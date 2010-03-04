@@ -116,7 +116,7 @@ public class MTShellScene extends AbstractScene {
 
 	private boolean useBackgroundGradient = true;
 	
-	//TODO (dont allow throwing stuff out of the screen)
+	//TODO (dont allow throwing stuff out of the screen) or destroy it then
 	//TODO loading screen
 	
 	/**

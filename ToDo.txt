@@ -107,13 +107,18 @@ ToDo list:
 
 -> Typography:
 - we can switch the textcolor on textarea draw code instead of creatin different memoryhungry fonts
+- add and implement setCursorPos() in MTTextArea
 - add setText()/setLabel() to buttons
 - (make bitmapfontfactory create the same size fonts as the ttf/svg factories, there is a difference now - fixed, but fontascent's different?)
 - (store scale information in every fontcharacter, but only change current matrix if new scale different from last)
 
 
 -> Gestures/Input
+- GestureUtil class? -> getDistance(cursor1, cursor2) getAngle(cursor1, movedCursor); etc
+- Test if intalled multitouch vista driver + win7 touch screen make problems
 - more gestures: double tap, flick(? velocity, straightness)
+- Win7 Input -> get and store blobsize
+- Change Tap&Hold gesture behaviour to match Windows -> send gesture_ended only if finger lifted, not if time is up
 - Win7Input source -> use getActiveWindow() -> reject windows Tap and HOld gestures -> set TWF_WANTPALM at registerTouchwindow or not? -> TEST! ->http://social.msdn.microsoft.com/Forums/en/tabletandtouch/thread/2a173296-49b6-4f25-860f-953ae6038857
 - add GenericTwoFingerGesture that delivers the touch points on the drag-plane -> methods for getLastRotation etc
 - at tapProcessor - when one cursor stolen by higher priority, abort tap without chance of resume -> else comp with tap+scale triggers tap after scale ended
@@ -121,6 +126,7 @@ ToDo list:
 - resume some gestures only if the cursor is still on the object -> else abort -> make abortGesture() method in all processors!
 - simplify writing of gestures
 - implement logically meaningful returns of boolean processInputEvent() - when return true, when false, how to react?
+- add keyboard input source sending keyboard events to the focused/selected component -> FocusManager?
 (- map input to mtapplication window if it is windowed and not fullscreen)
 - (if object that is dragged, scaled etc is destroyed while during gesture -> nullpointer error)
 - (background rotate gesture? -> not good, would rotate about center of cam.. -> better use MTComp at z=0 with rotateProcessor!)
@@ -141,6 +147,7 @@ ToDo list:
 
 
 -> Animations:
+- AnimationUtil static -> fadeOut(component) fadeIn() etc
 - simplify usage of animations, make subclasses for easinganimation (-> use reflection to set properties automatically? -lookat pulcore)
 - implement keyframe animations - TimeLine?
 - use p5 tweening library?

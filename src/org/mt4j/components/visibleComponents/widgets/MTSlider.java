@@ -360,6 +360,14 @@ public class MTSlider extends MTRectangle {
 	}
 	
 	
+	public float getMaxValue() {
+		return this.maxValue;
+	}
+
+	public float getMinValue() {
+		return this.minValue;
+	}
+
 	/**
 	 * Gets the outer shape.
 	 * 
