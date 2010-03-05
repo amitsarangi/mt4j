@@ -1,8 +1,8 @@
 ToDo list:
 
 -> General:
+- make standalone executable MT4j MTShell distribution/installer on windows
 - integrate with SWING?
-- Convert tuio coordinates to allow use on not fullscreen mt4j apps (only allow input if started on window)
 - make class DrawTools/GeomTools/GLTools and put stuff from Tools3D in there
 
 - enable a way so that even if input starts on a components the input can be redirected/replayed to another (parent or below) 
@@ -12,7 +12,6 @@ ToDo list:
      move, not the child whos dragged -> send evt to parent
 
 - let all implementations of processInputEvent return false by default (->not consumed)
-- add nice image as contact point instead of circle?
 
 - dont save vertices if we are in opengl -> we have to save vertices+we create new floatbuffers = 2*memory!
 	-> save only buffers and at getVerticesLocal -> create vertices from buffer -> not needed often
@@ -27,11 +26,11 @@ ToDo list:
 - mt4j as p5 library - difficult because mtapplication is derived from papplet
 - manymouse problem loadlibrary!? -> Compile on Mac!
 - remove MTVideoClip from core and put it into example with gsvideo and gstreamer?
+- update to latest GSVideo/GStreamer
 - add sound library (OpenAL?)
 - by default disable depth buffer and only for special 3d stuff enable it?
 - check if for line_smooth disabling/enabling multisampling is too expensive - if so disable/dont use line_smooth when multisampling at all 
 - create small test suite (transformation tests, get centerpoint ect)
-- 1 default overlay component in each mtcanvas with center camera and always drawn last &without depth test?
 - framework for component persistation (X-Stream?)
 - put perspective and viewport into MTCamera (?)
 - (Use nanotimer or currentmillis to update and animations? -> nano has more precision but has problems on some systems(?))
