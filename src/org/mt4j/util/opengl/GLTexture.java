@@ -89,6 +89,33 @@ public class GLTexture extends PImage implements PConstants , GLConstants{
     }	
     
     
+    /**
+     * Creates an instance of GLTexture with size width x height and with the specified parameters.
+     * The texture is initialized (empty) to that size.
+     * Caution: reuses the pixels array from the provided PImage!
+     * 
+     * @param parent PApplet
+     * @param pImage the image
+     * @param params GLTextureParameters
+     */	 
+    public GLTexture(PApplet parent, PImage pImage, GLTextureParameters params){
+    	this(parent, pImage.width, pImage.height, params, true);
+//    	pImage.loadPixels();
+//    	pImage.updatePixels();
+    	if (pImage.pixels == null || pImage.pixels.length == 0){
+    		pImage.loadPixels();
+    	}
+    	this.pixels = pImage.pixels;
+    	this.loadPixels();
+    	
+    	// ...into texture...
+        loadTexture();
+        // ...and into image.
+        updatePixels();
+//    	this.putImage(pImage);
+    }	
+    
+    
 //    FIXME ENABLE
     /**
      * Creates an instance of GLTexture with size width x height and with the specified parameters.
@@ -120,6 +147,8 @@ public class GLTexture extends PImage implements PConstants , GLConstants{
      * The last paramter is a dummy parameter, that isnt used.
      * This constructor initialized the textures internal PImage object (used by processing to texture stuff)
      * with 1,1, dimensions. This is useful if we really only intend to use the texture for opengl dawing.
+     * NOTE: Use this constructor only if you are sure that your applciation is using OpenGL and the component
+     * setUseDirectGL= true.
      * 
      * @param parent PApplet
      * @param width int
@@ -132,7 +161,7 @@ public class GLTexture extends PImage implements PConstants , GLConstants{
     	//FIXME TEST DO DIFFERENT!
     	//this texture for opengl!
 //    	super(width, height, ARGB);  
-        super(1, 1, ARGB);
+        super(0, 0, ARGB);
         this.width = width;
         this.height = height;
         
@@ -380,7 +409,7 @@ public class GLTexture extends PImage implements PConstants , GLConstants{
         }
 
         // Putting img into pixels...
-        PApplet.arraycopy(img.pixels, pixels);
+        PApplet.arraycopy(img.pixels, pixels); //TODO just assign the array instead of copy..? unsafer but faster
    
         // ...into texture...
         loadTexture();

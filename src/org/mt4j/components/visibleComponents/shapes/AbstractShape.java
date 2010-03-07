@@ -913,10 +913,12 @@ public abstract class AbstractShape extends AbstractVisibleComponent {
 					tParams.minFilter = GLTextureParameters.LINEAR;
 					tParams.magFilter = GLTextureParameters.LINEAR;
 					
-					//Initialize emtpy texture
-					GLTexture newGLTexture = new GLTexture(this.getRenderer(), newTexImage.width, newTexImage.height, tParams);
-					//Fill the texture with pixels
-					newGLTexture.putImage(newTexImage);
+//					//Initialize emtpy texture
+//					GLTexture newGLTexture = new GLTexture(this.getRenderer(), newTexImage.width, newTexImage.height, tParams);
+//					//Fill the texture with pixels
+//					newGLTexture.putImage(newTexImage);
+					GLTexture newGLTexture = new GLTexture(this.getRenderer(), newTexImage, tParams);
+							
 					newGLTexture.setFlippedY(true); //?
 					newGLTexture.format = newTexImage.format;  
 					this.textureImage = newGLTexture;
@@ -958,9 +960,11 @@ public abstract class AbstractShape extends AbstractVisibleComponent {
 					tParams.magFilter = GLTextureParameters.LINEAR;
 					
 					//Initialize emtpy texture
-					GLTexture newGLTexture = new GLTexture(this.getRenderer(), newTexImage.width, newTexImage.height, tParams);
-					//Fill the texture with pixels
-					newGLTexture.putImage(newTexImage);
+//					GLTexture newGLTexture = new GLTexture(this.getRenderer(), newTexImage.width, newTexImage.height, tParams);
+//					//Fill the texture with pixels
+//					newGLTexture.putImage(newTexImage);
+					GLTexture newGLTexture = new GLTexture(this.getRenderer(), newTexImage, tParams);
+					
 					newGLTexture.setFlippedY(true); //?
 					newGLTexture.format = newTexImage.format;  
 					this.textureImage = newGLTexture;

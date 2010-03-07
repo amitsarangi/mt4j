@@ -53,7 +53,6 @@ ToDo list:
 - make setEnableTransformStateEvents -> fire stateChangeEvts if transformed in any way (but children are also moved, fire also..?)
 - find a way to determine if a geometryinfo is shared or not -> if not -> delete displayLists!!
 - at setters make boolean parameter recurseChildren to also apply it to children?
-- remove or rework circlemenu
 - sprite component with acceleration/velocity/collision/ animatable with textures?
 - store Vertices only in floatBuffers instead of buffers+array to reduce memory consumption? (test if it matters)
 - use push/popattrib at drawing? -> speed up drawing -> externalize rendering? (ie. renderer.renderBuffers(..));
@@ -63,6 +62,7 @@ ToDo list:
 - switch in abstractshape to draw boundingshape
 - test if frustum culling working when canvas scaled? camera zoomed etc?
 - record displaylists with drawComponent() method instead of Tools3D.generateDisplist..
+- (remove or rework circlemenu)
 - (implement color picking for performance?)
 - (use bitmapfont in mtprogressbar)
 - (make mtmovieclip display the start frame at loading, nicen up ui, add pause button etc)
@@ -74,7 +74,6 @@ ToDo list:
 - mention component state changes/listeners in component tutorial
 - features -media supports, jpg,png,avi etc
 - at mutlitouch gestures page add link to java doc processor?
-- screenshots - remove second video?
 - Component structure
 - Gestures: 
 	- tapAndHold
@@ -126,7 +125,6 @@ ToDo list:
 - simplify writing of gestures
 - implement logically meaningful returns of boolean processInputEvent() - when return true, when false, how to react?
 - add keyboard input source sending keyboard events to the focused/selected component -> FocusManager?
-(- map input to mtapplication window if it is windowed and not fullscreen)
 - (if object that is dragged, scaled etc is destroyed while during gesture -> nullpointer error)
 - (background rotate gesture? -> not good, would rotate about center of cam.. -> better use MTComp at z=0 with rotateProcessor!)
 

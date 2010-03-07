@@ -2,8 +2,6 @@ package advanced.drawing;
 
 import java.util.HashMap;
 
-import javax.media.opengl.GL;
-
 import org.mt4j.MTApplication;
 import org.mt4j.components.TransformSpace;
 import org.mt4j.components.visibleComponents.shapes.AbstractShape;
