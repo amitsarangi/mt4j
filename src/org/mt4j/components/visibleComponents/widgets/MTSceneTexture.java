@@ -33,7 +33,7 @@ import org.mt4j.util.math.Plane;
 import org.mt4j.util.math.Tools3D;
 import org.mt4j.util.math.Vector3D;
 import org.mt4j.util.math.Vertex;
-import org.mt4j.util.opengl.FboStack;
+import org.mt4j.util.opengl.GLFboStack;
 import org.mt4j.util.opengl.GLFBO;
 import org.mt4j.util.opengl.GLTexture;
 
@@ -170,7 +170,7 @@ public class MTSceneTexture extends MTRectangle {
 			scene.drawAndUpdate(pgl, this.lastUpdateTime);
 		fbo.stopRenderToTexture();
 
-		if (FboStack.getInstance(gl).peekFBO() == 0)
+		if (GLFboStack.getInstance(gl).peekFBO() == 0)
 			gl.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA); //Restore default blend mode //FIXME TEST -> neccessary?
 		
 		//FIXME NOT NEEDED!? sufficient to call glGenerateMipmapEXT at texture creation!? 

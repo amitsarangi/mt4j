@@ -51,7 +51,7 @@ import processing.core.PGraphics;
  * 
  * @author Christopher Ruff
  */
-public class MTTextArea extends MTRectangle implements IdragClusterable, ITextInputListener{
+public class MTTextArea extends MTRectangle implements IdragClusterable, ITextInputListener, Comparable<Object>{
 		
 	/** The pa. */
 	private PApplet pa;
@@ -820,6 +820,15 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
 		}
 	}
 
+
+	public int compareTo(Object o) {
+		if (o instanceof MTTextArea) {
+			MTTextArea ta = (MTTextArea)o;
+			return this.getText().compareToIgnoreCase(ta.getText());
+		} else {
+			return 0;
+		}
+	}
 
 
 }

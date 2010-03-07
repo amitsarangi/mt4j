@@ -9,9 +9,9 @@ import org.apache.log4j.Logger;
 import org.apache.log4j.SimpleLayout;
 
 
-public class FboStack{
+public class GLFboStack{
 	/** The Constant logger. */
-	private static final Logger logger = Logger.getLogger(FboStack.class.getName());
+	private static final Logger logger = Logger.getLogger(GLFboStack.class.getName());
 	static{
 //		logger.setLevel(Level.ERROR);
 		SimpleLayout l = new SimpleLayout();
@@ -23,17 +23,17 @@ public class FboStack{
 	protected int currentFBO;
 	protected Stack<Integer> fboNameStack;
 	
-	private static FboStack instance = null;
+	private static GLFboStack instance = null;
 
-	private FboStack(GL gl){
+	private GLFboStack(GL gl){
 		this.gl = gl;
 		fboNameStack = new Stack<Integer>();
 		currentFBO = 0;
 	}
 	
-	public static FboStack getInstance(GL gl){
+	public static GLFboStack getInstance(GL gl){
 		if (instance == null){
-			instance = new FboStack(gl);
+			instance = new GLFboStack(gl);
 			return instance;
 		}else{
 			return instance;

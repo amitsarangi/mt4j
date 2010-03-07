@@ -67,7 +67,7 @@ public class GLFBO {
 	
 	private boolean stencilBufferAttached;
 
-	private FboStack fboStack;
+	private GLFboStack fboStack;
 	
 	
 	/**
@@ -111,7 +111,7 @@ public class GLFBO {
 		this.textures = new ArrayList<GLTexture>();
 		
 		//FIXME FBO STACK TEST!!
-		this.fboStack = FboStack.getInstance(gl); 
+		this.fboStack = GLFboStack.getInstance(gl); 
 		
 		this.initFBO();
 	}

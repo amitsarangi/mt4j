@@ -54,8 +54,6 @@ public class MTLine extends AbstractShape {
 //	/** The display list i ds. */
 //	private int[] displayListIDs;
 	
-	private IBoundingShape bounds;
-
 	/**
 	 * Instantiates a new mT line.
 	 * 
@@ -104,8 +102,8 @@ public class MTLine extends AbstractShape {
 		if (MT4jSettings.getInstance().isOpenGlMode()){
 			this.getGeometryInfo().generateOrUpdateBuffersLocal(new StyleInfo(new MTColor(255,255,255,255), new MTColor(startPoint.getR(), startPoint.getG(), startPoint.getB(), startPoint.getA()), this.isDrawSmooth(), this.isNoStroke(), this.isNoFill(), this.getStrokeWeight(), this.getFillDrawMode(), this.getLineStipple()));
 		}
-		this.setBoundsBehaviour(AbstractShape.BOUNDS_DONT_USE);
-//		this.setBoundsBehaviour(BOUNDS_ONLY_CHECK);
+//		this.setBoundsBehaviour(AbstractShape.BOUNDS_DONT_USE);
+		this.setBoundsBehaviour(BOUNDS_ONLY_CHECK);
 		
 		this.setName("unnamed MTLine");
 	}
@@ -113,6 +111,8 @@ public class MTLine extends AbstractShape {
 	//TODO getNormal() will crash ..
 	//TODO override vobs?
 	
+	
+	//TODO  this works only on z=0..better create a boundingbox? -> but that wont fit very tightly..
 	@Override
 	protected IBoundingShape computeDefaultBounds() {
 		Vertex v0 = getVerticesLocal()[0];
@@ -140,11 +140,12 @@ public class MTLine extends AbstractShape {
 	public void setGeometryInfo(GeometryInfo geometryInfo) {
 		super.setGeometryInfo(geometryInfo);
 		
-		//We keep a local bounds object here and dont use the AbstractShapes
-		//bounding mechanisms because of the geometryInfo.getVertices().length >= 3 check 
+		//We dont use the AbstractShapes setGeomInfo wont calc bounds for MTLine
+		//because of the geometryInfo.getVertices().length >= 3 check 
 		//which is false in a MTLine but usually its good to check that so we dont want
-		//to remove the check.. //TODO better ideas?
-		this.bounds = computeDefaultBounds(); 
+		//to remove the check.. 
+		if (this.isBoundsAutoCompute())
+			this.setBoundingShape(this.computeDefaultBounds());
 	}
 	
 	@Override
@@ -277,9 +278,6 @@ public class MTLine extends AbstractShape {
 	 */
 	@Override
 	public boolean isGeometryContainsPointLocal(Vector3D testPoint) {
-		if (this.bounds != null){
-			return this.bounds.containsPointLocal(testPoint);
-		}
 		return false;
 	}
 	
@@ -288,9 +286,6 @@ public class MTLine extends AbstractShape {
 	 */
 	@Override
 	public Vector3D getGeometryIntersectionLocal(Ray ray){
-		if (this.bounds != null){
-			return this.bounds.getIntersectionLocal(ray);
-		}
 		return null;
 	}
 
