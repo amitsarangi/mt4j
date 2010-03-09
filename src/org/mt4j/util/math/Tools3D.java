@@ -718,9 +718,11 @@ public class Tools3D {
 	{
 		GL gl=((PGraphicsOpenGL)pa.g).beginGL();
 		
+		/*
 		//Unbind any VBOs first
 		gl.glBindBufferARB(GL.GL_ARRAY_BUFFER_ARB, 0);
 		gl.glBindBufferARB(GL.GL_ELEMENT_ARRAY_BUFFER_ARB, 0);
+		*/
 		
 		//Generate new list IDs
 		int[] returnVal = new int[2];
@@ -989,9 +991,12 @@ public class Tools3D {
 		GL gl;
 //		gl =((PGraphicsOpenGL)pa.g).beginGL();
 		gl =((PGraphicsOpenGL)pa.g).gl;
+		
+		/*//Shouldnt be neccessary - REMOVE!? TODO
 		//Unbind any VBOs first
 		gl.glBindBufferARB(GL.GL_ARRAY_BUFFER_ARB, 0);
 		gl.glBindBufferARB(GL.GL_ELEMENT_ARRAY_BUFFER_ARB, 0);
+		*/
 		
 		//Generate new list IDs
 		int[] returnVal = new int[2];
@@ -1040,33 +1045,17 @@ public class Tools3D {
 			gl.glBindTexture(textureTarget, tex.getTextureID());
 			
 			gl.glEnableClientState(GL.GL_TEXTURE_COORD_ARRAY);
-			
-			if (false){//Texture //TODO kann man vbos aufrufen in displaylist?
-				gl.glBindBufferARB(GL.GL_ARRAY_BUFFER_ARB, 0); //FIXME get vbo id
-				gl.glTexCoordPointer(2, GL.GL_FLOAT, 0, 0);
-			}else{
-				gl.glTexCoordPointer(2, GL.GL_FLOAT, 0, tbuff);
-			}
+			gl.glTexCoordPointer(2, GL.GL_FLOAT, 0, tbuff);
 			textureDrawn = true;
 		}
 		
 		// Normals
 		if (geometryInfo.isContainsNormals()){
 			gl.glEnableClientState(GL.GL_NORMAL_ARRAY);
-			if (false){
-				gl.glBindBufferARB(GL.GL_ARRAY_BUFFER_ARB, 0);
-				gl.glNormalPointer(GL.GL_FLOAT, 0, 0); 
-			}else{
-				gl.glNormalPointer(GL.GL_FLOAT, 0, geometryInfo.getNormalsBuff());
-			}
+			gl.glNormalPointer(GL.GL_FLOAT, 0, geometryInfo.getNormalsBuff());
 		}
 		
-		if (false){//Color
-			gl.glBindBufferARB(GL.GL_ARRAY_BUFFER_ARB, 0);
-			gl.glColorPointer(4, GL.GL_FLOAT, 0, 0);
-		}else{
-			gl.glColorPointer(4, GL.GL_FLOAT, 0, colorBuff);
-		}
+		gl.glColorPointer(4, GL.GL_FLOAT, 0, colorBuff);
 		
 		// START recording display list and DRAW////////////////////
 		gl.glNewList(listIDFill, GL.GL_COMPILE);
@@ -1099,55 +1088,6 @@ public class Tools3D {
 			gl.glDisable(textureTarget); //weiter nach unten?
 		}
 		returnVal[0] = listIDFill;
-		
-		//////
-		/*
-		if (useTexture
-			&& texture != null 
-			&& texture instanceof GLTexture)
-		{
-			GLTexture tex = (GLTexture)texture;
-			textureTarget = tex.getTextureTarget();
-			
-			//tells opengl which texture to reference in following calls from now on!
-			//the first parameter is eigher GL.GL_TEXTURE_2D or ..1D
-			gl.glEnableClientState(GL.GL_TEXTURE_COORD_ARRAY);
-			gl.glTexCoordPointer(2, GL.GL_FLOAT, 0, tbuff);
-			
-			//Start recording display list
-			gl.glNewList(listIDFill, GL.GL_COMPILE);
-				gl.glEnable(textureTarget);
-				gl.glBindTexture(tex.getTextureTarget(), tex.getTextureID());
-//				gl.glDisable(GL.GL_POLYGON_SMOOTH);
-				//DRAW
-				if (indexBuff == null){
-					gl.glDrawArrays(fillDrawMode, 0, vertBuff.capacity()/3);
-				}else{
-					gl.glDrawElements(fillDrawMode, indexBuff.capacity(), GL.GL_UNSIGNED_INT, indexBuff);
-				}
-				
-				gl.glBindTexture(tex.getTextureTarget(), 0);
-				gl.glDisable(textureTarget); //weiter nach unten?
-			gl.glEndList();
-
-			gl.glDisableClientState(GL.GL_TEXTURE_COORD_ARRAY);
-			gl.glBindTexture(textureTarget,0);//Unbind texture
-			gl.glDisable(textureTarget); //weiter nach unten?
-		}else{
-			gl.glNewList(listIDFill, GL.GL_COMPILE);
-				//DRAW
-				if (indexBuff == null){
-					gl.glDrawArrays(fillDrawMode, 0, vertBuff.capacity()/3);
-				}else{
-					gl.glDrawElements(fillDrawMode, indexBuff.capacity(), GL.GL_UNSIGNED_INT, indexBuff);
-				}
-//				gl.glDrawArrays(GL.GL_POLYGON, 0, vertBuff.capacity()/3);
-			gl.glEndList();
-		}
-		
-		returnVal[0] = listIDFill;
-		*/
-		//////////////////////////////////////////////////
 		
 		/////// DO OUTLINE LIST////////////////////////////
 		gl.glColorPointer(4, GL.GL_FLOAT, 0, strokeColBuff);
@@ -1208,9 +1148,12 @@ public class Tools3D {
 		gl =((PGraphicsOpenGL)pa.g).beginGL();
 //		 WGL.ChoosePixelFormat(arg0, arg1) //TODO check into
 		
+		/*
 		//Unbind any VBOs first
 		gl.glBindBufferARB(GL.GL_ARRAY_BUFFER_ARB, 0);
 		gl.glBindBufferARB(GL.GL_ELEMENT_ARRAY_BUFFER_ARB, 0);
+		*/
+		
 		//Generate new list IDs
 		int returnVal = -1;
 		int listIDOutline = gl.glGenLists(1);

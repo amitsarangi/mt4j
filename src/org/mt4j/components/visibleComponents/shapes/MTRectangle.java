@@ -34,14 +34,30 @@ import processing.core.PImage;
  * @author Christopher Ruff
  */
 public class MTRectangle extends MTPolygon {
+	
+	/** The current anchor. */
 	private PositionAnchor currentAnchor;
 	
-	//FIXME if the rectangle is rotated, the boundsZPlaneRectangle wont work anymore!
+	// (if the rectangle is x or y, rotated, the boundsZPlaneRectangle wont work anymore as a boundingshape!)
+	// actually it works..only wouldnt work if the local vertices arent lying on a z=0 parallel plane.
 	
+	/**
+	 * The Enum PositionAnchor.
+	 * 
+	 * @author Christopher Ruff
+	 */
 	public enum PositionAnchor{
+		
+		/** The LOWE r_ left. */
 		LOWER_LEFT,
+		
+		/** The LOWE r_ right. */
 		LOWER_RIGHT,
+		
+		/** The UPPE r_ left. */
 		UPPER_LEFT,
+		
+		/** The CENTER. */
 		CENTER
 	}
 	
@@ -128,23 +144,36 @@ public class MTRectangle extends MTPolygon {
 
 	
 	/* (non-Javadoc)
-	 * @see com.jMT.components.visibleComponents.shapes.MTPolygon#computeDefaultBounds()
+	 * @see org.mt4j.components.visibleComponents.shapes.MTPolygon#computeDefaultBounds()
 	 */
 	@Override
 	protected IBoundingShape computeDefaultBounds(){
 		return new BoundsZPlaneRectangle(this);
 	}
 	
+	/**
+	 * Gets the Position anchor.
+	 * 
+	 * @return the anchor
+	 */
 	public PositionAnchor getAnchor(){
 		return this.currentAnchor;
 	}
 	
+	/**
+	 * Sets the anchor. The Anchor determines which reference point
+	 * is used at set/getPosition(). The default anchor point is the rectangle's
+	 * center.
+	 * 
+	 * @param anchor the new anchor
+	 */
 	public void setAnchor(PositionAnchor anchor){
 		this.currentAnchor = anchor;
 	}
 	
+	
 	/* (non-Javadoc)
-	 * @see mTouch.components.visibleComponents.shapes.AbstractShape#setPositionGlobal(util.math.Vector3D)
+	 * @see org.mt4j.components.visibleComponents.shapes.AbstractShape#setPositionGlobal(org.mt4j.util.math.Vector3D)
 	 */
 	@Override
 	public void setPositionGlobal(Vector3D position) {
@@ -172,6 +201,9 @@ public class MTRectangle extends MTPolygon {
 		}
 	}
 	
+	/* (non-Javadoc)
+	 * @see org.mt4j.components.visibleComponents.shapes.AbstractShape#setPositionRelativeToParent(org.mt4j.util.math.Vector3D)
+	 */
 	@Override
 	public void setPositionRelativeToParent(Vector3D position) {
 		switch (this.getAnchor()) {
@@ -202,6 +234,13 @@ public class MTRectangle extends MTPolygon {
 	}
 
 	
+	/**
+	 * Gets the position. The position is dependant on the
+	 * set PositionAnchor. The default is the PositionAnchor.CENTER.
+	 * 
+	 * @param transformSpace the transform space
+	 * @return the position
+	 */
 	public Vector3D getPosition(TransformSpace transformSpace){
 		Vector3D v;
 		switch (transformSpace) {
@@ -267,84 +306,45 @@ public class MTRectangle extends MTPolygon {
 	
 
 	/* (non-Javadoc)
-	 * @see com.jMT.components.visibleComponents.shapes.MTPolygon#get2DPolygonArea()
+	 * @see org.mt4j.components.visibleComponents.shapes.MTPolygon#get2DPolygonArea()
 	 */
 	@Override
 	public double get2DPolygonArea() {
 		return (getHeightXY(TransformSpace.RELATIVE_TO_PARENT)*getWidthXY(TransformSpace.RELATIVE_TO_PARENT));
 	}
 
+	
 	/* (non-Javadoc)
-	 * @see com.jMT.components.visibleComponents.shapes.MTPolygon#getCenterOfMassObjSpace()
+	 * @see org.mt4j.components.visibleComponents.shapes.MTPolygon#getCenterOfMass2DLocal()
 	 */
 	@Override
 	public Vector3D getCenterOfMass2DLocal() {
-		Vertex[] pickVertsUntrans = this.getVerticesLocal();
+		Vertex[] v = this.getVerticesLocal();
 		Vector3D center = new Vector3D(
-				pickVertsUntrans[0].getX() + ((pickVertsUntrans[1].getX() - pickVertsUntrans[0].getX())/2), 
-				pickVertsUntrans[1].getY() + ((pickVertsUntrans[2].getY() - pickVertsUntrans[1].getY())/2), 
-				pickVertsUntrans[0].getZ());
-//		center.transform(this.getAbsoluteLocalToWorldMatrix());
+				v[0].getX() + ((v[1].getX() - v[0].getX())/2), 
+				v[1].getY() + ((v[2].getY() - v[1].getY())/2), 
+				v[0].getZ());
 		return center;
 	}
 	
+	
 	/* (non-Javadoc)
-	 * @see com.jMT.components.visibleComponents.shapes.MTPolygon#getCenterPointObjectSpace()
+	 * @see org.mt4j.components.visibleComponents.shapes.MTPolygon#getCenterPointLocal()
 	 */
 	@Override
 	public Vector3D getCenterPointLocal(){
 		return this.getCenterOfMass2DLocal();
 	}
 
-	/*
-	public float getHeight() {
-		Vertex[] v1 = this.getPickVerticesTrans();
-		Vertex bla = (Vertex)v1[2].minus(v1[1]);
-		return  bla.magnitude();
-	}
 	
-	public float getWidth() {
-		Vertex[] v = this.getPickVerticesTrans();
-		Vertex bla = (Vertex)v[1].minus(v[0]);
-		return bla.magnitude();
-	}
-	
-	*/
-	
-	
-	//TODO wie mit local und world umgehen?
-	//setSize etc als "world" machen,
-	//evtl zusätzliche methoden für setSizeLocal?
-	
-//	//FIXME this actually is setSizeLOCAL!!!
-//	/**
-//	 * Sets the size of the rectangle.
-//	 * Changes the vertices themself, not the transform, to allow for hassle-free non-uniform scaling.
-//	 * <p>Overridden because shearing will occur if the component was rotated and then scaled non-uniformly!
-//	 * <br>This method preserves the orientation
-//	 * 
-//	 * @param width the width
-//	 * @param height the height
-//	 * 
-//	 * @return true, if sets the size xy relative to parent
-//	 */
-//	@Override
-//	public boolean setSizeXYRelativeToParent(float width, float height){
-//		if (width > 0 && height > 0){
-//			Vertex[] v = this.getVerticesLocal();
-//			this.setVertices(new Vertex[]{
-//					new Vertex(v[0].x,			v[0].y, 		v[0].z, v[0].getTexCoordU(), v[0].getTexCoordV(), v[0].getR(), v[0].getG(), v[0].getB(), v[0].getA()), 
-//					new Vertex(v[0].x+width, 	v[1].y, 		v[1].z, v[1].getTexCoordU(), v[1].getTexCoordV(), v[1].getR(), v[1].getG(), v[1].getB(), v[1].getA()), 
-//					new Vertex(v[0].x+width, 	v[1].y+height, 	v[2].z, v[2].getTexCoordU(), v[2].getTexCoordV(), v[2].getR(), v[2].getG(), v[2].getB(), v[2].getA()), 
-//					new Vertex(v[3].x,			v[0].y+height,	v[3].z, v[3].getTexCoordU(), v[3].getTexCoordV(), v[3].getR(), v[3].getG(), v[3].getB(), v[3].getA()), 
-//					new Vertex(v[4].x,			v[4].y,			v[4].z, v[4].getTexCoordU(), v[4].getTexCoordV(), v[4].getR(), v[4].getG(), v[4].getB(), v[4].getA()), 
-//			});
-//			return true;
-//		}else
-//			return false;
-//	}
-	
-	
+	/**
+	 * Sets the size locally, meaning that not the transformation of the rectangle is changed, (as setSize/setWidth, scale etc. would do) but the vertices 
+	 * of the rectangle themselves. This is useful if we dont want the rectangles children to be scaled as well, for example.
+	 * <br>Note: The scaling is done from the rectangles upper left corner - not the center!
+	 * 
+	 * @param width the width
+	 * @param height the height
+	 */
 	public void setSizeLocal(float width, float height){
 		if (width > 0 && height > 0){
 			Vertex[] v = this.getVerticesLocal();
@@ -358,25 +358,14 @@ public class MTRectangle extends MTPolygon {
 		}
 	}
 	
-//	/* (non-Javadoc)
-//	 * @see com.jMT.components.visibleComponents.shapes.MTPolygon#setHeightXYRelativeToParent(float)
-//	 */
-//	@Override
-//	public boolean setHeightXYRelativeToParent(float height){
-//		if (height > 0){
-//			Vertex[] v = this.getVerticesLocal();
-//			this.setVertices(new Vertex[]{
-//					new Vertex(v[0].x,	v[0].y, 		v[0].z, v[0].getTexCoordU(), v[0].getTexCoordV(), v[0].getR(), v[0].getG(), v[0].getB(), v[0].getA()), 
-//					new Vertex(v[1].x, 	v[1].y, 		v[1].z, v[1].getTexCoordU(), v[1].getTexCoordV(), v[1].getR(), v[1].getG(), v[1].getB(), v[1].getA()), 
-//					new Vertex(v[2].x, 	v[1].y+height, 	v[2].z, v[2].getTexCoordU(), v[2].getTexCoordV(), v[2].getR(), v[2].getG(), v[2].getB(), v[2].getA()), 
-//					new Vertex(v[3].x,	v[1].y+height,	v[3].z, v[3].getTexCoordU(), v[3].getTexCoordV(), v[3].getR(), v[3].getG(), v[3].getB(), v[3].getA()), 
-//					new Vertex(v[4].x,	v[4].y,			v[4].z, v[4].getTexCoordU(), v[4].getTexCoordV(), v[4].getR(), v[4].getG(), v[4].getB(), v[4].getA()), 
-//			});
-//			return true;
-//		}else
-//			return false;
-//	}
 	
+	/**
+	 * Sets the height locally, meaning that not the transformation of the rectangle is changed, (as setSize/setWidth, scale etc. would do) but the vertices 
+	 * of the rectangle themselves. This is useful if we dont want the rectangles children to be scaled as well, for example.
+	 * <br>Note: The scaling is done from the rectangles upper left corner - not the center!
+	 * 
+	 * @param height the new height local
+	 */
 	public void setHeightLocal(float height){
 		Vertex[] v = this.getVerticesLocal();
 		this.setVertices(new Vertex[]{
@@ -388,31 +377,13 @@ public class MTRectangle extends MTPolygon {
 		});
 	}
 	
-//	/**
-//	 * Scales the shape to the given width.
-//	 * Uses the bounding rectangle for calculation!
-//	 * Aspect ratio is preserved!
-//	 * 
-//	 * @param width the width
-//	 * 
-//	 * @return true, if the width isnt negative
-//	 */
-//	@Override
-//	public boolean setWidthXYRelativeToParent(float width){
-//		if (width > 0){
-//			Vertex[] v = this.getVerticesLocal();
-//			this.setVertices(new Vertex[]{
-//					new Vertex(v[0].x,			v[0].y, v[0].z, v[0].getTexCoordU(), v[0].getTexCoordV(), v[0].getR(), v[0].getG(), v[0].getB(), v[0].getA()), 
-//					new Vertex(v[0].x+width, 	v[1].y, v[1].z, v[1].getTexCoordU(), v[1].getTexCoordV(), v[1].getR(), v[1].getG(), v[1].getB(), v[1].getA()), 
-//					new Vertex(v[0].x+width, 	v[2].y, v[2].z, v[2].getTexCoordU(), v[2].getTexCoordV(), v[2].getR(), v[2].getG(), v[2].getB(), v[2].getA()), 
-//					new Vertex(v[3].x,			v[3].y,	v[3].z, v[3].getTexCoordU(), v[3].getTexCoordV(), v[3].getR(), v[3].getG(), v[3].getB(), v[3].getA()), 
-//					new Vertex(v[4].x,			v[4].y,	v[4].z, v[4].getTexCoordU(), v[4].getTexCoordV(), v[4].getR(), v[4].getG(), v[4].getB(), v[4].getA()), 
-//			});
-//			return true;
-//		}else
-//			return false;
-//	}
 	
+	/**
+	 * Sets the width locally, meaning that not the transformation of the rectangle is changed, (as setSize/setWidth, scale etc. would do) but the vertices 
+	 * of the rectangle themselves. This is useful if we dont want the rectangles children to be scaled as well, for example.
+	 * <br>Note: The scaling is done from the rectangles upper left corner - not the center!
+	 * @param width the new width local
+	 */
 	public void setWidthLocal(float width){
 		if (width > 0){
 			Vertex[] v = this.getVerticesLocal();

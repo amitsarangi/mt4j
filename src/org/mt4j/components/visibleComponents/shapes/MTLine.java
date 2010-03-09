@@ -224,14 +224,14 @@ public class MTLine extends AbstractShape {
 		gl.glEnableClientState(GL.GL_COLOR_ARRAY);
 		
 		if (this.isUseVBOs()){
-			gl.glBindBufferARB(GL.GL_ARRAY_BUFFER_ARB, this.getGeometryInfo().getVBOVerticesName());
+			gl.glBindBuffer(GL.GL_ARRAY_BUFFER, this.getGeometryInfo().getVBOVerticesName());
 			gl.glVertexPointer(3, GL.GL_FLOAT, 0, 0);
 		}else{
 			gl.glVertexPointer(3, GL.GL_FLOAT, 0, vertBuff);
 		}
 		
 		if (this.isUseVBOs()){
-			gl.glBindBufferARB(GL.GL_ARRAY_BUFFER_ARB, this.getGeometryInfo().getVBOStrokeColorName());
+			gl.glBindBuffer(GL.GL_ARRAY_BUFFER, this.getGeometryInfo().getVBOStrokeColorName());
 			gl.glColorPointer(4, GL.GL_FLOAT, 0, 0);
 		}else{
 			gl.glColorPointer(4, GL.GL_FLOAT, 0, strokeColBuff);
@@ -267,8 +267,8 @@ public class MTLine extends AbstractShape {
 		gl.glDisableClientState(GL.GL_VERTEX_ARRAY);
 		gl.glDisableClientState(GL.GL_COLOR_ARRAY);
 		if (this.isUseVBOs()){
-			gl.glBindBufferARB(GL.GL_ARRAY_BUFFER_ARB, 0);
-			gl.glBindBufferARB(GL.GL_ELEMENT_ARRAY_BUFFER_ARB, 0);
+			gl.glBindBuffer(GL.GL_ARRAY_BUFFER, 0);
+			gl.glBindBuffer(GL.GL_ELEMENT_ARRAY_BUFFER, 0);
 		}
 	}
 

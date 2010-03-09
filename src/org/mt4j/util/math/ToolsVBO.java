@@ -51,13 +51,13 @@ public class ToolsVBO {
 	public static int generateVertexVBO(PApplet pa, FloatBuffer vertexBuffer, int vertexCount){
 		int[] vboVertices = new int[1]; 
 		GL gl =((PGraphicsOpenGL)pa.g).gl;
-			gl.glGenBuffersARB(1, vboVertices, 0);  // Get A Valid Name
-			gl.glBindBufferARB(GL.GL_ARRAY_BUFFER_ARB, vboVertices[0]);  // Bind The Buffer
+			gl.glGenBuffers(1, vboVertices, 0);  // Get A Valid Name
+			gl.glBindBuffer(GL.GL_ARRAY_BUFFER, vboVertices[0]);  // Bind The Buffer
 			// Load The Data
-			gl.glBufferDataARB(GL.GL_ARRAY_BUFFER_ARB, vertexCount * 3 * BufferUtil.SIZEOF_FLOAT, vertexBuffer, GL.GL_STATIC_DRAW_ARB);
+			gl.glBufferData(GL.GL_ARRAY_BUFFER, vertexCount * 3 * BufferUtil.SIZEOF_FLOAT, vertexBuffer, GL.GL_STATIC_DRAW);
 			//Unbind VBOs 
-			gl.glBindBufferARB(GL.GL_ARRAY_BUFFER_ARB, 0);
-			gl.glBindBufferARB(GL.GL_ELEMENT_ARRAY_BUFFER_ARB, 0);
+			gl.glBindBuffer(GL.GL_ARRAY_BUFFER, 0);
+			gl.glBindBuffer(GL.GL_ELEMENT_ARRAY_BUFFER, 0);
 		return vboVertices[0];
 	}
 	
@@ -71,12 +71,12 @@ public class ToolsVBO {
 	 */
 	public static void updateVertexVBO(PApplet pa, FloatBuffer vertexBuffer, int vertexCount, int vboName){
 		GL gl =((PGraphicsOpenGL)pa.g).gl;
-		gl.glBindBufferARB(GL.GL_ARRAY_BUFFER_ARB, vboName);  // Bind The Buffer
+		gl.glBindBuffer(GL.GL_ARRAY_BUFFER, vboName);  // Bind The Buffer
 		// Load The Data
-		gl.glBufferDataARB(GL.GL_ARRAY_BUFFER_ARB, vertexCount * 3 * BufferUtil.SIZEOF_FLOAT, vertexBuffer, GL.GL_STATIC_DRAW_ARB);
+		gl.glBufferData(GL.GL_ARRAY_BUFFER, vertexCount * 3 * BufferUtil.SIZEOF_FLOAT, vertexBuffer, GL.GL_STATIC_DRAW);
 		//Unbind VBOs 
-		gl.glBindBufferARB(GL.GL_ARRAY_BUFFER_ARB, 0);
-		gl.glBindBufferARB(GL.GL_ELEMENT_ARRAY_BUFFER_ARB, 0);
+		gl.glBindBuffer(GL.GL_ARRAY_BUFFER, 0);
+		gl.glBindBuffer(GL.GL_ELEMENT_ARRAY_BUFFER, 0);
 	}
 	
 	/**
@@ -91,13 +91,13 @@ public class ToolsVBO {
 	public static int generateTextureVBO(PApplet pa, FloatBuffer textureBuffer, int vertexCount){
 		int[] vboTexCoords = new int[1];// Texture Coordinate VBO Name
 		GL gl =((PGraphicsOpenGL)pa.g).gl;
-			gl.glGenBuffersARB(1, vboTexCoords, 0);  // Get A Valid Name
-			gl.glBindBufferARB(GL.GL_ARRAY_BUFFER_ARB, vboTexCoords[0]); // Bind The Buffer
+			gl.glGenBuffers(1, vboTexCoords, 0);  // Get A Valid Name
+			gl.glBindBuffer(GL.GL_ARRAY_BUFFER, vboTexCoords[0]); // Bind The Buffer
 			// Load The Data
-			gl.glBufferDataARB(GL.GL_ARRAY_BUFFER_ARB, vertexCount * 2 * BufferUtil.SIZEOF_FLOAT, textureBuffer, GL.GL_STATIC_DRAW_ARB);
+			gl.glBufferData(GL.GL_ARRAY_BUFFER, vertexCount * 2 * BufferUtil.SIZEOF_FLOAT, textureBuffer, GL.GL_STATIC_DRAW);
 			//Unbind VBOs 
-			gl.glBindBufferARB(GL.GL_ARRAY_BUFFER_ARB, 0);
-			gl.glBindBufferARB(GL.GL_ELEMENT_ARRAY_BUFFER_ARB, 0);
+			gl.glBindBuffer(GL.GL_ARRAY_BUFFER, 0);
+			gl.glBindBuffer(GL.GL_ELEMENT_ARRAY_BUFFER, 0);
 		return vboTexCoords[0];
 	}
 	
@@ -111,12 +111,12 @@ public class ToolsVBO {
 	 */
 	public static void updateTextureVBO(PApplet pa, FloatBuffer textureBuffer, int vertexCount, int vboName){
 		GL gl =((PGraphicsOpenGL)pa.g).gl;
-			gl.glBindBufferARB(GL.GL_ARRAY_BUFFER_ARB, vboName); // Bind The Buffer
+			gl.glBindBuffer(GL.GL_ARRAY_BUFFER, vboName); // Bind The Buffer
 			// Load The Data
-			gl.glBufferDataARB(GL.GL_ARRAY_BUFFER_ARB, vertexCount * 2 * BufferUtil.SIZEOF_FLOAT, textureBuffer, GL.GL_STATIC_DRAW_ARB);
+			gl.glBufferData(GL.GL_ARRAY_BUFFER, vertexCount * 2 * BufferUtil.SIZEOF_FLOAT, textureBuffer, GL.GL_STATIC_DRAW);
 			//Unbind VBOs 
-			gl.glBindBufferARB(GL.GL_ARRAY_BUFFER_ARB, 0);
-			gl.glBindBufferARB(GL.GL_ELEMENT_ARRAY_BUFFER_ARB, 0);
+			gl.glBindBuffer(GL.GL_ARRAY_BUFFER, 0);
+			gl.glBindBuffer(GL.GL_ELEMENT_ARRAY_BUFFER, 0);
 	}
 	
 	/**
@@ -131,13 +131,13 @@ public class ToolsVBO {
 	public static int generateColorVBO(PApplet pa, FloatBuffer colorBuffer, int vertexCount){
 		int[] vboColor = new int[1];// vertexcolor Coordinate VBO Name
 		GL gl =((PGraphicsOpenGL)pa.g).gl;
-			gl.glGenBuffersARB(1, vboColor, 0);  // Get A Valid Name
-			gl.glBindBufferARB(GL.GL_ARRAY_BUFFER_ARB, vboColor[0]); // Bind The Buffer
+			gl.glGenBuffers(1, vboColor, 0);  // Get A Valid Name
+			gl.glBindBuffer(GL.GL_ARRAY_BUFFER, vboColor[0]); // Bind The Buffer
 			// Load The Data
-			gl.glBufferDataARB(GL.GL_ARRAY_BUFFER_ARB, vertexCount * 4 * BufferUtil.SIZEOF_FLOAT, colorBuffer, GL.GL_STATIC_DRAW_ARB);
+			gl.glBufferData(GL.GL_ARRAY_BUFFER, vertexCount * 4 * BufferUtil.SIZEOF_FLOAT, colorBuffer, GL.GL_STATIC_DRAW);
 			//Unbind VBOs 
-			gl.glBindBufferARB(GL.GL_ARRAY_BUFFER_ARB, 0);
-			gl.glBindBufferARB(GL.GL_ELEMENT_ARRAY_BUFFER_ARB, 0);
+			gl.glBindBuffer(GL.GL_ARRAY_BUFFER, 0);
+			gl.glBindBuffer(GL.GL_ELEMENT_ARRAY_BUFFER, 0);
 		return vboColor[0];
 	}
 	
@@ -151,12 +151,12 @@ public class ToolsVBO {
 	 */
 	public static void updateColorVBO(PApplet pa, FloatBuffer colorBuffer, int vertexCount, int vboName){
 		GL gl =((PGraphicsOpenGL)pa.g).gl;
-			gl.glBindBufferARB(GL.GL_ARRAY_BUFFER_ARB, vboName); // Bind The Buffer
+			gl.glBindBuffer(GL.GL_ARRAY_BUFFER, vboName); // Bind The Buffer
 			// Load The Data
-			gl.glBufferDataARB(GL.GL_ARRAY_BUFFER_ARB, vertexCount * 4 * BufferUtil.SIZEOF_FLOAT, colorBuffer, GL.GL_STATIC_DRAW_ARB);
+			gl.glBufferData(GL.GL_ARRAY_BUFFER, vertexCount * 4 * BufferUtil.SIZEOF_FLOAT, colorBuffer, GL.GL_STATIC_DRAW);
 			//Unbind VBOs 
-			gl.glBindBufferARB(GL.GL_ARRAY_BUFFER_ARB, 0);
-			gl.glBindBufferARB(GL.GL_ELEMENT_ARRAY_BUFFER_ARB, 0);
+			gl.glBindBuffer(GL.GL_ARRAY_BUFFER, 0);
+			gl.glBindBuffer(GL.GL_ELEMENT_ARRAY_BUFFER, 0);
 	}
 	
 	/**
@@ -171,13 +171,13 @@ public class ToolsVBO {
 	public static int generateStrokeColorVBO(PApplet pa, FloatBuffer strokeColBuffer, int vertexCount){
 		int[] vboStrokeColor = new int[1];// stroke Coordinate VBO Name
 		GL gl =((PGraphicsOpenGL)pa.g).gl;
-			gl.glGenBuffersARB(1, vboStrokeColor, 0);  // Get A Valid Name
-			gl.glBindBufferARB(GL.GL_ARRAY_BUFFER_ARB, vboStrokeColor[0]); // Bind The Buffer
+			gl.glGenBuffers(1, vboStrokeColor, 0);  // Get A Valid Name
+			gl.glBindBuffer(GL.GL_ARRAY_BUFFER, vboStrokeColor[0]); // Bind The Buffer
 			// Load The Data
-			gl.glBufferDataARB(GL.GL_ARRAY_BUFFER_ARB,vertexCount * 4 * BufferUtil.SIZEOF_FLOAT, strokeColBuffer, GL.GL_STATIC_DRAW_ARB);
+			gl.glBufferData(GL.GL_ARRAY_BUFFER,vertexCount * 4 * BufferUtil.SIZEOF_FLOAT, strokeColBuffer, GL.GL_STATIC_DRAW);
 			//Unbind VBOs 
-			gl.glBindBufferARB(GL.GL_ARRAY_BUFFER_ARB, 0);
-			gl.glBindBufferARB(GL.GL_ELEMENT_ARRAY_BUFFER_ARB, 0);
+			gl.glBindBuffer(GL.GL_ARRAY_BUFFER, 0);
+			gl.glBindBuffer(GL.GL_ELEMENT_ARRAY_BUFFER, 0);
 		return vboStrokeColor[0];
 	}
 	
@@ -191,12 +191,12 @@ public class ToolsVBO {
 	 */
 	public static void updateStrokeColorVBO(PApplet pa, FloatBuffer strokeColBuffer, int vertexCount, int vboName){
 		GL gl =((PGraphicsOpenGL)pa.g).gl;
-			gl.glBindBufferARB(GL.GL_ARRAY_BUFFER_ARB, vboName); // Bind The Buffer
+			gl.glBindBuffer(GL.GL_ARRAY_BUFFER, vboName); // Bind The Buffer
 			// Load The Data
-			gl.glBufferDataARB(GL.GL_ARRAY_BUFFER_ARB,vertexCount * 4 * BufferUtil.SIZEOF_FLOAT, strokeColBuffer, GL.GL_STATIC_DRAW_ARB);
+			gl.glBufferData(GL.GL_ARRAY_BUFFER,vertexCount * 4 * BufferUtil.SIZEOF_FLOAT, strokeColBuffer, GL.GL_STATIC_DRAW);
 			//Unbind VBOs 
-			gl.glBindBufferARB(GL.GL_ARRAY_BUFFER_ARB, 0);
-			gl.glBindBufferARB(GL.GL_ELEMENT_ARRAY_BUFFER_ARB, 0);
+			gl.glBindBuffer(GL.GL_ARRAY_BUFFER, 0);
+			gl.glBindBuffer(GL.GL_ELEMENT_ARRAY_BUFFER, 0);
 	}
 	
 	
@@ -212,13 +212,13 @@ public class ToolsVBO {
 	public static int generateNormalsVBO(PApplet pa, FloatBuffer normalsBuffer, int normalsCount){
 		int[] vboNormals = new int[1]; 
 		GL gl =((PGraphicsOpenGL)pa.g).gl;
-			gl.glGenBuffersARB(1, vboNormals, 0);  // Get A Valid Name
-			gl.glBindBufferARB(GL.GL_ARRAY_BUFFER_ARB, vboNormals[0]);  // Bind The Buffer
+			gl.glGenBuffers(1, vboNormals, 0);  // Get A Valid Name
+			gl.glBindBuffer(GL.GL_ARRAY_BUFFER, vboNormals[0]);  // Bind The Buffer
 			// Load The Data
-			gl.glBufferDataARB(GL.GL_ARRAY_BUFFER_ARB, normalsCount * 3 * BufferUtil.SIZEOF_FLOAT, normalsBuffer, GL.GL_STATIC_DRAW_ARB);
+			gl.glBufferData(GL.GL_ARRAY_BUFFER, normalsCount * 3 * BufferUtil.SIZEOF_FLOAT, normalsBuffer, GL.GL_STATIC_DRAW);
 			//Unbind VBOs 
-			gl.glBindBufferARB(GL.GL_ARRAY_BUFFER_ARB, 0);
-			gl.glBindBufferARB(GL.GL_ELEMENT_ARRAY_BUFFER_ARB, 0);
+			gl.glBindBuffer(GL.GL_ARRAY_BUFFER, 0);
+			gl.glBindBuffer(GL.GL_ELEMENT_ARRAY_BUFFER, 0);
 		return vboNormals[0];
 	}
 	
@@ -233,12 +233,12 @@ public class ToolsVBO {
 	 */
 	public static void updateNormalsVBO(PApplet pa, FloatBuffer normalsBuffer, int normalsCount, int vboName){
 		GL gl =((PGraphicsOpenGL)pa.g).gl;
-		gl.glBindBufferARB(GL.GL_ARRAY_BUFFER_ARB, vboName);  // Bind The Buffer
+		gl.glBindBuffer(GL.GL_ARRAY_BUFFER, vboName);  // Bind The Buffer
 		// Load The Data
-		gl.glBufferDataARB(GL.GL_ARRAY_BUFFER_ARB, normalsCount * 3 * BufferUtil.SIZEOF_FLOAT, normalsBuffer, GL.GL_STATIC_DRAW_ARB);
+		gl.glBufferData(GL.GL_ARRAY_BUFFER, normalsCount * 3 * BufferUtil.SIZEOF_FLOAT, normalsBuffer, GL.GL_STATIC_DRAW);
 		//Unbind VBOs 
-		gl.glBindBufferARB(GL.GL_ARRAY_BUFFER_ARB, 0);
-		gl.glBindBufferARB(GL.GL_ELEMENT_ARRAY_BUFFER_ARB, 0);
+		gl.glBindBuffer(GL.GL_ARRAY_BUFFER, 0);
+		gl.glBindBuffer(GL.GL_ELEMENT_ARRAY_BUFFER, 0);
 	}
 
 }

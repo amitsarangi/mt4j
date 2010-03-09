@@ -880,14 +880,18 @@ public abstract class AbstractShape extends AbstractVisibleComponent {
 							//System.out.println("Power of two texture in: " + this.getName());
 						}
 						
+						
+						//FIXME WHY DONT WE CHECK IF NEW TEXTURE IS GLTEXTURE INSTANCE AND JUST SET IT HERE, TOO??
+						
 						//Dont use mipmaps by default
 						tParams.minFilter = GLTextureParameters.LINEAR;
 						tParams.magFilter = GLTextureParameters.LINEAR;
 						
-						//Initialize emtpy texture
-						GLTexture newGLTexture = new GLTexture(this.getRenderer(), newTexImage.width, newTexImage.height, tParams);
-						//Fill the texture with pixels
-						newGLTexture.putImage(newTexImage);
+//						//Initialize emtpy texture
+//						GLTexture newGLTexture = new GLTexture(this.getRenderer(), newTexImage.width, newTexImage.height, tParams);
+//						//Fill the texture with pixels
+//						newGLTexture.putImage(newTexImage);
+						GLTexture newGLTexture = new GLTexture(this.getRenderer(), newTexImage, tParams);
 						newGLTexture.setFlippedY(true); //?
 						newGLTexture.format = newTexImage.format;  
 						this.textureImage = newGLTexture;
@@ -912,13 +916,7 @@ public abstract class AbstractShape extends AbstractVisibleComponent {
 					//Dont use mipmaps by default
 					tParams.minFilter = GLTextureParameters.LINEAR;
 					tParams.magFilter = GLTextureParameters.LINEAR;
-					
-//					//Initialize emtpy texture
-//					GLTexture newGLTexture = new GLTexture(this.getRenderer(), newTexImage.width, newTexImage.height, tParams);
-//					//Fill the texture with pixels
-//					newGLTexture.putImage(newTexImage);
 					GLTexture newGLTexture = new GLTexture(this.getRenderer(), newTexImage, tParams);
-							
 					newGLTexture.setFlippedY(true); //?
 					newGLTexture.format = newTexImage.format;  
 					this.textureImage = newGLTexture;
@@ -958,13 +956,7 @@ public abstract class AbstractShape extends AbstractVisibleComponent {
 					//Dont use mipmaps by default
 					tParams.minFilter = GLTextureParameters.LINEAR;
 					tParams.magFilter = GLTextureParameters.LINEAR;
-					
-					//Initialize emtpy texture
-//					GLTexture newGLTexture = new GLTexture(this.getRenderer(), newTexImage.width, newTexImage.height, tParams);
-//					//Fill the texture with pixels
-//					newGLTexture.putImage(newTexImage);
 					GLTexture newGLTexture = new GLTexture(this.getRenderer(), newTexImage, tParams);
-					
 					newGLTexture.setFlippedY(true); //?
 					newGLTexture.format = newTexImage.format;  
 					this.textureImage = newGLTexture;

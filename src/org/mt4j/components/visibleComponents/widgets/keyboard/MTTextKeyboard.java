@@ -344,7 +344,8 @@ public class MTTextKeyboard extends MTKeyboard {
 								getParent().addChild(text);
 							}else{
 								//do nothing..
-								throw new RuntimeException("Dont know where to add text area to!");
+//								throw new RuntimeException("Dont know where to add text area to!");
+								System.err.println("Dont know where to add text area to!");
 							}
 						}
 //						*/

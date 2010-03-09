@@ -1,6 +1,8 @@
 ToDo list:
 
 -> General:
+- change from GL_ARRAY_BUFFER_ARB to GL_ARRAY_BUFFER at drawing!
+
 - make standalone executable MT4j MTShell distribution/installer on windows
 - integrate with SWING?
 - make class DrawTools/GeomTools/GLTools and put stuff from Tools3D in there

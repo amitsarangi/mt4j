@@ -298,7 +298,7 @@ public class MTPolygon extends AbstractShape {
 		gl.glEnableClientState(GL.GL_VERTEX_ARRAY);
 		gl.glEnableClientState(GL.GL_COLOR_ARRAY);
 		if (this.isUseVBOs()){//Vertices
-			gl.glBindBufferARB(GL.GL_ARRAY_BUFFER_ARB, this.getGeometryInfo().getVBOVerticesName());
+			gl.glBindBuffer(GL.GL_ARRAY_BUFFER, this.getGeometryInfo().getVBOVerticesName());
 			gl.glVertexPointer(3, GL.GL_FLOAT, 0, 0);
 		}else{
 			gl.glVertexPointer(3, GL.GL_FLOAT, 0, vertBuff);
@@ -325,7 +325,7 @@ public class MTPolygon extends AbstractShape {
 				gl.glEnableClientState(GL.GL_TEXTURE_COORD_ARRAY);
 				
 				if (this.isUseVBOs()){//Texture
-					gl.glBindBufferARB(GL.GL_ARRAY_BUFFER_ARB, this.getGeometryInfo().getVBOTextureName());
+					gl.glBindBuffer(GL.GL_ARRAY_BUFFER, this.getGeometryInfo().getVBOTextureName());
 					gl.glTexCoordPointer(2, GL.GL_FLOAT, 0, 0);
 				}else
 					gl.glTexCoordPointer(2, GL.GL_FLOAT, 0, tbuff);
@@ -334,7 +334,7 @@ public class MTPolygon extends AbstractShape {
 			}
 			
 			if (this.isUseVBOs()){//Color
-				gl.glBindBufferARB(GL.GL_ARRAY_BUFFER_ARB, this.getGeometryInfo().getVBOColorName());
+				gl.glBindBuffer(GL.GL_ARRAY_BUFFER, this.getGeometryInfo().getVBOColorName());
 				gl.glColorPointer(4, GL.GL_FLOAT, 0, 0);
 			}else{
 				gl.glColorPointer(4, GL.GL_FLOAT, 0, colorBuff);
@@ -344,7 +344,7 @@ public class MTPolygon extends AbstractShape {
 			if (this.getGeometryInfo().isContainsNormals()){
 				gl.glEnableClientState(GL.GL_NORMAL_ARRAY);
 				if (this.isUseVBOs()){
-					gl.glBindBufferARB(GL.GL_ARRAY_BUFFER_ARB, this.getGeometryInfo().getVBONormalsName());
+					gl.glBindBuffer(GL.GL_ARRAY_BUFFER, this.getGeometryInfo().getVBONormalsName());
 					gl.glNormalPointer(GL.GL_FLOAT, 0, 0); 
 				}else{
 					gl.glNormalPointer(GL.GL_FLOAT, 0, this.getGeometryInfo().getNormalsBuff());
@@ -373,7 +373,7 @@ public class MTPolygon extends AbstractShape {
 		////////// DRAW OUTLINE ////////
 		if (!this.isNoStroke()){ 
 			if (this.isUseVBOs()){
-				gl.glBindBufferARB(GL.GL_ARRAY_BUFFER_ARB, this.getGeometryInfo().getVBOStrokeColorName());
+				gl.glBindBuffer(GL.GL_ARRAY_BUFFER, this.getGeometryInfo().getVBOStrokeColorName());
 				gl.glColorPointer(4, GL.GL_FLOAT, 0, 0);
 			}else{
 				gl.glColorPointer(4, GL.GL_FLOAT, 0, strokeColBuff);
@@ -426,8 +426,8 @@ public class MTPolygon extends AbstractShape {
 		
 		//TEST
 		if (this.isUseVBOs()){
-			gl.glBindBufferARB(GL.GL_ARRAY_BUFFER_ARB, 0);
-			gl.glBindBufferARB(GL.GL_ELEMENT_ARRAY_BUFFER_ARB, 0);
+			gl.glBindBuffer(GL.GL_ARRAY_BUFFER, 0);
+			gl.glBindBuffer(GL.GL_ELEMENT_ARRAY_BUFFER, 0);
 		}
 //		*/
 	}

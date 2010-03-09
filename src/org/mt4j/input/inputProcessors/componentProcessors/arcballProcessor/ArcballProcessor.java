@@ -736,7 +736,7 @@ public class ArcballProcessor extends AbstractCursorProcessor {
 	
 	@Override
 	public String getName() {
-		return "Arball Processor";
+		return "Arcball Processor";
 	}
 
 

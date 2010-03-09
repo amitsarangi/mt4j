@@ -50,20 +50,20 @@ public abstract class AbstractCursorProcessor extends AbstractComponentProcessor
 	protected void processInputEvtImpl(MTInputEvent inputEvent) {
 //		AbstractCursorInputEvt posEvt = (AbstractCursorInputEvt)inputEvent;
 		MTFingerInputEvt posEvt = (MTFingerInputEvt)inputEvent;
-		InputCursor m = posEvt.getCursor();
+		InputCursor c = posEvt.getCursor();
 		switch (posEvt.getId()) {
 		case MTFingerInputEvt.INPUT_DETECTED:
-			activeCursors.add(m);
-			m.registerGeneralInterest(this);
-			cursorStarted(m, posEvt);
+			activeCursors.add(c);
+			c.registerGeneralInterest(this);
+			cursorStarted(c, posEvt);
 			break;
 		case MTFingerInputEvt.INPUT_UPDATED:
-			cursorUpdated(m, posEvt);
+			cursorUpdated(c, posEvt);
 			break;
 		case MTFingerInputEvt.INPUT_ENDED:
-			activeCursors.remove(m);
-			cursorEnded(m, posEvt);
-			m.unregisterGeneralInterest(this);
+			activeCursors.remove(c);
+			cursorEnded(c, posEvt);
+			c.unregisterGeneralInterest(this);
 			break;
 		default:
 			break;
@@ -207,11 +207,25 @@ public abstract class AbstractCursorProcessor extends AbstractComponentProcessor
 	 */
 	abstract public void cursorUnlocked(InputCursor cursor);
 	
-	
+	/**
+	 * Called when a new cursor has been detected.
+	 * @param inputCursor
+	 * @param currentEvent
+	 */
 	abstract public void cursorStarted(InputCursor inputCursor, MTFingerInputEvt currentEvent);
 	
+	/**
+	 * Called when a cursor has been updated with a new input event.
+	 * @param inputCursor
+	 * @param currentEvent
+	 */
 	abstract public void cursorUpdated(InputCursor inputCursor, MTFingerInputEvt currentEvent);
 	
+	/**
+	 * Called when a cursor has been removed.
+	 * @param inputCursor
+	 * @param currentEvent
+	 */
 	abstract public void cursorEnded(InputCursor inputCursor, MTFingerInputEvt currentEvent);
 	
 

@@ -105,7 +105,7 @@ public class GLTexture extends PImage implements PConstants , GLConstants{
     	if (pImage.pixels == null || pImage.pixels.length == 0){
     		pImage.loadPixels();
     	}
-    	this.pixels = pImage.pixels;
+    	this.pixels = pImage.pixels; //Dont copy the pixels for performance
     	this.loadPixels();
     	
     	// ...into texture...
