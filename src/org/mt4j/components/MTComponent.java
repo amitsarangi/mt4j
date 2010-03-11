@@ -596,7 +596,6 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 		this.fireStateChange(StateChange.COMPONENT_DESTROYED);
 		
 //		/*
-		//FIXME TEST tracing a memory leak
 		if (userData != null){
 			this.userData.clear();	
 		}

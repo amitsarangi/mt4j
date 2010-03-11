@@ -22,6 +22,10 @@ import java.awt.FontMetrics;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.log4j.ConsoleAppender;
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
+import org.apache.log4j.SimpleLayout;
 import org.mt4j.components.visibleComponents.font.BitmapFont;
 import org.mt4j.components.visibleComponents.font.BitmapFontCharacter;
 import org.mt4j.components.visibleComponents.font.IFont;
@@ -38,6 +42,16 @@ import processing.core.PImage;
  * @author Christopher Ruff
  */
 public class BitmapFontFactory implements IFontFactory {
+	/** The Constant logger. */
+	private static final Logger logger = Logger.getLogger(BitmapFontFactory.class.getName());
+	static{
+//		logger.setLevel(Level.ERROR);
+//		logger.setLevel(Level.WARN);
+		logger.setLevel(Level.DEBUG);
+		SimpleLayout l = new SimpleLayout();
+		ConsoleAppender ca = new ConsoleAppender(l);
+		logger.addAppender(ca);
+	}
 	
 //	static{
 //		FontManager.getInstance().registerFontFactory("", new BitmapFontFactory());
@@ -55,109 +69,11 @@ public class BitmapFontFactory implements IFontFactory {
 			MTColor strokeColor
 	) {
 		
-		PFont p5Font;
-		//FIXME when loading the vlw font the font size is already determined with the file
-		//and our parameter isnt honored
-		if (fontFileName.endsWith(".vlw")){
-			int lastDirSeparator = fontFileName.lastIndexOf(java.io.File.separator);
-			if (lastDirSeparator != -1){
-//				p5Font = pa.createFont(fontFileName.substring(lastDirSeparator+1, fontFileName.length()), fontSize, false); //FIXME TEST
-				p5Font = pa.loadFont(fontFileName.substring(lastDirSeparator+1, fontFileName.length()));
-			}else{
-				p5Font = pa.loadFont(fontFileName);
-			}
-		}
-		else if (fontFileName.endsWith(".ttf") || fontFileName.endsWith(".otf")){
-			int lastDirSeparator = fontFileName.lastIndexOf(java.io.File.separator);
-			if (lastDirSeparator != -1){
-				p5Font = pa.createFont(fontFileName.substring(lastDirSeparator+1, fontFileName.length()), fontSize, true); 
-			}else{
-				p5Font = pa.loadFont(fontFileName);
-			}
-		}
-		else{
-			int lastDirSeparator = fontFileName.lastIndexOf(java.io.File.separator);
-			if (lastDirSeparator != -1){
-				p5Font = pa.createFont(fontFileName.substring(lastDirSeparator+1, fontFileName.length()), fontSize, true); //Creats the font?	
-			}else{
-				p5Font = pa.loadFont(fontFileName);
-			}
-		}
-	
-		
-//		char[] chars = new char[]{'0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','Ä','Ö','Ü','a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z','ä','ö','ü','<','>','|',',',';','.',':','-','_','#','\'','+','*','!','?','\\','$','%','&','/','(',')','=','´','~','²','³','{','[',']','}','^','@','ß',' '};
+		PFont p5Font = this.getProcessingFont(pa, fontFileName, fontSize);
 		char[] chars = new char[]{'0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','Ä','Ö','Ü','a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z','ä','ö','ü','<','>','|',',',';','.',':','-','_','#','\'','+','*','!','?','\\','$','%','&','/','(',')','=','´','~','{','[',']','}','^','@','ß',' '};
-		List<BitmapFontCharacter> bitMapCharacters = new ArrayList<BitmapFontCharacter>();
-		for (int i = 0; i < chars.length; i++) {
-			char c = chars[i];
-			int charIndex = p5Font.index(c);
-			if (charIndex != -1){
-				PImage charImage = p5Font.images[charIndex];
-				int charWidth = p5Font.width[charIndex];
-				int charHeight = p5Font.height[charIndex];
-				int topExtend = p5Font.topExtent[charIndex];
-				int leftExtend = p5Font.leftExtent[charIndex];
-				int widthDisplacement = p5Font.setWidth[charIndex];
-				
-//				float high    = (float) p5Font.height[charIndex]     / p5Font.fheight;
-//			    float bwidth  = (float) p5Font.width[charIndex]      / p5Font.fwidth;
-//			    float lextent = (float) p5Font.leftExtent[charIndex] / p5Font.fwidth;
-//			    float textent = (float) p5Font.topExtent[charIndex]  / p5Font.fheight;
-				
-//				int topOffset = p5Font.descent + (-charHeight - (topExtend-charHeight)); //ORIGINAL
-				int topOffset =  (-charHeight - (topExtend-charHeight));
-				
-//				/*
-				if (MT4jSettings.getInstance().isOpenGlMode()){
-					for (int j = 0; j < charImage.pixels.length; j++) {
-						int d = charImage.pixels[j];
-						/*
-						int a = d >> 24 & 0xFF;
-						int r = d >> 16 & 0xFF;
-						int g = d >> 8 & 0xFF;
-						int b = d & 0xFF;
-						System.out.println("R: " + r + " G:" + g + " B:" + " A:" + a);
-						 */
-						charImage.pixels[j] = (d << 24) | 0x00FFFFFF; //ORIGINAL! //make it white
-//						charImage.pixels[j] = (d << 24) | pa.color(fillRed, fillGreen, fillBlue, 0);
-						charImage.format = PConstants.ARGB;
-					}
-					
-//					/*
-					//Copy the actual font data on the image from the upper left corner 1 pixel
-					//into the middle of the image to avoid anti aliasing artefacts at the corners
-					PImage copy = new PImage(charImage.width, charImage.height, PImage.ARGB);
-					//Clear transparent
-					for (int j = 0; j < copy.pixels.length; j++) {
-						copy.pixels[j] = (copy.pixels[j] << 24) | 0x00FFFFFF; //Original! //make it white
-//						copy.pixels[j] = (copy.pixels[j] << 24) | pa.color(fillRed, fillGreen, fillBlue, 0);
-					}
-					int shiftAmount = 1;
-					copy.copy(charImage, 0, 0, charWidth, charHeight, shiftAmount, shiftAmount, charWidth, charHeight);
-					charImage = copy;
-					//Move the character to compensate for the shifting of the image
-					topOffset -= shiftAmount;
-					leftExtend -= shiftAmount;
-//					*/
-				}
-//				*/
-				   
-				//Create bitmap font character
-				String StringChar = new Character(c).toString();
-				BitmapFontCharacter character = new BitmapFontCharacter(charImage, pa, StringChar, leftExtend, topOffset, widthDisplacement);
-				character.setName(StringChar);
-				character.setFillColor(new MTColor(fillColor.getR(), fillColor.getG(), fillColor.getB(), fillColor.getAlpha()));
-				if (MT4jSettings.getInstance().isOpenGlMode()){
-					character.generateAndUseDisplayLists();
-				}
-				bitMapCharacters.add(character);
-//				System.out.println("Char: " + c + " charWidth: " + charWidth +  " leftExtend: " + leftExtend + " widthDisplacement: " + widthDisplacement + " imageHeight: " + charImage.height + " charHeight: " + charHeight +  " topExtent: " + topExtend);
-			}else{
-				System.err.println("Char : " + c + " not found!");
-			}
-		}
-		
-		
+		List<BitmapFontCharacter> bitMapCharacters = this.createCharacters(pa, p5Font, chars, fillColor, strokeColor);
+//		List<BitmapFontCharacter> bitMapCharacters = this.getCharacters(pa, chars, fillColor, strokeColor, fontFileName, fontSize);  
+	
 		//font is null sometimes (vlw)
 		/*
 		Font f = p5Font.getFont();
@@ -167,7 +83,7 @@ public class BitmapFontFactory implements IFontFactory {
 		for (Iterator iterator = attKeys.iterator(); iterator.hasNext();) {
 			TextAttribute textAttribute = (TextAttribute) iterator.next();
 			Object value = atts.get(textAttribute);
-			System.out.println("Key: " + textAttribute + " Value: " + value);
+			logger.debug("Key: " + textAttribute + " Value: " + value);
 		}
 //		FontMetrics fm = Toolkit.getDefaultToolkit().getFontMetrics(f);
 		 */
@@ -186,7 +102,7 @@ public class BitmapFontFactory implements IFontFactory {
 		}
 		fontMaxDescent *= -1; //We use negative descent values
 		
-		//System.out.println("Bitmapfont max descent: " + fontMaxDescent);
+		//logger.debug("Bitmapfont max descent: " + fontMaxDescent);
 		
 //		int fontMaxAscent = Math.round(p5Font.ascent()*fontSize);
 //		int fontMaxDescent = Math.round(p5Font.descent()*fontSize);
@@ -250,6 +166,143 @@ public class BitmapFontFactory implements IFontFactory {
 		);
 		bitmapFont.setFontFileName(fontFileName);
 		return bitmapFont;
+	}
+	
+	
+	
+	/**
+	 * Gets the processing font.
+	 * @param pa the pa
+	 * @param fontFileName the font file name
+	 * @param fontSize the font size
+	 * @return the processing font
+	 */
+	private PFont getProcessingFont(PApplet pa, String fontFileName, int fontSize){
+		PFont p5Font;
+		//FIXME when loading the vlw font the font size is already determined with the file
+		//and our parameter isnt honored
+		if (fontFileName.endsWith(".vlw")){
+			int lastDirSeparator = fontFileName.lastIndexOf(java.io.File.separator);
+			if (lastDirSeparator != -1){
+//				p5Font = pa.createFont(fontFileName.substring(lastDirSeparator+1, fontFileName.length()), fontSize, false); //FIXME TEST
+				p5Font = pa.loadFont(fontFileName.substring(lastDirSeparator+1, fontFileName.length()));
+			}else{
+				p5Font = pa.loadFont(fontFileName);
+			}
+		}
+		else if (fontFileName.endsWith(".ttf") || fontFileName.endsWith(".otf")){
+			int lastDirSeparator = fontFileName.lastIndexOf(java.io.File.separator);
+			if (lastDirSeparator != -1){
+				p5Font = pa.createFont(fontFileName.substring(lastDirSeparator+1, fontFileName.length()), fontSize, true); 
+			}else{
+				p5Font = pa.loadFont(fontFileName);
+			}
+		}
+		else{
+			int lastDirSeparator = fontFileName.lastIndexOf(java.io.File.separator);
+			if (lastDirSeparator != -1){
+				p5Font = pa.createFont(fontFileName.substring(lastDirSeparator+1, fontFileName.length()), fontSize, true); //Creats the font?	
+			}else{
+				p5Font = pa.loadFont(fontFileName);
+			}
+		}
+		return p5Font;
+	}
+	
+	
+	
+	/**
+	 * Creates the specified characters.
+	 * 
+	 * @param pa the pa
+	 * @param chars the chars
+	 * @param fillColor the fill color
+	 * @param strokeColor the stroke color
+	 * @param fontFileName the font file name
+	 * @param fontSize the font size
+	 * @return the characters
+	 */
+	public List<BitmapFontCharacter> getCharacters(PApplet pa, 
+			char[] chars,
+			MTColor fillColor, 
+			MTColor strokeColor,
+			String fontFileName, 
+			int fontSize
+	){
+		PFont p5Font = this.getProcessingFont(pa, fontFileName, fontSize);
+		return createCharacters(pa, p5Font, chars, fillColor, strokeColor);
+	}
+	
+	
+	private List<BitmapFontCharacter> createCharacters(PApplet pa, PFont p5Font, char[] chars, MTColor fillColor, MTColor strokeColor){
+		List<BitmapFontCharacter> bitMapCharacters = new ArrayList<BitmapFontCharacter>();
+		for (int i = 0; i < chars.length; i++) {
+			char c = chars[i];
+			int charIndex = p5Font.index(c);
+			if (charIndex != -1){
+				PImage charImage = p5Font.images[charIndex];
+				int charWidth = p5Font.width[charIndex];
+				int charHeight = p5Font.height[charIndex];
+				int topExtend = p5Font.topExtent[charIndex];
+				int leftExtend = p5Font.leftExtent[charIndex];
+				int widthDisplacement = p5Font.setWidth[charIndex];
+
+				//float high    = (float) p5Font.height[charIndex]     / p5Font.fheight;
+				//float bwidth  = (float) p5Font.width[charIndex]      / p5Font.fwidth;
+				//float lextent = (float) p5Font.leftExtent[charIndex] / p5Font.fwidth;
+				//float textent = (float) p5Font.topExtent[charIndex]  / p5Font.fheight;
+
+				//int topOffset = p5Font.descent + (-charHeight - (topExtend-charHeight)); //ORIGINAL
+				int topOffset =  (-charHeight - (topExtend-charHeight));
+
+//				/*
+				for (int j = 0; j < charImage.pixels.length; j++) {
+					int d = charImage.pixels[j];
+					/*
+						int a = d >> 24 & 0xFF;
+						int r = d >> 16 & 0xFF;
+						int g = d >> 8 & 0xFF;
+						int b = d & 0xFF;
+						logger.debug("R: " + r + " G:" + g + " B:" + " A:" + a);
+					 */
+					charImage.pixels[j] = (d << 24) | 0x00FFFFFF; //ORIGINAL! //make it white
+					//						charImage.pixels[j] = (d << 24) | pa.color(fillRed, fillGreen, fillBlue, 0);
+					charImage.format = PConstants.ARGB;
+				}
+
+//				/*
+				//Copy the actual font data on the image from the upper left corner 1 pixel
+				//into the middle of the image to avoid anti aliasing artefacts at the corners
+				PImage copy = new PImage(charImage.width, charImage.height, PImage.ARGB);
+				//Clear transparent
+				for (int j = 0; j < copy.pixels.length; j++) {
+					copy.pixels[j] = (copy.pixels[j] << 24) | 0x00FFFFFF; //Original! //make it white
+					//						copy.pixels[j] = (copy.pixels[j] << 24) | pa.color(fillRed, fillGreen, fillBlue, 0);
+				}
+				int shiftAmount = 1;
+				copy.copy(charImage, 0, 0, charWidth, charHeight, shiftAmount, shiftAmount, charWidth, charHeight);
+				charImage = copy;
+				//Move the character to compensate for the shifting of the image
+				topOffset -= shiftAmount;
+				leftExtend -= shiftAmount;
+//				*/
+//				*/
+
+				//Create bitmap font character
+				String StringChar = new Character(c).toString();
+				BitmapFontCharacter character = new BitmapFontCharacter(charImage, pa, StringChar, leftExtend, topOffset, widthDisplacement);
+				character.setName(StringChar);
+				character.setFillColor(new MTColor(fillColor.getR(), fillColor.getG(), fillColor.getB(), fillColor.getAlpha()));
+				if (MT4jSettings.getInstance().isOpenGlMode()){
+					character.generateAndUseDisplayLists();
+				}
+				bitMapCharacters.add(character);
+				//logger.debug("Char: " + c + " charWidth: " + charWidth +  " leftExtend: " + leftExtend + " widthDisplacement: " + widthDisplacement + " imageHeight: " + charImage.height + " charHeight: " + charHeight +  " topExtent: " + topExtend);
+			}else{
+				logger.warn("Couldnt create bitmap character : " + c + " -> not found!");
+			}
+		}
+		return bitMapCharacters;
 	}
 
 }

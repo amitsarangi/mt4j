@@ -18,6 +18,7 @@
 package org.mt4j.components.visibleComponents.font;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Set;
@@ -147,7 +148,7 @@ public class FontManager {
 			}
 
 			//Check which factory to use for this file type
-			IFontFactory factoryToUse = this.suffixToFactory.get(suffix);
+			IFontFactory factoryToUse = this.getFactoryForFileSuffix(suffix);
 
 			//Create the font if we have a factory
 			if (factoryToUse != null){
@@ -194,11 +195,32 @@ public class FontManager {
 		Set<String> suffixesInHashMap = this.suffixToFactory.keySet();
 		for (Iterator<String> iter = suffixesInHashMap.iterator(); iter.hasNext();) {
 			String suffix = (String) iter.next();
-			if (this.suffixToFactory.get(suffix).equals(factory)){
+			if (this.getFactoryForFileSuffix(suffix).equals(factory)){
 				this.suffixToFactory.remove(suffix);
 			}
 		}
 	}
+	
+	
+	/**
+	 * Gets the registered factories.
+	 * @return the registered factories
+	 */
+	public IFontFactory[] getRegisteredFactories(){
+		Collection<IFontFactory> factoryCollection = this.suffixToFactory.values();
+		return factoryCollection.toArray(new IFontFactory[factoryCollection.size()]);
+	}
+	
+	
+	/**
+	 * Gets the factory for file suffix.
+	 * @param suffix the suffix
+	 * @return the factory for file suffix
+	 */
+	public IFontFactory getFactoryForFileSuffix(String suffix){
+		return this.suffixToFactory.get(suffix);
+	}
+	
 	
 	/**
 	 * Gets the cached font.
@@ -210,7 +232,7 @@ public class FontManager {
 	 * 
 	 * @return the cached font
 	 */
-	private IFont getCachedFont(String fontAbsoultePath, int fontSize, MTColor fillColor, MTColor strokeColor){
+	public IFont getCachedFont(String fontAbsoultePath, int fontSize, MTColor fillColor, MTColor strokeColor){
 		for (IFont font : fonts){
 			if (fontsAreEqual(font, fontAbsoultePath, fontSize,	fillColor,	strokeColor)
 			){

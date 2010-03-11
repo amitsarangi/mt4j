@@ -18,14 +18,34 @@
 package org.mt4j.components.visibleComponents.font;
 
 import java.util.HashMap;
+import java.util.List;
 
+import org.apache.log4j.ConsoleAppender;
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
+import org.apache.log4j.SimpleLayout;
+import org.mt4j.components.MTComponent;
+import org.mt4j.components.visibleComponents.font.fontFactories.BitmapFontFactory;
+import org.mt4j.components.visibleComponents.font.fontFactories.IFontFactory;
 import org.mt4j.util.MTColor;
+
+import processing.core.PApplet;
 
 /**
  * The Class BitmapFont.
  * @author Christopher Ruff
  */
 public class BitmapFont implements IFont {
+	/** The Constant logger. */
+	private static final Logger logger = Logger.getLogger(BitmapFont.class.getName());
+	static{
+//		logger.setLevel(Level.ERROR);
+//		logger.setLevel(Level.WARN);
+		logger.setLevel(Level.DEBUG);
+		SimpleLayout l = new SimpleLayout();
+		ConsoleAppender ca = new ConsoleAppender(l);
+		logger.addAppender(ca);
+	}
 	
 	/** The characters. */
 	private BitmapFontCharacter[] characters;
@@ -107,35 +127,72 @@ public class BitmapFont implements IFont {
 	
 	
 	/* (non-Javadoc)
-	 * @see mTouch.components.visibleComponents.font.IVectorFont#getFontCharacterByName(java.lang.String)
+	 * @see org.mt4j.components.visibleComponents.font.IFont#getFontCharacterByName(java.lang.String)
 	 */
-	//@Override
 	public IFontCharacter getFontCharacterByName(String characterName){
 		BitmapFontCharacter returnChar = charNameToChar.get(characterName);
 		if (returnChar == null)
-			System.err.println("Font couldnt load charactername: " + characterName);
+			logger.warn("Font couldnt load charactername: " + characterName);
 		return returnChar;
 	}
 	
 	
 	
 	/* (non-Javadoc)
-	 * @see mTouch.components.visibleComponents.font.IVectorFont#getFontCharacterByUnicode(java.lang.String)
+	 * @see org.mt4j.components.visibleComponents.font.IFont#getFontCharacterByUnicode(java.lang.String)
 	 */
-	//@Override
 	public IFontCharacter getFontCharacterByUnicode(String unicode){
 		BitmapFontCharacter returnChar = uniCodeToChar.get(unicode);
-		if (returnChar == null)
-			System.err.println("Font couldnt load characterunicode: " + unicode);
+		if (returnChar == null){
+			logger.warn("Font couldnt load characterunicode: " + unicode);
+			
+			//This is a kind of hacky way to try to dynamically load characters from
+			//a font that were not loaded by default. 
+			if (fontFileName != null && fontFileName.length() > 0){
+				IFontFactory fontFactory = FontManager.getInstance().getFactoryForFileSuffix("");
+				if (fontFactory != null && fontFactory instanceof BitmapFontFactory){
+					BitmapFontFactory bitmapFontFactory = (BitmapFontFactory)fontFactory;
+					if (this.getCharacters().length > 0 && this.getCharacters()[0] != null && this.getCharacters()[0] instanceof MTComponent){
+						MTComponent comp = (MTComponent)this.getCharacters()[0];
+						PApplet pa = comp.getRenderer();
+						List<BitmapFontCharacter> charactersList = bitmapFontFactory.getCharacters(pa, new char[]{unicode.charAt(0)}, fillColor, strokeColor, this.fontFileName, this.originalFontSize);
+						BitmapFontCharacter[] characters = charactersList.toArray(new BitmapFontCharacter[charactersList.size()]); 
+						if (characters.length >= 1 && characters[0] != null){
+							BitmapFontCharacter loadedCharacter = characters[0];
+							BitmapFontCharacter[] newArray = new BitmapFontCharacter[this.getCharacters().length + 1];
+							System.arraycopy(this.getCharacters(), 0, newArray, 0, this.getCharacters().length);
+							newArray[newArray.length-1] = loadedCharacter;
+							this.setCharacters(newArray);
+							returnChar = loadedCharacter;
+							logger.debug("Re-loaded missing character: " + unicode + " from the font: " + this.fontFileName);
+						}	 
+					}
+				}
+			}
+		}
 		return returnChar;
 	}
 
 	/* (non-Javadoc)
 	 * @see org.mt4j.components.visibleComponents.font.IFont#getCharacters()
 	 */
-	//@Override
 	public IFontCharacter[] getCharacters() {
 		return this.characters;
+	}
+	
+	/**
+	 * Sets the characters for the font.
+	 * @param characters the new characters
+	 */
+	public void setCharacters(BitmapFontCharacter[] characters) {
+		uniCodeToChar.clear();
+		charNameToChar.clear();
+		for (int i = 0; i < characters.length; i++) {
+			BitmapFontCharacter currentChar = characters[i];
+			uniCodeToChar.put(currentChar.getUnicode(), currentChar);
+			charNameToChar.put(currentChar.getName(), currentChar);
+		}
+		this.characters = characters;
 	}
 
 	/* (non-Javadoc)

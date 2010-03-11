@@ -769,9 +769,11 @@ public class Vector3D {
 //    	System.out.println("Dot:" + dotP);
 //    	float theta = (float)Math.acos(dotP);
     	
-        float dot = v1.dot(v2);
-        float theta = FastMath.acos(dot / (v1.length() * v2.length()));
-        return theta;
+//        float dot = v1.dot(v2);
+//        float theta = FastMath.acos(dot / (v1.length() * v2.length()));
+//        return theta;
+    	
+    	return v1.angleBetween(v2);
     }
     
     /**

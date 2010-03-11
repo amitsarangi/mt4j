@@ -25,6 +25,10 @@ import org.apache.batik.svggen.font.Glyph;
 import org.apache.batik.svggen.font.Point;
 import org.apache.batik.svggen.font.table.CmapFormat;
 import org.apache.batik.svggen.font.table.Table;
+import org.apache.log4j.ConsoleAppender;
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
+import org.apache.log4j.SimpleLayout;
 import org.mt4j.components.visibleComponents.font.VectorFont;
 import org.mt4j.components.visibleComponents.font.VectorFontCharacter;
 import org.mt4j.util.MT4jSettings;
@@ -41,6 +45,16 @@ import processing.core.PApplet;
  * @author Christopher Ruff
  */
 public class TTFontFactory implements IFontFactory{
+	/** The Constant logger. */
+	private static final Logger logger = Logger.getLogger(TTFontFactory.class.getName());
+	static{
+//		logger.setLevel(Level.ERROR);
+		logger.setLevel(Level.WARN);
+//		logger.setLevel(Level.DEBUG);
+		SimpleLayout l = new SimpleLayout();
+		ConsoleAppender ca = new ConsoleAppender(l);
+		logger.addAppender(ca);
+	}
 	
 //	//Register the factory
 //	static{
@@ -67,8 +81,8 @@ public class TTFontFactory implements IFontFactory{
 //		this.unitsPerEm = f.getHeadTable().getUnitsPerEm();
 	}
 
-	public VectorFont createFont(PApplet pa, String svgFontFileName){
-		return this.createFont(pa, svgFontFileName, 50, new MTColor(0,0,0,255), new MTColor(0,0,0,255));
+	public VectorFont createFont(PApplet pa, String fontFileName){
+		return this.createFont(pa, fontFileName, 50, new MTColor(0,0,0,255), new MTColor(0,0,0,255));
 	}
 			
 
@@ -78,41 +92,50 @@ public class TTFontFactory implements IFontFactory{
 	 */
 	public VectorFont createFont(
 			PApplet pa, 
-			String svgFontFileName, 
+			String fontFileName, 
 			int fontSize, 
 			MTColor fillColor, 
 			MTColor strokeColor)
 	{
-		//INITIAL SETTINGS
-		this.pa 					= pa;
-		this.fontPath 				= svgFontFileName;
-		this.f 						= Font.create(fontPath);
-		this.setSize(fontSize);
-		this.fontDefaultXAdvancing 	= 500; //TODO WOHER KRIEGEN?
-		this.fontSize 				= fontSize; 
-		this.unitsPerEm 			= f.getHeadTable().getUnitsPerEm();
-		///
 		
-		//Get the desired fontsize scaling factor 
-		short unitsPerEm = f.getHeadTable().getUnitsPerEm();
-		int resolution = Toolkit.getDefaultToolkit().getScreenResolution();
-		//System.out.println("Screen resolution: " + resolution);
+//		//INITIAL SETTINGS
+//		this.pa 					= pa;
+//		this.fontPath 				= svgFontFileName;
+//		this.f 						= Font.create(fontPath);
+//		this.setSize(fontSize);
+//		this.fontDefaultXAdvancing 	= 500; //TODO can we get this from somewhere?
+//		this.fontSize 				= fontSize; 
+//		this.unitsPerEm 			= f.getHeadTable().getUnitsPerEm();
+//		///
+//		
+//		//Get the desired fontsize scaling factor 
+//		short unitsPerEm = f.getHeadTable().getUnitsPerEm();
+//		int resolution = Toolkit.getDefaultToolkit().getScreenResolution();
+//		//logger.info("Screen resolution: " + resolution);
+//		
+//		//This calculates the font in "pt" point size (used in windows)
+//		this.scaleFactor = ((float)fontSize * (float)resolution) / (72F * (float)unitsPerEm); //original
+//		
+//		//FIXME TEST
+//		float test = UnitTranslator.pointsToPixels(scaleFactor*fontSize, Math.round(resolution));
+////		test = Math.round((float)fontSize/(float)unitsPerEm);
+//		//This calculates the font size in..pixels? at least same as in svg
+//		test = (float)(1.0/(float)this.unitsPerEm) * fontSize;
+//		this.scaleFactor = test;
+//		
+//		//System.out.println("->Scalefactor: " + this.scaleFactor);
+//		
+//		//CREATE FONT CHARACTERS
+//		VectorFontCharacter[] chars = this.getTTFCharacters(f, "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZÄÖÜabcdefghijklmnopqrstuvwxyzäöü<>|,;.:-_#'+*!\"§$%&/()=?´~²³{[]}\\^°@ß"
+//														,fillColor, strokeColor, scaleFactor);
 		
-		//This calculates the font in "pt" point size (used in windows)
-		this.scaleFactor = ((float)fontSize * (float)resolution) / (72F * (float)unitsPerEm); //original
-		
-		//FIXME TEST
-		float test = UnitTranslator.pointsToPixels(scaleFactor*fontSize, Math.round(resolution));
-//		test = Math.round((float)fontSize/(float)unitsPerEm);
-		//This calculates the font size in..pixels? at least same as in svg
-		test = (float)(1.0/(float)this.unitsPerEm) * fontSize;
-		this.scaleFactor = test;
-		
-		//System.out.println("->Scalefactor: " + this.scaleFactor);
-		
-		//CREATE FONT CHARACTERS
-		VectorFontCharacter[] chars = this.getTTFCharacters(f, "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZÄÖÜabcdefghijklmnopqrstuvwxyzäöü<>|,;.:-_#'+*!\"§$%&/()=?´~²³{[]}\\^°@ß"
-														,fillColor, strokeColor);
+		VectorFontCharacter[] chars = this.getTTFCharacters(
+				pa, 
+				"0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZÄÖÜabcdefghijklmnopqrstuvwxyzäöü<>|,;.:-_#'+*!\"§$%&/()=?´{[]}\\@", 
+				fillColor, 
+				strokeColor, 
+				fontFileName, 
+				fontSize);
 
 		VectorFontCharacter[] newArray = new VectorFontCharacter[chars.length+3];
 		System.arraycopy(chars, 0, newArray, 0, chars.length);
@@ -202,10 +225,7 @@ public class TTFontFactory implements IFontFactory{
 
 	
 	
-	/**
-	 * 
-	 * @return
-	 */
+	
 	/*
 	public SvgFont getFont(){
 		SvgFontCharacter[] chars = this.getTTFCharacters("123456789ABCDEFGHIJKLMNOPQRSTUVWXYZÄÖÜabcdefghijklmnopqrstuvwxyzäöü<>|,;.:-_#'+*!\"§$%&/()=?´´~#²³456{[]}\\^°@ß");
@@ -240,7 +260,7 @@ public class TTFontFactory implements IFontFactory{
 		space.setUnicode(" ");
 		space.setName("space");
 		newArray[newArray.length-2] = space;
-		System.out.println("Advance of character space " + charIndex + " :" + default_advance_x);
+		logger.info("Advance of character space " + charIndex + " :" + default_advance_x);
 
 		//Manually add a TAB character to the font
 		int defaultTabWidth = fontDefaultXAdvancing*4;
@@ -279,16 +299,91 @@ public class TTFontFactory implements IFontFactory{
 	 */
 	
 	
+	
 
-	private VectorFontCharacter[] getTTFCharacters(Font f, String text,
+	/**
+	 * Gets the TTFont characters.
+	 * This does essentially the same as createFont()
+	 * but you can specify the characters to create in the string parameter.
+	 * 
+	 * @param pa the pa
+	 * @param text the text
+	 * @param fillColor the fill color
+	 * @param strokeColor the stroke color
+	 * @param fontFileName the font file name
+	 * @param fontSize the font size
+	 * @return the tTF characters
+	 */
+	public VectorFontCharacter[] getTTFCharacters(
+			PApplet pa, 
+			String text,
 			MTColor fillColor, 
-			MTColor strokeColor)  
+			MTColor strokeColor,
+			String fontFileName, 
+			int fontSize
+			)  {
+		this.pa = pa;
+		this.fontPath 				= fontFileName;
+		this.f 						= Font.create(fontPath);
+		if (f == null || f.getHeadTable() == null){
+			logger.error("Couldnt load font: " + fontPath);
+			return new VectorFontCharacter[]{};
+		}
+		this.setSize(fontSize);
+		this.fontDefaultXAdvancing 	= 500; //TODO can we get this from somewhere?
+		this.fontSize 				= fontSize; 
+		this.unitsPerEm 			= f.getHeadTable().getUnitsPerEm();
+		///
+		
+		//Get the desired fontsize scaling factor 
+		short unitsPerEm = f.getHeadTable().getUnitsPerEm();
+		int resolution = Toolkit.getDefaultToolkit().getScreenResolution();
+		//System.out.println("Screen resolution: " + resolution);
+		
+		//This calculates the font in "pt" point size (used in windows)
+		this.scaleFactor = ((float)fontSize * (float)resolution) / (72F * (float)unitsPerEm); //original
+		
+		//FIXME TEST
+		float test = UnitTranslator.pointsToPixels(scaleFactor*fontSize, Math.round(resolution));
+//		test = Math.round((float)fontSize/(float)unitsPerEm);
+		//This calculates the font size in..pixels? at least same as in svg
+		test = (float)(1.0/(float)this.unitsPerEm) * fontSize;
+		this.scaleFactor = test;
+		
+		//logger.info("->Scalefactor: " + this.scaleFactor);
+		
+		//CREATE FONT CHARACTERS
+		VectorFontCharacter[] chars = this.createTTFCharacters(f, text, fillColor, strokeColor, scaleFactor);
+		return chars;
+	}
+
+	
+	
+	
+	/**
+	 * Creates new TTFont characters.
+	 *  
+	 * @param f the f
+	 * @param text the text
+	 * @param fillColor the fill color
+	 * @param strokeColor the stroke color
+	 * @param scaleFactor the scale factor
+	 * @return the vector font character[]
+	 * @throws RuntimeException the runtime exception
+	 */
+	private VectorFontCharacter[] createTTFCharacters(Font f, String text,
+			MTColor fillColor, 
+			MTColor strokeColor,
+			float scaleFactor
+			)  
 	throws RuntimeException{
 		
 		// Decide upon a cmap table to use for our character to glyph look-up
 		CmapFormat cmapFmt = this.getCmapFormat(f);
 		if (cmapFmt == null) {
-			throw new RuntimeException("Cannot find a suitable cmap table");
+//			throw new RuntimeException("Cannot find a suitable cmap table");
+			logger.error("Cannot find a suitable cmap table");
+			return new VectorFontCharacter[]{};
 		}
 
 		// If this font includes arabic script, we want to specify
@@ -338,7 +433,7 @@ public class TTFontFactory implements IFontFactory{
 //					float tmp = fontChar.getHorizontalDist() * (float)(1.0/(float)this.unitsPerEm);
 //					fontChar.setHorizontalDist(Math.round(tmp * fontSize));
 					
-					fontChar.setHorizontalDist(Math.round(fontChar.getHorizontalDist() * this.scaleFactor)); //FIXME TRIAL
+					fontChar.setHorizontalDist(Math.round(fontChar.getHorizontalDist() * scaleFactor)); //FIXME TRIAL
 					
 					fontChar.setUnicode(Character.toString(text.charAt(i)));
 					fontChar.setName(Character.toString(text.charAt(i)));
@@ -348,7 +443,7 @@ public class TTFontFactory implements IFontFactory{
 
 				x += glyph.getAdvanceWidth();
 			}else{
-				System.err.println("Couldnt find character: \"" + text.charAt(i) + "\" in " + fontPath);
+				logger.error("Couldnt find character: \"" + text.charAt(i) + "\" in " + fontPath);
 				x += (int)((float)default_advance_x /* *scaleFactor */);
 			}
 
@@ -453,13 +548,13 @@ public class TTFontFactory implements IFontFactory{
 	 * @return
 	 */
 	private Vertex[] getContourAsShape(Glyph glyph, int startIndex, int count, float xadv) {
-		// If this is a single point on it's own, weSystem.out.println("Value of pointx: "+pointx); can't do anything with it
+		// If this is a single point on it's own, welogger.info("Value of pointx: "+pointx); can't do anything with it
 		if (glyph.getPoint(startIndex).endOfContour) {
 			return null;
 		}
 
-		//System.out.println("Leftsidebear " + glyph.getLeftSideBearing());
-		//System.out.println("Advx " + glyph.getAdvanceWidth());
+		//logger.info("Leftsidebear " + glyph.getLeftSideBearing());
+		//logger.info("Advx " + glyph.getAdvanceWidth());
 		
 		int offset = 0;
 		//float originx = 0F,originy = 0F;
@@ -505,7 +600,7 @@ public class TTFontFactory implements IFontFactory{
 				pathHandler.curvetoQuadraticAbs(pointx, pointy, point_plus1x, point_plus1y);
 				offset++;
 			} else {
-				System.out.println("drawGlyph case not catered for!!");
+				logger.info("drawGlyph case not catered for!!");
 				break;
 			}
 		}
@@ -519,17 +614,17 @@ public class TTFontFactory implements IFontFactory{
 		  //Get Sub-Paths
 		  ArrayList<Vertex[]> subPaths = pathHandler.getContours();
 
-		  System.out.println("Pathpoints array:");
+		  logger.info("Pathpoints array:");
 		  for (int i = 0; i < p.length; i++) {
 			  Vertex vertex = p[i];
-			  System.out.println(vertex);
+			  logger.info(vertex);
 		  }
 
-		  System.out.println("Subpaths");
+		  logger.info("Subpaths");
 		  for(Vertex[] subPath : subPaths)
 			  for (int i = 0; i < subPath.length; i++) {
 				Vertex vertex = subPath[i];
-				System.out.println(vertex);
+				logger.info(vertex);
 			}
 		 */
 		return p;
@@ -589,7 +684,7 @@ public class TTFontFactory implements IFontFactory{
 					Table.platformMacintosh,
 					Table.encodingRoman );
 
-			//System.out.println("Forced ASCII.  Loading ASCII/Macintosh cmap format...");
+			//logger.info("Forced ASCII.  Loading ASCII/Macintosh cmap format...");
 		} else {
 			// The default behaviour is to use the Unicode cmap encoding
 			cmapFmt = f.getCmapTable().getCmapFormat(
@@ -597,7 +692,7 @@ public class TTFontFactory implements IFontFactory{
 					Table.encodingUGL );
 
 			if(cmapFmt != null) {
-//				System.out.println("Loading Unicode cmap format...");
+//				logger.info("Loading Unicode cmap format...");
 			}
 
 			if (cmapFmt == null){
@@ -606,7 +701,7 @@ public class TTFontFactory implements IFontFactory{
 						Table.encodingKorean );
 
 				if(cmapFmt != null) {
-//					System.out.println("Loading Microsoft/Korean cmap format...");
+//					logger.info("Loading Microsoft/Korean cmap format...");
 				}
 			}
 			if (cmapFmt == null){
@@ -615,7 +710,7 @@ public class TTFontFactory implements IFontFactory{
 						Table.encodingHebrew );
 
 				if(cmapFmt != null) {
-//					System.out.println("Loading Microsoft/Hebrew cmap format...");
+//					logger.info("Loading Microsoft/Hebrew cmap format...");
 				}
 			}
 			if (cmapFmt == null) {
@@ -625,7 +720,7 @@ public class TTFontFactory implements IFontFactory{
 						Table.encodingUndefined );
 
 				if(cmapFmt != null) {
-//					System.out.println("Loading Undefined cmap format...");
+//					logger.info("Loading Undefined cmap format...");
 				}
 			}
 		}
@@ -650,8 +745,8 @@ public class TTFontFactory implements IFontFactory{
 		int resolution = Toolkit.getDefaultToolkit().getScreenResolution();
 		this.scaleFactor = ((float)size * (float)resolution) / (72F * (float)unitsPerEm);
 		//this.scaleFactorFixed = (int)(this.scaleFactor * 65536F);
-		//System.out.println(scaleFactor);
-		//System.out.println(scaleFactorFixed);
+		//logger.info(scaleFactor);
+		//logger.info(scaleFactorFixed);
 	}
 
 
