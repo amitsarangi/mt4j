@@ -614,7 +614,11 @@ public class MTTriangleMesh extends AbstractShape{
 				}
 			}
 		}else{
-			this.drawPureGl(gl);
+			if (this.isNoFill() && this.isNoStroke()){
+				return;
+			}else{
+				this.drawPureGl(gl);	
+			}
 		}
 	}
 
@@ -797,11 +801,13 @@ public class MTTriangleMesh extends AbstractShape{
 			}
 		}
 		
+		boolean outlineDrawn = false;
 		////////// DRAW OUTLINE ////////
 		if (!this.isNoStroke()
 				&& this.outlineBuffers != null //FIXME EXPERIMENT
 				&& this.outlineContours != null
 		){ 
+			outlineDrawn = true;
 			
 //			FloatBuffer strokeColBuff = this.getStrokeColBuff();
 //			if (this.isUseVBOs()){
@@ -835,6 +841,7 @@ public class MTTriangleMesh extends AbstractShape{
 			//instead we use a single, simple stroke color and custom outlines, if provided 
 			gl.glDisableClientState(GL.GL_COLOR_ARRAY); //disable color buffer use
 			gl.glColor4f(strokeR, strokeG, strokeB, strokeA);
+			
 			//Always use just buffes and drawarrays instead of vbos..too complicated for a simple outline..
 			for(FloatBuffer outlineBuffer : this.outlineBuffers){ //FIXME EXPERIMENTAL
 				gl.glVertexPointer(3, GL.GL_FLOAT, 0, outlineBuffer); 
@@ -864,9 +871,10 @@ public class MTTriangleMesh extends AbstractShape{
 		}
 		
 		gl.glDisableClientState(GL.GL_VERTEX_ARRAY);
-//		gl.glDisableClientState(GL.GL_COLOR_ARRAY);
+		if (!outlineDrawn){ 
+			gl.glDisableClientState(GL.GL_COLOR_ARRAY); //If outline drawn we disabled color_array earlier
+		}
 		
-		//TEST
 		if (this.isUseVBOs()){
 			gl.glBindBuffer(GL.GL_ARRAY_BUFFER, 0);
 			gl.glBindBuffer(GL.GL_ELEMENT_ARRAY_BUFFER, 0);
@@ -895,9 +903,6 @@ public class MTTriangleMesh extends AbstractShape{
 	}
 
 
-	/* (non-Javadoc)
-	 * @see com.jMT.components.visibleComponents.shapes.AbstractShape#destroyComponent()
-	 */
 	@Override
 	protected void destroyComponent() {
 		this.triangles = null;

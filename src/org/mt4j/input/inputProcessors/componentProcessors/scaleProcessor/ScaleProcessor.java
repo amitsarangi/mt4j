@@ -488,9 +488,6 @@ public class ScaleProcessor extends AbstractCursorProcessor {
 	}
 	
 	
-	/* (non-Javadoc)
-	 * @see org.mt4j.input.inputAnalyzers.componentAnalyzers.AbstractComponentInputAnalyzer#getName()
-	 */
 	@Override
 	public String getName() {
 		return "Scale Processor";

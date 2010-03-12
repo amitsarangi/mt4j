@@ -81,18 +81,12 @@ public class BoundsArbitraryPlanarPolygon implements IBoundingShape {
 	}
 
 	
-	/* (non-Javadoc)
-	 * @see com.jMT.components.bounds.IBoundingShape#getCenterPointObjSpace()
-	 */
 	public Vector3D getCenterPointLocal() {
 		//TODO check if entierely in x,y plane and use this, else create bounding box/sphere and get the center
 		return  Tools3D.getPolygonCenterOfMass2D(this.boundingPointsLocal);
 	}
 	
 	
-	/* (non-Javadoc)
-	 * @see com.jMT.components.bounds.IBoundingShape#getCenterPointWorld()
-	 */
 	public Vector3D getCenterPointGlobal() {
 		if (centerWorldDirty){
 			Vector3D tmp = this.getCenterPointLocal().getCopy();
@@ -110,9 +104,6 @@ public class BoundsArbitraryPlanarPolygon implements IBoundingShape {
 	}
 
 	
-	/* (non-Javadoc)
-	 * @see com.jMT.components.bounds.IBoundingShape#getIntersectionPoint(util.math.Ray)
-	 */
 	public Vector3D getIntersectionLocal(Ray ray) {
 		Vector3D[] verts 	= this.boundingPointsLocal;
 		Vector3D polyNormal = this.getNormalLocal();
@@ -133,18 +124,12 @@ public class BoundsArbitraryPlanarPolygon implements IBoundingShape {
 		return Tools3D.getNormal(this.boundingPointsLocal[0], this.boundingPointsLocal[1], this.boundingPointsLocal[2], true);
 	}
 
-
-	/* (non-Javadoc)
-	 * @see com.jMT.components.bounds.IBoundingShape#getVectorsObjSpace()
-	 */
+	
 	public Vector3D[] getVectorsLocal() {
 		return this.boundingPointsLocal;
 	}
 
 
-	/* (non-Javadoc)
-	 * @see com.jMT.components.bounds.IBoundingShape#getVectorsWorld(util.math.Matrix)
-	 */
 	public Vector3D[] getVectorsGlobal() {
 		if (this.worldVecsDirty){
 			Vector3D[] vecs = Vector3D.getDeepVertexArrayCopy(this.boundingPointsLocal);
@@ -161,17 +146,11 @@ public class BoundsArbitraryPlanarPolygon implements IBoundingShape {
 	}
 
 
-	/* (non-Javadoc)
-	 * @see com.jMT.components.bounds.IBoundingShape#containsPoint(util.math.Vector3D)
-	 */
 	public boolean containsPointLocal(Vector3D testPoint) {
 		return Tools3D.isPolygonContainsPoint(this.getVectorsLocal(), testPoint);
 	}
 
 
-	/* (non-Javadoc)
-	 * @see com.jMT.components.bounds.IBoundingShape#getHeightXY(com.jMT.components.TransformSpace)
-	 */
 	public float getHeightXY(TransformSpace transformSpace) {
 		switch (transformSpace) {
 		case LOCAL:
@@ -249,9 +228,6 @@ public class BoundsArbitraryPlanarPolygon implements IBoundingShape {
 	}
 
 
-	/* (non-Javadoc)
-	 * @see com.jMT.components.bounds.IBoundingShape#getWidthXY(com.jMT.components.TransformSpace)
-	 */
 	public float getWidthXY(TransformSpace transformSpace) {
 		switch (transformSpace) {
 		case LOCAL:

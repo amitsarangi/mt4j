@@ -17,6 +17,7 @@
  ***********************************************************************/
 package org.mt4j.components.visibleComponents.font;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -83,6 +84,8 @@ public class BitmapFont implements IFont {
 	/** The stroke color. */
 	private MTColor strokeColor;
 	
+	private List<String> notAvailableChars;
+	
 	
 	/**
 	 * Instantiates a new bitmap font.
@@ -123,6 +126,8 @@ public class BitmapFont implements IFont {
 			uniCodeToChar.put(currentChar.getUnicode(), currentChar);
 			charNameToChar.put(currentChar.getName(), currentChar);
 		}
+		
+		notAvailableChars = new ArrayList<String>();
 	}
 	
 	
@@ -144,11 +149,15 @@ public class BitmapFont implements IFont {
 	public IFontCharacter getFontCharacterByUnicode(String unicode){
 		BitmapFontCharacter returnChar = uniCodeToChar.get(unicode);
 		if (returnChar == null){
-			logger.warn("Font couldnt load characterunicode: " + unicode);
+			logger.warn("Font couldnt load characterunicode: '" + unicode + "'");
 			
 			//This is a kind of hacky way to try to dynamically load characters from
 			//a font that were not loaded by default. 
-			if (fontFileName != null && fontFileName.length() > 0){
+			if (!unicode.equalsIgnoreCase("missing-glyph")
+				&& !isInNotAvailableList(unicode) 
+				&& fontFileName != null
+				&& fontFileName.length() > 0
+			){
 				IFontFactory fontFactory = FontManager.getInstance().getFactoryForFileSuffix("");
 				if (fontFactory != null && fontFactory instanceof BitmapFontFactory){
 					BitmapFontFactory bitmapFontFactory = (BitmapFontFactory)fontFactory;
@@ -164,14 +173,34 @@ public class BitmapFont implements IFont {
 							newArray[newArray.length-1] = loadedCharacter;
 							this.setCharacters(newArray);
 							returnChar = loadedCharacter;
-							logger.debug("Re-loaded missing character: " + unicode + " from the font: " + this.fontFileName);
-						}	 
+							logger.debug("Re-loaded missing character: '" + unicode + "' from the font: " + this.fontFileName);
+						}
+					}
+				}
+				
+				if (returnChar == null){
+					if (!isInNotAvailableList(unicode)){
+						logger.debug("Couldnt re-load the character: '" + unicode + "' -> adding to ignore list.");
+						notAvailableChars.add(unicode);	
 					}
 				}
 			}
+			
 		}
 		return returnChar;
 	}
+	
+	
+	private boolean isInNotAvailableList(String unicode){
+		boolean blackListed = false;
+		for (String s : notAvailableChars){
+			if (s.equalsIgnoreCase(unicode)){
+				blackListed = true;
+			}
+		}
+		return blackListed;
+	}
+	
 
 	/* (non-Javadoc)
 	 * @see org.mt4j.components.visibleComponents.font.IFont#getCharacters()

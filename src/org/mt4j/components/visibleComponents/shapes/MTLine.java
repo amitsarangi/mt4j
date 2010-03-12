@@ -117,22 +117,27 @@ public class MTLine extends AbstractShape {
 	protected IBoundingShape computeDefaultBounds() {
 		Vertex v0 = getVerticesLocal()[0];
 		Vertex v1 = getVerticesLocal()[1];
-		Vector3D dir = v1.getSubtracted(v0);
-		dir.normalizeLocal();
-		dir.scaleLocal(10);
-		dir.rotateZ(PApplet.radians(90));
-		Vector3D bv0 = new Vector3D(v0.getAdded(dir));
-		Vector3D bv1 = new Vector3D(v0.getAdded(dir.getScaled(-1)));
-		Vector3D bv2 = new Vector3D(v1.getAdded(dir.getScaled(-1)));
-		Vector3D bv3 = new Vector3D(v1.getAdded(dir));
-		Vector3D[] v = new Vector3D[]{
-				bv0,
-				bv1,
-				bv2,
-				bv3,
-		};
-		BoundsArbitraryPlanarPolygon b = new BoundsArbitraryPlanarPolygon(this, v);
-		return b;
+
+		if (v0.z == 0 && v1.z == 0){ //Only create bounding poly if the line is in the z=0 plane
+			Vector3D dir = v1.getSubtracted(v0);
+			dir.normalizeLocal();
+			dir.scaleLocal(10);
+			dir.rotateZ(PApplet.radians(90));
+			Vector3D bv0 = new Vector3D(v0.getAdded(dir));
+			Vector3D bv1 = new Vector3D(v0.getAdded(dir.getScaled(-1)));
+			Vector3D bv2 = new Vector3D(v1.getAdded(dir.getScaled(-1)));
+			Vector3D bv3 = new Vector3D(v1.getAdded(dir));
+			Vector3D[] v = new Vector3D[]{
+					bv0,
+					bv1,
+					bv2,
+					bv3,
+			};
+			BoundsArbitraryPlanarPolygon b = new BoundsArbitraryPlanarPolygon(this, v);
+			return b;
+		}else{
+			return null;
+		}
 	}
 	 
 	
@@ -144,9 +149,11 @@ public class MTLine extends AbstractShape {
 		//because of the geometryInfo.getVertices().length >= 3 check 
 		//which is false in a MTLine but usually its good to check that so we dont want
 		//to remove the check.. 
-		if (this.isBoundsAutoCompute())
+		if (this.isBoundsAutoCompute()){
 			this.setBoundingShape(this.computeDefaultBounds());
+		}
 	}
+	
 	
 	@Override
 	public void generateDisplayLists(){

@@ -880,17 +880,12 @@ public abstract class AbstractShape extends AbstractVisibleComponent {
 							//System.out.println("Power of two texture in: " + this.getName());
 						}
 						
-						
 						//FIXME WHY DONT WE CHECK IF NEW TEXTURE IS GLTEXTURE INSTANCE AND JUST SET IT HERE, TOO??
-						
+						System.out.println(this + " Check if we create GLTexture 2 times!!!!!!!!!!!");
 						//Dont use mipmaps by default
 						tParams.minFilter = GLTextureParameters.LINEAR;
 						tParams.magFilter = GLTextureParameters.LINEAR;
 						
-//						//Initialize emtpy texture
-//						GLTexture newGLTexture = new GLTexture(this.getRenderer(), newTexImage.width, newTexImage.height, tParams);
-//						//Fill the texture with pixels
-//						newGLTexture.putImage(newTexImage);
 						GLTexture newGLTexture = new GLTexture(this.getRenderer(), newTexImage, tParams);
 						newGLTexture.setFlippedY(true); //?
 						newGLTexture.format = newTexImage.format;  

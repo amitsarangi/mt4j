@@ -1,6 +1,7 @@
 ToDo list:
 
 -> General:
+- update to the latest GSVideo/GStreamer
 - make standalone executable MT4j MTShell distribution/installer on windows
 - integrate with SWING?
 - make class DrawTools/GeomTools/GLTools and put stuff from Tools3D in there
@@ -11,7 +12,7 @@ ToDo list:
   => example, component with 2 children; children are tappable but when dragging on either children the component should
      move, not the child whos dragged -> send evt to parent
 
-- let all implementations of processInputEvent return false by default (->not consumed)
+- let all implementations of processInputEvent return false by default (->not consumed), or true-> for handled?
 
 - dont save vertices if we are in opengl -> we have to save vertices+we create new floatbuffers = 2*memory!
 	-> save only buffers and at getVerticesLocal -> create vertices from buffer -> not needed often

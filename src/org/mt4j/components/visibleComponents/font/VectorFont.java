@@ -17,7 +17,9 @@
  ***********************************************************************/
 package org.mt4j.components.visibleComponents.font;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.Level;
@@ -87,6 +89,8 @@ public class VectorFont implements IFont {
 	/** The stroke color. */
 	private MTColor strokeColor;
 	
+	private List<String> notAvailableChars;
+	
 //	/**
 //	 * The Constructor.
 //	 * 
@@ -155,6 +159,8 @@ public class VectorFont implements IFont {
 			uniCodeToChar.put(currentChar.getUnicode(), currentChar);
 			charNameToChar.put(currentChar.getName(), currentChar);
 		}
+		
+		notAvailableChars = new ArrayList<String>();
 	}
 	
 
@@ -178,10 +184,14 @@ public class VectorFont implements IFont {
 		VectorFontCharacter returnChar = uniCodeToChar.get(unicode);
 		if (returnChar == null){
 			logger.warn("Font couldnt load characterunicode: " + unicode);
-			
 			//This is a kind of hacky way to try to dynamically load characters from a .ttf
 			//font that were not loaded by default. 
-			if (fontFileName != null && fontFileName.length() > 0 && fontFileName.endsWith(".ttf")){
+			if (!unicode.equalsIgnoreCase("missing-glyph") 
+				&& !isInNotAvailableList(unicode) 
+				&& fontFileName != null 
+				&& fontFileName.length() > 0 
+				&& fontFileName.endsWith(".ttf")
+			){
 				IFontFactory fontFactory = FontManager.getInstance().getFactoryForFileSuffix(".ttf");
 				if (fontFactory != null && fontFactory instanceof TTFontFactory){
 					TTFontFactory ttFontFactory = (TTFontFactory)fontFactory;
@@ -200,11 +210,27 @@ public class VectorFont implements IFont {
 						}	 
 					}
 				}
+				if (returnChar == null){
+					if (!isInNotAvailableList(unicode)){
+						logger.debug("Couldnt re-load the character: '" + unicode + "' -> adding to ignore list.");
+						notAvailableChars.add(unicode);	
+					}
+				}
 			}
 		}
 		return returnChar;
 	}
 
+	
+	private boolean isInNotAvailableList(String unicode){
+		boolean blackListed = false;
+		for (String s : notAvailableChars){
+			if (s.equalsIgnoreCase(unicode)){
+				blackListed = true;
+			}
+		}
+		return blackListed;
+	}
 	
 	
 	/* (non-Javadoc)

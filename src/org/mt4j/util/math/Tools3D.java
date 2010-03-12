@@ -996,7 +996,7 @@ public class Tools3D {
 		//Unbind any VBOs first
 		gl.glBindBufferARB(GL.GL_ARRAY_BUFFER_ARB, 0);
 		gl.glBindBufferARB(GL.GL_ELEMENT_ARRAY_BUFFER_ARB, 0);
-		*/
+//		*/
 		
 		//Generate new list IDs
 		int[] returnVal = new int[2];
@@ -1072,8 +1072,8 @@ public class Tools3D {
 			}
 			
 			if (textureDrawn){
-				gl.glDisable(textureTarget); 
 				gl.glBindTexture(textureTarget, 0);
+				gl.glDisable(textureTarget); 
 			}
 		gl.glEndList();
 		//// STOP recording display list and DRAW////////////////////
@@ -1083,9 +1083,9 @@ public class Tools3D {
 		}
 
 		if (textureDrawn){
-			gl.glBindTexture(textureTarget, 0);//Unbind texture
+//			gl.glBindTexture(textureTarget, 0);//Unbind texture
 			gl.glDisableClientState(GL.GL_TEXTURE_COORD_ARRAY);
-			gl.glDisable(textureTarget); //weiter nach unten?
+//			gl.glDisable(textureTarget); //weiter nach unten?
 		}
 		returnVal[0] = listIDFill;
 		

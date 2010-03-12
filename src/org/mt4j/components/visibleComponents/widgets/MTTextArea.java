@@ -556,7 +556,7 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
 		//Get the character from the font
 		IFontCharacter character = font.getFontCharacterByUnicode(unicode);
 		if (character == null){
-			System.err.println("Error adding character with unicode '" + unicode + "' to the textarea. The font couldnt find the character. ->Trying to use 'missing glyph'");
+//			System.err.println("Error adding character with unicode '" + unicode + "' to the textarea. The font couldnt find the character. ->Trying to use 'missing glyph'");
 			character = font.getFontCharacterByUnicode("missing-glyph");
 			if (character != null)
 				addCharacter(character);

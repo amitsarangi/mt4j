@@ -93,9 +93,7 @@ public class VectorFontCharacter extends
 		//no gestures
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.jMT.components.visibleComponents.shapes.AbstractShape#computeDefaultBounds()
-	 */
+	
 	@Override
 	protected IBoundingShape computeDefaultBounds(){
 //		return new BoundsZPlaneRectangle(this);
@@ -104,16 +102,13 @@ public class VectorFontCharacter extends
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.jMT.components.visibleComponents.font.IFontCharacter#getUnicode()
-	 */
+
 	public String getUnicode() {
 		return unicode;
 	}
 	
 	/**
 	 * Sets the unicode.
-	 * 
 	 * @param unicode the new unicode
 	 */
 	public void setUnicode(String unicode) {
@@ -144,9 +139,10 @@ public class VectorFontCharacter extends
 	protected void destroyDisplayLists() {
 		super.destroyDisplayLists();
 		
-		//this should actually only be called explicitly since a fontchar is
+		//this should actually be called explicitly since a fontchar is
 		//usually not child of a component
-		//So we destroy the list if we explicitly destroy a font
+		//So we have to destroy the list if we explicitly destroy a font
+		//E.g. when we remove it from the cache
 	}
 
 
