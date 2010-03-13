@@ -20,9 +20,11 @@ package org.mt4j.components.visibleComponents.widgets.video;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import org.mt4j.MTApplication;
 import org.mt4j.components.TransformSpace;
 import org.mt4j.components.bounds.BoundsZPlaneRectangle;
 import org.mt4j.components.bounds.IBoundingShape;
+import org.mt4j.components.visibleComponents.shapes.MTRectangle;
 import org.mt4j.components.visibleComponents.shapes.MTRoundRectangle;
 import org.mt4j.components.visibleComponents.widgets.MTSlider;
 import org.mt4j.components.visibleComponents.widgets.buttons.MTSvgButton;
@@ -51,8 +53,8 @@ import codeanticode.gsvideo.GSMovie;
  * @author Christopher Ruff
  */
 public class MTMovieClip extends 
-//MTRectangle 
-MTRoundRectangle
+MTRectangle 
+//MTRoundRectangle
 implements IdragClusterable {
 
 	/** The movie. */
@@ -88,12 +90,24 @@ implements IdragClusterable {
 	 */
 	public MTMovieClip(String movieFile, Vertex upperLeft, int ifps,  PApplet pApplet) {
 //		super(upperLeft, 150, 100, pApplet);
-		super(upperLeft.x,upperLeft.y,upperLeft.z, 105,127, 15,15, pApplet);
+		super(upperLeft.x,upperLeft.y,upperLeft.z, 105,127, pApplet);
 		
 		try {
-			movie = new GSMovie(pApplet, movieFile, ifps, this);
+			movie = new GSMovie(pApplet, movieFile, ifps);
+			movie.setEventHandlerObject(this);
 			
-			this.setName("unnamed movieclip");		
+			
+//			if (pApplet instanceof MTApplication) {
+//				MTApplication app = (MTApplication) pApplet;
+//				movie.play();
+//				app.invokeLater(new Runnable() {
+//					public void run() {
+//						movie.pause();
+//					}
+//				});
+//			}
+			
+			this.setName("movieclip: " + movieFile);		
 			
 			playButton = new MTSvgButton(MT4jSettings.getInstance().getDefaultSVGPath() 
 					+ "play.svg" , pApplet);
@@ -102,8 +116,10 @@ implements IdragClusterable {
 //					movie.play();
 					switch (arg0.getID()) {
 					case TapEvent.BUTTON_CLICKED:
-						movie.loop();
-						slider.setVisible(true);
+						if (movie != null){
+							movie.loop();
+							slider.setVisible(true);							
+						}
 						break;
 					default:
 						break;
@@ -120,8 +136,30 @@ implements IdragClusterable {
 				public void actionPerformed(ActionEvent arg0) {
 					switch (arg0.getID()) {
 					case TapEvent.BUTTON_CLICKED:
-						movie.stop();
-						movie.goToBeginning();
+						if (movie != null){
+//							movie.stop();
+////							movie.pause();
+//							movie.goToBeginning();
+							
+//							if (getRenderer() instanceof MTApplication) {
+//								final MTApplication app = (MTApplication) getRenderer() ;
+//								movie.goToBeginning();
+//								app.invokeLater(new Runnable() {
+//									public void run() {
+//										app.invokeLater(new Runnable() {
+//											public void run() {
+//												movie.pause();
+//											}
+//										});
+//									}
+//								});
+//							}else{
+								movie.goToBeginning();
+								movie.pause();	
+//							}
+							
+//							movie.stop();
+						}
 						slider.setVisible(false);
 						break;
 					default:
@@ -174,7 +212,7 @@ implements IdragClusterable {
 				case MTGestureEvent.GESTURE_UPDATED:
 					break;
 				case MTGestureEvent.GESTURE_ENDED:
-					if (m.isPlaying()){
+					if (m != null && m.isPlaying()){
 						float currValue = slider.getValue();
 						jump(currValue);
 					}
@@ -225,65 +263,83 @@ implements IdragClusterable {
 	public void movieEvent(GSMovie myMovie) throws InterruptedException {
 		m = myMovie;
 		
-		if (!dragging){
-			slider.setValue(myMovie.time()); //ONLY DO THIS WHEN NOT DRAGGING THE SLIDER
-		}
-
-		if (firstTimeRead 
-			&& myMovie.available()
-		){
-			myMovie.read();
+//		if (!dragging){
+//			slider.setValue(myMovie.time()); //ONLY DO THIS WHEN NOT DRAGGING THE SLIDER
+//		}
+	}
+	
+	protected void firstFrame(){
+		if (m.available()){
+			m.read();
 			System.out.println("Movie img format: " + m.format);
-			
-			//FIXME TEST - dont do every frame! Duration is only valid if playing..
-			slider.setValueRange(0, myMovie.duration());
-			
+
+			//Dont do every frame! Duration is only valid if playing..
+			slider.setValueRange(0, m.duration());
+
 			this.setSizeLocal(m.width, m.height);
-//			/*
+
 			slider.setSizeXYRelativeToParent(m.width - 2*sliderXOffset, sliderHeight);
 			Vector3D movieClipCenterLocal = this.getCenterPointLocal();
 			slider.setPositionRelativeToParent(new Vector3D(movieClipCenterLocal.x, movieClipCenterLocal.y + this.getHeightXY(TransformSpace.LOCAL)*0.5f - slider.getHeightXY(TransformSpace.RELATIVE_TO_PARENT)*0.5f - 5,0 ));
-//			*/
-			
-//			this.setUseDirectGL(false);
-			this.setTexture(null); //TO force to rescale of new texture coordianates to RECTANGLE (0..width)
+
+//			this.setTexture(null); //TO force to rescale of new texture coordianates to RECTANGLE (0..width)
 			this.setTexture(m);
 			this.setTextureEnabled(true);
-//			this.setUseDirectGL(true);
-			firstTimeRead = false;
+		}
+	}
+	
+	public GSMovie getMovie(){
+		return this.movie;
+	}
+	
+	@Override
+	public void updateComponent(long timeDelta){
+		super.updateComponent(timeDelta);
+
+		if (m != null){
+			if (firstTimeRead){
+				this.firstFrame();
+				firstTimeRead = false;
+			}
+			else{
+				if (m != null 
+					&& m.isPlaying()
+					&& m.available() //if unread frame available
+				){
+
+					if (!dragging){
+						slider.setValue(m.time()); //ONLY UPDATE the slider position WHEN NOT DRAGGING THE SLIDER
+					}
+
+					if (this.getTexture() instanceof GLTexture){
+						if (this.isUseDirectGL() && MT4jSettings.getInstance().isOpenGlMode()){
+							//Directly put the new frame buffer into the texture only if in openGL mode 
+							//without filling the PImage array of this objects texture and also not of the GSMovie PImage =>performance
+							((GLTexture)this.getTexture()).putBuffer(m.getMoviePixelsBuffer(),  GLConstants.TEX4, GLConstants.TEX_UBYTE);
+						}else{
+							//Fill the PImage with the new movieframe
+							//dont fill the openGL texture
+							m.read();
+							((GLTexture)this.getTexture()).putImageOnly(m);	
+						}
+					}else{
+						//Usually all textures should be GLTextures instances, but just to be sure..
+						m.read();
+						this.setTexture(m); //SLOW!!!
+					}
+				}
+			}
 		}
 	}
 	
 	
-	/* (non-Javadoc)
-	 * @see com.jMT.components.MTBaseComponent#updateComponent(long)
-	 */
 	@Override
-	public void updateComponent(long timeDelta){
-		super.updateComponent(timeDelta);
-//		/*
-		if (   m != null 
-			&& m.isPlaying()
-			&& m.available() //if unread frame available
-			){
-			if (this.getTexture() instanceof GLTexture){
-				if (this.isUseDirectGL() && MT4jSettings.getInstance().isOpenGlMode()){
-					//Directly put the new frame buffer into the texture only if in openGL mode 
-					//without filling the PImage array of this objects texture and also not of the GSMovie PImage =>performance
-					((GLTexture)this.getTexture()).putBuffer(m.getMoviePixelsBuffer(),  GLConstants.TEX4, GLConstants.TEX_UBYTE);
-				}else{
-					//Fill the PImage with the new movieframe
-					//dont fill the openGL texture
-					m.read();
-					((GLTexture)this.getTexture()).putImageOnly(m);	
-				}
-			}else{
-				//Usually all textures should be GLTextures instances, but just to be sure..
-				m.read();
-				this.setTexture(m); //SLOW!
-			}
+	protected void destroyComponent() {
+		super.destroyComponent();
+		
+		if (m != null){
+			m.dispose();
 		}
-//		*/
 	}
 	
 	//FIXME TEST
@@ -364,16 +420,10 @@ implements IdragClusterable {
 		return movie.time();
 	}
 
-	/* (non-Javadoc)
-	 * @see com.jMT.input.inputAnalyzers.clusterInputAnalyzer.IdragClusterable#isSelected()
-	 */
 	public boolean isSelected() {
 		return selected;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.jMT.input.inputAnalyzers.clusterInputAnalyzer.IdragClusterable#setSelected(boolean)
-	 */
 	public void setSelected(boolean selected) {
 		this.selected = selected;
 	}

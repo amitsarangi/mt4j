@@ -6,9 +6,6 @@
 	<classpathentry kind="lib" path="mt4jLibs/core.jar"/>
 	<classpathentry kind="lib" path="mt4jLibs/mri.jar"/>
 	<classpathentry kind="lib" path="mt4jLibs/muito_blobtracking.jar"/>
-	<classpathentry kind="lib" path="mt4jLibs/gsvideo/gstreamer-java-bin-1.0.jar"/>
-	<classpathentry kind="lib" path="mt4jLibs/gsvideo/gsvideo.jar"/>
-	<classpathentry kind="lib" path="mt4jLibs/gsvideo/jna-3.0.4.jar"/>
 	<classpathentry kind="lib" path="mt4jLibs/batik/batik-anim.jar"/>
 	<classpathentry kind="lib" path="mt4jLibs/batik/batik-awt-util.jar"/>
 	<classpathentry kind="lib" path="mt4jLibs/batik/batik-bridge.jar"/>
@@ -55,5 +52,8 @@
 	</classpathentry>
 	<classpathentry kind="lib" path="examples/advanced/physics/lib/jbox2d.jar"/>
 	<classpathentry kind="lib" path="examples/advanced/water/lib/waterScene.jar"/>
+	<classpathentry kind="lib" path="mt4jLibs/gsvideo/jna-3.1.0.jar"/>
+	<classpathentry kind="lib" path="mt4jLibs/gsvideo/gstreamer-java-bin-1.2.jar"/>
+	<classpathentry kind="lib" path="mt4jLibs/gsvideo/gsvideo06pre.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
