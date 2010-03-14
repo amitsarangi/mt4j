@@ -164,7 +164,7 @@ public class BitmapFont implements IFont {
 					if (this.getCharacters().length > 0 && this.getCharacters()[0] != null && this.getCharacters()[0] instanceof MTComponent){
 						MTComponent comp = (MTComponent)this.getCharacters()[0];
 						PApplet pa = comp.getRenderer();
-						List<BitmapFontCharacter> charactersList = bitmapFontFactory.getCharacters(pa, new char[]{unicode.charAt(0)}, fillColor, strokeColor, this.fontFileName, this.originalFontSize);
+						List<BitmapFontCharacter> charactersList = bitmapFontFactory.getCharacters(pa, unicode, fillColor, strokeColor, this.fontFileName, this.originalFontSize);
 						BitmapFontCharacter[] characters = charactersList.toArray(new BitmapFontCharacter[charactersList.size()]); 
 						if (characters.length >= 1 && characters[0] != null){
 							BitmapFontCharacter loadedCharacter = characters[0];

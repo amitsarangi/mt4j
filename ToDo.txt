@@ -2,7 +2,6 @@ ToDo list:
 
 -> General:
 - update to processing 1.1 -> bitmapfont working?
-- update to the latest GSVideo/GStreamer
 - make standalone executable MT4j MTShell distribution/installer on windows
 - integrate with SWING?
 - make class DrawTools/GeomTools/GLTools and put stuff from Tools3D in there
