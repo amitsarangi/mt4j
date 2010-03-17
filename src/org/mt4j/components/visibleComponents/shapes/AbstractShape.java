@@ -1345,17 +1345,18 @@ public abstract class AbstractShape extends AbstractVisibleComponent {
 	
 	
 	/**
-	 * Moves this shape to the specified global position using an animation specified 
-	 * by the last three parameters
+	 * Moves this shape to the specified global position using an animation specified
+	 * by the last three parameters.
 	 * 
 	 * @param x the x
 	 * @param y the y
 	 * @param z the z
 	 * @param interpolationDuration the interpolation duration
-	 * @param accelerationEndTime the acceleration end time
-	 * @param decelerationStartTime the deceleration start time
+	 * @param accelerationEndTime the acceleration end time - normalized value 0..1
+	 * @param decelerationStartTime the deceleration start time - normalized value 0..1
+	 * @return the animation
 	 */
-	public void tweenTranslateTo(float x, float y, float z, float interpolationDuration, float accelerationEndTime, float decelerationStartTime){
+	public Animation tweenTranslateTo(float x, float y, float z, float interpolationDuration, float accelerationEndTime, float decelerationStartTime){
 		Vector3D from 			= this.getCenterPointGlobal();
 		Vector3D targetPoint 	= new Vector3D(x, y, z);
 		Vector3D directionVect 	= targetPoint.getSubtracted(from);
@@ -1375,7 +1376,7 @@ public abstract class AbstractShape extends AbstractVisibleComponent {
 					animation.stop();
 			}
 		}
-		this.tweenTranslate(directionVect, interpolationDuration, accelerationEndTime, decelerationStartTime);
+		return this.tweenTranslate(directionVect, interpolationDuration, accelerationEndTime, decelerationStartTime);
 	}
 	
 	/**
@@ -1383,11 +1384,12 @@ public abstract class AbstractShape extends AbstractVisibleComponent {
 	 * 
 	 * @param directionVect the direction vect
 	 * @param interpolationDuration the interpolation duration
-	 * @param accelerationEndTime the acceleration end time
-	 * @param decelerationStartTime the deceleration start time
+	 * @param accelerationEndTime the acceleration end time - normalized value 0..1
+	 * @param decelerationStartTime the deceleration start time - normalized value 0..1
+	 * @return the animation
 	 */
-	public void tweenTranslate(Vector3D directionVect, float interpolationDuration, float accelerationEndTime, float decelerationStartTime){
-		this.tweenTranslate(directionVect, interpolationDuration, accelerationEndTime, decelerationStartTime, 0);
+	public Animation tweenTranslate(Vector3D directionVect, float interpolationDuration, float accelerationEndTime, float decelerationStartTime){
+		return this.tweenTranslate(directionVect, interpolationDuration, accelerationEndTime, decelerationStartTime, 0);
 	}
 	
 	/**
@@ -1395,17 +1397,19 @@ public abstract class AbstractShape extends AbstractVisibleComponent {
 	 * 
 	 * @param directionVect the direction vect
 	 * @param interpolationDuration the interpolation duration
-	 * @param accelerationEndTime the acceleration end time
-	 * @param decelerationStartTime the deceleration start time
+	 * @param accelerationEndTime the acceleration end time - normalized value 0..1
+	 * @param decelerationStartTime the deceleration start time - normalized value 0..1
 	 * @param triggerDelay the trigger delay
+	 * @return the animation
 	 */
-	public void tweenTranslate(Vector3D directionVect, float interpolationDuration, float accelerationEndTime, float decelerationStartTime, int triggerDelay){
+	public Animation tweenTranslate(Vector3D directionVect, float interpolationDuration, float accelerationEndTime, float decelerationStartTime, int triggerDelay){
 		float distance = directionVect.length();
 		MultiPurposeInterpolator interpolator = new MultiPurposeInterpolator(0, distance, interpolationDuration , accelerationEndTime, decelerationStartTime , 1);
 		Animation animation = new Animation("Tween translate of " + this.getName(), interpolator, this, triggerDelay);
 		animation.addAnimationListener(new TranslationAnimationListener(this, directionVect));
 		animation.setResetOnFinish(false);
 		animation.start();
+		return animation;
 	}
 	
 	/**

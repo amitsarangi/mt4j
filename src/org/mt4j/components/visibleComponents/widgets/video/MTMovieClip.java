@@ -1,5 +1,5 @@
 /***********************************************************************
- * mt4j Copyright (c) 2008 - 2009, C.Ruff, Fraunhofer-Gesellschaft All rights reserved.
+ * mt4j Copyright (c) 2008 - 2010 Christopher Ruff, Fraunhofer-Gesellschaft All rights reserved.
  *  
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -19,14 +19,18 @@ package org.mt4j.components.visibleComponents.widgets.video;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 
 import org.mt4j.MTApplication;
 import org.mt4j.components.TransformSpace;
-import org.mt4j.components.bounds.BoundsZPlaneRectangle;
 import org.mt4j.components.bounds.IBoundingShape;
+import org.mt4j.components.visibleComponents.shapes.MTEllipse;
+import org.mt4j.components.visibleComponents.shapes.MTPolygon;
 import org.mt4j.components.visibleComponents.shapes.MTRectangle;
-import org.mt4j.components.visibleComponents.shapes.MTRoundRectangle;
+import org.mt4j.components.visibleComponents.shapes.MTRectangle.PositionAnchor;
 import org.mt4j.components.visibleComponents.widgets.MTSlider;
+import org.mt4j.components.visibleComponents.widgets.buttons.MTImageButton;
 import org.mt4j.components.visibleComponents.widgets.buttons.MTSvgButton;
 import org.mt4j.input.inputProcessors.IGestureEventListener;
 import org.mt4j.input.inputProcessors.MTGestureEvent;
@@ -34,392 +38,480 @@ import org.mt4j.input.inputProcessors.componentProcessors.dragProcessor.DragEven
 import org.mt4j.input.inputProcessors.componentProcessors.dragProcessor.DragProcessor;
 import org.mt4j.input.inputProcessors.componentProcessors.lassoProcessor.IdragClusterable;
 import org.mt4j.input.inputProcessors.componentProcessors.tapProcessor.TapEvent;
+import org.mt4j.input.inputProcessors.componentProcessors.tapProcessor.TapProcessor;
 import org.mt4j.util.MT4jSettings;
 import org.mt4j.util.MTColor;
+import org.mt4j.util.animation.Animation;
+import org.mt4j.util.animation.AnimationEvent;
+import org.mt4j.util.animation.IAnimationListener;
+import org.mt4j.util.animation.MultiPurposeInterpolator;
 import org.mt4j.util.math.Vector3D;
 import org.mt4j.util.math.Vertex;
-import org.mt4j.util.opengl.GLConstants;
-import org.mt4j.util.opengl.GLTexture;
+
+import codeanticode.gsvideo.GSMovie;
 
 import processing.core.PApplet;
 import processing.core.PImage;
-import codeanticode.gsvideo.GSMovie;
 
 /**
  * The Class MTMovieClip. 
  * A widget which can be used as a video player.
  * <br>NOTE: Needs to have the GStreamer framework to be installed on the system.
  * 
- * @author Christopher Ruff
+ * @author Chris
  */
-public class MTMovieClip extends 
-MTRectangle 
-//MTRoundRectangle
-implements IdragClusterable {
-
-	/** The movie. */
-	private GSMovie movie;
+public class MTMovieClip extends MTRectangle implements IdragClusterable {
 	
-	/** The first time read. */
-	private boolean firstTimeRead;
+	/** The app. */
+	private PApplet app;
 	
 	/** The selected. */
 	private boolean selected;
-	
-	/** The play button. */
-	MTSvgButton playButton;
-
-	/**
-	 * Instantiates a new MT movie clip.
-	 * 
-	 * @param movieFile the movie file
-	 * @param upperLeft the upper left
-	 * @param pApplet the applet
-	 */
-	public MTMovieClip(String movieFile, Vertex upperLeft, PApplet pApplet) {
-		this(movieFile, upperLeft, 30, pApplet);
-	}
-	
-	/**
-	 * Instantiates a new MT movie clip.
-	 * 
-	 * @param movieFile the movie file - located in the ./data directory
-	 * @param upperLeft the upper left movie position
-	 * @param ifps the ifps the frames per second
-	 * @param pApplet the applet
-	 */
-	public MTMovieClip(String movieFile, Vertex upperLeft, int ifps,  PApplet pApplet) {
-//		super(upperLeft, 150, 100, pApplet);
-		super(upperLeft.x,upperLeft.y,upperLeft.z, 105,127, pApplet);
-		
-		try {
-			movie = new GSMovie(pApplet, movieFile, ifps);
-			movie.setEventHandlerObject(this);
-			
-			
-//			if (pApplet instanceof MTApplication) {
-//				MTApplication app = (MTApplication) pApplet;
-//				movie.play();
-//				app.invokeLater(new Runnable() {
-//					public void run() {
-//						movie.pause();
-//					}
-//				});
-//			}
-			
-			this.setName("movieclip: " + movieFile);		
-			
-			playButton = new MTSvgButton(MT4jSettings.getInstance().getDefaultSVGPath() 
-					+ "play.svg" , pApplet);
-			playButton.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent arg0) {
-//					movie.play();
-					switch (arg0.getID()) {
-					case TapEvent.BUTTON_CLICKED:
-						if (movie != null){
-							movie.loop();
-							slider.setVisible(true);							
-						}
-						break;
-					default:
-						break;
-					}
-				}
-			});
-			playButton.scale(0.5f, 0.5f, 1, new Vector3D(0,0,0));
-			playButton.translate(upperLeft);
-			this.addChild(playButton);
-
-			MTSvgButton stopButton = new MTSvgButton(MT4jSettings.getInstance().getDefaultSVGPath() 
-					+ "stop.svg" , pApplet);
-			stopButton.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent arg0) {
-					switch (arg0.getID()) {
-					case TapEvent.BUTTON_CLICKED:
-						if (movie != null){
-//							movie.stop();
-////							movie.pause();
-//							movie.goToBeginning();
-							
-//							if (getRenderer() instanceof MTApplication) {
-//								final MTApplication app = (MTApplication) getRenderer() ;
-//								movie.goToBeginning();
-//								app.invokeLater(new Runnable() {
-//									public void run() {
-//										app.invokeLater(new Runnable() {
-//											public void run() {
-//												movie.pause();
-//											}
-//										});
-//									}
-//								});
-//							}else{
-								movie.goToBeginning();
-								movie.pause();	
-//							}
-							
-//							movie.stop();
-						}
-						slider.setVisible(false);
-						break;
-					default:
-						break;
-					}
-				}
-			});
-			//TODO müsste eigentlich grösste comp aus svg holen, dann center an die stelle positionieren
-			this.addChild(stopButton);
-			stopButton.scale(0.5f, 0.5f, 1, new Vector3D(0,0,0));
-			stopButton.translate(new Vector3D(upperLeft.x + 30 , upperLeft.y, upperLeft.z));
-			
-			
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		
-		firstTimeRead = true;
-		
-		
-		if (MT4jSettings.getInstance().isOpenGlMode())
-			this.setUseDirectGL(true);
-		
-		try{
-			PImage movieImg = pApplet.loadImage(MT4jSettings.getInstance().getDefaultImagesPath() + "Crystal_Clear_mimetype_video_cr.png");
-			this.setTexture(movieImg);
-			this.setTextureEnabled(true);
-//			this.setSizeXYRelativeToParent(movieImg.width, movieImg.height);
-		}catch(Exception e){
-			e.printStackTrace();
-		}
-		
-		//Slider
-		this.duration = 0.0f;
-		sliderXOffset = 10;
-		sliderHeight = 10;
-		slider = new MTSlider(upperLeft.x + sliderXOffset, upperLeft.y + this.getHeightXY(TransformSpace.LOCAL) - 30, this.getWidthXY(TransformSpace.LOCAL) - sliderXOffset*2, sliderHeight, 0, 10, pApplet);
-		slider.getOuterShape().setFillColor(new MTColor(0, 0, 0, 80));
-		slider.getOuterShape().setStrokeColor(new MTColor(0, 0, 0, 80));
-		slider.getKnob().setFillColor(new MTColor(100, 100, 100, 80));
-		slider.getOuterShape().setStrokeColor(new MTColor(100, 100, 100, 80));
-		slider.getKnob().addGestureListener(DragProcessor.class, new IGestureEventListener() {
-			//@Override
-			public boolean processGestureEvent(MTGestureEvent ge) {
-				DragEvent de = (DragEvent)ge;
-				switch (de.getId()) {
-				case MTGestureEvent.GESTURE_DETECTED:
-					dragging = true;
-					break;
-				case MTGestureEvent.GESTURE_UPDATED:
-					break;
-				case MTGestureEvent.GESTURE_ENDED:
-					if (m != null && m.isPlaying()){
-						float currValue = slider.getValue();
-						jump(currValue);
-					}
-					dragging = false;
-					break;
-				default:
-					break;
-				}
-				return false;
-			}
-		});
-		this.addChild(slider);
-		slider.setVisible(false);
-		dragging = false;
-	}
-	
-	
-	/* (non-Javadoc)
-	 * @see org.mt4j.components.visibleComponents.shapes.MTRoundRectangle#computeDefaultBounds()
-	 */
-	@Override
-	protected IBoundingShape computeDefaultBounds() {
-		return new BoundsZPlaneRectangle(this);
-	}
 	
 	/** The slider. */
 	private MTSlider slider;
 	
 	/** The dragging. */
-	private boolean dragging;
+	private boolean stopSliderAdvance;
 	
-	/** The slider x offset. */
-	private int sliderXOffset;
+	private MovieClip movieClip;
 	
-	/** The slider height. */
-	private int sliderHeight;
+	private float topBarHeight = 35;
 	
-	/** The m. */
-	private GSMovie m;
+	private float sideBarWidth = 15;
 	
-	/**
-	 * Movie event.
-	 * 
-	 * @param myMovie the my movie
-	 * 
-	 * @throws InterruptedException the interrupted exception
-	 */
-	public void movieEvent(GSMovie myMovie) throws InterruptedException {
-		m = myMovie;
+	private float bottomBarHeight = 35;
+	
+	private PlaySymbol playSymbol;
+
+	private MTImageButton closeButton;
+
+	private MTSlider volumeSlider;
+	
+	//TODO tap on slider -> jump -> amount settable?
+	//TODO (volume control icon)
+	//TODO (title bar)
+	
+	//TODO we actually would need some sort of command queue since this
+	//has to work asynchronously -> read from queue after the next frame
+	//FIXME error at pause sometimes when using gplayer.isPlaying() -> report bug
+	
+	public MTMovieClip(String movieFile, Vertex upperLeft, PApplet pApplet) {
+		this(movieFile, upperLeft, 30, pApplet);
+	}
+	
+	
+	public MTMovieClip(String movieFile, Vertex upperLeft, int ifps, PApplet pApplet) {
+		super(upperLeft, 100, 100, pApplet);
+		this.app = pApplet;
+		this.selected = false;
+		stopSliderAdvance = false;
 		
-//		if (!dragging){
-//			slider.setValue(myMovie.time()); //ONLY DO THIS WHEN NOT DRAGGING THE SLIDER
-//		}
-	}
-	
-	protected void firstFrame(){
-		if (m.available()){
-			m.read();
-			System.out.println("Movie img format: " + m.format);
+		this.setSizeLocal(105 + 2*sideBarWidth, 127 + topBarHeight + bottomBarHeight);
+		this.setStrokeColor(new MTColor(0,0,0));
+		this.setFillColor(new MTColor(50,50,50,200));
+//		this.setNoFill(true);
+		
+		//Create movieclip child
+		Vertex movieClipUpperLeft = new Vertex(upperLeft);
+		movieClipUpperLeft.y += topBarHeight;
+		movieClipUpperLeft.x += sideBarWidth;
+		this.movieClip = new MovieClip(movieFile, movieClipUpperLeft, ifps, pApplet);
+		this.movieClip.setStrokeColor(new MTColor(0,0,0));
+		this.movieClip.setStrokeWeight(0.5f);
+		this.movieClip.setNoFill(true);
+		this.movieClip.setNoStroke(true);
+		this.addChild(movieClip);
+		
+//		MTSvgButton playButton = new MTSvgButton(MT4jSettings.getInstance().getDefaultSVGPath() 
+//				+ "play.svg" , pApplet);
+//		playButton.addActionListener(new ActionListener() {
+//			public void actionPerformed(ActionEvent arg0) {
+//				switch (arg0.getID()) {
+//				case TapEvent.BUTTON_CLICKED:
+//					if (movieClip != null && movieClip.movie != null){
+//						movieClip.loop();
+//						if (slider != null){
+//							slider.setVisible(true);
+//						}
+//					}
+//					break;
+//				default:
+//					break;
+//				}
+//			}
+//		});
+//		playButton.scale(0.5f, 0.5f, 1, new Vector3D(0,0,0));
+//		playButton.translate(upperLeft);
+//		this.addChild(playButton);
 
-			//Dont do every frame! Duration is only valid if playing..
-			slider.setValueRange(0, m.duration());
-
-			this.setSizeLocal(m.width, m.height);
-
-			slider.setSizeXYRelativeToParent(m.width - 2*sliderXOffset, sliderHeight);
-			Vector3D movieClipCenterLocal = this.getCenterPointLocal();
-			slider.setPositionRelativeToParent(new Vector3D(movieClipCenterLocal.x, movieClipCenterLocal.y + this.getHeightXY(TransformSpace.LOCAL)*0.5f - slider.getHeightXY(TransformSpace.RELATIVE_TO_PARENT)*0.5f - 5,0 ));
-
-//			this.setTexture(null); //TO force to rescale of new texture coordianates to RECTANGLE (0..width)
-			this.setTexture(m);
-			this.setTextureEnabled(true);
-		}
-	}
-	
-	public GSMovie getMovie(){
-		return this.movie;
-	}
-	
-	@Override
-	public void updateComponent(long timeDelta){
-		super.updateComponent(timeDelta);
-
-		if (m != null){
-			if (firstTimeRead){
-				this.firstFrame();
-				firstTimeRead = false;
-			}
-			else{
-				if (m != null 
-					&& m.isPlaying()
-					&& m.available() //if unread frame available
-				){
-
-					if (!dragging){
-						slider.setValue(m.time()); //ONLY UPDATE the slider position WHEN NOT DRAGGING THE SLIDER
-					}
-
-					if (this.getTexture() instanceof GLTexture){
-						if (this.isUseDirectGL() && MT4jSettings.getInstance().isOpenGlMode()){
-							//Directly put the new frame buffer into the texture only if in openGL mode 
-							//without filling the PImage array of this objects texture and also not of the GSMovie PImage =>performance
-							((GLTexture)this.getTexture()).putBuffer(m.getMoviePixelsBuffer(),  GLConstants.TEX4, GLConstants.TEX_UBYTE);
+//		MTSvgButton stopButton = new MTSvgButton(MT4jSettings.getInstance().getDefaultSVGPath() 
+//				+ "stop.svg" , pApplet);
+//		stopButton.addActionListener(new ActionListener() {
+//			public void actionPerformed(ActionEvent arg0) {
+//				switch (arg0.getID()) {
+//				case TapEvent.BUTTON_CLICKED:
+//					if (movieClip != null && movieClip.movie != null){
+////						movie.stop();
+//////						movie.pause();
+////						movie.goToBeginning();
+//						
+////						if (getRenderer() instanceof MTApplication) {
+////							final MTApplication app = (MTApplication) getRenderer() ;
+////							movie.goToBeginning();
+////							app.invokeLater(new Runnable() {
+////								public void run() {
+////									app.invokeLater(new Runnable() {
+////										public void run() {
+////											movie.pause();
+////										}
+////									});
+////								}
+////							});
+////						}else{
+//							movieClip.goToBeginning();
+//							movieClip.pause();	
+////						}
+////						movie.stop();
+//					}
+//					if (slider != null){
+//						slider.setVisible(false);	
+//					}
+//					break;
+//				default:
+//					break;
+//				}
+//			}
+//		});
+//		//müsste eigentlich grösste comp aus svg holen, dann center an die stelle positionieren
+//		this.addChild(stopButton);
+//		stopButton.scale(0.5f, 0.5f, 1, new Vector3D(0,0,0));
+//		stopButton.translate(new Vector3D(upperLeft.x + 30 , upperLeft.y, upperLeft.z));
+		
+		float movieClipWidth = movieClip.getWidthXY(TransformSpace.RELATIVE_TO_PARENT);
+		playSymbol = new PlaySymbol(app, this.movieClip.getCenterPointRelativeToParent(), movieClipWidth/2f, movieClipWidth/2f, 35);
+		this.addChild(playSymbol);
+		
+		
+		this.registerInputProcessor(new TapProcessor(app, 30));
+		this.addGestureListener(TapProcessor.class, new IGestureEventListener() {
+			public boolean processGestureEvent(MTGestureEvent ge) {
+				TapEvent te = (TapEvent)ge;
+				if (te.isTapped()){
+					if (movieClip != null && movieClip.movie != null){
+//						if (movieClip.getMovie().isPlaying()){
+						if (!playSymbol.isVisible()){
+//							System.out.println("Pause!");
+							if (playSymbol != null){
+								playSymbol.setVisible(true);
+							}
+							if (slider != null){
+								slider.setVisible(false);
+							}
+							movieClip.loop(); //FIXME TEST
+							movieClip.pause();
 						}else{
-							//Fill the PImage with the new movieframe
-							//dont fill the openGL texture
-							m.read();
-							((GLTexture)this.getTexture()).putImageOnly(m);	
+//							System.out.println("Play!");
+							if (playSymbol != null){
+								playSymbol.setVisible(false);
+							}
+							if (slider != null){
+								slider.setVisible(true);
+							}	
+							movieClip.loop();
 						}
-					}else{
-						//Usually all textures should be GLTextures instances, but just to be sure..
-						m.read();
-						this.setTexture(m); //SLOW!!!
+						
 					}
 				}
+				return false;
 			}
-		}
+		});
+		
+		
+		//Close button
+		PImage closeButtonImage = app.loadImage(MT4jSettings.getInstance().getDefaultImagesPath() +
+		"closeButton64.png");
+		closeButton = new MTImageButton(closeButtonImage, app);
+		closeButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent r) {
+				switch (r.getID()) {
+				case TapEvent.BUTTON_CLICKED:
+					close(); 
+					break;
+				default:
+					break;
+				}
+			}
+		});
+		this.addChild(closeButton);
+		closeButton.setNoStroke(true);
+		closeButton.setSizeXYRelativeToParent(topBarHeight - 0, topBarHeight - 0);
+		this.setAnchor(PositionAnchor.UPPER_LEFT);
+		Vector3D upperRight = new Vector3D(upperLeft.x + this.getWidthXY(TransformSpace.LOCAL), upperLeft.y);
+		Vector3D closeButtonPos = new Vector3D(upperRight.x - closeButton.getWidthXY(TransformSpace.RELATIVE_TO_PARENT), upperRight.y);
+		closeButton.setAnchor(PositionAnchor.UPPER_LEFT);
+		closeButton.setPositionRelativeToParent(closeButtonPos);
+		
+		
 	}
 	
+	
+	
+	private class PlaySymbol extends MTEllipse{
+
+		public PlaySymbol(PApplet pApplet, Vector3D centerPoint, float radiusX,	float radiusY, int segments) {
+			super(pApplet, centerPoint, radiusX, radiusY, segments);
+			
+			float widthLocal = this.getWidthXY(TransformSpace.LOCAL);
+			float heightLocal = this.getHeightXY(TransformSpace.LOCAL);
+			
+			
+			Vertex[] vertices = new Vertex[]{
+				new Vertex(centerPoint.x - radiusX/3f, centerPoint.y - radiusY/3f, centerPoint.z),
+				new Vertex(centerPoint.x + radiusX/2.5f, centerPoint.y, centerPoint.z),
+				new Vertex(centerPoint.x - radiusX/3f, centerPoint.y + radiusY/3f, centerPoint.z),
+				
+				new Vertex(centerPoint.x - radiusX/3f, centerPoint.y - radiusY/3f, centerPoint.z),
+			};
+			MTPolygon triangle = new MTPolygon(pApplet, vertices);
+			triangle.setPickable(false);
+			triangle.setNoFill(true);
+			triangle.setStrokeColor(new MTColor(0,0,0,255));
+			triangle.setStrokeWeight(1.5f);
+			this.addChild(triangle);
+			
+			this.setComposite(true);
+			this.setPickable(false); //We tap on the movie itself instead
+			this.setFillColor(new MTColor(150,150,150,255));
+			this.setStrokeColor(new MTColor(0,0,0,255));
+			this.setStrokeWeight(1.5f);
+		}
+		
+		
+		@Override
+		protected void setDefaultGestureActions() {
+		}
+		
+		@Override
+		protected IBoundingShape computeDefaultBounds() {
+			return null;
+		}
+		
+	}
+
+	
+	private class MovieClip extends MTVideoTexture{
+		public MovieClip(String movieFile, Vertex upperLeft, int ifps, PApplet pApplet) {
+			super(movieFile, upperLeft, ifps, pApplet);
+			
+			this.setPickable(false);
+		}
+
+		@Override
+		protected void onFirstFrame() {
+			super.onFirstFrame();
+
+			GSMovie m = getMovie();
+			if (m != null){
+				this.setNoFill(false);
+				this.setNoStroke(false);
+				
+				//Resize MTMovieClip
+				MTMovieClip.this.setSizeLocal(movieClip.getWidthXY(TransformSpace.RELATIVE_TO_PARENT) + 2*sideBarWidth, movieClip.getHeightXY(TransformSpace.RELATIVE_TO_PARENT) + topBarHeight + bottomBarHeight);
+				
+				//Reposition movie
+				PositionAnchor oldAnchor = MTMovieClip.this.getAnchor();
+				MTMovieClip.this.setAnchor(PositionAnchor.LOWER_LEFT);
+				Vector3D lowerLeft = MTMovieClip.this.getPosition(TransformSpace.LOCAL);
+				MTMovieClip.this.setAnchor(oldAnchor);
+				
+				//Reposition close button
+				MTMovieClip.this.setAnchor(PositionAnchor.UPPER_LEFT);
+				Vector3D upperLeft = MTMovieClip.this.getPosition(TransformSpace.LOCAL);
+				this.setAnchor(PositionAnchor.UPPER_LEFT);
+				Vector3D upperRight = new Vector3D(upperLeft.x + MTMovieClip.this.getWidthXY(TransformSpace.LOCAL), upperLeft.y);
+				Vector3D closeButtonPos = new Vector3D(upperRight.x - closeButton.getWidthXY(TransformSpace.RELATIVE_TO_PARENT) - sideBarWidth, upperRight.y);
+				closeButton.setPositionRelativeToParent(closeButtonPos);
+				
+				//Reposition play symbol
+				if (playSymbol != null){
+//					playSymbol.setSizeXYRelativeToParent(this.getHeightXY(TransformSpace.LOCAL), this.getHeightXY(TransformSpace.LOCAL));
+					playSymbol.setPositionRelativeToParent(this.getCenterPointRelativeToParent());
+				}
+				
+				//Create movie seek Slider
+				float sliderXPadding = 10;
+				float sliderYPadding = 3;
+				float sliderHeight = bottomBarHeight - 2*sliderYPadding;
+				slider = new MTSlider(lowerLeft.x + sliderXPadding, lowerLeft.y - sliderHeight - sliderYPadding, MTMovieClip.this.getWidthXY(TransformSpace.LOCAL) - sliderXPadding*2, sliderHeight, 0, 10, app);
+				slider.getOuterShape().setFillColor(new MTColor(0, 0, 0, 80));
+				slider.getOuterShape().setStrokeColor(new MTColor(0, 0, 0, 80));
+				slider.getKnob().setFillColor(new MTColor(100, 100, 100, 80));
+				slider.getOuterShape().setStrokeColor(new MTColor(100, 100, 100, 80));
+				slider.getKnob().addGestureListener(DragProcessor.class, new IGestureEventListener() {
+					public boolean processGestureEvent(MTGestureEvent ge) {
+						DragEvent de = (DragEvent)ge;
+						switch (de.getId()) {
+						case MTGestureEvent.GESTURE_DETECTED:
+							stopSliderAdvance = true;
+							break;
+						case MTGestureEvent.GESTURE_UPDATED:
+							break;
+						case MTGestureEvent.GESTURE_ENDED:
+							if (movieClip != null && movieClip.getMovie() != null /*&& movieClip.getMovie().isPlaying()*/){
+								float currValue = slider.getValue();
+								movieClip.jump(currValue);
+							}
+							stopSliderAdvance = false;
+							break;
+						default:
+							break;
+						}
+						return false;
+					}
+				});
+				//Dont do every frame! Duration is only valid if playing..
+				slider.setValueRange(0, m.duration());
+				
+				slider.getOuterShape().addGestureListener(TapProcessor.class, new IGestureEventListener() {
+					public boolean processGestureEvent(MTGestureEvent ge) {
+						TapEvent te = (TapEvent)ge;
+						switch (te.getTapID()) {
+						case TapEvent.BUTTON_DOWN:
+							stopSliderAdvance = true;
+							break;
+						case TapEvent.BUTTON_UP:
+							stopSliderAdvance = false;
+							break;
+						case TapEvent.BUTTON_CLICKED:
+							if (movieClip != null && movieClip.getMovie() != null /*&& movieClip.getMovie().isPlaying()*/){
+								float currValue = slider.getValue();
+								movieClip.jump(currValue);
+							}
+							stopSliderAdvance = false;
+							break;
+						default:
+							break;
+						}
+						return false;
+					}
+				});
+				if (app instanceof MTApplication) {
+					MTApplication mtApp = (MTApplication) app;
+					mtApp.invokeLater(new Runnable() {
+						public void run() {
+							MTMovieClip.this.addChild(slider);
+						}
+					});
+				}else{
+					this.addChild(slider);
+				}
+				slider.setVisible(true);
+				
+				//Create volume slider
+				float volSliderWidth = this.getWidthXY(TransformSpace.LOCAL)/7f;
+				float volSliderHeight = topBarHeight - 2*sliderYPadding;
+				this.setAnchor(PositionAnchor.UPPER_LEFT);
+				Vector3D movieUpperLeft = this.getPosition(TransformSpace.RELATIVE_TO_PARENT);
+				volumeSlider = new MTSlider(movieUpperLeft.x + 1.5f, movieUpperLeft.y - volSliderHeight - 1.5f, volSliderWidth, volSliderHeight, 0, 1, app);
+				volumeSlider.getOuterShape().setFillColor(new MTColor(0, 0, 0, 80));
+				volumeSlider.getOuterShape().setStrokeColor(new MTColor(0, 0, 0, 80));
+				volumeSlider.getKnob().setFillColor(new MTColor(100, 100, 100, 80));
+				volumeSlider.getOuterShape().setStrokeColor(new MTColor(100, 100, 100, 80));
+				if (app instanceof MTApplication) {
+					MTApplication mtApp = (MTApplication) app;
+					mtApp.invokeLater(new Runnable() {
+						public void run() {
+							MTMovieClip.this.addChild(volumeSlider);
+						}
+					});
+				}else{
+					this.addChild(volumeSlider);
+				}
+				volumeSlider.setVisible(true);
+				volumeSlider.setValue(1);
+				volumeSlider.addPropertyChangeListener("value", new PropertyChangeListener() {
+					public void propertyChange(PropertyChangeEvent e) {
+							if (movie != null){
+								movie.volume(((Float)e.getNewValue()).doubleValue());
+							}
+					}
+				});
+			}
+		}
+		
+		@Override
+		protected void onNewFrame() {
+			super.onNewFrame();
+			
+			GSMovie m = getMovie();
+			if (!stopSliderAdvance && m != null && slider != null){
+				slider.setValue(m.time()); //ONLY UPDATE the slider position WHEN NOT DRAGGING THE SLIDER
+			}
+		}
+		
+		@Override
+		protected void setDefaultGestureActions() {
+			
+		}
+		
+		@Override
+		public void play() {
+			super.play();
+			if (slider != null){
+				slider.setVisible(true);
+			}
+		}
+		
+		@Override
+		public void loop() {
+			super.loop();
+			if (slider != null){
+				slider.setVisible(true);
+			}
+		}
+		
+		
+	}
+	
+	
+	public void close(){
+		float width = this.getWidthXY(TransformSpace.RELATIVE_TO_PARENT);
+		Animation closeAnim = new Animation("Window Fade", new MultiPurposeInterpolator(width, 1, 350, 0.2f, 0.5f, 1), this);
+		closeAnim.addAnimationListener(new IAnimationListener(){
+			public void processAnimationEvent(AnimationEvent ae) {
+//				float delta = ae.getAnimation().getInterpolator().getCurrentStepDelta();
+				switch (ae.getId()) {
+				case AnimationEvent.ANIMATION_STARTED:
+				case AnimationEvent.ANIMATION_UPDATED:
+					float currentVal = ae.getAnimation().getInterpolator().getCurrentValue();
+					setWidthXYRelativeToParent(currentVal);
+					break;
+				case AnimationEvent.ANIMATION_ENDED:
+					setVisible(false);
+					destroy();
+					break;	
+				default:
+					break;
+				}//switch
+			}//processanimation
+		});
+		closeAnim.start();
+	}
+
 	
 	@Override
 	protected void destroyComponent() {
 		super.destroyComponent();
 		
-		if (m != null){
-			m.dispose();
+		this.movieClip.noLoop();
+//		if (this.movieClip.getMovie().getGplayer().isPlaying()){ //gplayer.isPlaying still hangs the program sometimes..
+		if (this.movieClip.getMovie().isPlaying()){ //not as accurate..
+			this.movieClip.getMovie().dispose();
 		}
 	}
 	
-	//FIXME TEST
-	/** The duration. */
-	float duration;
 	
-	/**
-	 * Gets the duration.
-	 * 
-	 * @return the duration
-	 */
-	public float getDuration(){//duration only valid if video is playing
-		if (movie.duration() == 0.0){
-			return duration;
-		}else{
-			duration = movie.duration();
-			return duration;
-		}
-	}
-	
-
-	/**
-	 * Jump.
-	 * 
-	 * @param where the where
-	 */
-	public void jump(float where) {
-		movie.jump(where);
-	}
-
-
-	/**
-	 * Loop the movie.
-	 */
-	public void loop() {
-		movie.loop();
-	}
-
-
-	/**
-	 * No looping.
-	 */
-	public void noLoop() {
-		movie.noLoop();
-	}
-
-
-	/**
-	 * Pause.
-	 */
-	public void pause() {
-		movie.pause();
-	}
-
-
-	/**
-	 * Play.
-	 */
-	public void play() {
-		movie.play();
-	}
-
-
-	/**
-	 * Stop.
-	 */
-	public void stop() {
-		movie.stop();
-	}
-
-
-	/**
-	 * Time.
-	 * 
-	 * @return the time the movie plays in float
-	 */
-	public float getTime() {
-		return movie.time();
-	}
-
 	public boolean isSelected() {
 		return selected;
 	}
@@ -427,7 +519,7 @@ implements IdragClusterable {
 	public void setSelected(boolean selected) {
 		this.selected = selected;
 	}
-	
+
 	
 
 }

@@ -1,6 +1,7 @@
 ToDo list:
 
 -> General:
+- fix software renderer -> fill in cursortracer ellipse -> lines in textures -> airhockey etc
 - update to processing 1.1 -> bitmapfont working?
 - make standalone executable MT4j MTShell distribution/installer on windows
 - integrate with SWING?
@@ -11,6 +12,7 @@ ToDo list:
   => or do with global processors?
   => example, component with 2 children; children are tappable but when dragging on either children the component should
      move, not the child whos dragged -> send evt to parent
+- make inputevent recorder -> IMTInputListener
 
 - let all implementations of processInputEvent return false by default (->not consumed), or true-> for handled?
 
@@ -27,7 +29,6 @@ ToDo list:
 - mt4j as p5 library - difficult because mtapplication is derived from papplet
 - manymouse problem loadlibrary!? -> Compile on Mac!
 - remove MTVideoClip from core and put it into example with gsvideo and gstreamer?
-- update to latest GSVideo/GStreamer
 - add sound library (OpenAL?)
 - by default disable depth buffer and only for special 3d stuff enable it?
 - check if for line_smooth disabling/enabling multisampling is too expensive - if so disable/dont use line_smooth when multisampling at all 
@@ -53,7 +54,7 @@ ToDo list:
 - create generic gradientPaint FillPaints to use with setFillPaint() - will only work with AbstractShapes..
 - make setEnableTransformStateEvents -> fire stateChangeEvts if transformed in any way (but children are also moved, fire also..?)
 - find a way to determine if a geometryinfo is shared or not -> if not -> delete displayLists!!
-- at setters make boolean parameter recurseChildren to also apply it to children?
+- at setters make boolean parameter recurseChildren to also apply it to children? e.g. setPickable(true, true)
 - sprite component with acceleration/velocity/collision/ animatable with textures?
 - store Vertices only in floatBuffers instead of buffers+array to reduce memory consumption? (test if it matters)
 - use push/popattrib at drawing? -> speed up drawing -> externalize rendering? (ie. renderer.renderBuffers(..));
