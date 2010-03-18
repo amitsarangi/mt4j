@@ -149,6 +149,7 @@ public class MTShellScene extends AbstractScene {
 					new Vertex(0, 			app.height/3,	0,	0,0,0,255),
 			};
 			MTPolygon p = new MTPolygon(vertices, getMTApplication());
+			p.setName("upper gradient");
 			p.setNoStroke(true);
 			p.generateAndUseDisplayLists();
 			p.setPickable(false);

@@ -685,6 +685,96 @@ public class GLTexture extends PImage implements PConstants , GLConstants{
 //	
 
     
+    //FIXME TEST //FIXME TEST
+    /**
+     * @invisible
+     */		    
+    protected int[] pbo = { 0 };
+    
+    /**
+     * @invisible
+     */		    
+    protected int pboTarget;
+    
+    /**
+     * @invisible
+     */    
+    protected int pboUsage;
+    
+    /**
+     * @invisible
+     * Deletes the PBO.
+     */
+    protected void releasePBO()
+    {
+    	if (pbo[0] != 0)
+    	{
+    		gl.glDeleteBuffers(1, pbo, 0);  
+    		pbo[0] = 0;
+    	}
+    }
+    
+    /**
+     * Copy pixels to texture using PBO (EXPERIMENTAL).
+     */	
+	public void loadTextureFast()
+	{
+		if (pbo[0] == 0)
+		{
+			System.err.println("Fast texture load is not enabled!");
+			return; 
+		}
+		
+		gl.glBindTexture(texTarget, tex[0]);
+		gl.glBindBuffer(pboTarget, pbo[0]);
+		
+		//gl.glBufferDataARB(GL_PIXEL_UNPACK_BUFFER_ARB, DATA_SIZE, 0, GL_STREAM_DRAW_ARB);
+		//gl.glBufferDataARB(pboTarget, 4 * width * height, null, pboUsage);
+		
+		IntBuffer texels = gl.glMapBuffer(pboTarget, GL.GL_WRITE_ONLY).asIntBuffer();
+		
+		System.out.println(texels);
+		texels.put(pixels);
+
+		gl.glUnmapBufferARB(pboTarget);
+	    gl.glBindBuffer(pboTarget, 0);		
+	}
+	
+    /**
+     * Creates a Pixel Buffer Object (PBO) to allow for faster transfers of pixel data in
+     * GPU memory (EXPERIMENTAL). 
+     * For a detailed tutorial on PBOs look at:
+     * http://www.songho.ca/opengl/gl_pbo.html
+     */    
+    public void enableFastTextureLoad()
+    {
+        if (pbo[0] != 0)
+        {
+            releasePBO();
+        }
+    	
+    	gl.glGenBuffersARB(1, pbo, 0);
+    	
+    	// GL.GL_PIXEL_UNPACK_BUFFER_ARB indicates that the PBO will be used to copy data
+    	// to the framebuffer (unpack operations).
+    	pboTarget = GL.GL_PIXEL_UNPACK_BUFFER_ARB;
+    	
+    	// This usage setting means that the data will be changed frequently ("dynamic") and
+    	// it will be sent to GPU in order to draw (application to GL).
+//    	pboUsage = GL.GL_DYNAMIC_DRAW_ARB;
+    	pboUsage = GL.GL_STREAM_DRAW_ARB;
+    	
+    	gl.glBindBufferARB(pboTarget, pbo[0]);
+    	
+    	// Reserve empty space for the PBO.
+    	gl.glBufferDataARB(pboTarget, 4 * width * height, null, pboUsage);
+    	
+    	gl.glBindBufferARB(pboTarget, 0);    	
+    }    
+    	//FIXME TEST //FIXME TEST
+    
+    
+    
     /**
      * Draws the texture using the opengl commands, inside a rectangle of width w and height h
      * located at (x,y).
@@ -1240,6 +1330,8 @@ public class GLTexture extends PImage implements PConstants , GLConstants{
 	        gl.glDeleteTextures(1, tex, 0);  
 	        tex[0] = 0;
     	}
+    	
+    	releasePBO();
     }
     
     

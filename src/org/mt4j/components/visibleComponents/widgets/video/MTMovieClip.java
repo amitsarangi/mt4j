@@ -28,10 +28,8 @@ import org.mt4j.components.bounds.IBoundingShape;
 import org.mt4j.components.visibleComponents.shapes.MTEllipse;
 import org.mt4j.components.visibleComponents.shapes.MTPolygon;
 import org.mt4j.components.visibleComponents.shapes.MTRectangle;
-import org.mt4j.components.visibleComponents.shapes.MTRectangle.PositionAnchor;
 import org.mt4j.components.visibleComponents.widgets.MTSlider;
 import org.mt4j.components.visibleComponents.widgets.buttons.MTImageButton;
-import org.mt4j.components.visibleComponents.widgets.buttons.MTSvgButton;
 import org.mt4j.input.inputProcessors.IGestureEventListener;
 import org.mt4j.input.inputProcessors.MTGestureEvent;
 import org.mt4j.input.inputProcessors.componentProcessors.dragProcessor.DragEvent;
@@ -48,10 +46,9 @@ import org.mt4j.util.animation.MultiPurposeInterpolator;
 import org.mt4j.util.math.Vector3D;
 import org.mt4j.util.math.Vertex;
 
-import codeanticode.gsvideo.GSMovie;
-
 import processing.core.PApplet;
 import processing.core.PImage;
+import codeanticode.gsvideo.GSMovie;
 
 /**
  * The Class MTMovieClip. 
@@ -89,8 +86,10 @@ public class MTMovieClip extends MTRectangle implements IdragClusterable {
 	private MTSlider volumeSlider;
 	
 	//TODO tap on slider -> jump -> amount settable?
+	//TODO delete button svg's?
 	//TODO (volume control icon)
 	//TODO (title bar)
+	
 	
 	//TODO we actually would need some sort of command queue since this
 	//has to work asynchronously -> read from queue after the next frame
@@ -261,10 +260,6 @@ public class MTMovieClip extends MTRectangle implements IdragClusterable {
 
 		public PlaySymbol(PApplet pApplet, Vector3D centerPoint, float radiusX,	float radiusY, int segments) {
 			super(pApplet, centerPoint, radiusX, radiusY, segments);
-			
-			float widthLocal = this.getWidthXY(TransformSpace.LOCAL);
-			float heightLocal = this.getHeightXY(TransformSpace.LOCAL);
-			
 			
 			Vertex[] vertices = new Vertex[]{
 				new Vertex(centerPoint.x - radiusX/3f, centerPoint.y - radiusY/3f, centerPoint.z),
@@ -506,9 +501,9 @@ public class MTMovieClip extends MTRectangle implements IdragClusterable {
 		
 		this.movieClip.noLoop();
 //		if (this.movieClip.getMovie().getGplayer().isPlaying()){ //gplayer.isPlaying still hangs the program sometimes..
-		if (this.movieClip.getMovie().isPlaying()){ //not as accurate..
-			this.movieClip.getMovie().dispose();
-		}
+//		if (this.movieClip.getMovie().isPlaying()){ //not as accurate..
+//			this.movieClip.getMovie().dispose(); //DONE IN MTVideoTexture child..
+//		}
 	}
 	
 	

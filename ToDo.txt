@@ -4,7 +4,7 @@ ToDo list:
 - fix software renderer -> fill in cursortracer ellipse -> lines in textures -> airhockey etc
 - update to processing 1.1 -> bitmapfont working?
 - make standalone executable MT4j MTShell distribution/installer on windows
-- integrate with SWING?
+- integrate with SWING /JNLP?
 - make class DrawTools/GeomTools/GLTools and put stuff from Tools3D in there
 
 - enable a way so that even if input starts on a components the input can be redirected/replayed to another (parent or below) 
@@ -12,6 +12,7 @@ ToDo list:
   => or do with global processors?
   => example, component with 2 children; children are tappable but when dragging on either children the component should
      move, not the child whos dragged -> send evt to parent
+     
 - make inputevent recorder -> IMTInputListener
 
 - let all implementations of processInputEvent return false by default (->not consumed), or true-> for handled?
@@ -115,6 +116,7 @@ ToDo list:
 
 -> Gestures/Input
 - GestureUtil class? -> getDistance(cursor1, cursor2) getAngle(cursor1, movedCursor); etc
+- abort tapGesture if finger moved too much -> check on update as in PressAndHold gesture
 - Test if intalled multitouch vista driver + win7 touch screen make problems
 - more gestures: double tap, flick(? velocity, straightness)
 - Win7 Input -> get and store blobsize

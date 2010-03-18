@@ -26,7 +26,6 @@ import org.mt4j.util.opengl.GLConstants;
 import org.mt4j.util.opengl.GLTexture;
 
 import processing.core.PApplet;
-import processing.core.PImage;
 import codeanticode.gsvideo.GSMovie;
 
 /**
@@ -50,7 +49,6 @@ MTRectangle
 	/** The first time read. */
 	private boolean firstTimeRead;
 
-	//FIXME TEST
 	/** The duration. */
 	float duration;
 	
@@ -138,6 +136,12 @@ MTRectangle
 //			this.setTexture(null); //TO force to rescale of new texture coordianates to RECTANGLE (0..width)
 			this.setTexture(m);
 			this.setTextureEnabled(true);
+			
+			//FIXME try to use PBO for pixel->texture transfer -> even slower??
+			if (this.getTexture() instanceof GLTexture){
+//				GLTexture glTex = (GLTexture)this.getTexture();
+//				glTex.enableFastTextureLoad();
+			}
 		}
 	}
 	

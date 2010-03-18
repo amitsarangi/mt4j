@@ -698,7 +698,8 @@ public abstract class AbstractShape extends AbstractVisibleComponent {
 					logger.warn(this.getName() + " - Warning, no displaylists created yet on component: " + this.getName());
 				}
 			}else{
-				logger.error(this.getName() + " - Cant set display lists if not in opengl mode and setDrawDirectGL has to be set to true! Object: " + this.getName());
+				if (useDisplayList)
+					logger.warn(this.getName() + " - Cant set display lists if not in opengl mode and setDrawDirectGL has to be set to true! Object: " + this.getName());
 				this.useDisplayList = false;
 			}
 	}

@@ -80,6 +80,7 @@ public class MTPolygon extends AbstractShape {
 		super(vertices, pApplet);
 		
 		this.normalDirty = true;
+//		this.hasVertexColor = false;
 //		this.normal = this.getNormal();
 		
 		this.setTextureEnabled(false);
@@ -104,9 +105,6 @@ public class MTPolygon extends AbstractShape {
 //		this.setBoundsPickingBehaviour(AbstractShape.BOUNDS_ONLY_CHECK);
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.jMT.components.visibleComponents.shapes.AbstractShape#computeDefaultBounds()
-	 */
 	@Override
 	protected IBoundingShape computeDefaultBounds(){
 //		this.setBoundingShape(new BoundsArbitraryPlanarPolygon(this, this.getVerticesObjSpace())); //Works inly in z=0
@@ -119,6 +117,30 @@ public class MTPolygon extends AbstractShape {
 	public void setGeometryInfo(GeometryInfo geometryInfo) {
 		super.setGeometryInfo(geometryInfo);
 		this.normalDirty = true;
+		
+		//FIXME TEST
+		//Actually we would have to do that also in opengl mode if setDirectGL is set to false
+		//but then we would also have to check at setDirectGL(false) 
+		if (!MT4jSettings.getInstance().isOpenGlMode()){ 
+			this.hasVertexColor = this.hasVertexColors(geometryInfo);
+		}
+	}
+	
+	//FIXME TEST
+	private boolean hasVertexColor;
+	private boolean hasVertexColors(GeometryInfo geometryInfo){
+		Vertex[] verts = geometryInfo.getVertices();
+		for (int i = 0; i < verts.length; i++) {
+			Vertex vertex = verts[i];
+			if (vertex.getR() != 255 ||
+				vertex.getG() != 255 ||
+				vertex.getB() != 255 ||
+				vertex.getA() != 255
+			){
+				return true;
+			}
+		}
+		return false;
 	}
 
 	@Override
@@ -179,26 +201,26 @@ public class MTPolygon extends AbstractShape {
 
 			//handles the drawing of the vertices with the texture coordinates
 			//try doing a smoothed poly outline with opengl
-			if (MT4jSettings.getInstance().isOpenGlMode()  
-				&& this.isDrawSmooth()
-				&& !this.isNoStroke()
-				&& !this.isUseDirectGL()
+			if (
+				MT4jSettings.getInstance().isOpenGlMode()  &&
+				 this.isDrawSmooth() &&
+				 !this.isNoStroke() &&
+				 !this.isUseDirectGL()
 			){
+				//draw FILL of polygon, without smooth or stroke
 				g.noStroke();
 				g.noSmooth();
-				//draw insided of polygon, without smooth or stroke
 				drawWithProcessing(g); 
-
+				
+				// DRAW SMOOTHED THE STROKE outline OF THE POLYGON WIHTOUT FILL OR TEXTURE
 				g.smooth();
 				g.noFill(); 
 				g.stroke(strokeColor.getR(), strokeColor.getG(), strokeColor.getB(), strokeColor.getAlpha());
-
-				// DRAW SMOOTHED THE OUTLINE SHAPE OF THE POLYGON WIHTOUT FILL OR TEXTURE
 				drawWithProcessing(g); 
 
 				g.noSmooth();
-				//restore fill color
-				g.fill(fillColor.getR(), fillColor.getG(), fillColor.getB(), fillColor.getAlpha());
+//				//restore fill color
+//				g.fill(fillColor.getR(), fillColor.getG(), fillColor.getB(), fillColor.getAlpha());
 			}else{
 				drawWithProcessing(g);
 			}//end if gl and smooth
@@ -206,11 +228,12 @@ public class MTPolygon extends AbstractShape {
 			//reSet the tint values to defaults 
 			g.tint(255, 255, 255, 255);
 
-			if (MT4jSettings.getInstance().isOpenGlMode() && this.isDrawSmooth())
-				g.noSmooth(); //because of tesselation bug
+			if (/*MT4jSettings.getInstance().isOpenGlMode() &&*/ this.isDrawSmooth())
+				g.noSmooth(); //because of tesselation bug/lines visibile in shapes
 		}
 		
 	}
+	
 	
 	
 	/**
@@ -234,6 +257,9 @@ public class MTPolygon extends AbstractShape {
 		for (int i = 0; i < vertices.length; i++) {
 			Vertex v = vertices[i];
 			
+			//FIXME THIS IS MESSED UP -> overrides the fill color setting
+			//TODO check at setgeomInfo if vertices have non-default color -> set a switch?
+			/*
 			//Check if we have uniform color or have to use different colors for different vertices
 			if (i == 0){
 				firstVertexColor[0] = v.getR();
@@ -250,6 +276,12 @@ public class MTPolygon extends AbstractShape {
 					g.fill(v.getR(), v.getG(), v.getB(), v.getA()); //takes vertex colors into account	
 				}
 			}
+			*/
+			//FIXME TEST
+			if (this.hasVertexColor){
+				g.fill(v.getR(), v.getG(), v.getB(), v.getA()); //takes vertex colors into account	
+			}
+			//
 			
 			if (this.isTextureEnabled())
 				g.vertex(v.x, v.y, v.z, v.getTexCoordU(), v.getTexCoordV());
