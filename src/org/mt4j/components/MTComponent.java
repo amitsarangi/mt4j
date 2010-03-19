@@ -61,7 +61,7 @@ import processing.opengl.PGraphicsOpenGL;
  * testing is properly implemented by extending subclasses.
  * <p>
  * This base class has no visible representation an thus can be used
- * as a group container node for other scene graph objects.
+ * as a group container node for other scene graph components.
  * 
  * @author Christopher Ruff
  */
@@ -237,7 +237,6 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 			this.drawnOnTop = false;
 			this.name = name;
 			
-			//FIXME TEST
 			this.composite = false;
 			
 			//Default viewport, can be changed in subclass //FIXME REMOVE?
@@ -272,8 +271,7 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 			
 			allowedGestures = new ArrayList<Class<? extends IInputProcessor>>();
 			
-			//TODO lazily instantiate gesturehandler/arraylist dadrin damit graphikobjecte nicht zu teuer bei der
-			//eerstellung werden
+			//TODO lazily instantiate gesturehandler/arraylist so that graphicobjects arent expensive at creation?
 			
 			this.inputListeners = new ArrayList<IMTInputEventListener>();
 			
@@ -312,6 +310,12 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 	public IMTInputEventListener[] getInputListeners(){
 		return this.inputListeners.toArray(new IMTInputEventListener[this.inputListeners.size()]);
 	}
+	
+	/**
+	 * Fire input event.
+	 * 
+	 * @param iEvt the i evt
+	 */
 	protected void fireInputEvent(MTInputEvent iEvt){
 		for (IMTInputEventListener listener : inputListeners){
 			listener.processInputEvent(iEvt);
@@ -334,10 +338,19 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 		}
 	}
 	
+	/**
+	 * Search viewing camera.
+	 */
 	private void searchViewingCamera(){
 		 this.viewingCamera = this.searchViewingCamRecur(this);
 	}
 	
+	/**
+	 * Search viewing cam recur.
+	 * 
+	 * @param current the current
+	 * @return the icamera
+	 */
 	private Icamera searchViewingCamRecur(MTComponent current){
 		if (current.attachedCamera != null){
 			return current.attachedCamera;
@@ -350,10 +363,21 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 		}
 	}
 	
+	/**
+	 * Propagate cam change.
+	 * 
+	 * @param cam the cam
+	 */
 	private void propagateCamChange(Icamera cam){
 		this.propagateCamChangeRecur(this, cam);
 	}
 	
+	/**
+	 * Propagate cam change recur.
+	 * 
+	 * @param current the current
+	 * @param cam the cam
+	 */
 	private void propagateCamChangeRecur(MTComponent current, Icamera cam){
 		//Only propagate further if current has no attached cam of its own
 		//or it is the same as the propagated one
@@ -704,7 +728,7 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 			//this should work because the dirty component should also have dirty children already
 			//CAUTION: object can have for example a dirty global matrix and a clean global inverse matrix
 			//so we check if both are dirty and only then dont propagate the dirty state
-			//FIXME NOT WORKING WITH SVG EXAMPLEaaaaaaaaa - wegen composite?
+			//FIXME NOT WORKING WITH SVG EXAMPLEaaaaaaaaa - cause of composite?
 //			if ((!object.isGlobalInverseMatrixDirty() || !object.isGlobalMatrixDirty())){ 
 				object.setMatricesDirty(matrixDirty);
 //			}
@@ -998,7 +1022,7 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 	 */
 	public static Vector3D getGlobalVecToParentRelativeSpace(MTComponent referenceComp, Vector3D point){
 		//Returns point relative to the references parent!
-		if (referenceComp.getParent() == null){ //FIXME TRIAL!
+		if (referenceComp.getParent() == null){ 
 			return point.getCopy();
 		}else{
 			Vector3D ret = point.getCopy();
@@ -1227,7 +1251,7 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 	
 	
 	/* (non-Javadoc)
-	 * @see mTouch.components.interfaces.IMTComponent#translateGlobal(util.math.Vector3D)
+	 * @see org.mt4j.components.interfaces.IMTComponent#translateGlobal(org.mt4j.util.math.Vector3D)
 	 */
 	public void translateGlobal(Vector3D dirVect) {
 		this.translate(dirVect, TransformSpace.GLOBAL);
@@ -1283,7 +1307,7 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 	
 	
 	/* (non-Javadoc)
-	 * @see com.jMT.components.interfaces.IMTComponent3D#rotateYGlobal(util.math.Vector3D, float)
+	 * @see org.mt4j.components.interfaces.IMTComponent3D#rotateXGlobal(org.mt4j.util.math.Vector3D, float)
 	 */
 	public void rotateXGlobal(Vector3D rotationPoint, float degree) {
 		this.rotateX(rotationPoint, degree, TransformSpace.GLOBAL);
@@ -1337,7 +1361,7 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 	
 	
 	/* (non-Javadoc)
-	 * @see com.jMT.components.interfaces.IMTComponent3D#rotateYGlobal(util.math.Vector3D, float)
+	 * @see org.mt4j.components.interfaces.IMTComponent3D#rotateYGlobal(org.mt4j.util.math.Vector3D, float)
 	 */
 	public void rotateYGlobal(Vector3D rotationPoint, float degree) {
 		this.rotateY(rotationPoint, degree, TransformSpace.GLOBAL);
@@ -1391,7 +1415,7 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 	
 	
 	/* (non-Javadoc)
-	 * @see com.jMT.components.interfaces.IMTComponent#rotateZGlobal(util.math.Vector3D, float)
+	 * @see org.mt4j.components.interfaces.IMTComponent#rotateZGlobal(org.mt4j.util.math.Vector3D, float)
 	 */
 	public void rotateZGlobal(Vector3D rotationPoint, float degree) {
 		this.rotateZ(rotationPoint, degree, TransformSpace.GLOBAL);
@@ -1452,41 +1476,13 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 		this.scale(X, Y, Z, scalingPoint);
 	}
 	
-//	/**
-//	 * Scales this component around the specified point. The point is assumed to
-//	 * be in global coordinates.
-//	 * 
-//	 * @param factor the factor
-//	 * @param scaleReferencePoint the scale reference point
-//	 */
-//	public void scaleGlobal(float factor, Vector3D scaleReferencePoint) {
-//		this.scaleGlobal(factor, factor, factor, scaleReferencePoint);
-//	}
 	
 	/* (non-Javadoc)
-	 * @see com.jMT.components.interfaces.IMTComponent#scaleGlobal(float, float, float, util.math.Vector3D)
+	 * @see org.mt4j.components.interfaces.IMTComponent#scaleGlobal(float, float, float, org.mt4j.util.math.Vector3D)
 	 */
 	public void scaleGlobal(float X, float Y, float Z, Vector3D scalingPoint) {
 		this.scale(X, Y, Z, scalingPoint, TransformSpace.GLOBAL);
 	}
-	
-//	/**
-//	 * Scale.
-//	 * 
-//	 * @param factor the factor
-//	 * @param scaleReferencePoint the scale reference point
-//	 */
-//	public void scale(float factor, Vector3D scaleReferencePoint) {
-//		this.scale(factor, factor, factor, scaleReferencePoint);
-//	}
-	
-	//TODO scaleLocal machen, dass den scalingpoint in object relative space transformiert? (
-	//rotationPoint.transform(poly.getLocalBasisMatrix()));
-	//So bezieht sich der scaling/rotpoint auf den parent frame of reference..
-	//Auch translation, richtung bezieht sich im moment auf parent frame.
-	//wenn man local, ausrichtung des objects selber berücksichtigen möchte, also relative to self obj space
-	//muss man dirVect transformen für direction vectoren (dirVect.transformDirectionVector(object.getLocalBasisMatrix()); 
-	//oder rotationPoint.transform(poly.getLocalBasisMatrix())); für um einen punkt drehen/skalieren
 	
 	
 	//FIXME scale non uniform um parent space punkt realisieren,
@@ -1524,7 +1520,7 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 			Matrix.toScalingMatrixAndInverse(ms[0], ms[1], scalingPoint, X, Y, Z);
 			
 //			this.setLocalBasisMatrixInternal(ms[0].mult(this.getLocalBasisMatrix(), this.getLocalBasisMatrix())); //working original
-//			this.setLocalBasisMatrixInternal(this.getLocalBasisMatrix().mult(ms[0])); //FIXME TRIAL! PROBLEM MIT NON-UNIFORM SCALING!!
+//			this.setLocalBasisMatrixInternal(this.getLocalBasisMatrix().mult(ms[0])); //FIXME TRIAL! PROBLEM WITH NON-UNIFORM SCALING!!
 			this.setLocalMatrixInternal(ms[0].scaleMult(this.getLocalMatrix(), this.getLocalMatrix()));
 			try {
 //				this.setLocalInverseMatrixInternal(this.getLocalInverseMatrix().multLocal(ms[1])); //working original!
@@ -1589,7 +1585,7 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 		MTLight aLight = this.getLight();
 		if (aLight != null){
 			GL gl = ((PGraphicsOpenGL)g).gl;
-			gl.glEnable(GL.GL_LIGHTING); //FIXME DAS IS TEUER, LIEBER AUF DEFAULT HELLES AMBIENT LIGHT SCHALTEN AM ANFANG, LIGHNTING IMMMER ON
+			gl.glEnable(GL.GL_LIGHTING); //this is expensive
 			aLight.enable();
 		}
 
@@ -1614,7 +1610,8 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 	/**
 	 * Post draw.
 	 * Called immediatly after drawing this component.
-	 * @param g 
+	 * 
+	 * @param g the g
 	 */
 	public void postDraw(PGraphics g) {
 		if (this.getClip() != null){
@@ -1653,6 +1650,7 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 	}
 	
 	// CLIP ////////////////
+	/** The clip. */
 	private Clip clip;
 	
 	/**
@@ -1664,11 +1662,11 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 	}
 	
 	/**
-	 * Sets the clip mask for this component. This restricts the drawing 
+	 * Sets the clip mask for this component. This restricts the drawing
 	 * of this component to the specified clip area.
 	 * <br>NOTE: Only supported when using OpenGL as the renderer!
 	 * 
-	 * @param childClip the child clip mask
+	 * @param clip the new clip
 	 */
 	public void setClip(Clip clip) {
 		if (MT4jSettings.getInstance().isOpenGlMode()){
@@ -1679,6 +1677,7 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 
 	
 	// CHILDREN CLIP /////////////////////
+	/** The child clip. */
 	private Clip childClip;
 	
 	/**
@@ -2075,7 +2074,6 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 	
 	/**
 	 * Gets the child index of a child.
-	 * 
 	 * @param comp the comp
 	 * 
 	 * @return the child index of
@@ -2144,62 +2142,59 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 	
 
 	/* (non-Javadoc)
-	 * @see com.jMT.components.interfaces.IMTComponent#setVisible(boolean)
+	 * @see org.mt4j.components.interfaces.IMTComponent#setVisible(boolean)
 	 */
 	public void setVisible(boolean visible){
 		this.visible = visible;
 	}
 	
 	
-	//TODO FÜR ALLE CHILDS AUCH ÜBERNEHMEN UND SETTEN?
 	/* (non-Javadoc)
-	 * @see com.jMT.components.interfaces.IMTComponent#isEnabled()
+	 * @see org.mt4j.components.interfaces.IMTComponent#isEnabled()
 	 */
 	public boolean isEnabled() {
 		return enabled;
 	}
 
+	
 	/* (non-Javadoc)
-	 * @see com.jMT.components.interfaces.IMTComponent#setEnabled(boolean)
+	 * @see org.mt4j.components.interfaces.IMTComponent#setEnabled(boolean)
 	 */
 	public void setEnabled(boolean enabled) {
 		this.enabled = enabled;
 	}
 
-//	public void setID(int i){
-//		this.ID = i;
-//	}
 	
 	/* (non-Javadoc)
-	 * @see com.jMT.components.interfaces.IMTComponent#getID()
+	 * @see org.mt4j.components.interfaces.IMTComponent#getID()
 	 */
 	public int getID(){
 		return this.ID;
 	}
 	
 	/* (non-Javadoc)
-	 * @see mTouch.components.interfaces.IMTComponent#setName(java.lang.String)
+	 * @see org.mt4j.components.interfaces.IMTComponent#setName(java.lang.String)
 	 */
 	public void setName(String name){
 		this.name = name;
 	}
 	
 	/* (non-Javadoc)
-	 * @see mTouch.components.interfaces.IMTComponent#getName()
+	 * @see org.mt4j.components.interfaces.IMTComponent#getName()
 	 */
 	public String getName(){
 		return this.name;
 	}
 	
 	/* (non-Javadoc)
-	 * @see mTouch.components.interfaces.IMTComponent#getRenderer()
+	 * @see org.mt4j.components.interfaces.IMTComponent#getRenderer()
 	 */
 	public PApplet getRenderer(){
 		return this.renderer;
 	}
 
 	/* (non-Javadoc)
-	 * @see com.jMT.components.interfaces.IMTComponent#isVisible()
+	 * @see org.mt4j.components.interfaces.IMTComponent#isVisible()
 	 */
 	public boolean isVisible() {
 		return visible;
@@ -2207,7 +2202,7 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 	
 	
 	/* (non-Javadoc)
-	 * @see com.jMT.components.interfaces.IMTComponent3D#isPickable()
+	 * @see org.mt4j.components.interfaces.IMTComponent3D#isPickable()
 	 */
 	public boolean isPickable() {
 		return pickable;
@@ -2215,7 +2210,7 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 
 
 	/* (non-Javadoc)
-	 * @see mTouch.components.interfaces.IMTComponent3D#setPickable(boolean)
+	 * @see org.mt4j.components.interfaces.IMTComponent3D#setPickable(boolean)
 	 */
 	public void setPickable(boolean pickable) {
 		this.pickable = pickable;
@@ -2250,7 +2245,7 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 	
 	
 	/* (non-Javadoc)
-	 * @see mTouch.components.interfaces.IMTComponent#containsPointGlobal(util.math.Vector3D)
+	 * @see org.mt4j.components.interfaces.IMTComponent#containsPointGlobal(org.mt4j.util.math.Vector3D)
 	 */
 	public boolean containsPointGlobal(Vector3D testPoint) {
 //		if (this.componentContainsPointLocal(testPoint))
@@ -2287,7 +2282,7 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 	
 	
 	/* (non-Javadoc)
-	 * @see org.mt4j.components.interfaces.IMTComponent3D#getIntersectionGlobalSpace(util.math.Ray)
+	 * @see org.mt4j.components.interfaces.IMTComponent3D#getIntersectionGlobal(org.mt4j.util.math.Ray)
 	 */
 	public Vector3D getIntersectionGlobal(Ray ray) {
 		float currentDistance = Float.MAX_VALUE; //high value so that the first time a object is found this distance is exchanged with his
@@ -2362,12 +2357,9 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 	 * <br>The ray is assumed to already be in component space (not in global space).
 	 * <br>If the component is not intersected, null is returned.
 	 * 
-	 * 
-	 * @see #globalToLocal
-	 * 
 	 * @param localRay the rays, in local space
-	 * 
 	 * @return the component intersection point
+	 * @see #globalToLocal
 	 */
 	public Vector3D getIntersectionLocal(Ray localRay) {
 		return null;
@@ -2445,7 +2437,8 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 	 * @param pickInfo the pick info
 	 * @param pickResult the pick result
 	 * @param currObjDist the curr obj dist
-	 * 
+	 * @param currentRay the current ray
+	 * @param onlyPickables the only pickables
 	 * @return the float
 	 */
 	private float pickRecursive(PickInfo pickInfo, PickResult pickResult, float currObjDist, Ray currentRay, boolean onlyPickables){
@@ -2584,9 +2577,9 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 	 * <br>If the obj has a custom camera attached to it, this cameras position is the new ray origin and
 	 * the point in the ray direction is the unprojected x,y, coordinates while this camera is active.
 	 * 
+	 * @param pa the pa
 	 * @param obj the obj
 	 * @param pickInfo the pick info
-	 * 
 	 * @return the real pick ray
 	 * 
 	 * the new calculated ray, or the original ray, if the obj has no custom camera attached to it.
@@ -2619,7 +2612,7 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 	
 
 	/* (non-Javadoc)
-	 * @see com.jMT.components.interfaces.IMTComponent3D#getDefaultViewportSetting()
+	 * @see org.mt4j.components.interfaces.IMTComponent3D#getDefaultViewportSetting()
 	 */
 	public ViewportSetting getDefaultViewportSetting(){
 		return this.defaultViewPortSetting;
@@ -2627,7 +2620,7 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 	
 	//TODO make function 2Dshift3DObj? das dann viewport ändert?
 	/* (non-Javadoc)
-	 * @see com.jMT.components.interfaces.IMTComponent3D#getCustomViewportSetting()
+	 * @see org.mt4j.components.interfaces.IMTComponent3D#getCustomViewportSetting()
 	 */
 	public ViewportSetting getCustomViewportSetting() {
 		return customViewPort;
@@ -2645,13 +2638,12 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 	}
 	
 	/* (non-Javadoc)
-	 * @see com.jMT.components.interfaces.IMTComponent3D#hasCustomViewPort()
+	 * @see org.mt4j.components.interfaces.IMTComponent3D#hasCustomViewPort()
 	 */
 	public boolean hasCustomViewPort(){
 		return this.customViewPort != null;
 	}
 
-	
 
 	//TODO bubble events up and down hierarchy?
 	//@Override
@@ -2681,6 +2673,7 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 	 * Fires the specified gesture event to the attached IGestureEventListers of this component.
 	 * 
 	 * @param gestureEvent the gesture event
+	 * @return true, if successful
 	 */
 	public boolean processGestureEvent(MTGestureEvent gestureEvent){
 		this.gestureEvtSupport.fireGestureEvt(gestureEvent);
@@ -2691,7 +2684,6 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 
 	/**
 	 * Checks if is composite.
-	 * 
 	 * @return true, if is composite
 	 */
 	public boolean isComposite() {
@@ -2715,7 +2707,6 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 
 	/**
 	 * Gets the controller.
-	 * 
 	 * @return the controller
 	 */
 	public IMTController getController() {
@@ -2749,9 +2740,8 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 	
 	/**
 	 * Sets the gesture allowance. 
-	 * 
-	 * @param c the c
-	 * @param allowed the allowed
+	 * @param c the gesture processors class
+	 * @param allowed allowance
 	 */
 	public void setGestureAllowance(Class<? extends IInputProcessor> c, boolean allowed){
 		if (allowed){
@@ -2841,6 +2831,9 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 		return userData.get(key);
 	}
 	
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
 	@Override
 	public String toString() {
 		return "\"" + this.getName() + "\"" + " [" + super.toString() + "]";

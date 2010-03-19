@@ -22,9 +22,11 @@ import org.mt4j.input.inputProcessors.componentProcessors.scaleProcessor.ScalePr
 import org.mt4j.input.inputProcessors.componentProcessors.zoomProcessor.ZoomProcessor;
 import org.mt4j.input.inputProcessors.globalProcessors.CursorTracer;
 import org.mt4j.sceneManagement.AbstractScene;
+import org.mt4j.util.MT4jSettings;
 import org.mt4j.util.math.Tools3D;
 import org.mt4j.util.math.Vector3D;
 import org.mt4j.util.modelImporter.ModelImporterFactory;
+import org.mt4j.util.opengl.GLFBO;
 import org.mt4j.util.opengl.GLMaterial;
 
 public class Models3DScene extends AbstractScene {
@@ -41,6 +43,11 @@ public class Models3DScene extends AbstractScene {
 		//Make canvas zoomable
 		this.getCanvas().registerInputProcessor(new ZoomProcessor(mtApp));
 		this.getCanvas().addGestureListener(ZoomProcessor.class, new DefaultZoomAction());
+		
+		if (!(MT4jSettings.getInstance().isOpenGlMode() && GLFBO.isSupported(mtApp))){
+			System.err.println(this.getClass().getName() + " example can only be run in OpenGL mode.");
+			return;
+		}
 		
 		//Init light settings
 		MTLight.enableLightningAndAmbient(mtApplication, 150, 150, 150, 255);

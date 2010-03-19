@@ -54,11 +54,11 @@ public class MTPolygon extends AbstractShape {
 	//FIXME TRIAL REMOVE LATER
 //	boolean useLocalObjectSpace;
 	
+	/** The normal. */
 	private Vector3D normal;
-	private boolean normalDirty;
 	
-	/** save the first vertex color to check if color is uniform throught the polygon **/
-	private float[] firstVertexColor;
+	/** The normal dirty. */
+	private boolean normalDirty;
 	
 	/**
 	 * Instantiates a new mT polygon.
@@ -80,7 +80,7 @@ public class MTPolygon extends AbstractShape {
 		super(vertices, pApplet);
 		
 		this.normalDirty = true;
-//		this.hasVertexColor = false;
+//		this.hasVertexColor = false;//Dont set here, gets set to false after being true in super constructor
 //		this.normal = this.getNormal();
 		
 		this.setTextureEnabled(false);
@@ -89,22 +89,18 @@ public class MTPolygon extends AbstractShape {
 		this.setEnabled(true);
 		this.setVisible(true);
 		
-//		this.setDraggable(true);
-//		this.setRotatable(true);
-//		this.setSelectable(true);
-		
 		this.setDrawSmooth(true);
 		this.setNoStroke(false);
 		this.setNoFill(false);
 		this.setName("Polygon");
 		
-//		useLocalObjectSpace = false; 
-//		useLocalObjectSpace = true;
-		
 		this.setBoundsBehaviour(AbstractShape.BOUNDS_DONT_USE);
 //		this.setBoundsPickingBehaviour(AbstractShape.BOUNDS_ONLY_CHECK);
 	}
 	
+	/* (non-Javadoc)
+	 * @see org.mt4j.components.visibleComponents.shapes.AbstractShape#computeDefaultBounds()
+	 */
 	@Override
 	protected IBoundingShape computeDefaultBounds(){
 //		this.setBoundingShape(new BoundsArbitraryPlanarPolygon(this, this.getVerticesObjSpace())); //Works inly in z=0
@@ -112,22 +108,33 @@ public class MTPolygon extends AbstractShape {
 //		return new BoundingSphere(new OrientedBoundingBox(this);
 	}
 	
+
 	
+	/* (non-Javadoc)
+	 * @see org.mt4j.components.visibleComponents.shapes.AbstractShape#setGeometryInfo(org.mt4j.components.visibleComponents.GeometryInfo)
+	 */
 	@Override
 	public void setGeometryInfo(GeometryInfo geometryInfo) {
 		super.setGeometryInfo(geometryInfo);
 		this.normalDirty = true;
 		
-		//FIXME TEST
-		//Actually we would have to do that also in opengl mode if setDirectGL is set to false
-		//but then we would also have to check at setDirectGL(false) 
-		if (!MT4jSettings.getInstance().isOpenGlMode()){ 
+		//FIXME TEST 
+		//If we use processings drawing we have to check if the geometry has individually colored vertices
+		if (!MT4jSettings.getInstance().isOpenGlMode() || (MT4jSettings.getInstance().isOpenGlMode() && this.isUseDirectGL())){
 			this.hasVertexColor = this.hasVertexColors(geometryInfo);
 		}
 	}
 	
 	//FIXME TEST
+	/** The has vertex color. */
 	private boolean hasVertexColor;
+	
+	/**
+	 * Checks for vertex colors.
+	 * 
+	 * @param geometryInfo the geometry info
+	 * @return true, if successful
+	 */
 	private boolean hasVertexColors(GeometryInfo geometryInfo){
 		Vertex[] verts = geometryInfo.getVertices();
 		for (int i = 0; i < verts.length; i++) {
@@ -142,15 +149,32 @@ public class MTPolygon extends AbstractShape {
 		}
 		return false;
 	}
+	
+	
+	/* (non-Javadoc)
+	 * @see org.mt4j.components.visibleComponents.shapes.AbstractShape#setUseDirectGL(boolean)
+	 */
+	@Override
+	public void setUseDirectGL(boolean drawPureGL) {
+		super.setUseDirectGL(drawPureGL);
+		//If we use processings drawing we have to check if the geometry has individually colored vertices
+		if (!drawPureGL && !this.hasVertexColor){ 
+			this.hasVertexColor = this.hasVertexColors(this.getGeometryInfo());
+		}
+	}
 
+	/* (non-Javadoc)
+	 * @see org.mt4j.components.visibleComponents.shapes.AbstractShape#setVertices(org.mt4j.util.math.Vertex[])
+	 */
 	@Override
 	public void setVertices(Vertex[] vertices) {
 		super.setVertices(vertices);
 		this.normalDirty = true;
 	}
 
+	
 	/* (non-Javadoc)
-	 * @see com.jMT.components.visibleComponents.AbstractVisibleComponent#drawComponent()
+	 * @see org.mt4j.components.visibleComponents.AbstractVisibleComponent#drawComponent(processing.core.PGraphics)
 	 */
 	@Override
 	public void drawComponent(PGraphics g) {
@@ -250,38 +274,13 @@ public class MTPolygon extends AbstractShape {
 		}
 		Vertex[] vertices = this.getVerticesLocal();
 		
-		if (firstVertexColor == null){
-			firstVertexColor = new float[4];
-		}
-		
 		for (int i = 0; i < vertices.length; i++) {
 			Vertex v = vertices[i];
 			
-			//FIXME THIS IS MESSED UP -> overrides the fill color setting
-			//TODO check at setgeomInfo if vertices have non-default color -> set a switch?
-			/*
-			//Check if we have uniform color or have to use different colors for different vertices
-			if (i == 0){
-				firstVertexColor[0] = v.getR();
-				firstVertexColor[1] = v.getG();
-				firstVertexColor[2] = v.getB();
-				firstVertexColor[3] = v.getA();
-				g.fill(firstVertexColor[0], firstVertexColor[1], firstVertexColor[2], firstVertexColor[3]);
-			}else{
-				if (       firstVertexColor[0] != v.getR()
-						|| firstVertexColor[1] != v.getG()
-						|| firstVertexColor[2] != v.getB()
-						|| firstVertexColor[3] != v.getA()
-				){
-					g.fill(v.getR(), v.getG(), v.getB(), v.getA()); //takes vertex colors into account	
-				}
-			}
-			*/
 			//FIXME TEST
 			if (this.hasVertexColor){
 				g.fill(v.getR(), v.getG(), v.getB(), v.getA()); //takes vertex colors into account	
 			}
-			//
 			
 			if (this.isTextureEnabled())
 				g.vertex(v.x, v.y, v.z, v.getTexCoordU(), v.getTexCoordV());
@@ -302,6 +301,7 @@ public class MTPolygon extends AbstractShape {
 	
 	
 	/*
+	 *TODO
 	 * To do multi-texture:
 	 * 
 	 * glClientActiveTexture(GL_TEXTURE1);
@@ -311,7 +311,7 @@ public class MTPolygon extends AbstractShape {
 	 */
 
 	/**
-	 * Draws with pure opengl commands using vertex arrays, or vbos for speed.
+	 * Draws with pure opengl commands (without using processing) using vertex arrays, or vbos for speed.
 	 * It is assumed that PGraphicsOpenGL's beginGL() method has already been called
 	 * before calling this method!
 	 * 
@@ -465,7 +465,7 @@ public class MTPolygon extends AbstractShape {
 	}
 	
 	/* (non-Javadoc)
-	 * @see com.jMT.components.visibleComponents.shapes.AbstractShape#isGeometryContainsPoint(util.math.Vector3D)
+	 * @see org.mt4j.components.visibleComponents.shapes.AbstractShape#isGeometryContainsPointLocal(org.mt4j.util.math.Vector3D)
 	 */
 	@Override
 	public boolean isGeometryContainsPointLocal(Vector3D testPoint) { 
@@ -474,7 +474,7 @@ public class MTPolygon extends AbstractShape {
 
 
 	/* (non-Javadoc)
-	 * @see com.jMT.components.visibleComponents.shapes.AbstractShape#getGeometryIntersection(util.math.Ray)
+	 * @see org.mt4j.components.visibleComponents.shapes.AbstractShape#getGeometryIntersectionLocal(org.mt4j.util.math.Ray)
 	 */
 	@Override
 	public Vector3D getGeometryIntersectionLocal(Ray ray){
@@ -500,9 +500,8 @@ public class MTPolygon extends AbstractShape {
 	 * <br><b>NOTE:</b> The calculation is done in local object space, so the ray has to be transformed into this objects
 	 * space aswell!.
 	 * 
-	 * @param polygonNormal the polygon normal
 	 * @param ray the ray
-	 * 
+	 * @param polygonNormal the polygon normal
 	 * @return the ray poly plane intersection point
 	 * 
 	 * a possible intersectionPoint or null if there is none
@@ -583,7 +582,7 @@ public class MTPolygon extends AbstractShape {
 	
 	
 	/* (non-Javadoc)
-	 * @see com.jMT.components.visibleComponents.shapes.AbstractShape#getCenterPointObjectSpace()
+	 * @see org.mt4j.components.visibleComponents.shapes.AbstractShape#getCenterPointLocal()
 	 */
 	@Override
 	public Vector3D getCenterPointLocal(){
@@ -598,7 +597,7 @@ public class MTPolygon extends AbstractShape {
 	
 	
 	/* (non-Javadoc)
-	 * @see com.jMT.components.visibleComponents.shapes.AbstractShape#getHeightXY(com.jMT.components.TransformSpace)
+	 * @see org.mt4j.components.visibleComponents.shapes.AbstractShape#getHeightXY(org.mt4j.components.TransformSpace)
 	 */
 	public float getHeightXY(TransformSpace transformSpace) {
 		switch (transformSpace) {
@@ -616,7 +615,6 @@ public class MTPolygon extends AbstractShape {
 	
 	/**
 	 * Gets the height xy obj space.
-	 * 
 	 * @return the height xy obj space
 	 */
 	private float getHeightXYLocal() {
@@ -689,7 +687,7 @@ public class MTPolygon extends AbstractShape {
 
 	
 	/* (non-Javadoc)
-	 * @see com.jMT.components.visibleComponents.shapes.AbstractShape#getWidthXY(com.jMT.components.TransformSpace)
+	 * @see org.mt4j.components.visibleComponents.shapes.AbstractShape#getWidthXY(org.mt4j.components.TransformSpace)
 	 */
 	public float getWidthXY(TransformSpace transformSpace) {
 		switch (transformSpace) {
@@ -906,7 +904,7 @@ public class MTPolygon extends AbstractShape {
 
 	
 	/* (non-Javadoc)
-	 * @see com.jMT.components.visibleComponents.shapes.AbstractShape#destroyComponent()
+	 * @see org.mt4j.components.visibleComponents.shapes.AbstractShape#destroyComponent()
 	 */
 	@Override
 	protected void destroyComponent() {

@@ -557,9 +557,6 @@ public abstract class AbstractShape extends AbstractVisibleComponent {
 	}
 
 	
-	/* (non-Javadoc)
-	 * @see com.jMT.components.MTBaseComponent#setMatricesDirty(boolean)
-	 */
 	@Override
 	public void setMatricesDirty(boolean baseMatrixDirty) {
 		/* 
@@ -1110,9 +1107,6 @@ public abstract class AbstractShape extends AbstractVisibleComponent {
 	}
 	
 	
-	/* (non-Javadoc)
-	 * @see com.jMT.components.visibleComponents.AbstractVisibleComponent#getComponentIntersectionPoint(util.math.Ray)
-	 */
 	@Override
 	public Vector3D getIntersectionLocal(Ray ray) {
 		switch (this.getBoundsBehaviour()) {
@@ -1146,9 +1140,6 @@ public abstract class AbstractShape extends AbstractVisibleComponent {
 	}
 	
 	
-	/* (non-Javadoc)
-	 * @see com.jMT.components.visibleComponents.AbstractVisibleComponent#componentContainsPoint(util.math.Vector3D)
-	 */
 	@Override
 	protected boolean componentContainsPointLocal(Vector3D testPoint) {
 		switch (this.getBoundsBehaviour()) {
@@ -1311,9 +1302,6 @@ public abstract class AbstractShape extends AbstractVisibleComponent {
 //		*/
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.jMT.components.MTBaseComponent#destroyComponent()
-	 */
 	@Override
 	abstract protected void destroyComponent();
 	

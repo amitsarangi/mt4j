@@ -109,6 +109,7 @@ ToDo list:
 -> Typography:
 - we can switch the textcolor on textarea draw code instead of creatin different memoryhungry fonts
 - add and implement setCursorPos() in MTTextArea
+- implement vertical padding in MTTextArea
 - add setText()/setLabel() to buttons
 - (make bitmapfontfactory create the same size fonts as the ttf/svg factories, there is a difference now - fixed, but fontascent's different?)
 - (store scale information in every fontcharacter, but only change current matrix if new scale different from last)
