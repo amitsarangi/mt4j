@@ -116,7 +116,7 @@ public class TapProcessor extends AbstractCursorProcessor {
 	@Override
 	public void cursorEnded(InputCursor m, MTFingerInputEvt positionEvent) {
 		IMTComponent3D comp = positionEvent.getTargetComponent();
-		logger.debug(this.getName() + " INPUT_ENDED RECIEVED - MOTION: " + m.getId());
+		logger.debug(this.getName() + " INPUT_ENDED RECIEVED - CURSOR: " + m.getId());
 
 		if (lockedCursors.contains(m)){ //cursor was a actual drag cursor
 			lockedCursors.remove(m);
@@ -173,34 +173,33 @@ public class TapProcessor extends AbstractCursorProcessor {
 	}
 
 
-	/* (non-Javadoc)
-	 * @see org.mt4j.input.inputAnalyzers.IInputAnalyzer#cursorLocked(org.mt4j.input.inputData.InputCursor, org.mt4j.input.inputAnalyzers.IInputAnalyzer)
-	 */
 	@Override
-	public void cursorLocked(InputCursor m, IInputProcessor lockingAnalyzer) {
-		if (lockingAnalyzer instanceof AbstractComponentProcessor){
-			logger.debug(this.getName() + " Recieved MOTION LOCKED by (" + ((AbstractComponentProcessor)lockingAnalyzer).getName()  + ") - cursor ID: " + m.getId());
+	public void cursorLocked(InputCursor m, IInputProcessor lockingProcessor) {
+		if (lockingProcessor instanceof AbstractComponentProcessor){
+			logger.debug(this.getName() + " Recieved CURSOR LOCKED by (" + ((AbstractComponentProcessor)lockingProcessor).getName()  + ") - cursor ID: " + m.getId());
 		}else{
-			logger.debug(this.getName() + " Recieved MOTION LOCKED by higher priority signal - cursor ID: " + m.getId());
+			logger.debug(this.getName() + " Recieved CURSOR LOCKED by higher priority signal - cursor ID: " + m.getId());
 		}
 
 		if (lockedCursors.contains(m)){ //cursor was in use here
 			lockedCursors.remove(m);
 			//TODO fire ended evt?
 			unUsedCursors.add(m);
-			logger.debug(this.getName() + " cursor:" + m.getId() + " MOTION LOCKED. Was an active cursor in this gesture!");
-		}else{ //TODO remove else, it is pretty useless
+			logger.debug(this.getName() + " cursor:" + m.getId() + " CURSOR LOCKED. Was an active cursor in this gesture!");
+			
+			//FIXME TEST -> dont allow resuming of tap if the tap cursor was locked by a higher priority gesture
+			//-> fire gesture ended
+			this.fireGestureEvent(new TapEvent(this, MTGestureEvent.GESTURE_ENDED, m.getCurrentEvent().getTargetComponent(), m, new Vector3D(m.getCurrentEvent().getPosX(), m.getCurrentEvent().getPosY()), TapEvent.BUTTON_UP));	
+			
+		}else{ //Else is just for debug
 			if (unUsedCursors.contains(m)){
-				logger.debug(this.getName() + " MOTION LOCKED. But it was NOT an active cursor in this gesture!");
+				logger.debug(this.getName() + " CURSOR LOCKED. But it was NOT an active cursor in this gesture!");
 			}
 		}
 	}
 
 
 
-	/* (non-Javadoc)
-	 * @see org.mt4j.input.inputAnalyzers.IInputAnalyzer#cursorUnlocked(org.mt4j.input.inputData.InputCursor)
-	 */
 	@Override
 	public void cursorUnlocked(InputCursor m) {
 		logger.debug(this.getName() + " Recieved UNLOCKED signal for cursor ID: " + m.getId());
@@ -210,6 +209,9 @@ public class TapProcessor extends AbstractCursorProcessor {
 			return;
 		}
 
+		/*
+		//FIXME TEST -> dont allow resuming of tap if the tap cursor was locked by a higher priority gesture
+		//-> dont resume gesture here
 		if (unUsedCursors.contains(m)){
 			if (this.canLock(m)){
 				this.getLock(m);
@@ -219,6 +221,7 @@ public class TapProcessor extends AbstractCursorProcessor {
 				logger.debug(this.getName() + " can resume its gesture with cursor: " + m.getId());
 			}
 		}
+		*/
 	}
 
 	
@@ -248,9 +251,6 @@ public class TapProcessor extends AbstractCursorProcessor {
 	
 	
 	
-	/* (non-Javadoc)
-	 * @see org.mt4j.input.inputAnalyzers.componentAnalyzers.AbstractComponentInputAnalyzer#getName()
-	 */
 	@Override
 	public String getName() {
 		return "Tap Processor";
