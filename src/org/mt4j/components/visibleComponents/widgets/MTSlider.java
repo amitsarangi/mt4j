@@ -34,6 +34,7 @@ import org.mt4j.input.inputProcessors.componentProcessors.dragProcessor.DragProc
 import org.mt4j.input.inputProcessors.componentProcessors.tapProcessor.TapEvent;
 import org.mt4j.input.inputProcessors.componentProcessors.tapProcessor.TapProcessor;
 import org.mt4j.util.MTColor;
+import org.mt4j.util.math.ToolsMath;
 import org.mt4j.util.math.Tools3D;
 import org.mt4j.util.math.Vector3D;
 
@@ -264,7 +265,7 @@ public class MTSlider extends MTRectangle {
 		float knobCurr = knobPosX-leftMostPossibleKnobPosX;
 		float valueCurr = minValue +  knobCurr * sliderAreaToValueAreaRatio;
 		
-		valueCurr = Tools3D.clamp(valueCurr, minValue, maxValue);
+		valueCurr = ToolsMath.clamp(valueCurr, minValue, maxValue);
 		/*
 		System.out.println("sliderCurr: " + sliderCurr);
 		System.out.println("ValueCurr: " + valueCurrr);

@@ -3,7 +3,7 @@ package advanced.touchTail;
 import java.awt.Polygon;
 
 import org.mt4j.util.MTColor;
-import org.mt4j.util.math.Tools3D;
+import org.mt4j.util.math.ToolsMath;
 import org.mt4j.util.math.Vector3D;
 
 import processing.core.PApplet;
@@ -65,7 +65,7 @@ public class TailGesture {
 		jumpDy = 0;
 		
 //		this.color = new MTColor(Tools3D.getRandom(50, 255), Tools3D.getRandom(50, 255), Tools3D.getRandom(50, 255), 255);
-		this.color = new MTColor(Tools3D.getRandom(0, 255), Tools3D.getRandom(0, 255), Tools3D.getRandom(0, 255), 255);
+		this.color = new MTColor(ToolsMath.getRandom(0, 255), ToolsMath.getRandom(0, 255), ToolsMath.getRandom(0, 255), 255);
 	}
 
 	public void clear() {

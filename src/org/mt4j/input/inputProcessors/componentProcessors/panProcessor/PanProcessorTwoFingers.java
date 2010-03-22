@@ -28,7 +28,7 @@ import org.mt4j.input.inputProcessors.MTGestureEvent;
 import org.mt4j.input.inputProcessors.componentProcessors.AbstractComponentProcessor;
 import org.mt4j.input.inputProcessors.componentProcessors.AbstractCursorProcessor;
 import org.mt4j.util.math.Tools3D;
-import org.mt4j.util.math.ToolsIntersection;
+import org.mt4j.util.math.ToolsGeometry;
 import org.mt4j.util.math.Vector3D;
 
 import processing.core.PApplet;
@@ -268,19 +268,19 @@ public class PanProcessorTwoFingers extends AbstractCursorProcessor {
 	 * @return the new translation
 	 */
 	private Vector3D getNewTranslation(IMTComponent3D comp, InputCursor movingCursor, InputCursor otherCursor){
-		Vector3D fromFirstFinger = ToolsIntersection.getRayPlaneIntersection(
+		Vector3D fromFirstFinger = ToolsGeometry.getRayPlaneIntersection(
 				Tools3D.getCameraPickRay(applet, comp.getViewingCamera(), movingCursor.getPreviousEvent().getPosX(), movingCursor.getPreviousEvent().getPosY()), 
 				planeNormal, 
 				pointInPlane);
 		
-		Vector3D fromSecondFinger = ToolsIntersection.getRayPlaneIntersection(
+		Vector3D fromSecondFinger = ToolsGeometry.getRayPlaneIntersection(
 				Tools3D.getCameraPickRay(applet, comp.getViewingCamera(), otherCursor.getCurrentEvent().getPosX(), otherCursor.getCurrentEvent().getPosY()), 
 				planeNormal, 
 				pointInPlane);
 		
 		Vector3D oldMiddlePoint = getMiddlePointBetweenFingers(fromSecondFinger, fromFirstFinger);
 		
-		Vector3D toFirstFinger = ToolsIntersection.getRayPlaneIntersection(
+		Vector3D toFirstFinger = ToolsGeometry.getRayPlaneIntersection(
 				Tools3D.getCameraPickRay(applet, comp.getViewingCamera(), movingCursor.getCurrentEvent().getPosX(), movingCursor.getCurrentEvent().getPosY()), 
 				planeNormal, 
 				pointInPlane);

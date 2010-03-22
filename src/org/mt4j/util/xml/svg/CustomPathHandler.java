@@ -26,7 +26,7 @@ import java.util.Stack;
 import org.apache.batik.parser.ParseException;
 import org.apache.batik.parser.PathHandler;
 import org.mt4j.util.math.BezierVertex;
-import org.mt4j.util.math.Tools3D;
+import org.mt4j.util.math.ToolsGeometry;
 import org.mt4j.util.math.Vertex;
 
 
@@ -138,7 +138,7 @@ public class CustomPathHandler implements PathHandler {
 			System.out.println("arcAbs: " + rx + " " + ry + " " + phi + " " + large_arc + " "  + sweep + " " + x + " " + y);
 		
 		Vertex lastPoint = pathPoints.getLast();
-		List<Vertex> arcVertices = Tools3D.arcTo(lastPoint.x, lastPoint.y, rx, ry, phi, large_arc, sweep, x, y, 40);
+		List<Vertex> arcVertices = ToolsGeometry.arcTo(lastPoint.x, lastPoint.y, rx, ry, phi, large_arc, sweep, x, y, 40);
 		
 		//Prevent odd picking behavour, in which the normal is 
 		//not correctly computed, because the 2 points are the same
@@ -160,7 +160,7 @@ public class CustomPathHandler implements PathHandler {
 			System.out.println("arcRel: " + rx + " " + ry + " " + phi + " " + large_arc + " "  + sweep + " " + x + " " + y);
 		
 		Vertex lastPoint = pathPoints.getLast();
-		List<Vertex> arcVertices = Tools3D.arcTo(lastPoint.x, lastPoint.y, rx, ry, phi, large_arc, sweep, lastPoint.x+x, lastPoint.y+y, 40);
+		List<Vertex> arcVertices = ToolsGeometry.arcTo(lastPoint.x, lastPoint.y, rx, ry, phi, large_arc, sweep, lastPoint.x+x, lastPoint.y+y, 40);
 		
 		//Prevent odd picking behavour, in which the normal is 
 		//not correctly computed, because the 2 points are the same
@@ -261,7 +261,7 @@ public class CustomPathHandler implements PathHandler {
 			Vertex lastEndPoint = new Vertex(pathPoints.getLast().getX(), pathPoints.getLast().getY(), pathPoints.getLast().getZ());
 			Vertex quadControlPoint = new Vertex(x1,y1,0);
 			//Put in startPoint = last QuadTo Endpoint of this smoothQuadTo, the calculated control point, and the endpoint of smoothQuadTo 
-			BezierVertex b5 = Tools3D.getCubicFromQuadraticCurve(lastEndPoint, quadControlPoint , new Vertex(x, y, 0)); 
+			BezierVertex b5 = ToolsGeometry.getCubicFromQuadraticCurve(lastEndPoint, quadControlPoint , new Vertex(x, y, 0)); 
 
 			cubicBezVertTOQuadricControlPoint.put(b5, quadControlPoint);
 
@@ -286,7 +286,7 @@ public class CustomPathHandler implements PathHandler {
 			Vertex quadControlPoint = new Vertex(lastPoint.getX() + x1, lastPoint.getY()+ y1, 0);
 			
 			//Put in startPoint = last QuadTo Endpoint of this smoothQuadTo, the calculated control point, and the endpoint of smoothQuadTo 
-			BezierVertex b5 = Tools3D.getCubicFromQuadraticCurve(
+			BezierVertex b5 = ToolsGeometry.getCubicFromQuadraticCurve(
 					lastEndPoint,
 					quadControlPoint , 
 					new Vertex(lastPoint.getX() + x, lastPoint.getY()+ y, 0)); 
@@ -318,7 +318,7 @@ public class CustomPathHandler implements PathHandler {
 			lastQuadControlPoint.rotateZ(lastEndPoint, 180); 
 
 			//Put in startPoint = last QuadTo Endpoint of this smoothQuadTo, the calculated control point, and the endpoint of smoothQuadTo 
-			BezierVertex b5 = Tools3D.getCubicFromQuadraticCurve(lastEndPoint, lastQuadControlPoint , new Vertex(x, y, 0)); 
+			BezierVertex b5 = ToolsGeometry.getCubicFromQuadraticCurve(lastEndPoint, lastQuadControlPoint , new Vertex(x, y, 0)); 
 
 			//Save last quad control point
 			cubicBezVertTOQuadricControlPoint.put(b5, lastQuadControlPoint);
@@ -334,7 +334,7 @@ public class CustomPathHandler implements PathHandler {
 			Vertex lastEndPoint 	= new Vertex(lastPoint.getX(),lastPoint.getY(),0);
 			Vertex quadControlPoint = new Vertex(lastPoint.getX(),lastPoint.getY(),0);
 			
-			BezierVertex b5 = Tools3D.getCubicFromQuadraticCurve(
+			BezierVertex b5 = ToolsGeometry.getCubicFromQuadraticCurve(
 					lastEndPoint, 
 					quadControlPoint , 
 					new Vertex(x, y, 0)); 
@@ -364,7 +364,7 @@ public class CustomPathHandler implements PathHandler {
 			lastQuadControlPoint.rotateZ(lastEndPoint, 180); 
 
 			//Put in startPoint = last QuadTo Endpoint of this smoothQuadTo, the calculated control point, and the endpoint of smoothQuadTo 
-			BezierVertex b5 = Tools3D.getCubicFromQuadraticCurve(
+			BezierVertex b5 = ToolsGeometry.getCubicFromQuadraticCurve(
 					lastEndPoint, 
 					lastQuadControlPoint , 
 					new Vertex(lastPoint.getX() + x, lastPoint.getY() + y, 0)); 
@@ -380,7 +380,7 @@ public class CustomPathHandler implements PathHandler {
 			Vertex lastEndPoint 	= new Vertex(lastPoint.getX(),lastPoint.getY(),0);
 			Vertex quadControlPoint =  new Vertex(lastPoint.getX(),lastPoint.getY(),0);
 			
-			BezierVertex b5 = Tools3D.getCubicFromQuadraticCurve(
+			BezierVertex b5 = ToolsGeometry.getCubicFromQuadraticCurve(
 					lastEndPoint, 
 					quadControlPoint , 
 					new Vertex(lastPoint.getX() + x, lastPoint.getY() + y, 0)); 

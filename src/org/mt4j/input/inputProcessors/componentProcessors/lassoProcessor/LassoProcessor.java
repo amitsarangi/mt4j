@@ -43,7 +43,7 @@ import org.mt4j.util.MTColor;
 import org.mt4j.util.camera.Icamera;
 import org.mt4j.util.math.Ray;
 import org.mt4j.util.math.Tools3D;
-import org.mt4j.util.math.ToolsIntersection;
+import org.mt4j.util.math.ToolsGeometry;
 import org.mt4j.util.math.Vector3D;
 import org.mt4j.util.math.Vertex;
 
@@ -279,7 +279,7 @@ public class LassoProcessor extends AbstractCursorProcessor {
 			gestureAborted = false;
 			this.cursor = cursor;
 			
-			Vector3D newPos = ToolsIntersection.getRayPlaneIntersection(
+			Vector3D newPos = ToolsGeometry.getRayPlaneIntersection(
 					Tools3D.getCameraPickRay(pa, camera, cursor.getCurrentEvent().getPosX(), cursor.getCurrentEvent().getPosY()), 
 					planeNormal, 
 					pointInPlane);
@@ -371,7 +371,7 @@ public class LassoProcessor extends AbstractCursorProcessor {
 				this.newPosition = Tools3D.unprojectScreenCoords(pa, camera, cursor.getCurrentEvent().getPosX(), cursor.getCurrentEvent().getPosY());
 
 				Vector3D rayStartPoint = camera.getPosition(); //default cam
-				Vector3D newPos = ToolsIntersection.getRayPlaneIntersection(new Ray(rayStartPoint, newPosition), planeNormal, pointInPlane);
+				Vector3D newPos = ToolsGeometry.getRayPlaneIntersection(new Ray(rayStartPoint, newPosition), planeNormal, pointInPlane);
 				newPosition = newPos;
 
 				if (newPosition != null && !lastPosition.equalsVector(newPosition)){

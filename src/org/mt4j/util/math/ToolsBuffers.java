@@ -24,7 +24,7 @@ import java.nio.IntBuffer;
 
 /**
  * Methods to build Buffers for use with vertex/texture/color arrays in opengl
- * Some methods are from the JME.
+ * Some methods are adapted from the JME.
  * 
  * @author C.Ruff
  */

@@ -786,7 +786,7 @@ public class Vector3D {
 //  FIXME this produces an not 0.0 angle for equal vectors sometimes..why?
     public float angleBetween(Vector3D v2) {
         float dot = this.dot(v2);
-        float theta = FastMath.acos(dot / (this.length() * v2.length()));
+        float theta = ToolsMath.acos(dot / (this.length() * v2.length()));
         return theta;
     }
 	

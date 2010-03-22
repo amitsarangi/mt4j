@@ -80,11 +80,7 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
 	/** The caret width. */
 	private float caretWidth;
 
-	/** The upper left local. */
-	private Vertex upperLeftLocal;
-
 	private float innerPadding;
-
 	
 	private float totalScrollTextX;
 	private float totalScrollTextY;
@@ -187,9 +183,6 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
 		enableCaret = false;
 		showCaretTime = 1000;
 		
-		//upper left corner of the textarea rectangle, used later when re-setting the height
-		upperLeftLocal = new Vertex(0, -1 * font.getFontMaxAscent(), 0);
-		
 		this.setStrokeWeight(1.5f);
 		this.setStrokeColor(new MTColor(255, 255, 255, 255));
 		this.setDrawSmooth(true);
@@ -204,9 +197,6 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
 	
 	
 
-	/* (non-Javadoc)
-	 * @see com.jMT.components.MTBaseComponent#updateComponent(long)
-	 */
 	@Override
 	public void updateComponent(long timeDelta) {
 		super.updateComponent(timeDelta);
@@ -226,16 +216,14 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
 	@Override
 	public void preDraw(PGraphics graphics) {
 		super.preDraw(graphics);
+		
+		noStrokeSettingSaved = this.isNoStroke();
 		if (this.mode == MODE_WRAP && this.getClip() != null && !this.isNoStroke()){
-			noStrokeSettingSaved = this.isNoStroke();
 			this.setNoStroke(true);	
 		}
 	}
 	
 	
-	/* (non-Javadoc)
-	 * @see com.jMT.components.visibleComponents.shapes.MTPolygon#drawComponent()
-	 */
 	@Override
 	public void drawComponent(PGraphics g) {
 		super.drawComponent(g);
@@ -346,7 +334,7 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
 	@Override
 	public void postDraw(PGraphics graphics) {
 		super.postDraw(graphics);
-		if (this.mode == MODE_WRAP && this.getClip()!=null && !noStrokeSettingSaved){
+		if (this.mode == MODE_WRAP && this.getClip()!= null && !noStrokeSettingSaved){
 			this.setNoStroke(noStrokeSettingSaved);
 			boolean noFillSavedSetting = this.isNoFill();
 			this.setNoFill(true);

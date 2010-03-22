@@ -38,7 +38,7 @@ import org.mt4j.components.visibleComponents.shapes.AbstractShape;
 import org.mt4j.components.visibleComponents.shapes.mesh.MTTriangleMesh;
 import org.mt4j.components.visibleComponents.shapes.mesh.Triangle;
 import org.mt4j.util.camera.IFrustum;
-import org.mt4j.util.math.FastMath;
+import org.mt4j.util.math.ToolsMath;
 import org.mt4j.util.math.Matrix;
 import org.mt4j.util.math.Ray;
 import org.mt4j.util.math.Vector3D;
@@ -202,9 +202,8 @@ public class OrientedBoundingBox implements IBoundingShape {
 		g.popMatrix();
 	}
     
-	/* (non-Javadoc)
-	 * @see mTouch.components.bounds.IBoundingShape#containsPoint(util.math.Vector3D)
-	 */
+	
+	
 	public boolean containsPointLocal(Vector3D point) {
 		//TODO punkt erst in local space transformieren!?
 		
@@ -212,13 +211,13 @@ public class OrientedBoundingBox implements IBoundingShape {
 		_compVect1.subtractLocal(center);
 		
 		float coeff = _compVect1.dot(xAxis);
-		if (FastMath.abs(coeff) > extent.x) return false;
+		if (ToolsMath.abs(coeff) > extent.x) return false;
 
 		coeff = _compVect1.dot(yAxis);
-		if (FastMath.abs(coeff) > extent.y) return false;
+		if (ToolsMath.abs(coeff) > extent.y) return false;
 
 		coeff = _compVect1.dot(zAxis);
-		if (FastMath.abs(coeff) > extent.z) return false;
+		if (ToolsMath.abs(coeff) > extent.z) return false;
 		return true;
 	}
 
@@ -673,10 +672,6 @@ public class OrientedBoundingBox implements IBoundingShape {
 		return minZ;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.jMT.components.bounds.IBoundingShape#getVectorsObjSpace()
-	 */
-	//@Override
 	public Vector3D[] getVectorsLocal() {
 		if (!this.correctCorners){
 			this.computeCorners();
@@ -690,10 +685,6 @@ public class OrientedBoundingBox implements IBoundingShape {
 }
 	
 	
-	/* (non-Javadoc)
-	 * @see com.jMT.components.bounds.IBoundingShape#getVectorsWorld(util.math.Matrix)
-	 */
-	//@Override
 	public Vector3D[] getVectorsGlobal() {
 		if (this.worldVecsDirty){
 			Vector3D[] vecs = Vector3D.getDeepVertexArrayCopy(this.getVectorsLocal());
@@ -714,12 +705,6 @@ public class OrientedBoundingBox implements IBoundingShape {
 
 
 	
-	
-	
-	
-	/* (non-Javadoc)
-	 * @see com.jMT.components.bounds.IBoundingShape#getHeightXY(com.jMT.components.TransformSpace)
-	 */
 	public float getHeightXY(TransformSpace transformSpace) {
 		switch (transformSpace) {
 		case LOCAL:
@@ -791,9 +776,6 @@ public class OrientedBoundingBox implements IBoundingShape {
 	}
 
 	
-	/* (non-Javadoc)
-	 * @see com.jMT.components.bounds.IBoundingShape#getWidthXY(com.jMT.components.TransformSpace)
-	 */
 	public float getWidthXY(TransformSpace transformSpace) {
 		switch (transformSpace) {
 		case LOCAL:
@@ -887,7 +869,6 @@ public class OrientedBoundingBox implements IBoundingShape {
 	}
 
 
-	//@Override
 	public boolean isContainedInFrustum(IFrustum frustum) {
 		Vector3D[] points = this.getVectorsGlobal();
 		for (int i = 0; i < points.length; i++) {

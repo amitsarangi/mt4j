@@ -12,7 +12,7 @@ import org.mt4j.input.inputData.MTInputEvent;
 import org.mt4j.sceneManagement.AbstractScene;
 import org.mt4j.sceneManagement.IPreDrawAction;
 import org.mt4j.util.MTColor;
-import org.mt4j.util.math.Tools3D;
+import org.mt4j.util.math.ToolsMath;
 import org.mt4j.util.math.Vector3D;
 
 import processing.core.PApplet;
@@ -131,7 +131,7 @@ public class DrawSurfaceScene extends AbstractScene {
 									//Rotate brush randomly
 //									mtApp.rotateZ(PApplet.radians(Tools3D.getRandom(0, 179)));
 //									mtApp.rotateZ(PApplet.radians(Tools3D.getRandom(-85, 85)));
-									mtApp.rotateZ(PApplet.radians(Tools3D.getRandom(-25, 25)));
+									mtApp.rotateZ(PApplet.radians(ToolsMath.getRandom(-25, 25)));
 //									mtApp.rotateZ(PApplet.radians(Tools3D.getRandom(-9, 9)));
 									mtApp.translate(-brushWidthHalf, -brushHeightHalf);
 									}

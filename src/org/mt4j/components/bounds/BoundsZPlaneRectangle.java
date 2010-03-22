@@ -22,8 +22,7 @@ import org.mt4j.components.TransformSpace;
 import org.mt4j.components.visibleComponents.shapes.AbstractShape;
 import org.mt4j.util.camera.IFrustum;
 import org.mt4j.util.math.Ray;
-import org.mt4j.util.math.Tools3D;
-import org.mt4j.util.math.ToolsIntersection;
+import org.mt4j.util.math.ToolsGeometry;
 import org.mt4j.util.math.Vector3D;
 
 import processing.core.PGraphics;
@@ -100,7 +99,7 @@ public class BoundsZPlaneRectangle implements IBoundingShape {
 	 * @return a Vector3D array containing the vertices of the bounding rectangle
 	 */
 	private Vector3D[] getBoundingRectVertices(Vector3D[] vertices){
-		float[] minMax = Tools3D.getMinXYMaxXY(vertices);
+		float[] minMax = ToolsGeometry.getMinXYMaxXY(vertices);
 		float minX = minMax[0];
 		float minY = minMax[1];
 		float maxX = minMax[2];
@@ -155,9 +154,6 @@ public class BoundsZPlaneRectangle implements IBoundingShape {
 
 
 	
-	/* (non-Javadoc)
-	 * @see mTouch.components.bounds.IBoundingShape#containsPoint(util.math.Vector3D)
-	 */
 	public boolean containsPointLocal(Vector3D testPoint) {
 		if (		testPoint.x >= this.boundingPointsLocal[0].x
 			    && 	testPoint.x <= this.boundingPointsLocal[1].x
@@ -200,14 +196,11 @@ public class BoundsZPlaneRectangle implements IBoundingShape {
 	/** The rect normal. */
 	private Vector3D rectNormal = new Vector3D(0,0,1);
 	
-	/* (non-Javadoc)
-	 * @see mTouch.components.bounds.IBoundingShape#getIntersectionPoint(util.math.Ray)
-	 */
 	public Vector3D getIntersectionLocal(Ray ray) {
 		Vector3D[] verts = this.boundingPointsLocal;
 //		rectNormal= this.getNormalObjSpace();
 		//Normal should actually always be (0,0,1)!
-		Vector3D testPoint = ToolsIntersection.getRayPlaneIntersection(ray, rectNormal, verts[0]);
+		Vector3D testPoint = ToolsGeometry.getRayPlaneIntersection(ray, rectNormal, verts[0]);
 		
 		if (testPoint == null){
 			return null;
@@ -222,7 +215,7 @@ public class BoundsZPlaneRectangle implements IBoundingShape {
 	 * @return the normal obj space
 	 */
 	private Vector3D getNormalObjSpace() {
-		return Tools3D.getNormal(this.boundingPointsLocal[0], this.boundingPointsLocal[1], this.boundingPointsLocal[2], true);
+		return ToolsGeometry.getNormal(this.boundingPointsLocal[0], this.boundingPointsLocal[1], this.boundingPointsLocal[2], true);
 	}
 	
 	private Vector3D calcCenterPointObjSpace(){
@@ -238,9 +231,6 @@ public class BoundsZPlaneRectangle implements IBoundingShape {
 		return tmp0;
 	}
 
-	/* (non-Javadoc)
-	 * @see mTouch.components.bounds.IBoundingShape#getCenterPointLocal()
-	 */
 	public Vector3D getCenterPointLocal() {
 //		Vector3D tmp0 = this.boundingPointsLocal[0].getCopy();
 //		Vector3D tmp1 = this.boundingPointsLocal[1].getSubtracted(this.boundingPointsLocal[0]);
@@ -256,9 +246,6 @@ public class BoundsZPlaneRectangle implements IBoundingShape {
 	}
 	
 	
-	/* (non-Javadoc)
-	 * @see mTouch.components.bounds.IBoundingShape#getCenterPointWorld()
-	 */
 	public Vector3D getCenterPointGlobal() {
 		if (centerWorldDirty){
 			Vector3D tmp = this.getCenterPointLocal();
@@ -277,9 +264,6 @@ public class BoundsZPlaneRectangle implements IBoundingShape {
 	}
 	
 	
-	/* (non-Javadoc)
-	 * @see mTouch.components.bounds.IBoundingShape#getVectorsObjSpace()
-	 */
 	public Vector3D[] getVectorsLocal() {
 		return this.boundingPointsLocal;
 	}
@@ -292,9 +276,6 @@ public class BoundsZPlaneRectangle implements IBoundingShape {
 		return vecs;
 	}
 	
-	/* (non-Javadoc)
-	 * @see mTouch.components.bounds.IBoundingShape#getVectorsWorld(util.math.Matrix)
-	 */
 	public Vector3D[] getVectorsGlobal() {
 		if (this.worldVecsDirty){
 			Vector3D[] vecs = Vector3D.getDeepVertexArrayCopy(this.boundingPointsLocal);
@@ -312,11 +293,6 @@ public class BoundsZPlaneRectangle implements IBoundingShape {
 	
 	
 	
-	
-	/* (non-Javadoc)
-	 * @see com.jMT.components.bounds.IBoundingShape#getHeightXY(com.jMT.components.TransformSpace)
-	 */
-	//@Override
 	public float getHeightXY(TransformSpace transformSpace) {
 		switch (transformSpace) {
 		case LOCAL:
@@ -353,7 +329,7 @@ public class BoundsZPlaneRectangle implements IBoundingShape {
 //		return p.length();
 		
 		Vector3D[] v = this.getVectorsRelativeToParent();
-		float[] minMax = Tools3D.getMinXYMaxXY(v);
+		float[] minMax = ToolsGeometry.getMinXYMaxXY(v);
 		return minMax[3] - minMax[1];
 	}
 	
@@ -371,7 +347,7 @@ public class BoundsZPlaneRectangle implements IBoundingShape {
 //		return p.length();
 		
 		Vector3D[] v = this.getVectorsGlobal();
-		float[] minMax = Tools3D.getMinXYMaxXY(v);
+		float[] minMax = ToolsGeometry.getMinXYMaxXY(v);
 		return minMax[3] - minMax[1];
 	}
 	
@@ -384,7 +360,6 @@ public class BoundsZPlaneRectangle implements IBoundingShape {
 	 * 
 	 * vector representing the height of the boundingshape of the shape
 	 */
-	//@Override
 	public Vector3D getHeightXYVectLocal() {
 		Vector3D[] boundRectVertsLocal = this.getVectorsLocal();
 		Vector3D height = boundRectVertsLocal[2].getSubtracted(boundRectVertsLocal[1]);
@@ -392,10 +367,6 @@ public class BoundsZPlaneRectangle implements IBoundingShape {
 	}
 
 	
-	/* (non-Javadoc)
-	 * @see com.jMT.components.bounds.IBoundingShape#getWidthXY(com.jMT.components.TransformSpace)
-	 */
-	//@Override
 	public float getWidthXY(TransformSpace transformSpace) {
 		switch (transformSpace) {
 		case LOCAL:
@@ -433,7 +404,7 @@ public class BoundsZPlaneRectangle implements IBoundingShape {
 //		return p.length();
 		
 		Vector3D[] v = this.getVectorsRelativeToParent();
-		float[] minMax = Tools3D.getMinXYMaxXY(v);
+		float[] minMax = ToolsGeometry.getMinXYMaxXY(v);
 		return minMax[2] - minMax[0];
 	}
 	
@@ -450,7 +421,7 @@ public class BoundsZPlaneRectangle implements IBoundingShape {
 //		return p.length();
 		
 		Vector3D[] v = this.getVectorsGlobal();
-		float[] minMax = Tools3D.getMinXYMaxXY(v);
+		float[] minMax = ToolsGeometry.getMinXYMaxXY(v);
 		return minMax[2] - minMax[0];
 	}
 	
@@ -471,7 +442,6 @@ public class BoundsZPlaneRectangle implements IBoundingShape {
 	}
 
 
-	//@Override
 	public boolean isContainedInFrustum(IFrustum frustum) {
 		Vector3D[] points = this.getVectorsGlobal();
 		for (int i = 0; i < points.length; i++) {

@@ -1,7 +1,6 @@
 ToDo list:
 
 -> General:
-- fix software renderer -> fill in cursortracer ellipse -> lines in textures -> airhockey etc
 - update to processing 1.1 -> bitmapfont working?
 - make standalone executable MT4j MTShell distribution/installer on windows
 - integrate with SWING /JNLP?
@@ -14,7 +13,6 @@ ToDo list:
      move, not the child whos dragged -> send evt to parent
      
 - make inputevent recorder -> IMTInputListener
-
 - let all implementations of processInputEvent return false by default (->not consumed), or true-> for handled?
 
 - dont save vertices if we are in opengl -> we have to save vertices+we create new floatbuffers = 2*memory!
@@ -50,15 +48,18 @@ ToDo list:
 
 
 -> Components:
+- add ability to set boundingshapes to MTComponents?
+- updateBounds/Layout() if childrens transform changes?
 - add ShapeGroup component that offers methods like getCenterPoint and getWidth etc taking child shapes into account
-- at clipping check if clipshape would be screen aligned rect -> use glScissor instead if stencil buffer -> performance!
+- at clipping check if clipshape would be screen aligned rect -> use glScissor instead of stencil buffer -> performance!
 - create generic gradientPaint FillPaints to use with setFillPaint() - will only work with AbstractShapes..
 - make setEnableTransformStateEvents -> fire stateChangeEvts if transformed in any way (but children are also moved, fire also..?)
 - find a way to determine if a geometryinfo is shared or not -> if not -> delete displayLists!!
+- delete opengl objects in object.finalize() ?
 - at setters make boolean parameter recurseChildren to also apply it to children? e.g. setPickable(true, true)
 - sprite component with acceleration/velocity/collision/ animatable with textures?
 - store Vertices only in floatBuffers instead of buffers+array to reduce memory consumption? (test if it matters)
-- use push/popattrib at drawing? -> speed up drawing -> externalize rendering? (ie. renderer.renderBuffers(..));
+- use glpush/popattrib at drawing? -> speed up drawing -> externalize rendering? (ie. renderer.renderBuffers(..));
 - make propertychange listener/events in MTComponent? (useful in many components)
 - add more gui elements -> sperate model | view(setUIDelegate) (MTCheckbox)
 - Keyboard internationalize -> xml?
@@ -124,13 +125,12 @@ ToDo list:
 - Change Tap&Hold gesture behaviour to match Windows -> send gesture_ended only if finger lifted, not if time is up
 - Win7Input source -> use getActiveWindow() -> reject windows Tap and HOld gestures -> set TWF_WANTPALM at registerTouchwindow or not? -> TEST! ->http://social.msdn.microsoft.com/Forums/en/tabletandtouch/thread/2a173296-49b6-4f25-860f-953ae6038857
 - add GenericTwoFingerGesture that delivers the touch points on the drag-plane -> methods for getLastRotation etc
-- at tapProcessor - when one cursor stolen by higher priority, abort tap without chance of resume -> else comp with tap+scale triggers tap after scale ended
 - at mouseinputsource send mouseInputEvt extends mtinputposEvt/MTFingerInputEvt -> attach mouse button information for pure mouse applications
 - resume some gestures only if the cursor is still on the object -> else abort -> make abortGesture() method in all processors!
 - simplify writing of gestures
 - implement logically meaningful returns of boolean processInputEvent() - when return true, when false, how to react?
 - add keyboard input source sending keyboard events to the focused/selected component -> FocusManager?
-- (if object that is dragged, scaled etc is destroyed while during gesture -> nullpointer error)
+- (if object that is dragged, scaled etc is destroyed while during gesture -> nullpointer error -> check if viewing cam is null!)
 - (background rotate gesture? -> not good, would rotate about center of cam.. -> better use MTComp at z=0 with rotateProcessor!)
 
 

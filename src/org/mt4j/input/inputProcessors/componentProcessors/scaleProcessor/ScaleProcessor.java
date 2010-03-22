@@ -28,7 +28,7 @@ import org.mt4j.input.inputProcessors.MTGestureEvent;
 import org.mt4j.input.inputProcessors.componentProcessors.AbstractComponentProcessor;
 import org.mt4j.input.inputProcessors.componentProcessors.AbstractCursorProcessor;
 import org.mt4j.util.math.Tools3D;
-import org.mt4j.util.math.ToolsIntersection;
+import org.mt4j.util.math.ToolsGeometry;
 import org.mt4j.util.math.Vector3D;
 
 import processing.core.PApplet;
@@ -406,7 +406,7 @@ public class ScaleProcessor extends AbstractCursorProcessor {
 //			logger.debug("scalePlaneNormal: " + scalePlaneNormal);
 //			/*
 			if (m.equals(firstFingerCursor)){ ///FIRST FINGER MOVED!
-				Vector3D newFirstFingerPos = ToolsIntersection.getRayPlaneIntersection(
+				Vector3D newFirstFingerPos = ToolsGeometry.getRayPlaneIntersection(
 						Tools3D.getCameraPickRay(applet, object, firstFingerCursor.getCurrentEvent().getPosX(), firstFingerCursor.getCurrentEvent().getPosY()), 
 						scalePlaneNormal, 
 						firstFingerStartPos.getCopy());
@@ -416,7 +416,7 @@ public class ScaleProcessor extends AbstractCursorProcessor {
 					this.firstFingerNewPos = newFirstFingerPos;
 			
 			}else if (m.equals(secondFingerCursor)){ ///SECOND FINGER MOVED!
-				Vector3D newSecondFingerPos = ToolsIntersection.getRayPlaneIntersection(
+				Vector3D newSecondFingerPos = ToolsGeometry.getRayPlaneIntersection(
 						Tools3D.getCameraPickRay(applet, object, secondFingerCursor.getCurrentEvent().getPosX(), secondFingerCursor.getCurrentEvent().getPosY()), 
 						scalePlaneNormal, 
 						secondFingerStartPos.getCopy());

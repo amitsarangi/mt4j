@@ -761,8 +761,8 @@ public class Matrix  implements Serializable, Cloneable {
         zero();
         m33 = 1;
 
-        float fCos = (float) FastMath.cos(angle);
-        float fSin = (float) FastMath.sin(angle);
+        float fCos = (float) ToolsMath.cos(angle);
+        float fSin = (float) ToolsMath.sin(angle);
         float fOneMinusCos = ((float)1.0)-fCos;
         float fX2 = axis.x*axis.x;
         float fY2 = axis.y*axis.y;
@@ -1132,7 +1132,7 @@ public class Matrix  implements Serializable, Cloneable {
 //        if ( FastMath.abs(fDet) <= FastMath.FLT_EPSILON ) //TODO ENABLE ORIGINAL
 //            throw new ArithmeticException("This matrix cannot be inverted");
         
-        if ( FastMath.abs(fDet) <= FastMath.DBL_EPSILON )
+        if ( ToolsMath.abs(fDet) <= ToolsMath.DBL_EPSILON )
             throw new ArithmeticException("This matrix cannot be inverted");
 
         store.m00 = + m11*fB5 - m12*fB4 + m13*fB3;
@@ -1179,7 +1179,7 @@ public class Matrix  implements Serializable, Cloneable {
         float fB5 = m22*m33 - m23*m32;
         float fDet = fA0*fB5-fA1*fB4+fA2*fB3+fA3*fB2-fA4*fB1+fA5*fB0;
 
-        if ( FastMath.abs(fDet) <= FastMath.FLT_EPSILON )
+        if ( ToolsMath.abs(fDet) <= ToolsMath.FLT_EPSILON )
             return zero();
 
         float f00 = + m11*fB5 - m12*fB4 + m13*fB3;
@@ -1494,15 +1494,15 @@ public class Matrix  implements Serializable, Cloneable {
         float angle;
         float sr, sp, sy, cr, cp, cy;
 
-        angle = (angles.z * FastMath.DEG_TO_RAD);
-        sy = FastMath.sin(angle);
-        cy = FastMath.cos(angle);
-        angle = (angles.y * FastMath.DEG_TO_RAD);
-        sp = FastMath.sin(angle);
-        cp = FastMath.cos(angle);
-        angle = (angles.x * FastMath.DEG_TO_RAD);
-        sr = FastMath.sin(angle);
-        cr = FastMath.cos(angle);
+        angle = (angles.z * ToolsMath.DEG_TO_RAD);
+        sy = ToolsMath.sin(angle);
+        cy = ToolsMath.cos(angle);
+        angle = (angles.y * ToolsMath.DEG_TO_RAD);
+        sp = ToolsMath.sin(angle);
+        cp = ToolsMath.cos(angle);
+        angle = (angles.x * ToolsMath.DEG_TO_RAD);
+        sr = ToolsMath.sin(angle);
+        cr = ToolsMath.cos(angle);
 
         // matrix = (Z * Y) * X
         m00 = cp * cy;
@@ -1542,12 +1542,12 @@ public class Matrix  implements Serializable, Cloneable {
     public void setInverseRotationRadians(float[] angles) throws Exception {
         if (angles.length != 3) { throw new Exception(
                 "Angles must be of size 3."); }
-        double cr = FastMath.cos(angles[0]);
-        double sr = FastMath.sin(angles[0]);
-        double cp = FastMath.cos(angles[1]);
-        double sp = FastMath.sin(angles[1]);
-        double cy = FastMath.cos(angles[2]);
-        double sy = FastMath.sin(angles[2]);
+        double cr = ToolsMath.cos(angles[0]);
+        double sr = ToolsMath.sin(angles[0]);
+        double cp = ToolsMath.cos(angles[1]);
+        double sp = ToolsMath.sin(angles[1]);
+        double cy = ToolsMath.cos(angles[2]);
+        double sy = ToolsMath.sin(angles[2]);
 
         m00 = (float) (cp * cy);
         m10 = (float) (cp * sy);
@@ -1577,9 +1577,9 @@ public class Matrix  implements Serializable, Cloneable {
         if (angles.length != 3) { throw new Exception(
                 "Angles must be of size 3."); }
         float vec[] = new float[3];
-        vec[0] = (angles[0] * FastMath.RAD_TO_DEG);
-        vec[1] = (angles[1] * FastMath.RAD_TO_DEG);
-        vec[2] = (angles[2] * FastMath.RAD_TO_DEG);
+        vec[0] = (angles[0] * ToolsMath.RAD_TO_DEG);
+        vec[1] = (angles[1] * ToolsMath.RAD_TO_DEG);
+        vec[2] = (angles[2] * ToolsMath.RAD_TO_DEG);
         setInverseRotationRadians(vec);
     }
 
@@ -2067,9 +2067,9 @@ public Class<? extends Matrix> getClassTag() {
 	 * @return the x rotation matrix
 	 */
 	public static Matrix getXRotationMatrix(Vector3D rotationPoint, float degree) {
-		float rotationAngle = degree * FastMath.DEG_TO_RAD;
-		float sinus = FastMath.sin(rotationAngle);
-		float cosinus = FastMath.cos(rotationAngle);
+		float rotationAngle = degree * ToolsMath.DEG_TO_RAD;
+		float sinus = ToolsMath.sin(rotationAngle);
+		float cosinus = ToolsMath.cos(rotationAngle);
 //		float rotationAngle = PApplet.radians(degree); 
 //		float sinus = (float)Math.sin(rotationAngle);
 //		float cosinus = (float)Math.cos(rotationAngle);
@@ -2090,9 +2090,9 @@ public Class<? extends Matrix> getClassTag() {
 	 * @return the inv x rotation matrix
 	 */
 	public static Matrix getInvXRotationMatrix(Vector3D rotationPoint, float degree) {
-		float rotationAngle = degree * FastMath.DEG_TO_RAD;
-		float sinus = FastMath.sin(rotationAngle);
-		float cosinus = FastMath.cos(rotationAngle);
+		float rotationAngle = degree * ToolsMath.DEG_TO_RAD;
+		float sinus = ToolsMath.sin(rotationAngle);
+		float cosinus = ToolsMath.cos(rotationAngle);
 //		float rotationAngle = PApplet.radians(degree); 
 //		float sinus = (float)Math.sin(rotationAngle);
 //		float cosinus = (float)Math.cos(rotationAngle);
@@ -2113,9 +2113,9 @@ public Class<? extends Matrix> getClassTag() {
 	 * @return the x rotation matrix and inverse
 	 */
 	public static Matrix[] getXRotationMatrixAndInverse(Vector3D rotationPoint, float degree) {
-		float rotationAngle = degree * FastMath.DEG_TO_RAD;
-		float sinus 	= FastMath.sin(rotationAngle);
-		float cosinus 	= FastMath.cos(rotationAngle);
+		float rotationAngle = degree * ToolsMath.DEG_TO_RAD;
+		float sinus 	= ToolsMath.sin(rotationAngle);
+		float cosinus 	= ToolsMath.cos(rotationAngle);
 //		float rotationAngle = PApplet.radians(degree); 
 //		float sinus = (float)Math.sin(rotationAngle);
 //		float cosinus = (float)Math.cos(rotationAngle);
@@ -2143,9 +2143,9 @@ public Class<? extends Matrix> getClassTag() {
 	 * @param degree the degree
 	 */
 	public static void toXRotationMatrixAndInverse(Matrix m, Matrix mInv, Vector3D rotationPoint, float degree) {
-		float rotationAngle = degree * FastMath.DEG_TO_RAD;
-		float sinus 	= FastMath.sin(rotationAngle);
-		float cosinus 	= FastMath.cos(rotationAngle);
+		float rotationAngle = degree * ToolsMath.DEG_TO_RAD;
+		float sinus 	= ToolsMath.sin(rotationAngle);
+		float cosinus 	= ToolsMath.cos(rotationAngle);
 				try {
 					m.set(new float[]{
 							 1	, 0, 			  0, 	   0,
@@ -2172,9 +2172,9 @@ public Class<? extends Matrix> getClassTag() {
 	 * @return the y rotation matrix
 	 */
 	public static Matrix getYRotationMatrix(Vector3D rotationPoint, float degree) {
-		float rotationAngle = degree * FastMath.DEG_TO_RAD;
-		float sinus = FastMath.sin(rotationAngle);
-		float cosinus = FastMath.cos(rotationAngle);
+		float rotationAngle = degree * ToolsMath.DEG_TO_RAD;
+		float sinus = ToolsMath.sin(rotationAngle);
+		float cosinus = ToolsMath.cos(rotationAngle);
 //		float rotationAngle = PApplet.radians(degree); 
 //		float sinus = (float)Math.sin(rotationAngle);
 //		float cosinus = (float)Math.cos(rotationAngle);
@@ -2195,9 +2195,9 @@ public Class<? extends Matrix> getClassTag() {
 	 * @return the inv y rotation matrix
 	 */
 	public static Matrix getInvYRotationMatrix(Vector3D rotationPoint, float degree) {
-		float rotationAngle = degree * FastMath.DEG_TO_RAD;
-		float sinus = FastMath.sin(rotationAngle);
-		float cosinus = FastMath.cos(rotationAngle);
+		float rotationAngle = degree * ToolsMath.DEG_TO_RAD;
+		float sinus = ToolsMath.sin(rotationAngle);
+		float cosinus = ToolsMath.cos(rotationAngle);
 //		float rotationAngle = PApplet.radians(degree); 
 //		float sinus = (float)Math.sin(rotationAngle);
 //		float cosinus = (float)Math.cos(rotationAngle);
@@ -2218,9 +2218,9 @@ public Class<? extends Matrix> getClassTag() {
 	 * @return the y rotation matrix and inverse
 	 */
 	public static Matrix[] getYRotationMatrixAndInverse(Vector3D rotationPoint, float degree) {
-		float rotationAngle = degree * FastMath.DEG_TO_RAD;
-		float sinus 	= FastMath.sin(rotationAngle);
-		float cosinus 	= FastMath.cos(rotationAngle);
+		float rotationAngle = degree * ToolsMath.DEG_TO_RAD;
+		float sinus 	= ToolsMath.sin(rotationAngle);
+		float cosinus 	= ToolsMath.cos(rotationAngle);
 //		float rotationAngle = PApplet.radians(degree); 
 //		float sinus = (float)Math.sin(rotationAngle);
 //		float cosinus = (float)Math.cos(rotationAngle);
@@ -2247,9 +2247,9 @@ public Class<? extends Matrix> getClassTag() {
 	 * @param degree the degree
 	 */
 	public static void toYRotationMatrixAndInverse(Matrix m, Matrix mInv, Vector3D rotationPoint, float degree) {
-		float rotationAngle = degree * FastMath.DEG_TO_RAD;
-		float sinus 	= FastMath.sin(rotationAngle);
-		float cosinus 	= FastMath.cos(rotationAngle);
+		float rotationAngle = degree * ToolsMath.DEG_TO_RAD;
+		float sinus 	= ToolsMath.sin(rotationAngle);
+		float cosinus 	= ToolsMath.cos(rotationAngle);
 				try {
 					m.set(new float[]{
 							cosinus,	0,	  sinus, 	rotationPoint.x - (cosinus * rotationPoint.x)- (sinus * rotationPoint.z) ,
@@ -2276,9 +2276,9 @@ public Class<? extends Matrix> getClassTag() {
 	 * @return the z rotation matrix
 	 */
 	public static Matrix getZRotationMatrix(Vector3D rotationPoint, float degree){
-		float rotationAngle = degree * FastMath.DEG_TO_RAD;
-		float sinus 	= FastMath.sin(rotationAngle);
-		float cosinus 	= FastMath.cos(rotationAngle);
+		float rotationAngle = degree * ToolsMath.DEG_TO_RAD;
+		float sinus 	= ToolsMath.sin(rotationAngle);
+		float cosinus 	= ToolsMath.cos(rotationAngle);
 //		float rotationAngle = PApplet.radians(degree); 
 //		float sinus = (float)Math.sin(rotationAngle);
 //		float cosinus = (float)Math.cos(rotationAngle);
@@ -2299,9 +2299,9 @@ public Class<? extends Matrix> getClassTag() {
 	 * @return the inv z rotation matrix
 	 */
 	public static Matrix getInvZRotationMatrix(Vector3D rotationPoint, float degree) {
-		float rotationAngle = degree * FastMath.DEG_TO_RAD;
-		float sinus 	= FastMath.sin(rotationAngle);
-		float cosinus 	= FastMath.cos(rotationAngle);
+		float rotationAngle = degree * ToolsMath.DEG_TO_RAD;
+		float sinus 	= ToolsMath.sin(rotationAngle);
+		float cosinus 	= ToolsMath.cos(rotationAngle);
 		return new Matrix(
 		         cosinus , sinus,	0,  rotationPoint.x - cosinus * rotationPoint.x   - sinus   * rotationPoint.y ,
 				 -sinus , cosinus,	0,  rotationPoint.y + sinus   * rotationPoint.x   - cosinus * rotationPoint.y ,
@@ -2319,9 +2319,9 @@ public Class<? extends Matrix> getClassTag() {
 	 * @return the z rotation matrix and inverse
 	 */
 	public static Matrix[] getZRotationMatrixAndInverse(Vector3D rotationPoint, float degree) {
-		float rotationAngle = degree * FastMath.DEG_TO_RAD;
-		float sinus 	= FastMath.sin(rotationAngle);
-		float cosinus 	= FastMath.cos(rotationAngle);
+		float rotationAngle = degree * ToolsMath.DEG_TO_RAD;
+		float sinus 	= ToolsMath.sin(rotationAngle);
+		float cosinus 	= ToolsMath.cos(rotationAngle);
 		return new Matrix[]{
 				new Matrix(
 				         cosinus ,-sinus,	0, 	rotationPoint.x - cosinus * rotationPoint.x + sinus   * rotationPoint.y ,
@@ -2346,9 +2346,9 @@ public Class<? extends Matrix> getClassTag() {
 	 * @param degree the degree
 	 */
 	public static void toZRotationMatrixAndInverse(Matrix m, Matrix mInv, Vector3D rotationPoint, float degree) {
-		float rotationAngle = degree * FastMath.DEG_TO_RAD;
-		float sinus 	= FastMath.sin(rotationAngle);
-		float cosinus 	= FastMath.cos(rotationAngle);
+		float rotationAngle = degree * ToolsMath.DEG_TO_RAD;
+		float sinus 	= ToolsMath.sin(rotationAngle);
+		float cosinus 	= ToolsMath.cos(rotationAngle);
 				try {
 					m.set(new float[]{
 							 cosinus ,-sinus,	0, 	rotationPoint.x - cosinus * rotationPoint.x + sinus   * rotationPoint.y ,
@@ -2631,9 +2631,9 @@ public Class<? extends Matrix> getClassTag() {
 //		scale.y = sqrt( c[1][0] * c[1][0] + c[1][1] * c[1][1] + c[1][2] * c[1][2] );
 //		scale.z = sqrt( c[2][0] * c[2][0] + c[2][1] * c[2][1] + c[2][2] * c[2][2] );
 		
-		scale.x = FastMath.sqrt( m00 * m00 + m10 * m10 + m20 * m20 );
-		scale.y = FastMath.sqrt( m01 * m01 + m11 * m11 + m21 * m21 );
-		scale.z = FastMath.sqrt( m02 * m02 + m12 * m12 + m22 * m22 );
+		scale.x = ToolsMath.sqrt( m00 * m00 + m10 * m10 + m20 * m20 );
+		scale.y = ToolsMath.sqrt( m01 * m01 + m11 * m11 + m21 * m21 );
+		scale.z = ToolsMath.sqrt( m02 * m02 + m12 * m12 + m22 * m22 );
 
 		if( scale.x == 0 || scale.y == 0 || scale.z == 0 ) return;
 
@@ -2648,11 +2648,11 @@ public Class<? extends Matrix> getClassTag() {
 		// -Cos[z]*Sin[y]+Cos[y]*Sin[x]*Sin[z]  Cos[y]*Cos[z]*Sin[x]+Sin[y]*Sin[z]  Cos[x]*Cos[y]
 
 //		rot.x = asinf( -c[2][1] / scale.z );
-		rot.x = FastMath.asin( -m12 / scale.z );
+		rot.x = ToolsMath.asin( -m12 / scale.z );
 		
 		// Special case: Cos[x] == 0 (when Sin[x] is +/-1)
 //		float f = fabsf( c[2][1] / scale.z );
-		float f = FastMath.abs(m12 / scale.z );
+		float f = ToolsMath.abs(m12 / scale.z );
 		
 		if( f > 0.999f && f < 1.001f ){
 			// Pin arbitrarily one of y or z to zero
@@ -2662,15 +2662,15 @@ public Class<? extends Matrix> getClassTag() {
 			// Now: Cos[x] = 0, Sin[x] = +/-1, Cos[y] = 1, Sin[y] = 0
 			// => m[0][0] = Cos[z] and m[1][0] = Sin[z]
 //			rot.z = atan2f( -c[1][0] / scale.y, c[0][0] / scale.x );
-			rot.z = FastMath.atan2( -m01 / scale.y, m00 / scale.x );
+			rot.z = ToolsMath.atan2( -m01 / scale.y, m00 / scale.x );
 		}
 		// Standard case
 		else
 		{
 //			rot.y = atan2f( c[2][0] / scale.z, c[2][2] / scale.z );
 //			rot.z = atan2f( c[0][1] / scale.x, c[1][1] / scale.y );
-			rot.y = FastMath.atan2( m02 / scale.z, m22 / scale.z );
-			rot.z = FastMath.atan2( m10 / scale.x, m11 / scale.y );
+			rot.y = ToolsMath.atan2( m02 / scale.z, m22 / scale.z );
+			rot.z = ToolsMath.atan2( m10 / scale.x, m11 / scale.y );
 		}
 	}
 
@@ -2969,7 +2969,7 @@ public Class<? extends Matrix> getClassTag() {
 //		wxASSERT(Math::fabs(GetDeterminant()) >= Math::g_epsilon);		// make sure the rows/columns are linearly independent
 
 		// compute the length of the first column and set it
-		float length = FastMath.invSqrt(m00 * m00 + m10 * m10 + m20 * m20 + m30 * m30);
+		float length = ToolsMath.invSqrt(m00 * m00 + m10 * m10 + m20 * m20 + m30 * m30);
 		m00 *= length;
 		m10 *= length;
 		m20 *= length;
@@ -2981,7 +2981,7 @@ public Class<? extends Matrix> getClassTag() {
 		m11 -= dot * m10;
 		m21 -= dot * m20;
 		m31 -= dot * m30;
-		length = FastMath.invSqrt(m01 * m01 + m11 * m11 + m21 * m21 + m31 * m31);
+		length = ToolsMath.invSqrt(m01 * m01 + m11 * m11 + m21 * m21 + m31 * m31);
 		m01 *= length;
 		m11 *= length;
 		m21 *= length;
@@ -2994,7 +2994,7 @@ public Class<? extends Matrix> getClassTag() {
 		m12 -= dot * m10 + dot2 * m11;
 		m22 -= dot * m20 + dot2 * m21;
 		m32 -= dot * m30 + dot2 * m31;
-		length = FastMath.invSqrt(m02 * m02 + m12 * m12 + m22 * m22 + m32 * m32);
+		length = ToolsMath.invSqrt(m02 * m02 + m12 * m12 + m22 * m22 + m32 * m32);
 		m02 *= length;
 		m12 *= length;
 		m22 *= length;
@@ -3008,7 +3008,7 @@ public Class<? extends Matrix> getClassTag() {
 		m13 -= dot * m10 + dot2 * m11 + dot3 * m12;
 		m23 -= dot * m20 + dot2 * m21 + dot3 * m22;
 		m33 -= dot * m30 + dot2 * m31 + dot3 * m32;
-		length = FastMath.invSqrt(m03 * m03 + m13 * m13 + m23 * m23 + m33 * m33);
+		length = ToolsMath.invSqrt(m03 * m03 + m13 * m13 + m23 * m23 + m33 * m33);
 		m03 *= length;
 		m13 *= length;
 		m23 *= length;
@@ -3062,7 +3062,7 @@ public Class<? extends Matrix> getClassTag() {
 //		wxASSERT(Math::fabs(GetDeterminant()) >= Math::g_epsilon);		// make sure the rows/columns are linearly independent
 
 		// compute the length of the first row and set it
-		float length = FastMath.invSqrt(m00 * m00 + m01 * m01 + m02 * m02 + m03 * m03);
+		float length = ToolsMath.invSqrt(m00 * m00 + m01 * m01 + m02 * m02 + m03 * m03);
 		m00 *= length;
 		m01 *= length;
 		m02 *= length;
@@ -3074,7 +3074,7 @@ public Class<? extends Matrix> getClassTag() {
 		m11 -= dot * m01;
 		m12 -= dot * m02;
 		m13 -= dot * m03;
-		length = FastMath.invSqrt(m10 * m10 + m11 * m11 + m12 * m12 + m13 * m13);
+		length = ToolsMath.invSqrt(m10 * m10 + m11 * m11 + m12 * m12 + m13 * m13);
 		m10 *= length;
 		m11 *= length;
 		m12 *= length;
@@ -3087,7 +3087,7 @@ public Class<? extends Matrix> getClassTag() {
 		m21 -= dot * m01 + dot2 * m11;
 		m22 -= dot * m02 + dot2 * m12;
 		m23 -= dot * m03 + dot2 * m13;
-		length = FastMath.invSqrt(m20 * m20 + m21 * m21 + m22 * m22 + m23 * m23);
+		length = ToolsMath.invSqrt(m20 * m20 + m21 * m21 + m22 * m22 + m23 * m23);
 		m20 *= length;
 		m21 *= length;
 		m22 *= length;
@@ -3101,7 +3101,7 @@ public Class<? extends Matrix> getClassTag() {
 		m31 -= dot * m01 + dot2 * m11 + dot3 * m21;
 		m32 -= dot * m02 + dot2 * m12 + dot3 * m22;
 		m33 -= dot * m03 + dot2 * m13 + dot3 * m23;
-		length = FastMath.invSqrt(m30 * m30 + m31 * m31 + m32 * m32 + m33 * m33);
+		length = ToolsMath.invSqrt(m30 * m30 + m31 * m31 + m32 * m32 + m33 * m33);
 		m30 *= length;
 		m31 *= length;
 		m32 *= length;

@@ -22,7 +22,7 @@ import java.util.List;
 
 import org.mt4j.components.bounds.BoundsZPlaneRectangle;
 import org.mt4j.components.bounds.IBoundingShape;
-import org.mt4j.util.math.Tools3D;
+import org.mt4j.util.math.ToolsGeometry;
 import org.mt4j.util.math.Vertex;
 
 import processing.core.PApplet;
@@ -138,18 +138,18 @@ public class MTRoundRectangle extends MTPolygon {
 		Vertex rLinep2 = new Vertex(x + width, y + height	- arcHeight, 0);
 		
 		//Draw the first arc
-		List<Vertex> upperRightCorner = Tools3D.arcTo(upperLineP2.x,upperLineP2.y, arcWidth, arcHeight, 0, false,true, rLinep1.x,rLinep1.y, arcSegments);
+		List<Vertex> upperRightCorner = ToolsGeometry.arcTo(upperLineP2.x,upperLineP2.y, arcWidth, arcHeight, 0, false,true, rLinep1.x,rLinep1.y, arcSegments);
 		Vertex lowerLinep1 = new Vertex(x + width - arcWidth	, y + height, 0);
 		Vertex lowerLinep2 = new Vertex(x	+ arcWidth				, y + height, 0);
 			
 		
-		List<Vertex> lowerRightCorner = Tools3D.arcTo(rLinep2.x,rLinep2.y, arcWidth, arcHeight, 0, false,true, lowerLinep1.x,lowerLinep1.y, arcSegments);
+		List<Vertex> lowerRightCorner = ToolsGeometry.arcTo(rLinep2.x,rLinep2.y, arcWidth, arcHeight, 0, false,true, lowerLinep1.x,lowerLinep1.y, arcSegments);
 		Vertex lLinep1 = new Vertex(x , y + height - arcHeight, 0);
 		Vertex lLinep2 = new Vertex(x , y + arcHeight, 0);
 			
-		List<Vertex> lowerLeftCorner = Tools3D.arcTo(lowerLinep2.x,lowerLinep2.y, arcWidth, arcHeight, 0, false,true, lLinep1.x,lLinep1.y, arcSegments);
+		List<Vertex> lowerLeftCorner = ToolsGeometry.arcTo(lowerLinep2.x,lowerLinep2.y, arcWidth, arcHeight, 0, false,true, lLinep1.x,lLinep1.y, arcSegments);
 		
-		List<Vertex> upperLeftCorner = Tools3D.arcTo(lLinep2.x,lLinep2.y, arcWidth, arcHeight, 0, false,true, upperLineP1.x,upperLineP1.y, arcSegments);
+		List<Vertex> upperLeftCorner = ToolsGeometry.arcTo(lLinep2.x,lLinep2.y, arcWidth, arcHeight, 0, false,true, upperLineP1.x,upperLineP1.y, arcSegments);
 		
 		ArrayList<Vertex> verts = new ArrayList<Vertex>(); 
 		verts.add(upperLineP1); 

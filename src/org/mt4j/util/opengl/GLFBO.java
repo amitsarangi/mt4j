@@ -29,10 +29,18 @@ import org.apache.log4j.Logger;
 import org.apache.log4j.SimpleLayout;
 import org.mt4j.util.math.Tools3D;
 import org.mt4j.util.math.ToolsBuffers;
+import org.mt4j.util.math.ToolsMath;
 
 import processing.core.PApplet;
 import processing.opengl.PGraphicsOpenGL;
 
+/**
+ * This class abstracts a opengl frame buffer object for easier usage.
+ * This can mainly be used to draw to an offscreen buffer and use that buffer 
+ * as a texture later.
+ * 
+ * @author Christopher Ruff
+ */
 public class GLFBO {
 	/** The Constant logger. */
 	private static final Logger logger = Logger.getLogger(GLFBO.class.getName());
@@ -150,6 +158,12 @@ public class GLFBO {
 	
 	
 
+	/**
+	 * Attaches a gl texture object to the frame buffer object.
+	 * The texture will contain everything drawn when the fbo is bound.
+	 * 
+	 * @return the gL texture
+	 */
 	public GLTexture addNewTexture(){
 		return this.addNewTexture(false);
 	}
@@ -164,7 +178,7 @@ public class GLFBO {
 	public GLTexture addNewTexture(boolean useMipMap){
 		this.bind();
 
-		boolean isPowerOfTwoDimension = Tools3D.isPowerOfTwo(this.width) && Tools3D.isPowerOfTwo(this.height);
+		boolean isPowerOfTwoDimension = ToolsMath.isPowerOfTwo(this.width) && ToolsMath.isPowerOfTwo(this.height);
 		
 		GLTextureParameters tp = new GLTextureParameters();
 		
@@ -385,6 +399,8 @@ public class GLFBO {
 			id.rewind();
 			gl.glDeleteRenderbuffersEXT(id.limit(), id);
 		}
+		
+		this.textures.clear();
 	}
 	
 	

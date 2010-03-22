@@ -39,7 +39,7 @@ import org.mt4j.components.bounds.BoundingSphere;
 import org.mt4j.components.bounds.IBoundingShape;
 import org.mt4j.components.visibleComponents.GeometryInfo;
 import org.mt4j.components.visibleComponents.shapes.AbstractShape;
-import org.mt4j.util.math.FastMath;
+import org.mt4j.util.math.ToolsMath;
 import org.mt4j.util.math.ToolsBuffers;
 import org.mt4j.util.math.Vector3D;
 import org.mt4j.util.math.Vertex;
@@ -486,9 +486,9 @@ public class MTSphere extends MTTriangleMesh {
         float[] afSin = new float[(radialSamples + 1)];
         float[] afCos = new float[(radialSamples + 1)];
         for (int iR = 0; iR < radialSamples; iR++) {
-            float fAngle = FastMath.TWO_PI * fInvRS * iR;
-            afCos[iR] = FastMath.cos(fAngle);
-            afSin[iR] = FastMath.sin(fAngle);
+            float fAngle = ToolsMath.TWO_PI * fInvRS * iR;
+            afCos[iR] = ToolsMath.cos(fAngle);
+            afSin[iR] = ToolsMath.sin(fAngle);
         }
         afSin[radialSamples] = afSin[0];
         afCos[radialSamples] = afCos[0];
@@ -496,12 +496,12 @@ public class MTSphere extends MTTriangleMesh {
         // generate the sphere itself
         int i = 0;
         for (int iZ = 1; iZ < (zSamples - 1); iZ++) {
-            float fAFraction = FastMath.HALF_PI * (-1.0f + fZFactor * iZ); // in (-pi/2, pi/2)
+            float fAFraction = ToolsMath.HALF_PI * (-1.0f + fZFactor * iZ); // in (-pi/2, pi/2)
             float fZFraction;
             if (useEvenSlices)
                 fZFraction = -1.0f + fZFactor * iZ; // in (-1, 1)
             else
-                fZFraction = FastMath.sin(fAFraction); // in (-1,1)
+                fZFraction = ToolsMath.sin(fAFraction); // in (-1,1)
 
             float fZ = radius * fZFraction;
 
@@ -510,7 +510,7 @@ public class MTSphere extends MTTriangleMesh {
             kSliceCenter.z += fZ;
 
             // compute radius of slice
-            float fSliceRadius = FastMath.sqrt(FastMath.abs(radius * radius
+            float fSliceRadius = ToolsMath.sqrt(ToolsMath.abs(radius * radius
                     - fZ * fZ));
 
             // compute slice vertices with duplication at end point
@@ -541,11 +541,11 @@ public class MTSphere extends MTTriangleMesh {
                             0.5f * (fZFraction + 1.0f));
                 else if (textureMode == TextureMode.Projected)
                     texBuff.put(fRadialFraction).put(
-                            FastMath.INV_PI
-                                    * (FastMath.HALF_PI + FastMath
+                            ToolsMath.INV_PI
+                                    * (ToolsMath.HALF_PI + ToolsMath
                                             .asin(fZFraction)));
                 else if (textureMode == TextureMode.Polar) {
-                    float r = (FastMath.HALF_PI - FastMath.abs(fAFraction)) / FastMath.PI;
+                    float r = (ToolsMath.HALF_PI - ToolsMath.abs(fAFraction)) / ToolsMath.PI;
                     float u = r * afCos[iR] + 0.5f;
                     float v = r * afSin[iR] + 0.5f;
                     texBuff.put(u).put(v);
@@ -563,11 +563,11 @@ public class MTSphere extends MTTriangleMesh {
             else if (textureMode == TextureMode.Projected)
                 texBuff.put(1.0f)
                         .put(
-                                FastMath.INV_PI
-                                        * (FastMath.HALF_PI + FastMath
+                                ToolsMath.INV_PI
+                                        * (ToolsMath.HALF_PI + ToolsMath
                                                 .asin(fZFraction)));
             else if (textureMode == TextureMode.Polar) {
-                float r = (FastMath.HALF_PI - FastMath.abs(fAFraction)) / FastMath.PI;
+                float r = (ToolsMath.HALF_PI - ToolsMath.abs(fAFraction)) / ToolsMath.PI;
                 texBuff.put(r+0.5f).put(0.5f);
             }
 

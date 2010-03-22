@@ -11,7 +11,7 @@ import org.mt4j.components.MTComponent;
 import org.mt4j.input.inputProcessors.globalProcessors.CursorTracer;
 import org.mt4j.sceneManagement.AbstractScene;
 import org.mt4j.util.MTColor;
-import org.mt4j.util.math.Tools3D;
+import org.mt4j.util.math.ToolsMath;
 import org.mt4j.util.math.Vector3D;
 import org.mt4j.util.math.Vertex;
 
@@ -61,8 +61,8 @@ public class PhysicsScene extends AbstractScene {
 		
 		//Createa circles
 		for (int i = 0; i < 20; i++) {
-			PhysicsCircle c = new PhysicsCircle(app, new Vector3D(Tools3D.getRandom(60, mtApplication.width-60), Tools3D.getRandom(60, mtApplication.height-60)), 50, world, 1.0f, 0.3f, 0.4f, scale);
-			MTColor col = new MTColor(Tools3D.getRandom(60, 255),Tools3D.getRandom(60, 255),Tools3D.getRandom(60, 255));
+			PhysicsCircle c = new PhysicsCircle(app, new Vector3D(ToolsMath.getRandom(60, mtApplication.width-60), ToolsMath.getRandom(60, mtApplication.height-60)), 50, world, 1.0f, 0.3f, 0.4f, scale);
+			MTColor col = new MTColor(ToolsMath.getRandom(60, 255),ToolsMath.getRandom(60, 255),ToolsMath.getRandom(60, 255));
 			c.setFillColor(col);
 			c.setStrokeColor(col);
 			PhysicsHelper.addDragJoint(world, c, c.getBody().isDynamic(), scale);
@@ -71,7 +71,7 @@ public class PhysicsScene extends AbstractScene {
 		
 		//Create rectangle
 		PhysicsRectangle physRect = new PhysicsRectangle(new Vector3D(100,300), 100, 50, app, world, 1f, 0.4f, 0.4f, scale);
-		MTColor col = new MTColor(Tools3D.getRandom(60, 255),Tools3D.getRandom(60, 255),Tools3D.getRandom(60, 255));
+		MTColor col = new MTColor(ToolsMath.getRandom(60, 255),ToolsMath.getRandom(60, 255),ToolsMath.getRandom(60, 255));
 		physRect.setFillColor(col);
 		physRect.setStrokeColor(col);
 		PhysicsHelper.addDragJoint(world, physRect, physRect.getBody().isDynamic(), scale);
@@ -95,7 +95,7 @@ public class PhysicsScene extends AbstractScene {
 				new Vertex(-10,0,0),
 		};
 		PhysicsPolygon physPoly = new PhysicsPolygon(polyVertices, new Vector3D(250,250), app, world, 1.0f, 0.3f, 0.4f, scale);
-		MTColor polyCol = new MTColor(Tools3D.getRandom(60, 255),Tools3D.getRandom(60, 255),Tools3D.getRandom(60, 255));
+		MTColor polyCol = new MTColor(ToolsMath.getRandom(60, 255),ToolsMath.getRandom(60, 255),ToolsMath.getRandom(60, 255));
 		physPoly.setFillColor(polyCol);
 		physPoly.setStrokeColor(polyCol);
 		PhysicsHelper.addDragJoint(world, physPoly, physPoly.getBody().isDynamic(), scale);

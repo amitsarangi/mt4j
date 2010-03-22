@@ -17,10 +17,9 @@
  ***********************************************************************/
 package org.mt4j.components.visibleComponents.shapes.mesh;
 
-import org.mt4j.util.math.FastMath;
+import org.mt4j.util.math.ToolsMath;
 import org.mt4j.util.math.Ray;
-import org.mt4j.util.math.Tools3D;
-import org.mt4j.util.math.ToolsIntersection;
+import org.mt4j.util.math.ToolsGeometry;
 import org.mt4j.util.math.Vector3D;
 import org.mt4j.util.math.Vertex;
 
@@ -131,7 +130,7 @@ public class Triangle {
 	 */
 	private void calcNormal(){
 		if (normalDirty || this.normal == null || this.normalUnnormalized == null){
-			this.normal = Tools3D.getNormal(v0, v1, v2, false);
+			this.normal = ToolsGeometry.getNormal(v0, v1, v2, false);
 			
 			//Get unnormalized normal for triangle intersection tests (So degenerate tris get detected)
 			this.normalUnnormalized = normal.getCopy();
@@ -159,7 +158,7 @@ public class Triangle {
 			center = this.v0.getCopy();
 			center.addLocal(v1);
 			center.addLocal(v2);
-			center.scaleLocal(FastMath.ONE_THIRD);
+			center.scaleLocal(ToolsMath.ONE_THIRD);
 			centerDirty = false;
 		}
 	}
@@ -178,7 +177,7 @@ public class Triangle {
 	public Vector3D getRayTriangleIntersection(Ray r){
 		//Update unnormalized normal if neccessary
 		this.calcNormal();
-		return ToolsIntersection.getRayTriangleIntersection(r, v0, v1, v2, this.normalUnnormalized);
+		return ToolsGeometry.getRayTriangleIntersection(r, v0, v1, v2, this.normalUnnormalized);
 	}
 	
 	
@@ -205,7 +204,7 @@ public class Triangle {
 		total_angles += Math.acos(b.dot(c));
 		total_angles += Math.acos(c.dot(a));
 
-		return (FastMath.abs((float) total_angles - FastMath.TWO_PI) <= 0.005f);
+		return (ToolsMath.abs((float) total_angles - ToolsMath.TWO_PI) <= 0.005f);
 	}
 
 

@@ -35,7 +35,7 @@ import org.mt4j.sceneManagement.IPreDrawAction;
 import org.mt4j.util.MT4jSettings;
 import org.mt4j.util.MTColor;
 import org.mt4j.util.camera.MTCamera;
-import org.mt4j.util.math.Tools3D;
+import org.mt4j.util.math.ToolsMath;
 import org.mt4j.util.math.Vector3D;
 
 import processing.core.PImage;
@@ -179,7 +179,7 @@ public class FlickrScene extends AbstractScene {
 														MTImage card = fotos[i];
 														card.setUseDirectGL(true);
 														card.setDisplayCloseButton(true);
-														card.setPositionGlobal(new Vector3D(Tools3D.getRandom(10, MT4jSettings.getInstance().getScreenWidth()-100), Tools3D.getRandom(10, MT4jSettings.getInstance().getScreenHeight()-50),0 )  );
+														card.setPositionGlobal(new Vector3D(ToolsMath.getRandom(10, MT4jSettings.getInstance().getScreenWidth()-100), ToolsMath.getRandom(10, MT4jSettings.getInstance().getScreenHeight()-50),0 )  );
 														card.scale(0.6f, 0.6f, 0.6f, card.getCenterPointLocal(), TransformSpace.LOCAL);
 														card.addGestureListener(DragProcessor.class, new InertiaDragAction());
 														lassoProcessor.addClusterable(card); //make fotos lasso-able

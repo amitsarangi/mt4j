@@ -32,7 +32,7 @@ import org.mt4j.util.MTColor;
 import org.mt4j.util.math.BezierVertex;
 import org.mt4j.util.math.Ray;
 import org.mt4j.util.math.Tools3D;
-import org.mt4j.util.math.ToolsIntersection;
+import org.mt4j.util.math.ToolsGeometry;
 import org.mt4j.util.math.Vector3D;
 import org.mt4j.util.math.Vertex;
 import org.mt4j.util.opengl.GLTexture;
@@ -469,7 +469,7 @@ public class MTPolygon extends AbstractShape {
 	 */
 	@Override
 	public boolean isGeometryContainsPointLocal(Vector3D testPoint) { 
-		return Tools3D.isPolygonContainsPoint(this.getVerticesLocal(), testPoint);
+		return ToolsGeometry.isPolygonContainsPoint(this.getVerticesLocal(), testPoint);
 	}
 
 
@@ -483,12 +483,12 @@ public class MTPolygon extends AbstractShape {
 		Vector3D polyNormal 	= this.getNormal();
 		
 		//Possible intersection point in plane of polygon
-		Vector3D interSectPoint = ToolsIntersection.getRayPlaneIntersection(ray, polyNormal, vertices[0]);
+		Vector3D interSectPoint = ToolsGeometry.getRayPlaneIntersection(ray, polyNormal, vertices[0]);
 		
 		if (interSectPoint == null)
 			return null;
 		
-		return (Tools3D.isPoint3DInPlanarPolygon(vertices, interSectPoint, polyNormal) ? interSectPoint : null);
+		return (ToolsGeometry.isPoint3DInPlanarPolygon(vertices, interSectPoint, polyNormal) ? interSectPoint : null);
 	}
 
 
@@ -514,7 +514,7 @@ public class MTPolygon extends AbstractShape {
 //		else
 //			vertices = this.getVerticesPickingWorld();
 		vertices = this.getVerticesLocal();
-		return ToolsIntersection.getRayPlaneIntersection(ray, polygonNormal, vertices[0]);
+		return ToolsGeometry.getRayPlaneIntersection(ray, polygonNormal, vertices[0]);
 	}
 	
 	
@@ -542,7 +542,7 @@ public class MTPolygon extends AbstractShape {
 				){
 					System.err.println("Warning: in component " + this.getName() + ", 2 vectors for normal computation are equal -> bad results! -" + this);
 				}
-				this.normal = Tools3D.getNormal(vertices[0], vertices[1], vertices[2], true);
+				this.normal = ToolsGeometry.getNormal(vertices[0], vertices[1], vertices[2], true);
 				this.normalDirty = false;
 				return this.normal; //FIXME return copy or original?
 			}else{
@@ -563,7 +563,7 @@ public class MTPolygon extends AbstractShape {
 	 * @return the area as double
 	 */
 	public double get2DPolygonArea(){
-		return Tools3D.getPolygonArea2D(this.getVerticesGlobal());
+		return ToolsGeometry.getPolygonArea2D(this.getVerticesGlobal());
 	}
 	
 	
@@ -577,7 +577,7 @@ public class MTPolygon extends AbstractShape {
 	 */
 	public Vector3D getCenterOfMass2DLocal(){
 		//FIXME doesent work if polygon not in x,y plane!?
-		return Tools3D.getPolygonCenterOfMass2D(this.getVerticesLocal());
+		return ToolsGeometry.getPolygonCenterOfMass2D(this.getVerticesLocal());
 	}
 	
 	

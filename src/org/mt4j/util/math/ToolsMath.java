@@ -1,4 +1,35 @@
 
+/*
+ * Copyright (c) 2003-2009 jMonkeyEngine
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are
+ * met:
+ *
+ * * Redistributions of source code must retain the above copyright
+ *   notice, this list of conditions and the following disclaimer.
+ *
+ * * Redistributions in binary form must reproduce the above copyright
+ *   notice, this list of conditions and the following disclaimer in the
+ *   documentation and/or other materials provided with the distribution.
+ *
+ * * Neither the name of 'jMonkeyEngine' nor the names of its contributors
+ *   may be used to endorse or promote products derived from this software
+ *   without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
+ * TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+ * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
+ * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+ * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+ * PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+ * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+ * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
 package org.mt4j.util.math;
 
 import java.util.Random;
@@ -10,15 +41,13 @@ import java.util.Random;
  * Copyright by JMonkeyEngine
  * 
  * @author Various
- * @version $Id: FastMath.java,v 1.45 2007/08/26 08:44:20 irrisor Exp $
  */
-
-final public class FastMath {
+final public class ToolsMath {
 
     /**
      * Instantiates a new fast math.
      */
-    private FastMath(){}
+    private ToolsMath(){}
 
     /** A "close to zero" double epsilon value for use. */
     public static final double DBL_EPSILON = 2.220446049250313E-16d;
@@ -89,6 +118,31 @@ final public class FastMath {
     }
 
     /**
+	 * Returns the power of two number nearest to the given number.
+	 * 
+	 * @param value the value
+	 * 
+	 * @return the int
+	 */
+	public static int nearestPower(int value) {
+		int i = 1;
+		if (value == 0) {
+			return (-1);
+		}
+	
+		for (;;) {
+			if (value == 1) {
+				return (i);
+			} else if (value == 3) {
+				return (i * 4);
+			}
+	
+			value = value >> 1;
+	    i *= 2;
+		}
+	}
+
+	/**
      * Linear interpolation from startValue to endValue by the given percent.
      * Basically: ((1 - percent) * startValue) + (percent * endValue)
      * 
@@ -537,10 +591,10 @@ final public class FastMath {
      */
     public static Vector3D sphericalToCartesian(Vector3D sphereCoords,
             Vector3D store) {
-        store.y = sphereCoords.x * FastMath.sin(sphereCoords.z);
-        float a = sphereCoords.x * FastMath.cos(sphereCoords.z);
-        store.x = a * FastMath.cos(sphereCoords.y);
-        store.z = a * FastMath.sin(sphereCoords.y);
+        store.y = sphereCoords.x * ToolsMath.sin(sphereCoords.z);
+        float a = sphereCoords.x * ToolsMath.cos(sphereCoords.z);
+        store.x = a * ToolsMath.cos(sphereCoords.y);
+        store.z = a * ToolsMath.sin(sphereCoords.y);
 
         return store;
     }
@@ -558,15 +612,15 @@ final public class FastMath {
     public static Vector3D cartesianToSpherical(Vector3D cartCoords,
             Vector3D store) {
         if (cartCoords.x == 0)
-            cartCoords.x = FastMath.FLT_EPSILON;
-        store.x = FastMath
+            cartCoords.x = ToolsMath.FLT_EPSILON;
+        store.x = ToolsMath
                 .sqrt((cartCoords.x * cartCoords.x)
                         + (cartCoords.y * cartCoords.y)
                         + (cartCoords.z * cartCoords.z));
-        store.y = FastMath.atan(cartCoords.z / cartCoords.x);
+        store.y = ToolsMath.atan(cartCoords.z / cartCoords.x);
         if (cartCoords.x < 0)
-            store.y += FastMath.PI;
-        store.z = FastMath.asin(cartCoords.y / store.x);
+            store.y += ToolsMath.PI;
+        store.z = ToolsMath.asin(cartCoords.y / store.x);
         return store;
     }
 
@@ -581,10 +635,10 @@ final public class FastMath {
      */
     public static Vector3D sphericalToCartesianZ(Vector3D sphereCoords,
             Vector3D store) {
-        store.z = sphereCoords.x * FastMath.sin(sphereCoords.z);
-        float a = sphereCoords.x * FastMath.cos(sphereCoords.z);
-        store.x = a * FastMath.cos(sphereCoords.y);
-        store.y = a * FastMath.sin(sphereCoords.y);
+        store.z = sphereCoords.x * ToolsMath.sin(sphereCoords.z);
+        float a = sphereCoords.x * ToolsMath.cos(sphereCoords.z);
+        store.x = a * ToolsMath.cos(sphereCoords.y);
+        store.y = a * ToolsMath.sin(sphereCoords.y);
 
         return store;
     }
@@ -602,15 +656,15 @@ final public class FastMath {
     public static Vector3D cartesianZToSpherical(Vector3D cartCoords,
             Vector3D store) {
         if (cartCoords.x == 0)
-            cartCoords.x = FastMath.FLT_EPSILON;
-        store.x = FastMath
+            cartCoords.x = ToolsMath.FLT_EPSILON;
+        store.x = ToolsMath
                 .sqrt((cartCoords.x * cartCoords.x)
                         + (cartCoords.y * cartCoords.y)
                         + (cartCoords.z * cartCoords.z));
-        store.z = FastMath.atan(cartCoords.z / cartCoords.x);
+        store.z = ToolsMath.atan(cartCoords.z / cartCoords.x);
         if (cartCoords.x < 0)
-            store.z += FastMath.PI;
-        store.y = FastMath.asin(cartCoords.y / store.x);
+            store.z += ToolsMath.PI;
+        store.y = ToolsMath.asin(cartCoords.y / store.x);
         return store;
     }
 
@@ -651,17 +705,60 @@ final public class FastMath {
         else
             return x;
     }
+
+	/**
+	 * Take a float input and clamp it between min and max.
+	 * 
+	 * @param input the input
+	 * @param min the min
+	 * @param max the max
+	 * 
+	 * @return clamped input
+	 */
+	public static float clamp(float input, float min, float max) {
+	    return (input < min) ? min : (input > max) ? max : input;
+	}
+
+	/**
+	 * Convenience function to map a variable from one value range
+	 * to another.
+	 * 
+	 * @param theValue the the value
+	 * @param theInStart the the in start
+	 * @param theInEnd the the in end
+	 * @param theOutStart the the out start
+	 * @param theOutEnd the the out end
+	 * 
+	 * @return the float
+	 */
+	public static final float map(float theValue, float theInStart, float theInEnd, float theOutStart, float theOutEnd) {
+	    return theOutStart + (theOutEnd - theOutStart) * ((theValue - theInStart) / (theInEnd - theInStart));
+	}
+
+	/**
+	 * Calculates a random number ranging in between the floor and the ceiling value.
+	 * 
+	 * @param floor the floor
+	 * @param ceiling the ceiling
+	 * 
+	 * @return the random
+	 * 
+	 * the generated random number
+	 */
+	public static float getRandom(float floor, float ceiling){
+		return (floor + (float)Math.random()*(ceiling-floor));
+	}
+
+//	/**
+//	 * Checks if is power of two.
+//	 * 
+//	 * @param i the i
+//	 * 
+//	 * @return true, if is power of two
+//	 */
+//	public static boolean isPowerOfTwo(int i){
+//		return ((i&(i-1)) 		== 0);
+//	}
     
-    /**
-     * Take a float input and clamp it between min and max.
-     * 
-     * @param input the input
-     * @param min the min
-     * @param max the max
-     * 
-     * @return clamped input
-     */
-    public static float clamp(float input, float min, float max) {
-        return (input < min) ? min : (input > max) ? max : input;
-    }
+    
 }

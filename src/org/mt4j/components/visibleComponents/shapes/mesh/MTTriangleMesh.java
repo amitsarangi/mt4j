@@ -33,7 +33,7 @@ import org.mt4j.components.visibleComponents.shapes.AbstractShape;
 import org.mt4j.util.MT4jSettings;
 import org.mt4j.util.MTColor;
 import org.mt4j.util.math.BezierVertex;
-import org.mt4j.util.math.FastMath;
+import org.mt4j.util.math.ToolsMath;
 import org.mt4j.util.math.Matrix;
 import org.mt4j.util.math.Ray;
 import org.mt4j.util.math.Tools3D;
@@ -420,7 +420,7 @@ public class MTTriangleMesh extends AbstractShape{
 			if (intersectionPoint != null){
 				if (checkThoroughly){
 					for(Vector3D v: intersections){
-						if (v.equalsVectorWithTolerance(intersectionPoint, FastMath.ZERO_TOLERANCE)){
+						if (v.equalsVectorWithTolerance(intersectionPoint, ToolsMath.ZERO_TOLERANCE)){
 							sameAlreadyEncountered = true;
 						}
 					}

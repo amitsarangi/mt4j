@@ -18,8 +18,11 @@
 package org.mt4j.util.math;
 
 import java.nio.IntBuffer;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.mt4j.components.visibleComponents.shapes.mesh.MTTriangleMesh;
+import processing.core.PApplet;
 
 
 
@@ -27,7 +30,7 @@ import org.mt4j.components.visibleComponents.shapes.mesh.MTTriangleMesh;
 /**
  * The Class ToolsIntersection.
  */
-public class ToolsIntersection {
+public class ToolsGeometry {
 
 	/**
 	 * Calculates the intersection of a ray and a plane.
@@ -42,7 +45,7 @@ public class ToolsIntersection {
 	 * the intersection point or 'null' if there is not intersection
 	 */
 	public static Vector3D getRayPlaneIntersection(Ray ray, Vector3D planePoint1, Vector3D planePoint2, Vector3D planePoint3){
-		return getRayPlaneIntersection(ray, Tools3D.getNormal(planePoint1, planePoint2, planePoint3, true), planePoint1);
+		return getRayPlaneIntersection(ray, ToolsGeometry.getNormal(planePoint1, planePoint2, planePoint3, true), planePoint1);
 	}
 	
 	
@@ -135,7 +138,7 @@ public class ToolsIntersection {
 //		}
 		
 //		Vector3D n2 = 
-		if (n.equalsVectorWithTolerance(Vector3D.ZERO_VECTOR, FastMath.ZERO_TOLERANCE)){ // triangle is degenerate
+		if (n.equalsVectorWithTolerance(Vector3D.ZERO_VECTOR, ToolsMath.ZERO_TOLERANCE)){ // triangle is degenerate
 			return null;
 		}
 			
@@ -144,7 +147,7 @@ public class ToolsIntersection {
 		a 	= -n.dot(w0);
 		b 	= n.dot(dir);
 		
-		if (Math.abs(b) < FastMath.FLT_EPSILON) {     // ray is parallel to triangle plane
+		if (Math.abs(b) < ToolsMath.FLT_EPSILON) {     // ray is parallel to triangle plane
 			if (a == 0){                // ray lies in triangle plane
 				return null;
 			}
@@ -312,11 +315,11 @@ public class ToolsIntersection {
     	du2 = n1.dot(u2) + d1;
 
     	/* coplanarity robustness check */
-    	if (FastMath.abs(du0) < EPSILON)
+    	if (ToolsMath.abs(du0) < EPSILON)
     		du0 = 0.0f;
-    	if (FastMath.abs(du1) < EPSILON)
+    	if (ToolsMath.abs(du1) < EPSILON)
     		du1 = 0.0f;
-    	if (FastMath.abs(du2) < EPSILON)
+    	if (ToolsMath.abs(du2) < EPSILON)
     		du2 = 0.0f;
     	du0du1 = du0 * du1;
     	du0du2 = du0 * du2;
@@ -342,11 +345,11 @@ public class ToolsIntersection {
     	dv2 = n2.dot(v2) + d2;
 
 
-    	if (FastMath.abs(dv0) < EPSILON)
+    	if (ToolsMath.abs(dv0) < EPSILON)
     		dv0 = 0.0f;
-    	if (FastMath.abs(dv1) < EPSILON)
+    	if (ToolsMath.abs(dv1) < EPSILON)
     		dv1 = 0.0f;
-    	if (FastMath.abs(dv2) < EPSILON)
+    	if (ToolsMath.abs(dv2) < EPSILON)
     		dv2 = 0.0f;
 
     	dv0dv1 = dv0 * dv1;
@@ -364,10 +367,10 @@ public class ToolsIntersection {
 //  	n1.cross(n2, d);
 
     	/* compute and index to the largest component of d */
-    	max = FastMath.abs(d.x);
+    	max = ToolsMath.abs(d.x);
     	index = 0;
-    	bb = FastMath.abs(d.y);
-    	cc = FastMath.abs(d.z);
+    	bb = ToolsMath.abs(d.y);
+    	cc = ToolsMath.abs(d.z);
     	if (bb > max) {
     		max = bb;
     		index = 1;
@@ -531,9 +534,9 @@ public class ToolsIntersection {
     									Vector3D v2, Vector3D u0, Vector3D u1, Vector3D u2) {
     	Vector3D a = new Vector3D();
     	short i0, i1;
-    	a.x = FastMath.abs(n.x);
-    	a.y = FastMath.abs(n.y);
-    	a.z = FastMath.abs(n.z);
+    	a.x = ToolsMath.abs(n.x);
+    	a.y = ToolsMath.abs(n.y);
+    	a.z = ToolsMath.abs(n.z);
 
     	if (a.x > a.y) {
     		if (a.x > a.z) {
@@ -845,6 +848,14 @@ public class ToolsIntersection {
        return Vector3D.distance(thePoint, myIntersection);
    }
 
+   /**
+    * Distance point line.
+    * 
+    * @param thePoint the the point
+    * @param theLineStart the the line start
+    * @param theLineEnd the the line end
+    * @return the float
+    */
    public static float distancePointLine(final Vector3D thePoint,
                                          final Vector3D theLineStart,
                                          final Vector3D theLineEnd) {
@@ -910,11 +921,20 @@ public class ToolsIntersection {
 
    
    
+   /**
+    * Checks if is point in triangle.
+    * 
+    * @param v0 the v0
+    * @param v1 the v1
+    * @param v2 the v2
+    * @param thePoint the the point
+    * @return true, if is point in triangle
+    */
    public static final boolean isPointInTriangle(final Vector3D v0,  final Vector3D v1,  final Vector3D v2, final Vector3D thePoint) {
-////	   Compute vectors
-//	   v0 = C - A
-//	   v1 = B - A
-//	   v2 = P - A
+	   ////	   Compute vectors
+	   //	   v0 = C - A
+	   //	   v1 = B - A
+	   //	   v2 = P - A
 	   Vector3D v00 = new Vector3D(v2);
 	   v00.subtractLocal(v0);
 
@@ -923,7 +943,7 @@ public class ToolsIntersection {
 
 	   Vector3D v02 = new Vector3D(thePoint);
 	   v02.subtractLocal(v0);
-	   
+
 	   //Compute dot products
 	   float dot00 = v00.dot(v00);
 	   float dot01 = v00.dot(v01);
@@ -940,5 +960,754 @@ public class ToolsIntersection {
 	   return (u > 0) && (v > 0) && (u + v < 1);
    }
 
-   
+
+	/**
+	 * The Enum PolygonTestPlane.
+	 * 
+	 * @author Christopher Ruff
+	 */
+	private enum PolygonTestPlane{
+		XY,
+		XZ,
+		YZ;
+	}
+
+   /**
+    * Checks if is point2 d in polygon.
+    * 
+    * @param x the x
+    * @param y the y
+    * @param thePolygon the the polygon
+    * @return true, if is point2 d in polygon
+    */
+   public static boolean isPoint2DInPolygon(float x, float y, Vector3D[] thePolygon) {
+	   int c = 0;
+	   for (int i = 0, j = thePolygon.length - 1; i < thePolygon.length; j = i++) {
+		   if ((((thePolygon[i].y <= y) && (y < thePolygon[j].y)) ||
+				   ((thePolygon[j].y <= y) && (y < thePolygon[i].y))) &&
+				   (x < (thePolygon[j].x - thePolygon[i].x) * (y - thePolygon[i].y) /
+						   (thePolygon[j].y - thePolygon[i].y) + thePolygon[i].x)) {
+			   c = (c + 1) % 2;
+		   }
+	   }
+	   return c == 1;
+   }
+
+
+	private static boolean isPoint2DInPolygon(Vector3D testpoint, Vector3D[] thePolygon, PolygonTestPlane whichPlane) {
+	   float x;
+	   float y;
+	   int c = 0;
+	   switch (whichPlane) {
+	   case XY:	
+		   //System.out.println("Projected to X-Y");
+		   x = testpoint.x;
+		   y = testpoint.y;
+		   for (int i = 0, j = thePolygon.length - 1; i < thePolygon.length; j = i++) {
+			   if ((((thePolygon[i].y <= y) && (y < thePolygon[j].y)) ||
+					   ((thePolygon[j].y <= y) && (y < thePolygon[i].y))) &&
+					   (x < (thePolygon[j].x - thePolygon[i].x) * (y - thePolygon[i].y) /
+							   (thePolygon[j].y - thePolygon[i].y) + thePolygon[i].x)) {
+				   c = (c + 1) % 2;
+			   }
+		   }
+		   break;
+	   case XZ:	
+		   //System.out.println("Projected to X-Z");
+		   x = testpoint.x;
+		   y = testpoint.z;
+		   for (int i = 0, j = thePolygon.length - 1; i < thePolygon.length; j = i++) {
+			   if ((((thePolygon[i].z <= y) && (y < thePolygon[j].z)) ||
+					   ((thePolygon[j].z <= y) && (y < thePolygon[i].z))) &&
+					   (x < (thePolygon[j].x - thePolygon[i].x) * (y - thePolygon[i].z) /
+							   (thePolygon[j].z - thePolygon[i].z) + thePolygon[i].x)) {
+				   c = (c + 1) % 2;
+			   }
+		   }
+		   break;
+	   case YZ:	
+		   //System.out.println("Projected to Y-Z");
+		   x = testpoint.y;
+		   y = testpoint.z;
+		   for (int i = 0, j = thePolygon.length - 1; i < thePolygon.length; j = i++) {
+			   if ((((thePolygon[i].z <= y) && (y < thePolygon[j].z)) ||
+					   ((thePolygon[j].z <= y) && (y < thePolygon[i].z))) &&
+					   (x < (thePolygon[j].y - thePolygon[i].y) * (y - thePolygon[i].z) /
+							   (thePolygon[j].z - thePolygon[i].z) + thePolygon[i].y)) {
+				   c = (c + 1) % 2;
+			   }
+		   }
+		   break;
+	   default:
+		   break;
+	   }
+	   return c == 1;
+   }
+
+
+	/**
+    * Projects the polygon and and the point to check into 2D and then checks if the given point
+    * is inside the shape.
+    * <br><strong>NOTE:</strong> The polygon to test has to be planar, meaning that all points must lie
+    * int the same plane in 3d space.
+    * 
+    * @param testPoint the test point
+    * @param polyNormal the poly normal
+    * @param polygonVertices the polygon vertices
+    * 
+    * @return true, if checks if is point in poly
+    * 
+    * whether the testpoint is inside the planar polygon or not
+    */
+   public static boolean isPoint3DInPlanarPolygon(Vector3D[] polygonVertices, Vector3D testPoint, Vector3D polyNormal){
+	   if (testPoint == null) 
+		   return false;
+
+	   //Check parts of the normal to determine in which axis the poly is most contained in
+	   float absAX = PApplet.abs(polyNormal.x);
+	   float absBY = PApplet.abs(polyNormal.y);
+	   float absCZ = PApplet.abs(polyNormal.z);
+
+	   if (absAX > absBY){
+		   if ( absAX > absCZ){ //X biggest, project into y,z drop x
+			   return (ToolsGeometry.isPoint2DInPolygon(new Vector3D(testPoint), polygonVertices, PolygonTestPlane.YZ));
+		   }else{ //Z biggest //project into x,y drop z
+			   return (ToolsGeometry.isPoint2DInPolygon(new Vector3D(testPoint), polygonVertices, PolygonTestPlane.XY));
+		   }
+	   }else if (absBY > absAX){
+		   if (absBY > absCZ){ //Y biggest //project into x,z drop y
+			   return (ToolsGeometry.isPoint2DInPolygon(new Vector3D(testPoint), polygonVertices, PolygonTestPlane.XZ));
+		   }else{ //Z biggest //project into x,y drop Z
+			   return (ToolsGeometry.isPoint2DInPolygon(new Vector3D(testPoint), polygonVertices, PolygonTestPlane.XY));
+		   }
+	   }else if (absCZ > absAX){
+		   if (absCZ > absBY){ //Z biggest //project into x,y
+			   return (ToolsGeometry.isPoint2DInPolygon(new Vector3D(testPoint), polygonVertices, PolygonTestPlane.XY));
+		   }else{ //Y biggest // project into x,z
+			   return (ToolsGeometry.isPoint2DInPolygon(new Vector3D(testPoint), polygonVertices, PolygonTestPlane.XZ));
+		   }
+	   }else{
+		   return false;
+	   }
+   }
+
+
+	/**
+	 * Checks if the planar polygon vertices contain the point.
+	 * 
+	 * @param polygonPoints the polygon points
+	 * @param testPoint the test point
+	 * 
+	 * @return true, if checks if is polygon contains point
+	 */
+	public static boolean isPolygonContainsPoint(Vector3D[] polygonPoints, Vector3D testPoint){
+		Vector3D polyNormal = ToolsGeometry.getNormal(polygonPoints[0],polygonPoints[1], polygonPoints[2], true);
+		//Check if point is in plane of polygon
+		Vector3D tmp = testPoint.getSubtracted(polygonPoints[0]);
+		float dotProdukt = tmp.dot(polyNormal);
+		
+		//Remove the second condition if you want exact matches, this allows a small tolerance
+		if (dotProdukt == 0 || Math.abs(dotProdukt) < 0.015) {
+			return isPoint3DInPlanarPolygon(polygonPoints, testPoint, polyNormal);
+		}
+		else{	
+			return false;
+		}
+	}
+
+
+	/**
+	 * Returns the center of mass of the planar polygon vertices in the x,y plane.
+	 * <br><strong>NOTE:</strong> Use this in 2D, this only uses the x, y coordinates of the vectors!.
+	 * 
+	 * @param vertices the vertices
+	 * 
+	 * @return the polygon center of mass2 d
+	 */
+	public static Vector3D getPolygonCenterOfMass2D(Vector3D[] vertices){
+		float cx=0,cy=0;
+		float area=(float)ToolsGeometry.getPolygonArea2D(vertices);
+		int i,j;
+		int N = vertices.length;
+
+		float factor=0;
+		for (i=0;i<N;i++) {
+			j = (i + 1) % N;
+			factor = (vertices[i].x * vertices[j].y - vertices[j].x * vertices[i].y);
+			cx+= (vertices[i].x + vertices[j].x) * factor;
+			cy+= (vertices[i].y + vertices[j].y) * factor;
+		}
+		area*=6.0f;
+		factor=1/area;
+		cx*=factor;
+		cy*=factor;
+
+		//TODO how to get this in 3D? Project all vertex to the z plane and get the centerof mass ?
+		//this is a test, calculating the Z coordinate by integrating over
+		//all z values
+		float zValues = 0;
+		for (int k = 0; k < vertices.length-1; k++) {
+			Vector3D vector3D = vertices[k];
+			zValues += vector3D.z;
+		}
+
+		Vector3D center = new Vector3D(cx, cy , zValues/vertices.length);
+		//		System.out.println("Center: " + center);
+		return center;
+	}
+
+
+	/**
+	 * Calculates the area of a 2D polygon using its transformed world coordinates
+	 * <br><strong>NOTE:</strong> Use this in 2D, this only uses the x, y coordinates of the vectors!
+	 * <br>NOTE: works only if the last vertex is equal to the first (polygon is closed correctly). (not confirmed..)
+	 * <br>Polygon vertices have to be declared in counter-clockwise order! (or cw..?)
+	 * @param vertices the vertices
+	 * 
+	 * @return the area as double
+	 */
+	public static double getPolygonArea2D(Vector3D[] vertices){
+		//		/*
+		int i;
+		int N = vertices.length;
+		double area = 0;
+
+		for (i=0;i<N-1;i++) {
+			area = area + vertices[i].x * vertices[i+1].y - vertices[i+1].x * vertices[i].y;
+		}
+		area /= 2.0;
+		//		System.out.println("Area: " + (area < 0 ? -area : area));
+		//		*/
+
+		//		double area = getPolygonAreaSigned2D(vertices);
+		//		System.out.println("Area: " + area);
+
+		return (area < 0 ? -area : area);
+	}
+
+
+	/**
+	 * Calculates and returns the normal vector of the plane, the 3 given points are lying in.
+	 * Also normalizes the normal if <code>normalize</code> is set to true.
+	 * 
+	 * @param v0 the v0
+	 * @param v1 the v1
+	 * @param v2 the v2
+	 * @param normalize the normalize
+	 * 
+	 * @return the normal
+	 * 
+	 * the normal vector
+	 */
+	public static Vector3D getNormal(Vector3D v0, Vector3D v1, Vector3D v2, boolean normalize){
+		float ax,ay,az, bx,by,bz;
+		ax = v1.x - v0.x; //aX
+		ay = v1.y - v0.y; //aY
+		az = v1.z - v0.z; //aZ
+		
+		bx = v2.x - v0.x; //bX
+		by = v2.y - v0.y; //by
+		bz = v2.z - v0.z; //bz
+		
+		float crossX = ay * bz - by * az;
+	    float crossY = az * bx - bz * ax;
+	    float crossZ = ax * by - bx * ay;
+	    
+	    Vector3D normal = new Vector3D(crossX, crossY, crossZ);
+	    
+	    if (normalize)
+	    	normal.normalizeLocal();
+	    
+		return normal;
+	}
+	
+	
+	/**
+	 * Calculates the distance between 2 point vectors in 3D.
+	 * 
+	 * @param v1 the v1
+	 * @param v2 the v2
+	 * @return the float
+	 */
+	public static float distance (Vector3D v1, Vector3D v2) {
+		return v1.distance(v2);
+	}
+
+	/**
+	 * Calculates the distance between 2 points in 2D (only x,y considered)
+	 * 
+	 * @param v1 the v1
+	 * @param v2 the v2
+	 * 
+	 * @return the float
+	 */
+	public static float distance2D(Vector3D v1, Vector3D v2){
+		return v1.distance2D(v2);
+	}
+	
+	
+	/**
+	 * Angle between 2 directional vectors.
+	 * 
+	 * @param v1 the v1
+	 * @param v2 the v2
+	 * @return the angle in radians
+	 */
+	public static float angleBetween(Vector3D v1, Vector3D v2) {
+		return v1.angleBetween(v2);
+	}
+
+
+	/**
+	 * Goes through a list of vector arrays and gets the minimum and maximum
+	 * values of all together.
+	 * 
+	 * @param Vector3DLists the vector3 d lists
+	 * 
+	 * @return a float[4] {minX, minY, maxX, maxY};
+	 */
+	public static float[] getMinXYMaxXY(ArrayList<Vertex[]> Vector3DLists) {
+		float minX = Float.MAX_VALUE;
+		float minY = Float.MAX_VALUE;
+		float maxX = Float.MIN_VALUE;
+		float maxY = Float.MIN_VALUE;
+		for (int j = 0; j < Vector3DLists.size(); j++) {
+			Vector3D[] vertices = Vector3DLists.get(j);
+			for (int i = 0; i < vertices.length; i++) {
+				Vector3D Vector3D = vertices[i];
+				if (Vector3D.getX() < minX)
+					minX = Vector3D.getX();
+				if (Vector3D.getX() > maxX)
+					maxX = Vector3D.getX();
+				if (Vector3D.getY() < minY)
+					minY = Vector3D.getY();
+				if (Vector3D.getY() > maxY)
+					maxY = Vector3D.getY();
+			}
+		}
+		return new float[]{minX, minY, maxX, maxY};
+	}
+
+
+	/**
+	 * Goes through a list of vector arrays and
+	 * gets the minimum and maximum values.
+	 * 
+	 * @param Vector3DList the vector3 d list
+	 * 
+	 * @return a float[4] {minX, minY, maxX, maxY};
+	 */
+	public static float[] getMinXYMaxXY(Vector3D[] Vector3DList) {
+		float minX = Float.POSITIVE_INFINITY;
+		float minY = Float.POSITIVE_INFINITY;
+		float maxX = Float.NEGATIVE_INFINITY;
+		float maxY = Float.NEGATIVE_INFINITY;
+		for (int i = 0; i < Vector3DList.length; i++) {
+			Vector3D Vector3D = Vector3DList[i];
+			if (Vector3D.getX() < minX)
+				minX = Vector3D.getX();
+			if (Vector3D.getX() > maxX)
+				maxX = Vector3D.getX();
+			if (Vector3D.getY() < minY)
+				minY = Vector3D.getY();
+			if (Vector3D.getY() > maxY)
+				maxY = Vector3D.getY();
+		}
+		return new float[]{minX, minY, maxX, maxY};
+	}
+
+
+	/**
+	 * Checks whether the supplied vertex array contains BezierVertex instances.
+	 * @param originalPointsArray the original points array
+	 * 
+	 * @return true, if contains bezier vertices
+	 */
+	public static boolean containsBezierVertices(Vertex[] originalPointsArray) {
+		for (int i = 0; i < originalPointsArray.length; i++) {
+			Vertex vertex = originalPointsArray[i];
+			if (vertex instanceof BezierVertex){
+				return true;
+			}
+		}
+		return false;
+	}
+
+
+	/**
+	 * Interpolates the BezierVertex' in the Vertex array into regular vertices,
+	 * and approximates the bezier curve this way.
+	 * 
+	 * @param vertexArr the vertex arr
+	 * @param resolution the resolution
+	 * 
+	 * @return the vertex[]
+	 */
+	public static Vertex[] createVertexArrFromBezierArr(Vertex[] vertexArr, int resolution){
+		ArrayList<Vertex> allVerticesWithCurves = new ArrayList<Vertex>();
+		//Convert BezierVertices to regular Vertices
+		//RESOTULTION FACTOR! more = better quality, less performance
+		int segments = resolution; 
+
+		//Replace the beziervertices with many calculated regular vertices
+		for (int i = 0; i < vertexArr.length; i++) {
+			Vertex vertex = vertexArr[i];
+			if (vertex instanceof BezierVertex){
+				BezierVertex b = (BezierVertex)vertex;
+				Vertex[] curve = getCubicBezierVertices(
+						vertexArr[i-1].getX(), 
+						vertexArr[i-1].getY(),
+						b.getFirstCtrlPoint().getX(), 
+						b.getFirstCtrlPoint().getY(), 
+						b.getSecondCtrlPoint().getX(),
+						b.getSecondCtrlPoint().getY(),
+						b.getX(),
+						b.getY(), 
+						segments
+				);	
+				//Add all the curve vertices
+				for (int j = 0; j < curve.length; j++) {
+					Vertex curveVertex = curve[j];
+					//							allVerticesWithCurves.add(new Vertex(curveVertex.getX(), curveVertex.getY(), 0, vertex.getR(),vertex.getG(),vertex.getB(),vertex.getA()));
+					curveVertex.setRGBA(vertex.getR(), vertex.getG(), vertex.getB(), vertex.getA());
+					if (allVerticesWithCurves.size() > 0){
+						//Only add if not equal to last one in list
+						if (!allVerticesWithCurves.get(allVerticesWithCurves.size()-1).equalsVector(curveVertex)){
+							allVerticesWithCurves.add(curveVertex);	
+						}
+					}else{
+						allVerticesWithCurves.add(curveVertex);	
+					}
+				}
+			}else{
+				//Add the normal vertices
+				allVerticesWithCurves.add(new Vertex(vertex));
+			}//else
+		}//For
+		return (Vertex[])allVerticesWithCurves.toArray(new Vertex[allVerticesWithCurves.size()]);
+	}
+
+
+	/**
+	 * Interpolates the BezierVertex' in the Vertex array lists into regular vertices,
+	 * and approximates the bezier curve this way.
+	 * 
+	 * @param vertexArrays the vertex arrays
+	 * @param resolution the resolution
+	 * 
+	 * @return the list< vertex[]>
+	 */
+	public static List<Vertex[]> createVertexArrFromBezierVertexArrays(List<Vertex[]> vertexArrays, int resolution){
+		ArrayList<Vertex[]> partialPathsListCurves = new ArrayList<Vertex[]>() ;
+		for (int i = 0; i < vertexArrays.size(); i++) {
+			Vertex[] partArray = vertexArrays.get(i);
+			partArray = createVertexArrFromBezierArr(partArray, resolution);
+			partialPathsListCurves.add(partArray);
+		}
+		return partialPathsListCurves;
+	}
+
+
+	/**
+	 * Calculates the vertices of a quadric bezier curve defined by the
+	 * startpoint curveStartP, the controlpoint curveControlP and the end point curveEndP.<br>
+	 * The segments parameter defines the resolution of the curve.
+	 * <br>Note: This method uses only the X and Y Coordinates and generates a 2D curve!
+	 * 
+	 * @param curveStartP the curve start p
+	 * @param curveControlP the curve control p
+	 * @param curveEndP the curve end p
+	 * @param segmentDetail the segment detail
+	 * 
+	 * @return the quad bezier vertices
+	 */
+	public static Vertex[] getQuadBezierVertices(Vertex curveStartP, Vertex curveControlP, Vertex curveEndP, int segmentDetail){
+		//Change detail here
+		double segments = (double)segmentDetail;
+		double count = 0;  //used as our counter
+		double detailBias; //how many points should we put on our curve.
+
+		float x,y; //used as accumulators to make our code easier to read
+
+		//Vertex[] vertices = new Vertex[(int)segments]; //Org
+		Vertex[] vertices = new Vertex[(int)segments+1]; //FIXME TEST include start point
+		vertices[vertices.length-1] = new Vertex(curveStartP);
+
+		detailBias = 1.0 / segments; //we'll put 51 points on out curve (0.02 detail bias)
+
+		int loopCount = 0;
+		do{
+			double b1 =  count*count;
+			double b2 =	(2*count * (1-count)); 
+			double b3 = ((1-count) * (1-count));
+
+			x = (float)(curveStartP.getX()*b1 + curveControlP.getX()*b2 + curveEndP.getX()*b3);
+			y = (float)(curveStartP.getY()*b1 + curveControlP.getY()*b2 + curveEndP.getY()*b3);
+
+			vertices[loopCount] = new Vertex(x,y,0);
+
+			count += detailBias;
+			loopCount++;
+		}while( count <= 1);
+		vertices = (Vertex[]) Tools3D.reverse(vertices);
+		return vertices;
+	}
+
+
+	/**
+	 * Calculates/Interpolates the vertices of a bezier curve defined by the startpoint p,
+	 * the controlpoints b,b2 and the end point p2.
+	 * The segments parameter defines the resolution of the curve
+	 * 
+	 * @param startX the px0
+	 * @param startY the py0
+	 * @param controlP1X the bx1
+	 * @param controlP1Y the by1
+	 * @param controlP2X the b2x2
+	 * @param controlP2Y the b2y2
+	 * @param endX the p2x3
+	 * @param endY the p2y3
+	 * @param segments the segments
+	 * @return the cubic bezier vertices
+	 */
+	public static Vertex[] getCubicBezierVertices (
+			float startX, 
+			float startY, 
+			float controlP1X, 
+			float controlP1Y,
+			float controlP2X, 
+			float controlP2Y, 
+			float endX,
+			float endY, 
+			int segments
+	)
+	{
+		//Vertex[] returnArray = new Vertex[segments*2]; //org
+		//Vertex[] returnArray = new Vertex[segments]; //last org!
+		Vertex[] returnArray = new Vertex[segments+1]; //FIXME test include start point in array
+		returnArray[0] = new Vertex(startX,startY,0);
+
+		float lvl = 0.0f;
+		float x;
+		float y;
+
+		/*
+			x = (float)((px0 * (1.0 - lvl) * (1.0 - lvl) * (1.0 - lvl)) +
+					(bx1 * 3.0 * lvl * (1.0 - lvl) * (1.0 - lvl)) +
+					(b2x2 * 3.0 * lvl * lvl * (1.0 - lvl)) +
+					(p2x3 * lvl * lvl * lvl));
+
+			y = (float)((py0 * (1.0 - lvl) * (1.0 - lvl) * (1.0 - lvl)) +
+					(by1 * 3.0 * lvl * (1.0 - lvl) * (1.0 - lvl)) +
+					(b2y2 * 3.0 * lvl * lvl * (1.0 - lvl)) +
+					(p2y3 * lvl * lvl * lvl));
+
+		 */
+		for (int i = 0; i < segments; i++) {
+			/*
+				xx0 = Math.min(xx0, x);
+				xx1 = Math.max(xx1, x);
+				yy0 = Math.min(yy0, y);
+				yy1 = Math.max(yy1, y);
+			 */
+
+			//			returnArray[i*2] = new Vertex(x,y,0); //org
+
+			lvl = ((i + 1) / (float) segments);
+
+			x = (float)((startX * (1.0 - lvl) * (1.0 - lvl) * (1.0 - lvl)) +
+					(controlP1X * 3.0 * lvl * (1.0 - lvl) * (1.0 - lvl)) +
+					(controlP2X * 3.0 * lvl * lvl * (1.0 - lvl)) +
+					(endX * lvl * lvl * lvl));
+
+			y = (float)((startY * (1.0 - lvl) * (1.0 - lvl) * (1.0 - lvl)) +
+					(controlP1Y * 3.0 * lvl * (1.0 - lvl) * (1.0 - lvl)) +
+					(controlP2Y * 3.0 * lvl * lvl * (1.0 - lvl)) +
+					(endY * lvl * lvl * lvl));
+
+			/*
+				xx0 = Math.min(xx0, x);
+				xx1 = Math.max(xx1, x);
+				yy0 = Math.min(yy0, y);
+				yy1 = Math.max(yy1, y);
+			 */
+
+			//returnArray[i] = new Vertex(x,y,0); //org
+			returnArray[i+1] = new Vertex(x,y,0); //FIXME TEST
+
+			//returnArray[i*2+1] = new Vertex(x,y,0); //org
+			//System.out.println(x + " " + y);
+		}
+		return returnArray;
+	}
+
+
+	/**
+	 * Converts the values of a quadric bezier curve into a cubic.
+	 * <br>Returns a BezierVertex with the values of the cubic curve equivalent to
+	 * the quadric curve. -> Creates 2 bezier controlpoints out of one.
+	 * 
+	 * @param bezierStart the bezier start
+	 * @param firstQuadControlP the first quad control p
+	 * @param quadEndPoint the quad end point
+	 * 
+	 * @return the cubic from quadratic curve
+	 */
+	public static BezierVertex getCubicFromQuadraticCurve(Vertex bezierStart, Vertex firstQuadControlP, Vertex quadEndPoint){
+		Vertex bezStartCopy = (Vertex)bezierStart.getCopy();
+		Vertex firstQuadControlPCopy = (Vertex)firstQuadControlP.getCopy();
+		Vertex quadEndPCopy = (Vertex)quadEndPoint.getCopy();
+		
+		Vertex tmp1 = (Vertex)firstQuadControlPCopy.getSubtracted(bezStartCopy);
+		tmp1.scaleLocal(2/3);
+		Vertex cp1 = (Vertex)bezStartCopy.getAdded(tmp1);
+		
+		Vertex tmp2 = (Vertex)quadEndPCopy.getSubtracted(firstQuadControlP);
+		tmp2.scaleLocal(1/3);
+		Vertex cp2 = (Vertex)firstQuadControlP.getAdded(tmp1);
+		return new BezierVertex(cp1.getX(), cp1.getY(),0, cp2.getX(), cp2.getY(),0, quadEndPCopy.getX(), quadEndPCopy.getY(), 0);
+	}
+
+
+
+	/**
+	 * Returns an arraylist of vertices that form the arc, built from the
+	 * supplied parameters.
+	 * 
+	 * @param fromX1 curve startpointX
+	 * @param fromX2 curve startpointY
+	 * @param rx the x radius
+	 * @param ry the y radius
+	 * @param phi the phi
+	 * @param large_arc the large_arc
+	 * @param sweep the sweep
+	 * @param x the x
+	 * @param y the y
+	 * @param segments the resolution of the curve, more segments -> smoother curve -> less performance
+	 * 
+	 * @return the list< vertex>
+	 */
+	public static List<Vertex> arcTo(float fromX1, float fromX2, float rx, float ry, float phi, boolean large_arc, boolean sweep, float x , float y, int segments){
+		ArrayList<Vertex> vertexList = new ArrayList<Vertex>();
+		int circle_points = segments;
+		//current point
+		float x1 = fromX1; 
+		float y1 = fromX2; 
+		float x2 = x;
+		float y2 = y;
+		float cp = (float) Math.cos(Math.toRadians(phi));
+		float sp = (float) Math.sin(Math.toRadians(phi));
+		//	    float cp = (float) Math.cos(phi);
+		//	    float sp = (float) Math.sin(phi);
+
+		float dx = .5f * (x1 - x2);
+		float dy = .5f * (y1 - y2);
+
+		float x_ = cp * dx + sp * dy;
+		float y_ = -sp * dx + cp * dy;
+
+		float zaehler = (((rx*rx) * (ry*ry)) - ((rx*rx) * (y_*y_)) - ((ry*ry) * (x_*x_)));
+		if (zaehler < 0){
+			zaehler *=-1;
+		}
+		//	    float r = (float)Math.sqrt( ( -1*(((rx*rx) * (ry*ry)) - ((rx*rx) * (y_*y_)) - ((ry*ry) * (x_*x_))) ) /
+		//	                      (((rx*rx) * (y_*y_)) + ((ry*ry) * (x_*x_))));
+		float r = (float)Math.sqrt( (zaehler ) /
+				(((rx*rx) * (y_*y_)) + ((ry*ry) * (x_*x_))));
+
+		/*
+		    System.out.println(((rx*rx) * (ry*ry)) - ((rx*rx) * (y_*y_)) - ((ry*ry) * (x_*x_)) );
+		    System.out.println(r);   
+		 */
+
+		//FIXME why does this often help? but not in all cases
+		//	    if (phi>=0){
+		//	    	large_arc = !large_arc;
+		//	    }
+
+		//Orgininal
+		//	    if (large_arc != sweep){
+		//	    	r =-r;
+		//	    }   
+
+		if (large_arc != sweep){
+			//	    	r = Math.abs(r);
+			r =+r;
+		}else if (large_arc == sweep){
+			r = -r;
+		}
+
+
+		float cx_ = (r * rx * y_) / ry;
+		float cy_ = (-r * ry * x_) / rx;
+		float cx = cp * cx_ - sp * cy_ + .5f * (x1 + x2);
+		float cy = sp * cx_ + cp * cy_ + .5f * (y1 + y2);
+
+		float psi = ToolsGeometry.angle(new float[]{1,0}, new float[]{(x_ - cx_)/rx, (y_ - cy_)/ry});
+
+		float delta = ToolsGeometry.angle( new float[]{(x_ - cx_)/rx , (y_ - cy_)/ry} , new float[]{(-x_ - cx_)/rx, (-y_ - cy_)/ry});
+
+		if (sweep && delta < 0){
+			delta += Math.PI * 2;
+		}
+		if (!sweep && delta > 0){
+			delta -= Math.PI * 2;
+		}
+
+		//	    float n_points = max( int( abs(circle_points * delta / (2 * Math.PI))), 1);
+		float n_points = Math.max((int)( Math.abs(circle_points * delta / (2 * Math.PI))), 1);
+
+		//Add curve startpoint
+		//	    vertexList.add(new Vertex(x1,y2,0));
+		//Add the rest
+		for (int i = 0; i < n_points+1; i++) {
+			float theta = psi + i * delta / n_points;
+			float ct = (float) Math.cos(theta);
+			float st = (float) Math.sin(theta);
+
+			float newX = cp * rx * ct - sp * ry * st + cx;
+			float newY = sp * rx * ct + cp * ry * st + cy;
+			float newZ = 0;
+
+			/*
+	            //This prevents adding the same vertex as startpoint (fromx, fromY)
+	            if ((!vertexList.isEmpty() && (vertexList.get(vertexList.size()-1).x == newX && vertexList.get(vertexList.size()-1).y == newY))
+	            ){
+	            	//System.out.println("Same vertex, not using it.");
+	            }else if(vertexList.isEmpty() && (fromX1 == newX && fromX2 == newY)  ){
+	            	//System.out.println("Same vertex as (fromX, fromY), and list empty, not using it.");
+	            }else{
+	            	 vertexList.add(new Vertex(newX, newY , newZ));
+	            }
+			 */
+
+			//            /*
+			vertexList.add(new Vertex(newX, newY , newZ));
+			//            /*
+
+			//            vertexList.add(new Vertex(cp * rx * ct - sp * ry * st + cx, sp * rx * ct + cp * ry * st + cy , 0));
+			//            System.out.println(vertexList.get(vertexList.size()-1));
+		}
+		return vertexList;
+	}
+
+
+	/**
+	 * Method is used by the method to draw an arc (arcTo()).
+	 * 
+	 * @param u the u
+	 * @param v the v
+	 * 
+	 * @return the float
+	 */
+	private static float angle(float[] u, float[] v){
+		float a = (float)Math.acos( (u[0]*v[0] + u[1]*v[1]) / (float)Math.sqrt((u[0]*u[0] + u[1]*u[1]) * (v[0]*v[0] + v[1]*v[1]))) ;
+		float sgn = (u[0]*v[1] > u[1]*v[0])? 1 : -1;
+		return sgn * a;
+	}
+
+
+
+
 }
+

@@ -21,8 +21,7 @@ import org.mt4j.components.MTComponent;
 import org.mt4j.components.TransformSpace;
 import org.mt4j.util.camera.IFrustum;
 import org.mt4j.util.math.Ray;
-import org.mt4j.util.math.Tools3D;
-import org.mt4j.util.math.ToolsIntersection;
+import org.mt4j.util.math.ToolsGeometry;
 import org.mt4j.util.math.Vector3D;
 
 
@@ -83,7 +82,7 @@ public class BoundsArbitraryPlanarPolygon implements IBoundingShape {
 	
 	public Vector3D getCenterPointLocal() {
 		//TODO check if entierely in x,y plane and use this, else create bounding box/sphere and get the center
-		return  Tools3D.getPolygonCenterOfMass2D(this.boundingPointsLocal);
+		return  ToolsGeometry.getPolygonCenterOfMass2D(this.boundingPointsLocal);
 	}
 	
 	
@@ -107,11 +106,11 @@ public class BoundsArbitraryPlanarPolygon implements IBoundingShape {
 	public Vector3D getIntersectionLocal(Ray ray) {
 		Vector3D[] verts 	= this.boundingPointsLocal;
 		Vector3D polyNormal = this.getNormalLocal();
-		Vector3D testPoint 	= ToolsIntersection.getRayPlaneIntersection(ray, polyNormal, verts[0]);
+		Vector3D testPoint 	= ToolsGeometry.getRayPlaneIntersection(ray, polyNormal, verts[0]);
 		if (testPoint == null)
 			return null;
 		
-		return (Tools3D.isPoint3DInPlanarPolygon(verts, testPoint, polyNormal)? testPoint : null);
+		return (ToolsGeometry.isPoint3DInPlanarPolygon(verts, testPoint, polyNormal)? testPoint : null);
 	}
 
 	
@@ -121,7 +120,7 @@ public class BoundsArbitraryPlanarPolygon implements IBoundingShape {
 	 * @return the normal local
 	 */
 	private Vector3D getNormalLocal() {
-		return Tools3D.getNormal(this.boundingPointsLocal[0], this.boundingPointsLocal[1], this.boundingPointsLocal[2], true);
+		return ToolsGeometry.getNormal(this.boundingPointsLocal[0], this.boundingPointsLocal[1], this.boundingPointsLocal[2], true);
 	}
 
 	
@@ -147,7 +146,7 @@ public class BoundsArbitraryPlanarPolygon implements IBoundingShape {
 
 
 	public boolean containsPointLocal(Vector3D testPoint) {
-		return Tools3D.isPolygonContainsPoint(this.getVectorsLocal(), testPoint);
+		return ToolsGeometry.isPolygonContainsPoint(this.getVectorsLocal(), testPoint);
 	}
 
 
@@ -190,7 +189,7 @@ public class BoundsArbitraryPlanarPolygon implements IBoundingShape {
 //		return p.length();
 		
 		Vector3D[] v = xyBoundsRect.getVectorsRelativeToParent();
-		float[] minMax = Tools3D.getMinXYMaxXY(v);
+		float[] minMax = ToolsGeometry.getMinXYMaxXY(v);
 		return minMax[3] - minMax[1];
 	}
 
@@ -211,7 +210,7 @@ public class BoundsArbitraryPlanarPolygon implements IBoundingShape {
 //		return p.length();
 		
 		Vector3D[] v = xyBoundsRect.getVectorsGlobal();
-		float[] minMax = Tools3D.getMinXYMaxXY(v);
+		float[] minMax = ToolsGeometry.getMinXYMaxXY(v);
 		return minMax[3] - minMax[1];
 	}
 
@@ -270,7 +269,7 @@ public class BoundsArbitraryPlanarPolygon implements IBoundingShape {
 //		return p.length();
 		
 		Vector3D[] v = xyBoundsRect.getVectorsRelativeToParent();
-		float[] minMax = Tools3D.getMinXYMaxXY(v);
+		float[] minMax = ToolsGeometry.getMinXYMaxXY(v);
 		return minMax[2] - minMax[0];
 	}
 	
@@ -291,7 +290,7 @@ public class BoundsArbitraryPlanarPolygon implements IBoundingShape {
 //		return p.length();
 		
 		Vector3D[] v = xyBoundsRect.getVectorsGlobal();
-		float[] minMax = Tools3D.getMinXYMaxXY(v);
+		float[] minMax = ToolsGeometry.getMinXYMaxXY(v);
 		return minMax[2] - minMax[0];
 	}
 

@@ -20,7 +20,7 @@ package org.mt4j.util.camera;
 import javax.media.opengl.GL;
 
 import org.mt4j.util.MT4jSettings;
-import org.mt4j.util.math.FastMath;
+import org.mt4j.util.math.ToolsMath;
 import org.mt4j.util.math.Plane;
 import org.mt4j.util.math.Vector3D;
 
@@ -167,11 +167,11 @@ public class Frustum implements IFrustum{
 		this.farD = farD;
 
 		// compute width and height of the near and far plane sections
-		tang = FastMath.tan(this.angle); //(float) Math.tan(this.angle);
-		sphereFactorY = (1.0f/FastMath.cos(this.angle)); // (float) (1.0/Math.cos(this.angle)); 
+		tang = ToolsMath.tan(this.angle); //(float) Math.tan(this.angle);
+		sphereFactorY = (1.0f/ToolsMath.cos(this.angle)); // (float) (1.0/Math.cos(this.angle)); 
 
-		float anglex = FastMath.atan(tang*ratio); //(float) Math.atan(tang*ratio);
-		sphereFactorX = (1.0f/FastMath.cos(anglex));//(float) (1.0f/Math.cos(anglex)); 
+		float anglex = ToolsMath.atan(tang*ratio); //(float) Math.atan(tang*ratio);
+		sphereFactorX = (1.0f/ToolsMath.cos(anglex));//(float) (1.0f/Math.cos(anglex)); 
 
 		nh = nearD * tang;
 		nw = nh * ratio; 

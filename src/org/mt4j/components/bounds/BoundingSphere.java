@@ -39,7 +39,7 @@ import org.mt4j.components.visibleComponents.shapes.AbstractShape;
 import org.mt4j.components.visibleComponents.shapes.mesh.MTTriangleMesh;
 import org.mt4j.components.visibleComponents.shapes.mesh.Triangle;
 import org.mt4j.util.camera.IFrustum;
-import org.mt4j.util.math.FastMath;
+import org.mt4j.util.math.ToolsMath;
 import org.mt4j.util.math.Matrix;
 import org.mt4j.util.math.Plane;
 import org.mt4j.util.math.Ray;
@@ -60,7 +60,6 @@ import processing.core.PGraphics;
 	 * <code>computeFramePoint</code> in turn calls <code>containAABB</code>.
 	 *
 	 * @author Mark Powell, Christopher Ruff
-	 * @version $Id$
 	 */
 	public class BoundingSphere implements IBoundingShape{
 //	    private static final Logger logger = Logger.getLogger(BoundingSphere.class.getName());
@@ -546,7 +545,7 @@ import processing.core.PGraphics;
 	     * @see #calcWelzl(java.nio.FloatBuffer)
 	     */
 	    private void setSphere(Vector3D O, Vector3D A) {
-	        radius = FastMath.sqrt(((A.x - O.x) * (A.x - O.x) + (A.y - O.y)
+	        radius = ToolsMath.sqrt(((A.x - O.x) * (A.x - O.x) + (A.y - O.y)
 	                * (A.y - O.y) + (A.z - O.z) * (A.z - O.z)) / 4f) + radiusEpsilon - 1f;
 	        
 //	        center.interpolate(O, A, .5f);
@@ -605,9 +604,9 @@ import processing.core.PGraphics;
 
 
 	    private float getMaxAxis(Vector3D scale) {
-	        float x = FastMath.abs(scale.x);
-	        float y = FastMath.abs(scale.y);
-	        float z = FastMath.abs(scale.z);
+	        float x = ToolsMath.abs(scale.x);
+	        float y = ToolsMath.abs(scale.y);
+	        float z = ToolsMath.abs(scale.z);
 	        
 	        if (x >= y) {
 	            if (x >= z)
@@ -942,7 +941,7 @@ import processing.core.PGraphics;
 	        	a1 = rayDir.dot(diff);
 	        	
 	            discr = (a1 * a1) - a;
-	            root = FastMath.sqrt(discr);
+	            root = ToolsMath.sqrt(discr);
 	            float[] distances = new float[] { root - a1 };
 	            
 	            Vector3D hitVect = new Vector3D(rayDir).scaleLocal(distances[0]).addLocal(ray.getRayStartPoint()) ;
@@ -968,8 +967,8 @@ import processing.core.PGraphics;
 	        if (discr < 0.0){
 //	            return new IntersectionRecord();
 	        	return null;
-	        }else if (discr >= FastMath.ZERO_TOLERANCE) {
-	            root = FastMath.sqrt(discr);
+	        }else if (discr >= ToolsMath.ZERO_TOLERANCE) {
+	            root = ToolsMath.sqrt(discr);
 	            float[] distances = new float[] { -a1 - root, -a1 + root };
 	            
 	            Vector3D[] points = new Vector3D[] { 
@@ -1062,7 +1061,7 @@ import processing.core.PGraphics;
 	    
 
 	    public float getVolume() {
-	        return 4 * FastMath.ONE_THIRD * FastMath.PI * radius * radius * radius;
+	        return 4 * ToolsMath.ONE_THIRD * ToolsMath.PI * radius * radius * radius;
 	    }
 
 

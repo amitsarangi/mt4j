@@ -28,7 +28,7 @@ import org.mt4j.input.inputProcessors.MTGestureEvent;
 import org.mt4j.input.inputProcessors.componentProcessors.AbstractComponentProcessor;
 import org.mt4j.input.inputProcessors.componentProcessors.AbstractCursorProcessor;
 import org.mt4j.util.math.Tools3D;
-import org.mt4j.util.math.ToolsIntersection;
+import org.mt4j.util.math.ToolsGeometry;
 import org.mt4j.util.math.Vector3D;
 
 import processing.core.PApplet;
@@ -440,7 +440,7 @@ public class RotateProcessor extends AbstractCursorProcessor {
 			}
 			
 			//TODO save last position and use that one if new one is null.. everywhere!
-			Vector3D newRotateFingerPos = ToolsIntersection.getRayPlaneIntersection(
+			Vector3D newRotateFingerPos = ToolsGeometry.getRayPlaneIntersection(
 					Tools3D.getCameraPickRay(applet, object,rotateFingerCursor.getCurrentEvent().getPosX(), rotateFingerCursor.getCurrentEvent().getPosY()), 
 					dragPlaneNormal, 
 					rotateFingerStart.getCopy());
@@ -467,7 +467,7 @@ public class RotateProcessor extends AbstractCursorProcessor {
 				return;
 			}
 			
-			Vector3D newPinFingerPos = ToolsIntersection.getRayPlaneIntersection(
+			Vector3D newPinFingerPos = ToolsGeometry.getRayPlaneIntersection(
 					Tools3D.getCameraPickRay(applet, object, pinFingerCursor.getCurrentEvent().getPosX(), pinFingerCursor.getCurrentEvent().getPosY()), 
 					dragPlaneNormal, 
 					pinFingerStart.getCopy()); 

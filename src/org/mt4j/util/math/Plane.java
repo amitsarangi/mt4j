@@ -31,13 +31,10 @@ public class Plane {
      /** The Constant YZ. */
      public static final Plane YZ = new Plane(new Vector3D(), Vector3D.X_AXIS);
 
-     /** Classifier constant for {@link #classifyPoint(Vector3D)}. */
      public static final int PLANE_FRONT = -1;
 
-     /** Classifier constant for {@link #classifyPoint(Vector3D)}. */
      public static final int PLANE_BACK = 1;
 
-     /** Classifier constant for {@link #classifyPoint(Vector3D)}. */
      public static final int ON_PLANE = 0;
 
      /** The Normal of the plane. */
@@ -65,12 +62,12 @@ public class Plane {
       * @param v2 the v2
       */
      public Plane(Vector3D v0, Vector3D v1, Vector3D v2) {
-    	 this.normal = Tools3D.getNormal(v0, v1, v2, true);
+    	 this.normal = ToolsGeometry.getNormal(v0, v1, v2, true);
     	 this.origin = v0;
      }
 
      public void reconstruct(Vector3D v0, Vector3D v1, Vector3D v2) {
-    	 this.normal = Tools3D.getNormal(v0, v1, v2, true);
+    	 this.normal = ToolsGeometry.getNormal(v0, v1, v2, true);
     	 this.origin = v0;
      }
      
@@ -110,7 +107,7 @@ public class Plane {
 //                     return p;
 //             } else
 //                     return null;
-             return ToolsIntersection.getRayPlaneIntersection(r, this.normal, this.origin);
+             return ToolsGeometry.getRayPlaneIntersection(r, this.normal, this.origin);
      }
 
      /**
@@ -123,9 +120,9 @@ public class Plane {
       */
      public int classifyPoint(Vector3D p) {
              float d = this.origin.getSubtracted(p).dot(normal);
-             if (d < - FastMath.FLT_EPSILON)
+             if (d < - ToolsMath.FLT_EPSILON)
                      return PLANE_FRONT;
-             else if (d > FastMath.FLT_EPSILON)
+             else if (d > ToolsMath.FLT_EPSILON)
                      return PLANE_BACK;
              return ON_PLANE;
      }

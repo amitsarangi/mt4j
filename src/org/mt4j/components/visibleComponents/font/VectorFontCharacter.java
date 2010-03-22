@@ -22,7 +22,7 @@ import java.util.List;
 import org.mt4j.components.bounds.IBoundingShape;
 import org.mt4j.components.visibleComponents.GeometryInfo;
 import org.mt4j.components.visibleComponents.shapes.mesh.MTTriangleMesh;
-import org.mt4j.util.math.Tools3D;
+import org.mt4j.util.math.ToolsGeometry;
 import org.mt4j.util.math.Vertex;
 import org.mt4j.util.opengl.GluTrianglulator;
 
@@ -62,7 +62,7 @@ public class VectorFontCharacter extends
 		
 		//Caluculate vertices from bezierinformation
 		int segments = 10; 
-		List<Vertex[]> bezierContours = Tools3D.createVertexArrFromBezierVertexArrays(contours, segments);
+		List<Vertex[]> bezierContours = ToolsGeometry.createVertexArrFromBezierVertexArrays(contours, segments);
 		
 		//Triangulate bezier contours
 		GluTrianglulator triangulator = new GluTrianglulator(pApplet);

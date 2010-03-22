@@ -24,6 +24,7 @@ import java.util.List;
 import javax.media.opengl.GL;
 
 import org.mt4j.util.math.Tools3D;
+import org.mt4j.util.math.ToolsGeometry;
 import org.mt4j.util.math.Vertex;
 
 import processing.core.PApplet;
@@ -158,12 +159,12 @@ public class MTStencilPolygon extends MTPolygon {
 		//SEGMENTS CONRTOLS THE DETAIL OF THE BEZIER CURVE APPROXIMATION
 		int segments = 12; 
 		//TODO let the user do that beforehand?
-		Vertex[] allVerts = Tools3D.createVertexArrFromBezierArr(innerVertices, segments);
+		Vertex[] allVerts = ToolsGeometry.createVertexArrFromBezierArr(innerVertices, segments);
 		this.setVertices(allVerts);
 		
 		//Replace beziervertices in the SUB-PATHS (outlines) of the glyphs with many calculated regular vertices
 		//The subpaths are used to draw the outline
-		this.contours = Tools3D.createVertexArrFromBezierVertexArrays(contours, segments);
+		this.contours = ToolsGeometry.createVertexArrFromBezierVertexArrays(contours, segments);
 		
 	    reCalcMinMax();
 	    
@@ -180,7 +181,7 @@ public class MTStencilPolygon extends MTPolygon {
 	 * Re calc min max.
 	 */
 	private void reCalcMinMax(){
-		minMax = Tools3D.getMinXYMaxXY(this.getVerticesLocal());
+		minMax = ToolsGeometry.getMinXYMaxXY(this.getVerticesLocal());
 		minX = minMax[0]-5;
 	    minY = minMax[1]-5;
 	    maxX = minMax[2]+5;

@@ -33,7 +33,7 @@ import org.mt4j.input.inputProcessors.globalProcessors.CursorTracer;
 import org.mt4j.sceneManagement.AbstractScene;
 import org.mt4j.util.MTColor;
 import org.mt4j.util.camera.MTCamera;
-import org.mt4j.util.math.Tools3D;
+import org.mt4j.util.math.ToolsMath;
 import org.mt4j.util.math.Vector3D;
 
 import processing.core.PApplet;
@@ -170,7 +170,7 @@ public class AirHockeyScene extends AbstractScene {
 		ball.setNoStroke(true);
 		ball.setName("ball");
 		physicsContainer.addChild(ball);
-		ball.getBody().applyImpulse(new Vec2(Tools3D.getRandom(-8f, 8),Tools3D.getRandom(-8, 8)), ball.getBody().getWorldCenter());
+		ball.getBody().applyImpulse(new Vec2(ToolsMath.getRandom(-8f, 8),ToolsMath.getRandom(-8, 8)), ball.getBody().getWorldCenter());
 		
 		//Create the GOALS
 		HockeyGoal goal1 = new HockeyGoal(new Vector3D(0, mtApplication.height/2f), 50, mtApplication.height/4f, mtApplication, world, 0.0f, 0.1f, 0.0f, scale);
@@ -468,7 +468,7 @@ public class AirHockeyScene extends AbstractScene {
 											IPhysicsComponent a = (IPhysicsComponent)theBall;
 											a.getBody().setXForm(new Vec2(getMTApplication().width/2f/scale, getMTApplication().height/2f/scale), a.getBody().getAngle());
 //											a.getBody().setLinearVelocity(new Vec2(0,0));
-											a.getBody().setLinearVelocity(new Vec2(Tools3D.getRandom(-8, 8),Tools3D.getRandom(-8, 8)));
+											a.getBody().setLinearVelocity(new Vec2(ToolsMath.getRandom(-8, 8),ToolsMath.getRandom(-8, 8)));
 											a.getBody().setAngularVelocity(0);
 											theBall.setUserData("resetted", null); 
 										}
@@ -527,7 +527,7 @@ public class AirHockeyScene extends AbstractScene {
 					IPhysicsComponent a = (IPhysicsComponent)ball;
 					a.getBody().setXForm(new Vec2(getMTApplication().width/2f/scale, getMTApplication().height/2f/scale), a.getBody().getAngle());
 //					a.getBody().setLinearVelocity(new Vec2(0,0));
-					a.getBody().setLinearVelocity(new Vec2(Tools3D.getRandom(-8, 8),Tools3D.getRandom(-8, 8)));
+					a.getBody().setLinearVelocity(new Vec2(ToolsMath.getRandom(-8, 8),ToolsMath.getRandom(-8, 8)));
 					a.getBody().setAngularVelocity(0);
 					ball.setUserData("resetted", null); 
 				}

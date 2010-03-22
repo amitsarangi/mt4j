@@ -30,7 +30,7 @@ import org.mt4j.input.inputData.MTFingerInputEvt;
 import org.mt4j.input.inputProcessors.IInputProcessor;
 import org.mt4j.input.inputProcessors.componentProcessors.AbstractComponentProcessor;
 import org.mt4j.input.inputProcessors.componentProcessors.AbstractCursorProcessor;
-import org.mt4j.util.math.FastMath;
+import org.mt4j.util.math.ToolsMath;
 import org.mt4j.util.math.Matrix;
 import org.mt4j.util.math.Quaternion;
 import org.mt4j.util.math.Ray;
@@ -310,7 +310,7 @@ public class ArcballProcessor extends AbstractCursorProcessor {
 		    	if (camInSphere){ //we hit the backside of the boundingsphere, have to invert direction
 //		    		angle *= -1;
 //		    		rotationAxis.rotateZ(PApplet.radians(180)); //better than angle*-1
-		    		rotationAxis.rotateZ(FastMath.PI); //better than angle*-1
+		    		rotationAxis.rotateZ(ToolsMath.PI); //better than angle*-1
 //		    		rotationAxis.rotateX(PApplet.radians(180)); //better than angle*-1
 //		    		rotationAxis.scaleLocal(-1); //like angle*-1
 //		    		rotationAxis.rotateAroundAxisLocal(rotationAxis, PApplet.radians(90));

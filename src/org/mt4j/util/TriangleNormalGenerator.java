@@ -24,8 +24,8 @@ import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.log4j.SimpleLayout;
 import org.mt4j.components.visibleComponents.GeometryInfo;
-import org.mt4j.util.math.FastMath;
-import org.mt4j.util.math.Tools3D;
+import org.mt4j.util.math.ToolsGeometry;
+import org.mt4j.util.math.ToolsMath;
 import org.mt4j.util.math.Vector3D;
 import org.mt4j.util.math.Vertex;
 
@@ -820,7 +820,7 @@ public class TriangleNormalGenerator {
 						logger.debug("Face " + j + ", vdP" + i + " (Vertex: " + vertexDatas.get(currentVertexPointer).getVertex() + ")" + " normal not yet set -> set it: " + vertexNormalsCurrentFace[i]);
 					}else{//Vertexdata at index already contains a vertexnormal -> check if its the equal to this faces currentVD's
 						
-						if (currentFacesCurrentVDNormal.equalsVectorWithTolerance(vertexNormalsCurrentFace[i], FastMath.ZERO_TOLERANCE)){
+						if (currentFacesCurrentVDNormal.equalsVectorWithTolerance(vertexNormalsCurrentFace[i], ToolsMath.ZERO_TOLERANCE)){
 							logger.debug("Face " + j + ", vdP" + i +  " (Vertex: " + vertexDatas.get(currentVertexPointer).getVertex() + ")" + " already CONTAINS a normal with the same values as the normal of this faces point ->  we can leave the index and normal at the same place: N:" + vertexNormalsCurrentFace[i]);
 						}else{
 							int duplicateIndexOfSameVertDiffNormal = currentVertexDataP0OrP1OrP2.getVertDuplicateSameVertDiffNormalListIndex(vertexNormalsCurrentFace[i]); 
@@ -1199,7 +1199,7 @@ public class TriangleNormalGenerator {
 			 */
 			public void calcFaceNormal(ArrayList<VertexData> vertexList){
 				//We DONT NORMALIZE YET! 
-				this.normal = Tools3D.getNormal(vertexList.get(p0).getVertex(), vertexList.get(p1).getVertex(), vertexList.get(p2).getVertex(), false);
+				this.normal = ToolsGeometry.getNormal(vertexList.get(p0).getVertex(), vertexList.get(p1).getVertex(), vertexList.get(p2).getVertex(), false);
 				this.normalNormalized = normal.getCopy();
 				this.normalNormalized.normalizeLocal();
 			}
@@ -1217,7 +1217,7 @@ public class TriangleNormalGenerator {
 				center = vertexDataList.get(p0).getVertex().getCopy();
 				center.addLocal(vertexDataList.get(p1).getVertex());
 				center.addLocal(vertexDataList.get(p2).getVertex());
-				center.scaleLocal(FastMath.ONE_THIRD);
+				center.scaleLocal(ToolsMath.ONE_THIRD);
 				return this.center;
 			}
 	
@@ -1270,7 +1270,7 @@ public class TriangleNormalGenerator {
 						
 						
 						//Dont add faces normals that are equal to this faces normals
-						if (!useNormalsEqualToFace && nextSmoothNeighborNormalNormalized.equalsVectorWithTolerance(normalizedFaceNormal, FastMath.ZERO_TOLERANCE)){
+						if (!useNormalsEqualToFace && nextSmoothNeighborNormalNormalized.equalsVectorWithTolerance(normalizedFaceNormal, ToolsMath.ZERO_TOLERANCE)){
 							alreadyAddedSameNormalIn = true;
 							logger.debug("Not using normal: " + nextSmoothNeighborNormalNormalized + " of face " + neighborFaceP0.index + " in vertex norm calc because its equal to this faces normal.");
 						}
@@ -1278,7 +1278,7 @@ public class TriangleNormalGenerator {
 //						{
 						if (!useEqualNeighborNormalsAgain){
 							for(Vector3D neighBorNorm : alreadyAddedInP0){
-								if(neighBorNorm.equalsVectorWithTolerance(nextSmoothNeighborNormalNormalized, FastMath.ZERO_TOLERANCE)){
+								if(neighBorNorm.equalsVectorWithTolerance(nextSmoothNeighborNormalNormalized, ToolsMath.ZERO_TOLERANCE)){
 									alreadyAddedSameNormalIn = true;
 									logger.debug("Already added same normal -> dont add again N: " + neighBorNorm);
 								}
@@ -1310,7 +1310,7 @@ public class TriangleNormalGenerator {
 						boolean alreadyAddedSameNormalIn = false;
 						
 						//Dont add faces normals that are equal to this faces normals
-						if (!useNormalsEqualToFace && nextSmoothNeighborNormalNormalized.equalsVectorWithTolerance(normalizedFaceNormal, FastMath.ZERO_TOLERANCE)){
+						if (!useNormalsEqualToFace && nextSmoothNeighborNormalNormalized.equalsVectorWithTolerance(normalizedFaceNormal, ToolsMath.ZERO_TOLERANCE)){
 							alreadyAddedSameNormalIn = true;
 							logger.debug("Not using normal: " + nextSmoothNeighborNormalNormalized + " of face " + neighborFaceP1.index + " in vertex norm calc because its equal to this faces normal.");
 						}
@@ -1318,7 +1318,7 @@ public class TriangleNormalGenerator {
 //						{
 						if (!useEqualNeighborNormalsAgain){
 							for(Vector3D neighBorNorm : alreadyAddedInP1){
-								if(neighBorNorm.equalsVectorWithTolerance(nextSmoothNeighborNormalNormalized, FastMath.ZERO_TOLERANCE)){
+								if(neighBorNorm.equalsVectorWithTolerance(nextSmoothNeighborNormalNormalized, ToolsMath.ZERO_TOLERANCE)){
 									alreadyAddedSameNormalIn = true;
 									logger.debug("Already added same normal -> dont add again N: " + neighBorNorm);
 								}
@@ -1353,7 +1353,7 @@ public class TriangleNormalGenerator {
 						
 						
 						//Dont add faces normals that are equal to this faces normals
-						if (!useNormalsEqualToFace && nextSmoothNeighborNormalNormalized.equalsVectorWithTolerance(normalizedFaceNormal, FastMath.ZERO_TOLERANCE)){
+						if (!useNormalsEqualToFace && nextSmoothNeighborNormalNormalized.equalsVectorWithTolerance(normalizedFaceNormal, ToolsMath.ZERO_TOLERANCE)){
 							alreadyAddedSameNormalIn = true;
 							logger.debug("Not using normal: " + nextSmoothNeighborNormalNormalized + " of face " + neighborFaceP2.index + " in vertex norm calc because its equal to this faces normal.");
 						}
@@ -1361,7 +1361,7 @@ public class TriangleNormalGenerator {
 //						{
 						if (!useEqualNeighborNormalsAgain){
 							for(Vector3D neighBorNorm : alreadyAddedInP2){
-								if(neighBorNorm.equalsVectorWithTolerance(nextSmoothNeighborNormalNormalized, FastMath.ZERO_TOLERANCE)){
+								if(neighBorNorm.equalsVectorWithTolerance(nextSmoothNeighborNormalNormalized, ToolsMath.ZERO_TOLERANCE)){
 									alreadyAddedSameNormalIn = true;
 									logger.debug("Already added same normal -> dont add again N: " + neighBorNorm);
 								}
@@ -1742,7 +1742,7 @@ public class TriangleNormalGenerator {
 	//			Go through list of all duplicates
 				for (int i = 0; i < duplicationsWithDiffNormal.size(); i++) {
 					VertexData possibleDuplicate = duplicationsWithDiffNormal.get(i);
-					if (possibleDuplicate.getUniqueVertexNormal().equalsVectorWithTolerance(normalToCheckWith, FastMath.ZERO_TOLERANCE)){
+					if (possibleDuplicate.getUniqueVertexNormal().equalsVectorWithTolerance(normalToCheckWith, ToolsMath.ZERO_TOLERANCE)){
 						return possibleDuplicate.getArrayIndex();
 					}
 				}

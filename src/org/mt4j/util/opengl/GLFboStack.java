@@ -80,6 +80,7 @@ public class GLFboStack{
 	/**
 	 * Pops the fbo.
 	 * This switches back (binds) to the formely pushed fbo. 
+	 * <br>NOTE: THIS UNBINDS A CURRENT FBO IF SET! -> no need for calling unbind()!
 	 */
 	public void popFBO(){
 		if (fboNameStack.isEmpty()){

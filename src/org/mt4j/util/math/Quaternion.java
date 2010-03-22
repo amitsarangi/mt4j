@@ -211,14 +211,14 @@ public class Quaternion implements Externalizable, Cloneable {
         float angle;
         float sinRoll, sinPitch, sinYaw, cosRoll, cosPitch, cosYaw;
         angle = pitch * 0.5f;
-        sinPitch = FastMath.sin(angle);
-        cosPitch = FastMath.cos(angle);
+        sinPitch = ToolsMath.sin(angle);
+        cosPitch = ToolsMath.cos(angle);
         angle = roll * 0.5f;
-        sinRoll = FastMath.sin(angle);
-        cosRoll = FastMath.cos(angle);
+        sinRoll = ToolsMath.sin(angle);
+        cosRoll = ToolsMath.cos(angle);
         angle = yaw * 0.5f;
-        sinYaw = FastMath.sin(angle);
-        cosYaw = FastMath.cos(angle);
+        sinYaw = ToolsMath.sin(angle);
+        cosYaw = ToolsMath.cos(angle);
 
         // variables used to reduce multiplication calls.
         float cosRollXcosPitch = cosRoll * cosPitch;
@@ -259,17 +259,17 @@ public class Quaternion implements Externalizable, Cloneable {
 											// is correction factor
 		float test = x * y + z * w;
 		if (test > 0.499 * unit) { // singularity at north pole
-			angles[1] = 2 * FastMath.atan2(x, w);
-			angles[2] = FastMath.HALF_PI;
+			angles[1] = 2 * ToolsMath.atan2(x, w);
+			angles[2] = ToolsMath.HALF_PI;
 			angles[0] = 0;
 		} else if (test < -0.499 * unit) { // singularity at south pole
-			angles[1] = -2 * FastMath.atan2(x, w);
-			angles[2] = -FastMath.HALF_PI;
+			angles[1] = -2 * ToolsMath.atan2(x, w);
+			angles[2] = -ToolsMath.HALF_PI;
 			angles[0] = 0;
 		} else {
-			angles[1] = FastMath.atan2(2 * y * w - 2 * x * z, sqx - sqy - sqz + sqw); // roll or heading 
-			angles[2] = FastMath.asin(2 * test / unit); // pitch or attitude
-			angles[0] = FastMath.atan2(2 * x * w - 2 * y * z, -sqx + sqy - sqz + sqw); // yaw or bank
+			angles[1] = ToolsMath.atan2(2 * y * w - 2 * x * z, sqx - sqy - sqz + sqw); // roll or heading 
+			angles[2] = ToolsMath.asin(2 * test / unit); // pitch or attitude
+			angles[0] = ToolsMath.atan2(2 * x * w - 2 * y * z, -sqx + sqy - sqz + sqw); // yaw or bank
 		}
 		return angles;
 	}
@@ -315,14 +315,14 @@ public class Quaternion implements Externalizable, Cloneable {
 
         // we protect the division by s by ensuring that s>=1
         if (t >= 0) { // |w| >= .5
-            float s = FastMath.sqrt(t+1); // |s|>=1 ...
+            float s = ToolsMath.sqrt(t+1); // |s|>=1 ...
             w = 0.5f * s;
             s = 0.5f / s;                 // so this division isn't bad
             x = (m21 - m12) * s;
             y = (m02 - m20) * s;
             z = (m10 - m01) * s;
         } else if ((m00 > m11) && (m00 > m22)) {
-            float s = FastMath
+            float s = ToolsMath
                     .sqrt(1.0f + m00 - m11 - m22); // |s|>=1
             x = s * 0.5f; // |x| >= .5
             s = 0.5f / s;
@@ -330,7 +330,7 @@ public class Quaternion implements Externalizable, Cloneable {
             z = (m02 + m20) * s;
             w = (m21 - m12) * s;
         } else if (m11 > m22) {
-            float s = FastMath
+            float s = ToolsMath
                     .sqrt(1.0f + m11 - m00 - m22); // |s|>=1
             y = s * 0.5f; // |y| >= .5
             s = 0.5f / s;
@@ -338,7 +338,7 @@ public class Quaternion implements Externalizable, Cloneable {
             z = (m21 + m12) * s;
             w = (m02 - m20) * s;
         } else {
-            float s = FastMath
+            float s = ToolsMath
                     .sqrt(1.0f + m22 - m00 - m11); // |s|>=1
             z = s * 0.5f; // |z| >= .5
             s = 0.5f / s;
@@ -484,7 +484,7 @@ public class Quaternion implements Externalizable, Cloneable {
 
         float norm = norm();
         if (norm != 1.0f) {
-            norm = FastMath.invSqrt(norm);
+            norm = ToolsMath.invSqrt(norm);
         }
         
         float xx      = x * x * norm;
@@ -551,8 +551,8 @@ public class Quaternion implements Externalizable, Cloneable {
     		loadIdentity();
     	} else {
 	        float halfAngle = 0.5f * angle;
-	        float sin = FastMath.sin(halfAngle);
-	        w = FastMath.cos(halfAngle);
+	        float sin = ToolsMath.sin(halfAngle);
+	        w = ToolsMath.cos(halfAngle);
 	        x = sin * axis.x;
 	        y = sin * axis.y;
 	        z = sin * axis.z;
@@ -581,9 +581,9 @@ public class Quaternion implements Externalizable, Cloneable {
                 axisStore.z = 0.0f;
             }
         } else {
-            angle = (2.0f * FastMath.acos(w));
+            angle = (2.0f * ToolsMath.acos(w));
             if (axisStore != null) {
-                float invLength = (1.0f / FastMath.sqrt(sqrLength));
+                float invLength = (1.0f / ToolsMath.sqrt(sqrLength));
                 axisStore.x = x * invLength;
                 axisStore.y = y * invLength;
                 axisStore.z = z * invLength;
@@ -630,13 +630,13 @@ public class Quaternion implements Externalizable, Cloneable {
         // warrant such calculations
         if ((1 - result) > 0.1f) {// Get the angle between the 2 quaternions,
             // and then store the sin() of that angle
-            float theta = FastMath.acos(result);
-            float invSinTheta = 1f / FastMath.sin(theta);
+            float theta = ToolsMath.acos(result);
+            float invSinTheta = 1f / ToolsMath.sin(theta);
 
             // Calculate the scale for q1 and q2, according to the angle and
             // it's sine value
-            scale0 = FastMath.sin((1 - t) * theta) * invSinTheta;
-            scale1 = FastMath.sin((t * theta)) * invSinTheta;
+            scale0 = ToolsMath.sin((1 - t) * theta) * invSinTheta;
+            scale1 = ToolsMath.sin((t * theta)) * invSinTheta;
         }
 
         // Calculate the x, y, z and w values for the quaternion by using a
@@ -685,13 +685,13 @@ public class Quaternion implements Externalizable, Cloneable {
         if ((1 - result) > 0.1f) {
             // Get the angle between the 2 quaternions, and then store the sin()
             // of that angle
-            float theta = FastMath.acos(result);
-            float invSinTheta = 1f / FastMath.sin(theta);
+            float theta = ToolsMath.acos(result);
+            float invSinTheta = 1f / ToolsMath.sin(theta);
 
             // Calculate the scale for q1 and q2, according to the angle and
             // it's sine value
-            scale0 = FastMath.sin((1 - changeAmnt) * theta) * invSinTheta;
-            scale1 = FastMath.sin((changeAmnt * theta)) * invSinTheta;
+            scale0 = ToolsMath.sin((1 - changeAmnt) * theta) * invSinTheta;
+            scale1 = ToolsMath.sin((changeAmnt * theta)) * invSinTheta;
         }
 
         // Calculate the x, y, z and w values for the quaternion by using a
@@ -1044,7 +1044,7 @@ public class Quaternion implements Externalizable, Cloneable {
      * <code>normalize</code> normalizes the current <code>Quaternion</code>.
      */
     public void normalize() {
-        float n = FastMath.invSqrt(norm());
+        float n = ToolsMath.invSqrt(norm());
         x *= n;
         y *= n;
         z *= n;
@@ -1282,7 +1282,7 @@ public Class<? extends Quaternion> getClassTag() {
         Vector3D axis = new Vector3D();
         float angle = toAngleAxis(axis);
 
-        store.fromAngleAxis(FastMath.PI + angle, axis);
+        store.fromAngleAxis(ToolsMath.PI + angle, axis);
         return store;
     }
 

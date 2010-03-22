@@ -26,7 +26,7 @@ import org.mt4j.input.inputProcessors.IInputProcessor;
 import org.mt4j.input.inputProcessors.MTGestureEvent;
 import org.mt4j.input.inputProcessors.componentProcessors.AbstractCursorProcessor;
 import org.mt4j.util.math.Tools3D;
-import org.mt4j.util.math.ToolsIntersection;
+import org.mt4j.util.math.ToolsGeometry;
 import org.mt4j.util.math.Vector3D;
 
 import processing.core.PApplet;
@@ -170,7 +170,7 @@ public class MultipleDragProcessor extends AbstractCursorProcessor {
 		 * Update drag position.
 		 */
 		public void updateDragPosition(){
-			Vector3D newPos = ToolsIntersection.getRayPlaneIntersection(
+			Vector3D newPos = ToolsGeometry.getRayPlaneIntersection(
 					Tools3D.getCameraPickRay(app, dragObject, m.getCurrentEvent().getPosX(), m.getCurrentEvent().getPosY()), 
 					dragPlaneNormal, 
 					startPosition);
