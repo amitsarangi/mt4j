@@ -48,6 +48,9 @@ public class TapEvent extends MTGestureEvent {
 	/** The Constant BUTTON_CLICKED. */
 	public static final int BUTTON_CLICKED = 5;
 	
+	/** The Constant BUTTON_DOUBLE_CLICKED. */
+	public static final int BUTTON_DOUBLE_CLICKED = 6;
+	
 
 	/**
 	 * Instantiates a new click event.
@@ -118,6 +121,15 @@ public class TapEvent extends MTGestureEvent {
 	 */
 	public boolean isTapCanceled(){
 		return this.getTapID() == BUTTON_UP;
+	}
+	
+	/**
+	 * Checks if is double tap.
+	 * 
+	 * @return true, if is double tap
+	 */
+	public boolean isDoubleTap(){
+		return this.getTapID() == BUTTON_DOUBLE_CLICKED;
 	}
 	
 

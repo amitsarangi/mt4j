@@ -55,7 +55,14 @@ public class TapProcessor extends AbstractCursorProcessor {
 	/** The button down screen pos. */
 	private Vector3D buttonDownScreenPos;
 	
+	/** The enable double tap. */
+	private boolean enableDoubleTap;
 	
+	/** The time last tap. */
+	private long timeLastTap;
+	
+	/** The double tap time. */
+	private int doubleTapTime = 300;
 	
 	/**
 	 * Instantiates a new tap processor.
@@ -73,6 +80,18 @@ public class TapProcessor extends AbstractCursorProcessor {
 	 * @param maxFingerUpDistance the max finger up distance
 	 */
 	public TapProcessor(PApplet pa, float maxFingerUpDistance) {
+		this(pa, maxFingerUpDistance, false, 300); 
+	}
+	
+	/**
+	 * Instantiates a new tap processor.
+	 * 
+	 * @param pa the pa
+	 * @param maxFingerUpDistance the max finger up distance
+	 * @param enableDoubleTap the enable double tap
+	 * @param doubleTapTime the double tap time
+	 */
+	public TapProcessor(PApplet pa, float maxFingerUpDistance, boolean enableDoubleTap, int doubleTapTime){
 		super();
 		this.applet = pa;
 		this.maxFingerUpDist = maxFingerUpDistance;
@@ -80,17 +99,26 @@ public class TapProcessor extends AbstractCursorProcessor {
 		this.lockedCursors 	= new ArrayList<InputCursor>();
 		this.setLockPriority(1);
 		this.setDebug(false);
+		
+		
+		this.enableDoubleTap = enableDoubleTap;
+		this.doubleTapTime = doubleTapTime;
+		this.timeLastTap = -1;
+		//System.out.println("Double click default time:" + Toolkit.getDefaultToolkit().getDesktopProperty("awt.multiClickInterval"));
 	}
 
 
 
+	/* (non-Javadoc)
+	 * @see org.mt4j.input.inputProcessors.componentProcessors.AbstractCursorProcessor#cursorStarted(org.mt4j.input.inputData.InputCursor, org.mt4j.input.inputData.MTFingerInputEvt)
+	 */
 	@Override
 	public void cursorStarted(InputCursor m, MTFingerInputEvt positionEvent) {
 		IMTComponent3D comp = positionEvent.getTargetComponent();
-		if (lockedCursors.size() >= 1){ //We assume that drag is already in progress and add this new cursor to the unUsedList 
+		if (lockedCursors.size() >= 1){ //We assume that the gesture is already in progress and add this new cursor to the unUsedList 
 			unUsedCursors.add(m); 
 		}else{
-			if (unUsedCursors.size() == 0){ //Only start drag if no other finger on the component yet
+			if (unUsedCursors.size() == 0){ //Only start gesture if no other finger on the component yet
 				if (this.canLock(m)){//See if we can obtain a lock on this cursor (depends on the priority)
 					this.getLock(m);
 					logger.debug(this.getName() + " successfully locked cursor (id:" + m.getId() + ")");
@@ -107,18 +135,24 @@ public class TapProcessor extends AbstractCursorProcessor {
 	}
 
 
+	/* (non-Javadoc)
+	 * @see org.mt4j.input.inputProcessors.componentProcessors.AbstractCursorProcessor#cursorUpdated(org.mt4j.input.inputData.InputCursor, org.mt4j.input.inputData.MTFingerInputEvt)
+	 */
 	@Override
 	public void cursorUpdated(InputCursor m, MTFingerInputEvt positionEvent) {
 		
 	}
 	
 	
+	/* (non-Javadoc)
+	 * @see org.mt4j.input.inputProcessors.componentProcessors.AbstractCursorProcessor#cursorEnded(org.mt4j.input.inputData.InputCursor, org.mt4j.input.inputData.MTFingerInputEvt)
+	 */
 	@Override
 	public void cursorEnded(InputCursor m, MTFingerInputEvt positionEvent) {
 		IMTComponent3D comp = positionEvent.getTargetComponent();
 		logger.debug(this.getName() + " INPUT_ENDED RECIEVED - CURSOR: " + m.getId());
 
-		if (lockedCursors.contains(m)){ //cursor was a actual drag cursor
+		if (lockedCursors.contains(m)){ //cursor was a actual gesture cursor
 			lockedCursors.remove(m);
 			if (unUsedCursors.size() > 0){ //check if there are other cursors on the component, we could use 
 				InputCursor otherCursor = unUsedCursors.get(0); //TODO cycle through all available unUsedCursors and try to lock one, maybe the first one is lock but another isnt!
@@ -141,7 +175,9 @@ public class TapProcessor extends AbstractCursorProcessor {
 		}
 	}
 
+	
 
+	
 	/**
 	 * End gesture.
 	 * 
@@ -165,7 +201,21 @@ public class TapProcessor extends AbstractCursorProcessor {
 				&& 
 			Vector3D.distance(buttonDownScreenPos, buttonUpScreenPos) <= this.maxFingerUpDist
 		){
-			this.fireGestureEvent(new TapEvent(this, MTGestureEvent.GESTURE_ENDED, comp, m, buttonUpScreenPos, TapEvent.BUTTON_CLICKED));
+			//We have a valid TAP!
+			if (this.isEnableDoubleTap()){
+				//Check if it was a double tap by comparing the now time to the time of the last valid tap
+				long now = m.getCurrentEvent().getWhen();
+				if (this.timeLastTap != -1 && (now - this.timeLastTap) <= this.getDoubleTapTime()){
+					//Its a Double tap
+					this.timeLastTap = -1;
+					this.fireGestureEvent(new TapEvent(this, MTGestureEvent.GESTURE_ENDED, comp, m, buttonUpScreenPos, TapEvent.BUTTON_DOUBLE_CLICKED));
+				}else{
+					this.timeLastTap = now;
+					this.fireGestureEvent(new TapEvent(this, MTGestureEvent.GESTURE_ENDED, comp, m, buttonUpScreenPos, TapEvent.BUTTON_CLICKED));
+				}
+			}else{
+				this.fireGestureEvent(new TapEvent(this, MTGestureEvent.GESTURE_ENDED, comp, m, buttonUpScreenPos, TapEvent.BUTTON_CLICKED));
+			}
 		}else{
 			//logger.debug("FINGER UP NOT ON SAME OBJ!");
 			this.fireGestureEvent(new TapEvent(this, MTGestureEvent.GESTURE_ENDED, comp, m, buttonUpScreenPos, TapEvent.BUTTON_UP));
@@ -173,6 +223,9 @@ public class TapProcessor extends AbstractCursorProcessor {
 	}
 
 
+	/* (non-Javadoc)
+	 * @see org.mt4j.input.inputProcessors.componentProcessors.AbstractCursorProcessor#cursorLocked(org.mt4j.input.inputData.InputCursor, org.mt4j.input.inputProcessors.IInputProcessor)
+	 */
 	@Override
 	public void cursorLocked(InputCursor m, IInputProcessor lockingProcessor) {
 		if (lockingProcessor instanceof AbstractComponentProcessor){
@@ -183,11 +236,10 @@ public class TapProcessor extends AbstractCursorProcessor {
 
 		if (lockedCursors.contains(m)){ //cursor was in use here
 			lockedCursors.remove(m);
-			//TODO fire ended evt?
 			unUsedCursors.add(m);
 			logger.debug(this.getName() + " cursor:" + m.getId() + " CURSOR LOCKED. Was an active cursor in this gesture!");
 			
-			//FIXME TEST -> dont allow resuming of tap if the tap cursor was locked by a higher priority gesture
+			//FIXME TEST -> dont allow resuming of gesture if the cursor was locked by a higher priority gesture
 			//-> fire gesture ended
 			this.fireGestureEvent(new TapEvent(this, MTGestureEvent.GESTURE_ENDED, m.getCurrentEvent().getTargetComponent(), m, new Vector3D(m.getCurrentEvent().getPosX(), m.getCurrentEvent().getPosY()), TapEvent.BUTTON_UP));	
 			
@@ -200,6 +252,9 @@ public class TapProcessor extends AbstractCursorProcessor {
 
 
 
+	/* (non-Javadoc)
+	 * @see org.mt4j.input.inputProcessors.componentProcessors.AbstractCursorProcessor#cursorUnlocked(org.mt4j.input.inputData.InputCursor)
+	 */
 	@Override
 	public void cursorUnlocked(InputCursor m) {
 		logger.debug(this.getName() + " Recieved UNLOCKED signal for cursor ID: " + m.getId());
@@ -251,11 +306,52 @@ public class TapProcessor extends AbstractCursorProcessor {
 	
 	
 	
+	/* (non-Javadoc)
+	 * @see org.mt4j.input.inputProcessors.componentProcessors.AbstractComponentProcessor#getName()
+	 */
 	@Override
 	public String getName() {
 		return "Tap Processor";
 	}
 
+	/**
+	 * Checks if is enable double tap.
+	 * 
+	 * @return true, if is enable double tap
+	 */
+	public boolean isEnableDoubleTap() {
+		return this.enableDoubleTap;
+	}
+
+	/**
+	 * Sets the enable double tap.
+	 * 
+	 * @param enableDoubleTap the new enable double tap
+	 */
+	public void setEnableDoubleTap(boolean enableDoubleTap) {
+		this.enableDoubleTap = enableDoubleTap;
+	}
+
+	/**
+	 * Gets the double tap time.
+	 * 
+	 * @return the double tap time
+	 */
+	public int getDoubleTapTime() {
+		return this.doubleTapTime;
+	}
+
+	/**
+	 * Sets the double tap time.
+	 * 
+	 * @param doubleTapTime the new double tap time
+	 */
+	public void setDoubleTapTime(int doubleTapTime) {
+		this.doubleTapTime = doubleTapTime;
+	}
+
+	
+	
 	
 
 }
