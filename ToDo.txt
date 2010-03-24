@@ -1,10 +1,11 @@
 ToDo list:
 
 -> General:
+- nice image for touch cursor
 - update to processing 1.1 -> bitmapfont working?
 - make standalone executable MT4j MTShell distribution/installer on windows
 - integrate with SWING /JNLP?
-- make class DrawTools/GeomTools/GLTools and put stuff from Tools3D in there
+- make class DrawTools/GLTools and put stuff from Tools3D in there
 
 - enable a way so that even if input starts on a components the input can be redirected/replayed to another (parent or below) 
   so that if the comp doesent handle the gesture, the parent can use it (example: start zoom, even if not the background was hit)
@@ -48,7 +49,9 @@ ToDo list:
 
 
 -> Components:
+- geometry setColorBinding(BIND_PER_VERTEX)/BIND_SINGLE_COLOR to allow simple coloring using glColor()?
 - add ability to set boundingshapes to MTComponents?
+- LayoutContainer/Manager
 - updateBounds/Layout() if childrens transform changes?
 - add ShapeGroup component that offers methods like getCenterPoint and getWidth etc taking child shapes into account
 - at clipping check if clipshape would be screen aligned rect -> use glScissor instead of stencil buffer -> performance!
@@ -66,7 +69,6 @@ ToDo list:
 - switch in abstractshape to draw boundingshape
 - test if frustum culling working when canvas scaled? camera zoomed etc?
 - record displaylists with drawComponent() method instead of Tools3D.generateDisplist..
-- (remove or rework circlemenu)
 - (implement color picking for performance?)
 - (use bitmapfont in mtprogressbar)
 - (make mtmovieclip display the start frame at loading, nicen up ui, add pause button etc)
@@ -97,18 +99,20 @@ ToDo list:
 	- how to create my own gesture/evt -> sometimes we dont need new processor, can use existing (Drag->flick->gesturelistner)
 	- how to work with components/shapes (boundings, clipping, rot/trans/scale, addchild, color, displaylist, outline) -setUseDirectGL/list/VBO!
 	- animations
+	- scenes/transitions
 	- working with text - vector/bitmap fonts (dont create too many->memory, reuse vector fonts and scale them etc, vector looks ugly when small -> use bitmap there!)
 	- working with widgets
 - Download packages
 
 
 -> MTSceneWindow/MTWindow:
+- in MTShell always start scenes fullscreen
 - how to deal with init() shutdown()? 
 - (make fbo /texture power of two but use texcoords to fit)
 
 
 -> Typography:
-- we can switch the textcolor on textarea draw code instead of creatin different memoryhungry fonts
+- we can switch the textcolor on textarea draw code instead of creating different memoryhungry fonts
 - add and implement setCursorPos() in MTTextArea
 - implement vertical padding in MTTextArea
 - add setText()/setLabel() to buttons
@@ -120,7 +124,7 @@ ToDo list:
 - GestureUtil class? -> getDistance(cursor1, cursor2) getAngle(cursor1, movedCursor); etc
 - abort tapGesture if finger moved too much -> check on update as in PressAndHold gesture
 - Test if intalled multitouch vista driver + win7 touch screen make problems
-- more gestures: double tap, flick(? velocity, straightness)
+- more gestures: flick(? velocity, straightness)
 - Win7 Input -> get and store blobsize
 - Change Tap&Hold gesture behaviour to match Windows -> send gesture_ended only if finger lifted, not if time is up
 - Win7Input source -> use getActiveWindow() -> reject windows Tap and HOld gestures -> set TWF_WANTPALM at registerTouchwindow or not? -> TEST! ->http://social.msdn.microsoft.com/Forums/en/tabletandtouch/thread/2a173296-49b6-4f25-860f-953ae6038857
@@ -143,7 +147,7 @@ ToDo list:
 
 
 -> Scenes:
-- more transition effects
+- more transition effects (grid exploding)
 - rename init() and shutdown() to "onEnter()" and "onLeaving()"?
 - add a generic scene loading scene?
 

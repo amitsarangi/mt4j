@@ -1330,6 +1330,12 @@ public class Tools3D {
 	}
 	
 	
+	/**
+	 * Reverses an array.
+	 * 
+	 * @param b the b
+	 * @return the vector3 d[]
+	 */
 	public static Vector3D[] reverse(Vector3D[] b) {
 		   int left  = 0;          // index of leftmost element
 		   int right = b.length-1; // index of rightmost element
@@ -1379,21 +1385,5 @@ public class Tools3D {
     	}
     }
     
-    
-//    /**
-//	 * Convenience function to map a variable from one value range
-//	 * to another.
-//	 * 
-//	 * @param theValue the the value
-//	 * @param theInStart the the in start
-//	 * @param theInEnd the the in end
-//	 * @param theOutStart the the out start
-//	 * @param theOutEnd the the out end
-//	 * 
-//	 * @return the float
-//	 */
-//	public static final float map(float theValue, float theInStart, float theInEnd, float theOutStart, float theOutEnd) {
-//	    return ToolsMath.map(theValue, theInStart, theInEnd, theOutStart, theOutEnd);
-//	}
 
 }

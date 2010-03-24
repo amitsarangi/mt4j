@@ -26,9 +26,8 @@ import processing.core.PApplet;
 
 
 
-
 /**
- * The Class ToolsIntersection.
+ * A collection of geometry related static helper methods.
  */
 public class ToolsGeometry {
 

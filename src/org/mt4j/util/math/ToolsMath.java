@@ -36,7 +36,7 @@ import java.util.Random;
 
 
 /**
- * <code>FastMath</code> provides 'fast' math approximations and float equivalents of Math
+ * This class provides 'fast' math approximations and float equivalents of Math
  * functions.  These are all used as static values and functions.
  * Copyright by JMonkeyEngine
  * 

@@ -353,7 +353,9 @@ public class MTApplication extends PApplet {
 		try {
 			this.mt4jIcon = new ImageIcon(MT4jSettings.getInstance().getDefaultImagesPath() + 
 					"MT4j.gif");
-			this.frame.setIconImage(mt4jIcon.getImage());  
+			this.frame.setIconImage(mt4jIcon.getImage()); 
+			//Set the window frame's title
+			frame.setTitle(MT4jSettings.getInstance().getFrameTitle()); 
 		}catch (Exception e){
 			e.printStackTrace();
 		}
@@ -369,9 +371,6 @@ public class MTApplication extends PApplet {
 	    logger.info("Maximum framerate: \"" + MT4jSettings.getInstance().getMaxFrameRate() + "\"");
 		
 		MT4jSettings.getInstance().setProgramStartTime(System.currentTimeMillis());
-		
-		//Set the window frame's title
-		frame.setTitle(MT4jSettings.getInstance().getFrameTitle()); 
 		
 		//Apply some opengl settings like V-Syncing or multi-Sampling
 		this.applyOpenGLStartSettings();
