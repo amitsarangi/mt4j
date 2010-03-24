@@ -355,7 +355,7 @@ public class Model3dsFileFactory extends ModelImporterFactory{
 						return;
 					}
 					
-					String[] suffix = new String[]{"jpg", "JPG", "tga" , "TGA", "bmp", "BMP", "tiff", "TIFF"};
+					String[] suffix = new String[]{"jpg", "JPG", "tga" , "TGA", "bmp", "BMP", "png", "PNG", "tiff", "TIFF"};
 					for (int j = 0; j < suffix.length; j++) {
 						String suffixString = suffix[j];
 						//Try to load and set texture to mesh

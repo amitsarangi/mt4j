@@ -505,7 +505,13 @@ public class TTFontFactory implements IFontFactory{
 			
 			character.setStrokeWeight(0.7f);
 			character.setPickable(false);
-			character.setNoStroke(false);
+			
+//			//FIXME TEST -> dont use a font outline if we use multi-sampling and outlineColor=fillcolor
+			if (MT4jSettings.getInstance().isMultiSampling() && fillColor.equals(strokeColor)){
+				character.setNoStroke(true);
+			}else{
+				character.setNoStroke(false);	
+			}
 
 //			for(Vertex[] contour: character.getContours()){
 //				Vertex.xRotateVectorArray(contour, new Vector3D((float)(xadv/2.0),0,0), 180);

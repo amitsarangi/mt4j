@@ -59,8 +59,9 @@ public class MTBackgroundImage extends MTPolygon {
 			GLTextureParameters tp = new GLTextureParameters();
 			tp.minFilter = GLTextureParameters.LINEAR; //"LINEAR" disables mip-mapping in opengl
 	//		tp.target = GLConstants.RECTANGULAR;
-			GLTexture tex = new GLTexture(mtApp, mtApp.width, mtApp.height, tp);
-			tex.putImage(bgImage);
+//			GLTexture tex = new GLTexture(mtApp, mtApp.width, mtApp.height, tp);
+//			tex.putImage(bgImage);
+			GLTexture tex = new GLTexture(mtApp, bgImage, tp);
 			this.setTexture(tex);
 		}else{
 			this.setTexture(bgImage);
