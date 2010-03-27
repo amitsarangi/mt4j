@@ -195,6 +195,29 @@ public class MTGesturesExampleScene extends AbstractScene {
 		tapOnly.setAnchor(PositionAnchor.UPPER_LEFT);
 		tapOnly.setPositionGlobal(new Vector3D(1*horizontalPad,0,0));
 		
+		//Double Tap gesture
+		final MTTextArea doubleTap = new MTTextArea(mtApplication, font);
+		doubleTap.setFillColor(textAreaColor);
+		doubleTap.setStrokeColor(textAreaColor);
+		doubleTap.setText("Double Tap me! ---");
+		this.clearAllGestures(doubleTap);
+		doubleTap.registerInputProcessor(new TapProcessor(app, 25, true, 350));
+		doubleTap.addGestureListener(TapProcessor.class, new IGestureEventListener() {
+			public boolean processGestureEvent(MTGestureEvent ge) {
+				TapEvent te = (TapEvent)ge;
+				if (te.isDoubleTap()){
+					if (doubleTap.getText().endsWith("--"))
+						doubleTap.setText("Double Tap me! -|-");
+					else
+						doubleTap.setText("Double Tap me! ---");	
+				}
+				return false;
+			}
+		});
+		this.getCanvas().addChild(doubleTap);
+		doubleTap.setAnchor(PositionAnchor.UPPER_LEFT);
+		doubleTap.setPositionGlobal(new Vector3D(1*horizontalPad,1*verticalPad,0));
+		
 		//Tap and Hold gesture
 		final MTTextArea tapAndHoldOnly = new MTTextArea(mtApplication, font);
 		tapAndHoldOnly.setFillColor(textAreaColor);
@@ -227,7 +250,7 @@ public class MTGesturesExampleScene extends AbstractScene {
 		});
 		this.getCanvas().addChild(tapAndHoldOnly);
 		tapAndHoldOnly.setAnchor(PositionAnchor.UPPER_LEFT);
-		tapAndHoldOnly.setPositionGlobal(new Vector3D(1*horizontalPad,1*verticalPad,0));
+		tapAndHoldOnly.setPositionGlobal(new Vector3D(1*horizontalPad,2*verticalPad,0));
 		
 		//Arcball gesture
 		MTTextArea arcballOnly = new MTTextArea(mtApplication, font);
@@ -239,7 +262,7 @@ public class MTGesturesExampleScene extends AbstractScene {
 		arcballOnly.addGestureListener(ArcballProcessor.class, new DefaultArcballAction());
 		this.getCanvas().addChild(arcballOnly);
 		arcballOnly.setAnchor(PositionAnchor.UPPER_LEFT);
-		arcballOnly.setPositionGlobal(new Vector3D(1*horizontalPad,2*verticalPad,0));
+		arcballOnly.setPositionGlobal(new Vector3D(1*horizontalPad,3*verticalPad,0));
 		
 		//Lasso gesture
 		MTTextArea lassoUs1 = new MTTextArea(mtApplication, font);

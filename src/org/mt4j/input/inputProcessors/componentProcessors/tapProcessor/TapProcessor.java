@@ -89,6 +89,17 @@ public class TapProcessor extends AbstractCursorProcessor {
 	 * @param pa the pa
 	 * @param maxFingerUpDistance the max finger up distance
 	 * @param enableDoubleTap the enable double tap
+	 */
+	public TapProcessor(PApplet pa, float maxFingerUpDistance, boolean enableDoubleTap){
+		this(pa, maxFingerUpDistance, enableDoubleTap, 300);
+	}
+	
+	/**
+	 * Instantiates a new tap processor.
+	 * 
+	 * @param pa the pa
+	 * @param maxFingerUpDistance the max finger up distance
+	 * @param enableDoubleTap the enable double tap
 	 * @param doubleTapTime the double tap time
 	 */
 	public TapProcessor(PApplet pa, float maxFingerUpDistance, boolean enableDoubleTap, int doubleTapTime){
