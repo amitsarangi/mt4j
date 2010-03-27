@@ -172,17 +172,11 @@ public class MTLine extends AbstractShape {
 	}
 	
 	
-	/* (non-Javadoc)
-	 * @see com.jMT.components.visibleComponents.shapes.AbstractShape#setUseVBOs(boolean)
-	 */
 	@Override
 	public void setUseVBOs(boolean useVBOs) {
 		System.err.println("MT Line doesent support vbos.");
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.jMT.components.visibleComponents.AbstractVisibleComponent#drawComponent()
-	 */
 	@Override
 	public void drawComponent(PGraphics g) {
 		PApplet renderer = this.getRenderer();
@@ -214,6 +208,9 @@ public class MTLine extends AbstractShape {
 			//Do the line
 			Vertex[] verts = this.getVerticesLocal();
 			pContext.line(verts[0].x, verts[0].y, verts[0].z, verts[1].x, verts[1].y, verts[1].z);
+			
+			if (this.isDrawSmooth()) //Reset to no smoothing because of the smooth bug (visible triangle lines in shapes)
+				pContext.noSmooth();
 		}
 	}
 	
@@ -280,25 +277,16 @@ public class MTLine extends AbstractShape {
 	}
 
 
-	/* (non-Javadoc)
-	 * @see com.jMT.components.visibleComponents.shapes.AbstractShape#isGeometryContainsPoint(util.math.Vector3D)
-	 */
 	@Override
 	public boolean isGeometryContainsPointLocal(Vector3D testPoint) {
 		return false;
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.jMT.components.visibleComponents.shapes.AbstractShape#getGeometryIntersection(util.math.Ray)
-	 */
 	@Override
 	public Vector3D getGeometryIntersectionLocal(Ray ray){
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.jMT.components.visibleComponents.shapes.AbstractShape#getCenterPointObjectSpace()
-	 */
 	@Override
 	public Vector3D getCenterPointLocal() {
 		Vertex[] v = this.getVerticesLocal();
@@ -318,18 +306,12 @@ public class MTLine extends AbstractShape {
 		return lengthVect.length();
 	}
 
-	/* (non-Javadoc)
-	 * @see com.jMT.components.visibleComponents.shapes.AbstractShape#destroyComponent()
-	 */
 	@Override
 	protected void destroyComponent() {
 		
 	}
 
 	
-	/* (non-Javadoc)
-	 * @see mTouch.components.visibleComponents.shapes.AbstractShape#getHeightXY(mTouch.components.TransformSpace)
-	 */
 	@Override
 	public float getHeightXY(TransformSpace transformSpace) {
 //		switch (transformSpace) {
@@ -390,13 +372,10 @@ public class MTLine extends AbstractShape {
 //	}
 	
 	
-	
-	
 
-	/* (non-Javadoc)
- * @see com.jMT.components.visibleComponents.shapes.AbstractShape#getWidthXY(com.jMT.components.TransformSpace)
- */
-@Override
+
+
+	@Override
 	public float getWidthXY(TransformSpace transformSpace) {
 		switch (transformSpace) {
 		case LOCAL:

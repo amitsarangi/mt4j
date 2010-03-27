@@ -85,11 +85,10 @@ public class MTMovieClip extends MTRectangle implements IdragClusterable {
 
 	private MTSlider volumeSlider;
 	
-	//TODO tap on slider -> jump -> amount settable?
-	//TODO delete button svg's?
+	//TODO tap on slider -> amount settable?
+	//TODO delete button svg's from SVN?
 	//TODO (volume control icon)
 	//TODO (title bar)
-	
 	
 	//TODO we actually would need some sort of command queue since this
 	//has to work asynchronously -> read from queue after the next frame
@@ -470,6 +469,9 @@ public class MTMovieClip extends MTRectangle implements IdragClusterable {
 	}
 	
 	
+	/**
+	 * Stops and Closes the movieclip with an animation.
+	 */
 	public void close(){
 		float width = this.getWidthXY(TransformSpace.RELATIVE_TO_PARENT);
 		Animation closeAnim = new Animation("Window Fade", new MultiPurposeInterpolator(width, 1, 350, 0.2f, 0.5f, 1), this);
@@ -515,6 +517,13 @@ public class MTMovieClip extends MTRectangle implements IdragClusterable {
 		this.selected = selected;
 	}
 
-	
+	/**
+	 * Gets the video texture.
+	 * 
+	 * @return the video texture
+	 */
+	public MTVideoTexture getVideoTexture(){
+		return this.movieClip;
+	}
 
 }

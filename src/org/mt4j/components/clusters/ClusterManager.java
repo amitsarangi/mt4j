@@ -114,7 +114,7 @@ public class ClusterManager {
 	 * @param selectionPoly the selection poly
 	 */
 	public void removeClusterPolyFromCanvas(MTPolygon selectionPoly){
-		if (canvas.containsChild(selectionPoly)){
+		if (selectionPoly != null && canvas.containsChild(selectionPoly)){
 			selectionPoly.getParent().removeChild(selectionPoly);
 		}
 	}

@@ -21,6 +21,7 @@ import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.mt4j.components.visibleComponents.shapes.MTPolygon;
 import org.mt4j.components.visibleComponents.shapes.mesh.MTTriangleMesh;
 import processing.core.PApplet;
 
@@ -30,6 +31,10 @@ import processing.core.PApplet;
  * A collection of geometry related static helper methods.
  */
 public class ToolsGeometry {
+	
+	
+	private ToolsGeometry(){} //Dont allow instances of this class
+	
 
 	/**
 	 * Calculates the intersection of a ray and a plane.
@@ -1219,6 +1224,72 @@ public class ToolsGeometry {
 	    
 		return normal;
 	}
+	
+	
+	
+	final static int AXIS_NONE = -1;
+	final static int AXIS_X = 0;
+	final static int AXIS_Y = 1;
+	final static int AXIS_Z = 2;
+	
+	
+	/**
+	 * Checks if is polygon axis aligned. Uses the polygons
+	 * local vertices to check.
+	 * The result is one of the values:
+	 * <br>AXIS_NONE, AXIS_X, AXIS_Y, AXIS_Z
+	 * 
+	 * @param p the p
+	 * @param epsilon the epsilon
+	 * @return the int
+	 */
+	public static int isPolygonAxisAlignedLocal (MTPolygon p, float epsilon) {
+		boolean ax = true, ay = true, az = true;
+//		float where = Float.MAX_VALUE;
+		
+		Vector3D[] vertices = p.getVerticesLocal();
+		Vector3D a = vertices[0];
+		
+		for (int i = 1 ; i < vertices.length ; i++){
+			Vector3D b = vertices[i];
+			Vector3D d = a.getSubtracted(b);
+//			Vector3D d = b.getSubtracted(a);
+			
+			if (Math.abs(d.x) > epsilon){
+				ax = false;
+				if (!ay && !az) 
+					return AXIS_NONE;
+			}
+			if (Math.abs(d.y) > epsilon){
+				ay = false;
+				if (!ax && !az) 
+					return AXIS_NONE;
+			}
+			if (Math.abs(d.z) > epsilon){
+				az = false;
+				if (!ax && !ay) 
+					return AXIS_NONE;
+			}
+		}
+		
+		if (ax) { 
+//			where = a.x; 
+//			System.out.println("Where: " + where);
+			return AXIS_X;
+		}
+		if (ay) { 
+//			where = a.y; 
+//			System.out.println("Where: " + where);
+			return AXIS_Y; 
+		}
+		if (az) { 
+//			where = a.z; 
+//			System.out.println("Where: " + where);
+			return AXIS_Z; 
+		}
+		return AXIS_NONE;
+	}
+	
 	
 	
 	/**

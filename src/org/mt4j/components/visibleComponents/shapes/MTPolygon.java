@@ -910,6 +910,8 @@ public class MTPolygon extends AbstractShape {
 	protected void destroyComponent() {
 		
 	}
+	
 
+	
 
 }

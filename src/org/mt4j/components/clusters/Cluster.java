@@ -42,6 +42,11 @@ public class Cluster extends MTComponent { //extends MTComponent/implements IMTC
  private MTPolygon selectionPolygon;
 	
  //FIXME THIS WHOLE CLASS SHOULD BE RE-WORKED!
+ 
+ //Disadvantages of the cluster:
+ //each of the children are transformed, not only the cluster parent -> performance..
+ //hardwired into mtcanvas -> should be removed..
+ //could be replaced with a composite component -> but then we have the problem of picking child components of the group
 	
 	/**
 	 * Instantiates a new cluster.
@@ -64,7 +69,9 @@ public class Cluster extends MTComponent { //extends MTComponent/implements IMTC
 		super(pApplet);
 		
 		this.selectionPolygon = selectionPolygon;
-		this.addChild(selectionPolygon);
+		if (selectionPolygon != null){
+			this.addChild(selectionPolygon);
+		}
 		
 		for (int i = 0; i < components.length; i++) {
 			MTComponent component3D = components[i];
@@ -178,7 +185,9 @@ public class Cluster extends MTComponent { //extends MTComponent/implements IMTC
 	 */
 	@Override
 	public void sendToFront() {
-		this.getClusterPolygon().sendToFront();
+		if (this.getClusterPolygon() != null){
+			this.getClusterPolygon().sendToFront();
+		}
 		
 		for (int i = 0; i < this.getChildren().length; i++) {
 			MTComponent childComp = this.getChildren()[i];
@@ -187,26 +196,17 @@ public class Cluster extends MTComponent { //extends MTComponent/implements IMTC
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see com.jMT.components.MTBaseComponent#addChild(int, com.jMT.components.MTBaseComponent)
-	 */
 	@Override
 	public void addChild(int i, MTComponent tangibleComp) {
 		//Overridden, so the component keeps it original parent
 		this.getChildList().add(i, tangibleComp);
 	}
 
-	/* (non-Javadoc)
-	 * @see com.jMT.components.MTBaseComponent#addChild(com.jMT.components.MTBaseComponent)
-	 */
 	@Override
 	public void addChild(MTComponent tangibleComp) {
 		this.getChildList().add(tangibleComp);
 	}
 
-	/* (non-Javadoc)
-	 * @see com.jMT.components.MTBaseComponent#addChildren(com.jMT.components.MTBaseComponent[])
-	 */
 	@Override
 	public void addChildren(MTComponent[] tangibleComps) {
 		for (int i = 0; i < tangibleComps.length; i++) {
@@ -217,31 +217,20 @@ public class Cluster extends MTComponent { //extends MTComponent/implements IMTC
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see com.jMT.components.MTBaseComponent#removeAllChildren()
-	 */
 	@Override
 	public void removeAllChildren() {
 		this.getChildList().clear();
 	}
 
-	/* (non-Javadoc)
-	 * @see com.jMT.components.MTBaseComponent#removeChild(int)
-	 */
 	@Override
 	public void removeChild(int i) {
 		this.getChildList().remove(i);
 	}
 
-	/* (non-Javadoc)
-	 * @see com.jMT.components.MTBaseComponent#removeChild(com.jMT.components.MTBaseComponent)
-	 */
 	@Override
 	public void removeChild(MTComponent comp) {
 		this.getChildList().remove(comp);
 	}
-	
-	
 	
 	
 	//TODO GANZE CLUSTERING ÜBERARBEITEN
@@ -264,18 +253,12 @@ public class Cluster extends MTComponent { //extends MTComponent/implements IMTC
 	}
 
 	
-	/* (non-Javadoc)
-	 * @see com.jMT.components.MTBaseComponent#translateGlobal(util.math.Vector3D)
-	 */
 	public void translateGlobal(Vector3D dirVect) {
 		for (MTComponent c : this.getChildList()){
 			c.translateGlobal(dirVect);
 		}
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.jMT.components.MTBaseComponent#translate(util.math.Vector3D)
-	 */
 	public void translate(Vector3D dirVect) {
 		for (MTComponent c : this.getChildList()){
 			c.translate(dirVect);
@@ -283,18 +266,12 @@ public class Cluster extends MTComponent { //extends MTComponent/implements IMTC
 	}
 	
 	
-	/* (non-Javadoc)
-	 * @see com.jMT.components.MTBaseComponent#xRotateGlobal(util.math.Vector3D, float)
-	 */
 	public void rotateXGlobal(Vector3D rotationPoint, float degree) {
 		for (MTComponent c : this.getChildList()){
 			c.rotateXGlobal(rotationPoint, degree);
 		}
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.jMT.components.MTBaseComponent#xRotate(util.math.Vector3D, float)
-	 */
 	public void rotateX(Vector3D rotationPoint, float degree) {
 		for (MTComponent c : this.getChildList()){
 			c.rotateX(rotationPoint, degree);
@@ -302,27 +279,18 @@ public class Cluster extends MTComponent { //extends MTComponent/implements IMTC
 	}
 	
 	
-	/* (non-Javadoc)
-	 * @see com.jMT.components.MTBaseComponent#yRotateGlobal(util.math.Vector3D, float)
-	 */
 	public void rotateYGlobal(Vector3D rotationPoint, float degree) {
 		for (MTComponent c : this.getChildList()){
 			c.rotateYGlobal(rotationPoint, degree);
 		}
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.jMT.components.MTBaseComponent#yRotate(util.math.Vector3D, float)
-	 */
 	public void rotateY(Vector3D rotationPoint, float degree) {
 		for (MTComponent c : this.getChildList()){
 			c.rotateY(rotationPoint, degree);
 		}
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.jMT.components.MTBaseComponent#zRotateGlobal(util.math.Vector3D, float)
-	 */
 	public void rotateZGlobal(Vector3D rotationPoint, float degree) {
 		for (MTComponent c : this.getChildList()){
 			c.rotateZGlobal(rotationPoint, degree);
@@ -330,18 +298,12 @@ public class Cluster extends MTComponent { //extends MTComponent/implements IMTC
 	}
 	
 	
-	/* (non-Javadoc)
-	 * @see com.jMT.components.MTBaseComponent#zRotate(util.math.Vector3D, float)
-	 */
 	public void rotateZ(Vector3D rotationPoint, float degree) {
 		for (MTComponent c : this.getChildList()){
 			c.rotateZ(rotationPoint, degree);
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see com.jMT.components.MTBaseComponent#scaleGlobal(float, util.math.Vector3D)
-	 */
 	public void scaleGlobal(float factor, Vector3D scaleReferencePoint) {
 		this.scaleGlobal(factor, factor, factor, scaleReferencePoint);
 	}
@@ -361,9 +323,6 @@ public class Cluster extends MTComponent { //extends MTComponent/implements IMTC
 	}
 	
 	
-	/* (non-Javadoc)
-	 * @see com.jMT.components.MTBaseComponent#scale(float, util.math.Vector3D)
-	 */
 	public void scale(float factor, Vector3D scaleReferencePoint) {
 		this.scale(factor, factor, factor, scaleReferencePoint);
 	}

@@ -207,9 +207,6 @@ public class MTKey extends
 	}
 	
 	
-	/* (non-Javadoc)
-	 * @see com.jMT.components.visibleComponents.shapes.AbstractShape#computeDefaultBounds()
-	 */
 	@Override
 	protected IBoundingShape computeDefaultBounds(){
 		return new BoundsZPlaneRectangle(this);
@@ -234,9 +231,6 @@ public class MTKey extends
 		return characterUnicodeToWriteShifted;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.jMT.components.visibleComponents.shapes.mesh.MTTriangleMesh#drawComponent()
-	 */
 	@Override
 	/**
 	 * Overridden to also draw the key background (would be translucent else)

@@ -1,11 +1,13 @@
 ToDo list:
 
 -> General:
+- integrate $ gesture processor
+- remove logging from model loading -> consumes memory even if the logging level doesent match?
 - nice image for touch cursor
 - update to processing 1.1 -> bitmapfont working?
 - make standalone executable MT4j MTShell distribution/installer on windows
-- integrate with SWING /JNLP?
-- make class DrawTools/GLTools and put stuff from Tools3D in there
+- integrate with JNLP?
+- use PGraphics.pushStyle()/popStyle when rendering with processing!?
 
 - enable a way so that even if input starts on a components the input can be redirected/replayed to another (parent or below) 
   so that if the comp doesent handle the gesture, the parent can use it (example: start zoom, even if not the background was hit)
@@ -121,6 +123,7 @@ ToDo list:
 
 
 -> Gestures/Input
+- win7touchsource detects touch when wacom tablet installed?
 - GestureUtil class? -> getDistance(cursor1, cursor2) getAngle(cursor1, movedCursor); etc
 - abort tapGesture if finger moved too much -> check on update as in PressAndHold gesture
 - Test if intalled multitouch vista driver + win7 touch screen make problems
