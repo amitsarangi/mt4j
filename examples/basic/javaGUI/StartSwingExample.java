@@ -193,7 +193,6 @@ public class StartSwingExample extends JFrame {
         this.setJMenuBar(menuBar);
         ////////Menu
         
-        
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.pack();   // does layout of components.
 	}
@@ -207,7 +206,7 @@ public class StartSwingExample extends JFrame {
 //			setPreferredSize(new Dimension(MT4jSettings.getInstance().getScreenWidth(),MT4jSettings.getInstance().getScreenHeight()));
 //			pack();
 //			setResizable(false);
-			super.startUp();
+			
 			this.addScene(new TestScene(this, "test scene"));
 		}
 	}

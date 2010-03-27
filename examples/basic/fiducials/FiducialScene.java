@@ -16,6 +16,7 @@ import org.mt4j.input.inputProcessors.globalProcessors.RawFiducialProcessor;
 import org.mt4j.sceneManagement.AbstractScene;
 import org.mt4j.util.MTColor;
 import org.mt4j.util.math.Tools3D;
+import org.mt4j.util.math.ToolsMath;
 import org.mt4j.util.math.Vector3D;
 
 
@@ -102,9 +103,9 @@ public class FiducialScene extends AbstractScene implements IMTInputEventListene
 	private AbstractShape createComponent(int id, Vector3D pos){
 		MTEllipse comp = new MTEllipse(app, new Vector3D(pos), 50,50, 50);
 		comp.setNoFill(false);
-		float r = Tools3D.getRandom(20, 255);
-		float g = Tools3D.getRandom(20, 255); 
-		float b = Tools3D.getRandom(20, 255);
+		float r = ToolsMath.getRandom(20, 255);
+		float g = ToolsMath.getRandom(20, 255); 
+		float b = ToolsMath.getRandom(20, 255);
 		comp.setFillColor(new MTColor(r, g, b, 200));
 		comp.setNoStroke(false);
 		comp.setStrokeWeight(1);
