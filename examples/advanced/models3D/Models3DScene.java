@@ -44,7 +44,7 @@ public class Models3DScene extends AbstractScene {
 		this.getCanvas().registerInputProcessor(new ZoomProcessor(mtApp));
 		this.getCanvas().addGestureListener(ZoomProcessor.class, new DefaultZoomAction());
 		
-		if (!(MT4jSettings.getInstance().isOpenGlMode() && GLFBO.isSupported(mtApp))){
+		if (!(MT4jSettings.getInstance().isOpenGlMode())){
 			System.err.println(this.getClass().getName() + " example can only be run in OpenGL mode.");
 			return;
 		}

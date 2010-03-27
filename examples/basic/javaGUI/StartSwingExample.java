@@ -19,6 +19,7 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
+import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
 import org.mt4j.MTApplication;
@@ -26,13 +27,21 @@ import org.mt4j.components.MTComponent;
 import org.mt4j.components.visibleComponents.shapes.MTEllipse;
 import org.mt4j.components.visibleComponents.shapes.MTRectangle;
 import org.mt4j.components.visibleComponents.shapes.MTRoundRectangle;
+import org.mt4j.components.visibleComponents.shapes.mesh.MTCube;
 import org.mt4j.components.visibleComponents.widgets.MTOverlayContainer;
 import org.mt4j.input.gestureAction.InertiaDragAction;
 import org.mt4j.input.inputProcessors.componentProcessors.dragProcessor.DragProcessor;
+import org.mt4j.sceneManagement.Iscene;
 import org.mt4j.util.MT4jSettings;
 import org.mt4j.util.MTColor;
 import org.mt4j.util.math.ToolsMath;
 import org.mt4j.util.math.Vector3D;
+
+import basic.helloWorld.HelloWorldScene;
+
+import advanced.fluidSimulator.FluidSimulationScene;
+import advanced.models3D.Models3DScene;
+import advanced.modestMapsMT.MapsScene;
 
 
 public class StartSwingExample extends JFrame {
@@ -193,11 +202,12 @@ public class StartSwingExample extends JFrame {
 	private class TestMTApplication extends MTApplication{
 		@Override
 		public void startUp() {
-			setPreferredSize(new Dimension(MT4jSettings.getInstance().getScreenWidth(),MT4jSettings.getInstance().getScreenHeight()));
-			pack();
-			setResizable(false);
+			//This causeD the craetion of a new rendrer (-> new opengl context)
+			//so opengl objects like displaylists etc would get deleted!
+//			setPreferredSize(new Dimension(MT4jSettings.getInstance().getScreenWidth(),MT4jSettings.getInstance().getScreenHeight()));
+//			pack();
+//			setResizable(false);
 			super.startUp();
-			
 			this.addScene(new TestScene(this, "test scene"));
 		}
 	}

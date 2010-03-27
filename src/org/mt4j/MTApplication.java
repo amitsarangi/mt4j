@@ -513,7 +513,10 @@ public class MTApplication extends PApplet {
 			}
 		}else{
 			//Draw the current scene
-			this.getCurrentScene().drawAndUpdate(this.g, timeDelta);
+			Iscene theCurrentScene = this.getCurrentScene();
+			if (theCurrentScene != null){
+				theCurrentScene.drawAndUpdate(this.g, timeDelta);	
+			}
 		}
 //		 */
 		
