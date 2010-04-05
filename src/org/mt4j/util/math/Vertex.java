@@ -35,11 +35,16 @@ public class Vertex extends Vector3D {
 	/** The a. */
 	private float r,g,b,a;
 	
+	public static final int DEFAULT_RED_COLOR_COMPONENT = 255;
+	public static final int DEFAULT_GREEN_COLOR_COMPONENT = 255;
+	public static final int DEFAULT_BLUE_COLOR_COMPONENT = 255;
+	public static final int DEFAULT_ALPHA_COLOR_COMPONENT = 255;
+	
 	/**
 	 * Instantiates a new vertex. (0,0,0)
 	 */
 	public Vertex() {
-		this(0,0,0,1, 0,0, 255,255,255,255);
+		this(0,0,0,1, 0,0, DEFAULT_RED_COLOR_COMPONENT,DEFAULT_GREEN_COLOR_COMPONENT,DEFAULT_BLUE_COLOR_COMPONENT,DEFAULT_ALPHA_COLOR_COMPONENT);
 	}
 	
 	/**
@@ -69,7 +74,7 @@ public class Vertex extends Vector3D {
 	 * @param vector the vector
 	 */
 	public Vertex(Vector3D vector) {
-		this(vector.x,vector.y,vector.z,vector.w, 0,0, 255,255,255,255);
+		this(vector.x,vector.y,vector.z,vector.w, 0,0, DEFAULT_RED_COLOR_COMPONENT,DEFAULT_GREEN_COLOR_COMPONENT,DEFAULT_BLUE_COLOR_COMPONENT,DEFAULT_ALPHA_COLOR_COMPONENT);
 	}
 	
 	/**
@@ -81,7 +86,7 @@ public class Vertex extends Vector3D {
 	 * @param w the w
 	 */
 	public Vertex(float x, float y, float z, float w){
-		this(x,y,z,w, 0,0, 255,255,255,255);
+		this(x,y,z,w, 0,0, DEFAULT_RED_COLOR_COMPONENT,DEFAULT_GREEN_COLOR_COMPONENT,DEFAULT_BLUE_COLOR_COMPONENT,DEFAULT_ALPHA_COLOR_COMPONENT);
 	}
 	
 	/**
@@ -94,7 +99,7 @@ public class Vertex extends Vector3D {
 	 * @param textureY the texture y
 	 */
 	public Vertex(float x, float y, float z, float textureX, float textureY){
-		this(x,y,z,textureX,textureY, 255,255,255,255);
+		this(x,y,z,textureX,textureY, DEFAULT_RED_COLOR_COMPONENT,DEFAULT_GREEN_COLOR_COMPONENT,DEFAULT_BLUE_COLOR_COMPONENT,DEFAULT_ALPHA_COLOR_COMPONENT);
 	}
 	
 	/**

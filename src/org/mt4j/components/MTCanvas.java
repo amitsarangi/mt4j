@@ -40,7 +40,10 @@ import processing.core.PGraphics;
 import processing.core.PGraphics3D;
 
 /**
- * The canvas to add all objects to.
+ * MTCanvas is the root node of the component hierarchy of a MT4j scene.
+ * To make a mt4j component visible and interactable you have to add it to
+ * the scene's canvas or to a component which is already attached to the canvas.
+ * The canvas then recursivly updates and draws all attached components each frame.
  * 
  * @author Christopher Ruff
  */

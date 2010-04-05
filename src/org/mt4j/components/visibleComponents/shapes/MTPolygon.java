@@ -139,10 +139,10 @@ public class MTPolygon extends AbstractShape {
 		Vertex[] verts = geometryInfo.getVertices();
 		for (int i = 0; i < verts.length; i++) {
 			Vertex vertex = verts[i];
-			if (vertex.getR() != 255 ||
-				vertex.getG() != 255 ||
-				vertex.getB() != 255 ||
-				vertex.getA() != 255
+			if (vertex.getR() != Vertex.DEFAULT_RED_COLOR_COMPONENT ||
+				vertex.getG() != Vertex.DEFAULT_GREEN_COLOR_COMPONENT ||
+				vertex.getB() != Vertex.DEFAULT_BLUE_COLOR_COMPONENT ||
+				vertex.getA() != Vertex.DEFAULT_ALPHA_COLOR_COMPONENT
 			){
 				return true;
 			}

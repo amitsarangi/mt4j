@@ -7,6 +7,7 @@ ToDo list:
 - update to processing 1.1 -> bitmapfont working?
 - make standalone executable MT4j MTShell distribution/installer on windows
 - integrate with JNLP?
+- allow wrapping of JComponents in a MTComponent (-> swingToTexture, repaintManager update, generate mouse events)
 - use PGraphics.pushStyle()/popStyle when rendering with processing!?
 
 - enable a way so that even if input starts on a components the input can be redirected/replayed to another (parent or below) 
@@ -124,10 +125,11 @@ ToDo list:
 
 -> Gestures/Input
 - win7touchsource detects touch when wacom tablet installed?
+- differentiate between manipulations and gestures? (1 difference is: eg. flick is a gesture, drag a manipulation, we have to wait if it is a flick -> if not switch to drag but start drag from the 1st event, not resume at current)
 - GestureUtil class? -> getDistance(cursor1, cursor2) getAngle(cursor1, movedCursor); etc
 - abort tapGesture if finger moved too much -> check on update as in PressAndHold gesture
 - Test if intalled multitouch vista driver + win7 touch screen make problems
-- more gestures: flick(? velocity, straightness)
+- more gestures: flick(? velocity, straightness, how to deal with drag? make flick priority 2, and 2 scale priority ..10?)
 - Win7 Input -> get and store blobsize
 - Change Tap&Hold gesture behaviour to match Windows -> send gesture_ended only if finger lifted, not if time is up
 - Win7Input source -> use getActiveWindow() -> reject windows Tap and HOld gestures -> set TWF_WANTPALM at registerTouchwindow or not? -> TEST! ->http://social.msdn.microsoft.com/Forums/en/tabletandtouch/thread/2a173296-49b6-4f25-860f-953ae6038857

@@ -612,7 +612,23 @@ public class Vector3D {
         }
         return n;
     }
-
+    
+    
+    /**
+     * Limits the vector to the given length .
+     * 
+     * @param lim new maximum magnitude
+     * @return the limited vector
+     */
+    public final Vector3D limitLocal(float lim) {
+    	if (this.lengthSquared() > lim * lim) {
+    		normalizeLocal();
+    		scaleLocal(lim);
+    	}
+    	return this;
+    }
+    
+    
     /**
      * Creates a copy of the vector with its magnitude limited to the length
      * given.
@@ -630,7 +646,7 @@ public class Vector3D {
     	}
     	return new Vector3D(this);
     }
-
+    
 
     /**
      * Rotates the vector around the giving axis.
