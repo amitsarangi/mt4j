@@ -29,6 +29,7 @@ import org.mt4j.input.inputData.MTInputEvent;
 import org.mt4j.input.inputProcessors.globalProcessors.AbstractGlobalInputProcessor;
 import org.mt4j.input.inputProcessors.globalProcessors.CursorTracer;
 import org.mt4j.sceneManagement.Iscene;
+import org.mt4j.util.MT4jSettings;
 import org.mt4j.util.math.Plane;
 import org.mt4j.util.math.Tools3D;
 import org.mt4j.util.math.Vector3D;
@@ -65,11 +66,11 @@ public class MTSceneTexture extends MTRectangle {
 	private MTSceneMenu sceneMenu;
 	
 	public MTSceneTexture(MTApplication pa, float x,	float y, Iscene theScene){
-		this(pa, x, y, Math.round(pa.width * 0.6f), Math.round(pa.height * 0.6f), theScene);
+		this(pa, x, y, Math.round(MT4jSettings.getInstance().getScreenWidth() * 0.6f), Math.round(MT4jSettings.getInstance().getScreenHeight() * 0.6f), theScene);
 	}
 
 	public MTSceneTexture(MTApplication pa, float x,	float y, int fboWidth, int fboHeight, Iscene theScene){
-		super(x, y, 0, pa.width, pa.height, pa);
+		super(x, y, 0, MT4jSettings.getInstance().getScreenWidth(), MT4jSettings.getInstance().getScreenHeight(), pa);
 		
 		this.scene = theScene;
 		this.app = pa;

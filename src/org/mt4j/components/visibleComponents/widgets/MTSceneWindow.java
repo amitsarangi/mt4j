@@ -60,7 +60,8 @@ extends MTRoundRectangle {
 	
 	//Destroying the sceneTexture -> destroy SceneWindow -> destroy scene
 	//Destroy this -> destroy scene -> child sceneTexture.destroy() 
-
+	
+	
 	/**
 	 * Instantiates a new mT scene window.
 	 * 
@@ -70,12 +71,26 @@ extends MTRoundRectangle {
 	 * @param applet the applet
 	 */
 	public MTSceneWindow(final Iscene scene, float borderWidth, float borderHeight, MTApplication applet) {
+		this(scene, borderWidth, borderHeight, applet, Math.round(MT4jSettings.getInstance().getScreenWidth() * 0.6f), Math.round(MT4jSettings.getInstance().getScreenHeight() * 0.6f));
+	}
+	
+	/**
+	 * Instantiates a new mT scene window.
+	 * 
+	 * @param scene the scene
+	 * @param borderWidth the border width
+	 * @param borderHeight the border height
+	 * @param applet the applet
+	 * @param fboWidth the fbo width
+	 * @param fboHeight the fbo height
+	 */
+	public MTSceneWindow(final Iscene scene, float borderWidth, float borderHeight, MTApplication applet, int fboWidth, int fboHeight) {
 //		super(0-borderWidth, 0-borderHeight, applet.width+2*borderWidth, applet.height+2*borderHeight, applet);
-		super(0-borderWidth, 0-borderHeight, 0, applet.width+2*borderWidth, applet.height+2*borderHeight, 30, 30, applet);
+		super(0-borderWidth, 0-borderHeight, 0, MT4jSettings.getInstance().getScreenWidth()+2*borderWidth, MT4jSettings.getInstance().getScreenHeight()+2*borderHeight, 30, 30, applet);
 		
 		this.setStrokeColor(new MTColor(0,0,0));
 		
-		sceneTexture = new MTSceneTexture(applet,0, 0, scene); 
+		sceneTexture = new MTSceneTexture(applet,0, 0, fboWidth, fboHeight, scene); 
 		sceneTexture.setStrokeColor(new MTColor(0,0,0));
 		this.addChild(sceneTexture);
 		

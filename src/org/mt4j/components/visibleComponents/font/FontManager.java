@@ -142,7 +142,7 @@ public class FontManager {
 			String suffix;
 			if (indexOfPoint != -1){
 				suffix = fontFileName.substring(indexOfPoint, fontFileName.length());
-				suffix.toLowerCase();
+				suffix = suffix.toLowerCase();
 			}else{
 				suffix = "";
 			}
