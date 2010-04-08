@@ -57,7 +57,7 @@ public class MTBackgroundImage extends MTPolygon {
 		
 		if (MT4jSettings.getInstance().isOpenGlMode()){
 			GLTextureParameters tp = new GLTextureParameters();
-			tp.minFilter = GLTextureParameters.LINEAR; //"LINEAR" disables mip-mapping in opengl
+			tp.minFilter = GLTextureParameters.LINEAR; //"LINEAR" 
 	//		tp.target = GLConstants.RECTANGULAR;
 //			GLTexture tex = new GLTexture(mtApp, mtApp.width, mtApp.height, tp);
 //			tex.putImage(bgImage);
@@ -90,8 +90,6 @@ public class MTBackgroundImage extends MTPolygon {
 		this.setPickable(false);
 	}
 	
-	
-	
 	/**
 	 * Instantiates a new MT background image.
 	 * 
@@ -121,6 +119,10 @@ public class MTBackgroundImage extends MTPolygon {
 		svgImage.setPickable(false);
 	}
 	
+	@Override
+	protected void setDefaultGestureActions() {
+		//register no gesture processors
+	}
 	
 	@Override
 	protected IBoundingShape computeDefaultBounds() {

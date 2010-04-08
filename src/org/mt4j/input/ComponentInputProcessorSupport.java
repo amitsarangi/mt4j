@@ -43,9 +43,6 @@ public class ComponentInputProcessorSupport implements IMTInputEventListener /*,
 				
 		this.associatedComponent = associatedComponent;
 		this.registeredProcessors = new ArrayList<AbstractComponentProcessor>();
-		
-		//Listen to the components input events
-		this.associatedComponent.addInputListener(this);
 	}
 
 
@@ -75,9 +72,6 @@ public class ComponentInputProcessorSupport implements IMTInputEventListener /*,
 			//with the highest locking priority get served first
 			Collections.sort(registeredProcessors,  Collections.reverseOrder());
 			
-			//FIXME DO THIS DIRECTLY INSTEAD? - then we should also unregister the comp from the processor if processor is removed
-			//so the processors fire to the comp directly instead of this and then to the comp
-			//then this may not implement igestureevent listener
 			//-maybe put all this back to mtcomp?
 			inputProcessor.addGestureListener(associatedComponent);
 		}

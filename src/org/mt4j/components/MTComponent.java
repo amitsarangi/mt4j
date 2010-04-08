@@ -55,8 +55,8 @@ import processing.core.PGraphics3D;
 import processing.opengl.PGraphicsOpenGL;
 
 /**
- * This is the base class for all scenegraph nodes. It provides basic methods
- * for adding and managing child nodes. It also allows for changing the components position and
+ * This is the base class for all MT4j scene graph nodes. It provides basic methods
+ * for adding and managing child nodes/components. It also allows for changing the components position and
  * orientation in space. Picking those components with a picking ray is also supported, if intersection
  * testing is properly implemented by extending subclasses.
  * <p>
@@ -277,6 +277,8 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 			
 			//Delegate input processing/gesture detection to a special handler
 			this.inputProcessorsSupport = new ComponentInputProcessorSupport(pApplet, this);
+			//Let the input processor support class listen to the component's input events
+			this.addInputListener(inputProcessorsSupport);
 			
 			this.gestureEvtSupport = new GestureEventSupport();
 			
@@ -316,10 +318,15 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 	 * 
 	 * @param iEvt the i evt
 	 */
-	protected void fireInputEvent(MTInputEvent iEvt){
+	protected boolean fireInputEvent(MTInputEvent iEvt){
+		boolean handled = false; //TODO REALLY IMPLEMENT, CHECK LISTENERS WHAT THEY RETURN, PROPAGET ETC!
 		for (IMTInputEventListener listener : inputListeners){
-			listener.processInputEvent(iEvt);
+			boolean handledListener = listener.processInputEvent(iEvt);
+			if (!handled && handledListener){
+				handled = true;
+			}
 		}
+		return handled;
 	}
 	// INPUT LISTENER STUF ////
 	
@@ -2788,8 +2795,8 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 		Matrix m = new Matrix(this.getLocalMatrix());
         m.orthonormalizeLocal();
         
-        Matrix sm = Matrix.getScalingMatrix(Vector3D.ZERO_VECTOR, scale.x, scale.y, scale.z);
-        m.mult(sm, m);
+        //Apply scale because its removed at orthonormalization
+        m.mult(Matrix.getScalingMatrix(Vector3D.ZERO_VECTOR, scale.x, scale.y, scale.z), m);
         
         //Automatically inverts() the localMatrix, so exact inverse again! :)
         this.setLocalMatrix(m);
