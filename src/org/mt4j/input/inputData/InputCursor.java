@@ -438,6 +438,15 @@ public class InputCursor{
 	
 	
 	/**
+	 * Gets the position.
+	 * @return the position
+	 */
+	public Vector3D getPosition(){
+		return new Vector3D(getCurrentEvtPosX(), getCurrentEvtPosY()); 
+	}
+	
+	
+	/**
 	 * Gets the start position x.
 	 * 
 	 * @return the start position x
@@ -454,6 +463,15 @@ public class InputCursor{
 	public float getStartPosY(){
 		return this.getFirstEvent().getPosY();
 	}	
+	
+	
+	/**
+	 * Gets the start position.
+	 * @return the start position
+	 */
+	public Vector3D getStartPosition(){
+		return new Vector3D(getStartPosX(), getStartPosY()); 
+	}
 	
 	/**
 	 * Gets the previous event of.
