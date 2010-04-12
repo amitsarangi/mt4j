@@ -145,7 +145,20 @@ public class MTLine extends AbstractShape {
 	public void setGeometryInfo(GeometryInfo geometryInfo) {
 		super.setGeometryInfo(geometryInfo);
 		
-		//We dont use the AbstractShapes setGeomInfo wont calc bounds for MTLine
+		//the AbstractShapes setGeomInfo wont calc bounds for MTLine
+		//because of the geometryInfo.getVertices().length >= 3 check 
+		//which is false in a MTLine but usually its good to check that so we dont want
+		//to remove the check.. 
+		if (this.isBoundsAutoCompute()){
+			this.setBoundingShape(this.computeDefaultBounds());
+		}
+	}
+	
+	@Override
+	public void setVertices(Vertex[] vertices) {
+		super.setVertices(vertices);
+		
+		//the AbstractShapes setGeomInfo wont calc bounds for MTLine
 		//because of the geometryInfo.getVertices().length >= 3 check 
 		//which is false in a MTLine but usually its good to check that so we dont want
 		//to remove the check.. 
