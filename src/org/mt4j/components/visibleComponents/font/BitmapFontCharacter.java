@@ -68,7 +68,7 @@ public class BitmapFontCharacter extends MTRectangle implements IFontCharacter {
 		this.horizontalDist = horizontalAdvance;
 		this.unicode = unicode;
 		
-		this.setNoStroke(true); //FIXME ENABLE
+		this.setNoStroke(true); 
 		this.setPickable(false);
 		
 		if (MT4jSettings.getInstance().isOpenGlMode()){
@@ -77,6 +77,7 @@ public class BitmapFontCharacter extends MTRectangle implements IFontCharacter {
 			if (tex instanceof GLTexture) {
 				GLTexture glTex = (GLTexture) tex;
 //				glTex.setWrap(GL.GL_CLAMP, GL.GL_CLAMP);
+//				glTex.setWrap(GL.GL_REPEAT, GL.GL_REPEAT);
 				glTex.setWrap(GL.GL_CLAMP_TO_BORDER, GL.GL_CLAMP_TO_BORDER); //use!
 				
 //				glTex.setFilter(GL.GL_LINEAR_MIPMAP_LINEAR, GL.GL_LINEAR); 
@@ -89,8 +90,6 @@ public class BitmapFontCharacter extends MTRectangle implements IFontCharacter {
 				glTex.setFilter(GL.GL_LINEAR, GL.GL_NEAREST); 
 //				glTex.setFilter(GL.GL_LINEAR, GL.GL_LINEAR);
 //				glTex.setFilter(GL.GL_NEAREST, GL.GL_NEAREST); 
-
-
 			}
 		}
 	}
@@ -107,6 +106,7 @@ public class BitmapFontCharacter extends MTRectangle implements IFontCharacter {
 		if (MT4jSettings.getInstance().isOpenGlMode()){
 			if (this.isUseDisplayList() && this.getGeometryInfo().getDisplayListIDs()[0] != -1){
 				gl.glCallList(this.getGeometryInfo().getDisplayListIDs()[0]);
+//				gl.glCallList(this.getGeometryInfo().getDisplayListIDs()[1]); //Outline rectangle
 			}else{
 				this.drawPureGl(gl);
 			}

@@ -56,6 +56,9 @@ public class TTFontFactory implements IFontFactory{
 		logger.addAppender(ca);
 	}
 	
+	
+	public static String defaultCharacters = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZÄÖÜabcdefghijklmnopqrstuvwxyzäöü<>|,;.:-_#'+*!\"§$%&/()=?´{[]}\\@";
+	
 //	//Register the factory
 //	static{
 //		//FIXME not working!!? never gets called
@@ -131,7 +134,7 @@ public class TTFontFactory implements IFontFactory{
 		
 		VectorFontCharacter[] chars = this.getTTFCharacters(
 				pa, 
-				"0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZÄÖÜabcdefghijklmnopqrstuvwxyzäöü<>|,;.:-_#'+*!\"§$%&/()=?´{[]}\\@", 
+				defaultCharacters, 
 				fillColor, 
 				strokeColor, 
 				fontFileName, 

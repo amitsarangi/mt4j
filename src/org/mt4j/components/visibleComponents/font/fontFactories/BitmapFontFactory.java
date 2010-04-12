@@ -33,7 +33,6 @@ import org.mt4j.util.MT4jSettings;
 import org.mt4j.util.MTColor;
 
 import processing.core.PApplet;
-import processing.core.PConstants;
 import processing.core.PFont;
 import processing.core.PImage;
 
@@ -53,10 +52,14 @@ public class BitmapFontFactory implements IFontFactory {
 		logger.addAppender(ca);
 	}
 	
+	public static String defaultCharacters = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZÄÖÜabcdefghijklmnopqrstuvwxyzäöü<>|,;.:-_#'+*!\"§$%&/()=?´{[]}\\@";
+	
 //	static{
 //		FontManager.getInstance().registerFontFactory("", new BitmapFontFactory());
 //	}
 
+	
+	
 	/* (non-Javadoc)
 	 * @see org.mt4j.components.visibleComponents.font.fontFactories.IFontFactory#createFont(processing.core.PApplet, java.lang.String, int, org.mt4j.util.MTColor, org.mt4j.util.MTColor)
 	 */
@@ -67,12 +70,8 @@ public class BitmapFontFactory implements IFontFactory {
 			MTColor fillColor, 
 			MTColor strokeColor
 	) {
-		
 		PFont p5Font = this.getProcessingFont(pa, fontFileName, fontSize);
-//		char[] chars = new char[]{'0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','Ä','Ö','Ü','a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z','ä','ö','ü','<','>','|',',',';','.',':','-','_','#','\'','+','*','!','?','\\','$','%','&','/','(',')','=','´','{','[',']','}','@',' '};
-		String characterString = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZÄÖÜabcdefghijklmnopqrstuvwxyzäöü<>|,;.:-_#'+*!\"§$%&/()=?´{[]}\\@";
-		List<BitmapFontCharacter> bitMapCharacters = this.createCharacters(pa, p5Font, characterString, fillColor, strokeColor);
-//		List<BitmapFontCharacter> bitMapCharacters = this.getCharacters(pa, chars, fillColor, strokeColor, fontFileName, fontSize);  
+		List<BitmapFontCharacter> bitMapCharacters = this.createCharacters(pa, p5Font, defaultCharacters, fillColor, strokeColor);
 	
 		//font is null sometimes (vlw)
 		/*
@@ -114,7 +113,6 @@ public class BitmapFontFactory implements IFontFactory {
 //		/*
 		//Manually add a newLine character to the font
 		BitmapFontCharacter newLine = new BitmapFontCharacter(dummy, pa, "\n", 0, 0, 0);
-//		newLine.setSizeLocal(defaultHorizontalAdvX, defaultHorizontalAdvX);
 		newLine.setPickable(false);						    		
 		newLine.setVisible(false);
 		newLine.setNoFill(true);
@@ -125,6 +123,7 @@ public class BitmapFontFactory implements IFontFactory {
 		//Manually add a SPACE character to the font
 //		int spaceAdvancex = defaultHorizontalAdvX;
 //		int spaceAdvancex = fm.charWidth(' '); 
+		//TODO hack, we use the dash character's width for the space width, because dont know how to get it
 		int spaceIndex = p5Font.index('-');
 		int spaceAdvancex = p5Font.width[spaceIndex];
 //		int spaceAdvancex = Math.round(pa.textWidth(' '));
@@ -155,7 +154,7 @@ public class BitmapFontFactory implements IFontFactory {
 //		*/
 		
 		//TODO bitmap font size seems different to same size vector font, we must have check descent -> textarea -> res*em*etc
-		//TODO eureka numbers baseline wrong?
+		//TODO eureka font -  numbers baseline wrong?
 		
 		//Create the bitmap font
 		BitmapFontCharacter[] characters = bitMapCharacters.toArray(new BitmapFontCharacter[bitMapCharacters.size()]);
@@ -237,8 +236,6 @@ public class BitmapFontFactory implements IFontFactory {
 		List<BitmapFontCharacter> bitMapCharacters = new ArrayList<BitmapFontCharacter>();
 		for (int i = 0; i < chars.length(); i++) {
 			char c = chars.charAt(i);
-//		for (int i = 0; i < chars.length; i++) {
-//			char c = chars[i];
 			int charIndex = p5Font.index(c);
 			if (charIndex != -1){
 				PImage charImage = p5Font.images[charIndex];
@@ -248,15 +245,13 @@ public class BitmapFontFactory implements IFontFactory {
 				int leftExtend = p5Font.leftExtent[charIndex];
 				int widthDisplacement = p5Font.setWidth[charIndex];
 
-				//float high    = (float) p5Font.height[charIndex]     / p5Font.fheight;
-				//float bwidth  = (float) p5Font.width[charIndex]      / p5Font.fwidth;
-				//float lextent = (float) p5Font.leftExtent[charIndex] / p5Font.fwidth;
-				//float textent = (float) p5Font.topExtent[charIndex]  / p5Font.fheight;
-
 				//int topOffset = p5Font.descent + (-charHeight - (topExtend-charHeight)); //ORIGINAL
 				int topOffset =  (-charHeight - (topExtend-charHeight));
+				
+				//Copy the actual font data on the image from the upper left corner 1 pixel
+				//into the middle of the image to avoid anti aliasing artefacts at the corners
+				PImage copy = new PImage(charImage.width, charImage.height, PImage.ARGB);
 
-//				/*
 				for (int j = 0; j < charImage.pixels.length; j++) {
 					int d = charImage.pixels[j];
 					/*
@@ -267,27 +262,22 @@ public class BitmapFontFactory implements IFontFactory {
 						logger.debug("R: " + r + " G:" + g + " B:" + " A:" + a);
 					 */
 					charImage.pixels[j] = (d << 24) | 0x00FFFFFF; //ORIGINAL! //make it white
-					//						charImage.pixels[j] = (d << 24) | pa.color(fillRed, fillGreen, fillBlue, 0);
-					charImage.format = PConstants.ARGB;
-				}
-
-//				/*
-				//Copy the actual font data on the image from the upper left corner 1 pixel
-				//into the middle of the image to avoid anti aliasing artefacts at the corners
-				PImage copy = new PImage(charImage.width, charImage.height, PImage.ARGB);
-				//Clear transparent
-				for (int j = 0; j < copy.pixels.length; j++) {
+					//charImage.pixels[j] = (d << 24) | pa.color(fillRed, fillGreen, fillBlue, 0);
+					//charImage.format = PConstants.ARGB;
+					
+					//Clear the copy image in the same loop
 					copy.pixels[j] = (copy.pixels[j] << 24) | 0x00FFFFFF; //Original! //make it white
-					//						copy.pixels[j] = (copy.pixels[j] << 24) | pa.color(fillRed, fillGreen, fillBlue, 0);
 				}
-				int shiftAmount = 1;
+				
+				//Shift character image data 1 down and right in the image because of aliasing artifacts at the border
+				//we need to compensate for this when displaying the char
+				int shiftAmount = 8; 
 				copy.copy(charImage, 0, 0, charWidth, charHeight, shiftAmount, shiftAmount, charWidth, charHeight);
 				charImage = copy;
+				
 				//Move the character to compensate for the shifting of the image
 				topOffset -= shiftAmount;
 				leftExtend -= shiftAmount;
-//				*/
-//				*/
 
 				//Create bitmap font character
 				String StringChar = new Character(c).toString();
