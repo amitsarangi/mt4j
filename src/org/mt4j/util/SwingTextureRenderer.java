@@ -111,20 +111,25 @@ public class SwingTextureRenderer {
 //				false);
 //		compToDraw.dispatchEvent(me);
 		
-//      notVisibleImage = new PImage(rectC.width, rectC.height);
+	//Create the texture
+//    notVisibleImage = new PImage(rectC.width, rectC.height);
       GLTextureParameters tp = new GLTextureParameters();
-      tp.minFilter = GLConstants.NEAREST; //To avoid mipmapgeneration at each update
+      tp.minFilter = GLConstants.LINEAR; //To avoid mipmapgeneration at each update
+//      tp.minFilter = GLConstants.LINEAR_MIPMAP_LINEAR; //For mip maps
       tp.magFilter = GLConstants.LINEAR;
       
       final Rectangle rectC = SwingUtilities.getLocalBounds(compToDraw);
-
       textureToRenderTo = new GLTexture(mtApp, rectC.width, rectC.height, tp, false);
-      mtApp.invokeLater(new Runnable() {
-    	  //@Override
-    	  public void run() {
-    		  textureToRenderTo.initTexture(rectC.width, rectC.height);
-    	  }
-      });
+
+      //TODO check if we are in the rendering thread or not
+      if (!mtApp.isRenderThreadCurrent()){
+    	  mtApp.invokeLater(new Runnable() {
+        	  public void run() {
+        		  textureToRenderTo.initTexture(rectC.width, rectC.height);
+        	  }
+          });
+      }
+     
 //    this.scheduleRefresh(); //ENABLE?
 	}
 	
@@ -254,7 +259,7 @@ public class SwingTextureRenderer {
 		
 //		/*
 		//Put buffered image into PImage pixels
-		 BufferedImage bi = (BufferedImage) img;
+		 BufferedImage bi = img;
 	      int width = bi.getWidth();
 	      int height = bi.getHeight();
 	      if (tempImage == null){

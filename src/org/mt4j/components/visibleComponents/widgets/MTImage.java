@@ -20,7 +20,6 @@ package org.mt4j.components.visibleComponents.widgets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import org.mt4j.MTApplication;
 import org.mt4j.components.MTComponent;
 import org.mt4j.components.TransformSpace;
 import org.mt4j.components.visibleComponents.shapes.AbstractShape;
@@ -67,17 +66,6 @@ public class MTImage extends MTRectangle implements IdragClusterable{
 		image = new MTRectangle(texture, pApplet);
 		image.setStrokeColor(new MTColor(255,255,255,255));
 		image.setPickable(false);
-		//Set the image to use direct gl - thread safe
-		if (MT4jSettings.getInstance().isOpenGlMode()){
-			if (pApplet instanceof MTApplication) {
-				MTApplication app = (MTApplication) pApplet;
-				app.invokeLater(new Runnable() {
-					public void run() {
-						image.setUseDirectGL(true);
-					}
-				});
-			}
-		}
 		this.addChild(image);
 		
 		//Draw this component and its children above 
@@ -152,17 +140,10 @@ public class MTImage extends MTRectangle implements IdragClusterable{
 //	}
 
 	
-
-	/* (non-Javadoc)
-	 * @see com.jMT.input.inputAnalyzers.clusterInputAnalyzer.IdragClusterable#isSelected()
-	 */
 	public boolean isSelected() {
 		return selected;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.jMT.input.inputAnalyzers.clusterInputAnalyzer.IdragClusterable#setSelected(boolean)
-	 */
 	public void setSelected(boolean selected) {
 		this.selected = selected;
 	}

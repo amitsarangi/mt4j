@@ -122,6 +122,8 @@ public class MTApplication extends PApplet {
 	/** The scene stack. */
 	private ArrayDeque<Iscene> sceneStack;
 	
+	private Thread renderThread;
+	
 	
 //	private static boolean fullscreen;
 	/*
@@ -349,7 +351,11 @@ public class MTApplication extends PApplet {
 		
 //		hint(ENABLE_OPENGL_4X_SMOOTH);
 		
-		//Set icon image
+		// Save this applets rendering thread for reference
+		this.renderThread = Thread.currentThread();
+		//System.out.println("Current Thread: "+  Thread.currentThread());
+		
+		// Set frame icon image
 		try {
 			this.mt4jIcon = new ImageIcon(MT4jSettings.getInstance().getDefaultImagesPath() + 
 					"MT4j.gif");
@@ -417,7 +423,8 @@ public class MTApplication extends PApplet {
 	    if (MT4jSettings.getInstance().isOpenGlMode() ){
 	    	GL gl = Tools3D.getGL(this);
 	    	
-	    	logger.info("OpenGL Version: \"" + gl.glGetString(GL.GL_VERSION) + "\"");
+	    	logger.info("OpenGL Version: \"" + gl.glGetString(GL.GL_VERSION) + "\"" + " - Vendor: \"" + gl.glGetString(GL.GL_VENDOR) + "\"" + " - Renderer: \"" + gl.glGetString(GL.GL_RENDERER) + "\"");
+//	    	logger.info("Shading language version: \"" +  gl.glGetString(GL.GL_SHADING_LANGUAGE_VERSION) + "\"");
 	    	logger.info("Non power of two texture sizes allowed: \"" + Tools3D.supportsNonPowerOfTwoTexture(this) + "\"");
 	    	logger.info("OpenGL Framebuffer Object Extension available: \"" + GLFBO.isSupported(this) + "\"");
 	    	
@@ -455,7 +462,6 @@ public class MTApplication extends PApplet {
 	 * <br>Override this method in your extended MTApplication class!
 	 */
 	public void startUp(){};
-	
 	
 	
 	/**
@@ -528,6 +534,10 @@ public class MTApplication extends PApplet {
 		 */
 	}
 
+	
+	public boolean isRenderThreadCurrent(){
+		return Thread.currentThread().equals(renderThread);
+	}
 	
 	
 	/**

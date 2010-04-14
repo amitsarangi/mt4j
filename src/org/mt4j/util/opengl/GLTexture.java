@@ -1497,8 +1497,8 @@ public class GLTexture extends PImage implements PConstants , GLConstants{
     protected PGraphicsOpenGL pgl;
 	
     /** The tex. */	
-//    protected int[] tex = { 0 }; 
-    public int[] tex = { 0 }; //FIXME REMOVE!!
+    protected int[] tex = { 0 }; 
+//    public int[] tex = { 0 }; //FIXME REMOVE!!
 	
     /** The tex target. */			
     protected int texTarget;	
