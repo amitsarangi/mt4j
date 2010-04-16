@@ -989,7 +989,6 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 	}
 	
 	
-	
 	/**
 	 * Transforms the point - defined in the objects coordinate space - into parent relative space.
 	 * This is done by multiplying the point with the objects local basis matrix.
@@ -1096,7 +1095,6 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 			*/
 	}
 	
-	//Wann braucht man die methode?
 	/**
 	 * Gets the transform to destination local space.
 	 * 
@@ -1158,11 +1156,64 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 	 * 
 	 * @param point the point 
 	 * 
-	 * @return A vector3D object with coordinates relative to the global/canvas. 
+	 * @return A new vector3D object with coordinates relative to the global/canvas. 
 	 */
 	public Vector3D localToGlobal(Vector3D point){
 		Vector3D ret = point.getCopy();
 		ret.transform(this.getGlobalMatrix());
+		return ret;
+	}
+	
+	
+	/**
+	 *  Converts the Vector3D object from the component's (local) coordinates to the parent component's coordinates.
+	 *	<br><br>
+	 *	This method allows you to convert any given x, y and z coordinates from values that are relative to 
+	 *	the origin (0,0) of a specific component (local coordinates) to values that are relative to 
+	 *	the origin of the parent component.
+	 *	<br><br>
+	 *	To use this method, first create an instance of the Vector3D class. 
+	 *	The x, y and z values that you assign represent local coordinates because they relate to the origin of the component.
+	 *	<br><br>
+	 *	You then pass the Vector3D instance that you created as the parameter to the localToParent() method. 
+	 *<br>
+	 *	The method returns a new Vector3D object with x, y and z values that relate to the origin of the parent instead of 
+	 *  the origin of the component.
+	 * 
+	 * @param point the point 
+	 * 
+	 * @return A new vector3D object with coordinates relative to the parent component. 
+	 */
+	public Vector3D localToParent(Vector3D point){
+		Vector3D ret = point.getCopy();
+		ret.transform(this.getLocalMatrix());
+		return ret;
+	}
+	
+	
+	/**
+	 *  Converts the Vector3D object from the parent component's coordinates to this component's (local) coordinates.
+	 *	<br><br>
+	 *	This method allows you to convert any given x, y and z coordinates from values that are relative to 
+	 *	the origin (0,0) of a parent to values that are relative to 
+	 *	the origin of this component.
+	 *	<br><br>
+	 *	To use this method, first create an instance of the Vector3D class. 
+	 *	The x, y and z values that you assign represent parent relative coordinates because they relate to the origin of 
+	 *  the component's parent.
+	 *	<br><br>
+	 *	You then pass the Vector3D instance that you created as the parameter to the parentToLocal() method. 
+	 *  <br>
+	 *	The method returns a new Vector3D object with x, y and z values that relates to the origin of this component
+	 *  instead of the origin of the parent component.
+	 * 
+	 * @param point the point 
+	 * 
+	 * @return A new vector3D object with coordinates relative to the components local space. 
+	 */
+	public Vector3D parentToLocal(Vector3D point){
+		Vector3D ret = point.getCopy();
+		ret.transform(this.getLocalInverseMatrix());
 		return ret;
 	}
 	
@@ -1180,7 +1231,7 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 	 * 
 	 * @param point the point
 	 * 
-	 * @return the vector3D object with coordinates relative to the component. 
+	 * @return a new vector3D object with coordinates relative to the component. 
 	 */
 	public Vector3D globalToLocal(Vector3D point){
 		Vector3D ret = point.getCopy();

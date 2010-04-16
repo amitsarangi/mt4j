@@ -535,6 +535,11 @@ public class MTApplication extends PApplet {
 	}
 
 	
+	/**
+	 * Checks if is render thread is current.
+	 *
+	 * @return true, if is render thread current
+	 */
 	public boolean isRenderThreadCurrent(){
 		return Thread.currentThread().equals(renderThread);
 	}
