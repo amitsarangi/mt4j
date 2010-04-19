@@ -18,8 +18,10 @@
 package org.mt4j.components.visibleComponents.widgets;
 
 import org.mt4j.components.TransformSpace;
+import org.mt4j.components.clipping.Clip;
 import org.mt4j.components.visibleComponents.font.IFont;
 import org.mt4j.components.visibleComponents.font.IFontCharacter;
+import org.mt4j.components.visibleComponents.shapes.MTRectangle;
 
 import processing.core.PApplet;
 
@@ -87,6 +89,18 @@ public class MTTextField extends MTTextArea {
 	 */
 	private float getLastCharEndPos(){
 		return this.getMaxLineWidth() + this.getScrollTextX();
+	}
+	
+	
+	@Override
+	public void setSizeLocal(float width, float height) {
+		super.setSizeLocal(width, height);
+		
+		//Textfield is clipped. At resize of text field, per default we also resize the clip
+		Clip clipRect = this.getClip();
+		if (clipRect != null && clipRect.getClipShape() != null && clipRect.getClipShape() instanceof MTRectangle){
+			 ((MTRectangle)clipRect.getClipShape()).setSizeLocal(width,  height); 
+		}
 	}
 
 }
