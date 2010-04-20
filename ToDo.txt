@@ -1,7 +1,7 @@
 ToDo list:
 
 -> General:
-- integrate $ gesture processor
+- integrate $ gesture processor -test before publishing
 - remove logging from model loading -> consumes memory even if the logging level doesent match?
 - nice image for touch cursor
 - update to processing 1.1 -> bitmapfont working?
@@ -9,6 +9,8 @@ ToDo list:
 - integrate with JNLP?
 - allow wrapping of JComponents in a MTComponent (-> swingToTexture, repaintManager update, generate mouse events)
 - use PGraphics.pushStyle()/popStyle when rendering with processing!?
+
+- in Flickr Example search when hitting "Enter" -> maybe make method onEnterPressed in MTKeyboard to override?
 
 - enable a way so that even if input starts on a components the input can be redirected/replayed to another (parent or below) 
   so that if the comp doesent handle the gesture, the parent can use it (example: start zoom, even if not the background was hit)
@@ -52,7 +54,7 @@ ToDo list:
 
 
 -> Components:
-- geometry setColorBinding(BIND_PER_VERTEX)/BIND_SINGLE_COLOR to allow simple coloring using glColor()?
+- geometry setColorBinding(BIND_PER_VERTEX)/BIND_SINGLE_COLOR to allow simple coloring using glColor()? -> per default use BIND_SINGLE -> fill color vertices when setting fill color?
 - add ability to set boundingshapes to MTComponents?
 - LayoutContainer/Manager
 - updateBounds/Layout() if childrens transform changes?
@@ -66,6 +68,7 @@ ToDo list:
 - sprite component with acceleration/velocity/collision/ animatable with textures?
 - store Vertices only in floatBuffers instead of buffers+array to reduce memory consumption? (test if it matters)
 - use glpush/popattrib at drawing? -> speed up drawing -> externalize rendering? (ie. renderer.renderBuffers(..));
+- save and track openGL state to only change if neccessary? -> we would need to delegate all direct gl calls 
 - make propertychange listener/events in MTComponent? (useful in many components)
 - add more gui elements -> sperate model | view(setUIDelegate) (MTCheckbox)
 - Keyboard internationalize -> xml?

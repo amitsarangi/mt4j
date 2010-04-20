@@ -249,9 +249,6 @@ public class MTStencilPolygon extends MTPolygon {
 		}
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.jMT.components.visibleComponents.shapes.MTPolygon#drawComponent()
-	 */
 	@Override
 	public void drawComponent(PGraphics g) {
 		if (isUseDirectGL()){

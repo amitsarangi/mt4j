@@ -744,9 +744,6 @@ public class MTKeyboard extends MTRoundRectangle {
 			keyPressIndent = 3;
 		}
 		
-		/* (non-Javadoc)
-		 * @see com.jMT.input.gestureAction.IGestureAction#processGesture(com.jMT.input.inputAnalyzers.GestureEvent)
-		 */
 		public boolean processGestureEvent(MTGestureEvent g) {
 			if (g instanceof TapEvent){
 				TapEvent clickEvent = (TapEvent)g;
