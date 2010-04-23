@@ -29,6 +29,7 @@ import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.log4j.SimpleLayout;
 import org.mt4j.components.PickResult.PickEntry;
+import org.mt4j.components.bounds.IBoundingShape;
 import org.mt4j.components.clipping.Clip;
 import org.mt4j.components.interfaces.IMTComponent3D;
 import org.mt4j.components.interfaces.IMTController;
@@ -284,7 +285,66 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 			
 			this.attachedCamera = attachedCamera;
 			this.viewingCamera = attachedCamera;
+			
+			//FIXME TEST
+			this.boundsGlobalVerticesDirty = true;
 	}
+	
+	
+	//TODO
+	// BOUNDS STUFF ///////////////////////////////////
+	/** The bounding shape. */
+	private IBoundingShape boundingShape;
+	
+	/** The bounds global vertices dirty. */
+	private boolean boundsGlobalVerticesDirty;
+	
+	/**
+	 * Sets the bounding shape.
+	 * 
+	 * @param boundingShape the new bounding shape
+	 */
+	public void setBoundingShape(IBoundingShape boundingShape){
+		this.boundingShape = boundingShape;
+		this.setBoundsGlobalDirty(true);
+	}	
+	
+	//TODO REMOVE?
+	/**
+	 * Sets the bounds global vertices dirty.
+	 * 
+	 * @param boundsWorldVerticesDirty the new bounds world vertices dirty
+	 */
+	private void setBoundsGlobalDirty(boolean boundsWorldVerticesDirty) {
+		this.boundsGlobalVerticesDirty = boundsWorldVerticesDirty;
+		IBoundingShape bounds = this.getBoundingShape();
+		if (bounds != null){
+			bounds.setGlobalBoundsChanged();
+		}
+	}
+	
+	/**
+	 * Gets the bounding shape.
+	 * 
+	 * @return the bounding shape
+	 */
+	public IBoundingShape getBoundingShape(){
+		return this.boundingShape;
+	}
+	
+	/**
+	 * Checks if is bounding shape set.
+	 * @return true, if is bounding shape set
+	 */
+	public boolean isBoundingShapeSet(){
+		return this.boundingShape != null;
+	}
+	// BOUNDS STUFF ////////////////////////////////
+	
+	
+	
+	
+	
 	
 	// INPUT LISTENER STUF ////
 	/**
@@ -709,6 +769,9 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 	public void setMatricesDirty(boolean matricesDirty) {
 //		System.out.println("Setting matrices dirty->" + matricesDirty + " on: "  + this.getName());
 		if (matricesDirty == true){
+			//FIXME BOUNDS TEST
+			this.setBoundsGlobalDirty(true);
+			
 			//absolute matrix ändert sich damit auch auch wenn drüber parents geadded werden!
 			this.setGlobalMatrixDirty(true);
 			
@@ -1709,7 +1772,7 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 	
 	// CLIP ////////////////
 	/** The clip. */
-	private Clip clip;
+	protected Clip clip;
 	
 	/**
 	 * Gets the clip.
@@ -2333,9 +2396,30 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 	 * 
 	 * @return true, if successful
 	 */
-	protected boolean componentContainsPointLocal(Vector3D testPoint) { 
-		return false;
+	protected boolean componentContainsPointLocal(Vector3D testPoint) { //TODO rename containPointLocal
+//		return this.containsPointBoundsLocal(testPoint);
+		if (this.isBoundingShapeSet()){
+//			System.out.println("\"" + this.getName() + "\": -> BOUNDS only check");
+			return this.getBoundingShape().containsPointLocal(testPoint);
+		}else{
+			return false;
+		}
 	}
+	
+//	/**
+//	 * Contains point bounds local.
+//	 *
+//	 * @param testPoint the test point in local coordiantes
+//	 * @return true, if successful
+//	 */
+//	protected boolean containsPointBoundsLocal(Vector3D testPoint){
+//		if (this.isBoundingShapeSet()){
+////			System.out.println("\"" + this.getName() + "\": -> BOUNDS only check");
+//			return this.getBoundingShape().containsPointLocal(testPoint);
+//		}else{
+//			return false;
+//		}
+//	}
 	
 	
 	
@@ -2412,16 +2496,38 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 	/**
 	 * Returns the intersection point of the ray and this component (children are not checked for
 	 * intersections).
-	 * <br>The ray is assumed to already be in component space (not in global space).
+	 * <br>The ray is assumed to already be in local component space (not in global space).
 	 * <br>If the component is not intersected, null is returned.
 	 * 
 	 * @param localRay the rays, in local space
-	 * @return the component intersection point
+	 * @return the component local intersection point
 	 * @see #globalToLocal
 	 */
 	public Vector3D getIntersectionLocal(Ray localRay) {
-		return null;
+//		return this.getBoundsIntersectionLocal(localRay);//FIXME TEST
+		if (this.isBoundingShapeSet()){
+			return this.getBoundingShape().getIntersectionLocal(localRay);
+		}else{
+			return null;
+		}
 	}
+	
+//	/**
+//	 * Gets the bounds intersection local. Test if the ray in local coordinates
+//	 * intersection this component's bounding shape.
+//	 * Return the local intersection point or null if there is no intersection or no bounding shape
+//	 * is set.
+//	 *
+//	 * @param localRay the local ray
+//	 * @return the local intersection point
+//	 */
+//	protected Vector3D getBoundsIntersectionLocal(Ray localRay){//FIXME TEST
+//		if (this.isBoundingShapeSet()){
+//			return this.getBoundingShape().getIntersectionLocal(localRay);
+//		}else{
+//			return null;
+//		}
+//	}
 
 
 //	/** 

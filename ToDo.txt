@@ -1,6 +1,9 @@
 ToDo list:
 
 -> General:
+- in boundingShapes -> calculate width/height screen or object aligned? -> rather object aligned..
+- check why centerpointGlobal was used at mtPolygon.getWidthHeightXYRelativeToParent() -> Bug?
+- put get/setWidth/Height into AbstractShape? -> or even MTComponent?
 - integrate $ gesture processor
 - remove logging from model loading -> consumes memory even if the logging level doesent match?
 - nice image for touch cursor

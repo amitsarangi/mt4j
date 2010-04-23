@@ -20,6 +20,7 @@ package org.mt4j.components.bounds;
 import org.mt4j.components.MTComponent;
 import org.mt4j.components.TransformSpace;
 import org.mt4j.util.camera.IFrustum;
+import org.mt4j.util.math.Matrix;
 import org.mt4j.util.math.Ray;
 import org.mt4j.util.math.ToolsGeometry;
 import org.mt4j.util.math.Vector3D;
@@ -182,15 +183,15 @@ public class BoundsArbitraryPlanarPolygon implements IBoundingShape {
 	 * the height relative to its peer components parent frame of reference
 	 */
 	private float getHeightXYRelativeToParent() {
-//		Vector3D p = this.getHeightXYVectLocal();
-//		Matrix m = new Matrix(this.peerComponent.getLocalMatrix());
-//		m.removeTranslationFromMatrix();
-//		p.transform(m);
-//		return p.length();
+		Vector3D p = this.getHeightXYVectLocal();
+		Matrix m = new Matrix(this.peerComponent.getLocalMatrix());
+		m.removeTranslationFromMatrix();
+		p.transform(m);
+		return p.length();
 		
-		Vector3D[] v = xyBoundsRect.getVectorsRelativeToParent();
-		float[] minMax = ToolsGeometry.getMinXYMaxXY(v);
-		return minMax[3] - minMax[1];
+//		Vector3D[] v = xyBoundsRect.getVectorsRelativeToParent();
+//		float[] minMax = ToolsGeometry.getMinXYMaxXY(v);
+//		return minMax[3] - minMax[1];
 	}
 
 
@@ -203,15 +204,15 @@ public class BoundsArbitraryPlanarPolygon implements IBoundingShape {
 	 * the height relative to the world space
 	 */
 	private float getHeightXYGlobal() {
-//		Vector3D p = this.getHeightXYVectLocal();
-//		Matrix m = new Matrix(this.peerComponent.getGlobalMatrix());
-//		m.removeTranslationFromMatrix();
-//		p.transform(m);
-//		return p.length();
+		Vector3D p = this.getHeightXYVectLocal();
+		Matrix m = new Matrix(this.peerComponent.getGlobalMatrix());
+		m.removeTranslationFromMatrix();
+		p.transform(m);
+		return p.length();
 		
-		Vector3D[] v = xyBoundsRect.getVectorsGlobal();
-		float[] minMax = ToolsGeometry.getMinXYMaxXY(v);
-		return minMax[3] - minMax[1];
+//		Vector3D[] v = xyBoundsRect.getVectorsGlobal();
+//		float[] minMax = ToolsGeometry.getMinXYMaxXY(v);
+//		return minMax[3] - minMax[1];
 	}
 
 	/**
@@ -262,15 +263,15 @@ public class BoundsArbitraryPlanarPolygon implements IBoundingShape {
 	 * the width
 	 */
 	private float getWidthXYRealtiveToParent() {
-//		Vector3D p = this.getWidthXYVectLocal();
-//		Matrix m = new Matrix(this.peerComponent.getLocalMatrix());
-//		m.removeTranslationFromMatrix();
-//		p.transform(m);
-//		return p.length();
+		Vector3D p = this.getWidthXYVectLocal();
+		Matrix m = new Matrix(this.peerComponent.getLocalMatrix());
+		m.removeTranslationFromMatrix();
+		p.transform(m);
+		return p.length();
 		
-		Vector3D[] v = xyBoundsRect.getVectorsRelativeToParent();
-		float[] minMax = ToolsGeometry.getMinXYMaxXY(v);
-		return minMax[2] - minMax[0];
+//		Vector3D[] v = xyBoundsRect.getVectorsRelativeToParent();
+//		float[] minMax = ToolsGeometry.getMinXYMaxXY(v);
+//		return minMax[2] - minMax[0];
 	}
 	
 
@@ -283,15 +284,15 @@ public class BoundsArbitraryPlanarPolygon implements IBoundingShape {
 	 * the Width relative to the world space
 	 */
 	private float getWidthXYGlobal() {
-//		Vector3D p = this.getWidthXYVectLocal();
-//		Matrix m = new Matrix(this.peerComponent.getGlobalMatrix());
-//		m.removeTranslationFromMatrix();
-//		p.transform(m);
-//		return p.length();
+		Vector3D p = this.getWidthXYVectLocal();
+		Matrix m = new Matrix(this.peerComponent.getGlobalMatrix());
+		m.removeTranslationFromMatrix();
+		p.transform(m);
+		return p.length();
 		
-		Vector3D[] v = xyBoundsRect.getVectorsGlobal();
-		float[] minMax = ToolsGeometry.getMinXYMaxXY(v);
-		return minMax[2] - minMax[0];
+//		Vector3D[] v = xyBoundsRect.getVectorsGlobal();
+//		float[] minMax = ToolsGeometry.getMinXYMaxXY(v);
+//		return minMax[2] - minMax[0];
 	}
 
 	/**

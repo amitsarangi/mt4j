@@ -27,6 +27,8 @@ import org.apache.log4j.Logger;
 import org.apache.log4j.SimpleLayout;
 import org.mt4j.components.MTComponent;
 import org.mt4j.components.TransformSpace;
+import org.mt4j.components.bounds.BoundingSphere;
+import org.mt4j.components.bounds.BoundsZPlaneRectangle;
 import org.mt4j.components.bounds.IBoundingShape;
 import org.mt4j.components.bounds.OrientedBoundingBox;
 import org.mt4j.components.visibleComponents.AbstractVisibleComponent;
@@ -50,6 +52,8 @@ import org.mt4j.util.math.ConvexQuickHull2D;
 import org.mt4j.util.math.Matrix;
 import org.mt4j.util.math.Ray;
 import org.mt4j.util.math.Tools3D;
+import org.mt4j.util.math.ToolsGeometry;
+import org.mt4j.util.math.ToolsMath;
 import org.mt4j.util.math.Vector3D;
 import org.mt4j.util.math.Vertex;
 import org.mt4j.util.opengl.GLConstants;
@@ -58,6 +62,7 @@ import org.mt4j.util.opengl.GLTextureParameters;
 
 import processing.core.PApplet;
 import processing.core.PConstants;
+import processing.core.PGraphics;
 import processing.core.PImage;
 
 /**
@@ -106,8 +111,8 @@ public abstract class AbstractShape extends AbstractVisibleComponent {
 	/** The geometry of this shape. */
 	private GeometryInfo geometryInfo;
 	
-	/** The bounds global vertices dirty. */
-	private boolean boundsGlobalVerticesDirty;
+//	/** The bounds global vertices dirty. */
+//	private boolean boundsGlobalVerticesDirty;
 	
 	
 	/** The vertices global. */
@@ -137,28 +142,21 @@ public abstract class AbstractShape extends AbstractVisibleComponent {
 		super(pApplet,"unnamed  AbstractShape", /*null,*/ null);
 		
 		//Initialize fields 
-		if (MT4jSettings.getInstance().isOpenGlMode()){
-			this.drawDirectGL = true;
-		}else{
-			this.drawDirectGL = false;
-		}
-		
+		this.drawDirectGL = MT4jSettings.getInstance().isOpenGlMode()? true : false;
 		this.useVBOs 			= false;
 		this.useDisplayList 	= false;
 		this.textureMode = PConstants.NORMALIZED;
 		this.setFillDrawMode(GL.GL_TRIANGLE_FAN);
-		this.boundsGlobalVerticesDirty = true;
+//		this.boundsGlobalVerticesDirty = true;
 		this.boundsAutoCompute = true;
 		
 		this.setGeometryInfo(geometryInfo);
 		
 		//Default
 		this.boundsBehaviour = BOUNDS_CHECK_THEN_GEOMETRY_CHECK;
-//		this.bounds = new Vector3D[0];
+		this.globalVerticesDirty = true;//
 		
 		this.setDefaultGestureActions();
-		
-		globalVerticesDirty = true;//
 	}
 	
 	/*
@@ -185,7 +183,7 @@ public abstract class AbstractShape extends AbstractVisibleComponent {
 	
 	
 	/*
-	//Test for drawing bounding shape aligned to coordinate axis
+	//Test for drawing bounding shape aligned to coordinate axis, like getWidth/getHeightRelativeToParent would return
 	@Override
 	public void postDrawChildren(PGraphics g) {
 		super.postDrawChildren(g);
@@ -198,7 +196,7 @@ public abstract class AbstractShape extends AbstractVisibleComponent {
 			g.fill(250,150,150,180);
 			
 			Vector3D[] v = b.getVectorsGlobal();
-			float[] minMax = Tools3D.getMinXYMaxXY(v);
+			float[] minMax = ToolsGeometry.getMinXYMaxXY(v);
 			
 			g.beginShape();
 			g.vertex(minMax[0], minMax[1], 0);
@@ -236,8 +234,8 @@ public abstract class AbstractShape extends AbstractVisibleComponent {
 	}
 	
 //////////////// BOUNDING STUFF ///////////////////////////////
-	/** The bounding shape. */
-	private IBoundingShape boundingShape;
+//	/** The bounding shape. */
+//	private IBoundingShape boundingShape;
 	
 	/** The Constant BOUNDS_ONLY_CHECK. */
 	public static final int BOUNDS_ONLY_CHECK 					= 1;
@@ -252,7 +250,7 @@ public abstract class AbstractShape extends AbstractVisibleComponent {
 //	BOUNDSBEHAVIOUR_USE_GEOMETRY
 //	BOUNDSBEHAVIOUR_USE_BOUNDS_AND_GEOMETRY
 //	BOUNDSBEHAVIOUR_USE_BOUNDS
-	
+//	
 //	/** The Constant BOUNDS_ONLY_CHECK. */
 //	public static final int BOUNDS_ONLY_CHECK 					= 1;
 //	
@@ -331,39 +329,70 @@ public abstract class AbstractShape extends AbstractVisibleComponent {
 		return this.boundsBehaviour;
 	}
 	
-	/**
-	 * Sets the bounding shape.
-	 * 
-	 * @param boundingShape the new bounding shape
-	 */
-	public void setBoundingShape(IBoundingShape boundingShape){
-		this.boundingShape = boundingShape;
-		this.setBoundsGlobalDirty(true);
-	}	
-	
-	/**
-	 * Gets the bounding shape.
-	 * 
-	 * @return the bounding shape
-	 */
-	public IBoundingShape getBoundingShape(){
-		return this.boundingShape;
-	}
-	
-	/**
-	 * Checks if is bounding shape set.
-	 * @return true, if is bounding shape set
-	 */
-	public boolean isBoundingShapeSet(){
-		return this.boundingShape != null;
-	}
-	
-	/**
-	 * Computes a default bounding box for the shape.
-	 * This gets called after setting creating a shape and its setGeometryInfo method is called.
-	 */
-	protected IBoundingShape computeDefaultBounds(){
-		return new OrientedBoundingBox(this);
+//	/**
+//	 * Sets the bounding shape.
+//	 * 
+//	 * @param boundingShape the new bounding shape
+//	 */
+//	public void setBoundingShape(IBoundingShape boundingShape){
+//		this.boundingShape = boundingShape;
+//		this.setBoundsGlobalDirty(true);
+//	}	
+//	
+//	/**
+//	 * Gets the bounding shape.
+//	 * 
+//	 * @return the bounding shape
+//	 */
+//	public IBoundingShape getBoundingShape(){
+//		return this.boundingShape;
+//	}
+//	
+//	/**
+//	 * Checks if is bounding shape set.
+//	 * @return true, if is bounding shape set
+//	 */
+//	public boolean isBoundingShapeSet(){
+//		return this.boundingShape != null;
+//	}
+//	
+//	/**
+//	 * Sets the bounding shape.
+//	 * 
+//	 * @param boundingShape the new bounding shape
+//	 */
+//	public void setBoundingShape(IBoundingShape boundingShape){
+//		super.setBoundingShape(boundingShape);
+//		this.setBoundsGlobalDirty(true);
+//	}	
+//	
+//	//TODO REMOVE?
+//	/**
+//	 * Sets the bounds global vertices dirty.
+//	 * 
+//	 * @param boundsWorldVerticesDirty the new bounds world vertices dirty
+//	 */
+//	private void setBoundsGlobalDirty(boolean boundsWorldVerticesDirty) {
+//		this.boundsGlobalVerticesDirty = boundsWorldVerticesDirty;
+//		IBoundingShape bounds = this.getBoundingShape();
+//		if (bounds != null){
+//			bounds.setGlobalBoundsChanged();
+//		}
+//	}
+//	
+	@Override
+	public void setMatricesDirty(boolean baseMatrixDirty) {
+		/* 
+		 * Overridden, so the component is also informed of the need to update
+		 * the bounds vertices
+		 */
+		if (baseMatrixDirty){
+//			this.setBoundsGlobalDirty(true);
+			
+			this.globalVerticesDirty	= true;
+		}
+//		System.out.println("Set pickmat dirty on obj: " + this.getName());
+		super.setMatricesDirty(baseMatrixDirty);
 	}
 	
 	/**
@@ -383,6 +412,15 @@ public abstract class AbstractShape extends AbstractVisibleComponent {
 	public boolean isBoundsAutoCompute(){
 		return this.boundsAutoCompute;
 	}
+	
+	/**
+	 * Computes a default bounding box for the shape.
+	 * This gets called after setting creating a shape and its setGeometryInfo method is called.
+	 */
+	protected IBoundingShape computeDefaultBounds(){
+		return new OrientedBoundingBox(this);
+	}
+
 ////////////////BOUNDING STUFF ///////////////////////////////
 	
 	
@@ -541,37 +579,6 @@ public abstract class AbstractShape extends AbstractVisibleComponent {
 		}
 	}
 	
-	
-	//TODO REMOVE?
-	/**
-	 * Sets the bounds global vertices dirty.
-	 * 
-	 * @param boundsWorldVerticesDirty the new bounds world vertices dirty
-	 */
-	private void setBoundsGlobalDirty(boolean boundsWorldVerticesDirty) {
-		this.boundsGlobalVerticesDirty = boundsWorldVerticesDirty;
-		IBoundingShape bounds = this.getBoundingShape();
-		if (bounds != null){
-			bounds.setGlobalBoundsChanged();
-		}
-	}
-
-	
-	@Override
-	public void setMatricesDirty(boolean baseMatrixDirty) {
-		/* 
-		 * Overridden, so the component is also informed of the need to update
-		 * the bounds vertices
-		 */
-		if (baseMatrixDirty){
-			this.setBoundsGlobalDirty(true);
-			
-			this.globalVerticesDirty	= true;
-		}
-//		System.out.println("Set pickmat dirty on obj: " + this.getName());
-		super.setMatricesDirty(baseMatrixDirty);
-	}
-
 
 	
 	/**
@@ -1107,8 +1114,13 @@ public abstract class AbstractShape extends AbstractVisibleComponent {
 	}
 	
 	
+	/* (non-Javadoc)
+	 * @see org.mt4j.components.visibleComponents.AbstractVisibleComponent#getIntersectionLocal(org.mt4j.util.math.Ray)
+	 */
 	@Override
 	public Vector3D getIntersectionLocal(Ray ray) {
+		//TODO be aware that we dont call the super implementation here..
+		
 		switch (this.getBoundsBehaviour()) {
 		case AbstractShape.BOUNDS_DONT_USE:
 //			System.out.println("\"" + this.getName() + "\": -> GEOMETRY only check");
