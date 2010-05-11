@@ -55,6 +55,9 @@ ToDo list:
 
 
 -> Components:
+- try using absolute transformations (with anchor)
+- use layoutBounds (parent relative, axis aligned bounds)
+- 
 - geometry setColorBinding(BIND_PER_VERTEX)/BIND_SINGLE_COLOR to allow simple coloring using glColor()?
 - add ability to set boundingshapes to MTComponents?
 - LayoutContainer/Manager
@@ -128,7 +131,7 @@ ToDo list:
 
 -> Gestures/Input
 - win7touchsource detects touch when wacom tablet installed?
-- differentiate between manipulations and gestures? (1 difference is: eg. flick is a gesture, drag a manipulation, we have to wait if it is a flick -> if not switch to drag but start drag from the 1st event, not resume at current)
+- differentiate between manipulation s and gestures? (1 difference is: eg. flick is a gesture, drag a manipulation, we have to wait if it is a flick -> if not switch to drag but start drag from the 1st event, not resume at current)
 - GestureUtil class? -> getDistance(cursor1, cursor2) getAngle(cursor1, movedCursor); etc
 - abort tapGesture if finger moved too much -> check on update as in PressAndHold gesture
 - Test if intalled multitouch vista driver + win7 touch screen make problems

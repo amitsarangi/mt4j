@@ -18,16 +18,6 @@
 
 package org.mt4j.util.modelImporter.fileObj;
 
-//import com.sun.j3d.loaders.Scene;
-//import com.sun.j3d.loaders.SceneBase;
-//import com.sun.j3d.loaders.Loader;
-//import com.sun.j3d.loaders.IncorrectFormatException;
-//import com.sun.j3d.loaders.ParsingErrorException;
-//import com.sun.j3d.loaders.objectfile.ObjectFileParser;
-//import com.sun.j3d.loaders.objectfile.ObjectFileMaterials;
-//import com.sun.j3d.utils.geometry.GeometryInfo;
-//import com.sun.j3d.utils.geometry.NormalGenerator;
-//import com.sun.j3d.utils.geometry.Stripifier;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;

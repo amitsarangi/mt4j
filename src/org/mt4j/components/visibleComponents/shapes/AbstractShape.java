@@ -165,16 +165,16 @@ public abstract class AbstractShape extends AbstractVisibleComponent {
 	public void postDraw(PGraphics g) {
 		super.postDraw(g);
 		
-		if (this.getBoundingShape() instanceof OrientedBoundingBox){
-			OrientedBoundingBox b = (OrientedBoundingBox)this.getBoundingShape();
+		if (this.getBounds() instanceof OrientedBoundingBox){
+			OrientedBoundingBox b = (OrientedBoundingBox)this.getBounds();
 			b.drawBounds(g);
 		}
-		else if (this.getBoundingShape() instanceof BoundsZPlaneRectangle){
-			BoundsZPlaneRectangle b = (BoundsZPlaneRectangle)this.getBoundingShape();
+		else if (this.getBounds() instanceof BoundsZPlaneRectangle){
+			BoundsZPlaneRectangle b = (BoundsZPlaneRectangle)this.getBounds();
 			b.drawBounds(g);
 		}
-		else if (this.getBoundingShape() instanceof BoundingSphere){
-			BoundingSphere b = (BoundingSphere)this.getBoundingShape();
+		else if (this.getBounds() instanceof BoundingSphere){
+			BoundingSphere b = (BoundingSphere)this.getBounds();
 			b.drawBounds(g);
 		}
 		
@@ -188,8 +188,8 @@ public abstract class AbstractShape extends AbstractVisibleComponent {
 	public void postDrawChildren(PGraphics g) {
 		super.postDrawChildren(g);
 		
-		if (this.getBoundingShape() instanceof BoundsZPlaneRectangle){
-			BoundsZPlaneRectangle b = (BoundsZPlaneRectangle)this.getBoundingShape();
+		if (this.getBounds() instanceof BoundsZPlaneRectangle){
+			BoundsZPlaneRectangle b = (BoundsZPlaneRectangle)this.getBounds();
 //			b.drawBounds(g);
 			g.pushMatrix();
 			g.pushStyle();
@@ -344,7 +344,7 @@ public abstract class AbstractShape extends AbstractVisibleComponent {
 //	 * 
 //	 * @return the bounding shape
 //	 */
-//	public IBoundingShape getBoundingShape(){
+//	public IBoundingShape getBounds(){
 //		return this.boundingShape;
 //	}
 //	
@@ -352,7 +352,7 @@ public abstract class AbstractShape extends AbstractVisibleComponent {
 //	 * Checks if is bounding shape set.
 //	 * @return true, if is bounding shape set
 //	 */
-//	public boolean isBoundingShapeSet(){
+//	public boolean hasBounds(){
 //		return this.boundingShape != null;
 //	}
 //	
@@ -374,7 +374,7 @@ public abstract class AbstractShape extends AbstractVisibleComponent {
 //	 */
 //	private void setBoundsGlobalDirty(boolean boundsWorldVerticesDirty) {
 //		this.boundsGlobalVerticesDirty = boundsWorldVerticesDirty;
-//		IBoundingShape bounds = this.getBoundingShape();
+//		IBoundingShape bounds = this.getBounds();
 //		if (bounds != null){
 //			bounds.setGlobalBoundsChanged();
 //		}
@@ -1096,7 +1096,7 @@ public abstract class AbstractShape extends AbstractVisibleComponent {
 ////		localObjCenter.transform(otherComp.getAbsoluteWorldToLocalMatrix());
 ////		Vector3D diff = pos.minus(localObjCenter);
 //		
-//		Vector3D centerPoint = this.getBoundingShape().getCenterPointLocal();
+//		Vector3D centerPoint = this.getBounds().getCenterPointLocal();
 ////		centerPoint.transform(this.getLocalBasisMatrix());
 //		
 //		//Muss punkt nach svgComp space transformieren, da diese comp gescaled wird
@@ -1126,17 +1126,17 @@ public abstract class AbstractShape extends AbstractVisibleComponent {
 //			System.out.println("\"" + this.getName() + "\": -> GEOMETRY only check");
 			return this.getGeometryIntersectionLocal(ray);
 		case AbstractShape.BOUNDS_ONLY_CHECK:
-			if (this.isBoundingShapeSet()){
+			if (this.hasBounds()){
 //				System.out.println("\"" + this.getName() + "\": -> BOUNDS only check");
-				return this.getBoundingShape().getIntersectionLocal(ray);
+				return this.getBounds().getIntersectionLocal(ray);
 			}else{
 //				System.out.println("\"" + this.getName() + "\": -> GEOMETRY only check");
 				return this.getGeometryIntersectionLocal(ray);
 			}
 		case AbstractShape.BOUNDS_CHECK_THEN_GEOMETRY_CHECK:
-			if (this.isBoundingShapeSet()){
+			if (this.hasBounds()){
 //				System.out.println("\"" + this.getName() + "\": -> BOUNDS check then GEOMETRY check");
-				Vector3D boundsIntersection = this.getBoundingShape().getIntersectionLocal(ray);
+				Vector3D boundsIntersection = this.getBounds().getIntersectionLocal(ray);
 				if (boundsIntersection != null){
 					return this.getGeometryIntersectionLocal(ray);
 				}else{
@@ -1159,17 +1159,17 @@ public abstract class AbstractShape extends AbstractVisibleComponent {
 //			System.out.println("\"" + this.getName() + "\": -> GEOMETRY only check");
 			return this.isGeometryContainsPointLocal(testPoint);
 		case AbstractShape.BOUNDS_ONLY_CHECK:
-			if (this.isBoundingShapeSet()){
+			if (this.hasBounds()){
 //				System.out.println("\"" + this.getName() + "\": -> BOUNDS only check");
-				return this.getBoundingShape().containsPointLocal(testPoint);
+				return this.getBounds().containsPointLocal(testPoint);
 			}else{
 //				System.out.println("\"" + this.getName() + "\": -> GEOMETRY only check");
 				return this.isGeometryContainsPointLocal(testPoint);
 			}
 		case AbstractShape.BOUNDS_CHECK_THEN_GEOMETRY_CHECK:
-			if (this.isBoundingShapeSet()){
+			if (this.hasBounds()){
 //				System.out.println("\"" + this.getName() + "\": -> BOUNDS check then GEOMETRY check");
-				if (this.getBoundingShape().containsPointLocal(testPoint)){
+				if (this.getBounds().containsPointLocal(testPoint)){
 					return this.isGeometryContainsPointLocal(testPoint);
 				}else{
 					return false;
@@ -1183,20 +1183,6 @@ public abstract class AbstractShape extends AbstractVisibleComponent {
 		return false;
 	}
 	
-	
-	/* (non-Javadoc)
-	 * @see org.mt4j.components.MTComponent#isContainedIn(util.camera.IFrustum)
-	 */
-	@Override
-	public boolean isContainedIn(IFrustum frustum){
-		//Check if bounds are contained in the frustum
-		//if shape has no boundingshape return true by default
-		if (this.getBoundingShape() != null){
-			return this.getBoundingShape().isContainedInFrustum(frustum);
-		}else{
-			return true;
-		}
-	}
 	
 	/**
 	 * Tests if the ray intersects the shape and where.

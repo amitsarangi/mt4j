@@ -108,11 +108,11 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 	/** The child components. */
 	private List<MTComponent> childComponents;
 	
-	/** The custom view port. */
-	private ViewportSetting customViewPort;
-	
-	/** The default view port setting. */
-	private ViewportSetting defaultViewPortSetting;
+//	/** The custom view port. */
+//	private ViewportSetting customViewPort;
+//	
+//	/** The default view port setting. */
+//	private ViewportSetting defaultViewPortSetting;
 	
 	/** The composite. */
 	private boolean composite;
@@ -186,6 +186,11 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 	/** The user data. */
 	private Map<Object, Object> userData;
 	
+	private int inversePrecisionErrors;
+	private int orthogonalityErrors;
+	private static final int invPrecisionThreshold = 1000;
+	private static final int reOrthogonalizeThreshold = 1500;
+	
 	/**
 	 * Creates a new component. The component has no initial visual representation.
 	 * 
@@ -227,74 +232,74 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 		synchronized (this) { 
 			this.ID = currentID++;
 		}
-			this.childComponents = new ArrayList<MTComponent>();
+		//Defaults
+		this.renderer = pApplet;
+		this.visible = true;
+		this.enabled = true;
+		this.pickable = true;
+		this.drawnOnTop = false;
+		this.name = name;
+		this.composite = false;
 		
-			//Defaults
-			this.renderer = pApplet;
-			this.visible = true;
-			this.enabled = true;
-			
-			this.pickable = true;
-			this.drawnOnTop = false;
-			this.name = name;
-			
-			this.composite = false;
-			
-			//Default viewport, can be changed in subclass //FIXME REMOVE?
-			this.defaultViewPortSetting 	= new ViewportSetting(0, 0, this.getRenderer().width ,this.getRenderer().height);
-			
-			this.customViewPort 			= null;
-			
-			//NEW
-			this.localMatrix 		= new Matrix();
-			this.localInverseMatrix	= new Matrix(); 
-			this.globalMatrix		= new Matrix();
-			this.globalToLocalMatrix= new Matrix();
-			
-			this.globalMatrixDirty = true;
-			this.globalInverseMatrixDirty = true;
-			
-			//This class should only be used with a renderer derived from pgraphics3D!
-			this.pgraphics3D = (PGraphics3D)pApplet.g;
-			
-			//FIXME EXPERIMENTAL
-			light = null;
-			
-//			propertyChangeSupport 	= new PropertyChangeSupport(this);
-			
-			stateChangeSupport 		= new StateChangeSupport(this);
-			
-			_translationComputation 	= new Matrix[]{new Matrix(), new Matrix()}; 
-			_xRotationComputation 		= new Matrix[]{new Matrix(), new Matrix()}; 
-			_yRotationComputation 		= new Matrix[]{new Matrix(), new Matrix()}; 
-			_zRotationComputation 		= new Matrix[]{new Matrix(), new Matrix()}; 
-			_scalingComputation 		= new Matrix[]{new Matrix(), new Matrix()}; 
-			
-			allowedGestures = new ArrayList<Class<? extends IInputProcessor>>();
-			
-			//TODO lazily instantiate gesturehandler/arraylist so that graphicobjects arent expensive at creation?
-			
-			this.inputListeners = new ArrayList<IMTInputEventListener>();
-			
-			//Delegate input processing/gesture detection to a special handler
-			this.inputProcessorsSupport = new ComponentInputProcessorSupport(pApplet, this);
-			//Let the input processor support class listen to the component's input events
-			this.addInputListener(inputProcessorsSupport);
-			
-			this.gestureEvtSupport = new GestureEventSupport();
-			
-			this.attachedCamera = attachedCamera;
-			this.viewingCamera = attachedCamera;
-			
-			//FIXME TEST
-			this.boundsGlobalVerticesDirty = true;
+		this.childComponents = new ArrayList<MTComponent>();
+
+		//			//Default viewport, can be changed in subclass //FIXME REMOVE?
+		//			this.defaultViewPortSetting 	= new ViewportSetting(0, 0, this.getRenderer().width ,this.getRenderer().height);
+		//			this.customViewPort 			= null;
+
+		//(Cached) Matrices of this component
+		this.localMatrix 		= new Matrix();
+		this.localInverseMatrix	= new Matrix(); 
+		this.globalMatrix		= new Matrix();
+		this.globalToLocalMatrix= new Matrix();
+
+		this.globalMatrixDirty = true;
+		this.globalInverseMatrixDirty = true;
+
+		//This class should only be used with a renderer derived from pgraphics3D!
+		this.pgraphics3D = (PGraphics3D)pApplet.g;
+
+		//FIXME EXPERIMENTAL
+		light = null;
+
+		//			propertyChangeSupport 	= new PropertyChangeSupport(this);
+
+		//			stateChangeSupport 		= new StateChangeSupport(this);
+
+		_translationComputation 	= new Matrix[]{new Matrix(), new Matrix()}; 
+		_xRotationComputation 		= new Matrix[]{new Matrix(), new Matrix()}; 
+		_yRotationComputation 		= new Matrix[]{new Matrix(), new Matrix()}; 
+		_zRotationComputation 		= new Matrix[]{new Matrix(), new Matrix()}; 
+		_scalingComputation 		= new Matrix[]{new Matrix(), new Matrix()}; 
+
+		allowedGestures = new ArrayList<Class<? extends IInputProcessor>>(5);
+
+		//TODO lazily instantiate gesturehandler/arraylist so that graphicobjects arent expensive at creation?
+
+		this.inputListeners = new ArrayList<IMTInputEventListener>(3);
+
+		//Delegate input processing/gesture detection to a special handler
+		this.inputProcessorsSupport = new ComponentInputProcessorSupport(pApplet, this);
+		//Let the input processor support class listen to the component's input events
+		this.addInputListener(inputProcessorsSupport);
+
+		this.gestureEvtSupport = new GestureEventSupport();
+
+		this.attachedCamera = attachedCamera;
+		this.viewingCamera = attachedCamera;
+
+		//FIXME TEST
+		this.boundsGlobalVerticesDirty = true;
+
+		this.inversePrecisionErrors = 0;
+		this.orthogonalityErrors  = 0;
 	}
-	
+
 	
 	//TODO
 	// BOUNDS STUFF ///////////////////////////////////
-	/** The bounding shape. */
-	private IBoundingShape boundingShape;
+	/** The bounds */
+	private IBoundingShape bounds;
 	
 	/** The bounds global vertices dirty. */
 	private boolean boundsGlobalVerticesDirty;
@@ -303,11 +308,58 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 	 * Sets the bounding shape.
 	 * 
 	 * @param boundingShape the new bounding shape
+	 * @deprecated renamed to <code>setBounds</code>
 	 */
 	public void setBoundingShape(IBoundingShape boundingShape){
-		this.boundingShape = boundingShape;
+		this.bounds = boundingShape;
 		this.setBoundsGlobalDirty(true);
 	}	
+	
+	/**
+	 * Gets the bounding shape.
+	 * 
+	 * @return the bounding shape
+	 * @deprecated renamed to <code>getBounds</code>
+	 */
+	public IBoundingShape getBoundingShape(){
+		return this.bounds;
+	}
+	
+	/**
+	 * Checks if is bounding shape set.
+	 * @return true, if is bounding shape set
+	 * @deprecated renamed to <code>hasBounds</code>
+	 */
+	public boolean isBoundingShapeSet(){
+		return this.bounds != null;
+	}
+	
+	/**
+	 * Sets the bounding shape.
+	 * 
+	 * @param boundingShape the new bounding shape
+	 */
+	public void setBounds(IBoundingShape boundingShape){
+		this.bounds = boundingShape;
+		this.setBoundsGlobalDirty(true);
+	}	
+	
+	/**
+	 * Gets the bounding shape.
+	 * 
+	 * @return the bounding shape
+	 */
+	public IBoundingShape getBounds(){
+		return this.bounds;
+	}
+	
+	/**
+	 * Checks if is bounding shape set.
+	 * @return true, if is bounding shape set
+	 */
+	public boolean hasBounds(){
+		return this.bounds != null;
+	}
 	
 	//TODO REMOVE?
 	/**
@@ -321,23 +373,6 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 		if (bounds != null){
 			bounds.setGlobalBoundsChanged();
 		}
-	}
-	
-	/**
-	 * Gets the bounding shape.
-	 * 
-	 * @return the bounding shape
-	 */
-	public IBoundingShape getBoundingShape(){
-		return this.boundingShape;
-	}
-	
-	/**
-	 * Checks if is bounding shape set.
-	 * @return true, if is bounding shape set
-	 */
-	public boolean isBoundingShapeSet(){
-		return this.boundingShape != null;
 	}
 	// BOUNDS STUFF ////////////////////////////////
 	
@@ -626,12 +661,22 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 
 	////STATE CHANGE SUPPORT /////
 	/**
+     * Checks if the map is null and then lazily initializes it.
+     */
+    private void lazyInitStateChangeSupport(){
+    	if (stateChangeSupport == null){
+    		stateChangeSupport = new StateChangeSupport(this);
+    	}
+    }
+    
+	/**
 	 * Adds the state change listener.
 	 * 
 	 * @param state the state
 	 * @param listener the listener
 	 */
 	public void addStateChangeListener(StateChange state, StateChangeListener listener) {
+		this.lazyInitStateChangeSupport();
 		stateChangeSupport.addStateChangeListener(state, listener);
 	}
 	
@@ -643,7 +688,9 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 	 * @param listener the listener
 	 */
 	public void removeStateChangeListener(StateChange state, StateChangeListener listener) {
-		stateChangeSupport.removeStateChangeListener(state, listener);
+		if (stateChangeSupport != null){
+			stateChangeSupport.removeStateChangeListener(state, listener);			
+		}
 	}
 	
 	/**
@@ -652,6 +699,7 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 	 * @param evt the evt
 	 */
 	protected void fireStateChange(StateChangeEvent evt) {
+		this.lazyInitStateChangeSupport();
 		stateChangeSupport.fireStateChange(evt);
 	}
 
@@ -661,6 +709,7 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 	 * @param state the state
 	 */
 	protected void fireStateChange(StateChange state) { 
+		this.lazyInitStateChangeSupport();
 		stateChangeSupport.fireStateChange(state);
 	}
 /////STATE CHANGE SUPPORT /////
@@ -680,7 +729,7 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 		MTComponent[] childArr = this.getChildren(); 
 		
 		if (this.getParent() != null){
-			this.removeFromParent(); //wirklich machen?
+			this.removeFromParent(); //really do this?
 			this.fireStateChange(StateChange.REMOVED_FROM_PARENT);
 		}
 		this.destroyComponent();
@@ -714,7 +763,7 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 
 	
 	/**
-	 * Applies (multiplies) this components local matrix to processings current matrix.
+	 * Applies (multiplies) this component's local matrix to processings current matrix.
 	 */
 	protected void applyLocalMatrix(){
 		this.applyMatrixToProcessingModelView(localMatrix);
@@ -1316,13 +1365,15 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 	}
 	
 //////////////////////////////////////////////////////////////
-//					Object transformations					//
+//					COMPONENT TRANSFORMATIONS				//
 //////////////////////////////////////////////////////////////
-	//FIXME rounding errors accumulate on the matrices! -> reorthogonalize sometime!
-	
-	//FIXME also, the matrix and the inverse may suffer from rounding erros and not be exact inverse to each other!
-	//one fix would be to not calc the inverse continuously but just use invert() on the local and global matrix
-	//-> after 1000, or 10000 transformation, use the invert() method on the localMatrices instead
+	/*
+	 * NOTE: the matrix and the inverse may suffer from rounding erros and not be exact inverse to each other!
+	 * we calc the inverse incrementally -> rounding off errors accumulate
+	 * -> after a certain number of rotations we use the invert() method on the localMatrices instead
+	 * Also from incremental rotations the matrix may loose its orthogonality
+	 * -> we re-orthogonalize after a certain number of rotations
+	*/
 	
 	/**
 	 * Transforms the shapes local coordinate space by the specified matrix. This operation 
@@ -1334,7 +1385,9 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 		this.setLocalMatrixInternal(transformMatrix.mult(this.getLocalMatrix(), this.getLocalMatrix()));
 		try {
 			//THIS OPERATION IS NOT CHEAP!
+			//TODO maybe also only calculate this on demand? (at getLocalInverse() or getGlobalInverse())
 			this.setLocalInverseMatrixInternal(this.getLocalMatrix().invert());
+			this.inversePrecisionErrors = 0;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -1390,10 +1443,10 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 		Matrix.toTranslationMatrixAndInverse(ms[0], ms[1], dirVect.x, dirVect.y, dirVect.z);
 		
 //		this.setLocalBasisMatrixInternal(ms[0].mult(this.getLocalBasisMatrix(), this.getLocalBasisMatrix()));
+		//Using special multiplication with fewer operations - seems to work ;)
 		this.setLocalMatrixInternal(ms[0].translateMult(this.getLocalMatrix(), this.getLocalMatrix()));
 		try {
 //			this.setLocalInverseMatrixInternal(this.getLocalInverseMatrix().multLocal(ms[1]));
-			//TODO auch bei inverse translateMult methode nehmen?
 			this.setLocalInverseMatrixInternal(this.getLocalInverseMatrix().translateMultLocal(ms[1])); 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -1447,10 +1500,26 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 		Matrix.toXRotationMatrixAndInverse(ms[0], ms[1], rotationPoint, degree);
 		
 		this.setLocalMatrixInternal(ms[0].mult(this.getLocalMatrix(), this.getLocalMatrix()));
-		try {
-			this.setLocalInverseMatrixInternal(this.getLocalInverseMatrix().multLocal(ms[1]));
-		} catch (Exception e) {
-			e.printStackTrace();
+		this.inversePrecisionErrors ++;
+		this.orthogonalityErrors ++;
+		
+		if (this.orthogonalityErrors >= reOrthogonalizeThreshold){
+//			System.out.println("Matrix re-orthogonalized and inverted at: " + this);
+			this.reOrthogonalize(); //This also calculates the inverse in call of setLocalMatrix(..)
+			this.orthogonalityErrors = 0;
+			this.inversePrecisionErrors = 0;
+		}else{
+			try {
+				if (this.inversePrecisionErrors >= invPrecisionThreshold){
+					this.inversePrecisionErrors = 0;
+//					System.out.println("Matrix inverted at: " + this);
+					this.setLocalInverseMatrixInternal(new Matrix(this.getLocalMatrix()).invertLocal());
+				}else{
+					this.setLocalInverseMatrixInternal(this.getLocalInverseMatrix().multLocal(ms[1]));
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 	}
 	
@@ -1501,10 +1570,26 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 		Matrix.toYRotationMatrixAndInverse(ms[0], ms[1], rotationPoint, degree);
 		
 		this.setLocalMatrixInternal(ms[0].mult(this.getLocalMatrix(), this.getLocalMatrix()));
-		try {
-			this.setLocalInverseMatrixInternal(this.getLocalInverseMatrix().multLocal(ms[1]));
-		} catch (Exception e) {
-			e.printStackTrace();
+		this.inversePrecisionErrors ++;
+		this.orthogonalityErrors ++;
+		
+		if (this.orthogonalityErrors >= reOrthogonalizeThreshold){
+//			System.out.println("Matrix re-orthogonalized and inverted at: " + this);
+			this.reOrthogonalize(); //This also calculates the inverse in call of setLocalMatrix(..)
+			this.orthogonalityErrors = 0;
+			this.inversePrecisionErrors = 0;
+		}else{
+			try {
+				if (this.inversePrecisionErrors >= invPrecisionThreshold){
+					this.inversePrecisionErrors = 0;
+//					System.out.println("Matrix inverted at: " + this);
+					this.setLocalInverseMatrixInternal(new Matrix(this.getLocalMatrix()).invertLocal());
+				}else{
+					this.setLocalInverseMatrixInternal(this.getLocalInverseMatrix().multLocal(ms[1]));
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 	}
 	
@@ -1555,16 +1640,28 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 		Matrix[] ms = _zRotationComputation;
 		Matrix.toZRotationMatrixAndInverse(ms[0], ms[1], rotationPoint, degree);
 		
-//		this.setLocalMatrixInternal(ms[0].mult(this.getLocalMatrix(), this.getLocalMatrix()));
+		//Using special multiplication with fewer operations - seems to work ;)
 		this.setLocalMatrixInternal(ms[0].zRotateMult(this.getLocalMatrix(), this.getLocalMatrix()));
+		this.inversePrecisionErrors ++;
+		this.orthogonalityErrors ++;
 		
-		try {
-//			this.setLocalInverseMatrixInternal(this.getLocalInverseMatrix().multLocal(ms[1]));
-//			this.setLocalInverseMatrixInternal(this.getLocalInverseMatrix().zRotateMultLocal(ms[1]));
-			//FIXME doese fastMult work here? else use multLocal again..
-			this.setLocalInverseMatrixInternal(this.getLocalInverseMatrix().fastMult43(ms[1],this.getLocalInverseMatrix()));
-		} catch (Exception e) {
+		if (this.orthogonalityErrors >= reOrthogonalizeThreshold){
+//			System.out.println("Matrix re-orthogonalized and inverted at: " + this);
+			this.reOrthogonalize(); //This also calculates the inverse in call of setLocalMatrix(..)
+			this.orthogonalityErrors = 0;
+			this.inversePrecisionErrors = 0;
+		}else{
+			try {
+				if (this.inversePrecisionErrors >= invPrecisionThreshold){
+					this.inversePrecisionErrors = 0;
+//					System.out.println("Matrix inverted at: " + this);
+					this.setLocalInverseMatrixInternal(new Matrix(this.getLocalMatrix()).invertLocal());
+				}else{
+					this.setLocalInverseMatrixInternal(this.getLocalInverseMatrix().fastMult43(ms[1],this.getLocalInverseMatrix()));
+				}
+			} catch (Exception e) {
 				e.printStackTrace();
+			}
 		}
 	}
 
@@ -1657,9 +1754,8 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 		//Abstract shapes. This scales the shapes geometry, not their transformation.
 		//Thus, children arent scaled.
 		//=>Problem with complexpolys for ex. since they have more geometry than in the geometryInfo..
-		//=>setSize() get auch nicht mehr dann
-		//non uniform scaling macht nur probleme wenn das obj auch rotiert wurde und
-		//so nicht mehr axis aligned ist.
+		//=>setSize() wont work then
+		//non uniform scaling makes problems when comp has been rotated and isnt axis aligned
 		/*
 		if (!isScaleUniformXY(X,Y,Z) && this instanceof AbstractShape) {
 			AbstractShape shape = (AbstractShape) this;
@@ -1720,9 +1816,12 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 
 	
 	/**
-	 * Draws this component only (Not its children!).
+	 * Executes this component's drawing commands (Not its children!).
+	 * The component's matrix has to be made current before drawing.
 	 * <br>This method can be overridden in subclasses
 	 * and filled with drawing commands.
+	 * <br>NOTE: This method is called by the application. Usually you should
+	 * not invoke this method directly!
 	 * @param g the graphics context
 	 */
 	public void drawComponent(PGraphics g){ 	}
@@ -1863,11 +1962,14 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 	
 	/**
 	 * Tells the component to update its state if neccessary. This is called
-	 * shortly before the component's <code>drawComponent()</code> method is invoked. The <code>timeDelta</code>
+	 * shortly before the component's <code>drawComponent()</code> method is invoked at every frame.
+	 *  The <code>timeDelta</code>
 	 * parameter indicates the time passed since the last frame was drawn and can be used
-	 * for animation for example.<br>
+	 * for animations for example.<br>
 	 * Also, this updates the associated <code>IMTController</code> object if existing.
 	 * If overriden, the superclass implementation should always be called!
+	 * <br>NOTE: Be aware that this method is called every frame, so doing expensive calculations in it may slow down the
+	 * application.
 	 * 
 	 * @param timeDelta the time delta
 	 */
@@ -2495,7 +2597,8 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 	
 	/**
 	 * Returns the intersection point of the ray and this component (children are not checked for
-	 * intersections).
+	 * intersections). Usually, if the component has a bounding shape assigned, the bounds are checked
+	 * for an intersection. Shapes may also check the shape itself for intersection.
 	 * <br>The ray is assumed to already be in local component space (not in global space).
 	 * <br>If the component is not intersected, null is returned.
 	 * 
@@ -2774,39 +2877,37 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 	}
 	
 	
-
-	/* (non-Javadoc)
-	 * @see org.mt4j.components.interfaces.IMTComponent3D#getDefaultViewportSetting()
-	 */
-	public ViewportSetting getDefaultViewportSetting(){
-		return this.defaultViewPortSetting;
-	}
-	
-	//TODO make function 2Dshift3DObj? das dann viewport ändert?
-	/* (non-Javadoc)
-	 * @see org.mt4j.components.interfaces.IMTComponent3D#getCustomViewportSetting()
-	 */
-	public ViewportSetting getCustomViewportSetting() {
-		return customViewPort;
-	}
-
-
-	//FIXME funktioniert das so, dass man in subclass das erzeugen und setzen kann?
-	/**
-	 * Sets the view port settings.
-	 * 
-	 * @param viewPortSettings the new view port settings
-	 */
-	public void setViewPortSettings(ViewportSetting viewPortSettings) {
-		this.customViewPort = viewPortSettings;
-	}
-	
-	/* (non-Javadoc)
-	 * @see org.mt4j.components.interfaces.IMTComponent3D#hasCustomViewPort()
-	 */
-	public boolean hasCustomViewPort(){
-		return this.customViewPort != null;
-	}
+//	/* (non-Javadoc)
+//	 * @see org.mt4j.components.interfaces.IMTComponent3D#getDefaultViewportSetting()
+//	 */
+//	public ViewportSetting getDefaultViewportSetting(){
+//		return this.defaultViewPortSetting;
+//	}
+//	
+//	//TODO make function 2Dshift3DObj? das dann viewport ändert?
+//	/* (non-Javadoc)
+//	 * @see org.mt4j.components.interfaces.IMTComponent3D#getCustomViewportSetting()
+//	 */
+//	public ViewportSetting getCustomViewportSetting() {
+//		return customViewPort;
+//	}
+//
+//	//FIXME funktioniert das so, dass man in subclass das erzeugen und setzen kann?
+//	/**
+//	 * Sets the view port settings.
+//	 * 
+//	 * @param viewPortSettings the new view port settings
+//	 */
+//	public void setViewPortSettings(ViewportSetting viewPortSettings) {
+//		this.customViewPort = viewPortSettings;
+//	}
+//	
+//	/* (non-Javadoc)
+//	 * @see org.mt4j.components.interfaces.IMTComponent3D#hasCustomViewPort()
+//	 */
+//	public boolean hasCustomViewPort(){
+//		return this.customViewPort != null;
+//	}
 
 
 	//TODO bubble events up and down hierarchy?
@@ -2927,7 +3028,13 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 	 * @return true, if is contained in
 	 */
 	public boolean isContainedIn(IFrustum frustum){
-		return true;
+		//Check if bounds are contained in the frustum
+		//if shape has no boundingshape return true by default
+		if (this.getBoundingShape() != null){
+			return this.getBoundingShape().isContainedInFrustum(frustum);
+		}else{
+			return true;
+		}
 	}
 	
 	
@@ -2935,14 +3042,16 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 	 * Re orthogonalizes the components local matrix. As we use incremental matrix operations, floating
 	 * point errors can add up and lead to loss of precision and matrix orthogonality. This method
 	 * re-orthogonalizes the matrix.
-	 * <br>EXPERIMENTAL! - I think that this will destroy any shearing of the matrix
+	 * <br>- EXPERIMENTAL! - I think that this will destroy any shearing of the matrix
+	 * <br>- EXPENSIVE OPERATION! 
 	 */
 	public void reOrthogonalize(){
-		Matrix local = this.getLocalMatrix();
-		Vector3D trans = new Vector3D();
-		Vector3D rot = new Vector3D();
-		Vector3D scale = new Vector3D();
-		local.decompose(trans, rot, scale);
+//		Matrix local = this.getLocalMatrix();
+//		Vector3D trans = new Vector3D();
+//		Vector3D rot = new Vector3D();
+//		Vector3D scale = new Vector3D();
+//		local.decompose(trans, rot, scale);
+		Vector3D scale = this.getLocalMatrix().getScale();
 		
 //		System.out.println("Det b4: " + getLocalMatrix().determinant());
 //		Vector3D v1 = new Vector3D(2,3,4);
@@ -2950,17 +3059,19 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 //		v1.transform(this.getLocalMatrix());
 		
 		Matrix m = new Matrix(this.getLocalMatrix());
-        m.orthonormalizeLocal();
-        
-        //Apply scale because its removed at orthonormalization
-        m.mult(Matrix.getScalingMatrix(Vector3D.ZERO_VECTOR, scale.x, scale.y, scale.z), m);
-        
+//        m.orthonormalizeLocal();
+		//can we use 3x3 otrhogonalization on a 4x4 matrix just using the middle part?
+		//-seems yes
+		m.orthonormalizeUpperLeft();
+        //Re-Apply scale because its removed at orthonormalization
+//        m.mult(Matrix.getScalingMatrix(Vector3D.ZERO_VECTOR, scale.x, scale.y, scale.z), m);
+        m.scale(scale);
         //Automatically inverts() the localMatrix, so exact inverse again! :)
         this.setLocalMatrix(m);
         
 //        v2.transform(this.getLocalMatrix());
 //        System.out.println("Diff: " + v2.getSubtracted(v1));
-        logger.debug("Determinant after orthogonalize: " + getLocalMatrix().determinant());
+//        logger.debug("Determinant after orthogonalize: " + getLocalMatrix().determinant());
 	}
 	
 	

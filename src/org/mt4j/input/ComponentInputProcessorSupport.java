@@ -29,7 +29,7 @@ import processing.core.PApplet;
 
 /**
  * The Class ComponentInputProcessorSupport. Keeps the list of registered component input processors for
- * one component and sorts them by locking prioriy.
+ * one component and sorts them by locking priority.
  * 
  * @author Christopher Ruff
  */
@@ -42,7 +42,7 @@ public class ComponentInputProcessorSupport implements IMTInputEventListener /*,
 		super();
 				
 		this.associatedComponent = associatedComponent;
-		this.registeredProcessors = new ArrayList<AbstractComponentProcessor>();
+		this.registeredProcessors = new ArrayList<AbstractComponentProcessor>(5);
 	}
 
 
