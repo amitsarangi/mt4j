@@ -137,8 +137,8 @@ public class OrientedBoundingBox implements IBoundingShape {
     	
     	this.worldVecsDirty 	= true;
 		this.centerWorldDirty 	= true;
-		this.worldVecs 			= this.getVectorsGlobal();
-		this.centerPointWorld 	= this.getCenterPointGlobal();
+//		this.worldVecs 			= this.getVectorsGlobal();
+//		this.centerPointWorld 	= this.getCenterPointGlobal();
     }
     
     
@@ -158,8 +158,8 @@ public class OrientedBoundingBox implements IBoundingShape {
     	
     	this.worldVecsDirty 	= true;
 		this.centerWorldDirty 	= true;
-		this.worldVecs 			= this.getVectorsGlobal();
-		this.centerPointWorld 	= this.getCenterPointGlobal();
+//		this.worldVecs 			= this.getVectorsGlobal();
+//		this.centerPointWorld 	= this.getCenterPointGlobal();
     }
     
     
@@ -197,8 +197,7 @@ public class OrientedBoundingBox implements IBoundingShape {
 		g.fill(150,180);
 		Vector3D l = this.getCenterPointLocal();
 		g.translate(l.x, l.y, l.z);
-		float w = getWidthXYVectLocal().length();
-		g.box(w);
+		g.box(getWidthXYVectLocal().length());
 		g.popMatrix();
 	}
     

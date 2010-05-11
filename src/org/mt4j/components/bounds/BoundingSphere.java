@@ -133,10 +133,10 @@ import processing.core.PGraphics;
 	    	
 	    	this.worldVecsDirty 	= true;
 			this.centerWorldDirty 	= true;
-			this.worldVecs 			= this.getVectorsGlobal();
-			this.centerPointWorld 	= this.getCenterPointGlobal();
+//			this.worldVecs 			= this.getVectorsGlobal();
+//			this.centerPointWorld 	= this.getCenterPointGlobal();
 			this.radiusWorldDirty = true;
-			this.radiusWorld = this.getRadiusWorld();
+//			this.radiusWorld = this.getRadiusWorld();
 	    }
 	    
 	    /**
@@ -151,10 +151,29 @@ import processing.core.PGraphics;
 	    	
 	    	this.worldVecsDirty 	= true;
 			this.centerWorldDirty 	= true;
-			this.worldVecs 			= this.getVectorsGlobal();
-			this.centerPointWorld 	= this.getCenterPointGlobal();
+//			this.worldVecs 			= this.getVectorsGlobal(); //Do it only if requested to save memory (no cached values)
+//			this.centerPointWorld 	= this.getCenterPointGlobal();
 			this.radiusWorldDirty = true;
-			this.radiusWorld = this.getRadiusWorld();
+//			this.radiusWorld = this.getRadiusWorld();
+	    }
+	    
+	    /**
+    	 * The Constructor.
+    	 * 
+    	 * @param peerComponent the peer component
+    	 * @param vectors the vectors
+    	 */
+	    public BoundingSphere(MTComponent peerComponent, Vector3D center, float radius){
+	    	this.peerComponent = peerComponent;
+	    	this.radius = radius;
+	    	this.center = new Vector3D(center);
+	    	
+	    	this.worldVecsDirty 	= true;
+			this.centerWorldDirty 	= true;
+//			this.worldVecs 			= this.getVectorsGlobal();
+//			this.centerPointWorld 	= this.getCenterPointGlobal();
+			this.radiusWorldDirty = true;
+//			this.radiusWorld = this.getRadiusWorld();
 	    }
 
 	    

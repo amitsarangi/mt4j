@@ -45,7 +45,7 @@ public class BoundsZPlaneRectangle implements IBoundingShape {
 	/** The I n_ plan e_ tolerance. */
 	public static float IN_PLANE_TOLERANCE = 0.015f;
 	
-	private Vector3D centerPointObjSpace;
+	private Vector3D centerPointLocal;
 	
 	private Vector3D[] worldVecs;
 	private boolean worldVecsDirty;
@@ -91,11 +91,11 @@ public class BoundsZPlaneRectangle implements IBoundingShape {
 		this.peerComponent = peerComponent;
 		
 		this.boundingPointsLocal = this.getBoundingRectVertices(vertices);
-		this.centerPointObjSpace = this.calcCenterPointObjSpace();
+		this.centerPointLocal 	= this.calcCenterPointLocal();
 		this.worldVecsDirty 	= true;
 		this.centerWorldDirty 	= true;
-		this.worldVecs 			= this.getVectorsGlobal();
-		this.centerPointWorld 	= this.getCenterPointGlobal();
+//		this.worldVecs 			= this.getVectorsGlobal();
+//		this.centerPointWorld 	= this.getCenterPointGlobal();
 	}
 
 
@@ -229,11 +229,11 @@ public class BoundsZPlaneRectangle implements IBoundingShape {
 	 * 
 	 * @return the normal obj space
 	 */
-	private Vector3D getNormalObjSpace() {
+	private Vector3D getNormalLocal() {
 		return ToolsGeometry.getNormal(this.boundingPointsLocal[0], this.boundingPointsLocal[1], this.boundingPointsLocal[2], true);
 	}
 	
-	private Vector3D calcCenterPointObjSpace(){
+	private Vector3D calcCenterPointLocal(){
 		Vector3D tmp0 = this.boundingPointsLocal[0].getCopy();
 		Vector3D tmp1 = this.boundingPointsLocal[1].getSubtracted(this.boundingPointsLocal[0]);
 		tmp1.scaleLocal(0.5f);
@@ -257,7 +257,7 @@ public class BoundsZPlaneRectangle implements IBoundingShape {
 //		tmp0.addLocal(tmp1);
 //		tmp0.addLocal(tmp2);
 //		return tmp0;
-		return this.centerPointObjSpace.getCopy();
+		return this.centerPointLocal.getCopy();
 	}
 	
 	
@@ -273,9 +273,6 @@ public class BoundsZPlaneRectangle implements IBoundingShape {
 		else{
 			return this.centerPointWorld;
 		}
-//		Vector3D tmp = this.getCenterPointObjSpace();
-//		tmp.transform(this.peerComponent.getAbsoluteLocalToWorldMatrix());
-//		return tmp;
 	}
 	
 	

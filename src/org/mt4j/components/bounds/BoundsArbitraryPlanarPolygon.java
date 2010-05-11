@@ -25,6 +25,8 @@ import org.mt4j.util.math.Ray;
 import org.mt4j.util.math.ToolsGeometry;
 import org.mt4j.util.math.Vector3D;
 
+import processing.core.PGraphics;
+
 
 /**
  * The Class BoundsArbitraryPlanarPolygon.
@@ -50,8 +52,8 @@ public class BoundsArbitraryPlanarPolygon implements IBoundingShape {
 	
 	
 	/**
-	 * Instantiates a new bounds arbitrary planar polygon.
-	 * This bounding shape is only for objects that lie entirely in the z=0 plane.
+	 * A 2D bounding polygon that is defined by the specified vectors.
+	 * This bounding shape is only suitable for objects that lie entirely in the z=0 plane.
 	 * 
 	 * @param peerComponent the peer component
 	 * @param boundingPoints the bounding points
@@ -70,9 +72,23 @@ public class BoundsArbitraryPlanarPolygon implements IBoundingShape {
 		
 		this.worldVecsDirty 	= true;
 		this.centerWorldDirty 	= true;
-		this.worldVecs 			= this.getVectorsGlobal();
-		this.centerPointWorld 	= this.getCenterPointGlobal();
+//		this.worldVecs 			= this.getVectorsGlobal();
+//		this.centerPointWorld 	= this.getCenterPointGlobal();
 	}
+	
+	
+	public void drawBounds(PGraphics g) {
+		g.pushMatrix();
+		g.fill(150,180);
+		g.beginShape();
+		Vector3D[] vectors = this.getVectorsLocal();
+		for (int i = 0; i < vectors.length; i++) {
+			g.vertex(vectors[i].x, vectors[i].y, vectors[i].z);
+		}
+		g.endShape();
+		g.popMatrix();
+	}
+	
 	
 	public void setGlobalBoundsChanged(){
 		this.worldVecsDirty = true;
@@ -98,9 +114,6 @@ public class BoundsArbitraryPlanarPolygon implements IBoundingShape {
 		else{
 			return this.centerPointWorld;
 		}
-//		Vector3D center = this.getCenterPointObjSpace();
-//		center.transform(this.peerComponent.getAbsoluteLocalToWorldMatrix());
-//		return center;
 	}
 
 	
@@ -140,9 +153,6 @@ public class BoundsArbitraryPlanarPolygon implements IBoundingShape {
 		}else{
 			return this.worldVecs;
 		}
-//		Vector3D[] vecs = Vector3D.getDeepVertexArrayCopy(this.boundingPointsLocal);
-//		Vector3D.transFormArrayLocal(this.peerComponent.getAbsoluteLocalToWorldMatrix(), vecs);
-//		return vecs;
 	}
 
 
@@ -322,5 +332,7 @@ public class BoundsArbitraryPlanarPolygon implements IBoundingShape {
 		}
 		return false;
 	}
+
+	
 
 }
