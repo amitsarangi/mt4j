@@ -10,6 +10,7 @@ ToDo list:
 - update to processing 1.1 -> bitmapfont working?
 - make standalone executable MT4j MTShell distribution/installer on windows
 - integrate with JNLP?
+- update to latest gsvideo
 - allow wrapping of JComponents in a MTComponent (-> swingToTexture, repaintManager update, generate mouse events)
 - use PGraphics.pushStyle()/popStyle when rendering with processing!?
 
@@ -32,6 +33,7 @@ ToDo list:
 - how to create own gesture example
 - brainstorm example - textareas + draw links!
 
+- use hint(DISABLE_OPENGL_ERROR_REPORT)? put into Settings.txt?
 - mt4j as p5 library - difficult because mtapplication is derived from papplet
 - manymouse problem loadlibrary!? -> Compile on Mac!
 - remove MTVideoClip from core and put it into example with gsvideo and gstreamer?

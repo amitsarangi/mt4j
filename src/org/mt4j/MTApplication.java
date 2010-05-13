@@ -337,19 +337,30 @@ public class MTApplication extends PApplet {
 	    } catch (Exception e) {
 	    	logger.error("Error while loading Settings.txt file. Using defaults. (" + e.getMessage() + ")");
 	    }
-		
+	    
 		// Applet size - size() must be the first command in setup() method
 		if (MT4jSettings.getInstance().getRendererMode() == MT4jSettings.OPENGL_MODE)
-			this.size(MT4jSettings.getInstance().getScreenWidth(),MT4jSettings.getInstance().getScreenHeight(), PApplet.OPENGL); 
+//			this.size(MT4jSettings.getInstance().getScreenWidth(),MT4jSettings.getInstance().getScreenHeight(), PApplet.OPENGL);
+			this.size(MT4jSettings.getInstance().getScreenWidth(),MT4jSettings.getInstance().getScreenHeight(), "org.mt4j.util.opengl.CustomPGraphicsOpenGL");
 		else if (MT4jSettings.getInstance().getRendererMode() == MT4jSettings.P3D_MODE)
 			this.size(MT4jSettings.getInstance().getScreenWidth(),MT4jSettings.getInstance().getScreenHeight(), PApplet.P3D);
+	    
+	    /*
+	    //Processing Bug? seems to always use 2 samples 
+	    if (MT4jSettings.getInstance().getNumSamples() <= 0){
+	    	hint(DISABLE_OPENGL_2X_SMOOTH);
+	    }else if (MT4jSettings.getInstance().getNumSamples() == 2){
+	    	//Nothing to set, Processing default anyway
+	    }else if (MT4jSettings.getInstance().getNumSamples() == 4){
+	    	hint(DISABLE_OPENGL_2X_SMOOTH);
+	    	hint(ENABLE_OPENGL_4X_SMOOTH);
+	    }
+	    */
 	    
 //	    pContext.hint( PApplet.ENABLE_OPENGL_4X_SMOOTH );  // ENABLES OPENGL EXTRA SMOOTHING -> DOESENT GET CONSISTENT RESULTS ON ALL MACHINES! DISABLE WHEN PROBLEMS OCCUR!
 		//hint(ENABLE_DEPTH_SORT); // Enable primitive z-sorting of triangles and lines in P3D and OPENGL. This can slow performance considerably, and the algorithm is not yet perfect.
 		//hint(DISABLE_ERROR_REPORT); // Speeds up the OPENGL renderer setting by not checking for errors while running.
 		//hint(ENABLE_ACCURATE_TEXTURES); //Enables better texture accuracy for the P3D renderer. This option will do a better job of dealing with textures in perspective.  
-		
-//		hint(ENABLE_OPENGL_4X_SMOOTH);
 		
 		// Save this applets rendering thread for reference
 		this.renderThread = Thread.currentThread();

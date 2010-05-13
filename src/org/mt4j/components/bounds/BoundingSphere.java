@@ -177,13 +177,21 @@ import processing.core.PGraphics;
 	    }
 
 	    
-	    public void setGlobalBoundsChanged(){
+	    /* (non-Javadoc)
+    	 * @see org.mt4j.components.bounds.IBoundingShape#setGlobalBoundsChanged()
+    	 */
+    	public void setGlobalBoundsChanged(){
 	    	this.worldVecsDirty = true;
 	    	this.centerWorldDirty = true;
 	    	this.radiusWorldDirty = true;
 	    }
 	    
 	    
+		/**
+		 * Draw bounds.
+		 *
+		 * @param g the g
+		 */
 		public void drawBounds(PGraphics g){
 			g.pushMatrix();
 			g.pushStyle();

@@ -44,7 +44,6 @@ import org.mt4j.input.inputProcessors.componentProcessors.AbstractComponentProce
 import org.mt4j.util.MT4jSettings;
 import org.mt4j.util.camera.IFrustum;
 import org.mt4j.util.camera.Icamera;
-import org.mt4j.util.camera.ViewportSetting;
 import org.mt4j.util.math.Matrix;
 import org.mt4j.util.math.Ray;
 import org.mt4j.util.math.Tools3D;
@@ -304,6 +303,7 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 	/** The bounds global vertices dirty. */
 	private boolean boundsGlobalVerticesDirty;
 	
+	//TODO REMOVE THESE DEPRECATED METHODS IN THE NEXT RELEASE!
 	/**
 	 * Sets the bounding shape.
 	 * 
@@ -314,7 +314,6 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 		this.bounds = boundingShape;
 		this.setBoundsGlobalDirty(true);
 	}	
-	
 	/**
 	 * Gets the bounding shape.
 	 * 
@@ -324,7 +323,6 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 	public IBoundingShape getBoundingShape(){
 		return this.bounds;
 	}
-	
 	/**
 	 * Checks if is bounding shape set.
 	 * @return true, if is bounding shape set
@@ -336,7 +334,6 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 	
 	/**
 	 * Sets the bounding shape.
-	 * 
 	 * @param boundingShape the new bounding shape
 	 */
 	public void setBounds(IBoundingShape boundingShape){
@@ -346,7 +343,6 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 	
 	/**
 	 * Gets the bounding shape.
-	 * 
 	 * @return the bounding shape
 	 */
 	public IBoundingShape getBounds(){

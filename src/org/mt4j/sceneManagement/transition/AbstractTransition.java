@@ -29,26 +29,26 @@ import org.mt4j.sceneManagement.AbstractScene;
 public abstract class AbstractTransition extends AbstractScene implements ITransition {
 //	private Iscene previousScene;
 //	private Iscene nextScene;
-	
+
 	/**
- * Instantiates a new abstract transition.
- * 
- * @param mtApplication the mt application
- * @param name the name
- */
-public AbstractTransition(MTApplication mtApplication, String name) {
+	 * Instantiates a new abstract transition.
+	 * 
+	 * @param mtApplication the mt application
+	 * @param name the name
+	 */
+	public AbstractTransition(MTApplication mtApplication, String name) {
 		super(mtApplication, name);
-		
+
 		//Remove all global input processors - we dont want the transition to respond to input
 		AbstractGlobalInputProcessor[] inputProcessors = this.getGlobalInputProcessors();
 		for (int i = 0; i < inputProcessors.length; i++) {
 			AbstractGlobalInputProcessor abstractGlobalInputProcessor = inputProcessors[i];
 			this.unregisterGlobalInputProcessor(abstractGlobalInputProcessor);
 		}
-//		this.previousScene = previousScene;
-//		this.nextScene = nextScene;
+		//		this.previousScene = previousScene;
+		//		this.nextScene = nextScene;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.mt4j.sceneManagement.AbstractScene#registerDefaultGlobalInputProcessors()
 	 */

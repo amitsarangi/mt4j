@@ -115,8 +115,7 @@ public class Plane {
       * 
       * @param p the p
       * 
-      * @return One of the 3 integer classification codes: PLANE_FRONT,
-      * PLANE_BACK, ON_PLANE
+      * @return One of the 3 integer classification codes: PLANE_FRONT, PLANE_BACK, ON_PLANE
       */
      public int classifyPoint(Vector3D p) {
              float d = this.origin.getSubtracted(p).dot(normal);
