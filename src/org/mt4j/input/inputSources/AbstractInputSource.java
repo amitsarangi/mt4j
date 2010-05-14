@@ -57,7 +57,6 @@ public abstract class AbstractInputSource {
 		
 		this.app = mtApp;
 		
-		
 		inputProcessorsToFireTo = new ArrayList<IinputSourceListener>(10);
 	} 
 	
@@ -87,8 +86,6 @@ public abstract class AbstractInputSource {
 //	 * @return true, if it does.
 //	 */
 //	abstract public boolean firesEventType(Class<? extends MTInputEvent> evtClass);
-	
-	
 	
 	
 	/**
@@ -199,12 +196,10 @@ public abstract class AbstractInputSource {
 		}
 		*/
 	}
-
 	
 	
 	/**
 	 * Adds the input listener.
-	 * 
 	 * @param listener the listener
 	 */
 	public synchronized void addInputListener(IinputSourceListener listener){
@@ -216,7 +211,6 @@ public abstract class AbstractInputSource {
 	
 	/**
 	 * Removes the input listener.
-	 * 
 	 * @param listener the listener
 	 */
 	public synchronized void removeInputListener(IinputSourceListener listener){
@@ -227,7 +221,6 @@ public abstract class AbstractInputSource {
 	
 	/**
 	 * Gets the input listeners.
-	 * 
 	 * @return the input listeners
 	 */
 	public synchronized IinputSourceListener[] getInputListeners(){
