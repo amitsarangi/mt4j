@@ -1,16 +1,18 @@
 ToDo list:
 
 -> General:
-- integrate $ gesture processor -test before publishing
+- in boundingShapes -> calculate width/height screen or object aligned? -> rather object aligned..
+- check why centerpointGlobal was used at mtPolygon.getWidthHeightXYRelativeToParent() -> Bug?
+- put get/setWidth/Height into AbstractShape? -> or even MTComponent?
+- integrate $ gesture processor
 - remove logging from model loading -> consumes memory even if the logging level doesent match?
 - nice image for touch cursor
 - update to processing 1.1 -> bitmapfont working?
 - make standalone executable MT4j MTShell distribution/installer on windows
 - integrate with JNLP?
+- update to latest gsvideo
 - allow wrapping of JComponents in a MTComponent (-> swingToTexture, repaintManager update, generate mouse events)
 - use PGraphics.pushStyle()/popStyle when rendering with processing!?
-
-- in Flickr Example search when hitting "Enter" -> maybe make method onEnterPressed in MTKeyboard to override?
 
 - enable a way so that even if input starts on a components the input can be redirected/replayed to another (parent or below) 
   so that if the comp doesent handle the gesture, the parent can use it (example: start zoom, even if not the background was hit)
@@ -31,6 +33,7 @@ ToDo list:
 - how to create own gesture example
 - brainstorm example - textareas + draw links!
 
+- use hint(DISABLE_OPENGL_ERROR_REPORT)? put into Settings.txt?
 - mt4j as p5 library - difficult because mtapplication is derived from papplet
 - manymouse problem loadlibrary!? -> Compile on Mac!
 - remove MTVideoClip from core and put it into example with gsvideo and gstreamer?
@@ -54,7 +57,10 @@ ToDo list:
 
 
 -> Components:
-- geometry setColorBinding(BIND_PER_VERTEX)/BIND_SINGLE_COLOR to allow simple coloring using glColor()? -> per default use BIND_SINGLE -> fill color vertices when setting fill color?
+- try using absolute transformations (with anchor)
+- use layoutBounds (parent relative, axis aligned bounds)
+- 
+- geometry setColorBinding(BIND_PER_VERTEX)/BIND_SINGLE_COLOR to allow simple coloring using glColor()?
 - add ability to set boundingshapes to MTComponents?
 - LayoutContainer/Manager
 - updateBounds/Layout() if childrens transform changes?
@@ -68,7 +74,6 @@ ToDo list:
 - sprite component with acceleration/velocity/collision/ animatable with textures?
 - store Vertices only in floatBuffers instead of buffers+array to reduce memory consumption? (test if it matters)
 - use glpush/popattrib at drawing? -> speed up drawing -> externalize rendering? (ie. renderer.renderBuffers(..));
-- save and track openGL state to only change if neccessary? -> we would need to delegate all direct gl calls 
 - make propertychange listener/events in MTComponent? (useful in many components)
 - add more gui elements -> sperate model | view(setUIDelegate) (MTCheckbox)
 - Keyboard internationalize -> xml?
@@ -128,7 +133,7 @@ ToDo list:
 
 -> Gestures/Input
 - win7touchsource detects touch when wacom tablet installed?
-- differentiate between manipulations and gestures? (1 difference is: eg. flick is a gesture, drag a manipulation, we have to wait if it is a flick -> if not switch to drag but start drag from the 1st event, not resume at current)
+- differentiate between manipulation s and gestures? (1 difference is: eg. flick is a gesture, drag a manipulation, we have to wait if it is a flick -> if not switch to drag but start drag from the 1st event, not resume at current)
 - GestureUtil class? -> getDistance(cursor1, cursor2) getAngle(cursor1, movedCursor); etc
 - abort tapGesture if finger moved too much -> check on update as in PressAndHold gesture
 - Test if intalled multitouch vista driver + win7 touch screen make problems

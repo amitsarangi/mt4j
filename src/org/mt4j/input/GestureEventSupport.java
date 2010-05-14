@@ -69,7 +69,7 @@ public class GestureEventSupport {
             return;
         }
         
-        this.lazyInitMap();
+        this.lazyInitializeMap();
         
         IGestureEventListener[] array = this.gestureSenderToGestureListener.get(gestureEvtSender);
         
@@ -110,7 +110,7 @@ public class GestureEventSupport {
             return;
         }
     	
-    	 this.lazyInitMap();
+    	 this.lazyInitializeMap();
     	 
     	  if (this.gestureSenderToGestureListener != null) {
               IGestureEventListener[] array = this.gestureSenderToGestureListener.get(gestureEvtSender);
@@ -147,7 +147,7 @@ public class GestureEventSupport {
     		return;
     	}
     	
-    	 this.lazyInitMap();
+    	 this.lazyInitializeMap();
     	 
     	 this.gestureSenderToGestureListener.clear();
     }
@@ -258,7 +258,7 @@ public class GestureEventSupport {
     /**
      * Checks if the map is null and then lazily initializes it.
      */
-    private void lazyInitMap(){
+    private void lazyInitializeMap(){
     	if (gestureSenderToGestureListener == null){
     		 gestureSenderToGestureListener = new HashMap<Class<? extends IInputProcessor>, IGestureEventListener[]>();
     	}

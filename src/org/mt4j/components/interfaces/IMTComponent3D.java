@@ -18,7 +18,6 @@
 package org.mt4j.components.interfaces;
 
 import org.mt4j.util.camera.Icamera;
-import org.mt4j.util.camera.ViewportSetting;
 import org.mt4j.util.math.Ray;
 import org.mt4j.util.math.Vector3D;
 
@@ -58,26 +57,26 @@ public interface IMTComponent3D extends IMTComponent{
 	 */
 	public void rotateXGlobal(Vector3D rotationPoint, float degree);
 	
-	/**
-	 * Gets the custom viewport setting.
-	 * 
-	 * @return the custom viewport setting
-	 */
-	public ViewportSetting getCustomViewportSetting();
-	
-	/**
-	 * Gets the default viewport setting.
-	 * 
-	 * @return the default viewport setting
-	 */
-	public ViewportSetting getDefaultViewportSetting();
-	
-	/**
-	 * Checks for custom view port.
-	 * 
-	 * @return true, if successful
-	 */
-	public boolean hasCustomViewPort();
+//	/**
+//	 * Gets the custom viewport setting.
+//	 * 
+//	 * @return the custom viewport setting
+//	 */
+//	public ViewportSetting getCustomViewportSetting();
+//	
+//	/**
+//	 * Gets the default viewport setting.
+//	 * 
+//	 * @return the default viewport setting
+//	 */
+//	public ViewportSetting getDefaultViewportSetting();
+//	
+//	/**
+//	 * Checks for custom view port.
+//	 * 
+//	 * @return true, if successful
+//	 */
+//	public boolean hasCustomViewPort();
 	
 	/**
 	 * Checks if is pickable.

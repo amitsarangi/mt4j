@@ -792,8 +792,9 @@ public class MTPolygon extends AbstractShape {
 	public boolean setSizeXYRelativeToParent(float width, float height){
 		if (width > 0 && height > 0){
 			Vector3D centerPoint = this.getCenterPointRelativeToParent();
-			this.scale(1/this.getWidthXYRelativeToParent(), 1/this.getHeightXYRelativeToParent(), 1, centerPoint);
-			this.scale(width, height, 1, centerPoint);
+//			this.scale(1/this.getWidthXYRelativeToParent(), 1/this.getHeightXYRelativeToParent(), 1, centerPoint);
+//			this.scale(width, height, 1, centerPoint);
+			this.scale( (1f/this.getWidthXYRelativeToParent()) * width, (1f/this.getHeightXYRelativeToParent()) * height, 1, centerPoint);
 			return true;
 		}else
 			return false;
@@ -811,8 +812,9 @@ public class MTPolygon extends AbstractShape {
 	public boolean setSizeXYGlobal(float width, float height){
 		if (width > 0 && height > 0){
 			Vector3D centerPoint = this.getCenterPointGlobal();
-			this.scaleGlobal(1/this.getWidthXYGlobal(), 1/this.getHeightXYGlobal(), 1, centerPoint);
-			this.scaleGlobal(width, height, 1, centerPoint); 
+//			this.scaleGlobal(1/this.getWidthXYGlobal(), 1/this.getHeightXYGlobal(), 1, centerPoint);
+//			this.scaleGlobal(width, height, 1, centerPoint); 
+			this.scaleGlobal( (1f/this.getWidthXYGlobal())* width , (1f/this.getHeightXYGlobal()) * height, 1, centerPoint);
 			return true;
 		}else
 			return false;
@@ -831,9 +833,12 @@ public class MTPolygon extends AbstractShape {
 	 */
 	public boolean setHeightXYRelativeToParent(float height){
 		if (height > 0){
-			Vector3D centerPoint = this.getCenterPointGlobal();
-			this.scale(1/this.getHeightXYRelativeToParent(), 1/this.getHeightXYRelativeToParent(), 1, centerPoint);
-			this.scale(height, height, 1, centerPoint);
+//			Vector3D centerPoint = this.getCenterPointGlobal(); //FIXME why was centerpoint global used here?? BUG?
+			Vector3D centerPoint = this.getCenterPointRelativeToParent();
+//			this.scale(1/this.getHeightXYRelativeToParent(), 1/this.getHeightXYRelativeToParent(), 1, centerPoint);
+//			this.scale(height, height, 1, centerPoint);
+			float factor = (1f/this.getHeightXYRelativeToParent()) * height;
+			this.scale(factor, factor, 1, centerPoint);
 			return true;
 		}else
 			return false;
@@ -853,8 +858,10 @@ public class MTPolygon extends AbstractShape {
 	public boolean setHeightXYGlobal(float height){
 		if (height > 0){
 			Vector3D centerPoint = this.getCenterPointGlobal();
-			this.scaleGlobal(1/this.getHeightXYGlobal(), 1/this.getHeightXYGlobal(), 1, centerPoint);
-			this.scaleGlobal(height, height, 1, centerPoint);
+//			this.scaleGlobal(1/this.getHeightXYGlobal(), 1/this.getHeightXYGlobal(), 1, centerPoint);
+//			this.scaleGlobal(height, height, 1, centerPoint);
+			float factor = (1f/this.getHeightXYGlobal())* height;
+			this.scaleGlobal(factor, factor, 1, centerPoint);
 			return true;
 		}else
 			return false;
@@ -873,9 +880,12 @@ public class MTPolygon extends AbstractShape {
 	 */
 	public boolean setWidthXYRelativeToParent(float width){
 		if (width > 0){
-			Vector3D centerPoint = this.getCenterPointGlobal();
-			this.scale(1/this.getWidthXYRelativeToParent(), 1/this.getWidthXYRelativeToParent(), 1, centerPoint);
-			this.scale(width, width, 1, centerPoint);
+//			Vector3D centerPoint = this.getCenterPointGlobal(); //FIXME why was centerpoint global used here?? BUG?
+			Vector3D centerPoint = this.getCenterPointRelativeToParent(); 
+//			this.scale(1/this.getWidthXYRelativeToParent(), 1/this.getWidthXYRelativeToParent(), 1, centerPoint);
+//			this.scale(width, width, 1, centerPoint);
+			float factor = (1f/this.getWidthXYRelativeToParent()) * width;
+			this.scale(factor, factor, 1, centerPoint);
 			return true;
 		}else
 			return false;
@@ -895,8 +905,10 @@ public class MTPolygon extends AbstractShape {
 	public boolean setWidthXYGlobal(float width){
 		if (width > 0){
 			Vector3D centerPoint = this.getCenterPointGlobal();
-			this.scaleGlobal(1/this.getWidthXYGlobal(), 1/this.getWidthXYGlobal(), 1, centerPoint);
-			this.scaleGlobal(width, width, 1, centerPoint);
+//			this.scaleGlobal(1/this.getWidthXYGlobal(), 1/this.getWidthXYGlobal(), 1, centerPoint);
+//			this.scaleGlobal(width, width, 1, centerPoint);
+			float factor = (1f/this.getWidthXYGlobal())* width;
+			this.scaleGlobal(factor, factor, 1, centerPoint);
 			return true;
 		}else
 			return false;

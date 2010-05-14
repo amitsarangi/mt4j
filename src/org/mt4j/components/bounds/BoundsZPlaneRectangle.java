@@ -21,6 +21,7 @@ import org.mt4j.components.MTComponent;
 import org.mt4j.components.TransformSpace;
 import org.mt4j.components.visibleComponents.shapes.AbstractShape;
 import org.mt4j.util.camera.IFrustum;
+import org.mt4j.util.math.Matrix;
 import org.mt4j.util.math.Ray;
 import org.mt4j.util.math.ToolsGeometry;
 import org.mt4j.util.math.Vector3D;
@@ -44,7 +45,7 @@ public class BoundsZPlaneRectangle implements IBoundingShape {
 	/** The I n_ plan e_ tolerance. */
 	public static float IN_PLANE_TOLERANCE = 0.015f;
 	
-	private Vector3D centerPointObjSpace;
+	private Vector3D centerPointLocal;
 	
 	private Vector3D[] worldVecs;
 	private boolean worldVecsDirty;
@@ -67,6 +68,20 @@ public class BoundsZPlaneRectangle implements IBoundingShape {
 	
 	/**
 	 * Instantiates a new bounds z plane rectangle.
+	 *
+	 * @param peerComponent the peer component
+	 * @param x the x
+	 * @param y the y
+	 * @param width the width
+	 * @param height the height
+	 */
+	public BoundsZPlaneRectangle(MTComponent peerComponent, float x, float y, float width, float height) {
+		this(peerComponent, new Vector3D[]{new Vector3D(x,y), new Vector3D(x+width,y), new Vector3D(x+width,y+height), new Vector3D(x,y+height)});
+	}
+	
+	
+	/**
+	 * Instantiates a new bounds z plane rectangle.
 	 * 
 	 * @param peerComponent the peer component
 	 * @param vertices the vertices
@@ -76,11 +91,11 @@ public class BoundsZPlaneRectangle implements IBoundingShape {
 		this.peerComponent = peerComponent;
 		
 		this.boundingPointsLocal = this.getBoundingRectVertices(vertices);
-		this.centerPointObjSpace = this.calcCenterPointObjSpace();
+		this.centerPointLocal 	= this.calcCenterPointLocal();
 		this.worldVecsDirty 	= true;
 		this.centerWorldDirty 	= true;
-		this.worldVecs 			= this.getVectorsGlobal();
-		this.centerPointWorld 	= this.getCenterPointGlobal();
+//		this.worldVecs 			= this.getVectorsGlobal();
+//		this.centerPointWorld 	= this.getCenterPointGlobal();
 	}
 
 
@@ -214,11 +229,11 @@ public class BoundsZPlaneRectangle implements IBoundingShape {
 	 * 
 	 * @return the normal obj space
 	 */
-	private Vector3D getNormalObjSpace() {
+	private Vector3D getNormalLocal() {
 		return ToolsGeometry.getNormal(this.boundingPointsLocal[0], this.boundingPointsLocal[1], this.boundingPointsLocal[2], true);
 	}
 	
-	private Vector3D calcCenterPointObjSpace(){
+	private Vector3D calcCenterPointLocal(){
 		Vector3D tmp0 = this.boundingPointsLocal[0].getCopy();
 		Vector3D tmp1 = this.boundingPointsLocal[1].getSubtracted(this.boundingPointsLocal[0]);
 		tmp1.scaleLocal(0.5f);
@@ -242,7 +257,7 @@ public class BoundsZPlaneRectangle implements IBoundingShape {
 //		tmp0.addLocal(tmp1);
 //		tmp0.addLocal(tmp2);
 //		return tmp0;
-		return this.centerPointObjSpace.getCopy();
+		return this.centerPointLocal.getCopy();
 	}
 	
 	
@@ -258,9 +273,6 @@ public class BoundsZPlaneRectangle implements IBoundingShape {
 		else{
 			return this.centerPointWorld;
 		}
-//		Vector3D tmp = this.getCenterPointObjSpace();
-//		tmp.transform(this.peerComponent.getAbsoluteLocalToWorldMatrix());
-//		return tmp;
 	}
 	
 	
@@ -322,15 +334,15 @@ public class BoundsZPlaneRectangle implements IBoundingShape {
 	 * @return the height xy relative to parent
 	 */
 	private float getHeightXYRelativeToParent() {
-//		Vector3D p = this.getHeightXYVectLocal();
-//		Matrix m = new Matrix(this.peerComponent.getLocalMatrix());
-//		m.removeTranslationFromMatrix();
-//		p.transform(m);
-//		return p.length();
+		Vector3D p = this.getHeightXYVectLocal();
+		Matrix m = new Matrix(this.peerComponent.getLocalMatrix());
+		m.removeTranslationFromMatrix();
+		p.transform(m);
+		return p.length();
 		
-		Vector3D[] v = this.getVectorsRelativeToParent();
-		float[] minMax = ToolsGeometry.getMinXYMaxXY(v);
-		return minMax[3] - minMax[1];
+//		Vector3D[] v = this.getVectorsRelativeToParent();
+//		float[] minMax = ToolsGeometry.getMinXYMaxXY(v);
+//		return minMax[3] - minMax[1];
 	}
 	
 	
@@ -340,15 +352,15 @@ public class BoundsZPlaneRectangle implements IBoundingShape {
 	 * @return the height xy global
 	 */
 	private float getHeightXYGlobal() {
-//		Vector3D p = this.getHeightXYVectLocal();
-//		Matrix m = new Matrix(this.peerComponent.getGlobalMatrix());
-//		m.removeTranslationFromMatrix();
-//		p.transform(m);
-//		return p.length();
+		Vector3D p = this.getHeightXYVectLocal();
+		Matrix m = new Matrix(this.peerComponent.getGlobalMatrix());
+		m.removeTranslationFromMatrix();
+		p.transform(m);
+		return p.length();
 		
-		Vector3D[] v = this.getVectorsGlobal();
-		float[] minMax = ToolsGeometry.getMinXYMaxXY(v);
-		return minMax[3] - minMax[1];
+//		Vector3D[] v = this.getVectorsGlobal();
+//		float[] minMax = ToolsGeometry.getMinXYMaxXY(v);
+//		return minMax[3] - minMax[1];
 	}
 	
 	
@@ -397,15 +409,17 @@ public class BoundsZPlaneRectangle implements IBoundingShape {
 	 * @return the width xy realtive to parent
 	 */
 	private float getWidthXYRealtiveToParent() {
-//		Vector3D p = this.getWidthXYVectLocal();
-//		Matrix m = new Matrix(this.peerComponent.getLocalMatrix());
-//		m.removeTranslationFromMatrix();
-//		p.transform(m);
-//		return p.length();
+		//This calculates the width aligned/relative to the object 
+		Vector3D p = this.getWidthXYVectLocal();
+		Matrix m = new Matrix(this.peerComponent.getLocalMatrix());
+		m.removeTranslationFromMatrix();
+		p.transform(m);
+		return p.length();
 		
-		Vector3D[] v = this.getVectorsRelativeToParent();
-		float[] minMax = ToolsGeometry.getMinXYMaxXY(v);
-		return minMax[2] - minMax[0];
+		//This calculates the dimension relative to the screen axis (here X-axis)
+//		Vector3D[] v = this.getVectorsRelativeToParent();
+//		float[] minMax = ToolsGeometry.getMinXYMaxXY(v);
+//		return minMax[2] - minMax[0];
 	}
 	
 	/**
@@ -414,15 +428,15 @@ public class BoundsZPlaneRectangle implements IBoundingShape {
 	 * @return the width xy global
 	 */
 	private float getWidthXYGlobal() {
-//		Vector3D p = this.getWidthXYVectLocal();
-//		Matrix m = new Matrix(this.peerComponent.getGlobalMatrix());
-//		m.removeTranslationFromMatrix();
-//		p.transform(m);
-//		return p.length();
+		Vector3D p = this.getWidthXYVectLocal();
+		Matrix m = new Matrix(this.peerComponent.getGlobalMatrix());
+		m.removeTranslationFromMatrix();
+		p.transform(m);
+		return p.length();
 		
-		Vector3D[] v = this.getVectorsGlobal();
-		float[] minMax = ToolsGeometry.getMinXYMaxXY(v);
-		return minMax[2] - minMax[0];
+//		Vector3D[] v = this.getVectorsGlobal();
+//		float[] minMax = ToolsGeometry.getMinXYMaxXY(v);
+//		return minMax[2] - minMax[0];
 	}
 	
 	/**

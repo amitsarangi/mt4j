@@ -25,6 +25,7 @@ import java.awt.image.MemoryImageSource;
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -40,6 +41,7 @@ import org.apache.log4j.SimpleLayout;
 import org.mt4j.MTApplication;
 import org.mt4j.input.inputProcessors.globalProcessors.AbstractGlobalInputProcessor;
 import org.mt4j.input.inputSources.AbstractInputSource;
+import org.mt4j.input.inputSources.IinputSourceListener;
 import org.mt4j.input.inputSources.KeyboardInputSource;
 import org.mt4j.input.inputSources.MouseInputSource;
 import org.mt4j.input.inputSources.MultipleMiceInputSource;
@@ -119,26 +121,29 @@ public class InputManager {
 	    			logger.info("-> Multiple Mice detected!");
 	    			MultipleMiceInputSource multipleMice = new MultipleMiceInputSource(app);
 	    			multipleMice.setMTApp(app);
-	    			registeredInputSources.add(multipleMice);
-
+//	    			registeredInputSources.add(multipleMice);
+	    			this.registerInputSource(multipleMice);
 	    			this.hideCursorInFrame();
 	    		}else{
 //	    			*/
 	    			MouseInputSource mouseInput = new MouseInputSource(app);
-	    			registeredInputSources.add(mouseInput);
+//	    			registeredInputSources.add(mouseInput);
+	    			this.registerInputSource(mouseInput);
 	    		}
 //	    		*/
 	    	} catch (Exception e) {
 	    		e.printStackTrace();
 	    		//Use default mouse input source
 	    		MouseInputSource mouseInput = new MouseInputSource(app);
-	    		registeredInputSources.add(mouseInput);
+//	    		registeredInputSources.add(mouseInput);
+	    		this.registerInputSource(mouseInput);
 	    	}
 	    }
 	    else{
 //	    	*/
 	    	MouseInputSource mouseInput = new MouseInputSource(app);
-	    	registeredInputSources.add(mouseInput);
+//	    	registeredInputSources.add(mouseInput);
+	    	this.registerInputSource(mouseInput);
 	    }
 //	    */
 	    
@@ -153,7 +158,8 @@ public class InputManager {
 	    ) {
 	    	Win7NativeTouchSource win7NativeInput = new Win7NativeTouchSource(app);
 	    	if (win7NativeInput.isSuccessfullySetup()){
-	    		registeredInputSources.add(win7NativeInput);	
+//	    		registeredInputSources.add(win7NativeInput);	
+	    		this.registerInputSource(win7NativeInput);
 	    	}
 	    }
 
@@ -161,14 +167,17 @@ public class InputManager {
 		TuioInputSource tuioInput 	= new TuioInputSource(app);
 //		MuitoInputSource muitoInput = new MuitoInputSource(pa, "localhost", 6666);
 		
-		registeredInputSources.add(keyInput);
-		registeredInputSources.add(tuioInput);
+//		registeredInputSources.add(keyInput);
+//		registeredInputSources.add(tuioInput);
 //		registeredInputSources.add(muitoInput);
+		
+		this.registerInputSource(keyInput);
+		this.registerInputSource(tuioInput);
 	}
 	
 	
 	/**
-	 * Registers a new inputsource.
+	 * Registers a new input source for the application.
 	 * 
 	 * @param newInputSource the new input source
 	 */
@@ -182,9 +191,46 @@ public class InputManager {
 				//newInputSource.addInputListener(processor);
 				this.saveAddInputListenerToSource(newInputSource, processor);
 			}
+			
+			//Inform the input source that it is now registered with the application
+			newInputSource.onRegistered();
 		}else{
 			logger.error("input source already registered! - " + newInputSource);
 		}
+	}
+	
+	
+	/**
+	 * Unregisters a input source.
+	 * @param is the input source
+	 */
+	public void unregisterInputSource(AbstractInputSource is){
+		synchronized (registeredInputSources) {
+			if (registeredInputSources.contains(is)){
+				registeredInputSources.remove(is);
+				
+				//Inform the input source that it is now UN-registered from the application
+				is.onUnregistered();
+			}
+		}
+	}
+	
+	/**
+	 * Gets the input sources.
+	 * @return the input sources
+	 */
+	public AbstractInputSource[] getInputSources(){
+		return this.registeredInputSources.toArray(new AbstractInputSource[this.registeredInputSources.size()]);
+	}
+	
+	/**
+	 * Gets the registered input sources.
+	 * 
+	 * @return the registered input sources
+	 * @deprecated use getInputSources() instead
+	 */
+	public Collection<AbstractInputSource> getRegisteredInputSources(){
+		return this.registeredInputSources;
 	}
 	
 	
@@ -199,29 +245,6 @@ public class InputManager {
 		        Toolkit.getDefaultToolkit().createCustomCursor
 		             (image, new Point(0, 0), "invisibleCursor");
 		app.frame.setCursor(transparentCursor);
-	}
-	
-	
-	/**
-	 * Unregisters a input source.
-	 * 
-	 * @param is the input source
-	 */
-	public void unregisterInputSource(AbstractInputSource is){
-		synchronized (registeredInputSources) {
-			if (registeredInputSources.contains(is)){
-				registeredInputSources.remove(is);
-			}
-		}
-	}
-	
-	/**
-	 * Gets the registered input sources.
-	 * 
-	 * @return the registered input sources
-	 */
-	public Collection<AbstractInputSource> getRegisteredInputSources(){
-		return this.registeredInputSources;
 	}
 	
 	
@@ -255,7 +278,11 @@ public class InputManager {
 		//Only add input processor to input sources 
 		//that fire the event type that the processor is interested in
 //		if (source.firesEventType(inputprocessor.getListenEventType())){
-			source.addInputListener(inputprocessor);
+		
+			List<IinputSourceListener> sourceListener = Arrays.asList(source.getInputListeners());
+			if (!sourceListener.contains(inputprocessor)){ //Prevent adding same global input processor twice
+				source.addInputListener(inputprocessor);
+			}
 //		}
 	}
 	

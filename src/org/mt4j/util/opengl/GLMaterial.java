@@ -24,10 +24,10 @@ import java.nio.FloatBuffer;
 import javax.media.opengl.GL;
 
 /**
- * Wraps properties for a material.
+ * Abstracts usage of OpenGL materials.
  * 
- * To use:
- * create a new material,
+ * Usage:
+ * instantiate a new material,
  * set the material properties (setDiffuse(), setAmbient(), setSpecular(), setShininess()),
  * call material.apply() in your render function to set the OpenGL current material properties.
  */

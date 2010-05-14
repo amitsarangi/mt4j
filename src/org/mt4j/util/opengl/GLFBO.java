@@ -119,7 +119,7 @@ public class GLFBO {
 		this.textures = new ArrayList<GLTexture>();
 		
 		//FIXME FBO STACK TEST!!
-		this.fboStack = GLFboStack.getInstance(gl); 
+		this.fboStack = GLFboStack.getInstance(); 
 		
 		this.initFBO();
 	}

@@ -39,7 +39,7 @@ import java.util.logging.Logger;
 
 
 /**
- * <code>Matrix4f</code> defines and maintains a 4x4 matrix in row major order.
+ * <code>Matrix</code> defines and maintains a 4x4 matrix in row major order.
  * This matrix is intended for use in a translation and rotational capacity.
  * It provides convenience methods for creating the matrix from a multitude
  * of sources.
@@ -1488,7 +1488,7 @@ public class Matrix  implements Serializable, Cloneable {
      * degrees. These rotations are expressed in a single <code>Vector3D</code>
      * object.
      * 
-     * @param angles the angles to rotate.
+     * @param angles the angles to rotate (in degrees).
      */
     public void angleRotation(Vector3D angles) {
         float angle;
@@ -1569,7 +1569,7 @@ public class Matrix  implements Serializable, Cloneable {
      * <code>setInverseRotationDegrees</code> builds an inverted rotation from
      * Euler angles that are in degrees.
      * 
-     * @param angles the Euler angles in degrees.
+     * @param angles the Euler angles (in degrees).
      * 
      * @throws Exception if angles is not size 3.
      */
@@ -1781,53 +1781,14 @@ public class Matrix  implements Serializable, Cloneable {
         return true;
     }
 
-//    public void write(JMEExporter e) throws IOException {
-//        OutputCapsule cap = e.getCapsule(this);
-//        cap.write(m00, "m00", 1);
-//        cap.write(m01, "m01", 0);
-//        cap.write(m02, "m02", 0);
-//        cap.write(m03, "m03", 0);
-//        cap.write(m10, "m10", 0);
-//        cap.write(m11, "m11", 1);
-//        cap.write(m12, "m12", 0);
-//        cap.write(m13, "m13", 0);
-//        cap.write(m20, "m20", 0);
-//        cap.write(m21, "m21", 0);
-//        cap.write(m22, "m22", 1);
-//        cap.write(m23, "m23", 0);
-//        cap.write(m30, "m30", 0);
-//        cap.write(m31, "m31", 0);
-//        cap.write(m32, "m32", 0);
-//        cap.write(m33, "m33", 1);
-//    }
-//
-//    public void read(JMEImporter e) throws IOException {
-//        InputCapsule cap = e.getCapsule(this);
-//        m00 = cap.readFloat("m00", 1);
-//        m01 = cap.readFloat("m01", 0);
-//        m02 = cap.readFloat("m02", 0);
-//        m03 = cap.readFloat("m03", 0);
-//        m10 = cap.readFloat("m10", 0);
-//        m11 = cap.readFloat("m11", 1);
-//        m12 = cap.readFloat("m12", 0);
-//        m13 = cap.readFloat("m13", 0);
-//        m20 = cap.readFloat("m20", 0);
-//        m21 = cap.readFloat("m21", 0);
-//        m22 = cap.readFloat("m22", 1);
-//        m23 = cap.readFloat("m23", 0);
-//        m30 = cap.readFloat("m30", 0);
-//        m31 = cap.readFloat("m31", 0);
-//        m32 = cap.readFloat("m32", 0);
-//        m33 = cap.readFloat("m33", 1);
-//    }
-    
+
     /**
- * Gets the class tag.
- * 
- * @return the class tag
- */
-public Class<? extends Matrix> getClassTag() {
-        return this.getClass();
+     * Gets the class tag.
+     * 
+     * @return the class tag
+     */
+    public Class<? extends Matrix> getClassTag() {
+    	return this.getClass();
     }
 
     /**
@@ -1863,6 +1824,64 @@ public Class<? extends Matrix> getClassTag() {
         m22 *= scale.getZ();
         m32 *= scale.getZ();
     }
+    
+    
+    public void rotateX(float angle) {
+    	angle = angle * ToolsMath.DEG_TO_RAD;
+        float c = ToolsMath.cos(angle);
+        float s = ToolsMath.sin(angle);
+        apply(1, 0, 0, 0,  0, c, -s, 0,  0, s, c, 0,  0, 0, 0, 1);
+      }
+
+
+      public void rotateY(float angle) {
+    	angle = angle * ToolsMath.DEG_TO_RAD;
+        float c = ToolsMath.cos(angle);
+        float s = ToolsMath.sin(angle);
+        apply(c, 0, s, 0,  0, 1, 0, 0,  -s, 0, c, 0,  0, 0, 0, 1);
+      }
+
+
+      public void rotateZ(float angle) {
+    	angle = angle * ToolsMath.DEG_TO_RAD;
+        float c = ToolsMath.cos(angle);
+        float s = ToolsMath.sin(angle);
+        apply(c, -s, 0, 0,  s, c, 0, 0,  0, 0, 1, 0,  0, 0, 0, 1);
+      }
+
+      private void apply(float n00, float n01, float n02, float n03,
+    		  float n10, float n11, float n12, float n13,
+    		  float n20, float n21, float n22, float n23,
+    		  float n30, float n31, float n32, float n33) {
+
+    	  float r00 = m00*n00 + m01*n10 + m02*n20 + m03*n30;
+    	  float r01 = m00*n01 + m01*n11 + m02*n21 + m03*n31;
+    	  float r02 = m00*n02 + m01*n12 + m02*n22 + m03*n32;
+    	  float r03 = m00*n03 + m01*n13 + m02*n23 + m03*n33;
+
+    	  float r10 = m10*n00 + m11*n10 + m12*n20 + m13*n30;
+    	  float r11 = m10*n01 + m11*n11 + m12*n21 + m13*n31;
+    	  float r12 = m10*n02 + m11*n12 + m12*n22 + m13*n32;
+    	  float r13 = m10*n03 + m11*n13 + m12*n23 + m13*n33;
+
+    	  float r20 = m20*n00 + m21*n10 + m22*n20 + m23*n30;
+    	  float r21 = m20*n01 + m21*n11 + m22*n21 + m23*n31;
+    	  float r22 = m20*n02 + m21*n12 + m22*n22 + m23*n32;
+    	  float r23 = m20*n03 + m21*n13 + m22*n23 + m23*n33;
+
+    	  float r30 = m30*n00 + m31*n10 + m32*n20 + m33*n30;
+    	  float r31 = m30*n01 + m31*n11 + m32*n21 + m33*n31;
+    	  float r32 = m30*n02 + m31*n12 + m32*n22 + m33*n32;
+    	  float r33 = m30*n03 + m31*n13 + m32*n23 + m33*n33;
+
+    	  m00 = r00; m01 = r01; m02 = r02; m03 = r03;
+    	  m10 = r10; m11 = r11; m12 = r12; m13 = r13;
+    	  m20 = r20; m21 = r21; m22 = r22; m23 = r23;
+    	  m30 = r30; m31 = r31; m32 = r32; m33 = r33;
+      }
+
+
+
 
     /**
      * Equal identity.
@@ -2439,9 +2458,9 @@ public Class<? extends Matrix> getClassTag() {
 	 * @return the inv scaling matrix
 	 */
 	public static Matrix getInvScalingMatrix(Vector3D scalingPoint, float X, float Y, float Z) {
-		float xs = 1/X;
-		float ys = 1/Y;
-		float zs = 1/Z;
+		float xs = 1f/X;
+		float ys = 1f/Y;
+		float zs = 1f/Z;
 		return new Matrix(
 				xs,0,	0, 		scalingPoint.x - (xs * scalingPoint.x),
 			        0, 	ys,0, 	scalingPoint.y - (ys * scalingPoint.y),
@@ -2460,9 +2479,9 @@ public Class<? extends Matrix> getClassTag() {
 	 * @return the scaling matrix and inverse
 	 */
 	public static Matrix[] getScalingMatrixAndInverse(Vector3D scalingPoint, float X, float Y, float Z) {
-		float xs = 1/X;
-		float ys = 1/Y;
-		float zs = 1/Z;
+		float xs = 1f/X;
+		float ys = 1f/Y;
+		float zs = 1f/Z;
 		return new Matrix[]{
 				new Matrix(
 		                X ,	0,	0, scalingPoint.x - (X * scalingPoint.x),
@@ -2489,9 +2508,9 @@ public Class<? extends Matrix> getClassTag() {
 	 * @param Z the z
 	 */
 	public static void toScalingMatrixAndInverse(Matrix m, Matrix mInv, Vector3D scalingPoint, float X, float Y, float Z) {
-		float xs = 1/X;
-		float ys = 1/Y;
-		float zs = 1/Z;
+		float xs = 1f/X;
+		float ys = 1f/Y;
+		float zs = 1f/Z;
 				try {
 					m.set(new float[]{
 							X ,	0,	0, scalingPoint.x - (X * scalingPoint.x),
@@ -2673,6 +2692,17 @@ public Class<? extends Matrix> getClassTag() {
 			rot.z = ToolsMath.atan2( m10 / scale.x, m11 / scale.y );
 		}
 	}
+	
+	
+	public Vector3D getScale(){
+		Vector3D scale = new Vector3D();
+		// Scale is length of columns
+		scale.x = ToolsMath.sqrt( m00 * m00 + m10 * m10 + m20 * m20 );
+		scale.y = ToolsMath.sqrt( m01 * m01 + m11 * m11 + m21 * m21 );
+		scale.z = ToolsMath.sqrt( m02 * m02 + m12 * m12 + m22 * m22 );
+		return scale;
+	}
+
 
 	
 	/*
@@ -2914,6 +2944,77 @@ public Class<? extends Matrix> getClassTag() {
         System.out.println("after ortho: " + n1 +  " \n Det: " + n1.determinant());
 	 */
 	
+	
+	/**
+	 * Orthonormalizes the 3x3 upper left part of this matrix.
+	 */
+	public void orthonormalizeUpperLeft(){
+		// Algorithm uses Gram-Schmidt orthogonalization. If 'this' matrix is
+		// M = [m0|m1|m2], then orthonormal output matrix is Q = [q0|q1|q2],
+		//
+		// q0 = m0/|m0|
+		// q1 = (m1-(q0*m1)q0)/|m1-(q0*m1)q0|
+		// q2 = (m2-(q0*m2)q0-(q1*m2)q1)/|m2-(q0*m2)q0-(q1*m2)q1|
+		//
+		// where |V| indicates length of vector V and A*B indicates dot
+		// product of vectors A and B.
+
+		// compute q0
+		float fInvLength = ToolsMath.invSqrt(
+		m00*m00
+		+ m10*m10 +
+		m20*m20);
+
+		m00 *= fInvLength;
+		m10 *= fInvLength;
+		m20 *= fInvLength;
+
+		// compute q1
+		float fDot0 =
+		m00*m01 +
+		m10*m11 +
+		m20*m21;
+
+		m01 -= fDot0*m00;
+		m11 -= fDot0*m10;
+		m21 -= fDot0*m20;
+
+		fInvLength = ToolsMath.invSqrt(
+		m01*m01 +
+		m11*m11 +
+		m21*m21);
+
+		m01 *= fInvLength;
+		m11 *= fInvLength;
+		m21 *= fInvLength;
+
+		// compute q2
+		float fDot1 =
+		m01*m02 +
+		m11*m12 +
+		m21*m22;
+
+		fDot0 =
+		m00*m02 +
+		m10*m12 +
+		m20*m22;
+
+		m02 -= fDot0*m00 + fDot1*m01;
+		m12 -= fDot0*m10 + fDot1*m11;
+		m22 -= fDot0*m20 + fDot1*m21;
+
+		fInvLength = ToolsMath.invSqrt(
+		m02*m02 +
+		m12*m12 +
+		m22*m22);
+
+		m02 *= fInvLength;
+		m12 *= fInvLength;
+		m22 *= fInvLength;
+	}
+
+	
+	
 	public Matrix orthonormalizeLocal(){
 		float tx = m03;
         float ty = m13;
@@ -2928,46 +3029,46 @@ public Class<? extends Matrix> getClassTag() {
 	}
 	
 	
-	/**
-	 Orthonormalizes the column vectors of this matrix using Gram Schmidt 
-	 orthonormalization. Note that for this to work the column vectors 
-	 of this matrix must be linearly independent, i.e. the matrix must 
-	 have a determinant not equal to 0.
-
-	\verbatim
-	Given a set of n linearly independent vectors a_i we're looking for a
-	set of n vectors b_i so that these n vectors are orthonormalized, i.e. 
-	they are all orthogonal to each other and have unit-length, and span the
-	same space as the original n vectors.
-	Gram Schmidt orthonormalization is an algorithm that does exactly
-	this in an inductive manner. The algorithm is as follows:
-		
-		b_1 = normalize(a_1)
-		for j = 2 .. n:
-			b_j = a_j - sum of all i = 1 to j-1: dot(a_j, b_i) * b_i
-			normalize(b_j)
-
-	For orthonormalizing the columns of a 4x4 matrix
-		[ a00 a01 a02 a03 ]
-		[ a10 a11 a12 a13 ]
-		[ a20 a21 a22 a23 ]
-		[ a30 a31 a32 a33 ]
-	this simplifies to
-		[ b00 b10 b20 b30 ] = normalize([ a00 a10 a20 a30 ])
-		[ b01 b11 b21 b31 ] = normalize([ a01 a11 a21 a31 ]
-		                    - dot([ a01 a11 a21 a31 ], [ b00 b10 b20 b30 ]) * [ b00 b10 b20 b30 ])
-		[ b02 b12 b22 b32 ] = normalize([ a02 a12 a22 a32 ]
-		                    - dot([ a02 a12 a22 a32 ], [ b00 b10 b20 b30 ]) * [ b00 b10 b20 b30 ]
-		                    - dot([ a02 a12 a22 a32 ], [ b01 b11 b21 b31 ]) * [ b01 b11 b21 b31 ])
-		[ b03 b13 b23 b33 ] = normalize([ a03 a13 a23 a33 ]
-		                    - dot([ a03 a13 a23 a33 ], [ b00 b10 b20 b30 ]) * [ b00 b10 b20 b30 ]
-		                    - dot([ a03 a13 a23 a33 ], [ b01 b11 b21 b31 ]) * [ b01 b11 b21 b31 ]
-		                    - dot([ a03 a13 a23 a33 ], [ b02 b12 b22 b32 ]) * [ b02 b12 b22 b32 ])
-	\endverbatim
-**/
+		/**
+		 Orthonormalizes the column vectors of this matrix using Gram Schmidt 
+		 orthonormalization. Note that for this to work the column vectors 
+		 of this matrix must be linearly independent, i.e. the matrix must 
+		 have a determinant not equal to 0.
+	
+		\verbatim
+		Given a set of n linearly independent vectors a_i we're looking for a
+		set of n vectors b_i so that these n vectors are orthonormalized, i.e. 
+		they are all orthogonal to each other and have unit-length, and span the
+		same space as the original n vectors.
+		Gram Schmidt orthonormalization is an algorithm that does exactly
+		this in an inductive manner. The algorithm is as follows:
+			
+			b_1 = normalize(a_1)
+			for j = 2 .. n:
+				b_j = a_j - sum of all i = 1 to j-1: dot(a_j, b_i) * b_i
+				normalize(b_j)
+	
+		For orthonormalizing the columns of a 4x4 matrix
+			[ a00 a01 a02 a03 ]
+			[ a10 a11 a12 a13 ]
+			[ a20 a21 a22 a23 ]
+			[ a30 a31 a32 a33 ]
+		this simplifies to
+			[ b00 b10 b20 b30 ] = normalize([ a00 a10 a20 a30 ])
+			[ b01 b11 b21 b31 ] = normalize([ a01 a11 a21 a31 ]
+			                    - dot([ a01 a11 a21 a31 ], [ b00 b10 b20 b30 ]) * [ b00 b10 b20 b30 ])
+			[ b02 b12 b22 b32 ] = normalize([ a02 a12 a22 a32 ]
+			                    - dot([ a02 a12 a22 a32 ], [ b00 b10 b20 b30 ]) * [ b00 b10 b20 b30 ]
+			                    - dot([ a02 a12 a22 a32 ], [ b01 b11 b21 b31 ]) * [ b01 b11 b21 b31 ])
+			[ b03 b13 b23 b33 ] = normalize([ a03 a13 a23 a33 ]
+			                    - dot([ a03 a13 a23 a33 ], [ b00 b10 b20 b30 ]) * [ b00 b10 b20 b30 ]
+			                    - dot([ a03 a13 a23 a33 ], [ b01 b11 b21 b31 ]) * [ b01 b11 b21 b31 ]
+			                    - dot([ a03 a13 a23 a33 ], [ b02 b12 b22 b32 ]) * [ b02 b12 b22 b32 ])
+		\endverbatim
+	**/
 	private Matrix orthonormalizeColumns(){
-//		wxASSERT(Math::fabs(GetDeterminant()) >= Math::g_epsilon);		// make sure the rows/columns are linearly independent
-
+//		assert(Math.abs(determinant()) >= ToolsMath.FLT_EPSILON);		// make sure the rows/columns are linearly independent
+		
 		// compute the length of the first column and set it
 		float length = ToolsMath.invSqrt(m00 * m00 + m10 * m10 + m20 * m20 + m30 * m30);
 		m00 *= length;
@@ -3014,9 +3115,10 @@ public Class<? extends Matrix> getClassTag() {
 		m23 *= length;
 		m33 *= length;
 
+		//multiplications: 80
 		return this;
 	}
-
+	
 
 	
 /////////////////////////////////////////////////////////////////////////////

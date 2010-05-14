@@ -80,13 +80,9 @@ public class MTSceneTexture extends MTRectangle {
 		//from the current scene to the window scene
 		pa.getInputManager().disableGlobalInputProcessors(scene);
 		
-		//Create FBO //FIXME TODO MAKE SIZE SETTABLE, also constructor
+		//Create FBO 
 //		this.fbo = new GLFBO(pa, pa.width, pa.height);
-//		this.fbo = new GLFBO(pa, Math.round(pa.width/2f), Math.round(pa.height/2f)); //FIXME TEST
-//		this.fbo = new GLFBO(pa, Math.round(pa.width/1.5f), Math.round(pa.height/1.5f)); //FIXME TEST
-//		this.fbo = new GLFBO(pa, Math.round(pa.width * 0.675f), Math.round(pa.height * 0.675f)); //FIXME TEST
-		
-		this.fbo = new GLFBO(pa, fboWidth, fboHeight); //FIXME TEST
+		this.fbo = new GLFBO(pa, fboWidth, fboHeight); 
 		
 		//Attach texture to FBO to draw into
 		GLTexture tex = fbo.addNewTexture();
@@ -171,7 +167,7 @@ public class MTSceneTexture extends MTRectangle {
 			scene.drawAndUpdate(pgl, this.lastUpdateTime);
 		fbo.stopRenderToTexture();
 
-		if (GLFboStack.getInstance(gl).peekFBO() == 0)
+		if (GLFboStack.getInstance().peekFBO() == 0)
 			gl.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA); //Restore default blend mode //FIXME TEST -> neccessary?
 		
 		//FIXME NOT NEEDED!? sufficient to call glGenerateMipmapEXT at texture creation!? 

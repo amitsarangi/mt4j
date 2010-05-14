@@ -21,7 +21,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.mt4j.MTApplication;
-import org.mt4j.components.MTCanvas;
 import org.mt4j.components.MTComponent;
 import org.mt4j.components.bounds.IBoundingShape;
 import org.mt4j.components.visibleComponents.shapes.AbstractShape;
@@ -122,18 +121,18 @@ public class CursorTracer extends AbstractGlobalInputProcessor{
 //		}
 //	}
 	
-	private MTOverlayContainer checkForExistingOverlay(MTCanvas canvas){
-		MTComponent[] canvasChildren = canvas.getChildren();
-		MTOverlayContainer overlay = null;
-		for (int i = 0; i < canvasChildren.length; i++) {
-			MTComponent component = canvasChildren[i];
-			if (component instanceof MTOverlayContainer) {
-//				MTOverlayContainer foundOverlay = (MTOverlayContainer) component;
-				overlay = (MTOverlayContainer)component;
-			}
-		}
-		return overlay;
-	}
+//	private MTOverlayContainer checkForExistingOverlay(MTCanvas canvas){
+//		MTComponent[] canvasChildren = canvas.getChildren();
+//		MTOverlayContainer overlay = null;
+//		for (int i = 0; i < canvasChildren.length; i++) {
+//			MTComponent component = canvasChildren[i];
+//			if (component instanceof MTOverlayContainer) {
+////				MTOverlayContainer foundOverlay = (MTOverlayContainer) component;
+//				overlay = (MTOverlayContainer)component;
+//			}
+//		}
+//		return overlay;
+//	}
 	
 	/**
 	 * Creates the display component.
