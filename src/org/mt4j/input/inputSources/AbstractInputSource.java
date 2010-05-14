@@ -57,11 +57,26 @@ public abstract class AbstractInputSource {
 		
 		this.app = mtApp;
 		
-		app.registerPre(this);
 		
 		inputProcessorsToFireTo = new ArrayList<IinputSourceListener>(10);
 	} 
 	
+	
+	/**
+	 * Called by the inputmanager when this inputsource is registered with the application.
+	 * This method should not be invoked directly!
+	 */
+	public void onRegistered(){
+		app.registerPre(this); //Make processing call this class' pre() method at the beginning of each frame
+	}
+	
+	/**
+	 * Called by the inputmanager when this inputsource is unregistered from the application
+	 * This method should not be invoked directly!
+	 */
+	public void onUnregistered(){
+		app.unregisterPre(this);
+	}
 	
 //	/**
 //	 * Fires event type.
@@ -92,6 +107,7 @@ public abstract class AbstractInputSource {
 	
 	/**
 	 * The input events have to be fired in processings (and openGL's) thread.
+	 * Called by processing. This method should not be invoked directly!
 	 */
 	public void pre(){
 		this.flushEvents();

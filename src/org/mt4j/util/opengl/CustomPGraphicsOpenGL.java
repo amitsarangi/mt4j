@@ -24,6 +24,11 @@ import org.mt4j.util.MT4jSettings;
 
 import processing.opengl.PGraphicsOpenGL;
 
+/**
+ * The Class CustomPGraphicsOpenGL. An extension to processing's opengl renderer.
+ *
+ * @author Christopher Ruff
+ */
 public class CustomPGraphicsOpenGL extends PGraphicsOpenGL {
 	//Overridden to allow stencil buffer use and custom multisampling
 	/* (non-Javadoc)
