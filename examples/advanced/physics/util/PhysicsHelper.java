@@ -68,7 +68,8 @@ public class PhysicsHelper {
 //		mjd.maxForce = 8000.0f * body.m_mass;
 //		mjd.maxForce = 99000.0f * body.m_mass;
 //		mjd.maxForce = 99000.0f * body.m_mass;
-		mjd.maxForce = Float.MAX_VALUE;
+//		mjd.maxForce = Float.MAX_VALUE; //Too big values will result in erratic behaviour with more than 1 mousejoint on a component
+		mjd.maxForce = 30000.0f * body.m_mass;
 		return (MouseJoint) world.createJoint(mjd);
 	}
 	
@@ -78,11 +79,15 @@ public class PhysicsHelper {
 //		if (mouseJoint != null){
 //		world.destroyJoint(mouseJoint);	
 //		}
+		//FIXME this doesent remove the userData that pointed to the mousejoint!
 		for (Joint joint = body.getWorld().getJointList(); joint != null; joint = joint.getNext()) {
 			JointType type = joint.getType();
 			switch (type) {
 			case MOUSE_JOINT:
-				body.getWorld().destroyJoint(joint);
+				MouseJoint mj = (MouseJoint)joint;
+				if (body.equals(mj.getBody1()) || body.equals(mj.getBody2())){
+					body.getWorld().destroyJoint(mj);
+				}
 				break;
 			default:
 				break;

@@ -402,7 +402,7 @@ public class PhysicsRectangle extends MTRectangle implements IPhysicsComponent{
 		super.drawComponent(g);
 
 		if (drawBounds){
-			IBoundingShape bounds = this.getBoundingShape();
+			IBoundingShape bounds = this.getBounds();
 			if (bounds instanceof BoundsArbitraryPlanarPolygon){
 				BoundsArbitraryPlanarPolygon bound = (BoundsArbitraryPlanarPolygon)bounds;
 
@@ -442,8 +442,13 @@ public class PhysicsRectangle extends MTRectangle implements IPhysicsComponent{
 	//@Override
 	protected void destroyComponent() {
 		super.destroyComponent();
-		
-		world.destroyBody(body);
+		boolean exists = false;
+		for (Body body = world.getBodyList(); body != null; body = body.getNext()) {
+			if (body.equals(this.body))
+				exists = true;//Delete later to avoid concurrent modification
+		}
+		if (exists)
+			world.destroyBody(body);
 	}
 
 

@@ -218,7 +218,13 @@ public class PhysicsPolygon extends MTTriangleMesh implements IPhysicsComponent 
 		Object o = this.getUserData("box2d");
 		if (o != null && o instanceof Body){ 
 			Body box2dBody = (Body)o;
-			box2dBody.getWorld().destroyBody(box2dBody);
+			boolean exists = false;
+			for (Body body = world.getBodyList(); body != null; body = body.getNext()) {
+				if (body.equals(this.body))
+					exists = true;//Delete later to avoid concurrent modification
+			}
+			if (exists)
+				box2dBody.getWorld().destroyBody(box2dBody);
 		}
 		super.destroyComponent();
 	}
