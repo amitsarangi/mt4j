@@ -23,7 +23,6 @@ import java.awt.Toolkit;
 import java.io.FileInputStream;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Deque;
 import java.util.List;
 import java.util.Properties;
@@ -70,7 +69,7 @@ import processing.core.PApplet;
  * 
  * @author Christopher Ruff
  */
-public class MTApplication extends PApplet {
+public abstract class MTApplication extends PApplet {
 	
 	/** The Constant logger. */
 	private static final Logger logger = Logger.getLogger(MTApplication.class.getName());
@@ -83,6 +82,8 @@ public class MTApplication extends PApplet {
 		ConsoleAppender ca = new ConsoleAppender(l);
 		logger.addAppender(ca);
 	}
+	
+	public static String CUSTOM_OPENGL_GRAPHICS = "org.mt4j.util.opengl.CustomPGraphicsOpenGL"; //PApplet.OPENGL
 	
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
@@ -340,8 +341,7 @@ public class MTApplication extends PApplet {
 	    
 		// Applet size - size() must be the first command in setup() method
 		if (MT4jSettings.getInstance().getRendererMode() == MT4jSettings.OPENGL_MODE)
-//			this.size(MT4jSettings.getInstance().getScreenWidth(),MT4jSettings.getInstance().getScreenHeight(), PApplet.OPENGL);
-			this.size(MT4jSettings.getInstance().getScreenWidth(),MT4jSettings.getInstance().getScreenHeight(), "org.mt4j.util.opengl.CustomPGraphicsOpenGL");
+			this.size(MT4jSettings.getInstance().getScreenWidth(),MT4jSettings.getInstance().getScreenHeight(), MTApplication.CUSTOM_OPENGL_GRAPHICS);
 		else if (MT4jSettings.getInstance().getRendererMode() == MT4jSettings.P3D_MODE)
 			this.size(MT4jSettings.getInstance().getScreenWidth(),MT4jSettings.getInstance().getScreenHeight(), PApplet.P3D);
 	    
@@ -472,7 +472,7 @@ public class MTApplication extends PApplet {
 	 * Is called at the end of the setup() method.
 	 * <br>Override this method in your extended MTApplication class!
 	 */
-	public void startUp(){};
+	public abstract void startUp();
 	
 	
 	/**
@@ -673,8 +673,7 @@ public class MTApplication extends PApplet {
 			//IF input started or updated should be flushed with this they should appear in active
 			//cursor list after that and be sended the right events
 			//- maybe only flush input_ended?
-			Collection<AbstractInputSource> sources = getInputManager().getRegisteredInputSources();
-			for (AbstractInputSource abstractInputSource : sources) {
+			for (AbstractInputSource abstractInputSource : getInputManager().getInputSources()) {
 				abstractInputSource.flushEvents();
 			}
 			
