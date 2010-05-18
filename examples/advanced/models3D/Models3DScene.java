@@ -76,8 +76,8 @@ public class Models3DScene extends AbstractScene {
 
 		//Load the meshes with the ModelImporterFactory (A file can contain more than 1 mesh)
 		MTTriangleMesh[] meshes = ModelImporterFactory.loadModel(mtApplication, System.getProperty("user.dir") + File.separator + "examples" +  File.separator +"advanced"+ File.separator+ File.separator + "models3D"  + File.separator + "data" +  File.separator +
-//				"kentosaurus" + File.separator + "kentrosaurus.3ds", 180, true, false );
-				"trashbin.obj", 180, false, false );
+				"kentosaurus" + File.separator + "kentrosaurus.3ds", 180, true, false );
+//				"trashbin.obj", 180, false, false );
 		
 		
 		//Get the biggest mesh in the group to use as a reference for setting the position/scale
