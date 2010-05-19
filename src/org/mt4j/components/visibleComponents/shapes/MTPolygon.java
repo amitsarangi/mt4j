@@ -103,7 +103,7 @@ public class MTPolygon extends AbstractShape {
 	 */
 	@Override
 	protected IBoundingShape computeDefaultBounds(){
-//		this.setBoundingShape(new BoundsArbitraryPlanarPolygon(this, this.getVerticesObjSpace())); //Works inly in z=0
+//		this.setBounds(new BoundsArbitraryPlanarPolygon(this, this.getVerticesObjSpace())); //Works inly in z=0
 		return new BoundingSphere(this);
 //		return new BoundingSphere(new OrientedBoundingBox(this);
 	}
@@ -586,8 +586,8 @@ public class MTPolygon extends AbstractShape {
 	 */
 	@Override
 	public Vector3D getCenterPointLocal(){
-		if (this.isBoundingShapeSet()){
-			return this.getBoundingShape().getCenterPointLocal();
+		if (this.hasBounds()){
+			return this.getBounds().getCenterPointLocal();
 		}else{
 			//TODO this fails if the polygon isnt in the X,Y,0 Plane!
 //			return this.getCenterOfMas2DLocal();
@@ -635,8 +635,8 @@ public class MTPolygon extends AbstractShape {
 //		m.removeTranslationFromMatrix();
 //		p.transform(m);
 //		return p.length();
-		if (this.isBoundingShapeSet()){
-			return this.getBoundingShape().getHeightXY(TransformSpace.RELATIVE_TO_PARENT);
+		if (this.hasBounds()){
+			return this.getBounds().getHeightXY(TransformSpace.RELATIVE_TO_PARENT);
 		}else{
 			OrientedBoundingBox tempBounds = new OrientedBoundingBox(this);
 			return tempBounds.getHeightXY(TransformSpace.RELATIVE_TO_PARENT);
@@ -658,8 +658,8 @@ public class MTPolygon extends AbstractShape {
 //		m.removeTranslationFromMatrix();
 //		p.transform(m);
 //		return p.length();
-		if (this.isBoundingShapeSet()){
-			return this.getBoundingShape().getHeightXY(TransformSpace.GLOBAL);
+		if (this.hasBounds()){
+			return this.getBounds().getHeightXY(TransformSpace.GLOBAL);
 		}else{
 			OrientedBoundingBox tempBounds = new OrientedBoundingBox(this);
 			return tempBounds.getHeightXY(TransformSpace.GLOBAL);
@@ -677,8 +677,8 @@ public class MTPolygon extends AbstractShape {
 	 * vector representing the height of the boundingshape of the shape
 	 */
 	public Vector3D getHeightXYVectLocal() {
-		if (this.isBoundingShapeSet()){
-			return this.getBoundingShape().getHeightXYVectLocal();
+		if (this.hasBounds()){
+			return this.getBounds().getHeightXYVectLocal();
 		}else{
 			OrientedBoundingBox tempBounds = new OrientedBoundingBox(this);
 			return tempBounds.getHeightXYVectLocal();
@@ -729,8 +729,8 @@ public class MTPolygon extends AbstractShape {
 //		m.removeTranslationFromMatrix();
 //		p.transform(m);
 //		return p.length();
-		if (this.isBoundingShapeSet()){
-			return this.getBoundingShape().getWidthXY(TransformSpace.RELATIVE_TO_PARENT);
+		if (this.hasBounds()){
+			return this.getBounds().getWidthXY(TransformSpace.RELATIVE_TO_PARENT);
 		}else{
 			OrientedBoundingBox tempBounds = new OrientedBoundingBox(this);
 			return tempBounds.getWidthXY(TransformSpace.RELATIVE_TO_PARENT);
@@ -751,8 +751,8 @@ public class MTPolygon extends AbstractShape {
 //		m.removeTranslationFromMatrix();
 //		p.transform(m);
 //		return p.length();
-		if (this.isBoundingShapeSet()){
-			return this.getBoundingShape().getWidthXY(TransformSpace.GLOBAL);
+		if (this.hasBounds()){
+			return this.getBounds().getWidthXY(TransformSpace.GLOBAL);
 		}else{
 			OrientedBoundingBox tempBounds = new OrientedBoundingBox(this);
 			return tempBounds.getWidthXY(TransformSpace.GLOBAL);
@@ -769,8 +769,8 @@ public class MTPolygon extends AbstractShape {
 	 * vector representing the width of the boundingshape of the shape
 	 */
 	public Vector3D getWidthXYVectLocal() {
-		if (	this.isBoundingShapeSet()){
-			return this.getBoundingShape().getWidthXYVectLocal();
+		if (this.hasBounds()){
+			return this.getBounds().getWidthXYVectLocal();
 		}else{
 			OrientedBoundingBox tempBounds = new OrientedBoundingBox(this);
 			return tempBounds.getWidthXYVectLocal();

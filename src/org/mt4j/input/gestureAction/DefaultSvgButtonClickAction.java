@@ -72,12 +72,12 @@ public class DefaultSvgButtonClickAction extends DefaultButtonClickAction implem
 		}else if (this.getReferenceComp() instanceof MTTriangleMesh){
 			MTTriangleMesh mesh = (MTTriangleMesh)this.getReferenceComp();
 			return mesh.getWidthXYVectObjSpace();
-		}else if (this.getReferenceComp().getBoundingShape() != null){
-			if (this.getReferenceComp().getBoundingShape() instanceof BoundsZPlaneRectangle) {
-				BoundsZPlaneRectangle bounds = (BoundsZPlaneRectangle) this.getReferenceComp().getBoundingShape();
+		}else if (this.getReferenceComp().getBounds() != null){
+			if (this.getReferenceComp().getBounds() instanceof BoundsZPlaneRectangle) {
+				BoundsZPlaneRectangle bounds = (BoundsZPlaneRectangle) this.getReferenceComp().getBounds();
 				return bounds.getWidthXYVectLocal();
-			}else if (this.getReferenceComp().getBoundingShape() instanceof OrientedBoundingBox) {
-				OrientedBoundingBox bounds = (OrientedBoundingBox) this.getReferenceComp().getBoundingShape();
+			}else if (this.getReferenceComp().getBounds() instanceof OrientedBoundingBox) {
+				OrientedBoundingBox bounds = (OrientedBoundingBox) this.getReferenceComp().getBounds();
 				return bounds.getWidthXYVectLocal();
 			}
 		}else{

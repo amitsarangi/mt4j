@@ -323,7 +323,7 @@ public class MTKeyboard extends MTRoundRectangle {
 			
 			//this is a hack to fit the bounding shape of the "enter" key to its non-rectangular shape
 			if (key.getCharacterToWrite().equals("\n")){
-				Vector3D[] v = key.getBoundingShape().getVectorsLocal();
+				Vector3D[] v = key.getBounds().getVectorsLocal();
 				float indent = (v[1].getX()-v[0].getX())/2f;
 				Vertex[] vNew = new Vertex[]{
 						 new Vertex(v[0].getX(),v[0].getY()+indent,0)
@@ -336,7 +336,7 @@ public class MTKeyboard extends MTRoundRectangle {
 				};
 				BoundsArbitraryPlanarPolygon newBounds = new BoundsArbitraryPlanarPolygon(key, vNew); //Expensive..
 				key.setBoundsBehaviour(AbstractShape.BOUNDS_ONLY_CHECK);
-				key.setBoundingShape(newBounds);
+				key.setBounds(newBounds);
 			}
 			
 			keyList.add(key); 
@@ -648,8 +648,8 @@ public class MTKeyboard extends MTRoundRectangle {
 	private boolean setWidthRelativeToParent(float width){
 		if (width > 0){
 			Vector3D centerPoint;
-			if (this.isBoundingShapeSet()){
-				centerPoint = this.getBoundingShape().getCenterPointLocal();
+			if (this.hasBounds()){
+				centerPoint = this.getBounds().getCenterPointLocal();
 				centerPoint.transform(this.getLocalMatrix());
 			}else{
 				centerPoint = this.getCenterPointGlobal();
@@ -820,8 +820,8 @@ public class MTKeyboard extends MTRoundRectangle {
 	private boolean setSizeXYRelativeToParent(AbstractShape shape, float width, float height){
 		if (width > 0 && height > 0){
 			Vector3D centerPoint;
-			if (shape.isBoundingShapeSet()){
-				centerPoint = shape.getBoundingShape().getCenterPointLocal();
+			if (shape.hasBounds()){
+				centerPoint = shape.getBounds().getCenterPointLocal();
 				centerPoint.transform(shape.getLocalMatrix()); //TODO nötig?
 			}else{
 				centerPoint = shape.getCenterPointGlobal();

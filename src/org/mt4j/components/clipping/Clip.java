@@ -65,11 +65,11 @@ public class Clip {
 	public Clip(PApplet pApplet, float x, float y, float width, float height) {
 		MTRectangle clipRect = new MTRectangle(x, y, width, height, pApplet);
 		clipRect.setNoStroke(true);
-		if (clipRect.getBoundingShape() == null ){
-			clipRect.setBoundingShape(new BoundsZPlaneRectangle(clipRect));
+		if (clipRect.getBounds() == null ){
+			clipRect.setBounds(new BoundsZPlaneRectangle(clipRect));
 		}else{
-			if (!(clipRect.getBoundingShape() instanceof BoundsZPlaneRectangle)){
-				clipRect.setBoundingShape(new BoundsZPlaneRectangle(clipRect));
+			if (!(clipRect.getBounds() instanceof BoundsZPlaneRectangle)){
+				clipRect.setBounds(new BoundsZPlaneRectangle(clipRect));
 			}
 		}
 		clipRect.setBoundsBehaviour(AbstractShape.BOUNDS_ONLY_CHECK);	

@@ -474,13 +474,13 @@ public abstract class AbstractShape extends AbstractVisibleComponent {
 		
 		if (this.isBoundsAutoCompute()){
 			if (geometryInfo.getVertices().length >= 3){
-				this.setBoundingShape(this.computeDefaultBounds());
+				this.setBounds(this.computeDefaultBounds());
 			}else{
 //				logger.error("Warning: could not compute bounds because too few vertices were supplied: " + this.getName() + " in " + this + " -> Setting boundingShape to null.");
-				this.setBoundingShape(null);
+				this.setBounds(null);
 			}
 		}else{
-			this.setBoundingShape(null);
+			this.setBounds(null);
 		}
 
 		//Sets the base matrix dirty, so that when inquiring info about
@@ -521,13 +521,13 @@ public abstract class AbstractShape extends AbstractVisibleComponent {
 		
 		if (this.isBoundsAutoCompute()){
 			if (geometryInfo.getVertices().length >= 3){
-				this.setBoundingShape(this.computeDefaultBounds());
+				this.setBounds(this.computeDefaultBounds());
 			}else{
 //				logger.error("Warning: could not compute bounds because too few vertices were supplied: " + this.getName() + " in " + this + " -> Setting boundingShape to null.");
-				this.setBoundingShape(null);
+				this.setBounds(null);
 			}
 		}else{
-			this.setBoundingShape(null);
+			this.setBounds(null);
 		}
 		//Sets the base matrix dirty, so that when inquiring info about
 		//vertices, they get updated first
@@ -1273,7 +1273,7 @@ public abstract class AbstractShape extends AbstractVisibleComponent {
 		
 //		this.geometryInfo = null; //FIXME TEST
 //		this.boundingShape = null;
-		this.setBoundingShape(null);
+		this.setBounds(null);
 		
 		//Delete openGL texture object
 		if (this.getTexture() instanceof GLTexture){

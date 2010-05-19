@@ -1170,7 +1170,7 @@ public class SVGLoader implements SVGConstants{
 						  return null;
 					  }else{
 						  shape.setBoundsBehaviour(AbstractShape.BOUNDS_DONT_USE);
-						  shape.setBoundingShape(null);
+						  shape.setBounds(null);
 //						  shape.setUseDirectGL(false);
 					  }
 					  

@@ -150,7 +150,7 @@ public class MTLine extends AbstractShape {
 		//which is false in a MTLine but usually its good to check that so we dont want
 		//to remove the check.. 
 		if (this.isBoundsAutoCompute()){
-			this.setBoundingShape(this.computeDefaultBounds());
+			this.setBounds(this.computeDefaultBounds());
 		}
 	}
 	
@@ -163,7 +163,7 @@ public class MTLine extends AbstractShape {
 		//which is false in a MTLine but usually its good to check that so we dont want
 		//to remove the check.. 
 		if (this.isBoundsAutoCompute()){
-			this.setBoundingShape(this.computeDefaultBounds());
+			this.setBounds(this.computeDefaultBounds());
 		}
 	}
 	

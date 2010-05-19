@@ -981,6 +981,8 @@ public class Vector3D {
 	 * Checks if the two vectors have the same components (XYZW) in the range of a
 	 * specified tolerance.
 	 * <br>Does NOT check for object identity equality!
+	 * <br>NOTE: checks each component of the vector individually, so the overall difference
+	 * might be greater than the given tolerance!
 	 * 
 	 * @param vec the vec
 	 * @param tolerance the tolerance

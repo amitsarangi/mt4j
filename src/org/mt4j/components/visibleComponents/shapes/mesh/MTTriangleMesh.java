@@ -354,8 +354,8 @@ public class MTTriangleMesh extends AbstractShape{
 	 */
 	@Override
 	public Vector3D getCenterPointLocal() {
-		if (this.isBoundingShapeSet()){
-			return this.getBoundingShape().getCenterPointLocal();
+		if (this.hasBounds()){
+			return this.getBounds().getCenterPointLocal();
 		}else{
 			BoundingSphere tempBounds = new BoundingSphere(this);
 			return tempBounds.getCenterPointLocal();
@@ -1133,14 +1133,14 @@ public class MTTriangleMesh extends AbstractShape{
 	 * @return the height xy vect obj space
 	 */
 	public Vector3D getHeightXYVectObjSpace() {
-		if (this.isBoundingShapeSet()
-//		&& (this.getBoundingShape() instanceof BoundingBox)
+		if (this.hasBounds()
+//		&& (this.getBounds() instanceof BoundingBox)
 		){
-//			Vector3D[] boundRectVertsLocal = ((BoundsZPlaneRectangle)this.getBoundingShape()).getVectorsObjSpace();
+//			Vector3D[] boundRectVertsLocal = ((BoundsZPlaneRectangle)this.getBounds()).getVectorsObjSpace();
 //			Vector3D height = boundRectVertsLocal[2].getSubtracted(boundRectVertsLocal[1]);
 //			return height;
-//			return ((BoundingBox)this.getBoundingShape()).getHeightXYVectObjSpace();
-			return this.getBoundingShape().getHeightXYVectLocal();
+//			return ((BoundingBox)this.getBounds()).getHeightXYVectObjSpace();
+			return this.getBounds().getHeightXYVectLocal();
 		}else{
 			OrientedBoundingBox tempBounds = new OrientedBoundingBox(this);
 //			Vector3D[] boundRectVertsLocal = tempBounds.getVectorsObjSpace();
@@ -1219,15 +1219,15 @@ public class MTTriangleMesh extends AbstractShape{
 	 * @return the width xy vect obj space
 	 */
 	public Vector3D getWidthXYVectObjSpace() {
-		if (	this.isBoundingShapeSet()
-//			&& (this.getBoundingShape() instanceof BoundingBox)
+		if (	this.hasBounds()
+//			&& (this.getBounds() instanceof BoundingBox)
 		){
-//			Vector3D[] boundRectVertsLocal = ((BoundsZPlaneRectangle)this.getBoundingShape()).getVectorsObjSpace();
+//			Vector3D[] boundRectVertsLocal = ((BoundsZPlaneRectangle)this.getBounds()).getVectorsObjSpace();
 //			Vector3D width = boundRectVertsLocal[1].getSubtracted(boundRectVertsLocal[0]);
 ////			System.out.println("Width of " + this.getName()+ " :" + width);
 //			return width;
-//			return ((BoundingBox)this.getBoundingShape()).getWidthXYVectObjSpace();
-			return this.getBoundingShape().getWidthXYVectLocal();
+//			return ((BoundingBox)this.getBounds()).getWidthXYVectObjSpace();
+			return this.getBounds().getWidthXYVectLocal();
 		}else{
 			OrientedBoundingBox tempBounds = new OrientedBoundingBox(this);
 //			Vector3D[] boundRectVertsLocal = tempBounds.getVectorsObjSpace();

@@ -122,9 +122,9 @@ public class Cluster extends MTComponent { //extends MTComponent/implements IMTC
 //					 verts = shape.getVerticesGlobal();
 //				}
 				
-				if (shape.isBoundingShapeSet()){
-					if (shape.getBoundingShape() instanceof BoundsZPlaneRectangle || shape.getBoundingShape() instanceof BoundsArbitraryPlanarPolygon){
-						verts = shape.getBoundingShape().getVectorsGlobal();
+				if (shape.hasBounds()){
+					if (shape.getBounds() instanceof BoundsZPlaneRectangle || shape.getBounds() instanceof BoundsArbitraryPlanarPolygon){
+						verts = shape.getBounds().getVectorsGlobal();
 					}else{
 						BoundsZPlaneRectangle b = new BoundsZPlaneRectangle(shape);
 						verts = b.getVectorsGlobal();

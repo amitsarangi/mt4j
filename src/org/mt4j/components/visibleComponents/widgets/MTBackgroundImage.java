@@ -105,7 +105,7 @@ public class MTBackgroundImage extends MTPolygon {
 		this.setNoFill(true);
 		this.setNoStroke(true);
 		//Because this is used in 2D on the z=0 plane probably. 
-		this.setBoundingShape(new BoundsZPlaneRectangle(this));
+		this.setBounds(new BoundsZPlaneRectangle(this));
 		this.addChild(svgImage);
 		
 		if (stretchToFitWidth && stretchToFitHeight){

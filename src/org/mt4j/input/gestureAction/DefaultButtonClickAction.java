@@ -203,8 +203,8 @@ public class DefaultButtonClickAction implements IGestureEventListener  {
 	 */
 	protected Vector3D getRefCompCenterLocal(){
 		Vector3D centerPoint;
-		if (this.getReferenceComp().isBoundingShapeSet()){
-			centerPoint = this.getReferenceComp().getBoundingShape().getCenterPointLocal();
+		if (this.getReferenceComp().hasBounds()){
+			centerPoint = this.getReferenceComp().getBounds().getCenterPointLocal();
 			centerPoint.transform(this.getReferenceComp().getLocalMatrix()); //macht den punkt in self space
 		}else{
 			centerPoint = this.getReferenceComp().getCenterPointGlobal();

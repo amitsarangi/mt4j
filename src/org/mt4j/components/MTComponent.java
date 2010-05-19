@@ -365,9 +365,8 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 	 */
 	private void setBoundsGlobalDirty(boolean boundsWorldVerticesDirty) {
 		this.boundsGlobalVerticesDirty = boundsWorldVerticesDirty;
-		IBoundingShape bounds = this.getBoundingShape();
-		if (bounds != null){
-			bounds.setGlobalBoundsChanged();
+		if (this.hasBounds()){
+			this.getBounds().setGlobalBoundsChanged();
 		}
 	}
 	// BOUNDS STUFF ////////////////////////////////
@@ -2496,9 +2495,9 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 	 */
 	protected boolean componentContainsPointLocal(Vector3D testPoint) { //TODO rename containPointLocal
 //		return this.containsPointBoundsLocal(testPoint);
-		if (this.isBoundingShapeSet()){
+		if (this.hasBounds()){
 //			System.out.println("\"" + this.getName() + "\": -> BOUNDS only check");
-			return this.getBoundingShape().containsPointLocal(testPoint);
+			return this.getBounds().containsPointLocal(testPoint);
 		}else{
 			return false;
 		}
@@ -2604,8 +2603,8 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 	 */
 	public Vector3D getIntersectionLocal(Ray localRay) {
 //		return this.getBoundsIntersectionLocal(localRay);//FIXME TEST
-		if (this.isBoundingShapeSet()){
-			return this.getBoundingShape().getIntersectionLocal(localRay);
+		if (this.hasBounds()){
+			return this.getBounds().getIntersectionLocal(localRay);
 		}else{
 			return null;
 		}
@@ -3026,8 +3025,8 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 	public boolean isContainedIn(IFrustum frustum){
 		//Check if bounds are contained in the frustum
 		//if shape has no boundingshape return true by default
-		if (this.getBoundingShape() != null){
-			return this.getBoundingShape().isContainedInFrustum(frustum);
+		if (this.hasBounds()){
+			return this.getBounds().isContainedInFrustum(frustum);
 		}else{
 			return true;
 		}

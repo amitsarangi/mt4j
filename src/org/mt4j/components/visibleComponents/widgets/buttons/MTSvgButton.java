@@ -115,8 +115,8 @@ public class MTSvgButton extends MTSvg implements IclickableButton{
 //		/*
 		if (comp instanceof AbstractShape){
 			AbstractShape shape = (AbstractShape)comp;
-			if (!shape.isBoundingShapeSet() && !(shape.getBoundingShape() instanceof BoundsZPlaneRectangle)){
-				shape.setBoundingShape(new BoundsZPlaneRectangle(shape));
+			if (!shape.hasBounds() && !(shape.getBounds() instanceof BoundsZPlaneRectangle)){
+				shape.setBounds(new BoundsZPlaneRectangle(shape));
 			}
 			shape.setBoundsBehaviour(boundsBehaviour);
 		}

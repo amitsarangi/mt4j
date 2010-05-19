@@ -279,8 +279,8 @@ public class MTImage extends MTRectangle implements IdragClusterable{
 			 */
 			protected Vector3D getRefCompCenterRelParent(AbstractShape shape){
 				Vector3D centerPoint;
-				if (shape.isBoundingShapeSet()){
-					centerPoint = shape.getBoundingShape().getCenterPointLocal();
+				if (shape.hasBounds()){
+					centerPoint = shape.getBounds().getCenterPointLocal();
 					centerPoint.transform(shape.getLocalMatrix()); //macht den punkt in self space
 				}else{
 					Vector3D localObjCenter = shape.getCenterPointGlobal();
