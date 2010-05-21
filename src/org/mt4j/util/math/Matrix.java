@@ -1802,7 +1802,12 @@ public class Matrix  implements Serializable, Cloneable {
 //        (m10 == 0 && m11 == 1 && m12 == 0 && m13 == 0) &&
 //        (m20 == 0 && m21 == 0 && m22 == 1 && m23 == 0) &&
 //        (m30 == 0 && m31 == 0 && m32 == 0 && m33 == 1);
-    	return equalIdentity(this);
+        if (m00 != 1 || m01 != 0 || m02 != 0 || m03 != 0) return false;
+        if (m10 != 0 || m11 != 1 || m12 != 0 || m13 != 0) return false;
+        if (m20 != 0 || m21 != 0 || m22 != 1 || m23 != 0) return false;
+        if (m30 != 0 || m31 != 0 || m32 != 0 || m33 != 1) return false;
+        return true;
+//    	return equalIdentity(this); //FIXME this call is more expensive!
     }
 
     /**

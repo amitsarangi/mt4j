@@ -69,7 +69,7 @@ public class PhysicsHelper {
 //		mjd.maxForce = 99000.0f * body.m_mass;
 //		mjd.maxForce = 99000.0f * body.m_mass;
 //		mjd.maxForce = Float.MAX_VALUE; //Too big values will result in erratic behaviour with more than 1 mousejoint on a component
-		mjd.maxForce = 30000.0f * body.m_mass;
+		mjd.maxForce = 90000.0f * body.m_mass;
 		return (MouseJoint) world.createJoint(mjd);
 	}
 	

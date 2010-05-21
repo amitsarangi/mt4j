@@ -35,7 +35,7 @@ public enum StateChange {
 	/**  CHILD added. */
 	CHILD_ADDED,
 	
-//	TRANSFORMED,
+//	//TODO add TRANSFORMED? global matrix changed? local matrix changed? scaled? rotated? translated?
 	;
 
 }

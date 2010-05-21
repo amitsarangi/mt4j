@@ -242,6 +242,14 @@ public abstract class MTApplication extends PApplet {
 	public static void initialize(String classToInstantiate){
 		 logger.debug(classToInstantiate + " is the class instatiated by PApplet class.");
 		 
+		 String bit = System.getProperty("sun.arch.data.model");
+		 logger.info("Platform: \"" + System.getProperty("os.name") + "\" -> JVM Bit: \"" + bit + "\"");
+		 if (bit.contains("64")){
+			 MT4jSettings.getInstance().setArchitecture(MT4jSettings.ARCHITECTURE_64_BIT);
+		 }else{
+			 MT4jSettings.getInstance().setArchitecture(MT4jSettings.ARCHITECTURE_32_BIT);
+		 }
+		 
 		 boolean fullscreenExclusiveMode = true;
 		 int display = 1;
 		 

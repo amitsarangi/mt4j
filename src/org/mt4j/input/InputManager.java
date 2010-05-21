@@ -88,7 +88,6 @@ public class InputManager {
 		super();
 		this.registeredInputSources	= new ArrayList<AbstractInputSource>();
 
-//		this.inputProcessorsToScene = new WeakHashMap<AbstractGlobalInputProcessor, Iscene>();
 		this.inputProcessorsToScene = new HashMap<AbstractGlobalInputProcessor, Iscene>();
 		
 		this.app = pa;
@@ -121,13 +120,11 @@ public class InputManager {
 	    			logger.info("-> Multiple Mice detected!");
 	    			MultipleMiceInputSource multipleMice = new MultipleMiceInputSource(app);
 	    			multipleMice.setMTApp(app);
-//	    			registeredInputSources.add(multipleMice);
 	    			this.registerInputSource(multipleMice);
 	    			this.hideCursorInFrame();
 	    		}else{
 //	    			*/
 	    			MouseInputSource mouseInput = new MouseInputSource(app);
-//	    			registeredInputSources.add(mouseInput);
 	    			this.registerInputSource(mouseInput);
 	    		}
 //	    		*/
@@ -135,30 +132,20 @@ public class InputManager {
 	    		e.printStackTrace();
 	    		//Use default mouse input source
 	    		MouseInputSource mouseInput = new MouseInputSource(app);
-//	    		registeredInputSources.add(mouseInput);
 	    		this.registerInputSource(mouseInput);
 	    	}
 	    }
 	    else{
 //	    	*/
 	    	MouseInputSource mouseInput = new MouseInputSource(app);
-//	    	registeredInputSources.add(mouseInput);
 	    	this.registerInputSource(mouseInput);
 	    }
 //	    */
-	    
-	    //TODO TEST WIN7 WM_TOUCH input 
-	  //AT THE MOMENT WE ONLY HAVE 32 BIT DLLs!
-	    String platform = System.getProperty("os.name");
-	    String bit = System.getProperty("sun.arch.data.model");
-	    logger.info("Platform: \"" + platform + "\" -> JVM Bit: \"" + bit + "\"");
-	    if (platform.toLowerCase().contains("windows 7")
-	    	&& (bit.contains("32") 
-	    	||	bit.contains("unknown"))
-	    ) {
+
+	    //Check if we run windows 7
+	    if (System.getProperty("os.name").toLowerCase().contains("windows 7")){
 	    	Win7NativeTouchSource win7NativeInput = new Win7NativeTouchSource(app);
 	    	if (win7NativeInput.isSuccessfullySetup()){
-//	    		registeredInputSources.add(win7NativeInput);	
 	    		this.registerInputSource(win7NativeInput);
 	    	}
 	    }
@@ -166,10 +153,6 @@ public class InputManager {
 	    KeyboardInputSource keyInput= new KeyboardInputSource(app);
 		TuioInputSource tuioInput 	= new TuioInputSource(app);
 //		MuitoInputSource muitoInput = new MuitoInputSource(pa, "localhost", 6666);
-		
-//		registeredInputSources.add(keyInput);
-//		registeredInputSources.add(tuioInput);
-//		registeredInputSources.add(muitoInput);
 		
 		this.registerInputSource(keyInput);
 		this.registerInputSource(tuioInput);

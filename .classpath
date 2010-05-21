@@ -2,6 +2,7 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="examples"/>
+	<classpathentry kind="src" path="tests"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="mt4jLibs/core.jar"/>
 	<classpathentry kind="lib" path="mt4jLibs/mri.jar"/>
@@ -40,11 +41,6 @@
 	<classpathentry kind="lib" path="examples/advanced/flickrMT/lib/flickrj.jar"/>
 	<classpathentry kind="lib" path="examples/advanced/fluidSimulator/lib/MSAFluid.jar"/>
 	<classpathentry kind="lib" path="examples/advanced/modestMapsMT/lib/modestMaps.jar"/>
-	<classpathentry kind="lib" path="mt4jLibs/JNative.jar">
-		<attributes>
-			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="MT4j"/>
-		</attributes>
-	</classpathentry>
 	<classpathentry kind="lib" path="mt4jLibs/jogl/gluegen-rt.jar">
 		<attributes>
 			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="MT4j"/>

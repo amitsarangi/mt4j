@@ -1,5 +1,6 @@
 package org.mt4j.input.inputSources;
 
+import java.io.File;
 import java.util.HashMap;
 
 import javax.swing.SwingUtilities;
@@ -12,9 +13,7 @@ import org.mt4j.MTApplication;
 import org.mt4j.input.inputData.ActiveCursorPool;
 import org.mt4j.input.inputData.InputCursor;
 import org.mt4j.input.inputData.MTFingerInputEvt;
-import org.xvolks.jnative.exceptions.NativeException;
-import org.xvolks.jnative.misc.basicStructures.HWND;
-import org.xvolks.jnative.util.User32;
+import org.mt4j.util.MT4jSettings;
 
 /**
  * Input source for native Windows 7 WM_TOUCH messages for single/multi-touch.
@@ -49,27 +48,17 @@ public class Win7NativeTouchSource extends AbstractInputSource {
 	
 	private HashMap<Integer, Long> touchToCursorID;
 	
-	private static final String dllName = "Win7Touch";
+	private static final String dllName32 = "Win7Touch";
+	
+	private static final String dllName64 = "Win7Touch64";
 	
 	private static final String canvasClassName = "SunAwtCanvas";
 	
-	//TODO disable touch delay due to tap&hold gesture
-	//-> windows tries to make a tap&hold gesture and doesent send WM_TOUCH! (TWF_WANTPALM? flick gesture? registerTouchWindow on toplvl frame?)
-	//-> in control panel-> pen and touch-> disable "Enable multi-touch gestures and inking" ? Or Change "Touch actions"->"Settings..." ?
-	/*
-	 switch (message)
-	  {
-	  case WM_TABLET_QUERYSYSTEMGESTURESTATUS:
-	    return TABLET_DISABLE_TOUCHUIFORCEOFF;
-	    break;
-	 */
 	
 	//TODO remove points[] array? -> if digitizer has more than 255 touchpoints we could get out of bounds in points[]
-	
 	//TODO did we "delete [] ti;" in wndProc?
-	
 	//TODO- check dpi, if higher than 96 - if the screen is set to High DPI (more than 96 DPI),
-	// you may also need to divide the values by 96 and multiply by the current DPI. (oder schon gehandlet durch ScreenToClient()?)
+	// you may also need to divide the values by 96 and multiply by the current DPI. (or already handled by ScreenToClient()?)
 	
 	private boolean success;
 	
@@ -86,11 +75,13 @@ public class Win7NativeTouchSource extends AbstractInputSource {
 			logger.error("Win7NativeTouchSource input source can only be used on platforms running windows 7!");
 			return;
 		}
-			
+		
 		if (!loaded){
 			loaded = true;
-//			System.load(System.getProperty("user.dir") + File.separator + dllName + ".dll");	
-			System.loadLibrary(dllName);
+			String dllName = (MT4jSettings.getInstance().getArchitecture() == MT4jSettings.ARCHITECTURE_32_BIT)? dllName32 : dllName64;
+			System.out.println("Loading dll: " + dllName);
+			System.load(System.getProperty("user.dir") + File.separator + dllName + ".dll");	
+//			System.loadLibrary(dllName);
 		}else{
 			logger.error("Win7NativeTouchSource may only be instantiated once.");
 			return;
@@ -119,6 +110,8 @@ public class Win7NativeTouchSource extends AbstractInputSource {
 		success = true;
 	}
 	
+	// NATIVE METHODS //
+	private native int findWindow(String tmpTitle, String subWindowTitle);
 	
 	private native boolean init(long HWND); 
 	
@@ -127,7 +120,7 @@ public class Win7NativeTouchSource extends AbstractInputSource {
 	private native boolean quit(); 
 	
 	private native boolean pollEvent(Native_WM_TOUCH_Event myEvent);
-	
+	// NATIVE METHODS
 	
 //	private boolean addedArtificalTouchDown = false; //FIXME REMOVE
 	
@@ -163,6 +156,7 @@ public class Win7NativeTouchSource extends AbstractInputSource {
 					break;
 				}case Native_WM_TOUCH_Event.TOUCH_MOVE:{
 //					logger.debug("TOUCH_MOVE ==> ID:" + wmTouchEvent.id + " x:" +  wmTouchEvent.x + " y:" +  wmTouchEvent.y);
+//					System.out.println("Contact area X:" + wmTouchEvent.contactSizeX + " Y:" + wmTouchEvent.contactSizeY);
 					
 					Long cursorID = touchToCursorID.get(wmTouchEvent.id);
 					if (cursorID != null){
@@ -199,62 +193,81 @@ public class Win7NativeTouchSource extends AbstractInputSource {
 		super.pre();
 	}
 	
+	//TODO make MTFingerEvent hold contactSize
+	//TODO try again getWindow() in windows -> no success in all thread (we probably need to do it in the awt-windows thread?)
+	//TODO test on other machine
 	
-	private int getNativeWindowHandles(){
-		final int handle = -1;
-		
+	private void getNativeWindowHandles(){
 		//TODO kind of hacky way of getting the HWND..but there seems to be no real alternative(?)
 		final String oldTitle = app.frame.getTitle();
 		final String tmpTitle = "Initializing Native Windows 7 Touch Input " + Math.random();
 		app.frame.setTitle(tmpTitle);
 		logger.debug("Temp title: " + tmpTitle);
 		
+		//FIXME TEST REMOVE
+		//Window window = SwingUtilities.getWindowAncestor(app);
+//		AWTUtilities.setWindowOpacity(window, 0.5f); //works!
+				
 		//Invokelater because of some crash issue 
 		//-> maybe we need to wait a frame until windows is informed of the window name change
 		SwingUtilities.invokeLater(new Runnable() { 
 			public void run() {
-				//TODO also search for window class?
-				//Find top level window
-				int applicationWindowHandle = 0;
+				//FIXME TEST!
+				int awtCanvasHandle = 0;
 				try {
-					HWND appHWND = User32.FindWindow(null, tmpTitle);
-					applicationWindowHandle = appHWND.getValue();
-				} catch (NativeException e1) {
-					e1.printStackTrace();
-				} catch (IllegalAccessException e1) {
-					e1.printStackTrace();
-				} 
-				
-				/*
-				//this always return 0...
-				try {
-					HWND appHWND = User32.GetActiveWindow();
-					applicationWindowHandle = appHWND.getValue();
-				} catch (Exception e1) {
-					e1.printStackTrace();
-				} 
-				*/
-				
-				setTopWindowHandle(applicationWindowHandle);
-
-				try {
-//					logger.debug("Find SunAwtCanvas Handle:");
-					HWND topLvlHandle = new HWND(applicationWindowHandle);
-					HWND sunAwtCanvasHWND;
-					
-					//-> make sure it is the processing canvas, check with spy++ for more info
-					sunAwtCanvasHWND = User32.FindWindowEx(topLvlHandle, new HWND(0), canvasClassName, null); //Find child canvas
-					setSunAwtCanvasHandle(sunAwtCanvasHWND.getValue());
-				} catch (NativeException e) {
-					e.printStackTrace();
-				} catch (IllegalAccessException e) {
-					e.printStackTrace();
+					awtCanvasHandle = (int)findWindow(tmpTitle, canvasClassName);
+	//FIXME REMOVE!	//FIXME REMOVE!//FIXME REMOVE!//FIXME REMOVE!//FIXME REMOVE!//FIXME REMOVE!//FIXME REMOVE!//FIXME REMOVE!//FIXME REMOVE!//FIXME REMOVE!
+						System.out.println("awtCanvasHandle: " + awtCanvasHandle); 
+					setSunAwtCanvasHandle(awtCanvasHandle);
+				} catch (Exception e) {
+					System.err.println(e.getMessage());
 				}
+			
+				
+//				//TODO also search for window class?
+//				//Find top level window
+//				int applicationWindowHandle = 0;
+//				try {
+//					HWND appHWND = User32.FindWindow(null, tmpTitle);
+//					applicationWindowHandle = appHWND.getValue();
+//				} catch (NativeException e1) {
+//					e1.printStackTrace();
+//				} catch (IllegalAccessException e1) {
+//					e1.printStackTrace();
+//				} 
+//				
+//				/*
+//				//this always return 0...
+//				try {
+//					HWND appHWND = User32.GetActiveWindow();
+//					applicationWindowHandle = appHWND.getValue();
+//				} catch (Exception e1) {
+//					e1.printStackTrace();
+//				} 
+//				*/
+//				
+//				setTopWindowHandle(applicationWindowHandle);
+//				
+//				//FIXME TEST
+//				
+//
+//				try {
+////					logger.debug("Find SunAwtCanvas Handle:");
+//					HWND topLvlHandle = new HWND(applicationWindowHandle);
+//					HWND sunAwtCanvasHWND;
+//					
+//					//-> make sure it is the processing canvas, check with spy++ for more info
+//					sunAwtCanvasHWND = User32.FindWindowEx(topLvlHandle, new HWND(0), canvasClassName, null); //Find child canvas
+//					setSunAwtCanvasHandle(sunAwtCanvasHWND.getValue());
+//				} catch (NativeException e) {
+//					e.printStackTrace();
+//				} catch (IllegalAccessException e) {
+//					e.printStackTrace();
+//				}
 
 				app.frame.setTitle(oldTitle); //Reset title text
 			}
 		});
-		return handle;
 	}
 
 	
@@ -272,7 +285,6 @@ public class Win7NativeTouchSource extends AbstractInputSource {
 		if (HWND > 0){
 			this.sunAwtCanvasHandle = HWND;
 			logger.debug("-> Found SunAwtCanvas HWND: " + this.sunAwtCanvasHandle);
-			
 			//Initialize c++ core (subclass etc)
 			this.init(this.sunAwtCanvasHandle);
 			this.initialized = true;
@@ -303,6 +315,12 @@ public class Win7NativeTouchSource extends AbstractInputSource {
 	    
 	    /** The y value. */
 	    public int y;
+	    
+	    /** The contact size area X dimension */
+	    public int contactSizeX;
+	    
+	    /** The contact size area Y dimension */
+	    public int contactSizeY;
 	}
 
 }

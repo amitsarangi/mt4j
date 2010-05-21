@@ -373,9 +373,6 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 	
 	
 	
-	
-	
-	
 	// INPUT LISTENER STUF ////
 	/**
 	 * Adds an input listener to this component. The listener will be informed if
@@ -2691,8 +2688,8 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 	}
 	
 	
-	//FIXME currobj distance läuft jetzt über pickresult vistor, also parameter überflüssig
-	//wir könnten auch currObjDistance als returnparameter machen..
+	//FIXME currObjDist now in pickresult vistor, so parameter is obsolete
+	//could make currObjDistance  return parameter ..
 	/**
 	 * Pick closest comp with ray recursive.
 	 * 

@@ -1,9 +1,11 @@
 ToDo list:
 
 -> General:
+- implement scale limits in scaleAction using globalMatrix.getScale();
 - add setAnchor(Vector3D anchorPoint) for all AbstractShapes? -> use in set/getPosition() -> per default use centerpoint -> rotate(45) -> use anchor by default?
 - make gesture processor priorities float? (so flick could get 1.3f for example..)
 - add more stateChange events (e.g. transformed, globally position changed etc)
+- compile 64 bit manymouse
 - in boundingShapes -> calculate width/height screen or object aligned? -> rather object aligned..
 - add org.mt4jx -> new source folder? -> new project? -> integrate $ gesture processor
 - add unit tests -> new source folder?

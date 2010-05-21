@@ -57,12 +57,23 @@ public class MT4jSettings {
 	/** Start time of the app. */
 	private long programStartTime = 0;
 	
+	/** The Constant ARCHITECTURE_32_BIT. */
+	public static final int ARCHITECTURE_32_BIT = 32;
+	
+	/** The Constant ARCHITECTURE_64_BIT. */
+	public static final int ARCHITECTURE_64_BIT = 64;
+	
+	/** The architecture. */
+	private int architecture = ARCHITECTURE_32_BIT;
+	
 	/** The fullscreen. */
 	public static boolean fullscreen = false;
+	
 	
 	/** The DEFAUL t_ fon t_ path. */
 	public static String DEFAULT_SETTINGS_PATH = new String(System.getProperty("user.dir") + File.separator);
 
+	/** The DEFAUL t_ dat a_ folde r_ path. */
 	public static String DEFAULT_DATA_FOLDER_PATH = new String(System.getProperty("user.dir") + File.separator + "data" + File.separator);
 	
 	/** The DEFAUL t_ fon t_ path. */
@@ -352,6 +363,29 @@ public class MT4jSettings {
 	public boolean isP3DMode(){
 		return this.getRendererMode() == MT4jSettings.P3D_MODE;
 	}
+
+
+	/**
+	 * Gets the architecture. (32/64 bit JVM)
+	 *
+	 * @return the architecture constant indicating architecture (32 or 64 bit)
+	 */
+	public int getArchitecture() {
+		return this.architecture;
+	}
+
+
+	/**
+	 * Sets the architecture.
+	 * <br>NOTE: Set automatically. DONT SET THIS YOURSELF!
+	 *
+	 * @param architecture the new architecture
+	 */
+	public void setArchitecture(int architecture) {
+		this.architecture = architecture;
+	}
+	
+	
 	
 
 }
