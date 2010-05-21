@@ -1,6 +1,22 @@
+/***********************************************************************
+ * mt4j Copyright (c) 2008 - 2010 Christopher Ruff, Fraunhofer-Gesellschaft All rights reserved.
+ *  
+ *   This program is free software: you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation, either version 3 of the License, or
+ *   (at your option) any later version.
+ *
+ *   This program is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU General Public License for more details.
+ *
+ *   You should have received a copy of the GNU General Public License
+ *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ ***********************************************************************/
 package org.mt4j.input.inputSources;
 
-import java.io.File;
 import java.util.HashMap;
 
 import javax.swing.SwingUtilities;
@@ -46,6 +62,8 @@ public class Win7NativeTouchSource extends AbstractInputSource {
 
 	private boolean initialized;
 	
+	private boolean success;
+	
 	private HashMap<Integer, Long> touchToCursorID;
 	
 	private static final String dllName32 = "Win7Touch";
@@ -55,13 +73,30 @@ public class Win7NativeTouchSource extends AbstractInputSource {
 	private static final String canvasClassName = "SunAwtCanvas";
 	
 	
+	// NATIVE METHODS //
+	private native int findWindow(String tmpTitle, String subWindowTitle);
+	
+	private native boolean init(long HWND); 
+	
+	private native boolean getSystemMetrics(); 
+	
+	private native boolean quit(); 
+	
+	private native boolean pollEvent(Native_WM_TOUCH_Event myEvent);
+	// NATIVE METHODS //
+	
+	
 	//TODO remove points[] array? -> if digitizer has more than 255 touchpoints we could get out of bounds in points[]
 	//TODO did we "delete [] ti;" in wndProc?
 	//TODO- check dpi, if higher than 96 - if the screen is set to High DPI (more than 96 DPI),
 	// you may also need to divide the values by 96 and multiply by the current DPI. (or already handled by ScreenToClient()?)
 	
-	private boolean success;
 	
+	/**
+	 * Instantiates a new win7 native touch source.
+	 *
+	 * @param mtApp the mt app
+	 */
 	public Win7NativeTouchSource(MTApplication mtApp) {
 		super(mtApp);
 		this.app = mtApp;
@@ -79,9 +114,8 @@ public class Win7NativeTouchSource extends AbstractInputSource {
 		if (!loaded){
 			loaded = true;
 			String dllName = (MT4jSettings.getInstance().getArchitecture() == MT4jSettings.ARCHITECTURE_32_BIT)? dllName32 : dllName64;
-			System.out.println("Loading dll: " + dllName);
-			System.load(System.getProperty("user.dir") + File.separator + dllName + ".dll");	
-//			System.loadLibrary(dllName);
+			System.loadLibrary(dllName);
+//			System.load(System.getProperty("user.dir") + File.separator + dllName + ".dll");
 		}else{
 			logger.error("Win7NativeTouchSource may only be instantiated once.");
 			return;
@@ -109,18 +143,7 @@ public class Win7NativeTouchSource extends AbstractInputSource {
 		this.getNativeWindowHandles();
 		success = true;
 	}
-	
-	// NATIVE METHODS //
-	private native int findWindow(String tmpTitle, String subWindowTitle);
-	
-	private native boolean init(long HWND); 
-	
-	private native boolean getSystemMetrics(); 
-	
-	private native boolean quit(); 
-	
-	private native boolean pollEvent(Native_WM_TOUCH_Event myEvent);
-	// NATIVE METHODS
+
 	
 //	private boolean addedArtificalTouchDown = false; //FIXME REMOVE
 	
@@ -216,14 +239,11 @@ public class Win7NativeTouchSource extends AbstractInputSource {
 				int awtCanvasHandle = 0;
 				try {
 					awtCanvasHandle = (int)findWindow(tmpTitle, canvasClassName);
-	//FIXME REMOVE!	//FIXME REMOVE!//FIXME REMOVE!//FIXME REMOVE!//FIXME REMOVE!//FIXME REMOVE!//FIXME REMOVE!//FIXME REMOVE!//FIXME REMOVE!//FIXME REMOVE!
-						System.out.println("awtCanvasHandle: " + awtCanvasHandle); 
 					setSunAwtCanvasHandle(awtCanvasHandle);
 				} catch (Exception e) {
 					System.err.println(e.getMessage());
 				}
 			
-				
 //				//TODO also search for window class?
 //				//Find top level window
 //				int applicationWindowHandle = 0;
