@@ -134,7 +134,8 @@ public class DefaultScaleAction implements IGestureEventListener {
 					if (target instanceof MTComponent) {
 						MTComponent comp = (MTComponent) target;
 						
-						Vector3D currentScale = comp.getLocalMatrix().getScale(); //actually we should use globalmatrix but performance..
+						//FIXME actually we should use globalmatrix but performance is better for localMatrix..
+						Vector3D currentScale = comp.getLocalMatrix().getScale(); 
 						
 //						if (currentScale.x != currentScale.y){
 //							System.out.println("non uniform scale!");

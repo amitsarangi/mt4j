@@ -29,6 +29,7 @@ import org.mt4j.MTApplication;
 import org.mt4j.input.inputData.ActiveCursorPool;
 import org.mt4j.input.inputData.InputCursor;
 import org.mt4j.input.inputData.MTFingerInputEvt;
+import org.mt4j.input.inputData.MTWin7TouchInputEvt;
 import org.mt4j.util.MT4jSettings;
 
 /**
@@ -90,7 +91,6 @@ public class Win7NativeTouchSource extends AbstractInputSource {
 	//TODO did we "delete [] ti;" in wndProc?
 	//TODO- check dpi, if higher than 96 - if the screen is set to High DPI (more than 96 DPI),
 	// you may also need to divide the values by 96 and multiply by the current DPI. (or already handled by ScreenToClient()?)
-	//TODO make MTFingerEvent hold contactSize
 	//TODO try again getWindow() in windows -> no success in all thread (we probably need to do it in the awt-windows thread?)
 	
 	//TODO make singleton to avoid multiple instances
@@ -173,7 +173,7 @@ public class Win7NativeTouchSource extends AbstractInputSource {
 					
 					InputCursor c = new InputCursor();
 					long cursorID = c.getId();
-					MTFingerInputEvt touchEvt = new MTFingerInputEvt(this, wmTouchEvent.x, wmTouchEvent.y, MTFingerInputEvt.INPUT_DETECTED, c);
+					MTWin7TouchInputEvt touchEvt = new MTWin7TouchInputEvt(this, wmTouchEvent.x, wmTouchEvent.y, wmTouchEvent.contactSizeX, wmTouchEvent.contactSizeY, MTFingerInputEvt.INPUT_DETECTED, c);
 					int touchID = wmTouchEvent.id;
 					ActiveCursorPool.getInstance().putActiveCursor(cursorID, c);
 					touchToCursorID.put(touchID, cursorID);
@@ -188,7 +188,7 @@ public class Win7NativeTouchSource extends AbstractInputSource {
 					if (cursorID != null){
 						InputCursor c = ActiveCursorPool.getInstance().getActiveCursorByID(cursorID);
 						if (c != null){
-							MTFingerInputEvt te = new MTFingerInputEvt(this, wmTouchEvent.x, wmTouchEvent.y, MTFingerInputEvt.INPUT_UPDATED, c);
+							MTWin7TouchInputEvt te = new MTWin7TouchInputEvt(this, wmTouchEvent.x, wmTouchEvent.y, wmTouchEvent.contactSizeX, wmTouchEvent.contactSizeY, MTFingerInputEvt.INPUT_UPDATED, c);
 							this.enqueueInputEvent(te);	
 						}
 					}
@@ -201,8 +201,7 @@ public class Win7NativeTouchSource extends AbstractInputSource {
 					if (cursorID != null){
 						InputCursor c = ActiveCursorPool.getInstance().getActiveCursorByID(cursorID);
 						if (c != null){
-							MTFingerInputEvt te;
-							te = new MTFingerInputEvt(this, wmTouchEvent.x, wmTouchEvent.y, MTFingerInputEvt.INPUT_ENDED, c);
+							MTWin7TouchInputEvt te = new MTWin7TouchInputEvt(this, wmTouchEvent.x, wmTouchEvent.y, wmTouchEvent.contactSizeX, wmTouchEvent.contactSizeY, MTFingerInputEvt.INPUT_ENDED, c);
 							this.enqueueInputEvent(te);
 						}
 						ActiveCursorPool.getInstance().removeCursor(cursorID);
@@ -243,51 +242,12 @@ public class Win7NativeTouchSource extends AbstractInputSource {
 			public void run() {
 				int awtCanvasHandle = 0;
 				try {
+//					//TODO also search for window class?
 					awtCanvasHandle = (int)findWindow(tmpTitle, canvasClassName);
 					setSunAwtCanvasHandle(awtCanvasHandle);
 				} catch (Exception e) {
 					System.err.println(e.getMessage());
 				}
-			
-//				//TODO also search for window class?
-//				//Find top level window
-//				int applicationWindowHandle = 0;
-//				try {
-//					HWND appHWND = User32.FindWindow(null, tmpTitle);
-//					applicationWindowHandle = appHWND.getValue();
-//				} catch (NativeException e1) {
-//					e1.printStackTrace();
-//				} catch (IllegalAccessException e1) {
-//					e1.printStackTrace();
-//				} 
-//				
-//				/*
-//				//this always return 0...
-//				try {
-//					HWND appHWND = User32.GetActiveWindow();
-//					applicationWindowHandle = appHWND.getValue();
-//				} catch (Exception e1) {
-//					e1.printStackTrace();
-//				} 
-//				*/
-//				
-//				setTopWindowHandle(applicationWindowHandle);
-//				
-//
-//				try {
-////					logger.debug("Find SunAwtCanvas Handle:");
-//					HWND topLvlHandle = new HWND(applicationWindowHandle);
-//					HWND sunAwtCanvasHWND;
-//					
-//					//-> make sure it is the processing canvas, check with spy++ for more info
-//					sunAwtCanvasHWND = User32.FindWindowEx(topLvlHandle, new HWND(0), canvasClassName, null); //Find child canvas
-//					setSunAwtCanvasHandle(sunAwtCanvasHWND.getValue());
-//				} catch (NativeException e) {
-//					e.printStackTrace();
-//				} catch (IllegalAccessException e) {
-//					e.printStackTrace();
-//				}
-
 				app.frame.setTitle(oldTitle); //Reset title text
 			}
 		});

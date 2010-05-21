@@ -1,7 +1,6 @@
 ToDo list:
 
 -> General:
-- implement scale limits in scaleAction using globalMatrix.getScale();
 - add setAnchor(Vector3D anchorPoint) for all AbstractShapes? -> use in set/getPosition() -> per default use centerpoint -> rotate(45) -> use anchor by default?
 - make gesture processor priorities float? (so flick could get 1.3f for example..)
 - add more stateChange events (e.g. transformed, globally position changed etc)
