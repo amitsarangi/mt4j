@@ -90,7 +90,10 @@ public class Win7NativeTouchSource extends AbstractInputSource {
 	//TODO did we "delete [] ti;" in wndProc?
 	//TODO- check dpi, if higher than 96 - if the screen is set to High DPI (more than 96 DPI),
 	// you may also need to divide the values by 96 and multiply by the current DPI. (or already handled by ScreenToClient()?)
+	//TODO make MTFingerEvent hold contactSize
+	//TODO try again getWindow() in windows -> no success in all thread (we probably need to do it in the awt-windows thread?)
 	
+	//TODO make singleton to avoid multiple instances
 	
 	/**
 	 * Instantiates a new win7 native touch source.
@@ -216,11 +219,14 @@ public class Win7NativeTouchSource extends AbstractInputSource {
 		super.pre();
 	}
 	
-	//TODO make MTFingerEvent hold contactSize
-	//TODO try again getWindow() in windows -> no success in all thread (we probably need to do it in the awt-windows thread?)
-	//TODO test on other machine
+	
 	
 	private void getNativeWindowHandles(){
+		if (app.frame == null){
+			logger.error("applet.frame == null! -> cant set up windows 7 input!");
+			return;
+		}
+		
 		//TODO kind of hacky way of getting the HWND..but there seems to be no real alternative(?)
 		final String oldTitle = app.frame.getTitle();
 		final String tmpTitle = "Initializing Native Windows 7 Touch Input " + Math.random();
@@ -235,7 +241,6 @@ public class Win7NativeTouchSource extends AbstractInputSource {
 		//-> maybe we need to wait a frame until windows is informed of the window name change
 		SwingUtilities.invokeLater(new Runnable() { 
 			public void run() {
-				//FIXME TEST!
 				int awtCanvasHandle = 0;
 				try {
 					awtCanvasHandle = (int)findWindow(tmpTitle, canvasClassName);
@@ -267,8 +272,6 @@ public class Win7NativeTouchSource extends AbstractInputSource {
 //				*/
 //				
 //				setTopWindowHandle(applicationWindowHandle);
-//				
-//				//FIXME TEST
 //				
 //
 //				try {
