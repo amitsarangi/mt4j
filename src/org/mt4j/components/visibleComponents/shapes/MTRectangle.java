@@ -91,6 +91,32 @@ public class MTRectangle extends MTPolygon {
 		this.setTextureEnabled(true);
 	}
 	
+	
+	/**
+	 * Instantiates a new mT rectangle with the upper left corner at 0,0,0
+	 * 
+	 * @param width the width
+	 * @param height the height
+	 * @param pApplet the applet
+	 */
+	public MTRectangle(float width, float height, PApplet pApplet) {
+		this(new Vertex(0,0,0,0,0),width,height,pApplet);
+	}
+	
+	
+	/**
+	 * Instantiates a new mT rectangle.
+	 * 
+	 * @param x the x
+	 * @param y the y
+	 * @param width the width
+	 * @param height the height
+	 * @param pApplet the applet
+	 */
+	public MTRectangle(float x, float y, float width, float height, PApplet pApplet) {
+		this(new Vertex(x,y,0,0,0),width,height,pApplet);
+	}
+	
 	/**
 	 * Instantiates a new mT rectangle.
 	 * 
@@ -105,18 +131,6 @@ public class MTRectangle extends MTPolygon {
 		this(new Vertex(x,y,z,0,0),width,height,pApplet);
 	}
 
-	/**
-	 * Instantiates a new mT rectangle.
-	 * 
-	 * @param x the x
-	 * @param y the y
-	 * @param width the width
-	 * @param height the height
-	 * @param pApplet the applet
-	 */
-	public MTRectangle(float x, float y, float width, float height, PApplet pApplet) {
-		this(new Vertex(x,y,0,0,0),width,height,pApplet);
-	}
 	
 	/**
 	 * Instantiates a new mT rectangle.
