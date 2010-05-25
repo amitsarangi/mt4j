@@ -93,7 +93,6 @@ import com.modestmaps.providers.BlueMarble;
 import com.modestmaps.providers.CloudMade;
 import com.modestmaps.providers.DailyPlanet;
 import com.modestmaps.providers.Microsoft;
-import com.modestmaps.providers.OpenAerialMap;
 import com.modestmaps.providers.OpenStreetMaps;
 
 

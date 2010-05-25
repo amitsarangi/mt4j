@@ -137,7 +137,21 @@ public class MTList extends MTClipRectangle {
 		this.listCellContainer.removeCell(item);
 	}
 	
+	private Vector3D getListUpperLeftLocal(){
+		PositionAnchor savedAnchor = this.getAnchor();
+		this.setAnchor(PositionAnchor.UPPER_LEFT);
+		Vector3D pos = this.getPosition(TransformSpace.LOCAL);
+		this.setAnchor(savedAnchor);
+		return pos;
+	}
 	
+	private Vector3D getListLowerLeftLocal(){
+		PositionAnchor savedAnchor = this.getAnchor();
+		this.setAnchor(PositionAnchor.LOWER_LEFT);
+		Vector3D pos = this.getPosition(TransformSpace.LOCAL);
+		this.setAnchor(savedAnchor);
+		return pos;
+	}
 
 	/**
 	 * The Class MTListCellContainer. Container for all the MTListCell's.
@@ -236,11 +250,12 @@ public class MTList extends MTClipRectangle {
 			this.setWidthLocal(this.calcAllCellsWidth());
 			this.setHeightLocal(this.calcAllCellsHeight());
 
-			//Reset listcontainer Pos to 0,0
+			//Re-position list-container to upper left of MTList
 			this.setAnchor(PositionAnchor.UPPER_LEFT);
-			this.setPositionRelativeToParent(new Vector3D(0,0,0));
+			Vector3D listContainerUpperLeftLocal = getListUpperLeftLocal();
+			this.setPositionRelativeToParent(listContainerUpperLeftLocal);
 			
-			//Position list cells in listCellContainer
+			//Set the Position of the list cells in listCellContainer (cells are aligned to the left side of the container)
 			float offset = 0;
 			if (this.cells.size() > 0 && !this.cells.get(0).isNoStroke()){//FIXME TEST so that stroke isnt cut off TOP because of clipping
 				offset = this.cells.get(0).getStrokeWeight();
@@ -250,7 +265,7 @@ public class MTList extends MTClipRectangle {
 				cell.setAnchor(PositionAnchor.UPPER_LEFT);
 //				Vector3D pos = new Vector3D(0, offset, 0);
 				//FIXME TEST so that stroke isnt cut off left because of clipping
-				Vector3D pos = new Vector3D(cell.getStrokeWeight(), offset, 0); 
+				Vector3D pos = new Vector3D(listContainerUpperLeftLocal.x + cell.getStrokeWeight(), listContainerUpperLeftLocal.y + offset, 0); 
 				cell.setPositionRelativeToParent(pos);
 				offset += cellYPadding + cell.getHeightXY(TransformSpace.RELATIVE_TO_PARENT); //TODO take strokeweight into account here,too
 			}
@@ -349,18 +364,23 @@ public class MTList extends MTClipRectangle {
 			switch (de.getId()) {
 			case MTGestureEvent.GESTURE_DETECTED:
 			case MTGestureEvent.GESTURE_UPDATED:
+				//Constrain the movement of the listcellcontainer to the boundaries of the List
 				if (canDrag){
 //					if (dir.y > 0){
 						theListCellContainer.translate(new Vector3D(0, dir.y), TransformSpace.LOCAL);	
-						if (this.getContainerUpperLeft().y > 0){
+						
+						Vector3D listUpperLeftLocal = getListUpperLeftLocal();
+						if (this.getContainerUpperLeftRelParent().y > listUpperLeftLocal.y){
 							theListCellContainer.setAnchor(PositionAnchor.UPPER_LEFT);
-							theListCellContainer.setPositionRelativeToParent(new Vector3D(0,0,0));
+							theListCellContainer.setPositionRelativeToParent(listUpperLeftLocal);
 						}
 //					}else if(dir.y < 0){
 //						theListCellContainer.translate(new Vector3D(0, dir.y), TransformSpace.LOCAL);
-						if (this.getContainerLowerLeft().y < getHeightXY(TransformSpace.LOCAL)){
+						
+						Vector3D listLowLeftLocal = getListLowerLeftLocal();
+						if (this.getContainerLowerLeftRelParent().y < listLowLeftLocal.y){
 							theListCellContainer.setAnchor(PositionAnchor.LOWER_LEFT);
-							theListCellContainer.setPositionRelativeToParent(new Vector3D(0, getHeightXY(TransformSpace.LOCAL), 0));
+							theListCellContainer.setPositionRelativeToParent(listLowLeftLocal);
 						}
 //					}
 				}
@@ -384,7 +404,7 @@ public class MTList extends MTClipRectangle {
 		}
 		
 		
-		public Vector3D getContainerUpperLeft(){
+		public Vector3D getContainerUpperLeftRelParent(){
 			PositionAnchor saved = theListCellContainer.getAnchor();
 			theListCellContainer.setAnchor(PositionAnchor.UPPER_LEFT);
 			Vector3D returnPos = theListCellContainer.getPosition(TransformSpace.RELATIVE_TO_PARENT);
@@ -392,7 +412,7 @@ public class MTList extends MTClipRectangle {
 			return returnPos;
 		}
 		
-		public Vector3D getContainerLowerLeft(){
+		public Vector3D getContainerLowerLeftRelParent(){
 			PositionAnchor saved = theListCellContainer.getAnchor();
 			theListCellContainer.setAnchor(PositionAnchor.LOWER_LEFT);
 			Vector3D returnPos = theListCellContainer.getPosition(TransformSpace.RELATIVE_TO_PARENT);
@@ -446,16 +466,19 @@ public class MTList extends MTClipRectangle {
 				
 //				System.out.println("Vel vect: " + transVect);
 				
-				if (getContainerUpperLeft().y > 0){
+				//Constrain the movement of the listcellcontainer to the boundaries of the List
+				Vector3D listUpperLeftLocal = getListUpperLeftLocal();
+				if (getContainerUpperLeftRelParent().y > listUpperLeftLocal.y){
 					theListCellContainer.setAnchor(PositionAnchor.UPPER_LEFT);
-					theListCellContainer.setPositionRelativeToParent(new Vector3D(0,0,0));
+					theListCellContainer.setPositionRelativeToParent(listUpperLeftLocal);
 					//Bounce off list end					
 					startVelocityVec.scaleLocal(-0.25f);
 				}
 				
-				if (getContainerLowerLeft().y < getHeightXY(TransformSpace.LOCAL)){
+				Vector3D listLowLeftLocal = getListLowerLeftLocal();
+				if (getContainerLowerLeftRelParent().y < listLowLeftLocal.y){
 					theListCellContainer.setAnchor(PositionAnchor.LOWER_LEFT);
-					theListCellContainer.setPositionRelativeToParent(new Vector3D(0, getHeightXY(TransformSpace.LOCAL), 0));
+					theListCellContainer.setPositionRelativeToParent(listLowLeftLocal);
 					//Bounce off list end
 					startVelocityVec.scaleLocal(-0.25f);
 				}

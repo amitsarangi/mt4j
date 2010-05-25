@@ -7,7 +7,6 @@ ToDo list:
 - compile 64 bit manymouse
 - in boundingShapes -> calculate width/height screen or object aligned? -> rather object aligned..
 - add org.mt4jx -> new source folder? -> new project? -> integrate $ gesture processor
-- add unit tests -> new source folder?
 - put get/setWidth/Height into AbstractShape? -> or even MTComponent?
 
 - remove logging from model loading -> consumes memory even if the logging level doesent match?
@@ -62,7 +61,7 @@ ToDo list:
 
 
 -> Components:
-- try using absolute transformations (with anchor)
+- (try using absolute transformations (with anchor))
 - use layoutBounds (parent relative, axis aligned bounds)
 - 
 - geometry setColorBinding(BIND_PER_VERTEX)/BIND_SINGLE_COLOR to allow simple coloring using glColor()?
