@@ -137,6 +137,7 @@ public class MTList extends MTClipRectangle {
 		this.listCellContainer.removeCell(item);
 	}
 	
+	
 	private Vector3D getListUpperLeftLocal(){
 		PositionAnchor savedAnchor = this.getAnchor();
 		this.setAnchor(PositionAnchor.UPPER_LEFT);
@@ -151,6 +152,23 @@ public class MTList extends MTClipRectangle {
 		Vector3D pos = this.getPosition(TransformSpace.LOCAL);
 		this.setAnchor(savedAnchor);
 		return pos;
+	}
+	
+	
+	private Vector3D getContainerUpperLeftRelParent(){
+		PositionAnchor saved = listCellContainer.getAnchor();
+		listCellContainer.setAnchor(PositionAnchor.UPPER_LEFT);
+		Vector3D returnPos = listCellContainer.getPosition(TransformSpace.RELATIVE_TO_PARENT);
+		listCellContainer.setAnchor(saved);
+		return returnPos;
+	}
+	
+	private Vector3D getContainerLowerLeftRelParent(){
+		PositionAnchor saved = listCellContainer.getAnchor();
+		listCellContainer.setAnchor(PositionAnchor.LOWER_LEFT);
+		Vector3D returnPos = listCellContainer.getPosition(TransformSpace.RELATIVE_TO_PARENT);
+		listCellContainer.setAnchor(saved);
+		return returnPos;
 	}
 
 	/**
@@ -370,7 +388,7 @@ public class MTList extends MTClipRectangle {
 						theListCellContainer.translate(new Vector3D(0, dir.y), TransformSpace.LOCAL);	
 						
 						Vector3D listUpperLeftLocal = getListUpperLeftLocal();
-						if (this.getContainerUpperLeftRelParent().y > listUpperLeftLocal.y){
+						if (getContainerUpperLeftRelParent().y > listUpperLeftLocal.y){
 							theListCellContainer.setAnchor(PositionAnchor.UPPER_LEFT);
 							theListCellContainer.setPositionRelativeToParent(listUpperLeftLocal);
 						}
@@ -378,7 +396,7 @@ public class MTList extends MTClipRectangle {
 //						theListCellContainer.translate(new Vector3D(0, dir.y), TransformSpace.LOCAL);
 						
 						Vector3D listLowLeftLocal = getListLowerLeftLocal();
-						if (this.getContainerLowerLeftRelParent().y < listLowLeftLocal.y){
+						if (getContainerLowerLeftRelParent().y < listLowLeftLocal.y){
 							theListCellContainer.setAnchor(PositionAnchor.LOWER_LEFT);
 							theListCellContainer.setPositionRelativeToParent(listLowLeftLocal);
 						}
@@ -404,21 +422,7 @@ public class MTList extends MTClipRectangle {
 		}
 		
 		
-		public Vector3D getContainerUpperLeftRelParent(){
-			PositionAnchor saved = theListCellContainer.getAnchor();
-			theListCellContainer.setAnchor(PositionAnchor.UPPER_LEFT);
-			Vector3D returnPos = theListCellContainer.getPosition(TransformSpace.RELATIVE_TO_PARENT);
-			theListCellContainer.setAnchor(saved);
-			return returnPos;
-		}
 		
-		public Vector3D getContainerLowerLeftRelParent(){
-			PositionAnchor saved = theListCellContainer.getAnchor();
-			theListCellContainer.setAnchor(PositionAnchor.LOWER_LEFT);
-			Vector3D returnPos = theListCellContainer.getPosition(TransformSpace.RELATIVE_TO_PARENT);
-			theListCellContainer.setAnchor(saved);
-			return returnPos;
-		}
 		
 		
 		/**
@@ -491,6 +495,20 @@ public class MTList extends MTClipRectangle {
 		
 	}
 	
+	
+	public void scrollY(float amount){
+		listCellContainer.translate(new Vector3D(0, amount), TransformSpace.LOCAL);	
+		Vector3D listUpperLeftLocal = getListUpperLeftLocal();
+		if (getContainerUpperLeftRelParent().y > listUpperLeftLocal.y){
+			listCellContainer.setAnchor(PositionAnchor.UPPER_LEFT);
+			listCellContainer.setPositionRelativeToParent(listUpperLeftLocal);
+		}
+		Vector3D listLowLeftLocal = getListLowerLeftLocal();
+		if (this.getContainerLowerLeftRelParent().y < listLowLeftLocal.y){
+			listCellContainer.setAnchor(PositionAnchor.LOWER_LEFT);
+			listCellContainer.setPositionRelativeToParent(listLowLeftLocal);
+		}
+	}
 	
 	
 	
