@@ -53,7 +53,7 @@ public class PickResult {
 	 * are picked more likely.
 	 * <br>Still this is kind of a hack
 	 */
-	public static final float HIT_TOLERANCE = 0.3f; //0.03f; //FIXME reset to old value!?
+	public static final float HIT_TOLERANCE = 0.1f; //0.03f; //FIXME reset to old value!?
 	
 	/**
 	 * Instantiates a new pick result.
@@ -181,7 +181,7 @@ public class PickResult {
 		
 		for (int i = 0; i < getPickList().size(); i++) {
 			PickEntry p = pickEntries.get(i);
-			if (p.equals(pickedObj))
+			if (p.hitObj.equals(pickedObj)) 
 				return p.intersectionPoint;
 		}
 		return null;

@@ -26,7 +26,6 @@ import org.mt4j.util.MT4jSettings;
 import org.mt4j.util.math.Tools3D;
 import org.mt4j.util.math.Vector3D;
 import org.mt4j.util.modelImporter.ModelImporterFactory;
-import org.mt4j.util.opengl.GLFBO;
 import org.mt4j.util.opengl.GLMaterial;
 
 public class Models3DScene extends AbstractScene {

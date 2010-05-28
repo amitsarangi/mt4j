@@ -36,7 +36,8 @@ implements UncaughtExceptionHandler
 {
 	private boolean startUpRun;
 	private MTApplication app;
-	private List<AssertionFailedError> errors;
+//	private List<AssertionFailedError> errors;
+	private List<Throwable> errors;
 	
 	@Override
 	protected void setUp() throws Exception {
@@ -63,7 +64,7 @@ implements UncaughtExceptionHandler
 		app.frame = f;
 		
 		//List for errors caught in other thread (e.g. the animation thread)
-		errors = new ArrayList<AssertionFailedError>();
+		errors = new ArrayList<Throwable>();
 		
 		while (!startUpRun){
 			System.out.println("Sleeping test thread until MTApplication's startUp() executed...");
@@ -95,6 +96,7 @@ implements UncaughtExceptionHandler
 		super.tearDown();
 		System.out.println("-> tearDown()");
 		
+		/*
 		//Go through recieved AssertionFailedErrors and throw them 
 		for (AssertionFailedError assertionFailedError : this.errors){
 //			throwable.printStackTrace();
@@ -105,6 +107,20 @@ implements UncaughtExceptionHandler
 //			throw err;
 			
 			throw assertionFailedError;
+		}
+		*/
+		
+		for (Throwable throwable : this.errors){
+//			throwable.printStackTrace();
+//			fail(throwable.getMessage());
+			
+			if (throwable instanceof AssertionFailedError){
+				throw (AssertionFailedError)throwable;
+			}
+			else if (throwable instanceof RuntimeException){
+				((RuntimeException)throwable).printStackTrace();
+				throw (RuntimeException)throwable;
+			} 
 		}
 		
 //		final MTApplication appToDestroy = getMTApplication();
@@ -150,6 +166,10 @@ implements UncaughtExceptionHandler
 //			fail();
 			errors.add(ae);
 //			app.exit();
+//		}else if (throwable instanceof NullPointerException){
+		}else{
+			errors.add(throwable);
+//			throwable.printStackTrace(); //TODO we also need to fail the test!
 		}
 	}
 	
