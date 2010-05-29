@@ -297,7 +297,7 @@ public class MTProgressBar extends MTRoundRectangle {
 			pa.fill(fillText);
 			pa.textFont(font, 10);
 			
-			pa.text((int)this.getProgressInfoProvider().getPercentageFinished() + "%", this.getWidthXY(TransformSpace.RELATIVE_TO_PARENT)/2, this.getHeightXY(TransformSpace.RELATIVE_TO_PARENT) /2  + font.theight  );
+			pa.text((int)this.getProgressInfoProvider().getPercentageFinished() + "%", this.getWidthXY(TransformSpace.RELATIVE_TO_PARENT)/2, this.getHeightXY(TransformSpace.RELATIVE_TO_PARENT) /2  + font.ascent()+ font.descent()  );
 			
 //			pa.text((int)this.getProgressInfoProvider().getPercentageFinished() + "%", this.getLocationX() , this.getLocationY() + font.theight/4);
 //			pa.popMatrix();

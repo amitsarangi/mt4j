@@ -4,10 +4,10 @@ ToDo list:
 - add setAnchor(Vector3D anchorPoint) for all AbstractShapes? -> use in set/getPosition() -> per default use centerpoint -> rotate(45) -> use anchor by default?
 - make gesture processor priorities float? (so flick could get 1.3f for example..)
 - add more stateChange events (e.g. transformed, globally position changed etc)
-- compile 64 bit manymouse
 - in boundingShapes -> calculate width/height screen or object aligned? -> rather object aligned..
 - add org.mt4jx -> new source folder? -> new project? -> integrate $ gesture processor
 - put get/setWidth/Height into AbstractShape? -> or even MTComponent?
+- more JUnit tests
 
 - remove logging from model loading -> consumes memory even if the logging level doesent match?
 - nice image for touch cursor
@@ -18,6 +18,7 @@ ToDo list:
 - allow wrapping of JComponents in a MTComponent (-> swingToTexture, repaintManager update, generate mouse events)
 - use PGraphics.pushStyle()/popStyle when rendering with processing!?
 
+- how to differentiate between manipulations and gestures? (-> if we flick with priotiry 1.5f and then abort we have to start dragging but from the startposition, not the current one!)
 - enable a way so that even if input starts on a components the input can be redirected/replayed to another (parent or below) 
   so that if the comp doesent handle the gesture, the parent can use it (example: start zoom, even if not the background was hit)
   => or do with global processors?
@@ -31,6 +32,7 @@ ToDo list:
 	-> save only buffers and at getVerticesLocal -> create vertices from buffer -> not needed often
 	-> at setUseDirectGL(false) -> delete buffers and use vertices
 
+- compile 64 bit manymouse
 - shapes example, line, polyine(polygon not closed), custom shapes with bezier, concave shapes with triangulation
 - gui, widgets example
 - how to create own component example
@@ -44,7 +46,6 @@ ToDo list:
 - add sound library (OpenAL?)
 - by default disable depth buffer and only for special 3d stuff enable it?
 - check if for line_smooth disabling/enabling multisampling is too expensive - if so disable/dont use line_smooth when multisampling at all 
-- create small test suite (transformation tests, get centerpoint ect)
 - framework for component persistation (X-Stream?)
 - put perspective and viewport into MTCamera (?)
 - (Use nanotimer or currentmillis to update and animations? -> nano has more precision but has problems on some systems(?))
@@ -54,7 +55,7 @@ ToDo list:
 - (dropshadows - with custom created pimage?)
 - (bug when drawing outline after clipping on frustum culled object, dont draw outline then!)
 - (instead of String "fileName" use URLs? but p5 works with strings..)
-- (b4 picking, check if object visible? - update cam - check if obj in frustum)
+- (b4 picking, check if object in frustum ? - update cam - check if obj in frustum)
 - (particles not working in fullscreen (fluidscene))? -> cuz of depth buffer and p5 drawing (p5 drawing and pure opengl mix -> z-problems)
 - (use render bins and sort object automagically (2d, 3d, Hud, transparent))? 
 - (make class SceneDrawIterator? that implements the drawAndUpdateCanvas of MTCanvas so it can be called for single nodes to draw nodes with all children)

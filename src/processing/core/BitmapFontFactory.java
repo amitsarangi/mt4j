@@ -1,24 +1,7 @@
-/***********************************************************************
- * mt4j Copyright (c) 2008 - 2009 Christopher Ruff, Fraunhofer-Gesellschaft All rights reserved.
- *  
- *   This program is free software: you can redistribute it and/or modify
- *   it under the terms of the GNU General Public License as published by
- *   the Free Software Foundation, either version 3 of the License, or
- *   (at your option) any later version.
- *
- *   This program is distributed in the hope that it will be useful,
- *   but WITHOUT ANY WARRANTY; without even the implied warranty of
- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *   GNU General Public License for more details.
- *
- *   You should have received a copy of the GNU General Public License
- *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
- ***********************************************************************/
-package org.mt4j.components.visibleComponents.font.fontFactories;
+package processing.core;
 
 import java.awt.Font;
-import java.awt.FontMetrics;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,12 +12,12 @@ import org.apache.log4j.SimpleLayout;
 import org.mt4j.components.visibleComponents.font.BitmapFont;
 import org.mt4j.components.visibleComponents.font.BitmapFontCharacter;
 import org.mt4j.components.visibleComponents.font.IFont;
+import org.mt4j.components.visibleComponents.font.fontFactories.IFontFactory;
 import org.mt4j.util.MT4jSettings;
 import org.mt4j.util.MTColor;
+import org.mt4j.util.math.ToolsMath;
 
-import processing.core.PApplet;
-import processing.core.PFont;
-import processing.core.PImage;
+import processing.core.PFont.Glyph;
 
 /**
  * A factory for creating BitmapFont objects.
@@ -88,16 +71,21 @@ public class BitmapFontFactory implements IFontFactory {
 		 */
 		
 		int defaultHorizontalAdvX = bitMapCharacters.get(0).getHorizontalDist(); //FIXME HACK!
-		String fontFamily = p5Font.psname;
+		String fontFamily = p5Font.getPostScriptName();
 //		String fontFamily = f.getFamily(); 
-		int fontMaxAscent = p5Font.ascent;
-		int fontMaxDescent = p5Font.descent;
+		//FIXME ascent() and descent() return to small values! wheres the difference??
+		int fontMaxAscent = Math.round(p5Font.ascent()* (fontSize));
+		fontMaxAscent +=fontSize/8f; //FIXME HACK! because the same ttf fonts seem to have bigger ascents
+//		int fontMaxAscent = p5Font.lazyMetrics.getAscent();
+		int fontMaxDescent = Math.round(p5Font.descent() * fontSize);
+		/*
 		//TODO INFO: because in vector font this is a negative value, too
 		Font f = p5Font.getFont();
 		if (f != null){
 			FontMetrics fm = pa.getFontMetrics(f);
 			fontMaxDescent = fm.getDescent();
 		}
+		*/
 		fontMaxDescent *= -1; //We use negative descent values
 		
 		//logger.debug("Bitmapfont max descent: " + fontMaxDescent);
@@ -124,8 +112,10 @@ public class BitmapFontFactory implements IFontFactory {
 //		int spaceAdvancex = defaultHorizontalAdvX;
 //		int spaceAdvancex = fm.charWidth(' '); 
 		//TODO hack, we use the dash character's width for the space width, because dont know how to get it
-		int spaceIndex = p5Font.index('-');
-		int spaceAdvancex = p5Font.width[spaceIndex];
+//		int spaceIndex = p5Font.index('-');
+//		int spaceAdvancex = p5Font.width[spaceIndex];
+//		int spaceAdvancex = p5Font.getGlyph('-').width;
+		int spaceAdvancex = Math.round(((float) p5Font.width('i') * (float) fontSize));
 //		int spaceAdvancex = Math.round(pa.textWidth(' '));
 //		int spaceAdvancex = Math.round(p5Font.width(' ') * p5Font.size);
 		BitmapFontCharacter space = new BitmapFontCharacter(dummy, pa, " ", 0, 0, spaceAdvancex);
@@ -234,56 +224,89 @@ public class BitmapFontFactory implements IFontFactory {
 	
 	private List<BitmapFontCharacter> createCharacters(PApplet pa, PFont p5Font, String chars, MTColor fillColor, MTColor strokeColor){
 		List<BitmapFontCharacter> bitMapCharacters = new ArrayList<BitmapFontCharacter>();
+		
 		for (int i = 0; i < chars.length(); i++) {
 			char c = chars.charAt(i);
-			int charIndex = p5Font.index(c);
-			if (charIndex != -1){
-				PImage charImage = p5Font.images[charIndex];
-				int charWidth = p5Font.width[charIndex];
-				int charHeight = p5Font.height[charIndex];
-				int topExtend = p5Font.topExtent[charIndex];
-				int leftExtend = p5Font.leftExtent[charIndex];
-				int widthDisplacement = p5Font.setWidth[charIndex];
+//			int charIndex = p5Font.index(c);
+			Glyph glyph = p5Font.getGlyph(c);
+			if (glyph != null){
+				PImage charImage = glyph.image;
+				int charWidth = glyph.width;
+				int charHeight = glyph.height;
+				int topExtend = glyph.topExtent;
+				int leftExtend = glyph.leftExtent;
+				int widthDisplacement = glyph.setWidth;
+				
 
 				//int topOffset = p5Font.descent + (-charHeight - (topExtend-charHeight)); //ORIGINAL
 				int topOffset =  (-charHeight - (topExtend-charHeight));
 				
 				//Copy the actual font data on the image from the upper left corner 1 pixel
 				//into the middle of the image to avoid anti aliasing artefacts at the corners
-				PImage copy = new PImage(charImage.width, charImage.height, PImage.ARGB);
+//				PImage copy = new PImage(charImage.width, charImage.height, PImage.ARGB); //ORG
 
-				for (int j = 0; j < charImage.pixels.length; j++) {
-					int d = charImage.pixels[j];
-					/*
-						int a = d >> 24 & 0xFF;
-						int r = d >> 16 & 0xFF;
-						int g = d >> 8 & 0xFF;
-						int b = d & 0xFF;
-						logger.debug("R: " + r + " G:" + g + " B:" + " A:" + a);
-					 */
-					charImage.pixels[j] = (d << 24) | 0x00FFFFFF; //ORIGINAL! //make it white
-					//charImage.pixels[j] = (d << 24) | pa.color(fillRed, fillGreen, fillBlue, 0);
-					//charImage.format = PConstants.ARGB;
-					
-					//Clear the copy image in the same loop
-					copy.pixels[j] = (copy.pixels[j] << 24) | 0x00FFFFFF; //Original! //make it white
+//				for (int j = 0; j < charImage.pixels.length; j++) { //ORG
+//					int d = charImage.pixels[j];
+//					/*
+//						int a = d >> 24 & 0xFF;
+//						int r = d >> 16 & 0xFF;
+//						int g = d >> 8 & 0xFF;
+//						int b = d & 0xFF;
+//						logger.debug("R: " + r + " G:" + g + " B:" + " A:" + a);
+//					 */
+//					charImage.pixels[j] = (d << 24) | 0x00FFFFFF; //ORIGINAL! //make it white
+////					charImage.pixels[j] = (d << 24) | pa.color(fillColor.getR(), fillColor.getG(), fillColor.getB(), 0);
+////					charImage.pixels[j] = (charImage.pixels[j] << 24) | 0x00FFFFFF;
+//					//charImage.format = PConstants.ARGB;
+//					
+//					//Clear the copy image in the same loop
+//					copy.pixels[j] = (copy.pixels[j] << 24) | 0x00FFFFFF; //Original! //make it white
+////					copy.pixels[j] = (d << 24) | 0x00FFFFFF; //Original! //make it white
+//				}
+				
+				for (int j = 0; j < charImage.pixels.length; j++) { //ORG
+					charImage.pixels[j] = (charImage.pixels[j] << 24) | 0x00FFFFFF; //ORIGINAL! //make it white
 				}
 				
-				//Shift character image data 1 down and right in the image because of aliasing artifacts at the border
+				//Shift character image data down and right in the image because of aliasing artifacts at the border
 				//we need to compensate for this when displaying the char
-				int shiftAmount = 8; 
-				copy.copy(charImage, 0, 0, charWidth, charHeight, shiftAmount, shiftAmount, charWidth, charHeight);
+				int topShiftAmount = 8;
+				int leftShiftAmount = 8;
+				
+//				PImage copy = new PImage(ToolsMath.nearestPowerOfTwo(charWidth + shiftAmount), ToolsMath.nearestPowerOfTwo(charHeight + shiftAmount), PImage.ARGB);
+//				
+				PImage copy = new PImage(ToolsMath.nearestPowerOfTwo(charImage.width + leftShiftAmount + 1), ToolsMath.nearestPowerOfTwo(charImage.height + topShiftAmount), PImage.ARGB);
+//				PImage copy = new PImage(charImage.width + leftShiftAmount + 1, charImage.height + topShiftAmount, PImage.ARGB);
+				
+				copy.copy(charImage, 0, 0, charWidth, charHeight, leftShiftAmount, topShiftAmount, charWidth, charHeight);
+				
+//				copy.copy(charImage, 0, 0, charImage.width, charImage.height, leftShiftAmount, topShiftAmount, charImage.width, charImage.height);
+				
+//				copy.copy(charImage, 0, 0, charWidth, charHeight, shiftAmount, shiftAmount, charWidth, charHeight);
+//				copy.copy(charImage, 0, 0, charImage.width, charImage.height, shiftAmount, shiftAmount, charImage.width, charImage.height);
+//				copy.copy(charImage, 0, 0, charImage.width, charImage.height, shiftAmount, shiftAmount, charImage.width, charImage.height);
+//				copy.copy(charImage, 0, 0, charWidth, charHeight, shiftAmount, shiftAmount, charWidth, charHeight);
+				
 				charImage = copy;
 				
+				//FIXME the topoffset is smaller than with the vector font! check that!
+				//FIXME anti aliasing artefacts may also stem from using a perspective and not ortho camera!!
+				//FIXME space character too wide..
+				
 				//Move the character to compensate for the shifting of the image
-				topOffset -= shiftAmount;
-				leftExtend -= shiftAmount;
-
+				topOffset -= topShiftAmount; //org shiftamount 
+				leftExtend -= leftShiftAmount;
+				
+				//FIXME TEST
+//				if (c == 'i'){
+//					copy.save(MT4jSettings.DEFAULT_IMAGES_PATH + "i.png");
+//				}
+				
 				//Create bitmap font character
 				String StringChar = new Character(c).toString();
 				BitmapFontCharacter character = new BitmapFontCharacter(charImage, pa, StringChar, leftExtend, topOffset, widthDisplacement);
 				character.setName(StringChar);
-				character.setFillColor(new MTColor(fillColor.getR(), fillColor.getG(), fillColor.getB(), fillColor.getAlpha()));
+				character.setFillColor(new MTColor(fillColor));
 				if (MT4jSettings.getInstance().isOpenGlMode()){
 					character.generateAndUseDisplayLists();
 				}
@@ -295,5 +318,70 @@ public class BitmapFontFactory implements IFontFactory {
 		}
 		return bitMapCharacters;
 	}
+	
+	
+	
+	  /**
+	   * Create a .vlw font on the fly from either a font name that's
+	   * installed on the system, or from a .ttf or .otf that's inside
+	   * the data folder of this sketch.
+	   * <P/>
+	   * Many .otf fonts don't seem to be supported by Java, perhaps because 
+	   * they're CFF based?
+	   * <P/>
+	   * Font names are inconsistent across platforms and Java versions.
+	   * On Mac OS X, Java 1.3 uses the font menu name of the font,
+	   * whereas Java 1.4 uses the PostScript name of the font. Java 1.4
+	   * on OS X will also accept the font menu name as well. On Windows,
+	   * it appears that only the menu names are used, no matter what
+	   * Java version is in use. Naming system unknown/untested for 1.5.
+	   * <P/>
+	   * Use 'null' for the charset if you want to dynamically create
+	   * character bitmaps only as they're needed. (Version 1.0.9 and
+	   * earlier would interpret null as all unicode characters.)
+	   */
+	  public PFont createFont(PApplet app, String name, float size,
+	                          boolean smooth, char charset[]) {
+	    String lowerName = name.toLowerCase();
+	    Font baseFont = null;
+
+	    try {
+	      InputStream stream = null;
+	      if (lowerName.endsWith(".otf") || lowerName.endsWith(".ttf")) {
+	        stream = app.createInput(name);
+	        if (stream == null) {
+	          System.err.println("The font \"" + name + "\" " +
+	                             "is missing or inaccessible, make sure " +
+	                             "the URL is valid or that the file has been " +
+	                             "added to your sketch and is readable.");
+	          return null;
+	        }
+	        baseFont = Font.createFont(Font.TRUETYPE_FONT, app.createInput(name));
+
+	      } else {
+	        baseFont = PFont.findFont(name);
+	      }
+	      return new PFont(baseFont.deriveFont(size), smooth, charset, 
+	                       stream != null);
+
+	    } catch (Exception e) {
+	      System.err.println("Problem createFont(" + name + ")");
+	      e.printStackTrace();
+	      return null;
+	    }
+	  }
+	  
+	 private class MYPFont extends PFont{
+		 
+		 public void getGlyphImage(){
+			 getGlyph('a');
+		 }
+		 
+		 public class bla extends PFont.Glyph{
+			 
+		 }
+		 
+	 }
+
 
 }

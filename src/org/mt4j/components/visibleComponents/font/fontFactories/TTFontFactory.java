@@ -158,7 +158,9 @@ public class TTFontFactory implements IFontFactory{
 		newArray[newArray.length-3] = newLine;
 		
 		//Manually add a SPACE character to the font
-		int charIndex 			= this.getCmapFormat(f).mapCharCode(32);
+//		int charIndex 			= this.getCmapFormat(f).mapCharCode(32);
+		int charIndex 			= this.getCmapFormat(f).mapCharCode('i');
+//		int charIndex 			= this.getCmapFormat(f).mapCharCode('-');
 		int default_advance_x 	= f.getHmtxTable().getAdvanceWidth(charIndex);
 		Glyph glyph  			= f.getGlyph(charIndex);
 		int xadvance = 0;
@@ -534,8 +536,8 @@ public class TTFontFactory implements IFontFactory{
 		  character.scale(fontSize , new Vector3D(0,0,0));
 			 */
 
-			character.setStrokeColor(new MTColor(strokeColor.getR(), strokeColor.getG(), strokeColor.getB(), strokeColor.getAlpha()));
-			character.setFillColor(new MTColor(fillColor.getR(), fillColor.getG(), fillColor.getB(), fillColor.getAlpha()));
+			character.setStrokeColor(new MTColor(strokeColor));
+			character.setFillColor(new MTColor(fillColor));
 			
 			if (MT4jSettings.getInstance().isOpenGlMode())
 				character.generateAndUseDisplayLists();

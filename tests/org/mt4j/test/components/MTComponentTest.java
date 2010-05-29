@@ -81,6 +81,7 @@ public class MTComponentTest extends AbstractWindowTestcase {
 		runTest(new TestRunnable() {
 			@Override
 			public void runMTTestCode() {
+				//Create 3 rectangles
 				MTRectangle rect1 = new MTRectangle(100,100,getMTApplication());
 				rect1.setFillColor(new MTColor(255,0,0));
 				MTRectangle rect2 = new MTRectangle(100,100,getMTApplication());
@@ -120,7 +121,6 @@ public class MTComponentTest extends AbstractWindowTestcase {
 				assertEquals(getCanvas().pick(50, 50).getNearestPickResult(), rect2);
 				rect3.translate(new Vector3D(0,0, 0.5f));
 				assertEquals(getCanvas().pick(50, 50).getNearestPickResult(), rect3);
-				
 				rect1.translate(new Vector3D(0,0, 0.5f));
 				assertEquals(getCanvas().pick(50, 50).getNearestPickResult(), rect1);
 				rect1.translate(new Vector3D(0,0, -0.5f));

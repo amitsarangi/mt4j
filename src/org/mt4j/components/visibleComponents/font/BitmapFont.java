@@ -26,10 +26,10 @@ import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.log4j.SimpleLayout;
 import org.mt4j.components.MTComponent;
-import org.mt4j.components.visibleComponents.font.fontFactories.BitmapFontFactory;
 import org.mt4j.components.visibleComponents.font.fontFactories.IFontFactory;
 import org.mt4j.util.MTColor;
 
+import processing.core.BitmapFontFactory;
 import processing.core.PApplet;
 
 /**

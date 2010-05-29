@@ -71,14 +71,18 @@ public class BitmapFontCharacter extends MTRectangle implements IFontCharacter {
 		this.setNoStroke(true); 
 		this.setPickable(false);
 		
+//		this.setFillDrawMode(GL.GL_QUADS);//FIXME TEST
+		
 		if (MT4jSettings.getInstance().isOpenGlMode()){
 			//Set the texture to be non-repeating but clamping to the border to avoid artefacts
 			PImage tex = this.getTexture();
 			if (tex instanceof GLTexture) {
 				GLTexture glTex = (GLTexture) tex;
-//				glTex.setWrap(GL.GL_CLAMP, GL.GL_CLAMP);
+				glTex.setWrap(GL.GL_CLAMP, GL.GL_CLAMP);
 //				glTex.setWrap(GL.GL_REPEAT, GL.GL_REPEAT);
-				glTex.setWrap(GL.GL_CLAMP_TO_BORDER, GL.GL_CLAMP_TO_BORDER); //use!
+//				glTex.setWrap(GL.GL_REPEAT, GL.GL_CLAMP_TO_BORDER); 
+//				glTex.setWrap(GL.GL_CLAMP_TO_BORDER, GL.GL_CLAMP_TO_BORDER); //use!
+				
 				
 //				glTex.setFilter(GL.GL_LINEAR_MIPMAP_LINEAR, GL.GL_LINEAR); 
 //				glTex.setFilter(GL.GL_NEAREST_MIPMAP_NEAREST, GL.GL_NEAREST);
