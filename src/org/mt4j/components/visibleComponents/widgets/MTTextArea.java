@@ -80,19 +80,22 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
 	/** The caret width. */
 	private float caretWidth;
 
-	private float innerPadding;
+	private float innerPaddingTop;
+	private float innerPaddingLeft;
 	
 	private float totalScrollTextX;
 	private float totalScrollTextY;
 	
-	//TODO create mode : expand vertically but do word wrap horizontally
+	//TODO set font color on the fly
 	//TODO different font sizes in one textarea?
+	//TODO save original characterList and the one with added control characters -> but how to know which was added artificially?? when removing last one for example!
+	//TODO (create mode : expand vertically but do word wrap horizontally?)
+	//FIXME ACTUALLY WE HAVE TO RESET THE ORIGINAL TEXT AT setInnerPadding() BECAUSE WE BREAK THE LINE AT DIFFERENT POSITIONS IF THE INNERPADDING IS CHANGED!
 	
 	private static final int MODE_EXPAND = 0;
 	private static final int MODE_WRAP = 1;
 	
 	private int mode;
-	
 	
 	/**
 	 * Instantiates a new mT text area. 
@@ -177,7 +180,8 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
 		fontHeight = font.getFontAbsoluteHeight();
 		
 		caretWidth = 0; 
-		innerPadding = 5;
+		innerPaddingTop = 5f;
+		innerPaddingLeft = 5f;
 		
 		showCaret 	= false;
 		enableCaret = false;
@@ -217,6 +221,7 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
 	public void preDraw(PGraphics graphics) {
 		super.preDraw(graphics);
 		
+		//Hack for drawing anti aliased stroke outline over the clipped area
 		noStrokeSettingSaved = this.isNoStroke();
 		if (this.mode == MODE_WRAP && this.getClip() != null && !this.isNoStroke()){
 			this.setNoStroke(true);	
@@ -236,9 +241,24 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
 		int charListSize = characterList.size();
 		
 		float thisLineTotalXAdvancement = 0;
-		float lastXAdvancement = innerPadding;
+		float lastXAdvancement = innerPaddingLeft;
+
+		//Account for TOP inner padding if using WRAP mode -> translate text
+		switch (this.mode) {
+		case MODE_EXPAND:
+			//Dont need to translate for innerpadding TOP because we do that in setHeight() making the whole textarea bigger
+			break;
+		case MODE_WRAP:
+			//Need to translate innerpadding TOP because we shouldnt make the textarea bigger like in expand mode
+			g.pushMatrix();
+			g.translate(0, innerPaddingTop);
+			break;
+		default:
+			break;
+		}
+		
 //		/*//
-		//To set caret at start pos when charlist empty
+		//To set caret at most left start pos when charlist empty (looks better)
 		if (enableCaret && showCaret && charListSize == 1){
 			lastXAdvancement = 0;
 		}
@@ -246,9 +266,8 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
 		
 		if (this.isUseDirectGL()){
 			GL gl = Tools3D.beginGL(pa);
-			
-			gl.glPushMatrix(); //FIXME TEST
-			gl.glTranslatef(totalScrollTextX, totalScrollTextY, 0);//FIXME TEST
+			gl.glPushMatrix(); //FIXME TEST text scrolling 
+			gl.glTranslatef(totalScrollTextX, totalScrollTextY, 0);
 			
 			for (int i = 0; i < charListSize; i++) {
 				IFontCharacter character = characterList.get(i);
@@ -265,15 +284,15 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
 				if (character.getUnicode().equals("\n")){
 					gl.glTranslatef(-thisLineTotalXAdvancement, fontHeight, 0);
 					thisLineTotalXAdvancement = 0;
-					lastXAdvancement = innerPadding;
+					lastXAdvancement = innerPaddingLeft;
 				}else{
 					//If caret is showing and we are at index one before caret calc the advancement to include the caret in the text area
 					if (enableCaret && showCaret && i == charListSize-2){
 						if (character.getUnicode().equals("\t")){
-							lastXAdvancement = character.getHorizontalDist() - character.getHorizontalDist()/20;
+							lastXAdvancement = character.getHorizontalDist() - character.getHorizontalDist() / 20;
 						}else{
 							//approximated value, cant get the real one
-							lastXAdvancement = 2+character.getHorizontalDist() - (character.getHorizontalDist()/3);
+							lastXAdvancement = 2 + character.getHorizontalDist() - (character.getHorizontalDist() / 3);
 						}
 					}else{
 						lastXAdvancement = character.getHorizontalDist();
@@ -281,13 +300,13 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
 				}
 			}
 			
-			gl.glPopMatrix(); //FIXME TEST
+			gl.glPopMatrix(); //FIXME TEST text scrolling - but IMHO better done with parent list/scroll container
 			
 			Tools3D.endGL(pa);
 		}
 		else{ //P3D rendering
-			g.pushMatrix(); //FIXME TEST
-			g.translate(totalScrollTextX, totalScrollTextY, 0);//FIXME TEST
+			g.pushMatrix(); //FIXME TEST text scrolling - but IMHO better done with parent list/scroll container
+			g.translate(totalScrollTextX, totalScrollTextY, 0);
 			
 			for (int i = 0; i < charListSize; i++) {
 				IFontCharacter character = characterList.get(i);
@@ -304,22 +323,34 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
 				if (character.getUnicode().equals("\n")){
 					pa.translate(-thisLineTotalXAdvancement, fontHeight, 0);
 					thisLineTotalXAdvancement = 0;
-					lastXAdvancement = innerPadding;
+					lastXAdvancement = innerPaddingLeft;
 				}else{
 					//If caret is showing and we are at index one before caret calc the advancement
-					if (enableCaret && showCaret && i == charListSize-2){
+					if (enableCaret && showCaret && i == charListSize - 2){
 						if (character.getUnicode().equals("\t")){
-							lastXAdvancement = character.getHorizontalDist() - character.getHorizontalDist()/20;
+							lastXAdvancement = character.getHorizontalDist() - character.getHorizontalDist( ) / 20;
 						}else{
 							//approximated value, cant get the real one
-							lastXAdvancement = 2+character.getHorizontalDist() - (character.getHorizontalDist()/3);
+							lastXAdvancement = 2 + character.getHorizontalDist() - (character.getHorizontalDist() / 3);
 						}
 					}else{
 						lastXAdvancement = character.getHorizontalDist();
 					}
 				}
 			}
+			g.popMatrix();//FIXME TEST text scrolling - but IMHO better done with parent list/scroll container
+		}
+		
+		//FIXME TEST //Innerpadding TOP for wrapped textarea -> translates the text content downwards
+		switch (this.mode) {
+		case MODE_EXPAND:
+			break;
+		case MODE_WRAP:
+			//Need to translate innerpadding because we shouldnt make the textarea bigger
 			g.popMatrix();
+			break;
+		default:
+			break;
 		}
 		
 		//remove caret
@@ -334,6 +365,7 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
 	@Override
 	public void postDraw(PGraphics graphics) {
 		super.postDraw(graphics);
+		//Hack for drawing anti aliased stroke outline over the clipped area
 		if (this.mode == MODE_WRAP && this.getClip()!= null && !noStrokeSettingSaved){
 			this.setNoStroke(noStrokeSettingSaved);
 			boolean noFillSavedSetting = this.isNoFill();
@@ -343,7 +375,7 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
 		}
 	}
 	
-	//FIXME TEST
+	//FIXME TEST scrolling (used in MTTextField for example)
 	protected void scrollTextX(float amount){
 		this.totalScrollTextX += amount;
 	}
@@ -372,16 +404,14 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
 	 * @param scalable the new bitmap font scalable
 	 */
 	public void setBitmapFontTextureFiltered(boolean scalable){
-		if (MT4jSettings.getInstance().isOpenGlMode()){
-			if (this.getFont() instanceof BitmapFont){
-				BitmapFont font = (BitmapFont)this.getFont();
-				IFontCharacter[] characters = font.getCharacters();
-				for (int i = 0; i < characters.length; i++) {
-					IFontCharacter fontCharacter = characters[i];
-					if (fontCharacter instanceof BitmapFontCharacter) {
-						BitmapFontCharacter bChar = (BitmapFontCharacter) fontCharacter;
-						bChar.setTextureFiltered(scalable);
-					}
+		if (MT4jSettings.getInstance().isOpenGlMode() && this.getFont() instanceof BitmapFont){
+			BitmapFont font = (BitmapFont)this.getFont();
+			IFontCharacter[] characters = font.getCharacters();
+			for (int i = 0; i < characters.length; i++) {
+				IFontCharacter fontCharacter = characters[i];
+				if (fontCharacter instanceof BitmapFontCharacter) {
+					BitmapFontCharacter bChar = (BitmapFontCharacter) fontCharacter;
+					bChar.setTextureFiltered(scalable);
 				}
 			}
 		}
@@ -432,15 +462,35 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
 	 */
 	@Override
 	public void setWidthLocal(float width){
-		Vertex[] v = this.getVerticesLocal();
-		MTColor c = this.getFillColor();
-		this.setVertices(
-				new Vertex[]{
-						v[0], 
-						new Vertex(width, v[1].getY(), v[1].getZ(), c.getR(), c.getG(), c.getB(), c.getAlpha()), 
-						new Vertex(width, v[2].getY(), v[2].getZ(), c.getR(), c.getG(), c.getB(), c.getAlpha()), 
-						v[3], 
-						v[4]});
+		super.setWidthLocal(width);
+//				Vertex[] v = this.getVerticesLocal();
+//				MTColor c = this.getFillColor();
+//				this.setVertices(
+//						new Vertex[]{
+//								v[0], 
+//								new Vertex(width, v[1].getY(), v[1].getZ(), c.getR(), c.getG(), c.getB(), c.getAlpha()), 
+//								new Vertex(width, v[2].getY(), v[2].getZ(), c.getR(), c.getG(), c.getB(), c.getAlpha()), 
+//								v[3], 
+//								v[4]});
+
+		switch (this.mode) {
+		case MODE_EXPAND:
+			
+			break;
+		case MODE_WRAP:
+			//if in MODE_WRAP also reset the size of the CLIP SHAPE!
+			if (MT4jSettings.getInstance().isOpenGlMode() && this.getClip() != null && this.getClip().getClipShape() instanceof MTRectangle){ 
+				MTRectangle clipRect = (MTRectangle)this.getClip().getClipShape();
+				//				clipRect.setWidthLocal(this.getWidthXY(TransformSpace.LOCAL));
+				//Clip the text to the area
+				//				this.setClip(new Clip(pApplet, this.getVerticesLocal()[0].x, this.getVerticesLocal()[0].y, this.getWidthXY(TransformSpace.LOCAL), this.getHeightXY(TransformSpace.LOCAL)));
+				//				clipRect.setVertices(Vertex.getDeepVertexArrayCopy(this.getVerticesLocal()));
+				clipRect.setVertices(this.getVerticesLocal());
+			}
+			break;
+		default:
+			break;
+		}
 	}
 	/**
 	 * Sets the height local.
@@ -459,16 +509,58 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
 //						new Vertex(v[3].getX(), upperLeftLocal.y + height, v[3].getZ(), this.getFillRed(), this.getFillGreen(), this.getFillBlue(), this.getFillAlpha()),
 //						v[4]});
 		
-		this.setVertices(new Vertex[]{
-						new Vertex(v[0].x,	-font.getFontMaxAscent() - innerPadding, 		v[0].z, v[0].getTexCoordU(), v[0].getTexCoordV(), v[0].getR(), v[0].getG(), v[0].getB(), v[0].getA()), 
-						new Vertex(v[1].x, 	-font.getFontMaxAscent() - innerPadding, 		v[1].z, v[1].getTexCoordU(), v[1].getTexCoordV(), v[1].getR(), v[1].getG(), v[1].getB(), v[1].getA()), 
-						new Vertex(v[2].x, 	-font.getFontMaxAscent() - innerPadding + height + (2 * innerPadding), 	v[2].z, v[2].getTexCoordU(), v[2].getTexCoordV(), v[2].getR(), v[2].getG(), v[2].getB(), v[2].getA()), 
-						new Vertex(v[3].x,	-font.getFontMaxAscent() - innerPadding + height + (2 * innerPadding),	v[3].z, v[3].getTexCoordU(), v[3].getTexCoordV(), v[3].getR(), v[3].getG(), v[3].getB(), v[3].getA()), 
-						new Vertex(v[4].x,	-font.getFontMaxAscent() - innerPadding,			v[4].z, v[4].getTexCoordU(), v[4].getTexCoordV(), v[4].getR(), v[4].getG(), v[4].getB(), v[4].getA()), 
-		});
+		switch (this.mode) {
+		case MODE_EXPAND:
+			this.setVertices(new Vertex[]{
+					new Vertex(v[0].x,	-font.getFontMaxAscent() - innerPaddingTop, 		v[0].z, v[0].getTexCoordU(), v[0].getTexCoordV(), v[0].getR(), v[0].getG(), v[0].getB(), v[0].getA()), 
+					new Vertex(v[1].x, 	-font.getFontMaxAscent() - innerPaddingTop, 		v[1].z, v[1].getTexCoordU(), v[1].getTexCoordV(), v[1].getR(), v[1].getG(), v[1].getB(), v[1].getA()), 
+					new Vertex(v[2].x, 	-font.getFontMaxAscent() - innerPaddingTop + height + (2 * innerPaddingTop), 	v[2].z, v[2].getTexCoordU(), v[2].getTexCoordV(), v[2].getR(), v[2].getG(), v[2].getB(), v[2].getA()), 
+					new Vertex(v[3].x,	-font.getFontMaxAscent() - innerPaddingTop + height + (2 * innerPaddingTop),	v[3].z, v[3].getTexCoordU(), v[3].getTexCoordV(), v[3].getR(), v[3].getG(), v[3].getB(), v[3].getA()), 
+					new Vertex(v[4].x,	-font.getFontMaxAscent() - innerPaddingTop,			v[4].z, v[4].getTexCoordU(), v[4].getTexCoordV(), v[4].getR(), v[4].getG(), v[4].getB(), v[4].getA()), 
+			});
+			break;
+		case MODE_WRAP:
+			super.setHeightLocal(height);
+			//if in MODE_WRAP also reset the size of the CLIP SHAPE!
+			if (MT4jSettings.getInstance().isOpenGlMode() && this.getClip() != null && this.getClip().getClipShape() instanceof MTRectangle){ 
+				MTRectangle clipRect = (MTRectangle)this.getClip().getClipShape();
+				//				clipRect.setVertices(Vertex.getDeepVertexArrayCopy(this.getVerticesLocal()));
+				clipRect.setVertices(this.getVerticesLocal());
+			}
+			break;
+		default:
+			break;
+		}
 	}
 	
-	
+	@Override
+	public void setSizeLocal(float width, float height) {
+		if (width > 0 && height > 0){
+			Vertex[] v = this.getVerticesLocal();
+			switch (this.mode) {
+			case MODE_EXPAND:
+				this.setVertices(new Vertex[]{
+						new Vertex(v[0].x,			-font.getFontMaxAscent() - innerPaddingTop, 		v[0].z, v[0].getTexCoordU(), v[0].getTexCoordV(), v[0].getR(), v[0].getG(), v[0].getB(), v[0].getA()), 
+						new Vertex(v[0].x+width, 	-font.getFontMaxAscent() - innerPaddingTop, 		v[1].z, v[1].getTexCoordU(), v[1].getTexCoordV(), v[1].getR(), v[1].getG(), v[1].getB(), v[1].getA()), 
+						new Vertex(v[0].x+width, 	-font.getFontMaxAscent() - innerPaddingTop + height + (2 * innerPaddingTop), v[2].getTexCoordV(), v[2].getR(), v[2].getG(), v[2].getB(), v[2].getA()), 
+						new Vertex(v[3].x,			-font.getFontMaxAscent() - innerPaddingTop + height + (2 * innerPaddingTop),	v[3].z, v[3].getTexCoordU(), v[3].getTexCoordV(), v[3].getR(), v[3].getG(), v[3].getB(), v[3].getA()), 
+						new Vertex(v[4].x,			-font.getFontMaxAscent() - innerPaddingTop,			v[4].z, v[4].getTexCoordU(), v[4].getTexCoordV(), v[4].getR(), v[4].getG(), v[4].getB(), v[4].getA()), 
+				});
+				break;
+			case MODE_WRAP:
+				super.setSizeLocal(width, height);
+				//if in MODE_WRAP also reset the size of the CLIP SHAPE!
+				if (MT4jSettings.getInstance().isOpenGlMode() && this.getClip() != null && this.getClip().getClipShape() instanceof MTRectangle){ 
+					MTRectangle clipRect = (MTRectangle)this.getClip().getClipShape();
+					//clipRect.setVertices(Vertex.getDeepVertexArrayCopy(this.getVerticesLocal()));
+					clipRect.setVertices(this.getVerticesLocal());
+				}
+				break;
+			default:
+				break;
+			}
+		}
+	}
 	
 	
 	/**
@@ -496,22 +588,22 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
 	
 	
 	/* (non-Javadoc)
-	 * @see mTouch.components.visibleComponents.keyboard.ITextInputAcceptor#getText()
+	 * @see org.mt4j.components.visibleComponents.widgets.keyboard.ITextInputListener#getText()
 	 */
 	public String getText(){
 		String returnString = "";
 		for (Iterator<IFontCharacter> iter = this.characterList.iterator(); iter.hasNext();) {
 			IFontCharacter character = (IFontCharacter) iter.next();
 			String unicode = character.getUnicode();
-			if (unicode.equalsIgnoreCase("tab")){
-				returnString += "    ";
-			}
+//			if (unicode.equalsIgnoreCase("tab")){ //TODO why was this here? tab is handled with "\t" !
+//				returnString += "    ";
+//			}
 //			else if (unicode.equalsIgnoreCase("\n")){
 //				returnString += " ";
 //			}
-			else{
+//			else{
 				returnString += unicode;
-			}
+//			}
 		}
 		return returnString;
 	}
@@ -519,7 +611,6 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
 	
 	/**
 	 * Append char by name.
-	 * 
 	 * @param characterName the character name
 	 */
 	synchronized public void appendCharByName(String characterName){
@@ -538,7 +629,7 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
 	
 	
 	/* (non-Javadoc)
-	 * @see com.jMT.components.visibleComponents.keyboard.ITextInputAcceptor#appendCharByUnicode(java.lang.String)
+	 * @see org.mt4j.components.visibleComponents.widgets.keyboard.ITextInputListener#appendCharByUnicode(java.lang.String)
 	 */
 	synchronized public void appendCharByUnicode(String unicode){
 		//Get the character from the font
@@ -574,6 +665,11 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
 		this.characterAdded(character);
 	}
 	
+	/**
+	 * Invoked everytime a character is added.
+	 *
+	 * @param character the character
+	 */
 	protected void characterAdded(IFontCharacter character){
 		switch (this.mode) {
 		case MODE_EXPAND:
@@ -590,11 +686,22 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
 			break;
 		case MODE_WRAP:
 			float localWidth = this.getWidthXY(TransformSpace.LOCAL);
-//			float maxLineWidth = this.getMaxLineWidth(); //TODO last line width instead?
+//			float maxLineWidth = this.getMaxLineWidth(); 
 			float maxLineWidth = this.getLastLineWidth();
 			
-			if (maxLineWidth > localWidth  && this.characterList.size() > 0) {
-				this.characterList.add(this.characterList.size() -1 , this.font.getFontCharacterByUnicode("\n"));
+			if (this.characterList.size() > 0 && maxLineWidth > localWidth ) {
+//			if (this.characterList.size() > 0 && maxLineWidth > (localWidth - 2 * this.getInnerPaddingLeft())) {
+//				this.characterList.add(this.characterList.size() -1 , this.font.getFontCharacterByUnicode("\n"));
+				try {
+					int lastSpacePos = getLastWhiteSpace();
+					if (lastSpacePos != -1 ){ //&& !this.characterList.get(characterList.size()-1).getUnicode().equals("\n")
+						this.characterList.add(lastSpacePos + 1, this.font.getFontCharacterByUnicode("\n"));
+					}else{
+						return;
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 			}
 			break;
 		default:
@@ -602,6 +709,25 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
 		}
 	}
 	
+	
+	private int getLastWhiteSpace(){
+		for (int i = this.characterList.size()-1; i > 0; i--) {
+			IFontCharacter character = this.characterList.get(i);
+			if (character.getUnicode().equals(" ")){
+				return i;
+			}else if (character.getUnicode().equals("\n")){// stop search when newline found before first whitespace
+				return -1;
+			}
+		}
+		return -1;
+	}
+	
+	
+	/**
+	 * When Character removed.
+	 *
+	 * @param character the character
+	 */
 	protected void characterRemoved(IFontCharacter character){
 		switch (this.mode) {
 		case MODE_EXPAND:
@@ -650,11 +776,11 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
 	
 	
 	protected float getLastLineWidth(){
-		float currentLineWidth = 2 * this.getInnerPadding() + caretWidth;
+		float currentLineWidth = 2 * this.getInnerPaddingLeft() + caretWidth;
 		for (int i = 0; i < this.characterList.size(); i++) {
 			IFontCharacter character = this.characterList.get(i);
 			if (character.getUnicode().equals("\n")){
-				currentLineWidth = 2 * this.getInnerPadding() + caretWidth;; 
+				currentLineWidth = 2 * this.getInnerPaddingLeft() + caretWidth;; 
 			}else{
 				currentLineWidth += character.getHorizontalDist();
 			}
@@ -669,7 +795,7 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
 	 * @return the max line width
 	 */
 	protected float getMaxLineWidth(){
-		float currentLineWidth = 2 * this.getInnerPadding() + caretWidth;
+		float currentLineWidth = 2 * this.getInnerPaddingLeft() + caretWidth;
 		float maxWidth = currentLineWidth;
 		
 		for (int i = 0; i < this.characterList.size(); i++) {
@@ -679,7 +805,7 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
 				if (currentLineWidth > maxWidth){
 					maxWidth = currentLineWidth;
 				}
-				currentLineWidth = 2 * this.getInnerPadding() + caretWidth;
+				currentLineWidth = 2 * this.getInnerPaddingLeft() + caretWidth;
 			}else{
 				currentLineWidth += character.getHorizontalDist();
 				if (currentLineWidth > maxWidth){
@@ -708,14 +834,52 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
 	}
 	
 	
-	public float getInnerPadding(){
-		return this.innerPadding;
-	}
 	
 	public void setInnerPadding(float innerPadding){
-		this.innerPadding = innerPadding;
+		this.setInnerPaddingTop(innerPadding);
+		this.setInnerPaddingLeft(innerPadding);
 	}
-	
+
+	public float getInnerPaddingTop() {
+		return this.innerPaddingTop;
+	}
+
+	public void setInnerPaddingTop(float innerPaddingTop) {
+		this.innerPaddingTop = innerPaddingTop;
+		switch (this.mode) {
+		case MODE_EXPAND:
+			//At MODE_EXPAND we re-set the text so the size gets re-calculated
+			//We can safely do this since in EXPAND mode we didnt add any artificial control characters
+			this.setText(this.getText());
+			break;
+		case MODE_WRAP:
+			//At MODE_WRAP the padding is done with gl_Translate calls so we dont have to reset the size
+			break;
+		default:
+			break;
+		}
+	}
+
+	public float getInnerPaddingLeft() {
+		return this.innerPaddingLeft;
+	}
+
+	public void setInnerPaddingLeft(float innerPaddingLeft) {
+		this.innerPaddingLeft = innerPaddingLeft;
+		switch (this.mode) {
+		case MODE_EXPAND:
+			//At MODE_EXPAND we re-set the text so the size gets re-calculated
+			//We can safely do this since in EXPAND mode we didnt add any artificial control characters
+			this.setText(this.getText());
+			break;
+		case MODE_WRAP:
+			//At MODE_WRAP the padding is done with gl_Translate calls so we dont have to reset the size
+			//FIXME ACTUALLY WE HAVE TO RESET THE ORIGINAL TEXT BECAUSE WE BREAK THE LINE AT DIFFERENT POSITIONS IF THE INNERPADDING IS CHANGED!
+			break;
+		default:
+			break;
+		}
+	}
 
 
 	/**
@@ -758,20 +922,13 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
 	}
 
 
-	/* (non-Javadoc)
-	 * @see com.jMT.input.inputAnalyzers.clusterInputAnalyzer.IdragClusterable#isSelected()
-	 */
 	public boolean isSelected() {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.jMT.input.inputAnalyzers.clusterInputAnalyzer.IdragClusterable#setSelected(boolean)
-	 */
 	public void setSelected(boolean selected) {
 		// TODO Auto-generated method stub
-		
 	}
 
 

@@ -683,11 +683,11 @@ public class SVGLoader implements SVGConstants{
 									  //Calculate last/current textposition for DX and DY use
 									  //add up the last textareas start position end position(width)
 									  Vector3D lastPos = previousTextArea.getPosition(TransformSpace.LOCAL);
-									  newXPos = lastPos.x - previousTextArea.getInnerPadding();
+									  newXPos = lastPos.x - previousTextArea.getInnerPaddingLeft();
 									  newXPos += (Float)previousTextArea.getUserData("XPos");
 
 									  newYPos = lastPos.y;
-									  newYPos -= previousTextArea.getInnerPadding();
+									  newYPos -= previousTextArea.getInnerPaddingLeft();
 									  newYPos += fontToUse.getFontMaxDescent(); //FIXME WHY NEVESSARY?
 									  newYPos += (Float)previousTextArea.getUserData("YPos");
 									  previousTextArea.setAnchor(oldAnchor);
@@ -727,7 +727,7 @@ public class SVGLoader implements SVGConstants{
 								  switch (v.getStringValue().charAt(0)) {
 								  case 'e':
 									  t.setAnchor(PositionAnchor.LOWER_RIGHT);
-									  t.setUserData("posRelParent", new Vector3D(newXPos -t.getInnerPadding(), newYPos - fontToUse.getFontMaxDescent()  +  t.getInnerPadding() , 0));
+									  t.setUserData("posRelParent", new Vector3D(newXPos -t.getInnerPaddingLeft(), newYPos - fontToUse.getFontMaxDescent()  +  t.getInnerPaddingLeft() , 0));
 //									  t.setPositionRelativeToParent(new Vector3D(newXPos, newYPos - font.getFontMaxDescent() , 0));
 									  logger.debug("Character '" + currentChar + "' -> Anchor: LOWER_RIGHT");
 									  break;
@@ -739,7 +739,7 @@ public class SVGLoader implements SVGConstants{
 									  break;
 								  default:
 									  t.setAnchor(PositionAnchor.LOWER_LEFT);
-								  t.setUserData("posRelParent", new Vector3D(newXPos -t.getInnerPadding(), newYPos - fontToUse.getFontMaxDescent() + t.getInnerPadding() , 0));
+								  t.setUserData("posRelParent", new Vector3D(newXPos -t.getInnerPaddingLeft(), newYPos - fontToUse.getFontMaxDescent() + t.getInnerPaddingLeft() , 0));
 //								  t.setPositionRelativeToParent(new Vector3D(newXPos, newYPos - font.getFontMaxDescent() , 0));
 								  logger.debug("Character '" + currentChar + "' -> Anchor: LOWER_LEFT");
 								  }

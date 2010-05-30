@@ -44,7 +44,9 @@ public interface ITextInputListener {
 	public void setText(String text);
 	
 	/**
-	 * Gets the text.
+	 * Returns the text.
+	 * <br>NOTE: the text may be different from what was set using <code>setText()</code> since
+	 * the widget may add its own control characters into the text.
 	 * 
 	 * @return the text
 	 */

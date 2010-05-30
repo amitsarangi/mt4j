@@ -270,6 +270,7 @@ public class BitmapFontFactory implements IFontFactory {
 				
 				//Shift character image data down and right in the image because of aliasing artifacts at the border
 				//we need to compensate for this when displaying the char
+				//FIXME this creates far to big images..but because of artefacts needed..?
 				int topShiftAmount = 8;
 				int leftShiftAmount = 8;
 				

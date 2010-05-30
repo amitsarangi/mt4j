@@ -11,7 +11,6 @@ ToDo list:
 
 - remove logging from model loading -> consumes memory even if the logging level doesent match?
 - nice image for touch cursor
-- update to processing 1.1 -> bitmapfont working?
 - make standalone executable MT4j MTShell distribution/installer on windows
 - integrate with JNLP?
 - update to latest gsvideo
