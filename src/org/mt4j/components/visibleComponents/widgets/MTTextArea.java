@@ -88,14 +88,15 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
 	
 	//TODO set font color on the fly
 	//TODO different font sizes in one textarea?
-	//TODO save original characterList and the one with added control characters -> but how to know which was added artificially?? when removing last one for example!
 	//TODO (create mode : expand vertically but do word wrap horizontally?)
-	//FIXME ACTUALLY WE HAVE TO RESET THE ORIGINAL TEXT AT setInnerPadding() BECAUSE WE BREAK THE LINE AT DIFFERENT POSITIONS IF THE INNERPADDING IS CHANGED!
 	
 	private static final int MODE_EXPAND = 0;
 	private static final int MODE_WRAP = 1;
 	
 	private int mode;
+	
+	private static ArtificalLineBreak artificialLineBreak;
+	
 	
 	/**
 	 * Instantiates a new mT text area. 
@@ -181,7 +182,7 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
 		
 		caretWidth = 0; 
 		innerPaddingTop = 5f;
-		innerPaddingLeft = 5f;
+		innerPaddingLeft = 8f;
 		
 		showCaret 	= false;
 		enableCaret = false;
@@ -197,6 +198,10 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
 		
 		this.totalScrollTextX = 0.0f;
 		this.totalScrollTextY = 0.0f;
+		
+		if (artificialLineBreak == null){
+			artificialLineBreak = new ArtificalLineBreak();
+		}
 	}
 	
 	
@@ -487,6 +492,7 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
 				//				clipRect.setVertices(Vertex.getDeepVertexArrayCopy(this.getVerticesLocal()));
 				clipRect.setVertices(this.getVerticesLocal());
 			}
+			this.updateLayout();
 			break;
 		default:
 			break;
@@ -527,6 +533,7 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
 				//				clipRect.setVertices(Vertex.getDeepVertexArrayCopy(this.getVerticesLocal()));
 				clipRect.setVertices(this.getVerticesLocal());
 			}
+			this.updateLayout();
 			break;
 		default:
 			break;
@@ -555,6 +562,7 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
 					//clipRect.setVertices(Vertex.getDeepVertexArrayCopy(this.getVerticesLocal()));
 					clipRect.setVertices(this.getVerticesLocal());
 				}
+				this.updateLayout();
 				break;
 			default:
 				break;
@@ -602,8 +610,11 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
 //				returnString += " ";
 //			}
 //			else{
-				returnString += unicode;
+//				returnString += unicode;
 //			}
+			if (!character.equals(MTTextArea.artificialLineBreak)){
+				returnString += unicode;
+			}
 		}
 		return returnString;
 	}
@@ -646,7 +657,8 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
 	
 	
 	/**
-	 * Gets the characters.
+	 * Gets the characters. Also returns articifially added new line characters that were
+	 * added by the MTTextArea
 	 * @return the characters
 	 */
 	public IFontCharacter[] getCharacters(){
@@ -695,7 +707,8 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
 				try {
 					int lastSpacePos = getLastWhiteSpace();
 					if (lastSpacePos != -1 ){ //&& !this.characterList.get(characterList.size()-1).getUnicode().equals("\n")
-						this.characterList.add(lastSpacePos + 1, this.font.getFontCharacterByUnicode("\n"));
+//						this.characterList.add(lastSpacePos + 1, this.font.getFontCharacterByUnicode("\n"));
+						this.characterList.add(lastSpacePos + 1, MTTextArea.artificialLineBreak);
 					}else{
 						return;
 					}
@@ -775,6 +788,11 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
 	}
 	
 	
+	/**
+	 * Gets the last line width.
+	 *
+	 * @return the last line width
+	 */
 	protected float getLastLineWidth(){
 		float currentLineWidth = 2 * this.getInnerPaddingLeft() + caretWidth;
 		for (int i = 0; i < this.characterList.size(); i++) {
@@ -834,7 +852,6 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
 	}
 	
 	
-	
 	public void setInnerPadding(float innerPadding){
 		this.setInnerPaddingTop(innerPadding);
 		this.setInnerPaddingLeft(innerPadding);
@@ -850,10 +867,11 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
 		case MODE_EXPAND:
 			//At MODE_EXPAND we re-set the text so the size gets re-calculated
 			//We can safely do this since in EXPAND mode we didnt add any artificial control characters
-			this.setText(this.getText());
+			this.updateLayout();
 			break;
 		case MODE_WRAP:
 			//At MODE_WRAP the padding is done with gl_Translate calls so we dont have to reset the size
+			//TODO also reset? this.setText(this.getText());?
 			break;
 		default:
 			break;
@@ -870,15 +888,22 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
 		case MODE_EXPAND:
 			//At MODE_EXPAND we re-set the text so the size gets re-calculated
 			//We can safely do this since in EXPAND mode we didnt add any artificial control characters
-			this.setText(this.getText());
+			this.updateLayout();
 			break;
 		case MODE_WRAP:
-			//At MODE_WRAP the padding is done with gl_Translate calls so we dont have to reset the size
-			//FIXME ACTUALLY WE HAVE TO RESET THE ORIGINAL TEXT BECAUSE WE BREAK THE LINE AT DIFFERENT POSITIONS IF THE INNERPADDING IS CHANGED!
+			// WE HAVE TO RESET THE ORIGINAL TEXT BECAUSE WE BREAK THE LINE AT DIFFERENT POSITIONS IF THE INNERPADDING IS CHANGED!
+			this.updateLayout();
 			break;
 		default:
 			break;
 		}
+	}
+	
+	/**
+	 * Updates layout. (just does this.setText(this.getText()))
+	 */
+	protected void updateLayout(){
+		this.setText(this.getText());
 	}
 
 
@@ -972,6 +997,26 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
 			return this.getText().compareToIgnoreCase(ta.getText());
 		} else {
 			return 0;
+		}
+	}
+	
+	
+	
+	/**
+	 * Artifical line break to be used instead of the regular line break
+	 * to indicate that this linebreak was added by the text area itself for
+	 * layout reasons and doesent really belong to the supplied text.
+	 * 
+	 * @author Christopher Ruff
+	 */
+	private class ArtificalLineBreak implements IFontCharacter{
+		public void drawComponent(PGraphics g) {}
+		public void drawComponent(GL gl) {	}
+		public int getHorizontalDist() {
+			return 0;
+		}
+		public String getUnicode() {
+			return "\n";
 		}
 	}
 
