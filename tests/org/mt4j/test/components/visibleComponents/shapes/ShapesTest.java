@@ -135,5 +135,68 @@ public class ShapesTest extends AbstractWindowTestcase {
 			}
 		});
 	}
+	
+	
+	
+	public void testRectCenterPoint(){
+		runTest(new TestRunnable() {
+			@Override
+			public void runMTTestCode() {
+				MTRectangle rect1 = new MTRectangle(100, 100, 100, 200, 100, getMTApplication());
+				parent.addChild(rect1);
+				
+				//Check untransformed and not added to a parent
+				Vector3D expectedUntransformedCenter = new Vector3D(200, 150, 100);
+				Vector3D centerLocalR1 = rect1.getCenterPointLocal();
+				assertEquals(centerLocalR1, expectedUntransformedCenter);
+
+				Vector3D centerRelParentR1 = rect1.getCenterPointRelativeToParent();
+				assertEquals(centerRelParentR1, expectedUntransformedCenter);
+
+				Vector3D centerGlobalR1 = rect1.getCenterPointGlobal();
+				assertEquals(centerGlobalR1, expectedUntransformedCenter);
+
+
+				//Check with Transformed local matrix but not added to a parent
+				Vector3D transVect = new Vector3D(10,10,10);
+				rect1.translate(transVect, TransformSpace.LOCAL);
+
+				//Local center should not change
+				Vector3D centerLocal2 = rect1.getCenterPointLocal();
+				assertEquals(centerLocal2, expectedUntransformedCenter);
+
+				Vector3D expCenterRelP2 = new Vector3D(expectedUntransformedCenter.getAdded(transVect));
+				Vector3D centerRelParent2 = rect1.getCenterPointRelativeToParent();
+				assertEquals(centerRelParent2, expCenterRelP2);
+
+				Vector3D expCenterGlobal2 = expCenterRelP2;
+				Vector3D centerGlobal2 = rect1.getCenterPointGlobal();
+				assertEquals(centerGlobal2, expCenterGlobal2);
+			}
+		});
+
+	}
+	
+	
+	//TODO make subclasses returning different shapes for testing
+//	abstract AbstractShape createShape();
+	
+	public void assertEquals(Vector3D vec1, Vector3D vec2){
+		assertEquals("Vector3D check X equality", vec1.x, vec2.x);
+		assertEquals("Vector3D check Y equality", vec1.y, vec2.y);
+		assertEquals("Vector3D check Z equality", vec1.z, vec2.z);
+		assertEquals("Vector3D check W equality", vec1.w, vec2.w);
+		
+		/*
+		//Check with tolerance because of floating point math errors
+		assertTrue("Check X equality with tolerance:",  Math.abs(vec1.x - vec2.x) <= EPSILON);
+		assertTrue("Check Y equality with tolerance:",  Math.abs(vec1.y - vec2.y) <= EPSILON);
+		assertTrue("Check Z equality with tolerance:",  Math.abs(vec1.z - vec2.z) <= EPSILON);
+		assertTrue("Check W equality with tolerance:",  Math.abs(vec1.w - vec2.w) <= EPSILON);
+		*/
+	}
+	
+	public static float EPSILON =  1.1920928955078125E-7f;
+
 
 }

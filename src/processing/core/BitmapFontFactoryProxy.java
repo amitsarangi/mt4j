@@ -23,9 +23,9 @@ import processing.core.PFont.Glyph;
  * A factory for creating BitmapFont objects.
  * @author Christopher Ruff
  */
-public class BitmapFontFactory implements IFontFactory {
+public class BitmapFontFactoryProxy implements IFontFactory {
 	/** The Constant logger. */
-	private static final Logger logger = Logger.getLogger(BitmapFontFactory.class.getName());
+	private static final Logger logger = Logger.getLogger(BitmapFontFactoryProxy.class.getName());
 	static{
 //		logger.setLevel(Level.ERROR);
 //		logger.setLevel(Level.WARN);

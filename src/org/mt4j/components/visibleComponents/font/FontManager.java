@@ -23,13 +23,13 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Set;
 
+import org.mt4j.components.visibleComponents.font.fontFactories.BitmapFontFactory;
 import org.mt4j.components.visibleComponents.font.fontFactories.IFontFactory;
 import org.mt4j.components.visibleComponents.font.fontFactories.SvgFontFactory;
 import org.mt4j.components.visibleComponents.font.fontFactories.TTFontFactory;
 import org.mt4j.util.MT4jSettings;
 import org.mt4j.util.MTColor;
 
-import processing.core.BitmapFontFactory;
 import processing.core.PApplet;
 
 /**

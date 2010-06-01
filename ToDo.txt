@@ -1,6 +1,8 @@
 ToDo list:
 
 -> General:
+- processing.com post and bug report (font)
+- working with text tutorial
 - add setAnchor(Vector3D anchorPoint) for all AbstractShapes? -> use in set/getPosition() -> per default use centerpoint -> rotate(45) -> use anchor by default?
 - make gesture processor priorities float? (so flick could get 1.3f for example..how to differentiate between manipulations and gestures? )
 - add more stateChange events (e.g. transformed, globally position changed etc)
@@ -8,6 +10,7 @@ ToDo list:
 - add org.mt4jx -> new source folder? -> new project? -> integrate $ gesture processor
 - put get/setWidth/Height into AbstractShape? -> or even MTComponent?
 - more JUnit tests
+- compile Win7Touch.dll with VS 2008? -> Check if redistributable package is needed for running
 
 - remove logging from model loading -> consumes memory even if the logging level doesent match?
 - nice image for touch cursor
@@ -61,9 +64,7 @@ ToDo list:
 
 
 -> Components:
-- (try using absolute transformations (with anchor))
 - use layoutBounds (parent relative, axis aligned bounds)
-- 
 - geometry setColorBinding(BIND_PER_VERTEX)/BIND_SINGLE_COLOR to allow simple coloring using glColor()?
 - LayoutContainer/Manager
 - updateBounds/Layout() if childrens transform changes?
@@ -88,7 +89,7 @@ ToDo list:
 - (make mtmovieclip display the start frame at loading, nicen up ui, add pause button etc)
 - (periodically orthogonalize the local matrix?)
 - (combine appearance -> material, texture, smoothing, colors, lights etc)
-
+- (try using absolute transformations (with anchor))
 
 -> Online:
 - mention component state changes/listeners in component tutorial

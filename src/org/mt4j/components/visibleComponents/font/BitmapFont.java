@@ -29,7 +29,7 @@ import org.mt4j.components.MTComponent;
 import org.mt4j.components.visibleComponents.font.fontFactories.IFontFactory;
 import org.mt4j.util.MTColor;
 
-import processing.core.BitmapFontFactory;
+import processing.core.BitmapFontFactoryProxy;
 import processing.core.PApplet;
 
 /**
@@ -159,8 +159,8 @@ public class BitmapFont implements IFont {
 				&& fontFileName.length() > 0
 			){
 				IFontFactory fontFactory = FontManager.getInstance().getFactoryForFileSuffix("");
-				if (fontFactory != null && fontFactory instanceof BitmapFontFactory){
-					BitmapFontFactory bitmapFontFactory = (BitmapFontFactory)fontFactory;
+				if (fontFactory != null && fontFactory instanceof BitmapFontFactoryProxy){
+					BitmapFontFactoryProxy bitmapFontFactory = (BitmapFontFactoryProxy)fontFactory;
 					if (this.getCharacters().length > 0 && this.getCharacters()[0] != null && this.getCharacters()[0] instanceof MTComponent){
 						MTComponent comp = (MTComponent)this.getCharacters()[0];
 						PApplet pa = comp.getRenderer();
