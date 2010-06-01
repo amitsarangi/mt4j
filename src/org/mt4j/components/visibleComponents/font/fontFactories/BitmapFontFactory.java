@@ -25,7 +25,6 @@ import org.mt4j.util.MTColor;
 
 import processing.core.BitmapFontFactoryProxy;
 import processing.core.PApplet;
-import processing.core.PFont;
 
 /**
  * A factory for creating BitmapFont objects.
@@ -45,23 +44,6 @@ public class BitmapFontFactory implements IFontFactory {
 		return proxy.createFont(pa, fontFileName, fontSize, fillColor, strokeColor);
 	}
 
-	/**
-	 * Creates a new BitmapFont object.
-	 *
-	 * @param app the app
-	 * @param name the name
-	 * @param size the size
-	 * @param smooth the smooth
-	 * @param charset the charset
-	 * @return the p font
-	 */
-	public PFont createFont(PApplet app, String name, float size,
-			boolean smooth, char[] charset) {
-		if (proxy == null){
-			proxy = new BitmapFontFactoryProxy();
-		}
-		return proxy.createFont(app, name, size, smooth, charset);
-	}
 
 	/**
 	 * Gets the characters.

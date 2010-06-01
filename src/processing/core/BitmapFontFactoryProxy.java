@@ -1,7 +1,5 @@
 package processing.core;
 
-import java.awt.Font;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -321,68 +319,68 @@ public class BitmapFontFactoryProxy implements IFontFactory {
 	}
 	
 	
-	
-	  /**
-	   * Create a .vlw font on the fly from either a font name that's
-	   * installed on the system, or from a .ttf or .otf that's inside
-	   * the data folder of this sketch.
-	   * <P/>
-	   * Many .otf fonts don't seem to be supported by Java, perhaps because 
-	   * they're CFF based?
-	   * <P/>
-	   * Font names are inconsistent across platforms and Java versions.
-	   * On Mac OS X, Java 1.3 uses the font menu name of the font,
-	   * whereas Java 1.4 uses the PostScript name of the font. Java 1.4
-	   * on OS X will also accept the font menu name as well. On Windows,
-	   * it appears that only the menu names are used, no matter what
-	   * Java version is in use. Naming system unknown/untested for 1.5.
-	   * <P/>
-	   * Use 'null' for the charset if you want to dynamically create
-	   * character bitmaps only as they're needed. (Version 1.0.9 and
-	   * earlier would interpret null as all unicode characters.)
-	   */
-	  public PFont createFont(PApplet app, String name, float size,
-	                          boolean smooth, char charset[]) {
-	    String lowerName = name.toLowerCase();
-	    Font baseFont = null;
-
-	    try {
-	      InputStream stream = null;
-	      if (lowerName.endsWith(".otf") || lowerName.endsWith(".ttf")) {
-	        stream = app.createInput(name);
-	        if (stream == null) {
-	          System.err.println("The font \"" + name + "\" " +
-	                             "is missing or inaccessible, make sure " +
-	                             "the URL is valid or that the file has been " +
-	                             "added to your sketch and is readable.");
-	          return null;
-	        }
-	        baseFont = Font.createFont(Font.TRUETYPE_FONT, app.createInput(name));
-
-	      } else {
-	        baseFont = PFont.findFont(name);
-	      }
-	      return new PFont(baseFont.deriveFont(size), smooth, charset, 
-	                       stream != null);
-
-	    } catch (Exception e) {
-	      System.err.println("Problem createFont(" + name + ")");
-	      e.printStackTrace();
-	      return null;
-	    }
-	  }
-	  
-	 private class MYPFont extends PFont{
-		 
-		 public void getGlyphImage(){
-			 getGlyph('a');
-		 }
-		 
-		 public class bla extends PFont.Glyph{
-			 
-		 }
-		 
-	 }
+//	
+//	  /**
+//	   * Create a .vlw font on the fly from either a font name that's
+//	   * installed on the system, or from a .ttf or .otf that's inside
+//	   * the data folder of this sketch.
+//	   * <P/>
+//	   * Many .otf fonts don't seem to be supported by Java, perhaps because 
+//	   * they're CFF based?
+//	   * <P/>
+//	   * Font names are inconsistent across platforms and Java versions.
+//	   * On Mac OS X, Java 1.3 uses the font menu name of the font,
+//	   * whereas Java 1.4 uses the PostScript name of the font. Java 1.4
+//	   * on OS X will also accept the font menu name as well. On Windows,
+//	   * it appears that only the menu names are used, no matter what
+//	   * Java version is in use. Naming system unknown/untested for 1.5.
+//	   * <P/>
+//	   * Use 'null' for the charset if you want to dynamically create
+//	   * character bitmaps only as they're needed. (Version 1.0.9 and
+//	   * earlier would interpret null as all unicode characters.)
+//	   */
+//	  public PFont createFont(PApplet app, String name, float size,
+//	                          boolean smooth, char charset[]) {
+//	    String lowerName = name.toLowerCase();
+//	    Font baseFont = null;
+//
+//	    try {
+//	      InputStream stream = null;
+//	      if (lowerName.endsWith(".otf") || lowerName.endsWith(".ttf")) {
+//	        stream = app.createInput(name);
+//	        if (stream == null) {
+//	          System.err.println("The font \"" + name + "\" " +
+//	                             "is missing or inaccessible, make sure " +
+//	                             "the URL is valid or that the file has been " +
+//	                             "added to your sketch and is readable.");
+//	          return null;
+//	        }
+//	        baseFont = Font.createFont(Font.TRUETYPE_FONT, app.createInput(name));
+//
+//	      } else {
+//	        baseFont = PFont.findFont(name);
+//	      }
+//	      return new PFont(baseFont.deriveFont(size), smooth, charset, 
+//	                       stream != null);
+//
+//	    } catch (Exception e) {
+//	      System.err.println("Problem createFont(" + name + ")");
+//	      e.printStackTrace();
+//	      return null;
+//	    }
+//	  }
+//	  
+//	 private class MYPFont extends PFont{
+//		 
+//		 public void getGlyphImage(){
+//			 getGlyph('a');
+//		 }
+//		 
+//		 public class bla extends PFont.Glyph{
+//			 
+//		 }
+//		 
+//	 }
 
 
 }
