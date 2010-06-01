@@ -2,7 +2,7 @@ ToDo list:
 
 -> General:
 - add setAnchor(Vector3D anchorPoint) for all AbstractShapes? -> use in set/getPosition() -> per default use centerpoint -> rotate(45) -> use anchor by default?
-- make gesture processor priorities float? (so flick could get 1.3f for example..)
+- make gesture processor priorities float? (so flick could get 1.3f for example..how to differentiate between manipulations and gestures? )
 - add more stateChange events (e.g. transformed, globally position changed etc)
 - in boundingShapes -> calculate width/height screen or object aligned? -> rather object aligned..
 - add org.mt4jx -> new source folder? -> new project? -> integrate $ gesture processor

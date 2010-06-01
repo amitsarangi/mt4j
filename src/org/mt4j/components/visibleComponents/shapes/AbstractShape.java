@@ -211,26 +211,34 @@ public abstract class AbstractShape extends AbstractVisibleComponent {
 	}
 	*/
 	
+	
+	//FIXME TEST
+	public static boolean createDefaultGestures = true;
+	
 	/**
 	 * Assigns the default gesture to this component, drag, rotate, scale.
 	 * <br>Gets called in the constructor.
 	 * Can be overridden in subclasses to allow other/more default gestures.
 	 */
 	protected void setDefaultGestureActions(){
-		this.registerInputProcessor(new RotateProcessor(this.getRenderer()));
-		this.setGestureAllowance(RotateProcessor.class, true);
-//		this.addGestureListener(RotateProcessor.class, defaultRotateAction);
-		this.addGestureListener(RotateProcessor.class, new DefaultRotateAction());
-		
-		this.registerInputProcessor(new ScaleProcessor(this.getRenderer()));
-		this.setGestureAllowance(ScaleProcessor.class, true);
-//		this.addGestureListener(ScaleProcessor.class, defaultScaleAction);
-		this.addGestureListener(ScaleProcessor.class, new DefaultScaleAction());
-		
-		this.registerInputProcessor(new DragProcessor(this.getRenderer()));
-		this.setGestureAllowance(DragProcessor.class, true);
-//		this.addGestureListener(DragProcessor.class, defaultDragAction);
-		this.addGestureListener(DragProcessor.class, new DefaultDragAction());
+//		/*
+		if (createDefaultGestures){
+			this.registerInputProcessor(new RotateProcessor(this.getRenderer()));
+			this.setGestureAllowance(RotateProcessor.class, true);
+//			this.addGestureListener(RotateProcessor.class, defaultRotateAction);
+			this.addGestureListener(RotateProcessor.class, new DefaultRotateAction());
+			
+			this.registerInputProcessor(new ScaleProcessor(this.getRenderer()));
+			this.setGestureAllowance(ScaleProcessor.class, true);
+//			this.addGestureListener(ScaleProcessor.class, defaultScaleAction);
+			this.addGestureListener(ScaleProcessor.class, new DefaultScaleAction());
+			
+			this.registerInputProcessor(new DragProcessor(this.getRenderer()));
+			this.setGestureAllowance(DragProcessor.class, true);
+//			this.addGestureListener(DragProcessor.class, defaultDragAction);
+			this.addGestureListener(DragProcessor.class, new DefaultDragAction());
+		}
+//		*/
 	}
 	
 //////////////// BOUNDING STUFF ///////////////////////////////

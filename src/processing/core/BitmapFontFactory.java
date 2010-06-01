@@ -75,7 +75,7 @@ public class BitmapFontFactory implements IFontFactory {
 //		String fontFamily = f.getFamily(); 
 		//FIXME ascent() and descent() return to small values! wheres the difference??
 		int fontMaxAscent = Math.round(p5Font.ascent()* (fontSize));
-		fontMaxAscent +=fontSize/8f; //FIXME HACK! because the same ttf fonts seem to have bigger ascents
+		fontMaxAscent +=(float)fontSize/5.5f; //FIXME HACK! because the same ttf fonts seem to have bigger ascents
 //		int fontMaxAscent = p5Font.lazyMetrics.getAscent();
 		int fontMaxDescent = Math.round(p5Font.descent() * fontSize);
 		/*
