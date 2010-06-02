@@ -274,7 +274,7 @@ public class BitmapFontFactoryProxy implements IFontFactory {
 				
 //				PImage copy = new PImage(ToolsMath.nearestPowerOfTwo(charWidth + shiftAmount), ToolsMath.nearestPowerOfTwo(charHeight + shiftAmount), PImage.ARGB);
 //				
-				PImage copy = new PImage(ToolsMath.nearestPowerOfTwo(charImage.width + leftShiftAmount + 1), ToolsMath.nearestPowerOfTwo(charImage.height + topShiftAmount), PImage.ARGB);
+				PImage copy = new PImage(nextPowerOfTwo(charImage.width + leftShiftAmount + 1), nextPowerOfTwo(charImage.height + topShiftAmount), PImage.ARGB);
 //				PImage copy = new PImage(charImage.width + leftShiftAmount + 1, charImage.height + topShiftAmount, PImage.ARGB);
 				
 				copy.copy(charImage, 0, 0, charWidth, charHeight, leftShiftAmount, topShiftAmount, charWidth, charHeight);
@@ -318,7 +318,14 @@ public class BitmapFontFactoryProxy implements IFontFactory {
 		return bitMapCharacters;
 	}
 	
-	
+	private int nextPowerOfTwo(int val) {
+	      int ret = 1;
+	      while (ret < val) {
+	        ret <<= 1;
+	      }
+	      return ret;
+	    }
+
 //	
 //	  /**
 //	   * Create a .vlw font on the fly from either a font name that's
