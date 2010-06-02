@@ -194,7 +194,7 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
 		
 		//Draw this component and its children above 
 		//everything previously drawn and avoid z-fighting
-//		this.setDepthBufferDisabled(true);
+		this.setDepthBufferDisabled(true);
 		
 		this.totalScrollTextX = 0.0f;
 		this.totalScrollTextY = 0.0f;
