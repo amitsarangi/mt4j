@@ -78,8 +78,8 @@ public class BitmapFontCharacter extends MTRectangle implements IFontCharacter {
 			PImage tex = this.getTexture();
 			if (tex instanceof GLTexture) {
 				GLTexture glTex = (GLTexture) tex;
-				glTex.setWrap(GL.GL_CLAMP, GL.GL_CLAMP);
-//				glTex.setWrap(GL.GL_CLAMP_TO_EDGE, GL.GL_CLAMP_TO_EDGE);
+//				glTex.setWrap(GL.GL_CLAMP, GL.GL_CLAMP);
+				glTex.setWrap(GL.GL_CLAMP_TO_EDGE, GL.GL_CLAMP_TO_EDGE);
 //				glTex.setWrap(GL.GL_REPEAT, GL.GL_REPEAT);
 //				glTex.setWrap(GL.GL_REPEAT, GL.GL_CLAMP_TO_BORDER); 
 //				glTex.setWrap(GL.GL_CLAMP_TO_BORDER, GL.GL_CLAMP_TO_BORDER); //use!

@@ -55,7 +55,7 @@ public class StartSwingExample extends JFrame {
         
 		//Create our mt4j applet
         final MTApplication instance = new TestMTApplication();
-        instance.frame = this;
+        instance.frame = this; //Important for registering the Windows 7 Touch input
         instance.init();
         
         JPanel panel1 = new JPanel(new FlowLayout());

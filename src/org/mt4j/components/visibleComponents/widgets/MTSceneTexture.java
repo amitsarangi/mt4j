@@ -171,7 +171,7 @@ public class MTSceneTexture extends MTRectangle {
 			gl.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA); //Restore default blend mode //FIXME TEST -> neccessary?
 		
 		//FIXME NOT NEEDED!? sufficient to call glGenerateMipmapEXT at texture creation!? 
-		//I actually think its necessary to call each time after rendering to the texture! But lets see!
+		//TODO I actually think its necessary to call each time after rendering to the texture! But only for POT dimensions!?
 		/*
 		GLTexture tex = (GLTexture) this.getTexture();
 		gl.glBindTexture(tex.getTextureTarget(), tex.getTextureID());
