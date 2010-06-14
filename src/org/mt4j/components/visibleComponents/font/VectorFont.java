@@ -397,6 +397,19 @@ public class VectorFont implements IFont {
 	}
 
 
+	/* (non-Javadoc)
+	 * @see org.mt4j.components.visibleComponents.font.IFont#destroy()
+	 */
+	public void destroy() {
+		IFontCharacter[] characters = this.getCharacters();
+		for (int i = 0; i < characters.length; i++) {
+			IFontCharacter iFontCharacter = characters[i];
+			iFontCharacter.destroy();
+		}
+		FontManager.getInstance().removeFromCache(this);
+	}
+
+
 
 	
 

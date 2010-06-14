@@ -156,7 +156,10 @@ public class FontManager {
 				loadedFont = factoryToUse.createFont(pa, fontAbsoultePath, fontSize, fillColor, strokeColor);
 				fonts.add(loadedFont);
 				if (fonts.size() > CACHE_MAX_SIZE && !fonts.isEmpty()){
-					fonts.remove(0);
+					IFont removedFont = fonts.remove(0); //FIXME destroy font, too!
+					if (removedFont != null){
+						removedFont.destroy();
+					}
 				}
 			}else{
 				System.err.println("Couldnt find a appropriate font factory for: " + fontFileName + " Suffix: " + suffix);
@@ -307,6 +310,27 @@ public class FontManager {
 //				&& font1.getStrokeAlpha() 	== font2.getStrokeAlpha()
 				
 		);
+	}
+
+	/**
+	 * Removes the font from the cache.
+	 * <br><b>NOTE:</b> doesent destroy the font! To cleanly destroy a font AND remove it from
+	 * the fontmanager cache call <code>font.destroy()</code>.
+	 *
+	 * @param font the font
+	 * @return true, if successful
+	 */
+	public boolean removeFromCache(IFont font) {
+		int in = this.fonts.indexOf(font);
+		if (in != -1){
+			IFont removedFont = fonts.remove(in); 
+//			if (removedFont != null){ //DOESENT DESTROY THE FONT, font would get destroyed 2 times if font.destroy is called, which calls removeFromCache
+//				removedFont.destroy();
+//			}
+			return true;
+		}else{
+			return false;
+		}
 	}
 	
 

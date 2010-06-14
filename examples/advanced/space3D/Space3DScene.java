@@ -50,6 +50,11 @@ import org.mt4j.util.math.Tools3D;
 import org.mt4j.util.math.Vector3D;
 import org.mt4j.util.opengl.GLMaterial;
 import org.mt4j.util.opengl.GLTexture;
+import org.mt4j.util.opengl.GLTextureSettings;
+import org.mt4j.util.opengl.GLTexture.EXPANSION_FILTER;
+import org.mt4j.util.opengl.GLTexture.SHRINKAGE_FILTER;
+import org.mt4j.util.opengl.GLTexture.TEXTURE_TARGET;
+import org.mt4j.util.opengl.GLTexture.WRAP_MODE;
 
 
 public class Space3DScene extends AbstractScene {
@@ -100,7 +105,7 @@ public class Space3DScene extends AbstractScene {
 		earth.setMaterial(material);
 		earth.rotateX(earth.getCenterPointRelativeToParent(), -90);
 		earth.setTexture(new GLTexture(pa, System.getProperty("user.dir") + File.separator + "examples" + File.separator +"advanced"+ File.separator+ File.separator + "space3D"  + File.separator + "data" +  File.separator  +
-        		"worldMap.jpg"));
+        		"worldMap.jpg", new GLTextureSettings(TEXTURE_TARGET.TEXTURE_2D, SHRINKAGE_FILTER.Trilinear, EXPANSION_FILTER.Bilinear, WRAP_MODE.CLAMP_TO_EDGE, WRAP_MODE.CLAMP_TO_EDGE)));
         earth.generateAndUseDisplayLists();
         earth.setPositionGlobal(new Vector3D(pa.width/2f, pa.height/2f, 250)); //earth.setPositionGlobal(new Vector3D(200, 200, 250));
         //Animate earth rotation
@@ -130,13 +135,12 @@ public class Space3DScene extends AbstractScene {
 		this.getCanvas().addChild(group);
         group.addChild(earth);
         
-        
         //Create the moon
         final MTSphere moonSphere = new MTSphere(pa, "moon", 35, 35, 25, TextureMode.Polar);
        	moonSphere.setMaterial(material);
         moonSphere.translate(new Vector3D(earth.getRadius() + moonSphere.getRadius() + 50, 0,0));
         moonSphere.setTexture(new GLTexture(pa, System.getProperty("user.dir") + File.separator + "examples" + File.separator +"advanced"+ File.separator+ File.separator + "space3D"  + File.separator + "data" +  File.separator  + 
-        		"moonmap1k.jpg"));
+        		"moonmap1k.jpg", new GLTextureSettings(TEXTURE_TARGET.RECTANGULAR, SHRINKAGE_FILTER.BilinearNoMipMaps, EXPANSION_FILTER.Bilinear, WRAP_MODE.CLAMP_TO_EDGE, WRAP_MODE.CLAMP_TO_EDGE)));
         moonSphere.generateAndUseDisplayLists();
         moonSphere.unregisterAllInputProcessors();
         //Rotate the moon around the earth

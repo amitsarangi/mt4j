@@ -157,8 +157,9 @@ class ObjectFileMaterials implements ImageObserver {
         				tex.mask(alphaMap);
             			
             			if (tex instanceof GLTexture) {
-    						GLTexture glTex = (GLTexture) tex;
-    						glTex.putPixelsIntoTexture(tex);
+            				GLTexture glTex = (GLTexture) tex;
+//    						glTex.putPixelsIntoTexture(tex);
+            				glTex.loadGLTexture(tex);
     					}
         			}else{
         				//System.out.println("Alpha map isnt the same size as the texture for material: " + matName);

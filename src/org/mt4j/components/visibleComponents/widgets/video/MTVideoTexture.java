@@ -22,7 +22,6 @@ import org.mt4j.components.bounds.IBoundingShape;
 import org.mt4j.components.visibleComponents.shapes.MTRectangle;
 import org.mt4j.util.MT4jSettings;
 import org.mt4j.util.math.Vertex;
-import org.mt4j.util.opengl.GLConstants;
 import org.mt4j.util.opengl.GLTexture;
 
 import processing.core.PApplet;
@@ -134,7 +133,7 @@ MTRectangle
 			this.setSizeLocal(m.width, m.height);
 
 //			this.setTexture(null); //TO force to rescale of new texture coordianates to RECTANGLE (0..width)
-			this.setTexture(m);
+			this.setTexture(m); //FIXME this will call glGenTextures from NOT OPENGL THREAD! FIX THIS!
 			this.setTextureEnabled(true);
 			
 			//FIXME try to use PBO for pixel->texture transfer -> even slower??
@@ -168,12 +167,14 @@ MTRectangle
 						if (this.isUseDirectGL() && MT4jSettings.getInstance().isOpenGlMode()){
 							//Directly put the new frame buffer into the texture only if in openGL mode 
 							//without filling the PImage array of this objects texture and also not of the GSMovie PImage =>performance
-							((GLTexture)this.getTexture()).putBuffer(m.getMoviePixelsBuffer(),  GLConstants.TEX4, GLConstants.TEX_UBYTE);
+//							((MTTexture)this.getTexture()).putBuffer(m.getMoviePixelsBuffer(),  GLConstants.TEX4, GLConstants.TEX_UBYTE);
+							((GLTexture)this.getTexture()).updateGLTexture(m.getMoviePixelsBuffer());
 						}else{
 							//Fill the PImage with the new movieframe
 							//dont fill the openGL texture
 							m.read();
-							((GLTexture)this.getTexture()).putImageOnly(m);	
+//							((MTTexture)this.getTexture()).putImageOnly(m);	
+							((GLTexture)this.getTexture()).loadPImageTexture(m);
 						}
 					}else{
 						//Usually all textures should be GLTextures instances, but just to be sure..

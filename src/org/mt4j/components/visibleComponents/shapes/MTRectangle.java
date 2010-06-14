@@ -69,24 +69,48 @@ public class MTRectangle extends MTPolygon {
 	 */
 	public MTRectangle(PImage texture, PApplet applet) {
 		this(0 ,0 ,0, texture.width, texture.height, applet);
-		
-		//hm..this is for when we create textured rects in other threads
-		//, because when we init gl texture in other thread it breaks..
-		this.setUseDirectGL(false);
-		
-		//IF we are useing OpenGL, set useDirectGL to true 
-		//(=>creates OpenGL texture, draws with pure OpenGL commands)
-		//in our main thread.
-		if (MT4jSettings.getInstance().isOpenGlMode() && applet instanceof MTApplication){
-			MTApplication app = (MTApplication)applet;
-			app.invokeLater(new Runnable() {
-				public void run() {
-					if (!isUseDirectGL())
-						setUseDirectGL(true);
-				}
-			});
+
+		if (applet instanceof MTApplication) {
+			MTApplication app = (MTApplication) applet;
+			if (app.isRenderThreadCurrent()){
+				this.setUseDirectGL(true);
+			}
+		}else{
+			//hm..this is for when we create textured rects in other threads
+			//, because when we init gl texture in other thread it breaks..
+			this.setUseDirectGL(false);
+
+			//IF we are useing OpenGL, set useDirectGL to true 
+			//(=>creates OpenGL texture, draws with pure OpenGL commands)
+			//in our main thread.
+			if (MT4jSettings.getInstance().isOpenGlMode() && applet instanceof MTApplication){
+				MTApplication app = (MTApplication)applet;
+				app.invokeLater(new Runnable() {
+					public void run() {
+						if (!isUseDirectGL())
+							setUseDirectGL(true);
+					}
+				});
+			}
 		}
-		
+
+//		//hm..this is for when we create textured rects in other threads
+//		//, because when we init gl texture in other thread it breaks..
+//		this.setUseDirectGL(false);
+//
+//		//IF we are useing OpenGL, set useDirectGL to true 
+//		//(=>creates OpenGL texture, draws with pure OpenGL commands)
+//		//in our main thread.
+//		if (MT4jSettings.getInstance().isOpenGlMode() && applet instanceof MTApplication){
+//			MTApplication app = (MTApplication)applet;
+//			app.invokeLater(new Runnable() {
+//				public void run() {
+//					if (!isUseDirectGL())
+//						setUseDirectGL(true);
+//				}
+//			});
+//		}
+
 		this.setTexture(texture);
 		this.setTextureEnabled(true);
 	}

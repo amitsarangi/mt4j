@@ -35,9 +35,11 @@ import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 
 import org.mt4j.MTApplication;
-import org.mt4j.util.opengl.GLConstants;
+import org.mt4j.util.opengl.GLTextureSettings;
 import org.mt4j.util.opengl.GLTexture;
-import org.mt4j.util.opengl.GLTextureParameters;
+import org.mt4j.util.opengl.GLTexture.EXPANSION_FILTER;
+import org.mt4j.util.opengl.GLTexture.SHRINKAGE_FILTER;
+import org.mt4j.util.opengl.GLTexture.WRAP_MODE;
 
 import processing.core.PImage;
 
@@ -112,22 +114,46 @@ public class SwingTextureRenderer {
 //		compToDraw.dispatchEvent(me);
 		
 	//Create the texture
-//    notVisibleImage = new PImage(rectC.width, rectC.height);
-      GLTextureParameters tp = new GLTextureParameters();
-      tp.minFilter = GLConstants.LINEAR; //To avoid mipmapgeneration at each update
-//      tp.minFilter = GLConstants.LINEAR_MIPMAP_LINEAR; //For mip maps
-      tp.magFilter = GLConstants.LINEAR;
-      
+////    notVisibleImage = new PImage(rectC.width, rectC.height);
+//      GLTextureParameters tp = new GLTextureParameters();
+//      tp.minFilter = GLConstants.LINEAR; //To avoid mipmapgeneration at each update
+////      tp.minFilter = GLConstants.LINEAR_MIPMAP_LINEAR; //For mip maps
+//      tp.magFilter = GLConstants.LINEAR;
+//      
       final Rectangle rectC = SwingUtilities.getLocalBounds(compToDraw);
-      textureToRenderTo = new GLTexture(mtApp, rectC.width, rectC.height, tp, false);
-
-      //TODO check if we are in the rendering thread or not
+//      textureToRenderTo = new GLTexture(mtApp, rectC.width, rectC.height, tp, false);
+//
+//      //TODO check if we are in the rendering thread or not
+//      if (!mtApp.isRenderThreadCurrent()){
+//    	  mtApp.invokeLater(new Runnable() {
+//        	  public void run() {
+//        		  textureToRenderTo.initTexture(rectC.width, rectC.height);
+//        	  }
+//          });
+//      }
+      
+      GLTextureSettings ts = new GLTextureSettings();
+      ts.shrinkFilter = SHRINKAGE_FILTER.BilinearNoMipMaps;
+//      ts.shrinkFilter = SHRINKAGE_FILTER.Trilinear; //For better quality
+      ts.expansionFilter = EXPANSION_FILTER.Bilinear;
+      ts.wrappingHorizontal = WRAP_MODE.CLAMP_TO_EDGE;
+      ts.wrappingVertical = WRAP_MODE.CLAMP_TO_EDGE;
+     
+      textureToRenderTo = new GLTexture(mtApp, ts);
+//      textureToRenderTo = new MTTexture(mtApp, rectC.width, rectC.height, ts); //This would also init the gl texture 
+      textureToRenderTo.width = rectC.width; //So that tex coords of shape get scaled correctly 
+      textureToRenderTo.height = rectC.height;
+      
       if (!mtApp.isRenderThreadCurrent()){
     	  mtApp.invokeLater(new Runnable() {
         	  public void run() {
-        		  textureToRenderTo.initTexture(rectC.width, rectC.height);
+//        		  textureToRenderTo.initTexture(rectC.width, rectC.height);
+        		  textureToRenderTo.setupGLTexture(rectC.width, rectC.height);
         	  }
           });
+      }else{
+//    	  textureToRenderTo.initTexture(rectC.width, rectC.height);
+    	  textureToRenderTo.setupGLTexture(rectC.width, rectC.height);
       }
      
 //    this.scheduleRefresh(); //ENABLE?
@@ -274,9 +300,11 @@ public class SwingTextureRenderer {
 		mtApp.invokeLater(new Runnable() {
 			//@Override
 			public void run() {
-				textureToRenderTo.putPixelsIntoTexture(tempImage); //OpenGL
+//				textureToRenderTo.putPixelsIntoTexture(tempImage); //OpenGL
 //				textureToRenderTo.putImage(tempImage); //SLOWER but also fills the PImage pixels[] with the image
 				//firePaintOccurred();
+				textureToRenderTo.loadGLTexture(tempImage); //OpenGL
+				
 			}
 		});
 		return img;  

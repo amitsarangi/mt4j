@@ -104,6 +104,9 @@ public class GeometryInfo {
 	private boolean useVertexColorsAsOutline;
 	
 	
+	private boolean textureCoordsNormalized = true;
+	
+	
 //	public static enum type
 	
 	//TODO in displaylists auch die normalen berücksichtigen (v.a. für licht)
@@ -1052,5 +1055,13 @@ public class GeometryInfo {
 	 */
 	public PApplet getRenderer(){
 		return this.r;
+	}
+
+	public boolean isTextureCoordsNormalized() {
+		return this.textureCoordsNormalized;
+	}
+	
+	public void setTextureCoordsNormalized(boolean normalized){
+		this.textureCoordsNormalized = normalized;
 	}
 }

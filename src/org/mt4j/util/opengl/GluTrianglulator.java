@@ -51,6 +51,12 @@ public class GluTrianglulator extends GLUtessellatorCallbackAdapter{
        /** The p. */
        private PApplet p;
        
+       public static final int WINDING_RULE_ABS_GEQ_TWO = GLU.GLU_TESS_WINDING_ABS_GEQ_TWO;
+       public static final int WINDING_RULE_NEGATIVE = GLU.GLU_TESS_WINDING_NEGATIVE;
+       public static final int WINDING_RULE_NONZERO = GLU.GLU_TESS_WINDING_NONZERO;
+       public static final int WINDING_RULE_ODD = GLU.GLU_TESS_WINDING_ODD;
+       public static final int WINDING_RULE_POSITIVE = GLU.GLU_TESS_WINDING_POSITIVE;
+       
        
        /**
         * Creates a new GLU tesselator object and defines callback methods, which the
@@ -96,8 +102,35 @@ public class GluTrianglulator extends GLUtessellatorCallbackAdapter{
     	glu.gluDeleteTess(tesselator);
     	tesselator = null;
     }
+    
+    
+    /**
+     * Triangulates the given vertex arrays and creates a single triangle mesh.
+     * 
+     * @param contours the contours
+     * @param windingRule the winding rule
+     * 
+     * @return the MT triangle mesh
+     */
+    public MTTriangleMesh toTriangleMesh(Vertex[] contours){
+    	List<Vertex[]> contoursList = new ArrayList<Vertex[]>();
+    	contoursList.add(contours);
+    	return this.toTriangleMesh(contoursList, WINDING_RULE_ODD);
+    }
+    
+    /**
+     * Triangulates the given vertex arrays and creates a single triangle mesh.
+     * 
+     * @param contours the contours
+     * @param windingRule the winding rule
+     * 
+     * @return the MT triangle mesh
+     */
+    public MTTriangleMesh toTriangleMesh(List<Vertex[]> contours){
+    	return this.toTriangleMesh(contours, WINDING_RULE_ODD);
+    }
 
-       /**
+    /**
         * Triangulates the given vertex arrays and creates a single triangle mesh.
         * 
         * @param contours the contours
@@ -115,7 +148,30 @@ public class GluTrianglulator extends GLUtessellatorCallbackAdapter{
     	   return mesh;
        }
        
-       
+	    /**
+   	 * Tesselate.
+   	 * 
+   	 * @param contours the contours
+   	 * 
+   	 * @return the list< vertex>
+   	 */
+   	public List<Vertex> tesselate(List<Vertex[]> contours){
+   		this.triList.clear();
+	    	this.tesselate(contours, GLU.GLU_TESS_WINDING_ODD);
+	    	return this.getTriList();
+	    }
+   	
+   	
+   	
+   	public Vertex[] tesselate(Vertex[] contour){
+		this.triList.clear();
+    	List<Vertex[]> v = new ArrayList<Vertex[]>();
+    	v.add(contour);
+    	this.tesselate(v, WINDING_RULE_ODD);
+    	return this.getTriList().toArray(new Vertex[this.getTriList().size()]);
+    }
+   	
+   	
 	    /**
     	 * Tesselates/triangulates the given contours with the given
     	 * winding rule (ie. GLU.GLU_TESS_WINDING_ODD).
@@ -132,20 +188,8 @@ public class GluTrianglulator extends GLUtessellatorCallbackAdapter{
 	    	this.tesselate(v, windingRule);
 	    	return this.getTriList();
 	    }
+    	
 	   	
-	   	
-	    /**
-    	 * Tesselate.
-    	 * 
-    	 * @param contours the contours
-    	 * 
-    	 * @return the list< vertex>
-    	 */
-    	public List<Vertex> tesselate(List<Vertex[]> contours){
-    		this.triList.clear();
-	    	this.tesselate(contours, GLU.GLU_TESS_WINDING_ODD);
-	    	return this.getTriList();
-	    }
 	    
 	    /**
     	 * Triangulates the given vertex contours and returns a list of triangles.

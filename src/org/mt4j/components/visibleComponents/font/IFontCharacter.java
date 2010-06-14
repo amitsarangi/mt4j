@@ -58,4 +58,10 @@ public interface IFontCharacter {
 	 * the distance advancement
 	 */
 	public int getHorizontalDist();
+	
+	
+	/**
+	 * Destroys the character and its used resources.
+	 */
+	public void destroy();
 }

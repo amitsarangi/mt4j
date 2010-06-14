@@ -121,4 +121,10 @@ public interface IFont {
 	 * @return the stroke color
 	 */
 	public MTColor getStrokeColor();
+	
+	
+	/**
+	 * Destroys the font's characters and removes it from the FontManager's cache.
+	 */
+	public void destroy();
 }

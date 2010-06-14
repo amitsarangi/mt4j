@@ -102,13 +102,13 @@ public class MTSceneTexture extends MTRectangle {
 		//Apply the texture to this component
 		this.setTexture(tex);
 		
-		//Scale texture coords if using TEXTURE_RECTANGLE_ARB extension
-		if (!Tools3D.isPowerOfTwoDimension(tex)){
-			Tools3D.scaleTextureCoordsForRectModeFromNormalized(tex, this.getGeometryInfo().getVertices());
-			this.setTextureMode(PConstants.IMAGE);
-			//Update the texture buffer!
-			this.getGeometryInfo().updateTextureBuffer(this.isUseVBOs());
-		}
+//		//Scale texture coords if using TEXTURE_RECTANGLE_ARB extension
+//		if (!Tools3D.isPowerOfTwoDimension(tex)){
+//			Tools3D.scaleTextureCoordsForRectModeFromNormalized(tex, this.getGeometryInfo().getVertices());
+//			this.setTextureMode(PConstants.IMAGE);
+//			//Update the texture buffer!
+//			this.getGeometryInfo().updateTextureBuffer(this.isUseVBOs());
+//		}
 		
 		//REMOVE?
 		this.setUseDirectGL(true);

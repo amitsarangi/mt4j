@@ -160,7 +160,7 @@ public class MTEllipse extends MTPolygon {
 			
 			verts[i] = new Vertex(x, y, centerPoint.z, fillColor.getR(), fillColor.getG(), fillColor.getB(), fillColor.getAlpha());
 		}
-		verts[verts.length-1] = verts[0];
+		verts[verts.length-1] = (Vertex) verts[0].getCopy(); //NEED TO USE COPY BECAUSE TEX COORDS MAY GET SCALED DOUBLE IF SAME VERTEX OBJECT!
 //		System.out.println("Points: " + verts.length);
 		
 		//Create tex coords
@@ -172,7 +172,7 @@ public class MTEllipse extends MTPolygon {
 			Vertex vertex = verts[i];
 			vertex.setTexCoordU((vertex.x-upperLeftX)/width);
 			vertex.setTexCoordV((vertex.y-upperLeftY)/height);
-			//System.out.println("TexU:" + vertex.getTexCoordU() + " TexV:" + vertex.getTexCoordV());
+//			System.out.println("TexU:" + vertex.getTexCoordU() + " TexV:" + vertex.getTexCoordV());
 		}
 		
 		return verts;

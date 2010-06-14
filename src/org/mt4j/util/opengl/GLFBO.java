@@ -30,6 +30,10 @@ import org.apache.log4j.SimpleLayout;
 import org.mt4j.util.math.Tools3D;
 import org.mt4j.util.math.ToolsBuffers;
 import org.mt4j.util.math.ToolsMath;
+import org.mt4j.util.opengl.GLTexture.EXPANSION_FILTER;
+import org.mt4j.util.opengl.GLTexture.SHRINKAGE_FILTER;
+import org.mt4j.util.opengl.GLTexture.TEXTURE_TARGET;
+import org.mt4j.util.opengl.GLTexture.WRAP_MODE;
 
 import processing.core.PApplet;
 import processing.opengl.PGraphicsOpenGL;
@@ -180,43 +184,54 @@ public class GLFBO {
 
 		boolean isPowerOfTwoDimension = ToolsMath.isPowerOfTwo(this.width) && ToolsMath.isPowerOfTwo(this.height);
 		
-		GLTextureParameters tp = new GLTextureParameters();
+		GLTextureSettings texSettings = new GLTextureSettings();
+		texSettings.wrappingHorizontal = WRAP_MODE.CLAMP_TO_EDGE;
+		texSettings.wrappingVertical = WRAP_MODE.CLAMP_TO_EDGE;
+		texSettings.shrinkFilter = SHRINKAGE_FILTER.BilinearNoMipMaps;
+		texSettings.expansionFilter = EXPANSION_FILTER.Bilinear;
 		
-		//Set texture FILTER MODE
-//		tp.minFilter = GLTextureParameters.LINEAR_MIPMAP_LINEAR;
-//		tp.minFilter = GLTextureParameters.LINEAR_MIPMAP_NEAREST;
-		tp.minFilter = GLTextureParameters.LINEAR;
-//		tp.minFilter = GLTextureParameters.NEAREST;
-//		if (useMipMap)
-//			tp.minFilter = GLTextureParameters.LINEAR_MIPMAP_NEAREST; //Seems to not display the fbo texture when POT
-//		else{
-//			tp.minFilter = GLTextureParameters.LINEAR;			
-//		}
-		tp.magFilter = GLTextureParameters.LINEAR;	
-		
-		//Set texture WRAP MODE
-		tp.wrap_s = GL.GL_CLAMP_TO_EDGE;
-		tp.wrap_t = GL.GL_CLAMP_TO_EDGE;
-//		tp.wrap_s = GL.GL_CLAMP;
-//		tp.wrap_t = GL.GL_CLAMP;
+//		GLTextureParameters tp = new GLTextureParameters();
+//		//Set texture FILTER MODE
+////		tp.minFilter = GLTextureParameters.LINEAR_MIPMAP_LINEAR;
+////		tp.minFilter = GLTextureParameters.LINEAR_MIPMAP_NEAREST;
+//		tp.minFilter = GLTextureParameters.LINEAR;
+////		tp.minFilter = GLTextureParameters.NEAREST;
+////		if (useMipMap)
+////			tp.minFilter = GLTextureParameters.LINEAR_MIPMAP_NEAREST; //Seems to not display the fbo texture when POT
+////		else{
+////			tp.minFilter = GLTextureParameters.LINEAR;			
+////		}
+//		tp.magFilter = GLTextureParameters.LINEAR;	
+//		
+//		//Set texture WRAP MODE
+//		tp.wrap_s = GL.GL_CLAMP_TO_EDGE;
+//		tp.wrap_t = GL.GL_CLAMP_TO_EDGE;
+////		tp.wrap_s = GL.GL_CLAMP;
+////		tp.wrap_t = GL.GL_CLAMP;
 		
 		//Set texture TARGET
 		if (isPowerOfTwoDimension){
-			tp.target = GLTextureParameters.NORMAL;
+//			tp.target = GLTextureParameters.NORMAL;
+			texSettings.target = TEXTURE_TARGET.TEXTURE_2D;
 			logger.debug("Power of 2 FBO texture created");
 		}else{
-			tp.target = GLTextureParameters.RECTANGULAR;	
+//			tp.target = GLTextureParameters.RECTANGULAR;	
+			texSettings.target = TEXTURE_TARGET.RECTANGULAR;
 			logger.debug("Rectangular FBO texture created");
 		}
 		
-		GLTexture tex = new GLTexture(pa, this.width, this.height, tp, true, 0);
+//		GLTexture tex = new GLTexture(pa, this.width, this.height, tp, true, 0);
+		GLTexture tex = new GLTexture(this.pa, texSettings);
+		tex.setupGLTexture(this.width, this.height);
+		tex.width = this.width;
+		tex.height = this.height; //To prevent init() call in loadGLTexture().. not even neccessary with fbo usage?
 		
 		gl.glBindTexture(tex.getTextureTarget(), tex.getTextureID());
 		
 		//Use extension to automatically generate mipmaps for the fbo textures 
 		//TODO Is this always needed? supported? only working in power of two dimensions!?
-		if (useMipMap && isPowerOfTwoDimension) //only for target GL_TEXTURE_2D allowed
-			gl.glGenerateMipmapEXT(tex.getTextureTarget()); //FIXME seems to crash JVM after app close!
+//		if (useMipMap && isPowerOfTwoDimension) //only for target GL_TEXTURE_2D allowed
+//			gl.glGenerateMipmapEXT(tex.getTextureTarget()); //FIXME seems to crash JVM after app close! //FIXME do this only after drawing finished to fbo texture
 
 		//Attach texture to FBO
 		gl.glFramebufferTexture2DEXT(

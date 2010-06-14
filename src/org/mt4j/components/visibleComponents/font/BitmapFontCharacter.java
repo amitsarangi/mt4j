@@ -24,6 +24,9 @@ import org.mt4j.components.visibleComponents.shapes.MTRectangle;
 import org.mt4j.util.MT4jSettings;
 import org.mt4j.util.math.Vertex;
 import org.mt4j.util.opengl.GLTexture;
+import org.mt4j.util.opengl.GLTexture.EXPANSION_FILTER;
+import org.mt4j.util.opengl.GLTexture.SHRINKAGE_FILTER;
+import org.mt4j.util.opengl.GLTexture.WRAP_MODE;
 
 import processing.core.PApplet;
 import processing.core.PImage;
@@ -79,22 +82,13 @@ public class BitmapFontCharacter extends MTRectangle implements IFontCharacter {
 			if (tex instanceof GLTexture) {
 				GLTexture glTex = (GLTexture) tex;
 //				glTex.setWrap(GL.GL_CLAMP, GL.GL_CLAMP);
-				glTex.setWrap(GL.GL_CLAMP_TO_EDGE, GL.GL_CLAMP_TO_EDGE);
-//				glTex.setWrap(GL.GL_REPEAT, GL.GL_REPEAT);
-//				glTex.setWrap(GL.GL_REPEAT, GL.GL_CLAMP_TO_BORDER); 
-//				glTex.setWrap(GL.GL_CLAMP_TO_BORDER, GL.GL_CLAMP_TO_BORDER); //use!
+//				glTex.setWrap(GL.GL_CLAMP_TO_EDGE, GL.GL_CLAMP_TO_EDGE);
 				
+				glTex.setWrapMode(WRAP_MODE.CLAMP_TO_EDGE, WRAP_MODE.CLAMP_TO_EDGE);
 				
-//				glTex.setFilter(GL.GL_LINEAR_MIPMAP_LINEAR, GL.GL_LINEAR); 
-//				glTex.setFilter(GL.GL_NEAREST_MIPMAP_NEAREST, GL.GL_NEAREST);
-//				glTex.setFilter(GL.GL_NEAREST_MIPMAP_NEAREST, GL.GL_LINEAR);
-//				glTex.setFilter(GL.GL_NEAREST, GL.GL_LINEAR);
-				//FIXME normally we would use GL_LINEAR as magnification filter but sometimes
-				//small text is too filtered and smudged so we use NEAREST -> but this makes
-				//scaled text very ugly and pixelated..
-				glTex.setFilter(GL.GL_LINEAR, GL.GL_NEAREST); 
-//				glTex.setFilter(GL.GL_LINEAR, GL.GL_LINEAR);
-//				glTex.setFilter(GL.GL_NEAREST, GL.GL_NEAREST); 
+//				glTex.setFilter(SHRINKAGE_FILTER.Trilinear, EXPANSION_FILTER.Bilinear);
+//				glTex.setFilter(SHRINKAGE_FILTER.BilinearNoMipMaps, EXPANSION_FILTER.Bilinear);
+				glTex.setFilter(SHRINKAGE_FILTER.BilinearNoMipMaps, EXPANSION_FILTER.NearestNeighbor);
 			}
 		}
 	}
@@ -186,9 +180,11 @@ public class BitmapFontCharacter extends MTRectangle implements IFontCharacter {
 				//small text is too filtered and smudged so we use NEAREST -> but this makes
 				//scaled text very ugly and pixelated..
 				if (scalable){
-					glTex.setFilter(GL.GL_LINEAR, GL.GL_LINEAR);
+//					glTex.setFilter(GL.GL_LINEAR, GL.GL_LINEAR);
+					glTex.setFilter(SHRINKAGE_FILTER.BilinearNoMipMaps, EXPANSION_FILTER.Bilinear);
 				}else{
-					glTex.setFilter(GL.GL_LINEAR, GL.GL_NEAREST); 
+//					glTex.setFilter(GL.GL_LINEAR, GL.GL_NEAREST); 
+					glTex.setFilter(SHRINKAGE_FILTER.BilinearNoMipMaps, EXPANSION_FILTER.NearestNeighbor);
 				}
 			}
 		}

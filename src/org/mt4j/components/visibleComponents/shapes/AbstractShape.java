@@ -27,8 +27,6 @@ import org.apache.log4j.Logger;
 import org.apache.log4j.SimpleLayout;
 import org.mt4j.components.MTComponent;
 import org.mt4j.components.TransformSpace;
-import org.mt4j.components.bounds.BoundingSphere;
-import org.mt4j.components.bounds.BoundsZPlaneRectangle;
 import org.mt4j.components.bounds.IBoundingShape;
 import org.mt4j.components.bounds.OrientedBoundingBox;
 import org.mt4j.components.visibleComponents.AbstractVisibleComponent;
@@ -47,22 +45,24 @@ import org.mt4j.util.animation.AnimationEvent;
 import org.mt4j.util.animation.AnimationManager;
 import org.mt4j.util.animation.IAnimationListener;
 import org.mt4j.util.animation.MultiPurposeInterpolator;
-import org.mt4j.util.camera.IFrustum;
 import org.mt4j.util.math.ConvexQuickHull2D;
 import org.mt4j.util.math.Matrix;
 import org.mt4j.util.math.Ray;
 import org.mt4j.util.math.Tools3D;
-import org.mt4j.util.math.ToolsGeometry;
 import org.mt4j.util.math.ToolsMath;
 import org.mt4j.util.math.Vector3D;
 import org.mt4j.util.math.Vertex;
-import org.mt4j.util.opengl.GLConstants;
+import org.mt4j.util.opengl.GLTextureSettings;
 import org.mt4j.util.opengl.GLTexture;
-import org.mt4j.util.opengl.GLTextureParameters;
+import org.mt4j.util.opengl.GLTexture.EXPANSION_FILTER;
+import org.mt4j.util.opengl.GLTexture.SHRINKAGE_FILTER;
+import org.mt4j.util.opengl.GLTexture.TEXTURE_TARGET;
+import org.mt4j.util.opengl.GLTexture.WRAP_MODE;
+
+import com.sun.org.apache.bcel.internal.generic.LSTORE;
 
 import processing.core.PApplet;
 import processing.core.PConstants;
-import processing.core.PGraphics;
 import processing.core.PImage;
 
 /**
@@ -625,6 +625,11 @@ public abstract class AbstractShape extends AbstractVisibleComponent {
 	 * @param drawPureGL the draw pure gl
 	 */
 	public void setUseDirectGL(boolean drawPureGL){
+		//FIXME
+		if (this.getName().equals("PhysicsRectDrawn")){
+			System.out.println();
+		}
+		
 		if (MT4jSettings.getInstance().isOpenGlMode()){
 			if (!this.isUseDirectGL()  
 				&& drawPureGL //FIXME WHY WAS THIS MISSING? is there a reason not to put this condition?
@@ -635,11 +640,10 @@ public abstract class AbstractShape extends AbstractVisibleComponent {
 			}
 			
 			this.drawDirectGL = drawPureGL; 
-			
 			//Wrap the current texture into a gl texture object for openGl use
 			if 	(this.drawDirectGL
 				&& this.getTexture() != null 
-				&& !(this.getTexture() instanceof GLTexture)
+//				&& !(this.getTexture() instanceof MTTexture) //dont do so that tex coords get updated if previously set GLTexture was set with no directGL mode
 			){
 				this.setTexture(this.getTexture());
 			}
@@ -814,8 +818,7 @@ public abstract class AbstractShape extends AbstractVisibleComponent {
 	}
 	
 	
-	//TODO alte GL-Texture löschen wenn vorhanden!!?
-	//TODO there is a problem when we set a pimage texture and have > 1.0 texcoords for tiling 
+
 	/**
 	 * Sets a texture for this shape.
 	 * <br>Uses the texture coordinates in the provided vertices for drawing.
@@ -830,173 +833,153 @@ public abstract class AbstractShape extends AbstractVisibleComponent {
 	public void setTexture(PImage newTexImage){
 		if (newTexImage == null){
 			this.textureImage = null;
+			this.setTextureEnabled(false);
 //			System.out.println("Set texture to null");
 			return;
 		}
+
+		//TODO AbstractShape.updateGLTextureCoordinates(); ?
+		//-> updateTextureBuffer still needed if custom tex coords wanted 
+		//-> use before setTexture()!
 		
-		//Enable textures
+		//TODO delete old GLTexture object??? may cause memory leak if not!
+		
+		//But how to know if its not needed elsewhere? register in GLTexture object when its used and not?
+		
+		//TODO make sure that NORMALIZED texture coords are supplied and BEFORE setting the texture!
+		
+		//TODO Note that if we want to change the tex coords mannually, do it normalized, then for precaution update the buffer and then set the texture
+		//if the tex coords have to be un/normalized the updating is done twice but else we might miss updating it when we update from POT to POT.. 
+		//maybe make method updateTextureCoords() - maybe also call setTexture to un/normalize()
 		if (!this.isTextureEnabled())
 			this.setTextureEnabled(true);
 		
-		boolean isPowerOfTwo = Tools3D.isPowerOfTwoDimension(newTexImage);
+		if (lastTextureDimension.equalsVector(Vector3D.ZERO_VECTOR)){
+			lastTextureDimension.setXYZ(newTexImage.width, newTexImage.height, 0);
+		}
 		
-		if (this.textureImage != null){ //Shape already has a texture
-			
-			boolean hasSameDimensions = (this.textureImage.width  == newTexImage.width 
-									  && this.textureImage.height == newTexImage.height);
-			
-			if (this.isUseDirectGL()){
-				if (this.textureImage instanceof GLTexture){
-					//Old texture is instance of GLTexture object
-					GLTexture oldGLTex = (GLTexture)this.textureImage;
+//		if (MT4jSettings.getInstance().isOpenGlMode()){ //FIXME USE WHICH ONE? 
+		if (this.isUseDirectGL()){
+			if (newTexImage instanceof GLTexture) {
+				GLTexture glTex = (GLTexture) newTexImage;
+				
+				if (glTex.getTextureTargetEnum() == TEXTURE_TARGET.RECTANGULAR){
+					this.setTextureMode(PConstants.IMAGE);
 					
-//					if (hasSameDimensions){
-//						//Old GLTexture obj has same dimension -> just put new pimage and pixels into texture obj
-//						oldGLTex.putImage(newTexImage);
-//						//TODO delete old texture?
-//					}else{
-						//Old gl texture doesnt have same dimensions -> make new Texture 
-						/*
-						GLTextureParameters p = new GLTextureParameters();
-			        	p.format 	= oldGLTex.getTextureParams().format;
-			        	p.magFilter = oldGLTex.getTextureParams().magFilter;
-			        	p.minFilter = oldGLTex.getTextureParams().minFilter;
-			        	p.target 	= oldGLTex.getTextureParams().target;
-			        	GLTexture newTex = new GLTexture(this.getRenderer(), newTexImage.width, newTexImage.height, p);
-						newTex.putImage(textureImage);
-						
-						this.textureImage = newTex;
-						*/
-					
-						//TODO delete old glTexture object?
-						//generateDefault a GLTexture object for use with pure openGL
-						GLTextureParameters tParams = new GLTextureParameters();
-						if (!isPowerOfTwo){
-							tParams.target = GLConstants.RECTANGULAR;
-							//We have to scale the texture coordinates from 0..1 to 0..width
-//							
-							//If old gltexture was rectangular we assume that the textcoords were scaled to the images dimensions (instead of normalzied)
-							//so we rescale accordingly
-							if (oldGLTex.getTextureParams().target == GLTexture.RECTANGULAR){
-								this.scaleTextureCoordsForRectModeFromRectMode(this.textureImage, newTexImage, this.getGeometryInfo().getVertices());
-							}else{
-								Tools3D.scaleTextureCoordsForRectModeFromNormalized(newTexImage, this.getGeometryInfo().getVertices());
-							}
-							
-							this.setTextureMode(PConstants.IMAGE);
-							
-							//Update the texture buffer!
-							this.getGeometryInfo().updateTextureBuffer(this.isUseVBOs());
-//							System.out.println("Non power of two texture detected in object: " + this.getName());
-						}else{
-//							this.setTextureMode(PConstants.NORMALIZED);
-							//System.out.println("Power of two texture in: " + this.getName());
-						}
-						
-						//FIXME WHY DONT WE CHECK IF NEW TEXTURE IS GLTEXTURE INSTANCE AND JUST SET IT HERE, TOO??
-						System.out.println(this + " Check if we create GLTexture 2 times!!!!!!!!!!!");
-						//Dont use mipmaps by default
-						tParams.minFilter = GLTextureParameters.LINEAR;
-						tParams.magFilter = GLTextureParameters.LINEAR;
-						
-						GLTexture newGLTexture = new GLTexture(this.getRenderer(), newTexImage, tParams);
-						newGLTexture.setFlippedY(true); //?
-						newGLTexture.format = newTexImage.format;  
-						this.textureImage = newGLTexture;
-//					}
-				}else{
-					//Old texture isnt gltexture but this obj is in directGL mode ->create new gltexture
-					GLTextureParameters tParams = new GLTextureParameters();
-					if (!isPowerOfTwo){
-						tParams.target = GLConstants.RECTANGULAR;
-						//We have to scale the texture coordinates from 0..1 to 0..width
-						Tools3D.scaleTextureCoordsForRectModeFromNormalized(newTexImage, this.getGeometryInfo().getVertices());
-						this.setTextureMode(PConstants.IMAGE);
-						
-						//Update the texture buffer!
-						this.getGeometryInfo().updateTextureBuffer(this.isUseVBOs());
-//						System.out.println("Non power of two texture detected in object: " + this.getName());
+					if (this.getGeometryInfo().isTextureCoordsNormalized()){
+						//0..1 -> 0..width
+						this.unNormalizeFromPOTtoRectMode(newTexImage, this.getVerticesLocal());
+						this.getGeometryInfo().setTextureCoordsNormalized(false);
 					}else{
-//						this.setTextureMode(PConstants.NORMALIZED);
-						//System.out.println("Power of two texture in: " + this.getName());
+						//0..oldWidth -> 0..newWidth  GLTexture is NPOT but this component's texture coords have seemingly already been un-normalized
+						//FIXME dont do it if it has the same dimensions!
+						this.fromRectModeToRectMode(newTexImage, this.getVerticesLocal(), this.lastTextureDimension.x, this.lastTextureDimension.y);
+					}
+				}else{
+					//GLTexture is POT -> normalize tex coords if neccessary
+					this.setTextureMode(PConstants.NORMALIZED);
+					
+					if (this.getGeometryInfo().isTextureCoordsNormalized()){
+						//0..1 -> 0..1
+					}else{
+						//0..width -> 0..1
+						this.normalizeFromRectMode(newTexImage, this.getVerticesLocal(), this.lastTextureDimension.x, this.lastTextureDimension.y);
+						this.getGeometryInfo().setTextureCoordsNormalized(true);
+					}
+				}
+				this.textureImage = newTexImage;
+				//FIXME always save last tex dimensions? also if POT?
+				this.lastTextureDimension.setXYZ(newTexImage.width, newTexImage.height, 0);
+			}else{
+				//We are in OpenGL mode but the new texture is not a GLTexture -> create new GLTexture from PImage
+				boolean isPOT = Tools3D.isPowerOfTwoDimension(newTexImage);
+				GLTextureSettings ts = new GLTextureSettings();
+				if (!isPOT){
+					ts.target = TEXTURE_TARGET.RECTANGULAR;
+					this.setTextureMode(PConstants.IMAGE);
+					
+					if (this.getGeometryInfo().isTextureCoordsNormalized()){
+						//0..1 -> 0..newWidth
+						this.unNormalizeFromPOTtoRectMode(newTexImage, this.getVerticesLocal());
+						this.getGeometryInfo().setTextureCoordsNormalized(false);
+					}else{
+						//0..oldWidth -> 0..newWidth
+						//FIXME dont do it if it has the same dimensions!
+						this.fromRectModeToRectMode(newTexImage, this.getVerticesLocal(), this.lastTextureDimension.x, this.lastTextureDimension.y);
 					}
 					
-					//Dont use mipmaps by default
-					tParams.minFilter = GLTextureParameters.LINEAR;
-					tParams.magFilter = GLTextureParameters.LINEAR;
-					GLTexture newGLTexture = new GLTexture(this.getRenderer(), newTexImage, tParams);
-					newGLTexture.setFlippedY(true); //?
-					newGLTexture.format = newTexImage.format;  
-					this.textureImage = newGLTexture;
+					this.textureImage = newTexImage;
+					this.lastTextureDimension.setXYZ(newTexImage.width, newTexImage.height, 0);
+				}else{
+					ts.target = TEXTURE_TARGET.TEXTURE_2D;
+					this.setTextureMode(PConstants.NORMALIZED);
+					
+					//We are in OpenGL mode, new texture is a PImage, is POT -> create POT GLTexture and un-normalize tex coords if neccessary
+					if (this.getGeometryInfo().isTextureCoordsNormalized()){
+						//0..1 -> 0..1
+					}else{
+						//normalize 0..width -> 0..1
+						this.normalizeFromRectMode(newTexImage, this.getVerticesLocal(), this.lastTextureDimension.x, this.lastTextureDimension.y);
+						this.getGeometryInfo().setTextureCoordsNormalized(true);
+					}
 				}
-			}else{
-				//Had old texture but this shape isnt set to use direct gl mode ->just set new pimage
-				this.textureImage = newTexImage;
+				
+				//Create new GLTexture from PImage
+				ts.shrinkFilter 		= SHRINKAGE_FILTER.BilinearNoMipMaps;
+				ts.expansionFilter 		= EXPANSION_FILTER.Bilinear;
+				ts.wrappingHorizontal 	= WRAP_MODE.CLAMP_TO_EDGE;
+				ts.wrappingVertical 	= WRAP_MODE.CLAMP_TO_EDGE;
+				GLTexture newGLTexture = new GLTexture(this.getRenderer(), newTexImage, ts);
+//				newGLTexture.format = newTexImage.format;  //FIXME REMOVE?
+				
+				this.textureImage = newGLTexture;
+				this.lastTextureDimension.setXYZ(newTexImage.width, newTexImage.height, 0);
 			}
 		}else{
-			//Didnt have previously set texture -> check if were in direct gl mode
-//			System.out.println(this.getName() + "didnt have previous texture");
-			
-			if (this.isUseDirectGL()){
-//				System.out.println(this.getName() + "hast direct gl mode set");
-				
-				//Shape is set to use direct gl mode -> check if the new texture is already a gltexture object instance
-				if (newTexImage instanceof GLTexture){
-					//New texture is already gltexture -> just set it
-					this.textureImage = newTexImage;
-				}else{
-					//New texture isnt of GLTexture but we should use direct gl mode -> create one
-					GLTextureParameters tParams = new GLTextureParameters();
-					if (!isPowerOfTwo){
-						tParams.target = GLConstants.RECTANGULAR;
-						//We have to scale the texture coordinates from 0..1 to 0..width
-						Tools3D.scaleTextureCoordsForRectModeFromNormalized(newTexImage, this.getGeometryInfo().getVertices());
-						this.setTextureMode(PConstants.IMAGE);
-						
-						//Update the texture buffer!
-						this.getGeometryInfo().updateTextureBuffer(this.isUseVBOs());
-//						System.out.println("Non power of two texture detected in object: " + this.getName());
-					}else{
-//						this.setTextureMode(PConstants.NORMALIZED);
-						//System.out.println("Power of two texture in: " + this.getName());
-					}
-					
-					//Dont use mipmaps by default
-					tParams.minFilter = GLTextureParameters.LINEAR;
-					tParams.magFilter = GLTextureParameters.LINEAR;
-					GLTexture newGLTexture = new GLTexture(this.getRenderer(), newTexImage, tParams);
-					newGLTexture.setFlippedY(true); //?
-					newGLTexture.format = newTexImage.format;  
-					this.textureImage = newGLTexture;
-				}
-			}else{
-				//Didnt have old texture and this shape isnt set to use direct gl mode -> just set new pimage
-				this.textureImage = newTexImage;
-			}
+			//We dont use OpenGL -> just set the PImage texture
+			this.textureImage = newTexImage;		
+			this.lastTextureDimension.setXYZ(newTexImage.width, newTexImage.height, 0);
 		}
 	}
 	
+	//TODO save the set texture dimensions so we can always scale from one NPOT texture to another NPOT texture coords
+	//(even if texture was set to null in between)
+	private Vector3D lastTextureDimension = new Vector3D(); 
 	
-	/**
-	 * Rescale tex coords form old texture in rectangular mode to new.
-	 * 
-	 * @param oldTexture the old texture
-	 * @param newTexture the new texture
-	 * @param verts the verts
-	 */
-	private void scaleTextureCoordsForRectModeFromRectMode(PImage oldTexture, PImage newTexture, Vertex[] verts){
-			for (int i = 0; i < verts.length; i++) {
-				Vertex vertex = verts[i];
-					vertex.setTexCoordU( (vertex.getTexCoordU()/oldTexture.width) * newTexture.width );
-					vertex.setTexCoordV( (vertex.getTexCoordV()/oldTexture.height) *  newTexture.height);
-			}
+	
+	
+	
+	private void unNormalizeFromPOTtoRectMode(PImage newTexture, Vertex[] verts){
+		for (int i = 0; i < verts.length; i++) {
+    		Vertex vertex = verts[i];
+    		vertex.setTexCoordU(vertex.getTexCoordU() *  (float)newTexture.width);
+    		vertex.setTexCoordV(vertex.getTexCoordV() *  (float)newTexture.height);
+//    		System.out.println("TexU:" + vertex.getTexCoordU() + " TexV:" + vertex.getTexCoordV()); //FIXME REMOVE
+    	}
+		this.getGeometryInfo().updateTextureBuffer(this.isUseVBOs());
 	}
 	
-	/*//rectangular works even if dimensions is power of two so..not neccesary
-	private void scaleTextureCoordsForNormalizedModeFromRect(PImage texture, Vertex[] verts){
-		//TODO
+	private void normalizeFromRectMode(PImage newTexture, Vertex[] verts, float oldTexWidth, float oldTexHeight){
+		for (int i = 0; i < verts.length; i++) {
+    		Vertex vertex = verts[i];
+//    		vertex.setTexCoordU(ToolsMath.map(vertex.getTexCoordU(), 0, oldTexWidth, 0, 1));
+//    		vertex.setTexCoordV(ToolsMath.map(vertex.getTexCoordV(), 0, oldTexWidth, 0, 1));
+    		
+    		vertex.setTexCoordU(vertex.getTexCoordU() / oldTexWidth);
+    		vertex.setTexCoordV(vertex.getTexCoordV() / oldTexHeight);
+    	}
+		this.getGeometryInfo().updateTextureBuffer(this.isUseVBOs());
 	}
-	*/
+	
+	private void fromRectModeToRectMode(PImage newTexture, Vertex[] verts, float oldTexWidth, float oldTexHeight){
+		for (int i = 0; i < verts.length; i++) {
+    		Vertex vertex = verts[i];
+    		vertex.setTexCoordU( (vertex.getTexCoordU() / oldTexWidth)  *  (float)newTexture.width);
+			vertex.setTexCoordV( (vertex.getTexCoordV() / oldTexHeight) *  (float)newTexture.height);
+    	}
+		this.getGeometryInfo().updateTextureBuffer(this.isUseVBOs());
+	}
+	
 	
 	/**
 	 * Gets the texture.
@@ -1287,7 +1270,7 @@ public abstract class AbstractShape extends AbstractVisibleComponent {
 		if (this.getTexture() instanceof GLTexture){
 			GLTexture tex = (GLTexture) this.getTexture();
 			//Delete texture
-			tex.deleteTextureGL();
+			tex.destroy();
 			this.setTexture(null);
 			this.setTextureEnabled(false);
 		} 

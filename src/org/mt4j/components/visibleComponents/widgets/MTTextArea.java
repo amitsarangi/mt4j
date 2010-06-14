@@ -1012,12 +1012,14 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
 	private class ArtificalLineBreak implements IFontCharacter{
 		public void drawComponent(PGraphics g) {}
 		public void drawComponent(GL gl) {	}
+		public void destroy() {	}
 		public int getHorizontalDist() {
 			return 0;
 		}
 		public String getUnicode() {
 			return "\n";
 		}
+		
 	}
 
 

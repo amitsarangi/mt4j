@@ -1,6 +1,7 @@
 ToDo list:
 
 -> General:
+- movieclip fixe setTexture call in Gstreamer thread
 - processing.com post and bug report (font)
 - working with text tutorial
 - add setAnchor(Vector3D anchorPoint) for all AbstractShapes? -> use in set/getPosition() -> per default use centerpoint -> rotate(45) -> use anchor by default?

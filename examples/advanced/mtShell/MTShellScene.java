@@ -257,7 +257,7 @@ public class MTShellScene extends AbstractScene {
 		
 		this.addScene(new ICreateScene() {
 			public Iscene getNewScene() {
-				return new WaterSceneExportObf(app, "Interactive Water");
+				return new WaterSceneExportObf(app, "Interactive Water"); 
 			}
 			public String getTitle() {
 				return "Interactive Water";

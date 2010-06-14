@@ -17,8 +17,6 @@
  ***********************************************************************/
 package org.mt4j.components.visibleComponents.widgets;
 
-import javax.media.opengl.GL;
-
 import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
@@ -38,8 +36,9 @@ import org.mt4j.util.MT4jSettings;
 import org.mt4j.util.MTColor;
 import org.mt4j.util.math.Tools3D;
 import org.mt4j.util.math.Vector3D;
+import org.mt4j.util.opengl.GLTextureSettings;
 import org.mt4j.util.opengl.GLTexture;
-import org.mt4j.util.opengl.GLTextureParameters;
+import org.mt4j.util.opengl.GLTexture.WRAP_MODE;
 
 import processing.core.PApplet;
 import processing.core.PImage;
@@ -156,13 +155,20 @@ public class MTSceneMenu extends MTRectangle{
 		}
 		
 		if (MT4jSettings.getInstance().isOpenGlMode()){
-			GLTextureParameters tp = new GLTextureParameters();
-			tp.wrap_s = GL.GL_CLAMP;
-			tp.wrap_t = GL.GL_CLAMP;
-//			GLTexture glTex = new GLTexture(app, MT4jSettings.getInstance().getDefaultImagesPath()+
-//					"blackRoundSolidCorner64sh2.png", tp);
-			GLTexture glTex = new GLTexture(app, menuImage.width, menuImage.height, tp);
-			glTex.putPixelsIntoTexture(menuImage);
+//			GLTextureParameters tp = new GLTextureParameters();
+//			tp.wrap_s = GL.GL_CLAMP;
+//			tp.wrap_t = GL.GL_CLAMP;
+////			GLTexture glTex = new GLTexture(app, MT4jSettings.getInstance().getDefaultImagesPath()+
+////					"blackRoundSolidCorner64sh2.png", tp);
+//			GLTexture glTex = new GLTexture(app, menuImage.width, menuImage.height, tp);
+//			glTex.putPixelsIntoTexture(menuImage);
+//			this.setTexture(glTex);
+			
+			GLTextureSettings ts = new GLTextureSettings();
+			ts.wrappingHorizontal = WRAP_MODE.CLAMP;
+			ts.wrappingVertical = WRAP_MODE.CLAMP;
+			GLTexture glTex = new GLTexture(app, menuImage.width, menuImage.height, ts);
+			glTex.loadGLTexture(menuImage);
 			this.setTexture(glTex);
 		}else{
 			this.setTexture(menuImage);
