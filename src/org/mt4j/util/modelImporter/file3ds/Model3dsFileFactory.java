@@ -42,9 +42,15 @@ import org.mt4j.components.visibleComponents.GeometryInfo;
 import org.mt4j.components.visibleComponents.shapes.mesh.MTTriangleMesh;
 import org.mt4j.util.MT4jSettings;
 import org.mt4j.util.TriangleNormalGenerator;
+import org.mt4j.util.math.Tools3D;
 import org.mt4j.util.math.Vertex;
 import org.mt4j.util.modelImporter.ModelImporterFactory;
 import org.mt4j.util.opengl.GLTexture;
+import org.mt4j.util.opengl.GLTextureSettings;
+import org.mt4j.util.opengl.GLTexture.EXPANSION_FILTER;
+import org.mt4j.util.opengl.GLTexture.SHRINKAGE_FILTER;
+import org.mt4j.util.opengl.GLTexture.TEXTURE_TARGET;
+import org.mt4j.util.opengl.GLTexture.WRAP_MODE;
 
 import processing.core.PApplet;
 import processing.core.PImage;
@@ -370,7 +376,13 @@ public class Model3dsFileFactory extends ModelImporterFactory{
 							
 							PImage texture = null;
 							if (MT4jSettings.getInstance().isOpenGlMode()){
-								texture = new GLTexture(pa, texturePath);
+								PImage img = pa.loadImage(texturePath);
+								if (Tools3D.isPowerOfTwoDimension(img)){
+									texture = new GLTexture(pa, img, new GLTextureSettings(TEXTURE_TARGET.TEXTURE_2D, SHRINKAGE_FILTER.Trilinear, EXPANSION_FILTER.Bilinear, WRAP_MODE.REPEAT, WRAP_MODE.REPEAT));
+								}else{
+									texture = new GLTexture(pa, img, new GLTextureSettings(TEXTURE_TARGET.RECTANGULAR, SHRINKAGE_FILTER.Trilinear, EXPANSION_FILTER.Bilinear, WRAP_MODE.REPEAT, WRAP_MODE.REPEAT));
+//									((GLTexture)texture).setFilter(SHRINKAGE_FILTER.BilinearNoMipMaps, EXPANSION_FILTER.Bilinear);
+								}
 							}else{
 								texture 		= pa.loadImage(texturePath);
 							}

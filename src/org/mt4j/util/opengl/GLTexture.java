@@ -229,6 +229,8 @@ public class GLTexture extends PImage {
 	
 	private int internalFormat;
 	
+	private boolean forcedRectMipMaps = false;
+	
 //	private int width;
 //	private int height;
 	
@@ -428,9 +430,7 @@ public class GLTexture extends PImage {
 
     	boolean POT = (ToolsMath.isPowerOfTwo(width) && ToolsMath.isPowerOfTwo(height)) ;
     	if (POT){
-    		if (this.glTextureSettings.target == TEXTURE_TARGET.RECTANGULAR){
-    			this.glTextureSettings.target = TEXTURE_TARGET.TEXTURE_2D;
-    		}
+    		this.glTextureSettings.target = TEXTURE_TARGET.TEXTURE_2D;
     	}else{
     		this.glTextureSettings.target = TEXTURE_TARGET.RECTANGULAR;
     	}
@@ -464,6 +464,13 @@ public class GLTexture extends PImage {
     	boolean POT = (ToolsMath.isPowerOfTwo(width) && ToolsMath.isPowerOfTwo(height));
     	if (this.glTextureSettings.target != TEXTURE_TARGET.RECTANGULAR && !POT){
     		this.glTextureSettings.target = TEXTURE_TARGET.RECTANGULAR;
+    	}
+    	
+    	//FIXME TEST gluBuild2DMimaps with NPOT TEXTURE -> stretches the images to POT -> we can use normal TEXTURE2D target then
+    	if (this.glTextureSettings.target == TEXTURE_TARGET.RECTANGULAR && this.glTextureSettings.shrinkFilter.usesMipMapLevels()){
+    		System.err.println("INFO: A non-power-of-two dimension texture should ideally not be used with Mip Map minification filter. -> Result can be blurred/streched." );
+    		this.glTextureSettings.target = TEXTURE_TARGET.TEXTURE_2D;
+    		this.forcedRectMipMaps = true;
     	}
 
     	//check if fbo and thus the glGenerateMipmapEXT(GL_TEXTURE_2D);
@@ -661,12 +668,19 @@ public class GLTexture extends PImage {
 		int textureTarget = glTextureSettings.target.getGLConstant();
 		// int internalFormat = glTextureSettings.textureInternalFormat.getGLConstant();
 		
-		//NPOT texture dont support mipmaps!
+		//FIXME TEST gluBuild2DMimaps with NPOT TEXTURE -> stretches the images to POT -> we can use normal TEXTURE2D target then
+    	if (this.glTextureSettings.target == TEXTURE_TARGET.RECTANGULAR && this.glTextureSettings.shrinkFilter.usesMipMapLevels()){
+    		this.glTextureSettings.target = TEXTURE_TARGET.TEXTURE_2D;
+    		this.forcedRectMipMaps = true;
+    	}
+		
+		//NPOT texture targets dont support mipmaps!
 		if (glTextureSettings.target == TEXTURE_TARGET.RECTANGULAR){
 			if (glTextureSettings.shrinkFilter.usesMipMapLevels()){
 				this.glTextureSettings.shrinkFilter = SHRINKAGE_FILTER.BilinearNoMipMaps;
 			}
 		}
+		
 		switch (this.format) {
 		case PConstants.RGB:
 			this.internalFormat = GL.GL_RGB;
@@ -692,21 +706,30 @@ public class GLTexture extends PImage {
 		case RECTANGULAR:
 		default:
 			//MipMapping wont work with RECTANGLE_ARB TARGET !
-			if (glTextureSettings.shrinkFilter.usesMipMapLevels() && this.glTextureSettings.target != TEXTURE_TARGET.RECTANGULAR){
+			if (glTextureSettings.shrinkFilter.usesMipMapLevels() 
+				&& this.glTextureSettings.target != TEXTURE_TARGET.RECTANGULAR
+			){
 				//deprectated in opengl 3.0 -will always create mipmaps automatically if lvl 0 changes
 //				gl.glTexParameteri( textureTarget, GL.GL_GENERATE_MIPMAP, GL.GL_TRUE ); 
-				
-				if (this.fboSupported){ //Naive check if glGenerateMipmapEXT command is supported
-					//TODO problems on ATI? use gl.glEnable(textureTarget) first? 
-					gl.glTexSubImage2D(textureTarget, 0, 0, 0, this.width, this.height, glFormat, type, buffer);
-					// gl.glGenerateMipmapEXT(GL.GL_TEXTURE_2D); //newer OpenGL 3.x method of creating mip maps
-					gl.glGenerateMipmapEXT(textureTarget);
-				}else{
-					//Old school software method, will resize a NPOT texture to a POT texture
+				if (this.forcedRectMipMaps){
+					//Resizes NPOT textures to POT
 					GLU glu = ((PGraphicsOpenGL)this.parent.g).glu;
 					glu.gluBuild2DMipmaps(textureTarget, internalFormat, this.width, this.height, glFormat, type, buffer);
 					//GLU glu = ((PGraphicsOpenGL)this.parent.g).glu;
 					//glu.gluBuild2DMipmaps(textureTarget, internalFormat, width, height, glFormat, type, buffer);
+				}else{
+					if (this.fboSupported){ //Naive check if glGenerateMipmapEXT command is supported
+						//TODO problems on ATI? use gl.glEnable(textureTarget) first? 
+						gl.glTexSubImage2D(textureTarget, 0, 0, 0, this.width, this.height, glFormat, type, buffer);
+						// gl.glGenerateMipmapEXT(GL.GL_TEXTURE_2D); //newer OpenGL 3.x method of creating mip maps
+						gl.glGenerateMipmapEXT(textureTarget);
+					}else{
+						//Old school software method, will resize a NPOT texture to a POT texture
+						GLU glu = ((PGraphicsOpenGL)this.parent.g).glu;
+						glu.gluBuild2DMipmaps(textureTarget, internalFormat, this.width, this.height, glFormat, type, buffer);
+						//GLU glu = ((PGraphicsOpenGL)this.parent.g).glu;
+						//glu.gluBuild2DMipmaps(textureTarget, internalFormat, width, height, glFormat, type, buffer);
+					}
 				}
 			}
 			else{
@@ -724,7 +747,7 @@ public class GLTexture extends PImage {
      * Updates the OpenGL texture object with the data from this PImage.pixels pixel
      * array. This method should be called if the pixel data has changed and the change
      * has to be reflected in the OpenGL texture object (probably because direct OpenGL texture rendering is used)
-     *
+     * <b>NOTE:</b>The PImage pixel data dimensions have to match the OpenGL texture dimension! If not, use loadTexture()
      */
     public void updateGLTextureFromPImage(){ 
     	updateGLTexture(this.pixels);

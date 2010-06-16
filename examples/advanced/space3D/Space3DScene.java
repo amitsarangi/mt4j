@@ -109,7 +109,7 @@ public class Space3DScene extends AbstractScene {
         earth.generateAndUseDisplayLists();
         earth.setPositionGlobal(new Vector3D(pa.width/2f, pa.height/2f, 250)); //earth.setPositionGlobal(new Vector3D(200, 200, 250));
         //Animate earth rotation
-        new Animation("rotation animation", new MultiPurposeInterpolator(0,360, 12000, 0, 1, -1) , earth).addAnimationListener(new IAnimationListener(){
+        new Animation("rotation animation", new MultiPurposeInterpolator(0,360, 17000, 0, 1, -1) , earth).addAnimationListener(new IAnimationListener(){
         	public void processAnimationEvent(AnimationEvent ae) {
         		earth.rotateY(earth.getCenterPointLocal(), ae.getCurrentStepDelta(), TransformSpace.LOCAL);
         	}}).start();
@@ -140,7 +140,7 @@ public class Space3DScene extends AbstractScene {
        	moonSphere.setMaterial(material);
         moonSphere.translate(new Vector3D(earth.getRadius() + moonSphere.getRadius() + 50, 0,0));
         moonSphere.setTexture(new GLTexture(pa, System.getProperty("user.dir") + File.separator + "examples" + File.separator +"advanced"+ File.separator+ File.separator + "space3D"  + File.separator + "data" +  File.separator  + 
-        		"moonmap1k.jpg", new GLTextureSettings(TEXTURE_TARGET.RECTANGULAR, SHRINKAGE_FILTER.BilinearNoMipMaps, EXPANSION_FILTER.Bilinear, WRAP_MODE.CLAMP_TO_EDGE, WRAP_MODE.CLAMP_TO_EDGE)));
+        		"moonmap1k.jpg", new GLTextureSettings(TEXTURE_TARGET.RECTANGULAR, SHRINKAGE_FILTER.Trilinear, EXPANSION_FILTER.Bilinear, WRAP_MODE.CLAMP_TO_EDGE, WRAP_MODE.CLAMP_TO_EDGE)));
         moonSphere.generateAndUseDisplayLists();
         moonSphere.unregisterAllInputProcessors();
         //Rotate the moon around the earth
@@ -152,6 +152,7 @@ public class Space3DScene extends AbstractScene {
         new Animation("moon animation around own axis", new MultiPurposeInterpolator(0,360, 9000, 0, 1, -1) , moonSphere).addAnimationListener(new IAnimationListener(){
         	public void processAnimationEvent(AnimationEvent ae) {
         		moonSphere.rotateZ(moonSphere.getCenterPointLocal(), -3*ae.getCurrentStepDelta(), TransformSpace.LOCAL);
+        		moonSphere.rotateY(moonSphere.getCenterPointLocal(), 0.5f*ae.getCurrentStepDelta(), TransformSpace.LOCAL);
         	}}).start();
         earth.addChild(moonSphere);
 	}
