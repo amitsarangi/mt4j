@@ -715,20 +715,14 @@ public class GLTexture extends PImage {
 					//Resizes NPOT textures to POT
 					GLU glu = ((PGraphicsOpenGL)this.parent.g).glu;
 					glu.gluBuild2DMipmaps(textureTarget, internalFormat, this.width, this.height, glFormat, type, buffer);
-					//GLU glu = ((PGraphicsOpenGL)this.parent.g).glu;
-					//glu.gluBuild2DMipmaps(textureTarget, internalFormat, width, height, glFormat, type, buffer);
 				}else{
 					if (this.fboSupported){ //Naive check if glGenerateMipmapEXT command is supported
-						//TODO problems on ATI? use gl.glEnable(textureTarget) first? 
 						gl.glTexSubImage2D(textureTarget, 0, 0, 0, this.width, this.height, glFormat, type, buffer);
-						// gl.glGenerateMipmapEXT(GL.GL_TEXTURE_2D); //newer OpenGL 3.x method of creating mip maps
-						gl.glGenerateMipmapEXT(textureTarget);
+						gl.glGenerateMipmapEXT(textureTarget);  //newer OpenGL 3.x method of creating mip maps //TODO problems on ATI? use gl.glEnable(textureTarget) first? 
 					}else{
 						//Old school software method, will resize a NPOT texture to a POT texture
 						GLU glu = ((PGraphicsOpenGL)this.parent.g).glu;
 						glu.gluBuild2DMipmaps(textureTarget, internalFormat, this.width, this.height, glFormat, type, buffer);
-						//GLU glu = ((PGraphicsOpenGL)this.parent.g).glu;
-						//glu.gluBuild2DMipmaps(textureTarget, internalFormat, width, height, glFormat, type, buffer);
 					}
 				}
 			}
@@ -818,6 +812,11 @@ public class GLTexture extends PImage {
 	 * @param magFilter the mag filter
 	 */
 	public void setFilter(SHRINKAGE_FILTER minFilter, EXPANSION_FILTER magFilter){
+		if (this.forcedRectMipMaps){
+			//Because current target is TEXTURE_2D although it was a NPOT texture which was rescaled using glubuild2dmipmaps
+			//and if another filter is chosen that doesent use mip maps and an updating method is called it would choose a RECTANGULAR target = conflict
+			System.err.println("INFO: Changing the texture filter for NPOT texture in combination with MipMapping isnt allowed atm.");
+		}
 		boolean usedMipMapPreviously = this.glTextureSettings.shrinkFilter.usesMipMapLevels();
 		
 		this.glTextureSettings.shrinkFilter = minFilter;
