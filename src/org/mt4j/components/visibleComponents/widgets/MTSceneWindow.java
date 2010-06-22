@@ -84,7 +84,7 @@ extends MTRoundRectangle {
 	 * @param fboWidth the fbo width
 	 * @param fboHeight the fbo height
 	 */
-	public MTSceneWindow(final Iscene scene, float borderWidth, float borderHeight, MTApplication applet, int fboWidth, int fboHeight) {
+	public MTSceneWindow(final Iscene scene, float borderWidth, float borderHeight, final MTApplication applet, int fboWidth, int fboHeight) {
 //		super(0-borderWidth, 0-borderHeight, applet.width+2*borderWidth, applet.height+2*borderHeight, applet);
 		super(0-borderWidth, 0-borderHeight, 0, MT4jSettings.getInstance().getScreenWidth()+2*borderWidth, MT4jSettings.getInstance().getScreenHeight()+2*borderHeight, 30, 30, applet);
 		
@@ -95,7 +95,18 @@ extends MTRoundRectangle {
 		this.addChild(sceneTexture);
 		
 		//Add the scene to the scene list in the Application
-		applet.addScene(sceneTexture.getScene());
+		//FIXME add the scene later to the MTApplication because if we add the scene 
+		//before any other scene is added it becomes the active scene which we dont want
+		if (applet.getSceneCount() == 0){
+			applet.invokeLater(new Runnable() {
+				public void run() {
+					applet.addScene(sceneTexture.getScene());
+				}
+			});
+		}else{
+			applet.addScene(sceneTexture.getScene());	
+		}
+		
 		
 		sceneTexture.addStateChangeListener(StateChange.COMPONENT_DESTROYED, new StateChangeListener() {
 			public void stateChanged(StateChangeEvent evt) {
