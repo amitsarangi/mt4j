@@ -178,7 +178,9 @@ public class MapsScene extends AbstractScene implements MouseWheelListener, Mous
 		
 		
 		//Set up the progressbar
-		progressBar = new MTProgressBar(p, p.loadFont(MT4jSettings.getInstance().getDefaultFontPath() + "Ziggurat.vlw"));
+//		progressBar = new MTProgressBar(p, p.loadFont(MT4jSettings.getInstance().getDefaultFontPath() + "Ziggurat.vlw"));
+//		progressBar = new MTProgressBar(p, p.loadFont("arial"));
+		progressBar = new MTProgressBar(p, p.createFont("arial", 18));
 		progressBar.attachCamera(defaultCenterCam);
 		progressBar.setDepthBufferDisabled(true);
 		progressBar.setVisible(false);
@@ -191,8 +193,11 @@ public class MapsScene extends AbstractScene implements MouseWheelListener, Mous
 		
 		//Button for foto search
 		final MTImageButton fotoButton;
-		PImage fotoButtonImg = p.loadImage(System.getProperty("user.dir")+File.separator + "examples"+  File.separator +"advanced"+ File.separator+ File.separator +"modestMapsMT"+ File.separator +  File.separator + "data"+ File.separator + 
-				"foto6.png");
+//		PImage fotoButtonImg = p.loadImage(System.getProperty("user.dir")+File.separator + "examples"+  File.separator +"advanced"+ File.separator+ File.separator +"modestMapsMT"+ File.separator +  File.separator + "data"+ File.separator + 
+//				"foto6.png");
+		//Load image from classpath
+		PImage fotoButtonImg = p.loadImage( "advanced" + MTApplication.separator + "modestMapsMT" + MTApplication.separator + "data" + MTApplication.separator + 
+		"foto6.png");
 		fotoButtonImg.resize((int)(fotoButtonImg.width/1.5f), (int)(fotoButtonImg.height/1.5f));
 		fotoButton = new MTImageButton(fotoButtonImg, p);
 		fotoButton.setName("fotoButton");

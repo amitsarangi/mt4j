@@ -4,7 +4,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.io.File;
 
 import org.mt4j.MTApplication;
 import org.mt4j.components.TransformSpace;
@@ -36,6 +35,9 @@ public class MainDrawingScene extends AbstractScene {
 	private MTRectangle textureBrush;
 	private MTEllipse pencilBrush;
 	private DrawSurfaceScene drawingScene;
+	
+//	private String imagesPath = System.getProperty("user.dir")+File.separator + "examples"+  File.separator +"advanced"+ File.separator + File.separator +"drawing"+ File.separator + File.separator +"data"+ File.separator +  File.separator +"images" + File.separator ;
+	private String imagesPath = "advanced" + MTApplication.separator + "drawing" + MTApplication.separator + "data" + MTApplication.separator + "images" + MTApplication.separator;
 
 	public MainDrawingScene(MTApplication mtApplication, String name) {
 		super(mtApplication, name);
@@ -56,8 +58,7 @@ public class MainDrawingScene extends AbstractScene {
         drawingScene.setClear(false);
        
         //Create texture brush
-        PImage brushImage = getMTApplication().loadImage(System.getProperty("user.dir")+File.separator + "examples"+  File.separator +"advanced"+ File.separator + File.separator +"drawing"+ File.separator + File.separator +"data"+ File.separator +  File.separator +"images"+ File.separator +
-		"brush1.png");
+        PImage brushImage = getMTApplication().loadImage(imagesPath + "brush1.png");
 		textureBrush = new MTRectangle(brushImage, getMTApplication());
 		textureBrush.setPickable(false);
 		textureBrush.setNoFill(false);
@@ -85,8 +86,7 @@ public class MainDrawingScene extends AbstractScene {
         frame.addChild(sceneTexture);
         
         //Eraser button
-        PImage eraser = pa.loadImage(System.getProperty("user.dir")+File.separator + "examples"+  File.separator +"advanced"+ File.separator + File.separator +"drawing"+ File.separator + File.separator +"data"+ File.separator +  File.separator +"images"+ File.separator + 
-        		"Kde_crystalsvg_eraser.png");
+        PImage eraser = pa.loadImage(imagesPath + "Kde_crystalsvg_eraser.png");
         MTImageButton b = new MTImageButton(eraser, pa);
         b.setNoStroke(true);
         b.translate(new Vector3D(-50,0,0));
@@ -109,8 +109,7 @@ public class MainDrawingScene extends AbstractScene {
         frame.addChild(b);
         
         //Pen brush selector button
-        PImage penIcon = pa.loadImage(System.getProperty("user.dir")+File.separator + "examples"+  File.separator +"advanced"+ File.separator + File.separator +"drawing"+ File.separator + File.separator +"data"+ File.separator +  File.separator +"images"+ File.separator + 
-		"pen.png");
+        PImage penIcon = pa.loadImage(imagesPath + "pen.png");
         final MTImageButton penButton = new MTImageButton(penIcon, pa);
         frame.addChild(penButton);
         penButton.translate(new Vector3D(-50f, 65,0));
@@ -118,8 +117,7 @@ public class MainDrawingScene extends AbstractScene {
         penButton.setStrokeColor(new MTColor(0,0,0));
         
         //Texture brush selector button
-        PImage brushIcon = pa.loadImage(System.getProperty("user.dir")+File.separator + "examples"+  File.separator +"advanced"+ File.separator + File.separator +"drawing"+ File.separator + File.separator +"data"+ File.separator +  File.separator +"images"+ File.separator + 
-		"paintbrush.png");
+        PImage brushIcon = pa.loadImage(imagesPath + "paintbrush.png");
         final MTImageButton brushButton = new MTImageButton(brushIcon, pa);
         frame.addChild(brushButton);
         brushButton.translate(new Vector3D(-50f, 130,0));
@@ -153,8 +151,7 @@ public class MainDrawingScene extends AbstractScene {
         });
         
         //Save to file button
-        PImage floppyIcon = pa.loadImage(System.getProperty("user.dir")+File.separator + "examples"+  File.separator +"advanced"+ File.separator + File.separator +"drawing"+ File.separator + File.separator +"data"+ File.separator +  File.separator +"images"+ File.separator + 
-		"floppy.png");
+        PImage floppyIcon = pa.loadImage(imagesPath + "floppy.png");
         final MTImageButton floppyButton = new MTImageButton(floppyIcon, pa);
         frame.addChild(floppyButton);
         floppyButton.translate(new Vector3D(-50f, 260,0));
@@ -188,8 +185,7 @@ public class MainDrawingScene extends AbstractScene {
         
         /////////////////////////
         //ColorPicker and colorpicker button
-        PImage colPick = pa.loadImage(System.getProperty("user.dir")+File.separator + "examples"+  File.separator +"advanced"+ File.separator + File.separator +"drawing"+ File.separator + File.separator +"data"+ File.separator +  File.separator +"images"+ File.separator + 
-		"colorcircle.png");
+        PImage colPick = pa.loadImage(imagesPath + "colorcircle.png");
 //        final MTColorPicker colorWidget = new MTColorPicker(0, pa.height-colPick.height, colPick, pa);
         final MTColorPicker colorWidget = new MTColorPicker(0, 0, colPick, pa);
         colorWidget.translate(new Vector3D(0f, 135,0));
@@ -209,8 +205,7 @@ public class MainDrawingScene extends AbstractScene {
         frame.addChild(colorWidget);
         colorWidget.setVisible(false);
         
-        PImage colPickIcon = pa.loadImage(System.getProperty("user.dir")+File.separator + "examples"+  File.separator +"advanced"+ File.separator + File.separator +"drawing"+ File.separator + File.separator +"data"+ File.separator +  File.separator +"images"+ File.separator + 
-		"ColorPickerIcon.png");
+        PImage colPickIcon = pa.loadImage(imagesPath + "ColorPickerIcon.png");
         MTImageButton colPickButton = new MTImageButton(colPickIcon, pa);
         frame.addChild(colPickButton);
         colPickButton.translate(new Vector3D(-50f, 195,0));

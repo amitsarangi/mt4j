@@ -27,6 +27,9 @@ public class Scene1 extends AbstractScene {
 	private MTApplication mtApp;
 	private Iscene scene2;
 	
+//	private String imagePath = System.getProperty("user.dir") + File.separator + "examples"+  File.separator +"basic"+  File.separator + "scenes" + File.separator + "data" + File.separator;
+	private String imagePath =  "basic"+  MTApplication.separator + "scenes" + MTApplication.separator + "data" + MTApplication.separator;
+	
 	public Scene1(MTApplication mtApplication, String name) {
 		super(mtApplication, name);
 		this.mtApp = mtApplication;
@@ -46,8 +49,7 @@ public class Scene1 extends AbstractScene {
 		textField.setPositionGlobal(new Vector3D(mtApp.width/2f, mtApp.height/2f));
 		
 		//Button to get to the next scene
-		PImage arrow = mtApplication.loadImage(System.getProperty("user.dir") + File.separator + "examples"+  File.separator +"basic"+  File.separator + "scenes" + File.separator + "data" + File.separator +
-		"arrowRight.png");
+		PImage arrow = mtApplication.loadImage(imagePath +	"arrowRight.png");
 		MTImageButton nextSceneButton = new MTImageButton(arrow, mtApplication);
 		nextSceneButton.setNoStroke(true);
 		if (MT4jSettings.getInstance().isOpenGlMode())

@@ -18,7 +18,6 @@
 package advanced.space3D;
 
 import java.awt.event.KeyEvent;
-import java.io.File;
 
 import javax.media.opengl.GL;
 
@@ -63,6 +62,11 @@ public class Space3DScene extends AbstractScene {
 
 	//TODO make earth spinnable with velocity
 	
+	//Loads from file system only
+//	private String imagesPath = System.getProperty("user.dir") + File.separator + "examples" + File.separator +"advanced"+ File.separator+ File.separator + "space3D"  + File.separator + "data" +  File.separator ;
+	//allows loading from jar
+	private String imagesPath =  "advanced" + MTApplication.separator + "space3D" + MTApplication.separator + "data" +  MTApplication.separator ;
+	
 	/**
 	 * Instantiates a new model display scene.
 	 * 
@@ -82,8 +86,7 @@ public class Space3DScene extends AbstractScene {
 		this.registerGlobalInputProcessor(new CursorTracer(pa, this));
 		
 		//Add a background image for the scene
-		this.getCanvas().addChild(new MTBackgroundImage(pa, pa.loadImage(System.getProperty("user.dir") + File.separator + "examples" +  File.separator +"advanced"+ File.separator+ File.separator + "space3D"  + File.separator + "data" +  File.separator  +
-		"3040.jpg"), true));
+		this.getCanvas().addChild(new MTBackgroundImage(pa, pa.loadImage(imagesPath + "3040.jpg"), true));
 		
 		//Init light settings
 		MTLight.enableLightningAndAmbient(pa, 150, 150, 150, 255);
@@ -104,8 +107,7 @@ public class Space3DScene extends AbstractScene {
 		earth.setLight(light);
 		earth.setMaterial(material);
 		earth.rotateX(earth.getCenterPointRelativeToParent(), -90);
-		earth.setTexture(new GLTexture(pa, System.getProperty("user.dir") + File.separator + "examples" + File.separator +"advanced"+ File.separator+ File.separator + "space3D"  + File.separator + "data" +  File.separator  +
-        		"worldMap.jpg", new GLTextureSettings(TEXTURE_TARGET.TEXTURE_2D, SHRINKAGE_FILTER.Trilinear, EXPANSION_FILTER.Bilinear, WRAP_MODE.CLAMP_TO_EDGE, WRAP_MODE.CLAMP_TO_EDGE)));
+		earth.setTexture(new GLTexture(pa,imagesPath + "worldMap.jpg", new GLTextureSettings(TEXTURE_TARGET.TEXTURE_2D, SHRINKAGE_FILTER.Trilinear, EXPANSION_FILTER.Bilinear, WRAP_MODE.CLAMP_TO_EDGE, WRAP_MODE.CLAMP_TO_EDGE)));
         earth.generateAndUseDisplayLists();
         earth.setPositionGlobal(new Vector3D(pa.width/2f, pa.height/2f, 250)); //earth.setPositionGlobal(new Vector3D(200, 200, 250));
         //Animate earth rotation
@@ -139,8 +141,7 @@ public class Space3DScene extends AbstractScene {
         final MTSphere moonSphere = new MTSphere(pa, "moon", 35, 35, 25, TextureMode.Polar);
        	moonSphere.setMaterial(material);
         moonSphere.translate(new Vector3D(earth.getRadius() + moonSphere.getRadius() + 50, 0,0));
-        moonSphere.setTexture(new GLTexture(pa, System.getProperty("user.dir") + File.separator + "examples" + File.separator +"advanced"+ File.separator+ File.separator + "space3D"  + File.separator + "data" +  File.separator  + 
-        		"moonmap1k.jpg", new GLTextureSettings(TEXTURE_TARGET.RECTANGULAR, SHRINKAGE_FILTER.Trilinear, EXPANSION_FILTER.Bilinear, WRAP_MODE.CLAMP_TO_EDGE, WRAP_MODE.CLAMP_TO_EDGE)));
+        moonSphere.setTexture(new GLTexture(pa, imagesPath + "moonmap1k.jpg", new GLTextureSettings(TEXTURE_TARGET.RECTANGULAR, SHRINKAGE_FILTER.Trilinear, EXPANSION_FILTER.Bilinear, WRAP_MODE.CLAMP_TO_EDGE, WRAP_MODE.CLAMP_TO_EDGE)));
         moonSphere.generateAndUseDisplayLists();
         moonSphere.unregisterAllInputProcessors();
         //Rotate the moon around the earth

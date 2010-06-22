@@ -1,7 +1,6 @@
 package advanced.models3D;
 
 import java.awt.event.KeyEvent;
-import java.io.File;
 
 import javax.media.opengl.GL;
 
@@ -32,6 +31,9 @@ public class Models3DScene extends AbstractScene {
 	private MTApplication mtApp;
 	
 	//TODO switch button/wireframe
+	
+//	private String modelsPath = System.getProperty("user.dir") + File.separator + "examples" +  File.separator +"advanced"+ File.separator + "models3D"  + File.separator + "data" +  File.separator;
+	private String modelsPath = "advanced" + MTApplication.separator  + "models3D"  + MTApplication.separator + "data" +  MTApplication.separator;
 
 	public Models3DScene(MTApplication mtApplication, String name) {
 		super(mtApplication, name);
@@ -74,10 +76,10 @@ public class Models3DScene extends AbstractScene {
 		float destinationScale = mtApplication.width*0.94f;
 
 		//Load the meshes with the ModelImporterFactory (A file can contain more than 1 mesh)
-		MTTriangleMesh[] meshes = ModelImporterFactory.loadModel(mtApplication, System.getProperty("user.dir") + File.separator + "examples" +  File.separator +"advanced"+ File.separator+ File.separator + "models3D"  + File.separator + "data" +  File.separator +
-				"kentosaurus" + File.separator + "kentrosaurus.3ds", 180, true, false );
-//				"trashbin.obj", 180, false, false );
-		
+		//Loads 3ds model
+		MTTriangleMesh[] meshes = ModelImporterFactory.loadModel(mtApplication, modelsPath + "kentosaurus" + MTApplication.separator + "kentrosaurus.3ds", 180, true, false );
+		//Load obj model
+//		MTTriangleMesh[] meshes = ModelImporterFactory.loadModel(mtApplication,  modelsPath + "trashbin.obj", 180, false, false );
 		
 		//Get the biggest mesh in the group to use as a reference for setting the position/scale
 		final MTTriangleMesh biggestMesh = this.getBiggestMesh(meshes);

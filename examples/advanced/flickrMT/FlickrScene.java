@@ -3,8 +3,8 @@ package advanced.flickrMT;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
-import java.io.File;
 import java.io.FileInputStream;
+import java.io.InputStream;
 import java.util.Properties;
 
 import org.mt4j.MTApplication;
@@ -13,6 +13,7 @@ import org.mt4j.components.TransformSpace;
 import org.mt4j.components.visibleComponents.font.FontManager;
 import org.mt4j.components.visibleComponents.shapes.AbstractShape;
 import org.mt4j.components.visibleComponents.widgets.MTImage;
+import org.mt4j.components.visibleComponents.widgets.MTSceneWindow;
 import org.mt4j.components.visibleComponents.widgets.MTTextArea;
 import org.mt4j.components.visibleComponents.widgets.buttons.MTImageButton;
 import org.mt4j.components.visibleComponents.widgets.buttons.MTSvgButton;
@@ -39,6 +40,8 @@ import org.mt4j.util.math.ToolsMath;
 import org.mt4j.util.math.Vector3D;
 
 import processing.core.PImage;
+
+import advanced.touchTail.TouchTailScene;
 
 import com.aetrion.flickr.photos.SearchParameters;
 
@@ -79,9 +82,14 @@ public class FlickrScene extends AbstractScene {
 		
 		MTComponent topLayer = new MTComponent(app, "top layer group", new MTCamera(app));
 		
-		PImage keyboardImg = app.loadImage(System.getProperty("user.dir")+File.separator + "examples"+  File.separator +"advanced"+ File.separator+ File.separator + "flickrMT"+ File.separator +  File.separator + "data"+ File.separator 
-//		+ "keyb2.png");
-		+ "keyb128.png");
+		//Load from file system
+//		PImage keyboardImg = app.loadImage(System.getProperty("user.dir")+File.separator + "examples"+  File.separator +"advanced"+ File.separator+ File.separator + "flickrMT"+ File.separator +  File.separator + "data"+ File.separator 
+////		+ "keyb2.png");
+//		+ "keyb128.png");
+		//Load from classpath
+		PImage keyboardImg = app.loadImage("advanced" + MTApplication.separator + "flickrMT"+ MTApplication.separator + "data"+ MTApplication.separator 
+//				+ "keyb2.png");
+				+ "keyb128.png");
 		
 		final MTImageButton keyboardButton = new MTImageButton(keyboardImg, app);
 		keyboardButton.setFillColor(new MTColor(255,255,255,200));
@@ -91,7 +99,9 @@ public class FlickrScene extends AbstractScene {
 		keyboardButton.translateGlobal(new Vector3D(-2,app.height-keyboardButton.getWidthXY(TransformSpace.GLOBAL)+2,0));
 		topLayer.addChild(keyboardButton);
 
-		progressBar = new MTProgressBar(app, app.loadFont(MT4jSettings.getInstance().getDefaultFontPath()+ "Ziggurat.vlw"));
+//		progressBar = new MTProgressBar(app, app.loadFont(MT4jSettings.getInstance().getDefaultFontPath()+ "Ziggurat.vlw"));
+		progressBar = new MTProgressBar(app, app.createFont("arial", 18));
+		
 		progressBar.setDepthBufferDisabled(true);
 		progressBar.setVisible(false);
 		topLayer.addChild(progressBar);
@@ -116,7 +126,7 @@ public class FlickrScene extends AbstractScene {
 					keyb.addTextInputListener(t);
 			        
 			        //Flickr Button for the keyboard
-			        MTSvgButton flickrButton = new MTSvgButton(System.getProperty("user.dir")+File.separator+"examples"+File.separator+"advanced"+File.separator+File.separator+"flickrMT"+File.separator +"data"+File.separator
+			        MTSvgButton flickrButton = new MTSvgButton( "advanced" + MTApplication.separator +  "flickrMT" + MTApplication.separator + "data" + MTApplication.separator
 							+ "Flickr_Logo.svg", app);
 			        flickrButton.scale(0.4f, 0.4f, 1, new Vector3D(0,0,0), TransformSpace.LOCAL);
 			        flickrButton.translate(new Vector3D(0, 15,0));
@@ -157,7 +167,7 @@ public class FlickrScene extends AbstractScene {
 							        String flickrSecret = "";
 							        Properties properties = new Properties();
 								    try {
-								        properties.load(new FileInputStream(System.getProperty("user.dir") +File.separator+"examples"+ File.separator +"advanced"+ File.separator+ File.separator+"flickrMT"+File.separator +"data"+File.separator + "FlickrApiKey.txt"));
+								        properties.load(new FileInputStream( "advanced" + MTApplication.separator + "flickrMT" + MTApplication.separator + "data" + MTApplication.separator + "FlickrApiKey.txt"));
 								        flickrApiKey = properties.getProperty("FlickrApiKey", " ");
 								        flickrSecret = properties.getProperty("FlickrSecret", " ");
 								    } catch (Exception e) {

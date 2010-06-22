@@ -18,7 +18,6 @@
 package advanced.mtShell;
 
 import java.awt.event.KeyEvent;
-import java.io.File;
 
 import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.Level;
@@ -324,7 +323,9 @@ public class MTShellScene extends AbstractScene {
 	 * @return the path to icons
 	 */
 	private String getPathToIcons(){
-		return System.getProperty("user.dir")+File.separator+"examples"+File.separator+"advanced"+File.separator+"mtShell"+ File.separator+File.separator+"data"+ File.separator+"images"+File.separator; 
+//		return System.getProperty("user.dir")+File.separator+"examples"+File.separator+"advanced"+File.separator+"mtShell"+ File.separator +"data"+ File.separator+"images"+File.separator; 
+		//Load from classpath
+		return  "advanced" + MTApplication.separator + "mtShell" + MTApplication.separator + "data"+ MTApplication.separator + "images" + MTApplication.separator;
 	}
 	
 	

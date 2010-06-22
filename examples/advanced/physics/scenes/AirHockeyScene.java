@@ -1,7 +1,6 @@
 package advanced.physics.scenes;
 
 import java.awt.event.KeyEvent;
-import java.io.File;
 
 import org.jbox2d.collision.AABB;
 import org.jbox2d.collision.shapes.CircleDef;
@@ -77,6 +76,9 @@ public class AirHockeyScene extends AbstractScene {
 	//TODO after goal reset puck and make 3 second countdown -> dont use physics until countdown up!
 	//TODO get graphics, sounds, effects
 	
+//	private String imagesPath = System.getProperty("user.dir") + File.separator + "examples" + File.separator +"advanced"+ File.separator +  "physics"  + File.separator + "data" +  File.separator  + "images" +  File.separator;
+	private String imagesPath =  "advanced" + MTApplication.separator +  "physics"  + MTApplication.separator + "data" +  MTApplication.separator  + "images" +  MTApplication.separator;
+	
 	
 	public AirHockeyScene(MTApplication mtApplication, String name) {
 		super(mtApplication, name);
@@ -136,10 +138,7 @@ public class AirHockeyScene extends AbstractScene {
 		physicsContainer.addChild(centerCircleInner);
 		
 		//Create the paddles
-		PImage paddleTex = mtApplication.loadImage(
-//				MT4jSettings.getInstance().getDefaultImagesPath() + "AirHockey" + File.separator + "paddle.png");
-				System.getProperty("user.dir") + File.separator + "examples" + File.separator +"advanced"+ File.separator +  "physics"  + File.separator + "data" +  File.separator  + "images" +  File.separator  +
-        		 "paddle.png");
+		PImage paddleTex = mtApplication.loadImage(imagesPath + "paddle.png");
 		redCircle = new Paddle(app, new Vector3D(mtApplication.width - 60, mtApplication.height/2f), 50, world, 1.0f, 0.3f, 0.4f, scale);
 		redCircle.setTexture(paddleTex);
 		redCircle.setFillColor(new MTColor(255,50,50));
@@ -160,10 +159,7 @@ public class AirHockeyScene extends AbstractScene {
 		ball = new HockeyBall(app, new Vector3D(mtApplication.width/2f, mtApplication.height/2f), 38, world, 0.5f, 0.005f, 0.70f, scale);
 //		MTColor ballCol = new MTColor(0,255,0);
 //		ball.setFillColor(ballCol);
-		PImage ballTex = mtApplication.loadImage(
-//				MT4jSettings.getInstance().getDefaultImagesPath() + "AirHockey" + File.separator + 	"puk.png");
-		System.getProperty("user.dir") + File.separator + "examples" + File.separator +"advanced"+ File.separator +  "physics"  + File.separator + "data" +  File.separator  + "images" +  File.separator  +
-		 		"puk.png");
+		PImage ballTex = mtApplication.loadImage(imagesPath + "puk.png");
 		ball.setTexture(ballTex);
 //		ball.setFillColor(new MTColor(160,160,160,255));
 		ball.setFillColor(new MTColor(255,255,255,255));
