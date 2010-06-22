@@ -19,6 +19,8 @@ package org.mt4j.util;
 
 import java.io.File;
 
+import org.mt4j.MTApplication;
+
 /**
  * A class with some configurations to read the current settings from.
  * 
@@ -71,16 +73,21 @@ public class MT4jSettings {
 	
 	
 	/** The DEFAUL t_ fon t_ path. */
-	public static String DEFAULT_SETTINGS_PATH = new String(System.getProperty("user.dir") + File.separator);
+	public static String DEFAULT_SETTINGS_PATH = new String(/* MTApplication.separator */ "" );
 
 	/** The DEFAUL t_ dat a_ folde r_ path. */
-	public static String DEFAULT_DATA_FOLDER_PATH = new String(System.getProperty("user.dir") + File.separator + "data" + File.separator);
+	public static String DEFAULT_DATA_FOLDER_PATH = new String(/* MTApplication.separator + */ "data" + MTApplication.separator);
 	
 	/** The DEFAUL t_ fon t_ path. */
 	public static String DEFAULT_FONT_PATH = DEFAULT_DATA_FOLDER_PATH;
 	
 	/** The DEFAUL t_ image s_ path. */
-	public static String DEFAULT_IMAGES_PATH = new String(System.getProperty("user.dir") + File.separator + "data" + File.separator + "images"  +  File.separator);
+	public static String DEFAULT_IMAGES_PATH = new String(
+			/* 
+			 System.getProperty("user.dir") + 
+			 */
+			/* MTApplication.separator + */  "data" + MTApplication.separator + "images"  +  MTApplication.separator);
+			 
 	
 //	public static String DEFAULT_VIDEOS_PATH = new String(System.getProperty("user.dir") + File.separator + "data" /*+ File.separator + "videos"  */ +  File.separator);
 	//Since gsvideo looks into the ./data directory by itself
@@ -88,10 +95,10 @@ public class MT4jSettings {
 	public static String DEFAULT_VIDEOS_PATH = new String("");
 	
 	/** The DEFAUL t_ sv g_ path. */
-	public static String DEFAULT_SVG_PATH = new String(System.getProperty("user.dir") + File.separator + "data" + File.separator + "svg"  +  File.separator);
+	public static String DEFAULT_SVG_PATH = new String(/* MTApplication.separator + */  "data" + MTApplication.separator + "svg"  +  MTApplication.separator);
 	
 	/** The DEFAUL t_3 d_ mode l_ path. */
-	public static String DEFAULT_3D_MODEL_PATH = new String(System.getProperty("user.dir") + File.separator + "data" + File.separator + "models"  +  File.separator);
+	public static String DEFAULT_3D_MODEL_PATH = new String(/* MTApplication.separator + */ "data" + MTApplication.separator + "models"  +  MTApplication.separator);
 	
 
 	/**
