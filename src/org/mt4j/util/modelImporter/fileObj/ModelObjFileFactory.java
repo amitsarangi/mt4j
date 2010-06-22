@@ -49,6 +49,8 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StreamTokenizer;
 import java.net.URL;
@@ -56,6 +58,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 
+import org.mt4j.MTApplication;
 import org.mt4j.components.visibleComponents.GeometryInfo;
 import org.mt4j.components.visibleComponents.shapes.mesh.MTTriangleMesh;
 import org.mt4j.util.TriangleNormalGenerator;
@@ -413,14 +416,25 @@ public class ModelObjFileFactory  extends ModelImporterFactory {
 	 * @throws FileNotFoundException the file not found exception
 	 */
 	public MTTriangleMesh[] loadModelImpl(PApplet pa, String filename, float creaseAngle, boolean flipTextureY, boolean flipTextureX) throws FileNotFoundException {
-		File file = new File(filename);
-		if (!file.exists())
-			throw new FileNotFoundException("File not found: " + file.getAbsolutePath());
-		
 		this.pa = pa;
 		this.setBasePathFromFilename(filename);
-	
-		Reader reader = new BufferedReader(new FileReader(filename));
+		Reader reader = null;
+		
+		File file = new File(filename);
+		if (file.exists()){
+			reader = new BufferedReader(new FileReader(filename));
+		}else{
+			InputStream stream = Thread.currentThread().getContextClassLoader().getResourceAsStream(filename);  
+			if (stream == null){
+				stream = pa.getClass().getResourceAsStream(filename);
+			}
+			if (stream == null){
+				throw new FileNotFoundException("File not found: " + filename);
+			}
+			reader = new BufferedReader(new InputStreamReader(stream)); 
+		}
+//			throw new FileNotFoundException("File not found: " + file.getAbsolutePath());
+		
 		return load(reader,creaseAngle, flipTextureY, flipTextureX);
 	} // End of load(String)
 
@@ -968,6 +982,21 @@ public class ModelObjFileFactory  extends ModelImporterFactory {
 	 * containing that file.
 	 */
 	private void setBasePathFromFilename(String fileName) {
+		if (fileName.lastIndexOf(MTApplication.separator) == -1 && fileName.lastIndexOf(java.io.File.separator) == -1) {
+			// No path given - current directory
+			setBasePath("");
+		} else{
+			if (fileName.lastIndexOf(MTApplication.separator) != -1 ) {
+				setBasePath(
+						fileName.substring(0, fileName.lastIndexOf(MTApplication.separator)));
+			}else if (fileName.lastIndexOf(java.io.File.separator) != -1){
+				setBasePath(
+						fileName.substring(0, fileName.lastIndexOf(java.io.File.separator)));
+			}
+		}
+			
+		
+		/*
 		if (fileName.lastIndexOf(java.io.File.separator) == -1) {
 			// No path given - current directory
 			setBasePath("." + java.io.File.separator);
@@ -975,6 +1004,7 @@ public class ModelObjFileFactory  extends ModelImporterFactory {
 			setBasePath(
 					fileName.substring(0, fileName.lastIndexOf(java.io.File.separator)));
 		}
+		*/
 	} // End of setBasePathFromFilename
 
 
@@ -1160,12 +1190,23 @@ public class ModelObjFileFactory  extends ModelImporterFactory {
 	 */
 	private void setBasePath(String pathName) {
 		basePath = pathName;
-		if (basePath == null || basePath == "")
-			basePath = "." + java.io.File.separator;
-		basePath = basePath.replace('/', java.io.File.separatorChar);
-		basePath = basePath.replace('\\', java.io.File.separatorChar);
-		if (!basePath.endsWith(java.io.File.separator))
-			basePath = basePath + java.io.File.separator;
+		
+//		if (basePath == null || basePath == "")
+//			basePath = "." + java.io.File.separator;
+//		basePath = basePath.replace('/', java.io.File.separatorChar);
+//		basePath = basePath.replace('\\', java.io.File.separatorChar);
+//		if (!basePath.endsWith(java.io.File.separator))
+//			basePath = basePath + java.io.File.separator;
+		
+//		if (basePath == null || basePath == "")
+//			basePath = MTApplication.separator;
+		
+//		basePath = basePath.replace('/', MTApplication.separatorChar);
+		basePath = basePath.replace('\\', MTApplication.separatorChar);
+		
+		if (!basePath.endsWith(MTApplication.separator))
+			basePath = basePath + MTApplication.separator;
+		
 	} // End of setBasePath
 
 

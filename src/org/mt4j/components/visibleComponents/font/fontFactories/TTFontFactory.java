@@ -18,6 +18,10 @@
 package org.mt4j.components.visibleComponents.font.fontFactories;
 
 import java.awt.Toolkit;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 
 import org.apache.batik.svggen.font.Font;
@@ -329,7 +333,47 @@ public class TTFontFactory implements IFontFactory{
 			)  {
 		this.pa = pa;
 		this.fontPath 				= fontFileName;
-		this.f 						= Font.create(fontPath);
+		
+		
+		File fontFile = new File(fontPath);
+		if (fontFile.exists()){
+			//do it as usual
+			this.f 						= Font.create(fontPath); 
+		}else{
+		logger.debug("Couldnt find font file: " + fontPath + " - trying to load from classpath by extracting .ttf file to a temporary directory.");
+			//create tmp file
+			InputStream in = null;
+			in = Thread.currentThread().getContextClassLoader().getResourceAsStream(fontFileName);
+			if (in == null){
+				in = getClass().getResourceAsStream(fontFileName);
+			}
+			if (in == null)
+				logger.error("Couldnt load the font: " + fontPath + " from the classpath.");
+
+			try {
+				File tmpFile = File.createTempFile("tmpFont", ".ttf"); //TODO get font name !? //TODO works from JNLP/JAR?
+				tmpFile.deleteOnExit();
+				
+				FileOutputStream fo = new FileOutputStream(tmpFile);
+				byte[] buffer = new byte[2048];  
+				int    tmp    = 0;  
+				while ((tmp = in.read(buffer)) != -1){  
+					fo.write(buffer, 0, tmp);  
+				}  
+				fo.flush();
+				fo.close();
+				
+				//FileOutputStream fo = new FileOutputStream(new File(""));
+				this.f 						= Font.create(tmpFile.getPath()); 
+				
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+
+    	//TODO Load directly from stream?
+//    	File f = new FileCacheImageInputStream(arg0, arg1)
+		
 		if (f == null || f.getHeadTable() == null){
 			logger.error("Couldnt load font: " + fontPath);
 			return new VectorFontCharacter[]{};

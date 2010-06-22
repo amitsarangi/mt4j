@@ -49,8 +49,10 @@ import java.awt.image.ImageObserver;
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.URL;
@@ -399,6 +401,20 @@ class ObjectFileMaterials implements ImageObserver {
     						    	texture = pa.loadImage(basePath + tFile);
     						    }
     						    textureCache.put(tFile, texture);
+    						}else{
+    							
+    						    if (MT4jSettings.getInstance().isOpenGlMode()){
+    						    	PImage img = pa.loadImage(basePath + tFile);
+    								if (Tools3D.isPowerOfTwoDimension(img)){
+    									texture = new GLTexture(pa, img, new GLTextureSettings(TEXTURE_TARGET.TEXTURE_2D, SHRINKAGE_FILTER.Trilinear, EXPANSION_FILTER.Bilinear, WRAP_MODE.REPEAT, WRAP_MODE.REPEAT));
+    								}else{
+    									texture = new GLTexture(pa, img, new GLTextureSettings(TEXTURE_TARGET.RECTANGULAR, SHRINKAGE_FILTER.Trilinear, EXPANSION_FILTER.Bilinear, WRAP_MODE.REPEAT, WRAP_MODE.REPEAT));
+//    									((GLTexture)texture).setFilter(SHRINKAGE_FILTER.BilinearNoMipMaps, EXPANSION_FILTER.Bilinear);
+    								}
+    						    }else{
+    						    	texture = pa.loadImage(basePath + tFile);
+    						    }
+    						    textureCache.put(tFile, texture);
     						}
     					}
 
@@ -588,7 +604,20 @@ class ObjectFileMaterials implements ImageObserver {
     					new BufferedInputStream(
     							(new URL(basePath + fileName).openStream()))));
     		} else {
-    			reader = new BufferedReader(new FileReader(basePath + fileName));
+    			File f = new File(basePath+fileName);
+    			if (f.exists()){
+    				reader = new BufferedReader(new FileReader(basePath + fileName));
+    			}else{
+    				InputStream stream = Thread.currentThread().getContextClassLoader().getResourceAsStream(basePath + fileName);  
+    				if (stream == null){
+    					stream = pa.getClass().getResourceAsStream(basePath + fileName);
+    				}
+    				if (stream == null){
+    					throw new FileNotFoundException("File not found: " + basePath + fileName);
+    				}
+    				reader = new BufferedReader(new InputStreamReader(stream)); 
+    			}
+    			
     		}
     	}
     	catch (IOException e) {

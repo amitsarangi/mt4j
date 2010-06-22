@@ -29,6 +29,7 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.io.File;
+import java.io.InputStream;
 import java.net.URI;
 import java.text.AttributedCharacterIterator;
 import java.text.AttributedCharacterIterator.Attribute;
@@ -269,11 +270,30 @@ public class SVGLoader implements SVGConstants{
             SAXSVGDocumentFactory f = new SAXSVGDocumentFactory(parser);
             
             File file = new File(filedescr);
-            URI localFileAsUri = file.toURI(); 
-            String uri = localFileAsUri.toASCIIString();
-            
-            doc = f.createDocument(uri);
-            
+            if (file.exists()){
+                URI localFileAsUri = file.toURI(); 
+                String uri = localFileAsUri.toASCIIString();
+                doc = f.createDocument(uri);
+            }else{
+            	InputStream in = Thread.currentThread().getContextClassLoader().getResourceAsStream(filedescr);
+            	if (in == null){
+            		in = pa.getClass().getResourceAsStream(filedescr);
+            	}
+            	doc = f.createDocument(filedescr, in);
+            	
+            	 /*on it (after casting it to  SVGOMDocument) to give it a
+                URI of some sort.  If the document needs to be able to have relative
+                reference to files on the local file system, give it a URI like
+                "file:///some/where/file.svg";
+                */ 
+                //FIXME HACK! this seems to help the "org.apache.batik.bridge.BridgeException: Unable to make sense of URL for connection" error
+                //occuring with windmill.svg if loading from inputstream instead of local file system file
+                //FIXME but this might create errors when loading external file like images from the relative svg path?
+            	((SVGDocument)doc).setDocumentURI("") ; 
+//                String sub = filedescr.substring(0, filedescr.lastIndexOf(MTApplication.separator));
+//                System.out.println("F: " + filedescr + " sub; " + sub);
+//                svgDoc.setDocumentURI(sub+ MTApplication.separator) ; 
+            }
             svgDoc = (SVGDocument)doc;
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -284,7 +304,7 @@ public class SVGLoader implements SVGConstants{
 	        userAgent = new UserAgentAdapter();
 	        loader    = new DocumentLoader(userAgent);
 	        ctx       = new BridgeContext(userAgent, loader);
-	        ctx.setDynamicState(BridgeContext.DYNAMIC);
+	        ctx.setDynamicState(BridgeContext.DYNAMIC); //TODO use static?
 	        builder   = new GVTBuilder();
 	        rootGN    = builder.build(ctx, svgDoc);
 	        

@@ -7,6 +7,7 @@ import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.log4j.SimpleLayout;
+import org.mt4j.MTApplication;
 import org.mt4j.components.visibleComponents.font.BitmapFont;
 import org.mt4j.components.visibleComponents.font.BitmapFontCharacter;
 import org.mt4j.components.visibleComponents.font.IFont;
@@ -184,10 +185,14 @@ public class BitmapFontFactoryProxy implements IFontFactory {
 			}
 		}
 		else{
-			int lastDirSeparator = fontFileName.lastIndexOf(java.io.File.separator);
+			int lastDirFileSeparator = fontFileName.lastIndexOf(java.io.File.separator);
+			int lastDirSeparator = fontFileName.lastIndexOf(MTApplication.separator);
 			if (lastDirSeparator != -1){
-				p5Font = pa.createFont(fontFileName.substring(lastDirSeparator+1, fontFileName.length()), fontSize, true); //Creats the font?	
-			}else{
+				p5Font = pa.createFont(fontFileName.substring(lastDirSeparator+1, fontFileName.length()), fontSize, true); //Creats the font	
+			}else if (lastDirFileSeparator != -1){
+				p5Font = pa.createFont(fontFileName.substring(lastDirFileSeparator+1, fontFileName.length()), fontSize, true); //Creats the font
+			}
+			else{
 				p5Font = pa.loadFont(fontFileName);
 			}
 		}

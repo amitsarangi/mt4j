@@ -21,6 +21,7 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -167,10 +168,20 @@ public class XmlHandler {
 					}
 		        });
 		       
-		       parser.parse(new File(filePath), defaultHandler);
+		       File file = new File(filePath);
+		       if (file.exists()){
+		    	   parser.parse(new File(filePath), defaultHandler);
+		       }else{
+		    	   InputStream in = null;
+		    	   in = Thread.currentThread().getContextClassLoader().getResourceAsStream(filePath);
+		    	   if (in == null){
+		    		   in = getClass().getResourceAsStream(filePath);
+		    	   }
+		    	   parser.parse(in, defaultHandler);
+		       }
 	       }
 	       catch (Exception e){
-	           System.err.println("Error while parsing!");
+	           System.err.println("Error while parsing! : " + filePath);
 	          e.printStackTrace();
 	       }
 	}

@@ -21,6 +21,7 @@ package org.mt4j;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.io.FileInputStream;
+import java.io.InputStream;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Deque;
@@ -125,6 +126,8 @@ public abstract class MTApplication extends PApplet {
 	
 	private Thread renderThread;
 	
+	public static String separator = "/";
+	public static char separatorChar = '/';
 	
 //	private static boolean fullscreen;
 	/*
@@ -343,7 +346,18 @@ public abstract class MTApplication extends PApplet {
 		//Load some properties from Settings.txt file
 		Properties properties = new Properties();
 	    try {
-	        properties.load(new FileInputStream(MT4jSettings.getInstance().getDefaultSettingsPath() + "Settings.txt"));
+	    	FileInputStream fi = new FileInputStream(MT4jSettings.getInstance().getDefaultSettingsPath() + "Settings.txt");
+	    	if (fi != null){
+	    		properties.load(fi);	
+	    	}else{
+	    		InputStream in = Thread.currentThread().getContextClassLoader().getResourceAsStream("Settings.txt");
+	    		if (in != null){
+	    			properties.load(in);	
+	    		}else{
+	    			properties.load(getClass().getResourceAsStream("Settings.txt"));	
+	    		}
+	    	}
+	        
 	        //FIXME at fullscreen really use the screen dimension? -> we need to set the native resoultion ourselves!
 	        //so we can have a lower fullscreen resolution than the screen dimensions
 	        if (!MT4jSettings.getInstance().isFullscreen()){
@@ -391,11 +405,11 @@ public abstract class MTApplication extends PApplet {
 		
 		// Set frame icon image
 		try {
+			//Set the window frame's title
+			frame.setTitle(MT4jSettings.getInstance().getFrameTitle()); 
 			this.mt4jIcon = new ImageIcon(MT4jSettings.getInstance().getDefaultImagesPath() + 
 					"MT4j.gif");
 			this.frame.setIconImage(mt4jIcon.getImage()); 
-			//Set the window frame's title
-			frame.setTitle(MT4jSettings.getInstance().getFrameTitle()); 
 		}catch (Exception e){
 			e.printStackTrace();
 		}

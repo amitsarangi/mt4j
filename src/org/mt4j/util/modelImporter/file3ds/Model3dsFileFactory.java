@@ -19,6 +19,7 @@ package org.mt4j.util.modelImporter.file3ds;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -38,6 +39,7 @@ import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.log4j.SimpleLayout;
+import org.mt4j.MTApplication;
 import org.mt4j.components.visibleComponents.GeometryInfo;
 import org.mt4j.components.visibleComponents.shapes.mesh.MTTriangleMesh;
 import org.mt4j.util.MT4jSettings;
@@ -96,7 +98,11 @@ public class Model3dsFileFactory extends ModelImporterFactory{
 		HashMap<Integer, Group> materialIdToGroup = new HashMap<Integer, Group>();
 		
 		//TODO implement
+		if (textureCache != null)
+			textureCache.clear();
 		textureCache = new WeakHashMap<String, PImage>();
+		
+		Scene3ds scene = null;
 		
 		try{
 			TextDecode3ds decode = new TextDecode3ds();
@@ -105,10 +111,21 @@ public class Model3dsFileFactory extends ModelImporterFactory{
 
 			//LOAD all meshes from file into scene object
 			File file = new File(pathToModel);
-			if (!file.exists())
-				throw new FileNotFoundException("File not found: " + file.getAbsolutePath());
+			if (file.exists()){
+				scene = new Scene3ds(file, decode, level );
+			}else{
+				InputStream in = Thread.currentThread().getContextClassLoader().getResourceAsStream(pathToModel);
+				if (in == null){
+					in = pa.getClass().getResourceAsStream(pathToModel);
+				}
+				if (in != null){
+					scene = new Scene3ds(in, decode, level );
+				}else{
+					throw new FileNotFoundException("File not found: " + file.getAbsolutePath());
+				}
+			}
 				
-			Scene3ds scene = new Scene3ds(file, decode, level );
+			
 			if (debug)
 				logger.debug("\n-> Loading model: " + file.getName() + " <-");
 			
@@ -260,7 +277,7 @@ public class Model3dsFileFactory extends ModelImporterFactory{
 							if (mesh != null){
 								mesh.setName(m.name() + " material: " + new Integer(currentGroupName).toString());
 								//Assign texture
-								this.assignMaterial(file, scene, m, currentGroupName, mesh);
+								this.assignMaterial(pathToModel, file, scene, m, currentGroupName, mesh);
 
 								if (mesh.getTexture() != null){
 									mesh.setTextureEnabled(true);
@@ -322,36 +339,28 @@ public class Model3dsFileFactory extends ModelImporterFactory{
 			
 	/**
 	 * Assigns the texture.
+	 * @param pathToModel 
 	 * @param modelFile
 	 * @param scene
 	 * @param m
 	 * @param sceneMaterialID
 	 * @param mesh
 	 */		
-	private void assignMaterial(File modelFile, Scene3ds scene, Mesh3ds m, int sceneMaterialID, MTTriangleMesh mesh){
+	private void assignMaterial(String pathToModel, File modelFile, Scene3ds scene, Mesh3ds m, int sceneMaterialID, MTTriangleMesh mesh){
 		if (scene.materials() > 0){
 			if (m.faceMats() > 0){
 				//Just take the first material in the mesh, it could have more but we dont support more than 1 material for a mesh
-//				materialIndexForMesh = m.faceMat(0).matIndex();
+				// materialIndexForMesh = m.faceMat(0).matIndex();
 
 				Material3ds mat = scene.material(sceneMaterialID);
 				String materialName = mat.name();
 				if (debug)
 					logger.debug("Material name for mesh \"" + mesh.getName() + ":-> \"" + materialName + "\"");
+				materialName.trim();
+				materialName.toLowerCase();
 
 				//Try to load texture
 				try {
-					String modelFolder  = modelFile.getParent();// pathToModel.substring(), pathToModel.lastIndexOf(File.pathSeparator)
-					File modelFolderFile = new File (modelFolder);
-					if (modelFolderFile.exists() &&  modelFolderFile.isDirectory())
-						modelFolder = modelFolderFile.getAbsolutePath();
-					else{
-						modelFolder = "";
-					}
-					
-					materialName.trim();
-					materialName.toLowerCase();
-					
 					PImage cachedImage = textureCache.get(materialName);
 					if (cachedImage != null){
 						mesh.setTexture(cachedImage);
@@ -361,42 +370,75 @@ public class Model3dsFileFactory extends ModelImporterFactory{
 						return;
 					}
 					
-					String[] suffix = new String[]{"jpg", "JPG", "tga" , "TGA", "bmp", "BMP", "png", "PNG", "tiff", "TIFF"};
-					for (int j = 0; j < suffix.length; j++) {
-						String suffixString = suffix[j];
-						//Try to load and set texture to mesh
-						String texturePath 	= modelFolder + File.separator + materialName + "." +  suffixString;
-						File textureFile = new File(texturePath);
-						if (textureFile.exists()){
-							boolean success = textureFile.renameTo(new File(texturePath));
-						    if (!success) {
-						        // File was not successfully renamed
-						    	logger.debug("failed to RENAME file: " + textureFile.getAbsolutePath());
-						    }
-							
-							PImage texture = null;
+					if (modelFile.exists()){ //If model is loaded from local file system
+						String modelFolder  = modelFile.getParent();// pathToModel.substring(), pathToModel.lastIndexOf(File.pathSeparator)
+						File modelFolderFile = new File (modelFolder);
+						if (modelFolderFile.exists() &&  modelFolderFile.isDirectory())
+							modelFolder = modelFolderFile.getAbsolutePath();
+						else{
+							modelFolder = "";
+						}
+
+						String[] suffix = new String[]{"jpg", "JPG", "tga" , "TGA", "bmp", "BMP", "png", "PNG", "tiff", "TIFF"};
+						for (int j = 0; j < suffix.length; j++) {
+							String suffixString = suffix[j];
+							//Try to load and set texture to mesh
+							String texturePath 	= modelFolder + MTApplication.separator + materialName + "." +  suffixString;
+							File textureFile = new File(texturePath);
+							if (textureFile.exists()){
+								boolean success = textureFile.renameTo(new File(texturePath));
+								if (!success) {
+									// File was not successfully renamed
+									logger.debug("failed to RENAME file: " + textureFile.getAbsolutePath());
+								}
+								PImage texture = null;
+								if (MT4jSettings.getInstance().isOpenGlMode()){
+									PImage img = pa.loadImage(texturePath);
+									if (Tools3D.isPowerOfTwoDimension(img)){
+										texture = new GLTexture(pa, img, new GLTextureSettings(TEXTURE_TARGET.TEXTURE_2D, SHRINKAGE_FILTER.Trilinear, EXPANSION_FILTER.Bilinear, WRAP_MODE.REPEAT, WRAP_MODE.REPEAT));
+									}else{
+										texture = new GLTexture(pa, img, new GLTextureSettings(TEXTURE_TARGET.RECTANGULAR, SHRINKAGE_FILTER.Trilinear, EXPANSION_FILTER.Bilinear, WRAP_MODE.REPEAT, WRAP_MODE.REPEAT));
+										// ((GLTexture)texture).setFilter(SHRINKAGE_FILTER.BilinearNoMipMaps, EXPANSION_FILTER.Bilinear);
+									}
+								}else{
+									texture 		= pa.loadImage(texturePath);
+								}
+								mesh.setTexture(texture);
+								mesh.setTextureEnabled(true);
+
+								textureCache.put(materialName, texture);
+								if (debug)
+									logger.debug("->Loaded material texture: \"" + materialName + "\"");
+								break;
+							}
+							if (j+1==suffix.length){
+								logger.error("Couldnt load material texture: \"" + materialName + "\"");
+							}
+						}
+					}else{//Probably loading from jar file
+						PImage texture = null;
+						String[] suffix = new String[]{"jpg", "JPG", "tga" , "TGA", "bmp", "BMP", "png", "PNG", "tiff", "TIFF"};
+						for (String suffixString : suffix) {
+							String modelFolder  = pathToModel.substring(0, pathToModel.lastIndexOf(MTApplication.separator));
+							String texturePath 	= modelFolder + MTApplication.separator + materialName + "." +  suffixString;
 							if (MT4jSettings.getInstance().isOpenGlMode()){
 								PImage img = pa.loadImage(texturePath);
 								if (Tools3D.isPowerOfTwoDimension(img)){
 									texture = new GLTexture(pa, img, new GLTextureSettings(TEXTURE_TARGET.TEXTURE_2D, SHRINKAGE_FILTER.Trilinear, EXPANSION_FILTER.Bilinear, WRAP_MODE.REPEAT, WRAP_MODE.REPEAT));
 								}else{
 									texture = new GLTexture(pa, img, new GLTextureSettings(TEXTURE_TARGET.RECTANGULAR, SHRINKAGE_FILTER.Trilinear, EXPANSION_FILTER.Bilinear, WRAP_MODE.REPEAT, WRAP_MODE.REPEAT));
-//									((GLTexture)texture).setFilter(SHRINKAGE_FILTER.BilinearNoMipMaps, EXPANSION_FILTER.Bilinear);
+									// ((GLTexture)texture).setFilter(SHRINKAGE_FILTER.BilinearNoMipMaps, EXPANSION_FILTER.Bilinear);
 								}
 							}else{
-								texture 		= pa.loadImage(texturePath);
+								texture = pa.loadImage(texturePath);
 							}
 							mesh.setTexture(texture);
 							mesh.setTextureEnabled(true);
-							
+
 							textureCache.put(materialName, texture);
-//							
 							if (debug)
 								logger.debug("->Loaded material texture: \"" + materialName + "\"");
 							break;
-						}
-						if (j+1==suffix.length){
-							logger.error("Couldnt load material texture: \"" + materialName + "\"");
 						}
 					}
 				} catch (Exception e) {
