@@ -32,10 +32,10 @@ public class MT4jSettings {
 	private static MT4jSettings constAndSettings = null;
 	
 	/** Screen Size X. */
-	private int screenWidth = 1024;
+	public int screenWidth = 1024;
 	
 	/** Screen Size Y. */
-	private int screenHeight = 768;
+	public int screenHeight = 768;
 	
 	//Draw Modes
 	/** The Constant OPENGL_MODE. */
@@ -45,19 +45,19 @@ public class MT4jSettings {
 	public static final int P3D_MODE    = 2;
 	
 	/** Current DrawMode. */
-	private int renderer = P3D_MODE;
+	public int renderer = P3D_MODE;
 	
 	/** The num samples. */
-	private int numSamples = 0;
+	public int numSamples = 0;
 	
 	/** Frame Title. */
-	private String frameTitle = "MT-Application";
+	public String frameTitle = "MT-Application";
 	
 	/** Maximum FrameRate. */
-	private int maxFrameRate = 60;
+	public int maxFrameRate = 60;
 	
 	/** Start time of the app. */
-	private long programStartTime = 0;
+	public long programStartTime = 0;
 	
 	/** The Constant ARCHITECTURE_32_BIT. */
 	public static final int ARCHITECTURE_32_BIT = 32;
@@ -66,7 +66,9 @@ public class MT4jSettings {
 	public static final int ARCHITECTURE_64_BIT = 64;
 	
 	/** The architecture. */
-	private int architecture = ARCHITECTURE_32_BIT;
+	public int architecture = ARCHITECTURE_32_BIT;
+
+	public boolean vSync = false;
 	
 	/** The fullscreen. */
 	public static boolean fullscreen = false;
@@ -186,14 +188,14 @@ public class MT4jSettings {
 	}
 
 
-	/**
-	 * Sets the num samples.
-	 * 
-	 * @param numSamples the new num samples
-	 */
-	public void setNumSamples(int numSamples) {
-		this.numSamples = numSamples;
-	}
+//	/**
+//	 * Sets the num samples.
+//	 * 
+//	 * @param numSamples the new num samples
+//	 */
+//	public void setNumSamples(int numSamples) {
+//		this.numSamples = numSamples;
+//	}
 	
 	/**
 	 * Checks if is multi sampling.
@@ -263,30 +265,30 @@ public class MT4jSettings {
 		return renderer;
 	}
 
-	/**
-	 * Sets the renderer mode.
-	 * 
-	 * @param drawMode the new renderer mode
-	 */
-	public void setRendererMode(int drawMode) {
-		this.renderer = drawMode;
-	}
+//	/**
+//	 * Sets the renderer mode.
+//	 * 
+//	 * @param drawMode the new renderer mode
+//	 */
+//	public void setRendererMode(int drawMode) {
+//		this.renderer = drawMode;
+//	}
 	
 //	synchronized public long generateNewID(){
 //		return ConstantsAndHelpers.currentID++;
 //	}
 
 	
-	/**
-	 * Sets the title of the application frame.
-	 * Only takes effect if called right at the start.
-	 * This should be called by internally only!
-	 * 
-	 * @param frameTitle the frame title
-	 */
-	public void setFrameTitle(String frameTitle) {
-		this.frameTitle = frameTitle;
-	}
+//	/**
+//	 * Sets the title of the application frame.
+//	 * Only takes effect if called right at the start.
+//	 * This should be called by internally only!
+//	 * 
+//	 * @param frameTitle the frame title
+//	 */
+//	public void setFrameTitle(String frameTitle) {
+//		this.frameTitle = frameTitle;
+//	}
 
 
 	/**
@@ -298,14 +300,14 @@ public class MT4jSettings {
 		return frameTitle;
 	}
 
-	/**
-	 * Sets the max frame rate.
-	 * 
-	 * @param frameRate the new max frame rate
-	 */
-	public void setMaxFrameRate(int frameRate) {
-		this.maxFrameRate = frameRate;
-	}
+//	/**
+//	 * Sets the max frame rate.
+//	 * 
+//	 * @param frameRate the new max frame rate
+//	 */
+//	public void setMaxFrameRate(int frameRate) {
+//		this.maxFrameRate = frameRate;
+//	}
 	
 	/**
 	 * Gets the max frame rate.
@@ -325,32 +327,32 @@ public class MT4jSettings {
 		return programStartTime;
 	}
 
-	/**
-	 * Sets the program start time.
-	 * 
-	 * @param programStartTime the new program start time
-	 */
-	public void setProgramStartTime(long programStartTime) {
-		this.programStartTime = programStartTime;
-	}
+//	/**
+//	 * Sets the program start time.
+//	 * 
+//	 * @param programStartTime the new program start time
+//	 */
+//	public void setProgramStartTime(long programStartTime) {
+//		this.programStartTime = programStartTime;
+//	}
 
-	/**
-	 * NOTE: DONT SET THIS AFTER size() FROM PAPPLET HAS BEEN CALLED!.
-	 * 
-	 * @param screenHeight the screen height
-	 */
-	public void setScreenHeight(int screenHeight) {
-		this.screenHeight = screenHeight;
-	}
+//	/**
+//	 * NOTE: DONT SET THIS AFTER size() FROM PAPPLET HAS BEEN CALLED!.
+//	 * 
+//	 * @param screenHeight the screen height
+//	 */
+//	public void setScreenHeight(int screenHeight) {
+//		this.screenHeight = screenHeight;
+//	}
 
-	/**
-	 * NOTE: DONT SET THIS AFTER size() FROM PAPPLET HAS BEEN CALLED!.
-	 * 
-	 * @param screenWidth the screen width
-	 */
-	public void setScreenWidth(int screenWidth) {
-		this.screenWidth = screenWidth;
-	}
+//	/**
+//	 * NOTE: DONT SET THIS AFTER size() FROM PAPPLET HAS BEEN CALLED!.
+//	 * 
+//	 * @param screenWidth the screen width
+//	 */
+//	public void setScreenWidth(int screenWidth) {
+//		this.screenWidth = screenWidth;
+//	}
 
 
 	/**
@@ -382,17 +384,31 @@ public class MT4jSettings {
 	}
 
 
-	/**
-	 * Sets the architecture.
-	 * <br>NOTE: Set automatically. DONT SET THIS YOURSELF!
-	 *
-	 * @param architecture the new architecture
-	 */
-	public void setArchitecture(int architecture) {
-		this.architecture = architecture;
+//	/**
+//	 * Sets the architecture.
+//	 * <br>NOTE: Set automatically. DONT SET THIS YOURSELF!
+//	 *
+//	 * @param architecture the new architecture
+//	 */
+//	public void setArchitecture(int architecture) {
+//		this.architecture = architecture;
+//	}
+
+
+//	/**
+//	 * Sets the vertical synchronization.
+//	 * <br>NOTE: Set automatically. DONT SET THIS YOURSELF!
+//	 * @param parseBoolean the new vertical synchronization
+//	 */
+//	public void setVerticalSynchronization(boolean parseBoolean) {
+//		this.vSync = parseBoolean;
+//	}
+	
+	public boolean isVerticalSynchronization(){
+		return this.vSync;
 	}
 	
-	
+	//TODO remove setter methods, make field public to set them and only getter methods so noone thinks you can change the settings
 	
 
 }

@@ -69,28 +69,35 @@ public class MTRectangle extends MTPolygon {
 	 */
 	public MTRectangle(PImage texture, PApplet applet) {
 		this(0 ,0 ,0, texture.width, texture.height, applet);
+		
+		//To avoid errors if this is created in non opengl thread so the gl texture wont be created correctly when setting setTexture
+		this.setUseDirectGL(false);
 
 		if (applet instanceof MTApplication) {
 			MTApplication app = (MTApplication) applet;
-			if (app.isRenderThreadCurrent()){
-				this.setUseDirectGL(true);
+			
+			if (MT4jSettings.getInstance().isOpenGlMode()){
+				if (app.isRenderThreadCurrent()){
+					this.setUseDirectGL(true);
+				}else{
+					//IF we are useing OpenGL, set useDirectGL to true 
+					//(=>creates OpenGL texture, draws with pure OpenGL commands)
+					//in our main thread.
+					app.invokeLater(new Runnable() {
+						public void run() {
+							setUseDirectGL(true);
+						}
+					});
+				}
+			}else{
+				if (this.isUseDirectGL()){
+					this.setUseDirectGL(false);
+				}
 			}
 		}else{
-			//hm..this is for when we create textured rects in other threads
-			//, because when we init gl texture in other thread it breaks..
-			this.setUseDirectGL(false);
-
-			//IF we are useing OpenGL, set useDirectGL to true 
-			//(=>creates OpenGL texture, draws with pure OpenGL commands)
-			//in our main thread.
-			if (MT4jSettings.getInstance().isOpenGlMode() && applet instanceof MTApplication){
-				MTApplication app = (MTApplication)applet;
-				app.invokeLater(new Runnable() {
-					public void run() {
-						if (!isUseDirectGL())
-							setUseDirectGL(true);
-					}
-				});
+			//Cant check if we are in renderthread -> dont use direct gl mode -> dont create Gl texture object
+			if (this.isUseDirectGL()){
+				this.setUseDirectGL(false);
 			}
 		}
 

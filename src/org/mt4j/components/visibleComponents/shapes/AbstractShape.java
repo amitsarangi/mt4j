@@ -625,14 +625,10 @@ public abstract class AbstractShape extends AbstractVisibleComponent {
 	 * @param drawPureGL the draw pure gl
 	 */
 	public void setUseDirectGL(boolean drawPureGL){
-		//FIXME
-		if (this.getName().equals("PhysicsRectDrawn")){
-			System.out.println();
-		}
-		
 		if (MT4jSettings.getInstance().isOpenGlMode()){
-			if (!this.isUseDirectGL()  
-				&& drawPureGL //FIXME WHY WAS THIS MISSING? is there a reason not to put this condition?
+			if (
+					!this.isUseDirectGL()  &&
+				drawPureGL //FIXME WHY WAS THIS MISSING? is there a reason not to put this condition?
 				&& this.getGeometryInfo().getVertices() != null 
 				&& this.getGeometryInfo().getVertexCount() > 0){
 				//Generate buffers for opengl array use
