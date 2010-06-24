@@ -34,6 +34,7 @@ import org.mt4j.components.visibleComponents.widgets.keyboard.MTKeyboard;
 import org.mt4j.input.inputProcessors.componentProcessors.lassoProcessor.IdragClusterable;
 import org.mt4j.util.MT4jSettings;
 import org.mt4j.util.MTColor;
+import org.mt4j.util.math.Matrix;
 import org.mt4j.util.math.Tools3D;
 import org.mt4j.util.math.Vector3D;
 import org.mt4j.util.math.Vertex;
@@ -80,8 +81,8 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
 	/** The caret width. */
 	private float caretWidth;
 
-	private float innerPaddingTop;
-	private float innerPaddingLeft;
+	private int innerPaddingTop;
+	private int innerPaddingLeft;
 	
 	private float totalScrollTextX;
 	private float totalScrollTextY;
@@ -181,8 +182,8 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
 		fontHeight = font.getFontAbsoluteHeight();
 		
 		caretWidth = 0; 
-		innerPaddingTop = 5f;
-		innerPaddingLeft = 8f;
+		innerPaddingTop = 5;
+		innerPaddingLeft = 8;
 		
 		showCaret 	= false;
 		enableCaret = false;
@@ -201,6 +202,13 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
 		
 		if (artificialLineBreak == null){
 			artificialLineBreak = new ArtificalLineBreak();
+		}
+		
+		if (font instanceof BitmapFont) {
+			BitmapFont bf = (BitmapFont) font;
+			this.isBitmapFont = true;
+		}else{
+			this.isBitmapFont = false;
 		}
 	}
 	
@@ -233,11 +241,54 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
 		}
 	}
 	
+	//FIXME TEST Align/round text with screen pixels
+	private boolean snapToRoundedPosition = true;
+	private boolean globalMatrixChanged = false;
+	private Vector3D defaultScale = new Vector3D(1,1,1);
+	private Vector3D globalTranslation = new Vector3D();
+	private Vector3D rounded = new Vector3D();
+	private float tolerance = 0.05f;
+	private boolean isBitmapFont = false;
+	
+	public void setSnapBitmapFontToIntegerPosition(boolean snap){
+		this.snapToRoundedPosition = snap;
+	}
+	
+	public boolean isSnapBitmapFontToIntegerPosition(){
+		return this.snapToRoundedPosition;
+	}
+	
+	@Override
+	public void setMatricesDirty(boolean baseMatrixDirty) {
+		super.setMatricesDirty(baseMatrixDirty);
+		
+		globalMatrixChanged = baseMatrixDirty;
+	}
+	
 	
 	@Override
 	public void drawComponent(PGraphics g) {
 		super.drawComponent(g);
 		
+		//FIXME TEST Align/round text with screen pixels
+		//FIXME this doesent work if textarea is created at non-integer value!? and if Camera isnt default camera
+		boolean scaled = false;
+		if (isBitmapFont && snapToRoundedPosition && globalMatrixChanged){
+			Matrix m = this.getGlobalMatrix();
+			if (m.getScale().equalsVectorWithTolerance(defaultScale, tolerance)){
+				scaled = false;
+				globalTranslation.setXYZ(m.m03, m.m13, m.m23);
+				rounded.setXYZ(Math.round(globalTranslation.x), Math.round(globalTranslation.y), Math.round(globalTranslation.z));
+//				rounded.setXYZ((int)Math.ceil(globalTranslation.x), (int)Math.ceil(globalTranslation.y), (int)Math.ceil(globalTranslation.z));
+//				rounded.setXYZ((int)globalTranslation.x, (int)globalTranslation.y, (int)globalTranslation.z);
+				rounded.subtractLocal(globalTranslation);
+				g.pushMatrix();
+				g.translate(rounded.x, rounded.y, rounded.z);
+			}else{
+				scaled = true;
+			}
+		}
+
 		//Add caret if its time 
 		if (enableCaret && showCaret){
 			characterList.add(this.getFont().getFontCharacterByUnicode("|"));
@@ -245,8 +296,8 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
 		
 		int charListSize = characterList.size();
 		
-		float thisLineTotalXAdvancement = 0;
-		float lastXAdvancement = innerPaddingLeft;
+		int thisLineTotalXAdvancement = 0;
+		int lastXAdvancement = innerPaddingLeft;
 
 		//Account for TOP inner padding if using WRAP mode -> translate text
 		switch (this.mode) {
@@ -361,6 +412,11 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
 		//remove caret
 		if (enableCaret && showCaret){
 			characterList.remove(charListSize-1);
+		}
+		
+		//FIXME TEST
+		if (isBitmapFont && snapToRoundedPosition && globalMatrixChanged && !scaled){
+			g.popMatrix();
 		}
 	}
 	
@@ -852,7 +908,7 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
 	}
 	
 	
-	public void setInnerPadding(float innerPadding){
+	public void setInnerPadding(int innerPadding){
 		this.setInnerPaddingTop(innerPadding);
 		this.setInnerPaddingLeft(innerPadding);
 	}
@@ -861,7 +917,7 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
 		return this.innerPaddingTop;
 	}
 
-	public void setInnerPaddingTop(float innerPaddingTop) {
+	public void setInnerPaddingTop(int innerPaddingTop) {
 		this.innerPaddingTop = innerPaddingTop;
 		switch (this.mode) {
 		case MODE_EXPAND:
@@ -882,7 +938,7 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
 		return this.innerPaddingLeft;
 	}
 
-	public void setInnerPaddingLeft(float innerPaddingLeft) {
+	public void setInnerPaddingLeft(int innerPaddingLeft) {
 		this.innerPaddingLeft = innerPaddingLeft;
 		switch (this.mode) {
 		case MODE_EXPAND:

@@ -87,8 +87,9 @@ public class BitmapFontCharacter extends MTRectangle implements IFontCharacter {
 				glTex.setWrapMode(WRAP_MODE.CLAMP_TO_EDGE, WRAP_MODE.CLAMP_TO_EDGE);
 				
 //				glTex.setFilter(SHRINKAGE_FILTER.Trilinear, EXPANSION_FILTER.Bilinear);
-//				glTex.setFilter(SHRINKAGE_FILTER.BilinearNoMipMaps, EXPANSION_FILTER.Bilinear);
-				glTex.setFilter(SHRINKAGE_FILTER.BilinearNoMipMaps, EXPANSION_FILTER.NearestNeighbor);
+				glTex.setFilter(SHRINKAGE_FILTER.BilinearNoMipMaps, EXPANSION_FILTER.Bilinear);
+//				glTex.setFilter(SHRINKAGE_FILTER.NearestNeighborNoMipMaps, EXPANSION_FILTER.NearestNeighbor);
+//				glTex.setFilter(SHRINKAGE_FILTER.BilinearNoMipMaps, EXPANSION_FILTER.NearestNeighbor);
 			}
 		}
 	}
