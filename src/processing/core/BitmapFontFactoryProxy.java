@@ -273,8 +273,8 @@ public class BitmapFontFactoryProxy implements IFontFactory {
 				//Shift character image data down and right in the image because of aliasing artifacts at the border
 				//we need to compensate for this when displaying the char
 				//FIXME this creates far to big images..but because of artefacts needed..?
-				int topShiftAmount = 8;
-				int leftShiftAmount = 8;
+				int topShiftAmount = 4;
+				int leftShiftAmount = 4;
 				
 //				PImage copy = new PImage(ToolsMath.nearestPowerOfTwo(charWidth + shiftAmount), ToolsMath.nearestPowerOfTwo(charHeight + shiftAmount), PImage.ARGB);
 //				

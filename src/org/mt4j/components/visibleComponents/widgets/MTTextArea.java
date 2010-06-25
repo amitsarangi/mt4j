@@ -243,12 +243,13 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
 	
 	//FIXME TEST Align/round text with screen pixels
 	private boolean snapToRoundedPosition = true;
-	private boolean globalMatrixChanged = false;
+	private boolean snapVectorDirty = false;
 	private Vector3D defaultScale = new Vector3D(1,1,1);
 	private Vector3D globalTranslation = new Vector3D();
 	private Vector3D rounded = new Vector3D();
 	private float tolerance = 0.05f;
 	private boolean isBitmapFont = false;
+	private Vector3D diff = new Vector3D(0,0,0);
 	
 	public void setSnapBitmapFontToIntegerPosition(boolean snap){
 		this.snapToRoundedPosition = snap;
@@ -262,7 +263,8 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
 	public void setMatricesDirty(boolean baseMatrixDirty) {
 		super.setMatricesDirty(baseMatrixDirty);
 		
-		globalMatrixChanged = baseMatrixDirty;
+		if (baseMatrixDirty)
+			snapVectorDirty = baseMatrixDirty;
 	}
 	
 	
@@ -272,22 +274,38 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
 		
 		//FIXME TEST Align/round text with screen pixels
 		//FIXME this doesent work if textarea is created at non-integer value!? and if Camera isnt default camera
-		boolean scaled = false;
-		if (isBitmapFont && snapToRoundedPosition && globalMatrixChanged){
-			Matrix m = this.getGlobalMatrix();
-			if (m.getScale().equalsVectorWithTolerance(defaultScale, tolerance)){
-				scaled = false;
-				globalTranslation.setXYZ(m.m03, m.m13, m.m23);
-				rounded.setXYZ(Math.round(globalTranslation.x), Math.round(globalTranslation.y), Math.round(globalTranslation.z));
-//				rounded.setXYZ((int)Math.ceil(globalTranslation.x), (int)Math.ceil(globalTranslation.y), (int)Math.ceil(globalTranslation.z));
-//				rounded.setXYZ((int)globalTranslation.x, (int)globalTranslation.y, (int)globalTranslation.z);
-				rounded.subtractLocal(globalTranslation);
+		//FIXME if globalMatrixChanged is false, we dont snap -> correct? shouldnt we snap each frame??
+		//TODO cache snap translation vector and recalc if matrix changes!!!!! 0.5f round 
+		boolean applySnap = false;
+		if (isBitmapFont && snapToRoundedPosition){
+			if (snapVectorDirty){ //Calc new snap vector
+				Matrix m = this.getGlobalMatrix();
+				if (m.getScale().equalsVectorWithTolerance(defaultScale, tolerance)){ //Only if no scale applied
+					applySnap = true;
+					globalTranslation.setXYZ(m.m03, m.m13, m.m23);
+					rounded.setXYZ(Math.round(globalTranslation.x), Math.round(globalTranslation.y), Math.round(globalTranslation.z));
+//					rounded.setXYZ((int)Math.ceil(globalTranslation.x), (int)Math.ceil(globalTranslation.y), (int)Math.ceil(globalTranslation.z));
+//					rounded.setXYZ((int)globalTranslation.x, (int)globalTranslation.y, (int)globalTranslation.z);
+					rounded.subtractLocal(globalTranslation);
+					
+					diff.setXYZ(rounded.x, rounded.y, rounded.z);
+					snapVectorDirty = false;
+					
+					g.pushMatrix();
+					g.translate(diff.x, diff.y, diff.z);
+				}else{ //global matrix was set dirty but the textarea is scaled -> dont apply snapvector because it gets blurry anyway if scaled
+//					snapVectorDirty = false; //because only if scale changes back to 1,1,1 we have to calc new snapvector again
+					applySnap = false;
+				}
+			}else{ //new Snap vector already calculated since global matrix was chaneged 
+				applySnap = true;
 				g.pushMatrix();
-				g.translate(rounded.x, rounded.y, rounded.z);
-			}else{
-				scaled = true;
+				g.translate(diff.x, diff.y, diff.z);
 			}
 		}
+		
+		//if global matrix set dirty and comp not scaled -> calculate new diff vector -> apply
+		//if snap enabled -> apply diff vector
 
 		//Add caret if its time 
 		if (enableCaret && showCaret){
@@ -415,7 +433,7 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
 		}
 		
 		//FIXME TEST
-		if (isBitmapFont && snapToRoundedPosition && globalMatrixChanged && !scaled){
+		if (isBitmapFont && snapToRoundedPosition && applySnap){
 			g.popMatrix();
 		}
 	}
