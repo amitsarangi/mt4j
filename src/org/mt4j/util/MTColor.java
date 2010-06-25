@@ -26,23 +26,23 @@ public class MTColor {
 	/** The name. */
 	private String name;
 	
-	/** The Constant RED. */
-	public static transient final String RED =  "RED";
-	
-	/** The Constant GREEN. */
-	public static transient final String GREEN =  "GREEN";
-	
-	/** The Constant BLUE. */
-	public static transient final String BLUE =  "BLUE";
-	
-	/** The Constant YELLOW. */
-	public static transient final String YELLOW = "YELLOW";
-	
-	/** The Constant BLACK. */
-	public static transient final String BLACK =  "BLACK";
-	
-	/** The Constant WHITE. */
-	public static transient final String WHITE =  "WHITE";
+//	/** The Constant RED. */
+//	public static transient final String RED =  "RED";
+//	
+//	/** The Constant GREEN. */
+//	public static transient final String GREEN =  "GREEN";
+//	
+//	/** The Constant BLUE. */
+//	public static transient final String BLUE =  "BLUE";
+//	
+//	/** The Constant YELLOW. */
+//	public static transient final String YELLOW = "YELLOW";
+//	
+//	/** The Constant BLACK. */
+//	public static transient final String BLACK =  "BLACK";
+//	
+//	/** The Constant WHITE. */
+//	public static transient final String WHITE =  "WHITE";
 	
 	/** The Constant ALPHA_NO_TRANSPARENCY. */
 	public static transient final float ALPHA_NO_TRANSPARENCY = 255f;
@@ -70,6 +70,17 @@ public class MTColor {
 	
 	/** The alpha. */
 	private float alpha;
+	
+	
+	public static final MTColor RED = new MTColor(255,0,0,255);
+	
+	public static final MTColor GREEN = new MTColor(0,255,0,255);
+	
+	public static final MTColor BLUE = new MTColor(0,0,255,255);
+	
+	public static final MTColor BLACK = new MTColor(0,0,0,255);
+	
+	public static final MTColor WHITE = new MTColor(255,255,255,255);
 	
 	
 	/**

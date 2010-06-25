@@ -205,7 +205,6 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
 		}
 		
 		if (font instanceof BitmapFont) {
-			BitmapFont bf = (BitmapFont) font;
 			this.isBitmapFont = true;
 		}else{
 			this.isBitmapFont = false;
@@ -242,7 +241,7 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
 	}
 	
 	//FIXME TEST Align/round text with screen pixels
-	private boolean snapToRoundedPosition = true;
+	private boolean textPositionRounding = true;
 	private boolean snapVectorDirty = false;
 	private Vector3D defaultScale = new Vector3D(1,1,1);
 	private Vector3D globalTranslation = new Vector3D();
@@ -251,18 +250,17 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
 	private boolean isBitmapFont = false;
 	private Vector3D diff = new Vector3D(0,0,0);
 	
-	public void setSnapBitmapFontToIntegerPosition(boolean snap){
-		this.snapToRoundedPosition = snap;
+	public void setTextPositionRounding(boolean snap){
+		this.textPositionRounding = snap;
 	}
 	
-	public boolean isSnapBitmapFontToIntegerPosition(){
-		return this.snapToRoundedPosition;
+	public boolean isTextPositionRounding(){
+		return this.textPositionRounding;
 	}
 	
 	@Override
 	public void setMatricesDirty(boolean baseMatrixDirty) {
 		super.setMatricesDirty(baseMatrixDirty);
-		
 		if (baseMatrixDirty)
 			snapVectorDirty = baseMatrixDirty;
 	}
@@ -274,10 +272,9 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
 		
 		//FIXME TEST Align/round text with screen pixels
 		//FIXME this doesent work if textarea is created at non-integer value!? and if Camera isnt default camera
-		//FIXME if globalMatrixChanged is false, we dont snap -> correct? shouldnt we snap each frame??
-		//TODO cache snap translation vector and recalc if matrix changes!!!!! 0.5f round 
+		//TODO test 0.5f round 
 		boolean applySnap = false;
-		if (isBitmapFont && snapToRoundedPosition){
+		if (isBitmapFont && textPositionRounding){
 			if (snapVectorDirty){ //Calc new snap vector
 				Matrix m = this.getGlobalMatrix();
 				if (m.getScale().equalsVectorWithTolerance(defaultScale, tolerance)){ //Only if no scale applied
@@ -433,7 +430,7 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
 		}
 		
 		//FIXME TEST
-		if (isBitmapFont && snapToRoundedPosition && applySnap){
+		if (isBitmapFont && textPositionRounding && applySnap){
 			g.popMatrix();
 		}
 	}

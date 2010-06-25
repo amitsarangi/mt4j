@@ -349,6 +349,20 @@ class ObjectFileMaterials implements ImageObserver {
     						    	texture = pa.loadImage(basePath + tFile);
     						    }
     						    textureCache.put(tFile, texture);
+    						}else{
+    							System.out.println("Trying to load obj texture from: " + basePath + tFile);
+    						    if (MT4jSettings.getInstance().isOpenGlMode()){
+    						    	PImage img = pa.loadImage(basePath + tFile);
+    								if (Tools3D.isPowerOfTwoDimension(img)){
+    									texture = new GLTexture(pa, img, new GLTextureSettings(TEXTURE_TARGET.TEXTURE_2D, SHRINKAGE_FILTER.Trilinear, EXPANSION_FILTER.Bilinear, WRAP_MODE.REPEAT, WRAP_MODE.REPEAT));
+    								}else{
+    									texture = new GLTexture(pa, img, new GLTextureSettings(TEXTURE_TARGET.RECTANGULAR, SHRINKAGE_FILTER.Trilinear, EXPANSION_FILTER.Bilinear, WRAP_MODE.REPEAT, WRAP_MODE.REPEAT));
+//    									((GLTexture)texture).setFilter(SHRINKAGE_FILTER.BilinearNoMipMaps, EXPANSION_FILTER.Bilinear);
+    								}
+    						    }else{
+    						    	texture = pa.loadImage(basePath + tFile);
+    						    }
+    						    textureCache.put(tFile, texture);
     						}
     					}
     					
@@ -402,7 +416,7 @@ class ObjectFileMaterials implements ImageObserver {
     						    }
     						    textureCache.put(tFile, texture);
     						}else{
-    							
+    							System.out.println("Trying to load obj texture from: " + basePath + tFile);
     						    if (MT4jSettings.getInstance().isOpenGlMode()){
     						    	PImage img = pa.loadImage(basePath + tFile);
     								if (Tools3D.isPowerOfTwoDimension(img)){

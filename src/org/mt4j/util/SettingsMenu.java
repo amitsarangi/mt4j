@@ -134,6 +134,7 @@ public class SettingsMenu extends JFrame{
 		JPanel panel = new JPanel();
 		
 		startButton = new JButton("Start");
+		startButton.setPreferredSize(new Dimension(100, 50));
 		startButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				startMT4jApp();
