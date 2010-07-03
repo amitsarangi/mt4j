@@ -82,12 +82,20 @@ public class SvgFontFactory extends DefaultHandler implements IFontFactory {
 	private float scaleFactor;
 	private MTColor fillColor;
 	private MTColor strokeColor;
+	private boolean antiAliased;
 	
 	
-	public SvgFontFactory() {
-		
+	public SvgFontFactory() {    	}
+	
+	public IFont createFont(
+			PApplet pa, 
+			String svgFontFileName, 
+			int fontSize, 
+			MTColor fillColor, 
+			MTColor strokeColor
+	){
+		return this.createFont(pa, svgFontFileName, fontSize, fillColor, strokeColor, true);
 	}
-
 
 	/* (non-Javadoc)
 	 * @see mTouch.components.visibleComponents.font.IFontFactory#loadFont(processing.core.PApplet, java.lang.String, int, float, float, float, float, float, float, float, float)
@@ -97,12 +105,14 @@ public class SvgFontFactory extends DefaultHandler implements IFontFactory {
 			String svgFontFileName, 
 			int fontSize, 
 			MTColor fillColor, 
-			MTColor strokeColor)
-	{
+			MTColor strokeColor,
+			boolean antiAliased
+	){
 		this.pa = pa;
 		this.fontSize 		= fontSize;
 		this.fillColor = fillColor;
 		this.strokeColor = strokeColor;
+		this.antiAliased = antiAliased;
 		
 		//List of all (prepared for stencil drawing) Glyph path vertices
 //		pathVertexArrays 					= new ArrayList<Vertex[]>();
@@ -346,10 +356,19 @@ public class SvgFontFactory extends DefaultHandler implements IFontFactory {
 		character.setStrokeColor(new MTColor(strokeColor.getR(), strokeColor.getG(), strokeColor.getB(), strokeColor.getAlpha()));
 		character.setFillColor(new MTColor(fillColor.getR(), fillColor.getG(), fillColor.getB(), fillColor.getAlpha()));
 		
-		character.setStrokeWeight(0.8f);
+		character.setStrokeWeight(0.7f);
 		character.setPickable(false);
-		character.setNoStroke(false);
 		
+		if (!antiAliased){
+			character.setNoStroke(true);	
+		}else{
+			if (MT4jSettings.getInstance().isMultiSampling() && fillColor.equals(strokeColor)){
+				character.setNoStroke(true);
+			}else{
+				character.setNoStroke(false);	
+			}
+		}
+	
 		if (MT4jSettings.getInstance().isOpenGlMode())
 			character.generateAndUseDisplayLists();
 		
@@ -403,7 +422,8 @@ public class SvgFontFactory extends DefaultHandler implements IFontFactory {
 //		VectorFont svgFont = new VectorFont(this.getCharacters(), fontDefaultXAdvancing, fontFamily, fontMaxAscent, fontMaxDescent, font_units_per_em, fontSize,
 		VectorFont svgFont = new VectorFont((VectorFontCharacter[])characters.toArray(new VectorFontCharacter[characters.size()]), fontDefaultXAdvancing, fontFamily, fontMaxAscent, fontMaxDescent, font_units_per_em, fontSize,
 				fillColor,
-				strokeColor
+				strokeColor,
+				antiAliased
 		);
 		
 		//TODO this caused performance problems - reason UNKOWN! DISABLE IF PERFORMANCE DROPS SIGNIFICANTLY!

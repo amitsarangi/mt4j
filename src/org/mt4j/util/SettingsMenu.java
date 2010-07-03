@@ -23,10 +23,8 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.Spring;
 import javax.swing.SpringLayout;
-import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
-
 
 import processing.core.PApplet;
 
@@ -262,10 +260,11 @@ public class SettingsMenu extends JFrame{
 		
 		// Launch processing PApplet main() function
 	    if (MT4jSettings.getInstance().isFullscreen()){
-	    	
+	    	//Set screen size to screen dimensions if fullscreen and ignore custom sizes
 	    	Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 	    	MT4jSettings.getInstance().screenWidth = screenSize.width;
 	    	MT4jSettings.getInstance().screenHeight = screenSize.height;
+	    	
 	    	if (fullscreenExclusiveMode){
 	    		PApplet.main(new String[] {
 	    				displayString,

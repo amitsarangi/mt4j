@@ -392,7 +392,7 @@ public class Model3dsFileFactory extends ModelImporterFactory{
 									logger.debug("failed to RENAME file: " + textureFile.getAbsolutePath());
 								}
 								PImage texture = null;
-								if (MT4jSettings.getInstance().isOpenGlMode()){
+								if (MT4jSettings.getInstance().isOpenGlMode()){ //TODO check if render thread
 									PImage img = pa.loadImage(texturePath);
 									if (Tools3D.isPowerOfTwoDimension(img)){
 										texture = new GLTexture(pa, img, new GLTextureSettings(TEXTURE_TARGET.TEXTURE_2D, SHRINKAGE_FILTER.Trilinear, EXPANSION_FILTER.Bilinear, WRAP_MODE.REPEAT, WRAP_MODE.REPEAT));

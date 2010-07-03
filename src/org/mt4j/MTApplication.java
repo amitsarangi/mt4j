@@ -30,8 +30,6 @@ import java.util.Properties;
 
 import javax.media.opengl.GL;
 import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JFrame;
 
 import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.Level;
@@ -207,6 +205,7 @@ public abstract class MTApplication extends PApplet {
 	
 	/*
 	//TODO test to make window undecorated - seems to mess up some textures (maybe because opengl re-initialization)
+	//put frame.setLocation(-1600, 0); at the end of setup() to position the frame 
 	public void init(){
 		  // to make a frame not displayable, you can
 		  // use frame.removeNotify()

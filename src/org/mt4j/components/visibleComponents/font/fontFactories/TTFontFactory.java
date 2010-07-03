@@ -77,6 +77,8 @@ public class TTFontFactory implements IFontFactory{
 	private int fontDefaultXAdvancing; 
 	private int fontSize; 
 	private String fontPath;
+
+	private boolean antiAliasing;
 	
 
 	public TTFontFactory(){
@@ -92,7 +94,15 @@ public class TTFontFactory implements IFontFactory{
 		return this.createFont(pa, fontFileName, 50, new MTColor(0,0,0,255), new MTColor(0,0,0,255));
 	}
 			
-
+	public VectorFont createFont(
+			PApplet pa, 
+			String fontFileName, 
+			int fontSize, 
+			MTColor fillColor, 
+			MTColor strokeColor)
+	{
+		return this.createFont(pa, fontFileName, fontSize, fillColor, strokeColor, true);
+	}
 	
 	/* (non-Javadoc)
 	 * @see mTouch.components.visibleComponents.font.IFontFactory#loadFont(processing.core.PApplet, java.lang.String, int, float, float, float, float, float, float, float, float)
@@ -102,8 +112,9 @@ public class TTFontFactory implements IFontFactory{
 			String fontFileName, 
 			int fontSize, 
 			MTColor fillColor, 
-			MTColor strokeColor)
-	{
+			MTColor strokeColor,
+			boolean antiAliasing
+	){
 		
 //		//INITIAL SETTINGS
 //		this.pa 					= pa;
@@ -142,7 +153,8 @@ public class TTFontFactory implements IFontFactory{
 				fillColor, 
 				strokeColor, 
 				fontFileName, 
-				fontSize);
+				fontSize,
+				antiAliasing);
 
 		VectorFontCharacter[] newArray = new VectorFontCharacter[chars.length+3];
 		System.arraycopy(chars, 0, newArray, 0, chars.length);
@@ -223,13 +235,13 @@ public class TTFontFactory implements IFontFactory{
 		fontMaxDescent = Math.round(fontMaxDescent * this.scaleFactor);
 
 		//Create Font
-		VectorFont svgFont = new VectorFont(newArray, fontDefaultXAdvancing, this.getFamily(f), fontMaxAscent, fontMaxDescent,this.unitsPerEm,  fontSize,
+		VectorFont vectorFont = new VectorFont(newArray, fontDefaultXAdvancing, this.getFamily(f), fontMaxAscent, fontMaxDescent, this.unitsPerEm, fontSize,
 				fillColor,
-				strokeColor);
-		svgFont.setFontFileName(fontPath);
-		svgFont.setFontId("-1");
-		
-		return svgFont;
+				strokeColor,
+				antiAliasing);
+		vectorFont.setFontFileName(fontPath);
+		vectorFont.setFontId("-1");
+		return vectorFont;
 	}
 
 	
@@ -308,13 +320,9 @@ public class TTFontFactory implements IFontFactory{
 	 */
 	
 	
-	
-
 	/**
-	 * Gets the TTFont characters.
-	 * This does essentially the same as createFont()
-	 * but you can specify the characters to create in the string parameter.
-	 * 
+	 * Gets the tTF characters.
+	 *
 	 * @param pa the pa
 	 * @param text the text
 	 * @param fillColor the fill color
@@ -330,10 +338,37 @@ public class TTFontFactory implements IFontFactory{
 			MTColor strokeColor,
 			String fontFileName, 
 			int fontSize
-			)  {
+	)  {
+		return this.getTTFCharacters(pa, text, fillColor, strokeColor, fontFileName, fontSize, true);
+	}
+
+	
+	/**
+	 * Gets the TTFont characters.
+	 * This does essentially the same as createFont()
+	 * but you can specify the characters to create in the string parameter.
+	 *
+	 * @param pa the pa
+	 * @param text the text
+	 * @param fillColor the fill color
+	 * @param strokeColor the stroke color
+	 * @param fontFileName the font file name
+	 * @param fontSize the font size
+	 * @param antiAliasing the anti aliasing
+	 * @return the tTF characters
+	 */
+	public VectorFontCharacter[] getTTFCharacters(
+			PApplet pa, 
+			String text,
+			MTColor fillColor, 
+			MTColor strokeColor,
+			String fontFileName, 
+			int fontSize,
+			boolean antiAliasing
+	)  {
 		this.pa = pa;
-		this.fontPath 				= fontFileName;
-		
+		this.fontPath = fontFileName;
+		this.antiAliasing = antiAliasing;
 		
 		File fontFile = new File(fontPath);
 		if (fontFile.exists()){
@@ -341,7 +376,6 @@ public class TTFontFactory implements IFontFactory{
 			this.f 						= Font.create(fontPath); 
 		}else{
 		logger.debug("Couldnt find font file: " + fontPath + " - trying to load from classpath by extracting .ttf file to a temporary directory.");
-			//create tmp file
 			InputStream in = null;
 			in = Thread.currentThread().getContextClassLoader().getResourceAsStream(fontFileName);
 			if (in == null){
@@ -350,6 +384,7 @@ public class TTFontFactory implements IFontFactory{
 			if (in == null)
 				logger.error("Couldnt load the font: " + fontPath + " from the classpath.");
 
+			//Need to create a tmp file since Font.create() needs a File! :(
 			try {
 				File tmpFile = File.createTempFile("tmpFont", ".ttf"); //TODO get font name !? //TODO works from JNLP/JAR?
 				tmpFile.deleteOnExit();
@@ -424,8 +459,7 @@ public class TTFontFactory implements IFontFactory{
 			MTColor fillColor, 
 			MTColor strokeColor,
 			float scaleFactor
-			)  
-	throws RuntimeException{
+			)throws RuntimeException{
 		
 		// Decide upon a cmap table to use for our character to glyph look-up
 		CmapFormat cmapFmt = this.getCmapFormat(f);
@@ -556,10 +590,14 @@ public class TTFontFactory implements IFontFactory{
 			character.setPickable(false);
 			
 //			//FIXME TEST -> dont use a font outline if we use multi-sampling and outlineColor=fillcolor
-			if (MT4jSettings.getInstance().isMultiSampling() && fillColor.equals(strokeColor)){
-				character.setNoStroke(true);
+			if (!this.antiAliasing){
+				character.setNoStroke(true);	
 			}else{
-				character.setNoStroke(false);	
+				if (MT4jSettings.getInstance().isMultiSampling() && fillColor.equals(strokeColor)){
+					character.setNoStroke(true);
+				}else{
+					character.setNoStroke(false);	
+				}
 			}
 
 //			for(Vertex[] contour: character.getContours()){

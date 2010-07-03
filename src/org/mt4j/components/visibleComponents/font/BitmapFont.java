@@ -85,11 +85,13 @@ public class BitmapFont implements IFont {
 	private MTColor strokeColor;
 	
 	private List<String> notAvailableChars;
+
+	private boolean antiAliased;
 	
 	
 	/**
 	 * Instantiates a new bitmap font.
-	 * 
+	 *
 	 * @param characters the characters
 	 * @param defaultHorizontalAdvX the default horizontal adv x
 	 * @param fontFamily the font family
@@ -99,16 +101,20 @@ public class BitmapFont implements IFont {
 	 * @param originalFontSize the original font size
 	 * @param fillColor the fill color
 	 * @param strokeColor the stroke color
+	 * @param antiAliased the anti aliased
 	 */
 	public BitmapFont(BitmapFontCharacter[] characters, int defaultHorizontalAdvX, String fontFamily, int fontMaxAscent, int fontMaxDescent, int unitsPerEm, int originalFontSize,
 			MTColor fillColor,
-			MTColor strokeColor) {
+			MTColor strokeColor,
+			boolean antiAliased
+	) {
 		this.characters = characters;
 		this.defaultHorizontalAdvX = defaultHorizontalAdvX;
 		this.fontFamily = fontFamily;
 		this.originalFontSize = originalFontSize;
 		this.fillColor = fillColor;
 		this.strokeColor = strokeColor;
+		this.antiAliased = antiAliased;
 		
 //		this.fontId = "";
 		
@@ -164,7 +170,7 @@ public class BitmapFont implements IFont {
 					if (this.getCharacters().length > 0 && this.getCharacters()[0] != null && this.getCharacters()[0] instanceof MTComponent){
 						MTComponent comp = (MTComponent)this.getCharacters()[0];
 						PApplet pa = comp.getRenderer();
-						List<BitmapFontCharacter> charactersList = bitmapFontFactory.getCharacters(pa, unicode, fillColor, strokeColor, this.fontFileName, this.originalFontSize);
+						List<BitmapFontCharacter> charactersList = bitmapFontFactory.getCharacters(pa, unicode, fillColor, strokeColor, this.fontFileName, this.originalFontSize, this.antiAliased);
 						BitmapFontCharacter[] characters = charactersList.toArray(new BitmapFontCharacter[charactersList.size()]); 
 						if (characters.length >= 1 && characters[0] != null){
 							BitmapFontCharacter loadedCharacter = characters[0];
@@ -311,6 +317,16 @@ public class BitmapFont implements IFont {
 	//@Override
 	public MTColor getStrokeColor() {
 		return strokeColor;
+	}
+
+	
+	
+
+	/* (non-Javadoc)
+	 * @see org.mt4j.components.visibleComponents.font.IFont#isAntiAliased()
+	 */
+	public boolean isAntiAliased() {
+		return this.antiAliased;
 	}
 
 

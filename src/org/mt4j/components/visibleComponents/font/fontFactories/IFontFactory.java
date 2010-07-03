@@ -46,5 +46,24 @@ public interface IFontFactory {
 			MTColor fillColor, 
 			MTColor strokeColor);
 	
-
+	
+	/**
+	 * Creates a new IFont object.
+	 *
+	 * @param pa the pa
+	 * @param svgFontFileName the svg font file name
+	 * @param fontSize the font size
+	 * @param fillColor the fill color
+	 * @param strokeColor the stroke color
+	 * @param antiAliased the anti aliased
+	 * @return the iFont
+	 */
+	public IFont createFont(
+			PApplet pa, 
+			String svgFontFileName, 
+			int fontSize, 
+			MTColor fillColor, 
+			MTColor strokeColor,
+			boolean antiAliased
+			);
 }

@@ -124,6 +124,13 @@ public interface IFont {
 	
 	
 	/**
+	 * Checks if is anti aliased.
+	 *
+	 * @return true, if is anti aliased
+	 */
+	public boolean isAntiAliased();
+	
+	/**
 	 * Destroys the font's characters and removes it from the FontManager's cache.
 	 */
 	public void destroy();

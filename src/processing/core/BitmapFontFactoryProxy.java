@@ -1,3 +1,20 @@
+/***********************************************************************
+ * mt4j Copyright (c) 2008 - 2010 Christopher Ruff, Fraunhofer-Gesellschaft All rights reserved.
+ *  
+ *   This program is free software: you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation, either version 3 of the License, or
+ *   (at your option) any later version.
+ *
+ *   This program is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU General Public License for more details.
+ *
+ *   You should have received a copy of the GNU General Public License
+ *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ ***********************************************************************/
 package processing.core;
 
 import java.util.ArrayList;
@@ -37,10 +54,8 @@ public class BitmapFontFactoryProxy implements IFontFactory {
 	
 //	static{
 //		FontManager.getInstance().registerFontFactory("", new BitmapFontFactory());
-//	}
+	//	}
 
-	
-	
 	/* (non-Javadoc)
 	 * @see org.mt4j.components.visibleComponents.font.fontFactories.IFontFactory#createFont(processing.core.PApplet, java.lang.String, int, org.mt4j.util.MTColor, org.mt4j.util.MTColor)
 	 */
@@ -51,7 +66,21 @@ public class BitmapFontFactoryProxy implements IFontFactory {
 			MTColor fillColor, 
 			MTColor strokeColor
 	) {
-		PFont p5Font = this.getProcessingFont(pa, fontFileName, fontSize);
+		return this.createFont(pa, fontFileName, fontSize, fillColor, strokeColor, true);
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.mt4j.components.visibleComponents.font.fontFactories.IFontFactory#createFont(processing.core.PApplet, java.lang.String, int, org.mt4j.util.MTColor, org.mt4j.util.MTColor)
+	 */
+	public IFont createFont(
+			PApplet pa, 
+			String fontFileName, 
+			int fontSize,
+			MTColor fillColor, 
+			MTColor strokeColor,
+			boolean antiAliased
+	) {
+		PFont p5Font = this.getProcessingFont(pa, fontFileName, fontSize, antiAliased);
 		List<BitmapFontCharacter> bitMapCharacters = this.createCharacters(pa, p5Font, defaultCharacters, fillColor, strokeColor);
 	
 		//font is null sometimes (vlw)
@@ -68,7 +97,7 @@ public class BitmapFontFactoryProxy implements IFontFactory {
 //		FontMetrics fm = Toolkit.getDefaultToolkit().getFontMetrics(f);
 		 */
 		
-		int defaultHorizontalAdvX = bitMapCharacters.get(0).getHorizontalDist(); //FIXME HACK!
+		int defaultHorizontalAdvX = (!bitMapCharacters.isEmpty())? bitMapCharacters.get(0).getHorizontalDist() : Math.round(p5Font.descent() * fontSize); //FIXME HACK!
 		String fontFamily = p5Font.getPostScriptName();
 //		String fontFamily = f.getFamily(); 
 		//FIXME ascent() and descent() return to small values! wheres the difference??
@@ -148,38 +177,60 @@ public class BitmapFontFactoryProxy implements IFontFactory {
 		BitmapFontCharacter[] characters = bitMapCharacters.toArray(new BitmapFontCharacter[bitMapCharacters.size()]);
 		BitmapFont bitmapFont = new BitmapFont(characters, defaultHorizontalAdvX, fontFamily, fontMaxAscent, fontMaxDescent, unitsPerEm, originalFontSize, 
 				fillColor,
-				strokeColor
+				strokeColor,
+				antiAliased
 		);
 		bitmapFont.setFontFileName(fontFileName);
 		return bitmapFont;
 	}
 	
 	
-	
+//	/**
+//	 * Gets the processing font.
+//	 *
+//	 * @param pa the pa
+//	 * @param fontFileName the font file name
+//	 * @param fontSize the font size
+//	 * @return the processing font
+//	 */
+//	private PFont getProcessingFont(PApplet pa, String fontFileName, int fontSize){
+//		return this.getProcessingFont(pa, fontFileName, fontSize, true);
+//	}
+
 	/**
 	 * Gets the processing font.
+	 *
 	 * @param pa the pa
 	 * @param fontFileName the font file name
 	 * @param fontSize the font size
+	 * @param antiAliased the anti aliased
 	 * @return the processing font
 	 */
-	private PFont getProcessingFont(PApplet pa, String fontFileName, int fontSize){
+	private PFont getProcessingFont(PApplet pa, String fontFileName, int fontSize, boolean antiAliased){
 		PFont p5Font;
-		//FIXME when loading the vlw font the font size is already determined with the file
+		//FIXME when loading the vlw font the font size and anti aliasing is already determined with the file
 		//and our parameter isnt honored
 		if (fontFileName.endsWith(".vlw")){
-			int lastDirSeparator = fontFileName.lastIndexOf(java.io.File.separator);
-			if (lastDirSeparator != -1){
+			int lastDirFileSeparator = fontFileName.lastIndexOf(java.io.File.separator);
+			int lastDirSeparator = fontFileName.lastIndexOf(MTApplication.separator);
+			if (lastDirFileSeparator != -1){
 //				p5Font = pa.createFont(fontFileName.substring(lastDirSeparator+1, fontFileName.length()), fontSize, false); //FIXME TEST
+				p5Font = pa.loadFont(fontFileName.substring(lastDirFileSeparator+1, fontFileName.length()));
+			}else if (lastDirSeparator != -1){
 				p5Font = pa.loadFont(fontFileName.substring(lastDirSeparator+1, fontFileName.length()));
-			}else{
+			}
+			else{
 				p5Font = pa.loadFont(fontFileName);
 			}
 		}
 		else if (fontFileName.endsWith(".ttf") || fontFileName.endsWith(".otf")){
-			int lastDirSeparator = fontFileName.lastIndexOf(java.io.File.separator);
-			if (lastDirSeparator != -1){
-				p5Font = pa.createFont(fontFileName.substring(lastDirSeparator+1, fontFileName.length()), fontSize, true); 
+			int lastDirFileSeparator = fontFileName.lastIndexOf(java.io.File.separator);
+			int lastDirSeparator = fontFileName.lastIndexOf(MTApplication.separator);
+			 //FIXME this doesent use the actual file to load, but rather loads a system font again!?
+			if (lastDirFileSeparator != -1){
+				p5Font = pa.createFont(fontFileName.substring(lastDirFileSeparator+1, fontFileName.length()), fontSize, antiAliased); 
+			}else if (lastDirSeparator != -1){
+				p5Font = pa.createFont(fontFileName.substring(lastDirSeparator+1, fontFileName.length()), fontSize, antiAliased); 
 			}else{
 				p5Font = pa.loadFont(fontFileName);
 			}
@@ -187,10 +238,11 @@ public class BitmapFontFactoryProxy implements IFontFactory {
 		else{
 			int lastDirFileSeparator = fontFileName.lastIndexOf(java.io.File.separator);
 			int lastDirSeparator = fontFileName.lastIndexOf(MTApplication.separator);
-			if (lastDirSeparator != -1){
-				p5Font = pa.createFont(fontFileName.substring(lastDirSeparator+1, fontFileName.length()), fontSize, true); //Creats the font	
-			}else if (lastDirFileSeparator != -1){
-				p5Font = pa.createFont(fontFileName.substring(lastDirFileSeparator+1, fontFileName.length()), fontSize, true); //Creats the font
+			if (lastDirFileSeparator != -1){
+				p5Font = pa.createFont(fontFileName.substring(lastDirFileSeparator+1, fontFileName.length()), fontSize, antiAliased); //Creats the font
+			}
+			else if (lastDirSeparator != -1){
+				p5Font = pa.createFont(fontFileName.substring(lastDirSeparator+1, fontFileName.length()), fontSize, antiAliased); //Creats the font	
 			}
 			else{
 				p5Font = pa.loadFont(fontFileName);
@@ -201,17 +253,6 @@ public class BitmapFontFactoryProxy implements IFontFactory {
 	
 	
 	
-	/**
-	 * Creates the specified characters.
-	 * 
-	 * @param pa the pa
-	 * @param chars the chars
-	 * @param fillColor the fill color
-	 * @param strokeColor the stroke color
-	 * @param fontFileName the font file name
-	 * @param fontSize the font size
-	 * @return the characters
-	 */
 	public List<BitmapFontCharacter> getCharacters(PApplet pa, 
 			String chars,
 			MTColor fillColor, 
@@ -219,7 +260,30 @@ public class BitmapFontFactoryProxy implements IFontFactory {
 			String fontFileName, 
 			int fontSize
 	){
-		PFont p5Font = this.getProcessingFont(pa, fontFileName, fontSize);
+		return this.getCharacters(pa, chars, fillColor, strokeColor, fontFileName, fontSize, true);
+	}
+	
+	/**
+	 * Creates the specified characters.
+	 *
+	 * @param pa the pa
+	 * @param chars the chars
+	 * @param fillColor the fill color
+	 * @param strokeColor the stroke color
+	 * @param fontFileName the font file name
+	 * @param fontSize the font size
+	 * @param antiAliased the anti aliased
+	 * @return the characters
+	 */
+	public List<BitmapFontCharacter> getCharacters(PApplet pa, 
+			String chars,
+			MTColor fillColor, 
+			MTColor strokeColor,
+			String fontFileName, 
+			int fontSize,
+			boolean antiAliased
+	){
+		PFont p5Font = this.getProcessingFont(pa, fontFileName, fontSize, antiAliased);
 		return createCharacters(pa, p5Font, chars, fillColor, strokeColor);
 	}
 	

@@ -90,6 +90,8 @@ public class VectorFont implements IFont {
 	private MTColor strokeColor;
 	
 	private List<String> notAvailableChars;
+
+	private boolean antiAliased;
 	
 //	/**
 //	 * The Constructor.
@@ -113,24 +115,26 @@ public class VectorFont implements IFont {
 //	 */
 //	public VectorFont(VectorFontCharacter[] characters, int defaultHorizontalAdvX, String fontFamily, int fontMaxAscent, int fontMaxDescent, int originalFontSize) {
 //		this(characters, defaultHorizontalAdvX, fontFamily, fontMaxAscent, fontMaxDescent, 1000, originalFontSize);
-//	}
+	//	}
 
 	/**
- * The Constructor.
- * 
- * @param characters the characters
- * @param defaultHorizontalAdvX the default horizontal adv x
- * @param fontFamily the font family
- * @param fontMaxAscent the font max ascent
- * @param fontMaxDescent the font max descent
- * @param unitsPerEm the units per em
- * @param originalFontSize the original font size
- * @param fillColor the fill color
- * @param strokeColor the stroke color
- */
+	 * The Constructor.
+	 *
+	 * @param characters the characters
+	 * @param defaultHorizontalAdvX the default horizontal adv x
+	 * @param fontFamily the font family
+	 * @param fontMaxAscent the font max ascent
+	 * @param fontMaxDescent the font max descent
+	 * @param unitsPerEm the units per em
+	 * @param originalFontSize the original font size
+	 * @param fillColor the fill color
+	 * @param strokeColor the stroke color
+	 * @param antiAliased the anti aliased
+	 */
 	public VectorFont(VectorFontCharacter[] characters, int defaultHorizontalAdvX, String fontFamily, int fontMaxAscent, int fontMaxDescent, int unitsPerEm, int originalFontSize,
 			MTColor fillColor,
-			MTColor strokeColor
+			MTColor strokeColor,
+			boolean antiAliased
 	) {
 		super();
 		this.characters = characters;
@@ -139,6 +143,7 @@ public class VectorFont implements IFont {
 		this.originalFontSize = originalFontSize;
 		this.fillColor = fillColor;
 		this.strokeColor = strokeColor;
+		this.antiAliased = antiAliased;
 		
 //		this.fontSize = fontSize;
 //		this.fontUnitsPerEm = fontUnitsPerEm;
@@ -198,7 +203,7 @@ public class VectorFont implements IFont {
 					if (this.getCharacters().length > 0 && this.getCharacters()[0] != null && this.getCharacters()[0] instanceof MTComponent){
 						MTComponent comp = (MTComponent)this.getCharacters()[0];
 						PApplet pa = comp.getRenderer();
-						VectorFontCharacter[] characters = ttFontFactory.getTTFCharacters(pa, unicode, fillColor, strokeColor, this.fontFileName, this.originalFontSize);
+						VectorFontCharacter[] characters = ttFontFactory.getTTFCharacters(pa, unicode, fillColor, strokeColor, this.fontFileName, this.originalFontSize, this.antiAliased);
 						if (characters.length == 1 && characters[0] != null){
 							VectorFontCharacter loadedCharacter = characters[0];
 							VectorFontCharacter[] newArray = new VectorFontCharacter[this.getCharacters().length + 1];
@@ -394,6 +399,11 @@ public class VectorFont implements IFont {
 	 */
 	public MTColor getStrokeColor() {
 		return strokeColor;
+	}
+	
+
+	public boolean isAntiAliased() {
+		return this.antiAliased;
 	}
 
 

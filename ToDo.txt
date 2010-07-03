@@ -1,7 +1,6 @@
 ToDo list:
 
 -> General:
-- movieclip fixe setTexture call in Gstreamer thread
 - processing.com post and bug report (font)
 - working with text tutorial
 - add setAnchor(Vector3D anchorPoint) for all AbstractShapes? -> use in set/getPosition() -> per default use centerpoint -> rotate(45) -> use anchor by default?
@@ -15,8 +14,6 @@ ToDo list:
 
 - remove logging from model loading -> consumes memory even if the logging level doesent match?
 - nice image for touch cursor
-- make standalone executable MT4j MTShell distribution/installer on windows
-- integrate with JNLP?
 - update to latest gsvideo
 - allow wrapping of JComponents in a MTComponent (-> swingToTexture, repaintManager update, generate mouse events)
 - use PGraphics.pushStyle()/popStyle when rendering with processing!?
@@ -51,13 +48,12 @@ ToDo list:
 - check if for line_smooth disabling/enabling multisampling is too expensive - if so disable/dont use line_smooth when multisampling at all 
 - framework for component persistation (X-Stream?)
 - put perspective and viewport into MTCamera (?)
-- (Use nanotimer or currentmillis to update and animations? -> nano has more precision but has problems on some systems(?))
+- (Use nanotimer or currentmillis or gage timer to update and animations? -> nano has more precision but has problems on some systems(?))
 - Central TextureManager/Ogl resource manager that tracks the opengl texture ids and deletes them if not needed anymore
 - (a new MT4JTexture class/interface which internally creates a processing or opengl texture - the mixture make problems)
 - (save trans/rot/scale separately, not in a single matrix and compose matrix b4 each draw -> not orthogonalization req.)
 - (dropshadows - with custom created pimage?)
 - (bug when drawing outline after clipping on frustum culled object, dont draw outline then!)
-- (instead of String "fileName" use URLs? but p5 works with strings..)
 - (b4 picking, check if object in frustum ? - update cam - check if obj in frustum)
 - (particles not working in fullscreen (fluidscene))? -> cuz of depth buffer and p5 drawing (p5 drawing and pure opengl mix -> z-problems)
 - (use render bins and sort object automagically (2d, 3d, Hud, transparent))? 

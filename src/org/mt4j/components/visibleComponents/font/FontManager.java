@@ -90,6 +90,20 @@ public class FontManager {
 	
 	
 	/**
+	 * Creates the font.
+	 *
+	 * @param pa the pa
+	 * @param fontFileName the font file name
+	 * @param fontSize the font size
+	 * @param antiAliased the anti aliased
+	 * @return the i font
+	 */
+	public IFont createFont(PApplet pa, String fontFileName, int fontSize, boolean antiAliased){
+		return createFont(pa, fontFileName,fontSize, new MTColor(0,0,0,255), new MTColor(0,0,0,255), antiAliased);
+	}
+	
+	
+	/**
 	 * Loads and returns a font from a file.
 	 * <br>The file has to be located in the ./data/ directory of the program.
 	 * <br>Example: "IFont font = FontManager.createFont(papplet, "Pakenham.svg", 100);"
@@ -101,17 +115,15 @@ public class FontManager {
 	 * @return the i font
 	 */
 	public IFont createFont(PApplet pa, String fontFileName, int fontSize){
-//		String fontAbsoultePath = System.getProperty("user.dir") + File.separator + "data" + /*File.separator + "fonts"  + */ File.separator + IVectorFontFileName;
-		String fontAbsoultePath =  MT4jSettings.getInstance().getDefaultFontPath() + fontFileName;
-		IFont font = this.getCachedFont(fontAbsoultePath, fontSize, new MTColor(0,0,0,255), new MTColor(0,0,0,255));
-		if (font != null){
-			return font;
-		}
+////		String fontAbsoultePath = System.getProperty("user.dir") + File.separator + "data" + /*File.separator + "fonts"  + */ File.separator + IVectorFontFileName;
+//		String fontAbsoultePath =  MT4jSettings.getInstance().getDefaultFontPath() + fontFileName;
+//		IFont font = this.getCachedFont(fontAbsoultePath, fontSize, new MTColor(0,0,0,255), new MTColor(0,0,0,255), true);
+//		if (font != null){
+//			return font;
+//		}
 		return createFont(pa, fontFileName,fontSize, new MTColor(0,0,0,255), new MTColor(0,0,0,255));
 	}
 	
-	
-
 	/**
 	 * Loads and returns a vector font from a file.
 	 * <br>The file has to be located in the ./data/ directory of the program.
@@ -125,11 +137,27 @@ public class FontManager {
 	 * @return the i font
 	 */
 	public IFont createFont(PApplet pa, String fontFileName, int fontSize, MTColor fillColor, MTColor strokeColor) {
+		return this.createFont(pa, fontFileName, fontSize, fillColor, strokeColor, true);
+	}
+
+	/**
+	 * Loads and returns a vector font from a file.
+	 * <br>The file has to be located in the ./data/ directory of the program.
+	 *
+	 * @param pa the pa
+	 * @param fontFileName the font file name
+	 * @param fontSize the font size
+	 * @param fillColor the fill color
+	 * @param strokeColor the stroke color
+	 * @param antiAliased the anti aliased
+	 * @return the i font
+	 */
+	public IFont createFont(PApplet pa, String fontFileName, int fontSize, MTColor fillColor, MTColor strokeColor, boolean antiAliased) {
 //		String fontAbsoultePath = System.getProperty("user.dir") + File.separator + "data" + File.separator + "fonts"+  File.separator + fontFileName;
 		String fontAbsoultePath =  MT4jSettings.getInstance().getDefaultFontPath() + fontFileName;
 		
 		//Return cached font if there
-		IFont font = this.getCachedFont(fontAbsoultePath, fontSize,	fillColor, strokeColor);
+		IFont font = this.getCachedFont(fontAbsoultePath, fontSize,	fillColor, strokeColor, antiAliased);
 		if (font != null){
 			return font;
 		}
@@ -153,7 +181,8 @@ public class FontManager {
 			//Create the font if we have a factory
 			if (factoryToUse != null){
 				System.out.println("Loading new font \"" + fontFileName + "\" with factory: " + factoryToUse.getClass().getName());
-				loadedFont = factoryToUse.createFont(pa, fontAbsoultePath, fontSize, fillColor, strokeColor);
+//				loadedFont = factoryToUse.createFont(pa, fontAbsoultePath, fontSize, fillColor, strokeColor);
+				loadedFont = factoryToUse.createFont(pa, fontAbsoultePath, fontSize, fillColor, strokeColor, antiAliased);
 				fonts.add(loadedFont);
 				if (fonts.size() > CACHE_MAX_SIZE && !fonts.isEmpty()){
 					IFont removedFont = fonts.remove(0); //FIXME destroy font, too!
@@ -235,9 +264,9 @@ public class FontManager {
 	 * 
 	 * @return the cached font
 	 */
-	public IFont getCachedFont(String fontAbsoultePath, int fontSize, MTColor fillColor, MTColor strokeColor){
+	public IFont getCachedFont(String fontAbsoultePath, int fontSize, MTColor fillColor, MTColor strokeColor, boolean antiAliased){
 		for (IFont font : fonts){
-			if (fontsAreEqual(font, fontAbsoultePath, fontSize,	fillColor,	strokeColor)
+			if (fontsAreEqual(font, fontAbsoultePath, fontSize,	fillColor,	strokeColor, antiAliased)
 			){
 				System.out.println("Using cached font: " + fontAbsoultePath + " Fontsize: " + Math.round(fontSize) +
 						" FillColor: " + fillColor +
@@ -261,7 +290,7 @@ public class FontManager {
 	 * 
 	 * @return true, if successful
 	 */
-	public static boolean fontsAreEqual(IFont font, String IVectorFontFileName, int fontSize, MTColor fillColor, MTColor strokeColor){
+	public static boolean fontsAreEqual(IFont font, String IVectorFontFileName, int fontSize, MTColor fillColor, MTColor strokeColor, boolean antiAliased){
 		return (	font.getFontFileName().equalsIgnoreCase(IVectorFontFileName)
 				&& 	font.getOriginalFontSize() == fontSize
 				&&
@@ -272,6 +301,8 @@ public class FontManager {
 				font.getFillColor().equals(fillColor)
 								&&
 				font.getStrokeColor().equals(strokeColor)
+								&&
+				(font.isAntiAliased() == antiAliased)
 //				font.getStrokeRed() 		== strokeRed 
 //				&& font.getStrokeGreen() 	== strokeGreen
 //				&& font.getStrokeBlue()		== strokeBlue

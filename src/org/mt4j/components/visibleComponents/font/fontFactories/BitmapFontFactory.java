@@ -38,13 +38,17 @@ public class BitmapFontFactory implements IFontFactory {
 	 * @see org.mt4j.components.visibleComponents.font.fontFactories.IFontFactory#createFont(processing.core.PApplet, java.lang.String, int, org.mt4j.util.MTColor, org.mt4j.util.MTColor)
 	 */
 	public IFont createFont(PApplet pa, String fontFileName, int fontSize, MTColor fillColor, MTColor strokeColor) {
+		return this.createFont(pa, fontFileName, fontSize, fillColor, strokeColor, true);
+	}
+	
+	public IFont createFont(PApplet pa, String fontFileName, int fontSize, MTColor fillColor, MTColor strokeColor, boolean antiAliased) {
 		if (proxy == null){
 			proxy = new BitmapFontFactoryProxy();
 		}
-		return proxy.createFont(pa, fontFileName, fontSize, fillColor, strokeColor);
+		return proxy.createFont(pa, fontFileName, fontSize, fillColor, strokeColor, antiAliased);
 	}
 
-
+	
 	/**
 	 * Gets the characters.
 	 *
@@ -59,10 +63,17 @@ public class BitmapFontFactory implements IFontFactory {
 	public List<BitmapFontCharacter> getCharacters(PApplet pa, String chars,
 			MTColor fillColor, MTColor strokeColor, String fontFileName,
 			int fontSize) {
+		return this.getCharacters(pa, chars, fillColor, strokeColor, fontFileName, fontSize, true);
+	}
+	
+	public List<BitmapFontCharacter> getCharacters(PApplet pa, String chars,
+			MTColor fillColor, MTColor strokeColor, String fontFileName,
+			int fontSize, boolean antiAliased
+	) {
 		if (proxy == null){
 			proxy = new BitmapFontFactoryProxy();
 		}
-		return proxy.getCharacters(pa, chars, fillColor, strokeColor, fontFileName, fontSize);
+		return proxy.getCharacters(pa, chars, fillColor, strokeColor, fontFileName, fontSize, antiAliased);
 	}
 	
 	
