@@ -81,7 +81,6 @@ public class MT4jSettings {
 	public boolean fullscreenExclusive = false;
 	
 
-
 	/** The DEFAUL t_ fon t_ path. */
 	public static String DEFAULT_SETTINGS_PATH = new String(/* MTApplication.separator */ "" );
 
@@ -411,13 +410,13 @@ public class MT4jSettings {
 //	public void setVerticalSynchronization(boolean parseBoolean) {
 //		this.vSync = parseBoolean;
 //	}
-	
+
 	/**
- * Checks if is vertical synchronization.
- *
- * @return true, if is vertical synchronization
- */
-public boolean isVerticalSynchronization(){
+	 * Checks if is vertical synchronization.
+	 *
+	 * @return true, if is vertical synchronization
+	 */
+	public boolean isVerticalSynchronization(){
 		return this.vSync;
 	}
 	
@@ -439,8 +438,6 @@ public boolean isVerticalSynchronization(){
 	public boolean isFullscreenExclusive() {
 		return this.fullscreenExclusive;
 	}
-	
-	//TODO remove setter methods, make field public to set them and only getter methods so noone thinks you can change the settings
 	
 
 }

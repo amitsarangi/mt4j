@@ -82,6 +82,7 @@ public class MTColor {
 	
 	public static final MTColor WHITE = new MTColor(255,255,255,255);
 	
+	public static final MTColor GREY = new MTColor(128,128,128,255);
 	
 	/**
 	 * Instantiates a new mT color.
