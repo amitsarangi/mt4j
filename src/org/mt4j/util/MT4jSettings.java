@@ -68,12 +68,20 @@ public class MT4jSettings {
 	/** The architecture. */
 	public int architecture = ARCHITECTURE_32_BIT;
 
+	/** The v sync. */
 	public boolean vSync = false;
 	
 	/** The fullscreen. */
 	public static boolean fullscreen = false;
 	
+	/** The display. */
+	public int display = 1;
 	
+	/** The fullscreen exclusive. */
+	public boolean fullscreenExclusive = false;
+	
+
+
 	/** The DEFAUL t_ fon t_ path. */
 	public static String DEFAULT_SETTINGS_PATH = new String(/* MTApplication.separator */ "" );
 
@@ -404,8 +412,32 @@ public class MT4jSettings {
 //		this.vSync = parseBoolean;
 //	}
 	
-	public boolean isVerticalSynchronization(){
+	/**
+ * Checks if is vertical synchronization.
+ *
+ * @return true, if is vertical synchronization
+ */
+public boolean isVerticalSynchronization(){
 		return this.vSync;
+	}
+	
+	/**
+	 * Gets the display.
+	 *
+	 * @return the display
+	 */
+	public int getDisplay() {
+		return this.display;
+	}
+
+
+	/**
+	 * Checks if is fullscreen exclusive.
+	 *
+	 * @return true, if is fullscreen exclusive
+	 */
+	public boolean isFullscreenExclusive() {
+		return this.fullscreenExclusive;
 	}
 	
 	//TODO remove setter methods, make field public to set them and only getter methods so noone thinks you can change the settings

@@ -130,6 +130,10 @@ public abstract class MTApplication extends PApplet {
 	public static String separator = "/";
 	public static char separatorChar = '/';
 	
+	private static boolean settingsLoadedFromFile = false; //cant initialize in constructor, need it before that!
+	
+	private ImageIcon mt4jIcon;
+	
 //	private static boolean fullscreen;
 	/*
 	public static void main(String[] args){
@@ -238,8 +242,6 @@ public abstract class MTApplication extends PApplet {
 		invokeLaterActions = new ArrayDeque<Runnable>();
 		sceneStack = new ArrayDeque<Iscene>();
 		
-		pContext = this;
-		
 		sceneChangeLocked = false;
 	}
 	
@@ -275,107 +277,95 @@ public abstract class MTApplication extends PApplet {
 	 */
 	public static void initialize(String classToInstantiate, boolean showSettingsMenu){
 		logger.debug(classToInstantiate + " is the class instatiated by PApplet class.");
-		
-		 String bit = System.getProperty("sun.arch.data.model");
-		 logger.info("Platform: \"" + System.getProperty("os.name") + "\" -> JVM Bit: \"" + bit + "\"");
-		 MT4jSettings.getInstance().architecture = bit.contains("64")? MT4jSettings.ARCHITECTURE_64_BIT : MT4jSettings.ARCHITECTURE_32_BIT;
 		 
 		//FIXME TEST
 		if (showSettingsMenu){
+			settingsLoadedFromFile = true;
 			SettingsMenu menu = new SettingsMenu(classToInstantiate);
 			menu.setVisible(true);
 		}else{
-			 
-			 boolean fullscreenExclusiveMode = true;
-			 int display = 1;
-			 
-				//Load some properties from Settings.txt file
-				Properties properties = new Properties();
-			    try {
-//			        properties.load(new FileInputStream(MT4jSettings.getInstance().getDefaultSettingsPath() + "Settings.txt"));
-			    	FileInputStream fi = new FileInputStream(MT4jSettings.getInstance().getDefaultSettingsPath() + "Settings.txt");
-			    	if (fi != null){
-			    		properties.load(fi);	
-			    	}else{
-			    		InputStream in = Thread.currentThread().getContextClassLoader().getResourceAsStream("Settings.txt");
-			    		if (in != null){
-			    			properties.load(in);	
-			    		}
-			    	}
-			    	
-				    MT4jSettings.fullscreen = Boolean.parseBoolean(properties.getProperty("Fullscreen", "false"));
-				    //Use java's fullscreen exclusive mode (real fullscreen) or just use an undecorated window at fullscreen size 
-				    fullscreenExclusiveMode = Boolean.parseBoolean(properties.getProperty("FullscreenExclusive", "true"));
-				    //Which display to use for fullscreen
-				    display = Integer.parseInt(properties.getProperty("Display", "1"));
+			getSettingsFromFile();
 
-				    //FIXME at fullscreen really use the screen dimension? -> we need to set the native resoultion ourselves!
-				    //so we can have a lower fullscreen resolution than the screen dimensions
-				    if (!MT4jSettings.getInstance().isFullscreen()){
-				    	MT4jSettings.getInstance().screenWidth = Integer.parseInt(properties.getProperty("DisplayWidth", "1024"));
-				    	MT4jSettings.getInstance().screenHeight = Integer.parseInt(properties.getProperty("DisplayHeight", "768"));
-				    }
-				    MT4jSettings.getInstance().maxFrameRate = Integer.parseInt(properties.getProperty("MaximumFrameRate", "60"));
-				    MT4jSettings.getInstance().renderer = Integer.parseInt(properties.getProperty("Renderer", new Integer(MT4jSettings.P3D_MODE).toString()));
-				    MT4jSettings.getInstance().numSamples = Integer.parseInt(properties.getProperty("OpenGLAntialiasing", new Integer(0).toString()));
+			// Launch processing PApplet main() function
+			if (MT4jSettings.getInstance().isFullscreen()){
+				if (MT4jSettings.getInstance().isFullscreenExclusive()){
+					PApplet.main(new String[] {
+							"--display=" + MT4jSettings.getInstance().getDisplay(),
+							"--present", 
+							"--exclusive", 
+							"--bgcolor=#000000", 
+							"--hide-stop",
+							classToInstantiate}
+					); 
+				}else{
+					PApplet.main(new String[] {
+							"--display=" + MT4jSettings.getInstance().getDisplay(),
+							"--present", 
+							"--bgcolor=#000000", 
+							"--hide-stop",
+							classToInstantiate}
+					); 
+				}
+			}else{
+				PApplet.main(new String[] { 
+						"--display=" + MT4jSettings.getInstance().getDisplay(),
+						classToInstantiate }); 
+			}
+		}
 
-				    MT4jSettings.getInstance().vSync = Boolean.parseBoolean(properties.getProperty("Vertical_sync", "false"));
-				    
-				    //Set frametitle
-				    String frameTitle = properties.getProperty("Frametitle", "MT-Application");
-				    MT4jSettings.getInstance().frameTitle = frameTitle;
-				    
-			    } catch (Exception e) {
-			    	logger.error("Error while loading Settings.txt file. Using defaults.");
-			    }
-			    
-			    // Launch processing PApplet main() function
-			    if (MT4jSettings.getInstance().isFullscreen()){
-			    	Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+	}
+	
+	
+	private static void getSettingsFromFile(){
+		 //Load some properties from Settings.txt file
+		 Properties properties = new Properties();
+		 try {
+			 //			        properties.load(new FileInputStream(MT4jSettings.getInstance().getDefaultSettingsPath() + "Settings.txt"));
+			 FileInputStream fi = new FileInputStream(MT4jSettings.getInstance().getDefaultSettingsPath() + "Settings.txt");
+			 if (fi != null){
+				 properties.load(fi);	
+			 }else{
+				 InputStream in = Thread.currentThread().getContextClassLoader().getResourceAsStream("Settings.txt");
+				 if (in != null){
+					 properties.load(in);	
+				 }
+			 }
+
+			 MT4jSettings.fullscreen = Boolean.parseBoolean(properties.getProperty("Fullscreen", "false"));
+			 //Use java's fullscreen exclusive mode (real fullscreen) or just use an undecorated window at fullscreen size 
+			 MT4jSettings.getInstance().fullscreenExclusive = Boolean.parseBoolean(properties.getProperty("FullscreenExclusive", "false"));
+			 //Which display to use for fullscreen
+			 MT4jSettings.getInstance().display = Integer.parseInt(properties.getProperty("Display", "1"));
+
+			 //FIXME at fullscreen really use the screen dimension? -> we need to set the native resoultion ourselves!
+			 //so we can have a lower fullscreen resolution than the screen dimensions
+			 if (!MT4jSettings.getInstance().isFullscreen()){
+				 MT4jSettings.getInstance().screenWidth = Integer.parseInt(properties.getProperty("DisplayWidth", "1024"));
+				 MT4jSettings.getInstance().screenHeight = Integer.parseInt(properties.getProperty("DisplayHeight", "768"));
+			 }else{
+				 Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 			    	MT4jSettings.getInstance().screenWidth = screenSize.width;
 			    	MT4jSettings.getInstance().screenHeight = screenSize.height;
-			    	if (fullscreenExclusiveMode){
-			    		PApplet.main(new String[] {
-								   "--display=" + display,
-								   "--present", 
-								   "--exclusive", 
-								   "--bgcolor=#000000", 
-								   "--hide-stop",
-								   classToInstantiate}
-								   ); 
-			    	}else{
-			    		PApplet.main(new String[] {
-								   "--display=" + display,
-								   "--present", 
-								   "--bgcolor=#000000", 
-								   "--hide-stop",
-								   classToInstantiate}
-								   ); 
-			    	}
-			    }else{
-			    	PApplet.main(new String[] { 
-			    			 "--display=" + display,
-			    			 classToInstantiate }); 
-			    }
-		}
+			 }
+			 
+			 MT4jSettings.getInstance().maxFrameRate = Integer.parseInt(properties.getProperty("MaximumFrameRate", "60"));
+			 MT4jSettings.getInstance().renderer = Integer.parseInt(properties.getProperty("Renderer", new Integer(MT4jSettings.P3D_MODE).toString()));
+			 MT4jSettings.getInstance().numSamples = Integer.parseInt(properties.getProperty("OpenGLAntialiasing", new Integer(0).toString()));
+
+			 MT4jSettings.getInstance().vSync = Boolean.parseBoolean(properties.getProperty("Vertical_sync", "false"));
+
+			 //Set frametitle
+			 String frameTitle = properties.getProperty("Frametitle", "MT-Application");
+			 MT4jSettings.getInstance().frameTitle = frameTitle;
+
+		 } catch (Exception e) {
+			 logger.error("Error while loading Settings.txt file. Using defaults.");
+		 }
 		 
+		 settingsLoadedFromFile = true;
 	}
-	
-	
-	/** The p context. */
-	private PApplet pContext;
 
-	private ImageIcon mt4jIcon;
-
-	//FIXME REMOVE??
-	/**
-	 * Sets the p5 context.
-	 * 
-	 * @param pa the new p5 context
-	 */
-	public void setP5Context(PApplet pa){
-		this.pContext = pa;
-	}
+	
 	
 	/**
 	 * ***********************************************************
@@ -389,6 +379,15 @@ public abstract class MTApplication extends PApplet {
 		//this.frame.setAlwaysOnTop(true);
 	
 		logger.debug("-> setup called");
+
+		//Check if OS 32/64 Bit
+		String bit = System.getProperty("sun.arch.data.model");
+		logger.info("Platform: \"" + System.getProperty("os.name") + "\" -> JVM Bit: \"" + bit + "\"");
+		MT4jSettings.getInstance().architecture = bit.contains("64")? MT4jSettings.ARCHITECTURE_64_BIT : MT4jSettings.ARCHITECTURE_32_BIT;
+
+		if (!settingsLoadedFromFile){
+			getSettingsFromFile();
+		}
 		
 //		//Load some properties from Settings.txt file
 //		Properties properties = new Properties();
@@ -467,10 +466,10 @@ public abstract class MTApplication extends PApplet {
 		
 //		//Set background color
 //	    pContext.background(MT4jSettings.getInstance().getBackgroundClearColor());
-		pContext.background(150);
+		background(150);
 		
 		//Set the framerate
-	    pContext.frameRate(MT4jSettings.getInstance().getMaxFrameRate());
+	    frameRate(MT4jSettings.getInstance().getMaxFrameRate());
 	    logger.info("Maximum framerate: \"" + MT4jSettings.getInstance().getMaxFrameRate() + "\"");
 		
 		MT4jSettings.getInstance().programStartTime = System.currentTimeMillis();

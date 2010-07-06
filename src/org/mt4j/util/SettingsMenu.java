@@ -218,10 +218,12 @@ public class SettingsMenu extends JFrame{
 			displayString = "--display=" + displayComboBox.getSelectedItem().toString();
 		}
 		
+		MT4jSettings.getInstance().display = Integer.parseInt(displayComboBox.getSelectedItem().toString());
+		
 		//Set Fullscreen mode
 		boolean fullscreen = fullScreenCheckBox.isSelected();
 		MT4jSettings.fullscreen = fullscreen;
-		boolean fullscreenExclusiveMode = fullScreenExclusiveCheckBox.isSelected();
+		MT4jSettings.getInstance().fullscreenExclusive = fullScreenExclusiveCheckBox.isSelected();
 		
 		//Set screen dimensions
 		MT4jSettings.getInstance().screenWidth = Integer.parseInt(widthField.getText());
@@ -240,21 +242,21 @@ public class SettingsMenu extends JFrame{
 		//Set opengl multisampling value
 		MT4jSettings.getInstance().numSamples = Integer.parseInt(numSamplesComboBox.getSelectedItem().toString());
 
-		/*
+//		/*
 		//Print settings
 		System.out.println("Renderer: " + MT4jSettings.getInstance().getRendererMode());
 		System.out.println("Window Width: " + MT4jSettings.getInstance().getScreenWidth());
 		System.out.println("Window Height: " + MT4jSettings.getInstance().getScreenHeight());
 
 		System.out.println("Fullscreen: " + MT4jSettings.getInstance().isFullscreen());
-		System.out.println("Fullscreen Exclusive: " + fullscreenExclusiveMode);
+		System.out.println("Fullscreen Exclusive: " + MT4jSettings.getInstance().isFullscreenExclusive());
 
 		System.out.println("Framerate: " + MT4jSettings.getInstance().getMaxFrameRate());
 		System.out.println("Multisampling samples: " + MT4jSettings.getInstance().getNumSamples());
 		
 		System.out.println("Display: " + displayComboBox.getSelectedItem().toString());
 		System.out.println("Vertical Synchronization: " + MT4jSettings.getInstance().isVerticalSynchronization());
-		*/
+//		*/
 		
 		this.setVisible(false);
 		
@@ -265,7 +267,7 @@ public class SettingsMenu extends JFrame{
 	    	MT4jSettings.getInstance().screenWidth = screenSize.width;
 	    	MT4jSettings.getInstance().screenHeight = screenSize.height;
 	    	
-	    	if (fullscreenExclusiveMode){
+	    	if (MT4jSettings.getInstance().isFullscreenExclusive()){
 	    		PApplet.main(new String[] {
 	    				displayString,
 						   "--present", 

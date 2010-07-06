@@ -70,6 +70,7 @@ public class FontManager {
 //		this.registerFontFactory(".ttf", bitmapFontFactory); // TEST
 	    this.registerFontFactory("", bitmapFontFactory);
 	    this.registerFontFactory(".vlw", bitmapFontFactory);
+	    this.registerFontFactory(".otf", bitmapFontFactory);
 	}
 	
 	/**
@@ -215,6 +216,7 @@ public class FontManager {
 	 * @param fileSuffix the file suffix to use with that factory. ".ttf" for example.
 	 */
 	public void registerFontFactory(String fileSuffix, IFontFactory factory){
+		fileSuffix = fileSuffix.toLowerCase();
 		this.suffixToFactory.put(fileSuffix, factory);
 	}
 	

@@ -98,6 +98,9 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
 	
 	private static ArtificalLineBreak artificialLineBreak;
 	
+	//TODO allow setting of different font
+	//this needs to re-evaluate alot of variables, eg isBitmapFont, fontHeight etc
+	
 	
 	/**
 	 * Instantiates a new mT text area. 

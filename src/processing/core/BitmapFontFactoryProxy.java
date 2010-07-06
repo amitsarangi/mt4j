@@ -17,6 +17,7 @@
  ***********************************************************************/
 package processing.core;
 
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -80,7 +81,12 @@ public class BitmapFontFactoryProxy implements IFontFactory {
 			MTColor strokeColor,
 			boolean antiAliased
 	) {
-		PFont p5Font = this.getProcessingFont(pa, fontFileName, fontSize, antiAliased);
+		PFont p5Font = null;
+		try {
+			p5Font = this.getProcessingFont(pa, fontFileName, fontSize, antiAliased);
+		} catch (FileNotFoundException e1) {
+			e1.printStackTrace();
+		}
 		List<BitmapFontCharacter> bitMapCharacters = this.createCharacters(pa, p5Font, defaultCharacters, fillColor, strokeColor);
 	
 		//font is null sometimes (vlw)
@@ -205,8 +211,9 @@ public class BitmapFontFactoryProxy implements IFontFactory {
 	 * @param fontSize the font size
 	 * @param antiAliased the anti aliased
 	 * @return the processing font
+	 * @throws FileNotFoundException 
 	 */
-	private PFont getProcessingFont(PApplet pa, String fontFileName, int fontSize, boolean antiAliased){
+	private PFont getProcessingFont(PApplet pa, String fontFileName, int fontSize, boolean antiAliased) throws FileNotFoundException{
 		PFont p5Font;
 		//FIXME when loading the vlw font the font size and anti aliasing is already determined with the file
 		//and our parameter isnt honored
@@ -248,6 +255,10 @@ public class BitmapFontFactoryProxy implements IFontFactory {
 				p5Font = pa.loadFont(fontFileName);
 			}
 		}
+		
+		if (p5Font == null){
+			throw new NullPointerException("Couldnt load the font: " + fontFileName);
+		}
 		return p5Font;
 	}
 	
@@ -283,7 +294,12 @@ public class BitmapFontFactoryProxy implements IFontFactory {
 			int fontSize,
 			boolean antiAliased
 	){
-		PFont p5Font = this.getProcessingFont(pa, fontFileName, fontSize, antiAliased);
+		PFont p5Font = null;
+		try {
+			p5Font = this.getProcessingFont(pa, fontFileName, fontSize, antiAliased);
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
 		return createCharacters(pa, p5Font, chars, fillColor, strokeColor);
 	}
 	
