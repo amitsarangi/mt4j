@@ -23,14 +23,12 @@ public class FontLoadingTest extends AbstractWindowTestcase {
 		this.runTest(new TestRunnable() {
 			@Override
 			public void runMTTestCode() {
-				IFont font1 = FontManager.getInstance().createFont(getMTApplication(), "arial.ttf", 16, MTColor.BLACK, MTColor.BLACK, true);
-				
+				IFont font1 = FontManager.getInstance().createFont(getMTApplication(), "arial.ttf", 16, MTColor.GREY, MTColor.GREY, true);
 				IFont font2 = FontManager.getInstance().createFont(getMTApplication(), "arial", 16, MTColor.BLACK, MTColor.BLACK, false);
 				
 				MTTextArea ta = new MTTextArea(getMTApplication(), font1);
 				ta.setText("this is a\ntest text written for testing\npurposes");
 				scene.getCanvas().addChild(ta);
-				
 				ta.setFont(font2);
 				
 				MTTextArea ta2 = new MTTextArea(200,200, 100,200, font2, getMTApplication());

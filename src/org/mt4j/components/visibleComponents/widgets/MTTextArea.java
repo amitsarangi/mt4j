@@ -29,7 +29,6 @@ import org.mt4j.components.visibleComponents.font.BitmapFontCharacter;
 import org.mt4j.components.visibleComponents.font.IFont;
 import org.mt4j.components.visibleComponents.font.IFontCharacter;
 import org.mt4j.components.visibleComponents.shapes.MTRectangle;
-import org.mt4j.components.visibleComponents.shapes.MTRectangle.PositionAnchor;
 import org.mt4j.components.visibleComponents.widgets.keyboard.ITextInputListener;
 import org.mt4j.components.visibleComponents.widgets.keyboard.MTKeyboard;
 import org.mt4j.input.inputProcessors.componentProcessors.lassoProcessor.IdragClusterable;
@@ -392,6 +391,10 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
 		}
 		else{ //P3D rendering
 			g.pushMatrix(); //FIXME TEST text scrolling - but IMHO better done with parent list/scroll container
+			
+			//FIXME TEST
+			g.translate(0, font.getFontMaxAscent(), 0);
+			
 			g.translate(totalScrollTextX, totalScrollTextY, 0);
 			
 			for (int i = 0; i < charListSize; i++) {

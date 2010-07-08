@@ -2,7 +2,6 @@ ToDo list:
 
 -> General:
 - processing.com post and bug report (font)
-- working with text tutorial
 - add setAnchor(Vector3D anchorPoint) for all AbstractShapes? -> use in set/getPosition() -> per default use centerpoint -> rotate(45) -> use anchor by default?
 - make gesture processor priorities float? (so flick could get 1.3f for example..how to differentiate between manipulations and gestures? )
 - add more stateChange events (e.g. transformed, globally position changed etc)
@@ -112,7 +111,6 @@ ToDo list:
 	- how to work with components/shapes (boundings, clipping, rot/trans/scale, addchild, color, displaylist, outline) -setUseDirectGL/list/VBO!
 	- animations
 	- scenes/transitions
-	- working with text - vector/bitmap fonts (dont create too many->memory, reuse vector fonts and scale them etc, vector looks ugly when small -> use bitmap there!)
 	- working with widgets
 - Download packages
 
@@ -125,9 +123,7 @@ ToDo list:
 
 -> Typography:
 - we can switch the textcolor on textarea draw code instead of creating different memoryhungry fonts
-- break the text at spaces, not in the middle of a word at fixed MTTextarea dimensions 
 - add and implement setCursorPos() in MTTextArea
-- implement vertical padding in MTTextArea
 - add setText()/setLabel() to buttons
 - (make bitmapfontfactory create the same size fonts as the ttf/svg factories, there is a difference now - fixed, but fontascent's different?)
 - (store scale information in every fontcharacter, but only change current matrix if new scale different from last)
