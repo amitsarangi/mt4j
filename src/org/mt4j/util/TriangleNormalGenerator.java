@@ -303,13 +303,13 @@ public class TriangleNormalGenerator {
 								else if(j == 1) myFace.p1 = duplicateIndex;
 								else if(j == 2)	myFace.p2 = duplicateIndex;
 								
-								//wenn wir orginal hinzufügen wird auch allen duplicates neighbor face zugefügt.
+								//wenn wir orginal hinzufï¿½gen wird auch allen duplicates neighbor face zugefï¿½gt.
 								myVertexData.addNeighborFace(myFace);
 								
 								logger.debug("vdP" + j + "has different texture coordiantes but a already created duplicate has the same -> change this face pointer to the duplicate one");
 							}else{//there was no duplicate created with the same texture coords yet -> create one!
 								
-								//Neuen Vertex machen, an original vertices list anhängen, neuen index in face auf diesen setzen, face adden
+								//Neuen Vertex machen, an original vertices list anhï¿½ngen, neuen index in face auf diesen setzen, face adden
 								VertexData newVertexData = new VertexData();
 								
 								//Add the vertex information to the newly created vertexdata
@@ -332,7 +332,7 @@ public class TriangleNormalGenerator {
 								//Inform the original vertexdata, that a duplicate with diff tex coords was created and register it
 								myVertexData.registerCreatedDuplicateDiffTexCoords(newVertexData);
 								
-								//Adde face zu orginal face -> damit wird auch duplicates und dem neuen hinzugefügt,
+								//Adde face zu orginal face -> damit wird auch duplicates und dem neuen hinzugefï¿½gt,
 								//wenn wir es vorher mit registerDuplicate am orginal registiert haben!
 								myVertexData.addNeighborFace(myFace);
 								
@@ -438,7 +438,7 @@ public class TriangleNormalGenerator {
 				*/
 			} 
 			
-			//Leider nötig? da manche models newVertices enthalten, die in den faces garnicht referenziert werden, quasi tote verts
+			//Leider nï¿½tig? da manche models newVertices enthalten, die in den faces garnicht referenziert werden, quasi tote verts
 			for (int j = 0; j < newVertices.length; j++) {
 				if (newVertices[j] == null){
 					newVertices[j] = nullVect;
@@ -637,13 +637,13 @@ public class TriangleNormalGenerator {
 								else if(j == 1) myFace.p1 = duplicateIndex;
 								else if(j == 2)	myFace.p2 = duplicateIndex;
 								
-								//wenn wir orginal hinzufügen wird auch allen duplicates neighbor face zugefügt.
+								//wenn wir orginal hinzufï¿½gen wird auch allen duplicates neighbor face zugefï¿½gt.
 								myVertexData.addNeighborFace(myFace);
 								
 								logger.debug("vdP" + j + "has different texture coordiantes but a already created duplicate has the same -> change this face pointer to the duplicate one");
 							}else{//there was no duplicate created with the same texture coords yet -> create one!
 								
-								//Neuen Vertex machen, an original vertices list anhängen, neuen index in face auf diesen setzen, face adden
+								//Neuen Vertex machen, an original vertices list anhï¿½ngen, neuen index in face auf diesen setzen, face adden
 								VertexData newVertexData = new VertexData();
 								
 								//Add the vertex information to the newly created vertexdata
@@ -666,7 +666,7 @@ public class TriangleNormalGenerator {
 								//Inform the original vertexdata, that a duplicate with diff tex coords was created and register it
 								myVertexData.registerCreatedDuplicateDiffTexCoords(newVertexData);
 								
-								//Adde face zu orginal face -> damit wird auch duplicates und dem neuen hinzugefügt,
+								//Adde face zu orginal face -> damit wird auch duplicates und dem neuen hinzugefï¿½gt,
 								//wenn wir es vorher mit registerDuplicate am orginal registiert haben!
 								myVertexData.addNeighborFace(myFace);
 								
@@ -698,7 +698,7 @@ public class TriangleNormalGenerator {
 			if (creaseAngleRad != 0.0) {
 				//Durch alle selbst kreierten faces gehen, und schauen ob ein vertex des faces mit einem seiner
 				//nachbar faces einen "sharp edge" hat oder smooth ist.
-				//wenn smooth -> als smooth neighbor des face pointers hinzufügen
+				//wenn smooth -> als smooth neighbor des face pointers hinzufï¿½gen
 				for (int j = 0; j < faces.size(); j++) {
 					MyFace currentFace = faces.get(j);
 	
@@ -787,10 +787,10 @@ public class TriangleNormalGenerator {
 			
 	
 			//Die vertex normalen wurden pro face und pro pointer auf ein vertex in den faces berechnet
-			//Jetzt fügen wir den VertexDatas, die die vertices representieren diese vertex normalen hinzu.
-			//Wenn in mehreren faces auf den gleichen vertex gezeigt wird, aber in dem face für diesen vertex eine
-			//andere normale berechnet wurde (weil face mit anderen smooth ist) müssen wir evtl das Vertex(data) duplizieren
-			//und diesem die andere normale hinzufügen
+			//Jetzt fï¿½gen wir den VertexDatas, die die vertices representieren diese vertex normalen hinzu.
+			//Wenn in mehreren faces auf den gleichen vertex gezeigt wird, aber in dem face fï¿½r diesen vertex eine
+			//andere normale berechnet wurde (weil face mit anderen smooth ist) mï¿½ssen wir evtl das Vertex(data) duplizieren
+			//und diesem die andere normale hinzufï¿½gen
 			for (int j = 0; j < faces.size(); j++) {
 				MyFace currentFace = faces.get(j);
 				
@@ -833,7 +833,7 @@ public class TriangleNormalGenerator {
 								logger.debug("Face " + j + " vdP" + i  + " (Vertex: " + vertexDatas.get(currentVertexPointer).getVertex() + ")" +  " vertexnormal is conform with a duplicate of the original vertex -> point to that duplicate: N:"  + vertexNormalsCurrentFace[i]);
 							}else{//duplicate index == -1 -> neither the orignal faces point has the same vertexnormal nor a duplicate with different normal has that normal -> create new VD with the different normal and same vertex
 								
-								//Neuen Vertex machen, an original vertices list anhängen, neuen index in face auf diesen setzen
+								//Neuen Vertex machen, an original vertices list anhï¿½ngen, neuen index in face auf diesen setzen
 								VertexData newVertexData = new VertexData();
 								
 								//Add the vertex information to the newly created vertexdata
@@ -920,7 +920,7 @@ public class TriangleNormalGenerator {
 				*/
 			} 
 			
-			//Leider nötig? da manche models newVertices enthalten, die in den faces garnicht referenziert werden, quasi tote verts
+			//Leider nï¿½tig? da manche models newVertices enthalten, die in den faces garnicht referenziert werden, quasi tote verts
 			for (int j = 0; j < newVertices.length; j++) {
 				if (newVertices[j] == null){
 					newVertices[j] = nullVect;
@@ -976,12 +976,12 @@ public class TriangleNormalGenerator {
 	
 	/**
 	 * This influences the normal generation with crease angles.
-	 * <br>If <code>useNormalsEqualToFace</code> is set to true, normals
+	 * </br>If <code>useNormalsEqualToFace</code> is set to true, normals
 	 * of neighbor faces, that have the same normal as the face and vertex were checking
 	 * against will be used in the calculation.
-	 * <br>If <code>useNormalsEqualToFace</code> is set to false, these normals equal to
+	 * </br>If <code>useNormalsEqualToFace</code> is set to false, these normals equal to
 	 * the test face normal will be discarded to avoid adding up redundant normals.
-	 * <br>The default is FALSE.
+	 * </br>The default is FALSE.
 	 * 
 	 * @param useNormalsEqualToFace use other normals equal to face or
 	 */
@@ -1568,8 +1568,8 @@ public class TriangleNormalGenerator {
 			public void addNeighborFace(MyFace face){
 				if (!faces.contains(face))
 					faces.add(face);
-				//Auch duplicates face hinzufügen, da sie ja den gleichen vertex sharen
-				//und für die normalenberechnung alle neighborfaces brauchen
+				//Auch duplicates face hinzufï¿½gen, da sie ja den gleichen vertex sharen
+				//und fï¿½r die normalenberechnung alle neighborfaces brauchen
 				for (VertexData vdDuplicate : this.getDuplicateVertexWithDiffTexCoordsList()){
 					vdDuplicate.addNeighborFace(face);
 				}
@@ -1587,8 +1587,8 @@ public class TriangleNormalGenerator {
 						faces.add(currFace);
 					}
 				}
-				//Auch duplicates faces hinzufügen, da sie ja den gleichen vertex sharen
-				//und für die normalenberechnung alle neighborfaces brauchen
+				//Auch duplicates faces hinzufï¿½gen, da sie ja den gleichen vertex sharen
+				//und fï¿½r die normalenberechnung alle neighborfaces brauchen
 				for (VertexData vdDuplicate : this.getDuplicateVertexWithDiffTexCoordsList()){
 					vdDuplicate.addNeighborFaces(addFaces);
 				}

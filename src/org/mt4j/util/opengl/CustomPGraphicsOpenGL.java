@@ -93,12 +93,18 @@ public class CustomPGraphicsOpenGL extends PGraphicsOpenGL {
 	      settingsInited = false;
 
 	    } else {
+	    	//FIXME REMOVE THIS? can cause a "cant destroy context if its not current" error if PApplet is embedded into a swing application which causes a resize of the PApplet
+	    	//this code recreates the opengl context with a new size if the size of the PApplet should change
+	    	//so if we comment this out and resize the PApplet the Opengl context gets distorted...
+	    	
 	      // The following three lines are a fix for Bug #1176
 	      // http://dev.processing.org/bugs/show_bug.cgi?id=1176
+	    	/*
 	      context.destroy();
 	      context = drawable.createContext(null);
 	      gl = context.getGL();
 	      reapplySettings();
+	      */
 	    }
 	}
 	

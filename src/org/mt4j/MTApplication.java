@@ -503,8 +503,8 @@ public abstract class MTApplication extends PApplet {
 	 * Apply open gl start settings.
 	 */
 	private void applyOpenGLStartSettings(){
-		//TODO pa.smooth() / pa.noSmooth() verändert auch line_smooth!
-		//für test ob multisampling lines ohne Line_smooth okay rendered müssen
+		//TODO pa.smooth() / pa.noSmooth() verï¿½ndert auch line_smooth!
+		//fï¿½r test ob multisampling lines ohne Line_smooth okay rendered mï¿½ssen
 		//sicherheitshalber auch die pa.smoot() etc abgefangen werden und line_smooth immer disabled sein!
 		
 		//TODO check line drawing and abstractvisible at stencil in this context (line_smooth)
