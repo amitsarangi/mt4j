@@ -72,9 +72,9 @@ public class MTColor {
 	private float alpha;
 	
 	
-	public static final MTColor RED = new MTColor(255,0,0,255);
+public static final MTColor RED = new MTColor(255,0,0,255);
 	
-	public static final MTColor GREEN = new MTColor(0,255,0,255);
+	public static final MTColor GREEN = new MTColor(0,128,0,255);
 	
 	public static final MTColor BLUE = new MTColor(0,0,255,255);
 	
@@ -83,6 +83,28 @@ public class MTColor {
 	public static final MTColor WHITE = new MTColor(255,255,255,255);
 	
 	public static final MTColor GREY = new MTColor(128,128,128,255);
+	
+	public static final MTColor GRAY = new MTColor(128,128,128,255);
+	
+	public static final MTColor SILVER = new MTColor(192,192,192,255);
+	
+	public static final MTColor MAROON = new MTColor(128,0,0,255);
+	
+	public static final MTColor PURPLE = new MTColor(128,0,128,255);
+	
+	public static final MTColor FUCHSIA = new MTColor(255,0,255,255);
+	
+	public static final MTColor LIME = new MTColor(0,255,0,255);
+	
+	public static final MTColor OLIVE = new MTColor(128,128,0,255);
+	
+	public static final MTColor YELLOW = new MTColor(255,255,0,255);
+	
+	public static final MTColor NAVY = new MTColor(0,0,128,255);
+	
+	public static final MTColor TEAL = new MTColor(0,0,128,255);
+	
+	public static final MTColor AQUA = new MTColor(0,255,255,255);
 	
 	/**
 	 * Instantiates a new mT color.
