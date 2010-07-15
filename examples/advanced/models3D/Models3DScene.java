@@ -22,6 +22,7 @@ import org.mt4j.input.inputProcessors.componentProcessors.zoomProcessor.ZoomProc
 import org.mt4j.input.inputProcessors.globalProcessors.CursorTracer;
 import org.mt4j.sceneManagement.AbstractScene;
 import org.mt4j.util.MT4jSettings;
+import org.mt4j.util.MTColor;
 import org.mt4j.util.math.Tools3D;
 import org.mt4j.util.math.Vector3D;
 import org.mt4j.util.modelImporter.ModelImporterFactory;
@@ -39,6 +40,8 @@ public class Models3DScene extends AbstractScene {
 		super(mtApplication, name);
 		mtApp = mtApplication;
 		
+		this.setClearColor(new MTColor(40,40,40,255));
+		
 		this.registerGlobalInputProcessor(new CursorTracer(mtApp, this));
 		
 		//Make canvas zoomable
@@ -53,14 +56,14 @@ public class Models3DScene extends AbstractScene {
 		//Init light settings
 		MTLight.enableLightningAndAmbient(mtApplication, 150, 150, 150, 255);
 		//Create a light source //I think GL_LIGHT0 is used by processing!
-		MTLight light = new MTLight(mtApplication, GL.GL_LIGHT3, new Vector3D(0,0,0));
+		MTLight light = new MTLight(mtApplication, GL.GL_LIGHT3, new Vector3D(0,-300,0));
 		
 		//Set up a material to react to the light
 		GLMaterial material = new GLMaterial(Tools3D.getGL(mtApplication));
-		material.setAmbient(new float[]{ .3f, .3f, .3f, 1f });
-		material.setDiffuse(new float[]{ .9f, .9f, .9f, 1f } );
+		material.setAmbient(new float[]{ .5f, .5f, .5f, 1f });
+		material.setDiffuse(new float[]{ .8f, .8f, .8f, 1f } );
 		material.setEmission(new float[]{ .0f, .0f, .0f, 1f });
-		material.setSpecular(new float[]{ 1.0f, 1.0f, 1.0f, 1f });  // almost white: very reflective
+		material.setSpecular(new float[]{ 0.9f, 0.9f, 0.9f, 1f });  // almost white: very reflective
 		material.setShininess(110);// 0=no shine,  127=max shine
 		
 		//Group used to move to the screen center and to put the mesh group in
@@ -77,7 +80,8 @@ public class Models3DScene extends AbstractScene {
 
 		//Load the meshes with the ModelImporterFactory (A file can contain more than 1 mesh)
 		//Loads 3ds model
-		MTTriangleMesh[] meshes = ModelImporterFactory.loadModel(mtApplication, modelsPath + "kentosaurus" + MTApplication.separator + "kentrosaurus.3ds", 180, true, false );
+//		MTTriangleMesh[] meshes = ModelImporterFactory.loadModel(mtApplication, modelsPath + "kentosaurus" + MTApplication.separator + "kentrosaurus.3ds", 180, true, false );
+		MTTriangleMesh[] meshes = ModelImporterFactory.loadModel(mtApplication, modelsPath + "jazz_Obj" + MTApplication.separator + "honda_jazz.obj", 180, true, false );
 		//Load obj model
 //		MTTriangleMesh[] meshes = ModelImporterFactory.loadModel(mtApplication,  modelsPath + "trashbin.obj", 180, false, false );
 		
@@ -97,11 +101,24 @@ public class Models3DScene extends AbstractScene {
 		this.getCanvas().addChild(group1);
 		group1.addChild(meshGroup);
 		
+		//Inverts the normals, if they are calculated pointing inside of the mesh instead of outside
+		boolean invertNormals = true;
+		
 		for (int i = 0; i < meshes.length; i++) {
 			MTTriangleMesh mesh = meshes[i];
 			meshGroup.addChild(mesh);
 			mesh.unregisterAllInputProcessors(); //Clear previously registered input processors
 			mesh.setPickable(true);
+
+			if (invertNormals){
+				Vector3D[] normals = mesh.getGeometryInfo().getNormals();
+				for (int j = 0; j < normals.length; j++) {
+					Vector3D vector3d = normals[j];
+					vector3d.scaleLocal(-1);
+				}
+				mesh.getGeometryInfo().setNormals(mesh.getGeometryInfo().getNormals(), mesh.isUseDirectGL(), mesh.isUseVBOs());
+			}
+
 			//If the mesh has more than 20 vertices, use a display list for faster rendering
 			if (mesh.getVertexCount() > 20)
 				mesh.generateAndUseDisplayLists();
