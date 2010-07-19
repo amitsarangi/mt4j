@@ -77,6 +77,18 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 		logger.addAppender(ca);
 	}
 	
+	//CSS Enhancements
+	private String CSSID = "";
+	
+	public String getCSSID() {
+		return CSSID;
+	}
+
+	public void setCSSID(String cSSID) {
+		CSSID = cSSID;
+	}
+	//CSS Enhancements
+	
 	/** The ID. */
 	private int ID;
 	

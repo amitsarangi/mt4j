@@ -397,7 +397,7 @@ public class GLTexture extends PImage {
     	this.width 	= pImage.width;
     	this.height = pImage.height;
     	
-//    	this.loadPixels(); //FIXME neccessary? if we assigned the pixel array it should be loaded already!
+    	//this.loadPixels(); //FIXME neccessary? if we assigned the pixel array it should be loaded already!
         updateGLTextureFromPImage(); //TODO invokelater if not gl thread
         updatePixels();
     } 
