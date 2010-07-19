@@ -21,11 +21,14 @@ import java.nio.FloatBuffer;
 
 import javax.media.opengl.GL;
 
+import org.mt4j.MTApplication;
 import org.mt4j.components.TransformSpace;
 import org.mt4j.components.bounds.BoundsArbitraryPlanarPolygon;
 import org.mt4j.components.bounds.IBoundingShape;
 import org.mt4j.components.visibleComponents.GeometryInfo;
 import org.mt4j.components.visibleComponents.StyleInfo;
+import org.mt4j.css.util.CSSHelper;
+import org.mt4j.css.util.CSSStylableComponent;
 import org.mt4j.util.MT4jSettings;
 import org.mt4j.util.MTColor;
 import org.mt4j.util.math.Matrix;
@@ -43,7 +46,7 @@ import processing.opengl.PGraphicsOpenGL;
  * 
  * @author Christopher Ruff
  */
-public class MTLine extends AbstractShape {
+public class MTLine extends AbstractShape implements CSSStylableComponent{
 	
 	/** The p context. */
 	private PApplet pContext;
@@ -106,6 +109,10 @@ public class MTLine extends AbstractShape {
 		this.setBoundsBehaviour(BOUNDS_ONLY_CHECK);
 		
 		this.setName("unnamed MTLine");
+		if (pApplet instanceof MTApplication) {
+			this.mtApp = (MTApplication)pApplet;
+			this.cssHelper = new CSSHelper(this, mtApp);
+		}
 	}
 
 	//TODO getNormal() will crash ..
@@ -457,4 +464,35 @@ public class MTLine extends AbstractShape {
 	}
 
 
+	private MTApplication mtApp;
+	private boolean cssStyled = false;
+	private CSSHelper cssHelper;
+	
+	@Override
+	public boolean isCSSStyled() {
+		return cssStyled;
+	}
+
+	@Override
+	public void enableCSS() {
+		if (mtApp != null && cssHelper != null) {
+			cssStyled = true;
+		}
+		applyStyleSheet();
+	}
+
+	@Override
+	public void disableCSS() {
+		cssStyled = false;
+		
+	}
+
+	@Override
+	public void applyStyleSheet() {
+		if (cssStyled && mtApp != null && cssHelper != null) {
+			cssHelper.applyStyleSheet();
+		}
+		
+	}
+	
 }

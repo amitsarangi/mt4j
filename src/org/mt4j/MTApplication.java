@@ -36,6 +36,7 @@ import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.log4j.SimpleLayout;
+import org.mt4j.css.util.CSSStyleManager;
 import org.mt4j.input.InputManager;
 import org.mt4j.input.inputData.AbstractCursorInputEvt;
 import org.mt4j.input.inputData.ActiveCursorPool;
@@ -225,9 +226,15 @@ public abstract class MTApplication extends PApplet {
 		}
 	*/
 	
+	//Changes for CSS Integration
+	private CSSStyleManager cssStyleManager;
+	
+	public CSSStyleManager getCssStyleManager() {
+		return cssStyleManager;
+	}
 
-
-
+	//Changes for CSS Integration
+	
 	/**
 	 * Dont instiatiate this class directly!
 	 * It gets instantiated by the PApplet class via
@@ -244,6 +251,7 @@ public abstract class MTApplication extends PApplet {
 		sceneStack = new ArrayDeque<Iscene>();
 		
 		sceneChangeLocked = false;
+		cssStyleManager = new CSSStyleManager(this);
 	}
 	
 	/**

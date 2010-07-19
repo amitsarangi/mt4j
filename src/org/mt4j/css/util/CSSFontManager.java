@@ -8,13 +8,31 @@ import org.mt4j.css.util.CSSKeywords.CSSFontWeight;
 import org.mt4j.util.MTColor;
 
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class CSSFontManager.
+ */
 public class CSSFontManager {
+	
+	/** The app. */
 	MTApplication app;
+	
+	/**
+	 * Instantiates a new CSS font manager.
+	 *
+	 * @param app the MTApplication
+	 */
 	public CSSFontManager(MTApplication app) {
 		this.app = app;
 	}
 	
 	
+	/**
+	 * Select font.
+	 *
+	 * @param currentFont2 the CSSFont to be returned as IFont
+	 * @return the font as IFont
+	 */
 	public IFont selectFont(CSSFont currentFont2) {
 
 		if (currentFont2 != null) {
@@ -132,6 +150,14 @@ public class CSSFontManager {
 				currentFont2.getColor()); 
 	}
 
+	/**
+	 * Gets an IFont by its filename, size and color
+	 *
+	 * @param font the font file name
+	 * @param size the size
+	 * @param color the color
+	 * @return the font
+	 */
 	private IFont getFont(String font, int size, MTColor color) {
 		try {
 			IFont returnFont = FontManager.getInstance().createFont(app,

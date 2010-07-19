@@ -8,75 +8,160 @@ import org.mt4j.components.MTCanvas;
 import org.mt4j.components.MTComponent;
 import org.mt4j.css.util.CSSKeywords.CSSSelectorType;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class CSSSelector.
+ */
 public class CSSSelector {
+	
+	/** The primary part of the selector */
 	String primary = null;
+	
+	/** The type of the primary part of the selector */
 	CSSSelectorType primaryType = null;
 	
+	/** The secondary part of the selector. */
 	String secondary = null;
+	
+	/** The type of the secondary part of the selector. */
 	CSSSelectorType secondaryType = null;
 	
 	
 	
+	/**
+	 * Instantiates a new CSS selector.
+	 *
+	 * @param primary the primary part of the selector
+	 * @param primaryType the type of the primary part of the selector
+	 */
 	public CSSSelector(String primary, CSSSelectorType primaryType) {
 		super();
 		this.primary = check(primary);
 		this.primaryType = primaryType;
 	}
 
+	/** Does the selector have a child. */
 	boolean selectChild = false;
 
+	/** The child. */
 	CSSSelector child = null;
 	
+	/**
+	 * Gets the primary part of the selector
+	 *
+	 * @return the primary part of the selector
+	 */
 	public String getPrimary() {
 		return primary;
 	}
 
+	/**
+	 * Sets the primary part of the selector.
+	 *
+	 * @param primary the new primary part of the selector
+	 */
 	public void setPrimary(String primary) {
 		this.primary = check(primary);
 	}
 
+	/**
+	 * Gets the type of the primary part of the selector.
+	 *
+	 * @return the type of the primary part of the selector.
+	 */
 	public CSSSelectorType getPrimaryType() {
 		return primaryType;
 	}
 
+	/**
+	 * Sets the type of the primary part of the selector.
+	 *
+	 * @param primaryType the new type of the primary part of the selector.
+	 */
 	public void setPrimaryType(CSSSelectorType primaryType) {
 		this.primaryType = primaryType;
 	}
 
+	/**
+	 * Gets the secondary part of the selector.
+	 *
+	 * @return the secondary part of the selector
+	 */
 	public String getSecondary() {
 		return secondary;
 	}
 
+	/**
+	 * Sets the secondary part of the selector
+	 *
+	 * @param secondary the new secondary part of the selector
+	 */
 	public void setSecondary(String secondary) {
 		this.secondary = check(secondary);
 	}
 
+	/**
+	 * Sets the secondary.
+	 *
+	 * @param secondary the secondary part of the selector
+	 * @param type the type of the secondary  part of the selector
+	 */
 	public void setSecondary(String secondary, CSSSelectorType type) {
 		this.secondary = check(secondary);
 		this.secondaryType = type;
 	}
 	
+	/**
+	 * Gets the type of the secondary part of the selector
+	 *
+	 * @return the type of the secondary part of the selector
+	 */
 	public CSSSelectorType getSecondaryType() {
 		return secondaryType;
 	}
 
+	/**
+	 * Sets the type of the secondary part of the selector
+	 *
+	 * @param secondaryType the new secondary type of the secondary part of the selector
+	 */
 	public void setSecondaryType(CSSSelectorType secondaryType) {
 		this.secondaryType = secondaryType;
 	}
 
+	/**
+	 * Checks if the selector has a child.
+	 *
+	 * @return true, if is select child
+	 */
 	public boolean isSelectChild() {
 		return selectChild;
 	}
 
+	/**
+	 * Sets, whether the selector has a child
+	 *
+	 * @param selectChild the new select child
+	 */
 	public void setSelectChild(boolean selectChild) {
 		this.selectChild = selectChild;
 	}
 
+	/**
+	 * Gets the child.
+	 *
+	 * @return the child
+	 */
 	public CSSSelector getChild() {
 		if (selectChild) return child;
 		else return null;
 	}
 
+	/**
+	 * Sets the child.
+	 *
+	 * @param child the new child
+	 */
 	public void setChild(CSSSelector child) {
 		if (child != null) {
 		this.selectChild = true;
@@ -87,6 +172,9 @@ public class CSSSelector {
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -102,6 +190,9 @@ public class CSSSelector {
 		return result;
 	}
 
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
 	@Override
 	public boolean equals(Object obj) {
 		
@@ -140,6 +231,9 @@ public class CSSSelector {
 		return true;
 	}
 	
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
 	@Override
 	public String toString() {
 		String childString = "";
@@ -155,18 +249,30 @@ public class CSSSelector {
 		}
 		return "No Selector";
 	}
+	
+	/**
+	 * Replace all unwanted characters (" ", ".", "#")
+	 *
+	 * @param input the input
+	 * @return the string
+	 */
 	private String check(String input) {
 		return input.replace(" ", "").replace(".", "").replace("#", "");
 	}
 	
+	/**
+	 * Checks, whether the selector applies to a component
+	 *
+	 * @param c the MTComponent
+	 * @return the priority of the selector (0 if does not apply)
+	 * Selector: 	Pos1 	Pos2 > 	Pos3 	Pos 4
+	 * 				100-199	200-299	300-399	400-499
+	 */
 	public int appliesTo(MTComponent c) {
 		// Selector: 	Pos1 	Pos2 > 	Pos3 	Pos 4
 		// 				100-199	200-299	300-399	400-499
 		
-		
-		
-		
-		int returnInteger;
+
 		List<String> superclasses = getSuperclasses(c.getClass());
 		try {
 			if (secondary == null && child == null) {
@@ -366,6 +472,13 @@ public class CSSSelector {
 		return 0;
 	}
 	
+	/**
+	 * Checks, whether the Selector applies to a parent of the component
+	 *
+	 * @param c the MTComponent
+	 * @param level the level, for which to search
+	 * @return the hierarchy level, on which it was found (0, if not found)
+	 */
 	private int containsParent(MTComponent c, int level) {
 		//Level:
 		//1: Parent Match
@@ -398,11 +511,16 @@ public class CSSSelector {
 		return 0;
 	}
 	
+	/**
+	 * Searches, whether a parent matches the primary part of the selector
+	 *
+	 * @param c the MTComponent
+	 * @return the level, where the selector applies (0 if not found)
+	 */
 	private int searchLevelsOne(MTComponent c) {
 		//Search all above levels for instance of Selector
 		int numberOfLevels = numberOfLevels(c);
-		boolean found = false;
-		int foundAtLevel = 0;
+
 		try {
 			if (numberOfLevels > 1) {
 				for (int i = 2; i <= numberOfLevels; i++) {
@@ -424,6 +542,12 @@ public class CSSSelector {
 	
 	
 	
+	/**
+	 *  Searches, whether a grandparent matches the primary part of the selector and the parent matches the secondary part
+	 *
+	 * @param c the MTComponent
+	 * @return the level, where the selector applies (0 if not found)
+	 */
 	private int searchLevelsTwo(MTComponent c) {
 		//Search all upper levels for Grandparent, Level 1 = Match, Level 2 = Parent (Parent must be directly over child)
 		int numberOfLevels = numberOfLevels(c);
@@ -447,6 +571,12 @@ public class CSSSelector {
 		return 0;
 	}
 
+	/**
+	 * Searches, whether a grand-grandparent matches the primary part of the selector and the grandparent matches the secondary part, while the parent matches the primary part of the child
+	 *
+	 * @param c the c
+	 * @return the level, where the selector applies (0 if not found)
+	 */
 	private int searchLevelsThree(MTComponent c) {
 		int numberOfLevels = numberOfLevels(c);
 		boolean found = false;
@@ -471,6 +601,13 @@ public class CSSSelector {
 		return 0;
 
 	}
+	
+	/**
+	 * Search whether a grandparent matches the primary part of the selector and a parent matches the primary part of the child
+	 *
+	 * @param c the c
+	 * @return the level, where the selector applies (0 if not found)
+	 */
 	private int searchLevelsFour (MTComponent c) {
 		//return 	isMatch(primaryType, primary, c.getParent().getParent()) &&
 		//isMatch(child.getPrimaryType(), child.getPrimary(), c.getParent());
@@ -494,6 +631,12 @@ public class CSSSelector {
 		return 0;
 	}
 	
+	/**
+	 * Searches, whether a parent matches the primary part of the selector
+	 *
+	 * @param c the MTComponent
+	 * @return the level, where the selector applies (0 if not found)
+	 */
 	private int searchLevelsFive(MTComponent c) {
 		//Search all above levels for instance of Selector
 		int numberOfLevels = numberOfLevels(c);
@@ -518,6 +661,13 @@ public class CSSSelector {
 	}
 	
 	
+	/**
+	 * Gets the component at a certain level in the hierarchy
+	 *
+	 * @param c the MTComponent
+	 * @param level the level, at which to look
+	 * @return the component at that level
+	 */
 	private MTComponent getComponentAtLevel(MTComponent c,int level) {
 		
 		try {
@@ -532,6 +682,12 @@ public class CSSSelector {
 	}
 	
 	
+	/**
+	 * Determines the Number of levels in the hierarchy
+	 *
+	 * @param c the MTComponent
+	 * @return the number of levels
+	 */
 	private int numberOfLevels(MTComponent c) {
 		try {
 			if (c instanceof MTCanvas || c == null) {
@@ -545,6 +701,14 @@ public class CSSSelector {
 		}
 	}
 	
+	/**
+	 * Checks if the object name or ID matches the selector
+	 *
+	 * @param type the selector type
+	 * @param selector the selector
+	 * @param c the MTComponent
+	 * @return true, if is a match
+	 */
 	private boolean isMatch(CSSSelectorType type, String selector, MTComponent c) {
 		try {
 			if (c != null && c instanceof MTComponent) {
@@ -573,6 +737,12 @@ public class CSSSelector {
 		return false;
 	}
 	
+	/**
+	 * Gets the superclasses of a class
+	 *
+	 * @param c the Class
+	 * @return the superclasses
+	 */
 	private List<String> getSuperclasses(Class c) {
 		List<String> superclasses = new ArrayList<String>();
 		superclasses.add(c.getSimpleName().toUpperCase().replace(" ", ""));

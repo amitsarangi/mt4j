@@ -33,43 +33,78 @@ import org.mt4j.util.opengl.GLTexture.WRAP_MODE;
 
 import processing.core.PImage;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class CSSHelper.
+ */
 public class CSSHelper {
 
+	/** The private style sheets (unique to an object) */
 	List<CSSStyle> privateStyleSheets = new ArrayList<CSSStyle>();
 
+	/** The currently relevant global style sheet */
 	List<CSSStyleHierarchy> sheets = new ArrayList<CSSStyleHierarchy>();
+	
+	/** The virtual style sheet (generated from the global and private style sheets) */
 	public CSSStyle virtualStyleSheet = null;
+	
+	/** The CSS style manager. */
 	CSSStyleManager cssStyleManager;
+	
+	/** The MTApplication. */
 	MTApplication app;
+	
+	/** The MTComponent. */
 	private MTComponent c;
 
-	public CSSHelper(MTComponent c, MTApplication a, CSSStyleManager sm) {
+	/**
+	 * Instantiates a new CSS helper.
+	 *
+	 * @param c the MTComponent
+	 * @param a the MTApplication
+	 */
+	public CSSHelper(MTComponent c, MTApplication a) {
 		this.c = c;
 		this.app = a;
-		this.cssStyleManager = sm;
+		this.cssStyleManager = a.getCssStyleManager();
 		addListeners();
 	}
 
-	public CSSHelper(MTComponent c, MTApplication a, CSSStyleManager sm,
-			CSSStyle s) {
+	/**
+	 * Instantiates a new CSS helper.
+	 *
+	 * @param c the MTComponent
+	 * @param a the MTApplication
+	 * @param s the new private CSSStyle
+	 */
+	public CSSHelper(MTComponent c, MTApplication a, CSSStyle s) {
 		this.c = c;
 		this.app = a;
-		this.cssStyleManager = sm;
+		this.cssStyleManager = a.getCssStyleManager();
 		this.getPrivateStyleSheets().add(s);
 		addListeners();
 
 	}
 
-	public CSSHelper(MTComponent c, MTApplication a, CSSStyleManager sm,
-			List<CSSStyle> s) {
+	/**
+	 * Instantiates a new CSS helper.
+	 *
+	 * @param c the MTComponent
+	 * @param a the MTApplication
+	 * @param s the list of private style sheets
+	 */
+	public CSSHelper(MTComponent c, MTApplication a, List<CSSStyle> s) {
 		this.c = c;
 		this.app = a;
-		this.cssStyleManager = sm;
+		this.cssStyleManager = a.getCssStyleManager();
 		this.getPrivateStyleSheets().addAll(s);
 		addListeners();
 
 	}
 
+	/**
+	 * Adds the listeners to the MTComponent, so applyStyleSheet() is called every time the component is added as child
+	 */
 	private void addListeners() {
 		c.addStateChangeListener(StateChange.ADDED_TO_PARENT,
 				new StateChangeListener() {
@@ -81,33 +116,46 @@ public class CSSHelper {
 
 	}
 
+	/**
+	 * Apply the style sheet. Disambiguate between different subclasses of MTComponent
+	 */
 	public void applyStyleSheet() {
-		evaluateStyleSheets();
-		if ((c instanceof MTPolygon) || (c instanceof MTLine)) {
-			applyStyleSheetBasic((AbstractShape) c);
-		}
-		if (c instanceof MTPolygon) {
-			applyStyleSheetPolygon((MTPolygon)c);
-		}
-		
-		if (c instanceof MTRectangle) {
-			applyStyleSheetRectangle((MTRectangle) c);
-		}
-		if (c instanceof MTTextArea) {
-			applyStyleSheetTextArea((MTTextArea) c);
-		}
-		if (c instanceof MTEllipse) {
-			applyStyleSheetEllipse((MTEllipse) c);
-		}
-		for (MTComponent d : c.getChildren()) {
-			if (d instanceof MTCSSStylable) {
-				MTCSSStylable s = (MTCSSStylable) d;
-				s.applyStyleSheet();
+		if (c instanceof CSSStylableComponent) {
+			CSSStylableComponent sc = (CSSStylableComponent)c;
+			if (sc.isCSSStyled()) {
+				evaluateStyleSheets();
+				if ((c instanceof MTPolygon) || (c instanceof MTLine)) {
+					applyStyleSheetBasic((AbstractShape) c);
+				}
+				if (c instanceof MTPolygon) {
+					applyStyleSheetPolygon((MTPolygon)c);
+				}
+				
+				if (c instanceof MTRectangle) {
+					applyStyleSheetRectangle((MTRectangle) c);
+				}
+				if (c instanceof MTTextArea) {
+					applyStyleSheetTextArea((MTTextArea) c);
+				}
+				if (c instanceof MTEllipse) {
+					applyStyleSheetEllipse((MTEllipse) c);
+				}
+				for (MTComponent d : c.getChildren()) {
+					if (d instanceof CSSStylableComponent) {
+						CSSStylableComponent s = (CSSStylableComponent) d;
+						s.applyStyleSheet();
+					}
+				}
 			}
 		}
 	}
 
-	public void applyStyleSheetBasic(AbstractShape p) {
+	/**
+	 * Apply basic style sheet properties, applicable to all objects.
+	 *
+	 * @param p the AbstractShape (MTPolygon or MTLine)
+	 */
+	private void applyStyleSheetBasic(AbstractShape p) {
 
 		p.setFillColor(virtualStyleSheet.getBackgroundColor());
 		p.setStrokeColor(virtualStyleSheet.getBorderColor());
@@ -123,12 +171,22 @@ public class CSSHelper {
 
 	}
 	
-	public void applyStyleSheetPolygon(MTPolygon p) {
+	/**
+	 * Apply style sheet specific to a MTPolygon (and subclasses)
+	 *
+	 * @param p the MTPolygon
+	 */
+	private void applyStyleSheetPolygon(MTPolygon p) {
 		if (virtualStyleSheet.isModifiedBackgroundImage()) {
 			tiledBackground(p, virtualStyleSheet.getBackgroundImage());
 		}
 	}
 
+	/**
+	 * Apply style sheet to a MTEllipse.
+	 *
+	 * @param e the MTEllipse
+	 */
 	private void applyStyleSheetEllipse(MTEllipse e) {
 		if (virtualStyleSheet.isHeightPercentage()) {
 			if (e.getParent() != null)
@@ -149,6 +207,11 @@ public class CSSHelper {
 		}
 	}
 
+	/**
+	 * Apply style sheet to a MTRectangle.
+	 *
+	 * @param r the MTRectangle
+	 */
 	private void applyStyleSheetRectangle(MTRectangle r) {
 		if (virtualStyleSheet.isWidthPercentage()
 				&& virtualStyleSheet.isHeightPercentage()) {
@@ -190,6 +253,11 @@ public class CSSHelper {
 		}
 	}
 
+	/**
+	 * Apply style sheet to a MTTextArea
+	 *
+	 * @param ta the MTTextArea
+	 */
 	private void applyStyleSheetTextArea(MTTextArea ta) {
 		if (!virtualStyleSheet.getFont().equals(
 				cssStyleManager.getDefaultFont(app))) {
@@ -197,8 +265,11 @@ public class CSSHelper {
 		}
 	}
 
+	/**
+	 * Evaluate the style sheets (in order of relevance).
+	 */
 	@SuppressWarnings("unchecked")
-	public void evaluateStyleSheets() {
+	private void evaluateStyleSheets() {
 		sheets = cssStyleManager.getRelevantStyles(c);
 		Collections.sort(sheets);
 		virtualStyleSheet = new CSSStyle(app);
@@ -212,14 +283,31 @@ public class CSSHelper {
 
 	}
 
+	/**
+	 * Gets the private style sheets.
+	 *
+	 * @return the private style sheets
+	 */
 	public List<CSSStyle> getPrivateStyleSheets() {
 		return privateStyleSheets;
 	}
 
+	/**
+	 * Gets the currently relevant style sheets.
+	 *
+	 * @return the sheets
+	 */
 	public List<CSSStyleHierarchy> getSheets() {
 		return sheets;
 	}
 
+	/**
+	 * Gets the x distance (between a float and a Vertex)
+	 *
+	 * @param x the x-position
+	 * @param v2 the vertex to compare to
+	 * @return the x-distance
+	 */
 	private float getXDistance(float x, Vertex v2) {
 		float distance = v2.x - x;
 		if (distance >= 0)
@@ -229,6 +317,13 @@ public class CSSHelper {
 
 	}
 
+	/**
+	 * Gets the y distance (between a float and a vertex)
+	 *
+	 * @param y the y-position
+	 * @param v2 the vertex to compare to
+	 * @return the y-distance
+	 */
 	private float getYDistance(float y, Vertex v2) {
 		float distance = v2.y - y;
 		if (distance >= 0)
@@ -237,18 +332,39 @@ public class CSSHelper {
 			return -distance;
 	}
 
+	/**
+	 * Sets the private style sheets.
+	 *
+	 * @param privateStyleSheets the new private style sheets
+	 */
 	public void setPrivateStyleSheets(List<CSSStyle> privateStyleSheets) {
 		this.privateStyleSheets = privateStyleSheets;
 	}
 
+	/**
+	 * Sets the relevant style sheets.
+	 *
+	 * @param sheets the new sheets
+	 */
 	public void setSheets(List<CSSStyleHierarchy> sheets) {
 		this.sheets = sheets;
 	}
 
+	/**
+	 * Adds a style sheet.
+	 *
+	 * @param sheet the new style sheet
+	 */
 	public void setStyleSheet(CSSStyle sheet) {
 		this.privateStyleSheets.add(sheet);
 	}
 
+	/**
+	 * Sets the texture for a tiled background.
+	 *
+	 * @param p the MTPolygon to apply it to
+	 * @param bgImage the background-image
+	 */
 	private void tiledBackground(MTPolygon p, PImage bgImage) {
 		boolean pot = Tools3D.isPowerOfTwoDimension(bgImage);
 		boolean tiled = true;

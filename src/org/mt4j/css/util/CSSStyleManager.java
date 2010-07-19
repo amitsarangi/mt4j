@@ -1,21 +1,30 @@
 package org.mt4j.css.util;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
-import org.apache.log4j.Logger;
 import org.mt4j.MTApplication;
 import org.mt4j.components.MTComponent;
 import org.mt4j.components.visibleComponents.font.FontManager;
 import org.mt4j.components.visibleComponents.font.IFont;
-import org.mt4j.components.visibleComponents.shapes.AbstractShape;
+import org.mt4j.css.parser.CSSParserConnection;
 import org.mt4j.css.style.CSSSelector;
 import org.mt4j.css.style.CSSStyle;
 import org.mt4j.css.style.CSSStyleHierarchy;
 import org.mt4j.util.MTColor;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class CSSStyleManager.
+ */
 public class CSSStyleManager {
+	
+	/**
+	 * Instantiates a new CSS style manager.
+	 *
+	 * @param styles the CSSStyles
+	 * @param app the MTApplication
+	 */
 	public CSSStyleManager(List<CSSStyle> styles, MTApplication app) {
 		for (CSSStyle s: styles) {
 			this.styles.add(new CSSStyleHierarchy(s));
@@ -23,36 +32,100 @@ public class CSSStyleManager {
 		this.app = app;
 	}
 	
-	List<MTCSSStylable> components = new ArrayList<MTCSSStylable>();
+	/**
+	 * Instantiates a new (empty) CSS style manager.
+	 *
+	 * @param app the MTApplication
+	 */
+	public CSSStyleManager(MTApplication app) {
+		this.app = app;
+	}
 	
+	/**
+	 * Load styles from file
+	 *
+	 * @param uri the uri of the file
+	 */
+	public void loadStyles(String uri) {
+		CSSParserConnection pc = new CSSParserConnection(uri, app);
+		List<CSSStyle> newStyles = pc.getCssh().getStyles();
+		for (CSSStyle s: newStyles) {
+			this.styles.add(new CSSStyleHierarchy(s));
+		}
+	}
+	
+	/**
+	 * Clear all styles.
+	 */
+	public void clearStyles() {
+		this.styles.clear();
+		applyStyles();
+	}
+	
+	/** The components (of registered MTComponents) */
+	List<CSSStylableComponent> components = new ArrayList<CSSStylableComponent>();
+	
+	/** The MTApplication. */
 	MTApplication app = null;
 	
+	/** The styles. */
 	List<CSSStyleHierarchy> styles = new ArrayList<CSSStyleHierarchy>();
 
+	/**
+	 * Gets the styles.
+	 *
+	 * @return the styles
+	 */
 	public List<CSSStyleHierarchy> getStyles() {
 		return styles;
 	}
 
+	/**
+	 * Sets the styles.
+	 *
+	 * @param styles the new styles
+	 */
 	public void setStyles(List<CSSStyleHierarchy> styles) {
 		this.styles = styles;
 		applyStyles();
 	}
 	
+	/**
+	 * Adds a style.
+	 *
+	 * @param style the style
+	 */
 	public void addStyle(CSSStyle style) {
 		this.styles.add(new CSSStyleHierarchy(style));
 		applyStyles();
 	}
+	
+	/**
+	 * Adds a style with a certain priority
+	 *
+	 * @param style the style
+	 * @param priority the priority
+	 */
 	public void addStyle(CSSStyle style, int priority) {
 		this.styles.add(new CSSStyleHierarchy(style, priority));
 		applyStyles();
 	}
+	
+	/**
+	 * Removes a style.
+	 *
+	 * @param style the style
+	 */
 	public void removeStyle(CSSStyle style) {
 		this.styles.remove(style);
 		applyStyles();
 	}
 	
+	/**
+	 * Applies the global style sheets on all registered components.
+	 */
 	public void applyStyles() {
-		for (MTCSSStylable c: components) {
+		for (CSSStylableComponent c: components) {
 			if (c != null) {
 				c.applyStyleSheet();
 			}
@@ -61,6 +134,12 @@ public class CSSStyleManager {
 		}
 	}
 	
+	/**
+	 * Gets the first style which contains a specific selector.
+	 *
+	 * @param s the Selector
+	 * @return the first style which contains the selector
+	 */
 	public CSSStyle getFirstStyleForSelector(CSSSelector s) {
 		for (CSSStyleHierarchy sty: styles) {
 			if (sty.getStyle().getSelector().equals(s)) return sty.getStyle();
@@ -68,11 +147,17 @@ public class CSSStyleManager {
 		return null;
 	}
 	
+	/**
+	 * Gets all relevant styles for a MTComponent
+	 *
+	 * @param c the MTComponent
+	 * @return the relevant styles
+	 */
 	public List<CSSStyleHierarchy> getRelevantStyles(MTComponent c) {
-		if (!components.contains(c) && c instanceof MTCSSStylable) components.add((MTCSSStylable)c);
+		if (!components.contains(c) && c instanceof CSSStylableComponent) components.add((CSSStylableComponent)c);
 		
 		List<CSSStyleHierarchy> relevantStyles = new ArrayList<CSSStyleHierarchy>();
-		List<String> superClasses = getSuperclasses(c.getClass());
+
 	
 		
 		for (CSSStyleHierarchy s: styles) {
@@ -90,6 +175,12 @@ public class CSSStyleManager {
 	}
 	
 
+	/**
+	 * Gets the superclasses of an Object
+	 *
+	 * @param c the MTComponent
+	 * @return the superclasses
+	 */
 	private List<String> getSuperclasses(Class c) {
 		List<String> superclasses = new ArrayList<String>();
 		superclasses.add(c.getSimpleName().toUpperCase().replace(" ", ""));
@@ -102,6 +193,12 @@ public class CSSStyleManager {
 		return superclasses;
 	}
 	
+	/**
+	 * Gets the default font.
+	 *
+	 * @param app the app
+	 * @return the default font
+	 */
 	public IFont getDefaultFont(MTApplication app) {
 		return FontManager.getInstance().createFont(app,
 				"dejavu/DejaVuSans.ttf", 16, // Font size

@@ -6,6 +6,7 @@ import java.util.StringTokenizer;
 
 import org.apache.log4j.Logger;
 import org.mt4j.MTApplication;
+import org.mt4j.components.visibleComponents.font.BitmapFont;
 import org.mt4j.css.style.CSSFont;
 import org.mt4j.css.style.CSSSelector;
 import org.mt4j.css.style.CSSStyle;
@@ -16,6 +17,7 @@ import org.mt4j.css.util.CSSKeywords.CSSFontFamily;
 import org.mt4j.css.util.CSSKeywords.CSSFontStyle;
 import org.mt4j.css.util.CSSKeywords.CSSFontWeight;
 import org.mt4j.css.util.CSSKeywords.CSSSelectorType;
+import org.mt4j.css.util.CSSKeywords.cssproperties;
 import org.mt4j.util.MTColor;
 import org.w3c.css.sac.CSSException;
 import org.w3c.css.sac.DocumentHandler;
@@ -28,51 +30,89 @@ import processing.core.PImage;
 
 
 
+/**
+ * The Class CSSHandler consists of the CSS parsing rules
+ */
 public class CSSHandler implements DocumentHandler{
 	
+	/** The logger. */
 	Logger logger = null;
+	
+	/** The styles. */
 	List<CSSStyle> styles = null;
+	
+	/** The active styles. */
 	List<CSSStyle> activeStyles = new ArrayList<CSSStyle>();
+	
+	/** The current font. */
 	CSSFont currentFont = null;
+	
+	/** The app. */
 	MTApplication app = null;
+	
+	/** The default font size. */
 	float defaultFontSize = 16f;
 	
+	/**
+	 * Instantiates a new CSS handler.
+	 *
+	 * @param app the MTApplication
+	 * @param styles the List, to which the styles are added
+	 */
 	public CSSHandler(MTApplication app, List<CSSStyle> styles) {
-		logger = Logger.getLogger("MT4J Extensions");
+		logger = Logger.getLogger(CSSHandler.class.getName());
 		this.styles = styles;
 		this.app = app;
 	}
 	
 	
+	/* (non-Javadoc)
+	 * @see org.w3c.css.sac.DocumentHandler#comment(java.lang.String)
+	 */
 	@Override
 	public void comment(String arg0) throws CSSException {
 		//Don't hand comments
 	}
 
+	/* (non-Javadoc)
+	 * @see org.w3c.css.sac.DocumentHandler#endDocument(org.w3c.css.sac.InputSource)
+	 */
 	@Override
 	public void endDocument(InputSource arg0) throws CSSException {
 		//Document done, nothing to do
 		
 	}
 
+	/* (non-Javadoc)
+	 * @see org.w3c.css.sac.DocumentHandler#endFontFace()
+	 */
 	@Override
 	public void endFontFace() throws CSSException {
 		//
 		
 	}
 
+	/* (non-Javadoc)
+	 * @see org.w3c.css.sac.DocumentHandler#endMedia(org.w3c.css.sac.SACMediaList)
+	 */
 	@Override
 	public void endMedia(SACMediaList arg0) throws CSSException {
 		//
 		
 	}
 
+	/* (non-Javadoc)
+	 * @see org.w3c.css.sac.DocumentHandler#endPage(java.lang.String, java.lang.String)
+	 */
 	@Override
 	public void endPage(String arg0, String arg1) throws CSSException {
 		//
 		
 	}
 
+	/* (non-Javadoc)
+	 * @see org.w3c.css.sac.DocumentHandler#endSelector(org.w3c.css.sac.SelectorList)
+	 */
 	@Override
 	public void endSelector(SelectorList arg0) throws CSSException {
 		if (currentFont != null && currentFont.isModified()) {
@@ -87,12 +127,18 @@ public class CSSHandler implements DocumentHandler{
 
 
 	
+	/* (non-Javadoc)
+	 * @see org.w3c.css.sac.DocumentHandler#ignorableAtRule(java.lang.String)
+	 */
 	@Override
 	public void ignorableAtRule(String arg0) throws CSSException {
 		//
 		
 	}
 
+	/* (non-Javadoc)
+	 * @see org.w3c.css.sac.DocumentHandler#importStyle(java.lang.String, org.w3c.css.sac.SACMediaList, java.lang.String)
+	 */
 	@Override
 	public void importStyle(String arg0, SACMediaList arg1, String arg2)
 			throws CSSException {
@@ -100,6 +146,9 @@ public class CSSHandler implements DocumentHandler{
 		
 	}
 
+	/* (non-Javadoc)
+	 * @see org.w3c.css.sac.DocumentHandler#namespaceDeclaration(java.lang.String, java.lang.String)
+	 */
 	@Override
 	public void namespaceDeclaration(String arg0, String arg1)
 			throws CSSException {
@@ -107,6 +156,9 @@ public class CSSHandler implements DocumentHandler{
 		
 	}
 
+	/* (non-Javadoc)
+	 * @see org.w3c.css.sac.DocumentHandler#property(java.lang.String, org.w3c.css.sac.LexicalUnit, boolean)
+	 */
 	@Override
 	public void property(String name, LexicalUnit value, boolean important)
 			throws CSSException {
@@ -118,13 +170,20 @@ public class CSSHandler implements DocumentHandler{
 		}
 	}
 	
+	/**
+	 * Parses the LexicalUnit.
+	 *
+	 * @param name the name/identifier
+	 * @param value the value
+	 */
 	private void parseValue(String name, LexicalUnit value) {
 		try {
+			//Which tag is being used?
 			cssproperties prop = cssproperties.UNKNOWN;
 			try {
 				prop  = cssproperties.valueOf(name.replace(" ", "").replace("-", "").toUpperCase());
 			} catch (IllegalArgumentException iae) {
-				iae.printStackTrace();
+				
 			}
 		switch (prop) {
 		case BACKGROUNDCOLOR:
@@ -145,19 +204,24 @@ public class CSSHandler implements DocumentHandler{
 				parameters.add(value);
 			}
 			
+			//Evaluate all parameters
 			for (LexicalUnit lu: parameters) {
+				//What type is the current parameter?
 				switch (identifyBackgroundTag(lu)) {
 				case 1:
+					//Color
 					MTColor backgroundColor = handleColor(lu);
 					if (backgroundColor != null) 
 						for (CSSStyle sty: activeStyles) sty.setBackgroundColor(backgroundColor);
 					break;
 				case 2:
+					//Background Image
 					PImage backgroundImage2 = handleBackgroundImage(lu);
 					if (backgroundImage2 != null) 
 						for (CSSStyle sty: activeStyles) sty.setBackgroundImage(backgroundImage2);
 					break;
 				case 3:
+					//Background repeat rules
 					BackgroundRepeat backgroundRepeat = handleBackgroundRepeat(lu);
 					if (backgroundRepeat != null) 
 						for (CSSStyle sty: activeStyles) sty.setBackgroundRepeat(backgroundRepeat);
@@ -198,22 +262,27 @@ public class CSSHandler implements DocumentHandler{
 		case BORDER:
 			parameters = new ArrayList<LexicalUnit>();
 			parameters.add(value);
+			//Add all parameters to list
 			while (value.getNextLexicalUnit() != null) {
 				value = value.getNextLexicalUnit();
 				parameters.add(value);
 			}
 			
+			//Evaluate all Parameters
 			for (LexicalUnit lu: parameters) {
 				switch (identifyBorderTag(lu)) {
 				case 1:
+					//Border width
 					float width = handleBorderWidth(value);
 					for (CSSStyle sty: activeStyles) sty.setBorderWidth(width);
 					break;
 				case 2:
+					//Border style
 					CSSBorderStyle style = parseBorderStyle(value);
 					for (CSSStyle sty: activeStyles) sty.setBorderStyle(style);
 					break;
 				case 3:
+					//Border color
 					color = handleColor(value);
 					for (CSSStyle sty: activeStyles) sty.setBorderColor(color);
 					break;
@@ -242,7 +311,7 @@ public class CSSHandler implements DocumentHandler{
 			break;
 		case FONTSIZE:
 			parameter = value;
-			//Have to convert to pt
+			//Is the font-size a measuring unit or a string?
 			if (CSSKeywords.isMeasuringUnit(parameter)) {
 			if (currentFont == null) currentFont = new CSSFont((int) (parseMeasuringUnit(parameter,defaultFontSize) * (72f/100f)));
 			else currentFont.setFontsize((int) (parseMeasuringUnit(parameter,defaultFontSize)* (72f/100f)));
@@ -263,14 +332,17 @@ public class CSSHandler implements DocumentHandler{
 		case FONT:
 			parameters = new ArrayList<LexicalUnit>();
 			parameters.add(value);
+			//Add all parameters to list
 			while (value.getNextLexicalUnit() != null) {
 				value = value.getNextLexicalUnit();
 				parameters.add(value);
 			}
 			
+			//Evaluate all parameters
 			for (LexicalUnit lu: parameters) {
 				switch (identifyFontTag(lu)) {
 				case 1:
+					//Font size
 					parameter = lu;
 					if (CSSKeywords.isMeasuringUnit(parameter)) {
 						if (currentFont == null) currentFont = new CSSFont((int) (parseMeasuringUnit(parameter,defaultFontSize) * (72f/100f)));
@@ -281,12 +353,15 @@ public class CSSHandler implements DocumentHandler{
 						}
 					break;
 				case 2:
+					//Font weight
 					handleFontWeight(lu);
 					break;
 				case 3:
+					//Font style
 					handleFontStyle(lu);
 					break;
 				case 4:
+					//Font family
 					handleFontFamily(lu);
 					break;
 				default:
@@ -312,6 +387,17 @@ public class CSSHandler implements DocumentHandler{
 		}
 	}
 	
+	/**
+	 * Identifies the parameter type in a Font: tag
+	 *
+	 * @param lu the LexicalUnit
+	 * @return the parameter type
+	 * 	0: Unknown
+	 *	1: font-size
+	 *	2: font-weight
+	 *	3: font-style
+	 *	4: font-family
+	 */
 	private int identifyFontTag(LexicalUnit lu) {
 		//0: Unknown
 		//1: font-size
@@ -333,6 +419,16 @@ public class CSSHandler implements DocumentHandler{
 	}
 
 
+	/**
+	 * Identifies the parameter type in a Border: tag
+	 *
+	 * @param lu the LexicalUnit
+	 * @return the parameter type
+	 * 	0: Unknown
+	 *	1: Border-Width
+	 *	2: Border-Style
+	 *	3. Border-Color
+	 */
 	private int identifyBorderTag(LexicalUnit lu) {
 		//0: Unknown
 		//1: Border-Width
@@ -349,6 +445,12 @@ public class CSSHandler implements DocumentHandler{
 	}
 
 
+	/**
+	 * Handles the background-repeat: tag
+	 *
+	 * @param value the LexicalUnit
+	 * @return the background repeat type
+	 */
 	private BackgroundRepeat handleBackgroundRepeat(LexicalUnit value) {
 		logger.debug("Background Repeat Type: " + value.getLexicalUnitType());
 		if (value.getLexicalUnitType() == LexicalUnit.SAC_IDENT) {
@@ -363,6 +465,16 @@ public class CSSHandler implements DocumentHandler{
 		return null;
 	}
 	
+	/**
+	 * Identifies the parameter types in a Background: tag
+	 *
+	 * @param value the LexicalUnit
+	 * @return the parameter type
+	 * 	0: Unknown
+	 *	1: Color
+	 *	2: Background-Image
+	 *	3: Repeat
+	 */
 	private int identifyBackgroundTag(LexicalUnit value) {
 		//Return Values:
 		//0: Unknown
@@ -383,6 +495,12 @@ public class CSSHandler implements DocumentHandler{
 		return 0;
 	}
 	
+	/**
+	 * Handles the border-width: tag
+	 *
+	 * @param lu the LexicalUnit
+	 * @return the border width
+	 */
 	private float handleBorderWidth(LexicalUnit lu) {
 		if (CSSKeywords.isMeasuringUnit(lu)) {
 			return parseMeasuringUnit(lu,1);
@@ -400,6 +518,12 @@ public class CSSHandler implements DocumentHandler{
 	}
 	
 
+	/**
+	 * Handles background-image: tag
+	 *
+	 * @param value the LexicalUnit
+	 * @return the background image (as PImage)
+	 */
 	private PImage handleBackgroundImage(LexicalUnit value) {
 		if (value.getLexicalUnitType() == LexicalUnit.SAC_URI) {
 		
@@ -416,6 +540,12 @@ public class CSSHandler implements DocumentHandler{
 	}
 
 
+	/**
+	 * Handles the font-size: tag, if it's a string
+	 *
+	 * @param parameter the LexicalUnit
+	 * @return the font size
+	 */
 	private int handleFontSizeString(LexicalUnit parameter) {
 		
 		if (parameter.getStringValue().toUpperCase().contains("SMALLER")) return 8;
@@ -428,6 +558,11 @@ public class CSSHandler implements DocumentHandler{
 	}
 
 
+	/**
+	 * Handles the font-weight: tag
+	 *
+	 * @param value the LexicalUnit
+	 */
 	private void handleFontWeight(LexicalUnit value) {
 		CSSFontWeight weight = CSSFontWeight.NORMAL;
 		if (currentFont == null) currentFont = new CSSFont(weight);
@@ -449,6 +584,11 @@ public class CSSHandler implements DocumentHandler{
 	}
 
 
+	/**
+	 * Handles the font-family: tag
+	 *
+	 * @param value the LexicalUnit
+	 */
 	private void handleFontFamily(LexicalUnit value) {
 		CSSFontFamily family = CSSFontFamily.CUSTOM;
 		if (currentFont == null) currentFont = new CSSFont(family);
@@ -467,6 +607,12 @@ public class CSSHandler implements DocumentHandler{
 		}
 		
 	}
+	
+	/**
+	 * Handles the font-style: tag
+	 *
+	 * @param value the LexicalUnit
+	 */
 	private void handleFontStyle(LexicalUnit value) {
 		
 		CSSFontStyle style = CSSFontStyle.NORMAL;
@@ -477,6 +623,12 @@ public class CSSHandler implements DocumentHandler{
 		}
 	}
 	
+	/**
+	 * Handles color values, either as RGBCOLOR or as String
+	 *
+	 * @param value LexicalUnit
+	 * @return the Color (as MTColor)
+	 */
 	private MTColor handleColor(LexicalUnit value){
 		switch (value.getLexicalUnitType()) {
 		case LexicalUnit.SAC_RGBCOLOR:
@@ -493,6 +645,7 @@ public class CSSHandler implements DocumentHandler{
 					
 				} catch (Exception e) {e.printStackTrace();};
 			break;
+		case LexicalUnit.SAC_STRING_VALUE:
 		case LexicalUnit.SAC_IDENT:
 				if (value.getStringValue().equalsIgnoreCase("black")) return MTColor.BLACK;
 				if (value.getStringValue().equalsIgnoreCase("white")) return MTColor.WHITE;
@@ -522,6 +675,12 @@ public class CSSHandler implements DocumentHandler{
 		return new MTColor(0,0,0,0);
 	}
 	
+	/**
+	 * Parses boolean values
+	 *
+	 * @param value the LexicalUnit
+	 * @return true, if the stringValue is "true" 
+	 */
 	private boolean parseBoolean(LexicalUnit value) {
 		try {
 			return Boolean.parseBoolean(value.getStringValue());
@@ -533,6 +692,12 @@ public class CSSHandler implements DocumentHandler{
 		return false;
 	}
 	
+	/**
+	 * Handles the border-style: tag
+	 *
+	 * @param value the LexicalUnit
+	 * @return the border style (CSSBorderStyle)
+	 */
 	private CSSBorderStyle parseBorderStyle(LexicalUnit value) {
 		LexicalUnit parameter = value;
 		if (parameter.getLexicalUnitType() == LexicalUnit.SAC_IDENT) {
@@ -545,20 +710,15 @@ public class CSSHandler implements DocumentHandler{
 		return CSSBorderStyle.SOLID;
 	}
 	
-	private float parseNumber(LexicalUnit component) {
-		if (component.getLexicalUnitType() == LexicalUnit.SAC_INTEGER) {
-			return (float) component.getIntegerValue();
-		}
-		if (component.getLexicalUnitType() == LexicalUnit.SAC_REAL) {
-			return (float) component.getFloatValue();
-		}
-		if (component.getLexicalUnitType() == LexicalUnit.SAC_PERCENTAGE) {
-			return (float) component.getFloatValue();
-		}
-		
-		return 0;
-	}
+
 	
+	/**
+	 * Parses all measuring units, converts them to px
+	 *
+	 * @param value the LexicalUnit
+	 * @param referenceValue the reference value (for proportional calculations)
+	 * @return the measuring unit as px
+	 */
 	private float parseMeasuringUnit(LexicalUnit value, float referenceValue) {
 		float dpi = 100f;
 		
@@ -600,26 +760,41 @@ public class CSSHandler implements DocumentHandler{
 	}
 	
 	
+	/* (non-Javadoc)
+	 * @see org.w3c.css.sac.DocumentHandler#startDocument(org.w3c.css.sac.InputSource)
+	 */
 	@Override
 	public void startDocument(InputSource arg0) throws CSSException {
 		
 	}
 
+	/* (non-Javadoc)
+	 * @see org.w3c.css.sac.DocumentHandler#startFontFace()
+	 */
 	@Override
 	public void startFontFace() throws CSSException {
 		
 	}
 
+	/* (non-Javadoc)
+	 * @see org.w3c.css.sac.DocumentHandler#startMedia(org.w3c.css.sac.SACMediaList)
+	 */
 	@Override
 	public void startMedia(SACMediaList arg0) throws CSSException {
 		
 	}
 
+	/* (non-Javadoc)
+	 * @see org.w3c.css.sac.DocumentHandler#startPage(java.lang.String, java.lang.String)
+	 */
 	@Override
 	public void startPage(String arg0, String arg1) throws CSSException {
 		
 	}
 
+	/* (non-Javadoc)
+	 * @see org.w3c.css.sac.DocumentHandler#startSelector(org.w3c.css.sac.SelectorList)
+	 */
 	@Override
 	public void startSelector(SelectorList selectors) throws CSSException {
 		
@@ -633,6 +808,12 @@ public class CSSHandler implements DocumentHandler{
 		
 	}
 	
+	/**
+	 * Parses the selector.
+	 *
+	 * @param selector the org.w3c.css.sac.Selector
+	 * @return the Selector (CSSSelector)
+	 */
 	public CSSSelector parseSelector(org.w3c.css.sac.Selector selector) {
 
 		
@@ -656,6 +837,12 @@ public class CSSHandler implements DocumentHandler{
 		return newSelector;
 	}
 	
+	/**
+	 * Process parts of the selector string
+	 *
+	 * @param in the selector as string
+	 * @return the Selector (CSSSelector)
+	 */
 	public CSSSelector processElement(String in) {
 		CSSSelector newSelector = null;
 		
@@ -775,10 +962,21 @@ public class CSSHandler implements DocumentHandler{
 		return newSelector;
 	}
 	
+	/**
+	 * Gets the styles.
+	 *
+	 * @return the styles
+	 */
 	public List<CSSStyle> getStyles() {
 		return styles;
 	}
 	
+	/**
+	 * Determines the type of the Selector by the ".#*" characters
+	 *
+	 * @param in the in
+	 * @return the SelectorType (CSSSelectorType)
+	 */
 	private CSSSelectorType determineType (String in) {
 		if (in.contains(".")) return CSSSelectorType.CLASS;
 		if (in.contains("#")) return CSSSelectorType.ID;
@@ -787,9 +985,7 @@ public class CSSHandler implements DocumentHandler{
 		return CSSSelectorType.TYPE;
 	}
 	
-	private enum cssproperties {
-		COLOR, BACKGROUNDCOLOR, BORDERCOLOR, BACKGROUNDIMAGE, BACKGROUNDPOSITION, BACKGROUNDREPEAT, BORDERSTYLE, FONTFAMILY, FONT, FONTSIZE, FONTSTYLE, FONTWEIGHT, WIDTH, HEIGHT, BORDERWIDTH, PADDING, VISIBILITY, ZINDEX, BORDER, UNKNOWN, BACKGROUND 
-	}
+
 	
 
 }
