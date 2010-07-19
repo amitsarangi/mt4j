@@ -62,7 +62,6 @@ public class MTBackgroundImage extends MTPolygon {
 		
 		boolean pot = Tools3D.isPowerOfTwoDimension(bgImage);
 		
-		
 		if (tiled){
 			//Generate texture coordinates to repeat the texture over the whole background (works only with OpenGL)
 			float u = (float)mtApp.width/(float)bgImage.width;
@@ -84,7 +83,6 @@ public class MTBackgroundImage extends MTPolygon {
 				this.getGeometryInfo().updateTextureBuffer(this.isUseVBOs());
 		}
 		
-		
 		if (MT4jSettings.getInstance().isOpenGlMode()){
 			GLTextureSettings g = new GLTextureSettings(TEXTURE_TARGET.TEXTURE_2D, SHRINKAGE_FILTER.BilinearNoMipMaps, EXPANSION_FILTER.Bilinear, WRAP_MODE.REPEAT, WRAP_MODE.REPEAT); 
 			GLTexture tex;
@@ -93,7 +91,9 @@ public class MTBackgroundImage extends MTPolygon {
 			}else{
 				if (tiled){
 					g.target = TEXTURE_TARGET.RECTANGULAR;
-					g.shrinkFilter = SHRINKAGE_FILTER.Trilinear; //Because NPOT texture with GL_REPEAT isnt supported -> gluBuild2Dmipmapds strechtes the texture to POT size
+					//Because NPOT texture with GL_REPEAT isnt supported -> use mipMapping -> gluBuild2Dmipmapds strechtes the texture to POT size
+//					g.shrinkFilter = SHRINKAGE_FILTER.BilinearNearestMipMap; 
+					g.shrinkFilter = SHRINKAGE_FILTER.Trilinear;
 					tex = new GLTexture(mtApp, bgImage, g);
 				}else{
 					g.target = TEXTURE_TARGET.RECTANGULAR;

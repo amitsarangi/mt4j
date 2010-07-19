@@ -31,6 +31,7 @@ import javax.media.opengl.glu.GLU;
 import org.mt4j.components.interfaces.IMTComponent3D;
 import org.mt4j.components.visibleComponents.GeometryInfo;
 import org.mt4j.components.visibleComponents.StyleInfo;
+import org.mt4j.input.inputData.InputCursor;
 import org.mt4j.util.MT4jSettings;
 import org.mt4j.util.camera.Icamera;
 import org.mt4j.util.opengl.GLTexture;
@@ -226,6 +227,17 @@ public class Tools3D {
 	} 
 	
 	
+	/**
+	 * Gets the ray to pick this component.
+	 *
+	 * @param applet the applet
+	 * @param component the component
+	 * @param cursor the cursor
+	 * @return the camera pick ray
+	 */
+	public static Ray getCameraPickRay(PApplet applet, IMTComponent3D component, InputCursor cursor){
+		return Tools3D.getCameraPickRay(applet, component.getViewingCamera(), cursor.getCurrentEvtPosX(), cursor.getCurrentEvtPosY());
+	}
 	
 	/**
 	 * Constructs a picking ray from the components viewing camera position
