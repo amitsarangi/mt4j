@@ -78,11 +78,9 @@ public class CSSHelper {
 	 * @param s the new private CSSStyle
 	 */
 	public CSSHelper(MTComponent c, MTApplication a, CSSStyle s) {
-		this.c = c;
-		this.app = a;
-		this.cssStyleManager = a.getCssStyleManager();
+		this(c,a);
 		this.getPrivateStyleSheets().add(s);
-		addListeners();
+		
 
 	}
 
@@ -94,11 +92,9 @@ public class CSSHelper {
 	 * @param s the list of private style sheets
 	 */
 	public CSSHelper(MTComponent c, MTApplication a, List<CSSStyle> s) {
-		this.c = c;
-		this.app = a;
-		this.cssStyleManager = a.getCssStyleManager();
+		this(c,a);
 		this.getPrivateStyleSheets().addAll(s);
-		addListeners();
+		
 
 	}
 
@@ -122,7 +118,7 @@ public class CSSHelper {
 	public void applyStyleSheet() {
 		if (c instanceof CSSStylableComponent) {
 			CSSStylableComponent sc = (CSSStylableComponent)c;
-			if (sc.isCSSStyled()) {
+			if ((sc.isCSSStyled() && !app.getCssStyleManager().isGloballyDisabled()) || app.getCssStyleManager().isGloballyEnabled()) {
 				evaluateStyleSheets();
 				if ((c instanceof MTPolygon) || (c instanceof MTLine)) {
 					applyStyleSheetBasic((AbstractShape) c);

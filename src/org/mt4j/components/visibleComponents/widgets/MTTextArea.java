@@ -22,6 +22,7 @@ import java.util.Iterator;
 
 import javax.media.opengl.GL;
 
+import org.mt4j.MTApplication;
 import org.mt4j.components.TransformSpace;
 import org.mt4j.components.clipping.Clip;
 import org.mt4j.components.visibleComponents.font.BitmapFont;
@@ -160,6 +161,9 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
 		this.setWidthLocal(getMaxLineWidth());
 	}
 	
+	public MTTextArea(MTApplication app) {
+		this(app, app.getCssStyleManager().getDefaultFont(app));
+	}
 	
 	private void init(PApplet pApplet, IFont font, int mode){
 		this.pa = pApplet;

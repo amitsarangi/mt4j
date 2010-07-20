@@ -102,6 +102,9 @@ public class MTPolygon extends AbstractShape implements CSSStylableComponent{
 		if (pApplet instanceof MTApplication) {
 			this.mtApp = (MTApplication)pApplet;
 			this.cssHelper = new CSSHelper(this, mtApp);
+			if (this.mtApp.getCssStyleManager().isGloballyEnabled()) {
+				this.enableCSS();
+			}
 		}
 	}
 	

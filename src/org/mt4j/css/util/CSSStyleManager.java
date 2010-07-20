@@ -32,6 +32,16 @@ public class CSSStyleManager {
 		this.app = app;
 	}
 	
+		
+	/**
+	 * Register component.
+	 *
+	 * @param c the c
+	 */
+	public void registerComponent(CSSStylableComponent c) {
+		components.add(c);
+	}
+	
 	/**
 	 * Instantiates a new (empty) CSS style manager.
 	 *
@@ -42,7 +52,7 @@ public class CSSStyleManager {
 	}
 	
 	/**
-	 * Load styles from file
+	 * Load styles from file.
 	 *
 	 * @param uri the uri of the file
 	 */
@@ -62,7 +72,7 @@ public class CSSStyleManager {
 		applyStyles();
 	}
 	
-	/** The components (of registered MTComponents) */
+	/** The components (of registered MTComponents). */
 	List<CSSStylableComponent> components = new ArrayList<CSSStylableComponent>();
 	
 	/** The MTApplication. */
@@ -70,6 +80,58 @@ public class CSSStyleManager {
 	
 	/** The styles. */
 	List<CSSStyleHierarchy> styles = new ArrayList<CSSStyleHierarchy>();
+
+	/** CSS Styles globally enabled. */
+	boolean globallyEnabled = false;
+	
+	/** CSS Styles globally disabled. */
+	boolean globallyDisabled = false;
+	
+	
+	
+	/**
+	 * Checks if is globally enabled.
+	 *
+	 * @return true, if CSS Styles is globally enabled
+	 */
+	public boolean isGloballyEnabled() {
+		return globallyEnabled;
+	}
+
+
+	/**
+	 * Sets the CSS Styles globally enabled.
+	 *
+	 * @param globallyEnabled the new globally enabled
+	 */
+	public void setGloballyEnabled(boolean globallyEnabled) {
+		this.globallyEnabled = globallyEnabled;
+		if (globallyEnabled) this.globallyDisabled = false;
+		applyStyles();
+	}
+
+
+	/**
+	 * Checks if CSS Styles is globally disabled.
+	 *
+	 * @return true, if is globally disabled
+	 */
+	public boolean isGloballyDisabled() {
+		return globallyDisabled;
+	}
+
+
+	/**
+	 * Sets the CSS Styles globally disabled.
+	 *
+	 * @param globallyDisabled the new globally disabled
+	 */
+	public void setGloballyDisabled(boolean globallyDisabled) {
+		this.globallyDisabled = globallyDisabled;
+		if (globallyDisabled) this.globallyEnabled = false;
+		applyStyles();
+	}
+
 
 	/**
 	 * Gets the styles.
@@ -101,7 +163,7 @@ public class CSSStyleManager {
 	}
 	
 	/**
-	 * Adds a style with a certain priority
+	 * Adds a style with a certain priority.
 	 *
 	 * @param style the style
 	 * @param priority the priority
@@ -125,13 +187,17 @@ public class CSSStyleManager {
 	 * Applies the global style sheets on all registered components.
 	 */
 	public void applyStyles() {
+		List<CSSStylableComponent> toDelete = new ArrayList<CSSStylableComponent>();
 		for (CSSStylableComponent c: components) {
 			if (c != null) {
-				c.applyStyleSheet();
+				if (!this.isGloballyDisabled()) c.applyStyleSheet();
+			} else {
+				toDelete.add(c);
 			}
 			
 			
 		}
+		components.removeAll(toDelete);
 	}
 	
 	/**
@@ -148,7 +214,7 @@ public class CSSStyleManager {
 	}
 	
 	/**
-	 * Gets all relevant styles for a MTComponent
+	 * Gets all relevant styles for a MTComponent.
 	 *
 	 * @param c the MTComponent
 	 * @return the relevant styles
@@ -176,7 +242,7 @@ public class CSSStyleManager {
 	
 
 	/**
-	 * Gets the superclasses of an Object
+	 * Gets the superclasses of an Object.
 	 *
 	 * @param c the MTComponent
 	 * @return the superclasses
