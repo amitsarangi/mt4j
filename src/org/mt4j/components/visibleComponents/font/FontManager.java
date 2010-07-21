@@ -71,6 +71,11 @@ public class FontManager {
 	    this.registerFontFactory("", bitmapFontFactory);
 	    this.registerFontFactory(".vlw", bitmapFontFactory);
 	    this.registerFontFactory(".otf", bitmapFontFactory);
+	    
+	    this.registerFontFactory(".bold", bitmapFontFactory);
+	    this.registerFontFactory(".bolditalic", bitmapFontFactory);
+	    this.registerFontFactory(".italic", bitmapFontFactory);
+	    this.registerFontFactory(".plain", bitmapFontFactory);
 	}
 	
 	/**
