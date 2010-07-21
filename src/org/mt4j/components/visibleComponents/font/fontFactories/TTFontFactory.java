@@ -61,7 +61,7 @@ public class TTFontFactory implements IFontFactory{
 	}
 	
 	
-	public static String defaultCharacters = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZÄÖÜabcdefghijklmnopqrstuvwxyzäöü<>|,;.:-_#'+*!\"§$%&/()=?´{[]}\\@";
+	public static String defaultCharacters = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZÃ„Ã–ÃœabcdefghijklmnopqrstuvwxyzÃ¤Ã¶Ã¼<>|,;.:-_#'+*!\"Â§$%&/()=?Â´{[]}\\@";
 	
 //	//Register the factory
 //	static{
@@ -144,7 +144,7 @@ public class TTFontFactory implements IFontFactory{
 //		//System.out.println("->Scalefactor: " + this.scaleFactor);
 //		
 //		//CREATE FONT CHARACTERS
-//		VectorFontCharacter[] chars = this.getTTFCharacters(f, "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZÄÖÜabcdefghijklmnopqrstuvwxyzäöü<>|,;.:-_#'+*!\"§$%&/()=?´~²³{[]}\\^°@ß"
+//		VectorFontCharacter[] chars = this.getTTFCharacters(f, "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZï¿½ï¿½ï¿½abcdefghijklmnopqrstuvwxyzï¿½ï¿½ï¿½<>|,;.:-_#'+*!\"ï¿½$%&/()=?ï¿½~ï¿½ï¿½{[]}\\^ï¿½@ï¿½"
 //														,fillColor, strokeColor, scaleFactor);
 		
 		VectorFontCharacter[] chars = this.getTTFCharacters(
@@ -249,7 +249,7 @@ public class TTFontFactory implements IFontFactory{
 	
 	/*
 	public SvgFont getFont(){
-		SvgFontCharacter[] chars = this.getTTFCharacters("123456789ABCDEFGHIJKLMNOPQRSTUVWXYZÄÖÜabcdefghijklmnopqrstuvwxyzäöü<>|,;.:-_#'+*!\"§$%&/()=?´´~#²³456{[]}\\^°@ß");
+		SvgFontCharacter[] chars = this.getTTFCharacters("123456789ABCDEFGHIJKLMNOPQRSTUVWXYZï¿½ï¿½ï¿½abcdefghijklmnopqrstuvwxyzï¿½ï¿½ï¿½<>|,;.:-_#'+*!\"ï¿½$%&/()=?ï¿½ï¿½~#ï¿½ï¿½456{[]}\\^ï¿½@ï¿½");
 
 		SvgFontCharacter[] newArray = new SvgFontCharacter[chars.length+3];
 		System.arraycopy(chars, 0, newArray, 0, chars.length);

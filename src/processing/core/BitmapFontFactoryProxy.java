@@ -51,7 +51,7 @@ public class BitmapFontFactoryProxy implements IFontFactory {
 		logger.addAppender(ca);
 	}
 	
-	public static String defaultCharacters = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ���abcdefghijklmnopqrstuvwxyz���<>|,;.:-_#'+*!\"�$%&/()=?�{[]}\\@";
+	public static String defaultCharacters = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZÄÖÜabcdefghijklmnopqrstuvwxyzäöü<>|,;.:-_#'+*!\"§$%&/()=?´{[]}\\@";
 	
 //	static{
 //		FontManager.getInstance().registerFontFactory("", new BitmapFontFactory());

@@ -166,12 +166,29 @@ public class FlickrScene extends AbstractScene {
 							        String flickrApiKey = "";
 							        String flickrSecret = "";
 							        Properties properties = new Properties();
-								    try {
-								        properties.load(new FileInputStream( "advanced" + MTApplication.separator + "flickrMT" + MTApplication.separator + "data" + MTApplication.separator + "FlickrApiKey.txt"));
-								        flickrApiKey = properties.getProperty("FlickrApiKey", " ");
-								        flickrSecret = properties.getProperty("FlickrSecret", " ");
+							        try {
+							        	InputStream in = null;
+							        	try {
+							        		in = new FileInputStream( "examples" + MTApplication.separator + "advanced" + MTApplication.separator + "flickrMT" + MTApplication.separator + "data" + MTApplication.separator + "FlickrApiKey.txt");
+										} catch (Exception e) {
+											System.err.println(e.getLocalizedMessage());
+										}
+										
+							        	if (in == null){
+							        		try {
+							        			in = Thread.currentThread().getContextClassLoader().getResourceAsStream("advanced" + MTApplication.separator + "flickrMT" + MTApplication.separator + "data" + MTApplication.separator + "FlickrApiKey.txt");
+											} catch (Exception e) {
+												System.err.println(e.getLocalizedMessage());
+											}
+							        	}
+							        	properties.load(in);
+
+							        	flickrApiKey = properties.getProperty("FlickrApiKey", " ");
+							        	flickrSecret = properties.getProperty("FlickrSecret", " ");
 								    } catch (Exception e) {
-								    	System.err.println("Error while loading Settings.txt file. Using defaults.");
+								    	System.err.println("Error while loading FlickrApiKey.txt file.");
+								    	e.printStackTrace();
+								    	
 								    }
 							        
 							        //Create flickr loader thread

@@ -595,6 +595,11 @@ public class Tools3D {
 	//		boolean current =((PGraphicsOpenGL)pa.g).getContext().makeCurrent() == GLContext.CONTEXT_NOT_CURRENT;
 			return ((PGraphicsOpenGL)pa.g).gl;
 		}
+		
+		
+		public static GL getGL(PGraphics g){
+			return ((PGraphicsOpenGL)g).gl;
+		}
 
 
 	//////////////////////////////////////////////////////////
