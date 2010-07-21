@@ -44,26 +44,26 @@ public class CSSFontManager {
 			case ITALIC:
 			case OBLIQUE:
 				if (currentFont2.getWeight() == CSSFontWeight.BOLD) {
-					return getFont("dejavu/DejaVuSerif-BoldItalic.ttf", currentFont2.getFontsize(), currentFont2.getColor());
+					return getFont("Serif.bolditalic", currentFont2.getFontsize(), currentFont2.getColor());
 				}
 				if (currentFont2.getWeight() == CSSFontWeight.LIGHT) {
-					return getFont("dejavu/DejaVuSerif-Italic.ttf", currentFont2.getFontsize(), currentFont2.getColor());
+					return getFont("Serif.italic", currentFont2.getFontsize(), currentFont2.getColor());
 				}
 				if (currentFont2.getWeight() == CSSFontWeight.NORMAL) {
-					return getFont("dejavu/DejaVuSerif-Italic.ttf", currentFont2.getFontsize(), currentFont2.getColor());
+					return getFont("Serif.italic", currentFont2.getFontsize(), currentFont2.getColor());
 				}
 			
 				break;
 			case NORMAL:
 			default:
 				if (currentFont2.getWeight() == CSSFontWeight.BOLD) {
-					return getFont("dejavu/DejaVuSerif-Bold.ttf", currentFont2.getFontsize(), currentFont2.getColor());
+					return getFont("Serif.bold", currentFont2.getFontsize(), currentFont2.getColor());
 				}
 				if (currentFont2.getWeight() == CSSFontWeight.LIGHT) {
-					return getFont("dejavu/DejaVuSerif.ttf", currentFont2.getFontsize(), currentFont2.getColor());
+					return getFont("Serif", currentFont2.getFontsize(), currentFont2.getColor());
 				}
 				if (currentFont2.getWeight() == CSSFontWeight.NORMAL) {
-					return getFont("dejavu/DejaVuSerif.ttf", currentFont2.getFontsize(), currentFont2.getColor());
+					return getFont("Serif", currentFont2.getFontsize(), currentFont2.getColor());
 				}
 				break;
 			}
@@ -73,26 +73,26 @@ public class CSSFontManager {
 			case ITALIC:
 			case OBLIQUE:
 				if (currentFont2.getWeight() == CSSFontWeight.BOLD) {
-					return getFont("dejavu/DejaVuSansMono-BoldOblique.ttf", currentFont2.getFontsize(), currentFont2.getColor());
+					return getFont("Monospaced.bolditalic", currentFont2.getFontsize(), currentFont2.getColor());
 				}
 				if (currentFont2.getWeight() == CSSFontWeight.LIGHT) {
-					return getFont("dejavu/DejaVuSansMono-Oblique.ttf", currentFont2.getFontsize(), currentFont2.getColor());
+					return getFont("Monospaced.italic", currentFont2.getFontsize(), currentFont2.getColor());
 				}
 				if (currentFont2.getWeight() == CSSFontWeight.NORMAL) {
-					return getFont("dejavu/DejaVuSansMono-Oblique.ttf", currentFont2.getFontsize(), currentFont2.getColor());
+					return getFont("Monospaced.italic", currentFont2.getFontsize(), currentFont2.getColor());
 				}
 			
 				break;
 			case NORMAL:
 			default:
 				if (currentFont2.getWeight() == CSSFontWeight.BOLD) {
-					return getFont("dejavu/DejaVuSansMono-Bold.ttf", currentFont2.getFontsize(), currentFont2.getColor());
+					return getFont("Monospaced.bold", currentFont2.getFontsize(), currentFont2.getColor());
 				}
 				if (currentFont2.getWeight() == CSSFontWeight.LIGHT) {
-					return getFont("dejavu/DejaVuSansMono.ttf", currentFont2.getFontsize(), currentFont2.getColor());
+					return getFont("Monospaced", currentFont2.getFontsize(), currentFont2.getColor());
 				}
 				if (currentFont2.getWeight() == CSSFontWeight.NORMAL) {
-					return getFont("dejavu/DejaVuSansMono.ttf", currentFont2.getFontsize(), currentFont2.getColor());
+					return getFont("Monospaced", currentFont2.getFontsize(), currentFont2.getColor());
 				}
 				break;
 			}
@@ -107,26 +107,26 @@ public class CSSFontManager {
 			case ITALIC:
 			case OBLIQUE:
 				if (currentFont2.getWeight() == CSSFontWeight.BOLD) {
-					return getFont("dejavu/DejaVuSans-BoldOblique.ttf", currentFont2.getFontsize(), currentFont2.getColor());
+					return getFont("SansSerif.bolditalic", currentFont2.getFontsize(), currentFont2.getColor());
 				}
 				if (currentFont2.getWeight() == CSSFontWeight.LIGHT) {
-					return getFont("dejavu/DejaVuSans-Oblique.ttf", currentFont2.getFontsize(), currentFont2.getColor());
+					return getFont("SansSerif.italic", currentFont2.getFontsize(), currentFont2.getColor());
 				}
 				if (currentFont2.getWeight() == CSSFontWeight.NORMAL) {
-					return getFont("dejavu/DejaVuSans-Oblique.ttf", currentFont2.getFontsize(), currentFont2.getColor());
+					return getFont("SansSerif.italic", currentFont2.getFontsize(), currentFont2.getColor());
 				}
 			
 				break;
 			case NORMAL:
 			default:
 				if (currentFont2.getWeight() == CSSFontWeight.BOLD) {
-					return getFont("dejavu/DejaVuSans-Bold.ttf", currentFont2.getFontsize(), currentFont2.getColor());
+					return getFont("SansSerif.bold", currentFont2.getFontsize(), currentFont2.getColor());
 				}
 				if (currentFont2.getWeight() == CSSFontWeight.LIGHT) {
-					return getFont("dejavu/DejaVuSans-ExtraLight.ttf", currentFont2.getFontsize(), currentFont2.getColor());
+					return getFont("SansSerif", currentFont2.getFontsize(), currentFont2.getColor());
 				}
 				if (currentFont2.getWeight() == CSSFontWeight.NORMAL) {
-					return getFont("dejavu/DejaVuSans.ttf", currentFont2.getFontsize(), currentFont2.getColor());
+					return getFont("SansSerif", currentFont2.getFontsize(), currentFont2.getColor());
 				}
 				break;
 			}
@@ -145,7 +145,7 @@ public class CSSFontManager {
 		}
 		
 		 return FontManager.getInstance().createFont(app,
-				"dejavu/DejaVuSans.ttf", currentFont2.getFontsize(), // Font size
+				"SansSerif", currentFont2.getFontsize(), // Font size
 				currentFont2.getColor(), // Font fill color
 				currentFont2.getColor()); 
 	}
@@ -171,7 +171,7 @@ public class CSSFontManager {
 			e.printStackTrace();
 		}
 		return FontManager.getInstance().createFont(app,
-				"dejavu/DejaVuSans.ttf", size, // Font size
+				"SansSerif", size, // Font size
 				color, // Font fill color
 				color); 
 	}

@@ -153,18 +153,23 @@ public class CSSHelper {
 	 */
 	private void applyStyleSheetBasic(AbstractShape p) {
 
-		p.setFillColor(virtualStyleSheet.getBackgroundColor());
-		p.setStrokeColor(virtualStyleSheet.getBorderColor());
-		p.setStrokeWeight(virtualStyleSheet.getBorderWidth());
-		p.setVisible(virtualStyleSheet.isVisibility());
-
-		if (virtualStyleSheet.getBorderStylePattern() >= 0) {
-			p.setNoStroke(false);
-			p.setLineStipple(virtualStyleSheet.getBorderStylePattern());
-		} else {
-			p.setNoStroke(true);
+		if (virtualStyleSheet.isModifiedBackgroundColor())
+			p.setFillColor(virtualStyleSheet.getBackgroundColor());
+		if (virtualStyleSheet.isModifiedBorderColor())
+			p.setStrokeColor(virtualStyleSheet.getBorderColor());
+		if (virtualStyleSheet.isModifiedBorderWidth())
+			p.setStrokeWeight(virtualStyleSheet.getBorderWidth());
+		if (virtualStyleSheet.isModifiedVisibility())
+			p.setVisible(virtualStyleSheet.isVisibility());
+		
+		if (virtualStyleSheet.isModifiedBorderStyle()) {
+			if (virtualStyleSheet.getBorderStylePattern() >= 0) {
+				p.setNoStroke(false);
+				p.setLineStipple(virtualStyleSheet.getBorderStylePattern());
+			} else {
+				p.setNoStroke(true);
+			}
 		}
-
 	}
 	
 	/**
