@@ -226,11 +226,11 @@ public class SettingsMenu extends JFrame{
 		MT4jSettings.getInstance().fullscreenExclusive = fullScreenExclusiveCheckBox.isSelected();
 		
 		//Set screen dimensions
-		MT4jSettings.getInstance().screenWidth = Integer.parseInt(widthField.getText());
-		MT4jSettings.getInstance().screenHeight = Integer.parseInt(heightField.getText());
+		MT4jSettings.getInstance().screenWidth = Integer.parseInt(widthField.getText().trim());
+		MT4jSettings.getInstance().screenHeight = Integer.parseInt(heightField.getText().trim());
 		
 		//Set Max framerate
-		MT4jSettings.getInstance().maxFrameRate = Integer.parseInt(frameRateField.getText());
+		MT4jSettings.getInstance().maxFrameRate = Integer.parseInt(frameRateField.getText().trim());
 
 		//Set vertical sync
 		MT4jSettings.getInstance().vSync = verticalSyncCheckbox.isSelected();

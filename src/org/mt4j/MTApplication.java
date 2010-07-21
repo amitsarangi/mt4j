@@ -335,31 +335,31 @@ public abstract class MTApplication extends PApplet {
 				 }
 			}
 
-			 MT4jSettings.fullscreen = Boolean.parseBoolean(properties.getProperty("Fullscreen", new Boolean(MT4jSettings.getInstance().isFullscreen()).toString()));
+			 MT4jSettings.fullscreen = Boolean.parseBoolean(properties.getProperty("Fullscreen", new Boolean(MT4jSettings.getInstance().isFullscreen()).toString()).trim());
 			 //Use java's fullscreen exclusive mode (real fullscreen) or just use an undecorated window at fullscreen size 
-			 MT4jSettings.getInstance().fullscreenExclusive = Boolean.parseBoolean(properties.getProperty("FullscreenExclusive", new Boolean(MT4jSettings.getInstance().isFullscreenExclusive()).toString()));
+			 MT4jSettings.getInstance().fullscreenExclusive = Boolean.parseBoolean(properties.getProperty("FullscreenExclusive", new Boolean(MT4jSettings.getInstance().isFullscreenExclusive()).toString()).trim());
 			 //Which display to use for fullscreen
-			 MT4jSettings.getInstance().display = Integer.parseInt(properties.getProperty("Display", String.valueOf(MT4jSettings.getInstance().getDisplay())));
+			 MT4jSettings.getInstance().display = Integer.parseInt(properties.getProperty("Display", String.valueOf(MT4jSettings.getInstance().getDisplay())).trim());
 
 			 //FIXME at fullscreen really use the screen dimension? -> we need to set the native resoultion ourselves!
 			 //so we can have a lower fullscreen resolution than the screen dimensions
 			 if (!MT4jSettings.getInstance().isFullscreen()){
-				 MT4jSettings.getInstance().screenWidth = Integer.parseInt(properties.getProperty("DisplayWidth", String.valueOf(MT4jSettings.getInstance().getScreenWidth())));
-				 MT4jSettings.getInstance().screenHeight = Integer.parseInt(properties.getProperty("DisplayHeight", String.valueOf(MT4jSettings.getInstance().getScreenHeight())));
+				 MT4jSettings.getInstance().screenWidth = Integer.parseInt(properties.getProperty("DisplayWidth", String.valueOf(MT4jSettings.getInstance().getScreenWidth())).trim());
+				 MT4jSettings.getInstance().screenHeight = Integer.parseInt(properties.getProperty("DisplayHeight", String.valueOf(MT4jSettings.getInstance().getScreenHeight())).trim());
 			 }else{
 				 Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 			    	MT4jSettings.getInstance().screenWidth = screenSize.width;
 			    	MT4jSettings.getInstance().screenHeight = screenSize.height;
 			 }
 			 
-			 MT4jSettings.getInstance().maxFrameRate = Integer.parseInt(properties.getProperty("MaximumFrameRate", String.valueOf(MT4jSettings.getInstance().getMaxFrameRate())));
-			 MT4jSettings.getInstance().renderer = Integer.parseInt(properties.getProperty("Renderer", String.valueOf(MT4jSettings.getInstance().getRendererMode())));
-			 MT4jSettings.getInstance().numSamples = Integer.parseInt(properties.getProperty("OpenGLAntialiasing", String.valueOf(MT4jSettings.getInstance().getNumSamples())));
+			 MT4jSettings.getInstance().maxFrameRate = Integer.parseInt(properties.getProperty("MaximumFrameRate", String.valueOf(MT4jSettings.getInstance().getMaxFrameRate())).trim());
+			 MT4jSettings.getInstance().renderer = Integer.parseInt(properties.getProperty("Renderer", String.valueOf(MT4jSettings.getInstance().getRendererMode())).trim());
+			 MT4jSettings.getInstance().numSamples = Integer.parseInt(properties.getProperty("OpenGLAntialiasing", String.valueOf(MT4jSettings.getInstance().getNumSamples())).trim());
 
-			 MT4jSettings.getInstance().vSync = Boolean.parseBoolean(properties.getProperty("Vertical_sync", new Boolean(MT4jSettings.getInstance().isVerticalSynchronization()).toString()));
+			 MT4jSettings.getInstance().vSync = Boolean.parseBoolean(properties.getProperty("Vertical_sync", new Boolean(MT4jSettings.getInstance().isVerticalSynchronization()).toString()).trim());
 
 			 //Set frametitle
-			 String frameTitle = properties.getProperty("Frametitle", MT4jSettings.getInstance().getFrameTitle());
+			 String frameTitle = properties.getProperty("Frametitle", MT4jSettings.getInstance().getFrameTitle().trim());
 			 MT4jSettings.getInstance().frameTitle = frameTitle;
 
 		 } catch (Exception e) {
