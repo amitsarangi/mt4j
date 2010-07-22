@@ -53,7 +53,22 @@ import processing.core.PGraphics;
  * @author Christopher Ruff
  */
 public class MTTextArea extends MTRectangle implements IdragClusterable, ITextInputListener, Comparable<Object>{
-		
+
+//Standard expand direction is {@link ExpandDirection#UP} for
+// backward compatibility.
+    /**
+     * Determines the vertical expand direction of the {@link MTTextArea}
+     * if the text area will expand itself to fit the text in.
+     *
+     * 
+     */
+    public enum ExpandDirection {
+        /** Expand the {@link MTTextArea} in top direction if necessary. */  
+        UP,
+        /** Expand the {@link MTTextArea} in bottom direction if necassary. */
+        DOWN;
+    }
+    
 	/** The pa. */
 	private PApplet pa;
 	
@@ -97,6 +112,8 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
 	private int mode;
 
 	private static ArtificalLineBreak artificialLineBreak;
+
+    private ExpandDirection expandDirection ;
 	
 	/**
 	 * Instantiates a new mT text area. 
@@ -164,6 +181,7 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
 	private void init(PApplet pApplet, IFont font, int mode){
 		this.pa = pApplet;
 		this.font = font;
+		this.expandDirection = ExpandDirection.DOWN;
 		
 		this.mode = mode;
 		switch (this.mode) {
@@ -628,8 +646,29 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
 			break;
 		}
 	}
-	
-	@Override
+
+    /**
+     * Returns the currently active expand direction of the text area.
+     * (Only has an impact if the wrap mode of the textarea equals MODE_EXPAND!)
+     *
+     * @return the active expand direction
+     */
+    public ExpandDirection getExpandDirection() {
+        return expandDirection;
+    }
+
+    /**
+     * Sets the expand direction to be used by the text area if a new line is added.
+     *(Only has an impact if the wrap mode of the textarea equals MODE_EXPAND!)
+     * @see {@link ExpandDirection}
+     * @param direction the expand direction to be used
+     */
+    public void setExpandDirection(ExpandDirection direction) {
+        expandDirection = direction;
+        this.updateLayout(); //This wont translate the area to its original place if expand mode was UP and is now down..
+    }
+
+    @Override
 	public void setSizeLocal(float width, float height) {
 		if (width > 0 && height > 0){
 			Vertex[] v = this.getVerticesLocal();
@@ -777,10 +816,10 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
 			if (character.getUnicode().equals("\n")){
 				//Expand vertically at enter 
 				this.setHeightLocal(this.getTotalLinesHeight());
-				//TODO make behaviour settable
-				//Moves the Textarea up at a enter character instead of down 
-				this.translate(new Vector3D(0, -fontHeight, 0));
-			}else{
+				//Moves the Textarea up at a enter character instead of down
+                if (getExpandDirection() == ExpandDirection.UP)
+                    this.translate(new Vector3D(0, -fontHeight, 0));
+            }else{
 				//Expand the textbox to the extend of the widest line width
 				this.setWidthLocal(getMaxLineWidth());
 			}
@@ -838,7 +877,8 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
 				//Reduce field vertically at enter
 				this.setHeightLocal(this.getTotalLinesHeight());
 				//makes the textarea go down when a line is removed instead staying at the same loc.
-				this.translate(new Vector3D(0, fontHeight, 0));
+				if (getExpandDirection() == ExpandDirection.UP)
+                    translate(new Vector3D(0, fontHeight, 0));
 			}else{
 				//Reduce field horizontally
 				this.setWidthLocal(getMaxLineWidth());
