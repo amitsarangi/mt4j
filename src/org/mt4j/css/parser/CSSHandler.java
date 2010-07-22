@@ -7,6 +7,7 @@ import java.util.StringTokenizer;
 import org.apache.log4j.Logger;
 import org.mt4j.MTApplication;
 import org.mt4j.components.visibleComponents.font.BitmapFont;
+import org.mt4j.css.style.CSSBackgroundPosition;
 import org.mt4j.css.style.CSSFont;
 import org.mt4j.css.style.CSSSelector;
 import org.mt4j.css.style.CSSStyle;
@@ -17,6 +18,8 @@ import org.mt4j.css.util.CSSKeywords.CSSFontFamily;
 import org.mt4j.css.util.CSSKeywords.CSSFontStyle;
 import org.mt4j.css.util.CSSKeywords.CSSFontWeight;
 import org.mt4j.css.util.CSSKeywords.CSSSelectorType;
+import org.mt4j.css.util.CSSKeywords.Position;
+import org.mt4j.css.util.CSSKeywords.PositionType;
 import org.mt4j.css.util.CSSKeywords.cssproperties;
 import org.mt4j.util.MTColor;
 import org.w3c.css.sac.CSSException;
@@ -196,6 +199,14 @@ public class CSSHandler implements DocumentHandler{
 			if (backgroundImage != null) 
 				for (CSSStyle sty: activeStyles) sty.setBackgroundImage(backgroundImage);
 			break;
+			
+		case BACKGROUNDPOSITION:
+			CSSBackgroundPosition bp = handleBackgroundPosition(value, value.getNextLexicalUnit());
+			if (bp != null) {
+				for (CSSStyle sty: activeStyles) sty.setBackgroundPosition(bp);
+			}
+			
+			
 		case BACKGROUND:
 			List<LexicalUnit> parameters = new ArrayList<LexicalUnit>();
 			parameters.add(value);
@@ -205,7 +216,8 @@ public class CSSHandler implements DocumentHandler{
 			}
 			
 			//Evaluate all parameters
-			for (LexicalUnit lu: parameters) {
+			for (int i = 0; i < parameters.size(); i++) {
+				LexicalUnit lu = (LexicalUnit)parameters.get(i);
 				//What type is the current parameter?
 				switch (identifyBackgroundTag(lu)) {
 				case 1:
@@ -226,6 +238,15 @@ public class CSSHandler implements DocumentHandler{
 					if (backgroundRepeat != null) 
 						for (CSSStyle sty: activeStyles) sty.setBackgroundRepeat(backgroundRepeat);
 					break;
+				case 4:
+					//Background Position
+					if (i+1 < parameters.size() && identifyBackgroundTag(parameters.get(i+1)) == 4) {
+						handleBackgroundPosition(lu, parameters.get(i+1));
+						i++;
+					} else {
+						handleBackgroundPosition(lu, null);
+					}
+					
 				default:
 					break;
 				}
@@ -387,6 +408,64 @@ public class CSSHandler implements DocumentHandler{
 		}
 	}
 	
+	private CSSBackgroundPosition handleBackgroundPosition(LexicalUnit value, LexicalUnit value2) {
+		LexicalUnit part1 = value;
+		LexicalUnit part2 = value2;
+		CSSBackgroundPosition returnValue = new CSSBackgroundPosition();
+
+		
+		if (part1.getLexicalUnitType() == LexicalUnit.SAC_IDENT || part1.getLexicalUnitType() == LexicalUnit.SAC_STRING_VALUE) {
+			//Must be a keyword
+			try {
+				Position xPos = Position.valueOf(part1.getStringValue());
+				returnValue.setxKeywordPosition(xPos);
+				returnValue.setxType(PositionType.KEYWORD);
+			} catch (Exception e) {
+				return null;
+			}
+			
+		} else if (part1.getLexicalUnitType() == LexicalUnit.SAC_PERCENTAGE) {
+			returnValue.setxPos(part1.getFloatValue());
+			returnValue.setxType(PositionType.RELATIVE);
+			
+		} else if (CSSKeywords.isMeasuringUnit(part1)) {
+			returnValue.setxPos(part1.getFloatValue());
+			returnValue.setxType(PositionType.ABSOLUTE);
+			
+		}
+		
+		if (part2 != null) {
+			if (part2.getLexicalUnitType() == LexicalUnit.SAC_IDENT || part2.getLexicalUnitType() == LexicalUnit.SAC_STRING_VALUE) {
+				//Must be a keyword
+				try {
+					Position xPos = Position.valueOf(part2.getStringValue());
+					returnValue.setyKeywordPosition(xPos);
+					returnValue.setyType(PositionType.KEYWORD);
+				} catch (Exception e) {
+					returnValue.setyKeywordPosition(returnValue.getxKeywordPosition());
+					returnValue.setyPos(returnValue.getxPos());
+					returnValue.setyType(returnValue.getxType());
+				}
+				
+			} else if (part2.getLexicalUnitType() == LexicalUnit.SAC_PERCENTAGE) {
+				returnValue.setyPos(part2.getFloatValue());
+				returnValue.setyType(PositionType.RELATIVE);
+				
+			} else if (CSSKeywords.isMeasuringUnit(part2)) {
+				returnValue.setyPos(part2.getFloatValue());
+				returnValue.setyType(PositionType.ABSOLUTE);
+				
+			}
+		} else {
+			returnValue.setyKeywordPosition(returnValue.getxKeywordPosition());
+			returnValue.setyPos(returnValue.getxPos());
+			returnValue.setyType(returnValue.getxType());
+		}
+		
+		return returnValue;
+	}
+
+
 	/**
 	 * Identifies the parameter type in a Font: tag
 	 *
@@ -487,10 +566,10 @@ public class CSSHandler implements DocumentHandler{
 		if (value.getLexicalUnitType() == LexicalUnit.SAC_IDENT) {
 			if (CSSKeywords.isColor(value)) return 1;
 			if (CSSKeywords.isBackgroundRepeat(value)) return 3;
-			if (CSSKeywords.isBackgroundPosition(value)) return 0;
+			if (CSSKeywords.isBackgroundPosition(value)) return 4;
 			if (CSSKeywords.isBackgroundAttachment(value)) return 0;
 		}
-		
+		if (CSSKeywords.isMeasuringUnit(value)) return 4;
 		
 		return 0;
 	}

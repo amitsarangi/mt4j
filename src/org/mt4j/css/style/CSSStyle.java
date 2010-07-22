@@ -54,10 +54,10 @@ public class CSSStyle {
 	PImage backgroundImage = null;
 	
 	/** The position of the background image */
-	float[] backgroundPosition = null;
+	CSSBackgroundPosition backgroundPosition = new CSSBackgroundPosition();
 	
 	/** The background repeat options */
-	BackgroundRepeat backgroundRepeat = BackgroundRepeat.NONE;;
+	BackgroundRepeat backgroundRepeat = BackgroundRepeat.REPEAT;
 	
 	/**
 	 * The Enum BackgroundRepeat.
@@ -295,7 +295,7 @@ public class CSSStyle {
 	 *
 	 * @return the background position
 	 */
-	public float[] getBackgroundPosition() {
+	public CSSBackgroundPosition getBackgroundPosition() {
 		return backgroundPosition;
 	}
 	
@@ -304,7 +304,7 @@ public class CSSStyle {
 	 *
 	 * @param backgroundPosition the new background position
 	 */
-	public void setBackgroundPosition(float[] backgroundPosition) {
+	public void setBackgroundPosition(CSSBackgroundPosition backgroundPosition) {
 		this.backgroundPosition = backgroundPosition;
 		this.modifiedBackgroundPosition = true;
 	}
@@ -651,9 +651,8 @@ public class CSSStyle {
 
 
 
-	/* (non-Javadoc)
-	 * @see java.lang.Object#hashCode()
-	 */
+	
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -663,7 +662,10 @@ public class CSSStyle {
 				+ ((backgroundColor == null) ? 0 : backgroundColor.hashCode());
 		result = prime * result
 				+ ((backgroundImage == null) ? 0 : backgroundImage.hashCode());
-		result = prime * result + Arrays.hashCode(backgroundPosition);
+		result = prime
+				* result
+				+ ((backgroundPosition == null) ? 0 : backgroundPosition
+						.hashCode());
 		result = prime
 				* result
 				+ ((backgroundRepeat == null) ? 0 : backgroundRepeat.hashCode());
@@ -717,9 +719,6 @@ public class CSSStyle {
 		return result;
 	}
 
-	/* (non-Javadoc)
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -744,7 +743,10 @@ public class CSSStyle {
 				return false;
 		} else if (!backgroundImage.equals(other.backgroundImage))
 			return false;
-		if (!Arrays.equals(backgroundPosition, other.backgroundPosition))
+		if (backgroundPosition == null) {
+			if (other.backgroundPosition != null)
+				return false;
+		} else if (!backgroundPosition.equals(other.backgroundPosition))
 			return false;
 		if (backgroundRepeat != other.backgroundRepeat)
 			return false;

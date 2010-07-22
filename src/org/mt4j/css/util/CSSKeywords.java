@@ -15,7 +15,8 @@ public class CSSKeywords {
 			"SILVER", "GREY", "GRAY", "AQUA", "BLUE", "NAVY", "FUCHSIA",
 			"MAROON", "RED", "PURPLE", "GREEN", "LIME", "TEAL", "YELLOW",
 			"OLIVE" };
-
+	
+	
 	/** The background position names. */
 	public static String[] backgroundPositionNames = new String[] { "LEFT",
 			"RIGHT", "BOTTOM", "TOP", "CENTER" };
@@ -347,4 +348,14 @@ public class CSSKeywords {
 		/** The BACKGROUND. */
 		BACKGROUND
 	}
+	
+	public enum Position {
+		LEFT, RIGHT, TOP, BOTTOM, CENTER;
+	}
+	
+	
+	public enum PositionType {
+		ABSOLUTE, RELATIVE, KEYWORD;
+	}
+	
 }
