@@ -23,8 +23,6 @@ import org.mt4j.components.clipping.FillPaint;
 import org.mt4j.util.MT4jSettings;
 import org.mt4j.util.MTColor;
 import org.mt4j.util.camera.Icamera;
-import org.mt4j.util.math.Ray;
-import org.mt4j.util.math.Vector3D;
 import org.mt4j.util.opengl.GLMaterial;
 
 import processing.core.PApplet;
@@ -97,9 +95,7 @@ public abstract class AbstractVisibleComponent extends MTComponent {
 		this.fillPaint.setShape(this);
 	}
 
-	/* (non-Javadoc)
-	 * @see com.jMT.components.MTBaseComponent#preDraw()
-	 */
+
 	@Override
 	public void preDraw(PGraphics graphics) {
 		super.preDraw(graphics);
@@ -144,9 +140,7 @@ public abstract class AbstractVisibleComponent extends MTComponent {
 	/** The saved no stroke setting. */
 	private boolean savedNoStrokeSetting;
 
-	/* (non-Javadoc)
-	 * @see com.jMT.components.MTBaseComponent#postDraw()
-	 */
+
 	@Override
 	public void postDraw(PGraphics graphics) {
 		super.postDraw(graphics);
@@ -248,24 +242,17 @@ public abstract class AbstractVisibleComponent extends MTComponent {
 	//	TODO wirklich protected machen? dann kann man im zweifeln nicht nur diese eine komponente fragen ob sie schnittpunkt hat,
 	//	weil auch kinder miteinbezogen werden bei call von public  getInterSectionpoint()
 	
-	/* (non-Javadoc)
-	 * @see mTouch.components.MTBaseComponent#getComponentIntersectionPoint(util.math.Ray)
-	 */
-	abstract public Vector3D getIntersectionLocal(Ray ray);  
+
+//	abstract public Vector3D getIntersectionLocal(Ray ray);  
 	
 //	abstract protected boolean intersectsComponentWithRay(Ray ray);
 	
 
-	/* (non-Javadoc)
-	 * @see mTouch.components.MTBaseComponent#drawComponent()
-	 */
 	abstract public void drawComponent(PGraphics g);
 	
 	
-	/* (non-Javadoc)
-	 * @see mTouch.components.MTBaseComponent#componentContainsPoint(util.math.Vector3D)
-	 */
-	abstract protected boolean componentContainsPointLocal(Vector3D testPoint);
+
+//	abstract protected boolean componentContainsPointLocal(Vector3D testPoint);
 
 	
 //	/**

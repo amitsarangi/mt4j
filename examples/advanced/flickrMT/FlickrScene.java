@@ -13,8 +13,8 @@ import org.mt4j.components.TransformSpace;
 import org.mt4j.components.visibleComponents.font.FontManager;
 import org.mt4j.components.visibleComponents.shapes.AbstractShape;
 import org.mt4j.components.visibleComponents.widgets.MTImage;
-import org.mt4j.components.visibleComponents.widgets.MTSceneWindow;
 import org.mt4j.components.visibleComponents.widgets.MTTextArea;
+import org.mt4j.components.visibleComponents.widgets.MTTextArea.ExpandDirection;
 import org.mt4j.components.visibleComponents.widgets.buttons.MTImageButton;
 import org.mt4j.components.visibleComponents.widgets.buttons.MTSvgButton;
 import org.mt4j.components.visibleComponents.widgets.keyboard.MTKeyboard;
@@ -40,8 +40,6 @@ import org.mt4j.util.math.ToolsMath;
 import org.mt4j.util.math.Vector3D;
 
 import processing.core.PImage;
-
-import advanced.touchTail.TouchTailScene;
 
 import com.aetrion.flickr.photos.SearchParameters;
 
@@ -118,6 +116,7 @@ public class FlickrScene extends AbstractScene {
 			        final MTTextArea t = new MTTextArea(app, FontManager.getInstance().createFont(app, "arial.ttf", 50, 
 			        		new MTColor(0,0,0,255), //Fill color 
 							new MTColor(0,0,0,255))); //Stroke color
+			        t.setExpandDirection(ExpandDirection.UP);
 					t.setStrokeColor(new MTColor(0,0 , 0, 255));
 					t.setFillColor(new MTColor(205,200,177, 255));
 					t.unregisterAllInputProcessors();

@@ -371,7 +371,10 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
 			//FIXME TEST
 			gl.glTranslatef(0, font.getFontMaxAscent(), 0);
 			
-			gl.glTranslatef(totalScrollTextX, totalScrollTextY, 0);
+			if (totalScrollTextX != 0.0f && totalScrollTextY != 0.0f){
+				gl.glTranslatef(totalScrollTextX, totalScrollTextY, 0);
+			}
+			
 			for (int i = 0; i < charListSize; i++) {
 				IFontCharacter character = characterList.get(i);
 				//Step to the right by the amount of the last characters x advancement
