@@ -29,6 +29,7 @@ import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.log4j.SimpleLayout;
+import org.mt4j.components.interfaces.IMTComponent3D;
 import org.mt4j.input.inputProcessors.componentProcessors.AbstractCursorProcessor;
 import org.mt4j.util.math.Vector3D;
 
@@ -186,7 +187,15 @@ public class InputCursor{
 		}
 	}
 	
-	
+	public boolean isLockedBy(AbstractCursorProcessor cp){
+//		return lockSeekingProcessorsToPriority.containsKey(cp);
+		for (AbstractCursorProcessor abstractCursorProcessor : lockSeekingProcessorsToPriority.keySet()) {
+			if (abstractCursorProcessor.equals(cp)){
+				return true;
+			}
+		}
+		return false;
+	}
 	
 	//only do this when previous highest priority strictly < the new priority!
 	private void cursorLockedByHigherPriorityGesture(AbstractCursorProcessor ia, int gesturePriority){
@@ -213,7 +222,7 @@ public class InputCursor{
 	 * 
 	 * @param ia the ia
 	 */
-	public void registerGeneralInterest(AbstractCursorProcessor ia) {
+	public void registerForLocking(AbstractCursorProcessor ia) {
 		interestedProcessorsToPriority.put(ia, ia.getLockPriority());
 	}
 	
@@ -222,7 +231,7 @@ public class InputCursor{
 	 * 
 	 * @param ia the ia
 	 */
-	public void unregisterGeneralInterest(AbstractCursorProcessor ia){
+	public void unregisterForLocking(AbstractCursorProcessor ia){
 		Set<AbstractCursorProcessor> keys = interestedProcessorsToPriority.keySet();
 		for (Iterator<AbstractCursorProcessor> iterator = keys.iterator(); iterator.hasNext();) {
 			AbstractCursorProcessor inputAnalyzer = (AbstractCursorProcessor) iterator.next();
@@ -246,12 +255,7 @@ public class InputCursor{
 	 * @param ia the AbstractCursorProcessor
 	 */
 	public void unlock(AbstractCursorProcessor ia){
-		if (ia instanceof AbstractCursorProcessor){
-			AbstractCursorProcessor a = (AbstractCursorProcessor)ia;
-			logger.debug(a.getName() + " UNLOCKING cursor: " + this.getId());
-		}else{
-			logger.debug(ia.getClass() + " UNLOCKING cursor: " + this.getId());
-		}
+		logger.debug(ia.getName() + " UNLOCKING cursor: " + this.getId());
 		
 		int beforeLockPriority = this.getCurrentLockPriority();
 		int unlockingGesturePriority = ia.getLockPriority();
@@ -262,8 +266,8 @@ public class InputCursor{
 //		}
 			Set<AbstractCursorProcessor> keys = lockSeekingProcessorsToPriority.keySet();
 			for (Iterator<AbstractCursorProcessor> iterator = keys.iterator(); iterator.hasNext();) {
-				AbstractCursorProcessor inputAnalyzer = iterator.next();
-				if (inputAnalyzer.equals(ia)){
+				AbstractCursorProcessor inputProcessor = iterator.next();
+				if (inputProcessor.equals(ia)){
 					iterator.remove();
 					logger.debug("Removed " + ia + " from lockSeekingAnalyzersToPriority list.");
 				}
@@ -445,6 +449,20 @@ public class InputCursor{
 		return new Vector3D(getCurrentEvtPosX(), getCurrentEvtPosY()); 
 	}
 	
+	
+	/**
+	 * Gets the target component of this cursor. (The component the cursor started on) 
+	 * or null if it has no target or the cursor has no input events yet.
+	 *
+	 * @return the target
+	 */
+	public IMTComponent3D getTarget(){
+		if (this.getCurrentEvent() != null){
+			return this.getCurrentEvent().getTargetComponent();
+		}else{
+			return null;
+		}
+	}
 	
 	/**
 	 * Gets the start position x.

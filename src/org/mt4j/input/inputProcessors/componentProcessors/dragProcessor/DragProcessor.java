@@ -17,9 +17,6 @@
  ***********************************************************************/
 package org.mt4j.input.inputProcessors.componentProcessors.dragProcessor;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.mt4j.components.interfaces.IMTComponent3D;
 import org.mt4j.input.inputData.InputCursor;
 import org.mt4j.input.inputData.MTFingerInputEvt;
@@ -45,13 +42,6 @@ public class DragProcessor extends AbstractCursorProcessor {
 	
 	/** The dc. */
 	private DragContext dc;
-	
-	/** The un used cursorss. */
-	private List<InputCursor> unUsedCursors;
-	
-	/** The locked cursorss. */
-	private List<InputCursor> lockedCursors;
-	
 
 	/**
 	 * Instantiates a new drag processor.
@@ -60,154 +50,124 @@ public class DragProcessor extends AbstractCursorProcessor {
 	 */
 	public DragProcessor(PApplet graphicsContext){
 		this.applet = graphicsContext;
-		this.unUsedCursors = new ArrayList<InputCursor>();
-		this.lockedCursors = new ArrayList<InputCursor>();
 		this.setLockPriority(1);
 		this.setDebug(false);
+//		logger.setLevel(Level.DEBUG);
 	}
 	
-
-	@Override
-	public void cursorStarted(InputCursor cursor, MTFingerInputEvt positionEvent) {
-		IMTComponent3D comp = positionEvent.getTargetComponent();
-		if (lockedCursors.size() >= 1){ //We assume that drag is already in progress and add this new cursors to the unUsedList 
-			unUsedCursors.add(cursor); 
-		}else{
-//			if (unUsedCursors.size() == 0){ //Only start drag if no other finger on the component yet -> use 1st finger //FIXME REALLY!??
-				if (this.canLock(cursor)){//See if we can obtain a lock on this cursors (depends on the priority)
-					dc = new DragContext(cursor, comp); 
-					if (!dc.isGestureAborted()){ //See if the drag couldnt start (i.e. cursor doesent hit component anymore etc)
-						this.getLock(cursor);//Lock the cursors for this processor
-						logger.debug(this.getName() + " successfully locked cursor (id:" + cursor.getId() + ")");
-						//TODO put the following in own method because needed often!
-						lockedCursors.add(cursor);
-						//Fire the "drag started" event
-						this.fireGestureEvent(new DragEvent(this,MTGestureEvent.GESTURE_DETECTED, comp, cursor, dc.getLastPosition(), dc.getNewPosition()));
-					}else{
-						logger.debug(this.getName() + " gesture aborted, probably finger not on component!");
-						dc = null;
-						unUsedCursors.add(cursor);
-					}
-				}else{
-					logger.debug(this.getName() + " we could NOT lock the cursor " + cursor);
-					unUsedCursors.add(cursor);
-				}
-//			}else{
-//				logger.debug(this.getName() + " already using a cursor, dont need cursor " + cursor);
-//				unUsedCursors.add(cursor);
-//			}
-		}
-	}
-
-	@Override
-	public void cursorUpdated(InputCursor m, MTFingerInputEvt positionEvent) {
-		IMTComponent3D comp = positionEvent.getTargetComponent();
-		if (lockedCursors.contains(m)){
-			dc.updateDragPosition();
-			this.fireGestureEvent(new DragEvent(this, MTGestureEvent.GESTURE_UPDATED, comp, m, dc.getLastPosition(), dc.getNewPosition()));
-		}
-	}
-
-	
-	@Override
-	public void cursorEnded(InputCursor m, MTFingerInputEvt positionEvent) {
-		IMTComponent3D comp = positionEvent.getTargetComponent();
-		logger.debug(this.getName() + " INPUT_ENDED RECIEVED - MOTION: " + m.getId());
-		if (lockedCursors.contains(m)){ //cursors was a actual gesture cursors
-			dc.updateDragPosition();
-			lockedCursors.remove(m);
-			if (unUsedCursors.size() > 0){ //check if there are other cursorss on the component, we could use for drag
-				InputCursor otherMotion = unUsedCursors.get(0); //TODO cycle through all available unUsedCursors and try to claim one, maybe the first one is claimed but another isnt!
-				if (this.canLock(otherMotion)){ //Check if we have the priority to use this cursors
-					DragContext newContext = new DragContext(otherMotion, comp); 
-					if (!newContext.isGestureAborted()){
-						dc = newContext;
-						this.getLock(otherMotion);
-						unUsedCursors.remove(otherMotion);
-						lockedCursors.add(otherMotion);
-						//TODO fire started? maybe not.. do we have to?
-					}else{
-						this.fireGestureEvent(new DragEvent(this, MTGestureEvent.GESTURE_ENDED, comp, m, dc.getLastPosition(), dc.getNewPosition()));
-					}
-				}else{
-					this.fireGestureEvent(new DragEvent(this, MTGestureEvent.GESTURE_ENDED, comp, m, dc.getLastPosition(), dc.getNewPosition()));
-				}
-			}else{
-				this.fireGestureEvent(new DragEvent(this, MTGestureEvent.GESTURE_ENDED, comp, m, dc.getLastPosition(), dc.getNewPosition()));
-			}
-			this.unLock(m); //FIXME TEST
-		}else{ //cursors was not used for dragging
-			if (unUsedCursors.contains(m)){
-				unUsedCursors.remove(m);
-			}
-		}
-	}
-
-
-	
-//FIXME wenn 1 cursors drag dann 2 cursors drag (wenn nur drag erlaubt auf obj) und dann 1.weg und 2. abort weil nicht auf obj, kann kein neuer finger auf obj starten!?
 	
 	/* (non-Javadoc)
-	 * @see org.mt4j.input.inputAnalyzers.IInputAnalyzer#cursorsLocked(org.mt4j.input.inputData.InputMotion, org.mt4j.input.inputAnalyzers.IInputAnalyzer)
+	 * @see org.mt4j.input.inputProcessors.componentProcessors.AbstractCursorProcessor#cursorStarted(org.mt4j.input.inputData.InputCursor, org.mt4j.input.inputData.MTFingerInputEvt)
 	 */
 	@Override
-	public void cursorLocked(InputCursor m, IInputProcessor lockingAnalyzer) {
-		if (lockingAnalyzer instanceof AbstractComponentProcessor){
-			logger.debug(this.getName() + " Recieved MOTION LOCKED by (" + ((AbstractComponentProcessor)lockingAnalyzer).getName()  + ") - cursors ID: " + m.getId());
-		}else{
-			logger.debug(this.getName() + " Recieved MOTION LOCKED by higher priority signal - cursors ID: " + m.getId());
-		}
-
-		if (lockedCursors.contains(m)){ //cursors was a actual gesture cursors
-			lockedCursors.remove(m);
-			//TODO fire ended evt?
-			unUsedCursors.add(m);
-			logger.debug(this.getName() + " cursors:" + m.getId() + " MOTION LOCKED. Was an active cursor in this gesture!");
-		}else{ //TODO remove "else", it is pretty useless
-			if (unUsedCursors.contains(m)){
-				logger.debug(this.getName() + " MOTION LOCKED. But it was NOT an active cursors in this gesture!");
+	public void cursorStarted(InputCursor cursor, MTFingerInputEvt fe) {
+		IMTComponent3D comp = fe.getTargetComponent();
+		InputCursor[] theLockedCursors = getLockedCursorsArray();
+		//if gesture isnt started and no other cursor on comp is locked by higher priority gesture -> start
+		if (theLockedCursors.length == 0 && this.canLock(getCurrentComponentCursorsArray())){ 
+			dc = new DragContext(cursor, comp); 
+			if (!dc.isGestureAborted()){ //See if the drag couldnt start (i.e. cursor doesent hit component anymore etc)
+				//Lock this cursor with our priority
+				this.getLock(cursor);
+				logger.debug(this.getName() + " successfully locked cursor (id:" + cursor.getId() + ")");
+				this.fireGestureEvent(new DragEvent(this,MTGestureEvent.GESTURE_DETECTED, comp, cursor, dc.getLastPosition(), dc.getNewPosition()));
+			}else{
+				logger.debug(this.getName() + " gesture aborted, probably finger not on component!");
+				dc = null;
 			}
 		}
 	}
 
-
-
+	/* (non-Javadoc)
+	 * @see org.mt4j.input.inputProcessors.componentProcessors.AbstractCursorProcessor#cursorUpdated(org.mt4j.input.inputData.InputCursor, org.mt4j.input.inputData.MTFingerInputEvt)
+	 */
 	@Override
-	public void cursorUnlocked(InputCursor m) {
-		logger.debug(this.getName() + " Recieved UNLOCKED signal for cursors ID: " + m.getId());
-		if (lockedCursors.size() >= 1){ //we dont need the unlocked cursors, gesture still in progress
-			return;
+	public void cursorUpdated(InputCursor c, MTFingerInputEvt fe) {
+		IMTComponent3D comp = fe.getTargetComponent();
+		if (getLockedCursors().contains(c)){
+			dc.updateDragPosition();
+			this.fireGestureEvent(new DragEvent(this, MTGestureEvent.GESTURE_UPDATED, comp, c, dc.getLastPosition(), dc.getNewPosition()));
 		}
-		
-		if (unUsedCursors.contains(m)){
-			if (this.canLock(m)){
-				DragContext newContext = new DragContext(m, m.getCurrentEvent().getTargetComponent());
+	}
+
+	
+	/* (non-Javadoc)
+	 * @see org.mt4j.input.inputProcessors.componentProcessors.AbstractCursorProcessor#cursorEnded(org.mt4j.input.inputData.InputCursor, org.mt4j.input.inputData.MTFingerInputEvt)
+	 */
+	@Override
+	public void cursorEnded(InputCursor c, MTFingerInputEvt fe) {
+		IMTComponent3D comp = fe.getTargetComponent();
+		logger.debug(this.getName() + " INPUT_ENDED RECIEVED - MOTION: " + c.getId());
+		if (getLockedCursors().contains(c)){ //cursors was a actual gesture cursors
+			dc.updateDragPosition();
+			//Check if we can resume the gesture with another cursor
+			InputCursor[] availableCursors = getFreeComponentCursorsArray();
+			if (availableCursors.length > 0 && this.canLock(getCurrentComponentCursorsArray())){ 
+				InputCursor otherCursor = availableCursors[0]; 
+				DragContext newContext = new DragContext(otherCursor, comp); 
 				if (!newContext.isGestureAborted()){
 					dc = newContext;
-					this.getLock(m);
-					unUsedCursors.remove(m);
-					lockedCursors.add(m);
-					//TODO fire started? maybe not.. do we have to?
-					logger.debug(this.getName() + " can resume its gesture with cursors: " + m.getId());
+					this.getLock(otherCursor);
 				}else{
-					dc = null;
-					logger.debug(this.getName() + " we could NOT start gesture - cursors not on component: " + m.getId());
+					this.fireGestureEvent(new DragEvent(this, MTGestureEvent.GESTURE_ENDED, comp, c, dc.getLastPosition(), dc.getNewPosition()));
 				}
 			}else{
-				logger.debug(this.getName() + " still in progress - we dont need the unlocked cursors" );
+				this.fireGestureEvent(new DragEvent(this, MTGestureEvent.GESTURE_ENDED, comp, c, dc.getLastPosition(), dc.getNewPosition()));
 			}
 		}
 	}
 
-	
-	
-	
-	
+
+
+	/* (non-Javadoc)
+	 * @see org.mt4j.input.inputProcessors.componentProcessors.AbstractCursorProcessor#cursorLocked(org.mt4j.input.inputData.InputCursor, org.mt4j.input.inputProcessors.IInputProcessor)
+	 */
+	@Override
+	public void cursorLocked(InputCursor c, IInputProcessor p) {
+		if (p instanceof AbstractComponentProcessor){
+			logger.debug(this.getName() + " Recieved MOTION LOCKED by (" + ((AbstractComponentProcessor)p).getName()  + ") - cursors ID: " + c.getId());
+		}else{
+			logger.debug(this.getName() + " Recieved MOTION LOCKED by higher priority signal - cursors ID: " + c.getId());
+		}
+
+		if (dc != null && dc.getCursor().equals(c)){ 
+			dc = null;
+			logger.debug(this.getName() + " cursors:" + c.getId() + " CURSOR LOCKED. Was an locked cursor in this gesture!");
+		}
+	}
+
+
+
+	/* (non-Javadoc)
+	 * @see org.mt4j.input.inputProcessors.componentProcessors.AbstractCursorProcessor#cursorUnlocked(org.mt4j.input.inputData.InputCursor)
+	 */
+	@Override
+	public void cursorUnlocked(InputCursor c) {
+		logger.debug(this.getName() + " Recieved UNLOCKED signal for cursors ID: " + c.getId());
+		if (getLockedCursors().size() >= 1){ //we dont need the unlocked cursors, gesture still in progress
+			return;
+		}
+
+		if (getFreeComponentCursors().size() > 0 && this.canLock(getCurrentComponentCursorsArray())){ 
+			DragContext newContext = new DragContext(c, c.getTarget());
+			if (!newContext.isGestureAborted()){
+				dc = newContext;
+				this.getLock(c);
+				logger.debug(this.getName() + " can resume its gesture with cursors: " + c.getId());
+			}else{
+				dc = null;
+				logger.debug(this.getName() + " we could NOT start gesture - cursors not on component: " + c.getId());
+			}
+		}else{
+			logger.debug(this.getName() + " still in progress - we dont need the unlocked cursors" );
+		}
+	}
+
 	/**
 	 * The Class DragContext.
+	 * @author Christopher Ruff
 	 */
 	private class DragContext {
-				
 				/** The start position. */
 				private Vector3D startPosition;
 				
@@ -245,8 +205,7 @@ public class DragProcessor extends AbstractCursorProcessor {
 					this.dragPlaneNormal =  dragObject.getViewingCamera().getPosition().getSubtracted(dragObject.getViewingCamera().getViewCenterPos()).normalizeLocal();
 					
 					//Set the Drag Startposition
-					Vector3D interSectP = dragObject.getIntersectionGlobal(
-							Tools3D.getCameraPickRay(applet, dragObject, m.getCurrentEvent().getPosX(), m.getCurrentEvent().getPosY()));
+					Vector3D interSectP = getIntersection(applet, dragObject, m);
 					
 					if (interSectP != null)
 						this.startPosition = interSectP;
@@ -264,9 +223,6 @@ public class DragProcessor extends AbstractCursorProcessor {
 					this.lastPosition	= startPosition.getCopy();
 				}
 				
-				/**
-				 * Update drag position.
-				 */
 				public void updateDragPosition(){
 					if (dragObject == null || dragObject.getViewingCamera() == null){ //IF component was destroyed while gesture still active
 						this.gestureAborted = true;
@@ -274,7 +230,7 @@ public class DragProcessor extends AbstractCursorProcessor {
 					}
 					
 					Vector3D newPos = ToolsGeometry.getRayPlaneIntersection(
-							Tools3D.getCameraPickRay(applet, dragObject, m.getCurrentEvent().getPosX(), m.getCurrentEvent().getPosY()), 
+							Tools3D.getCameraPickRay(applet, dragObject, m.getCurrentEvtPosX(), m.getCurrentEvtPosY()), 
 							dragPlaneNormal, 
 							startPosition);
 					if (newPos != null){
@@ -283,39 +239,26 @@ public class DragProcessor extends AbstractCursorProcessor {
 					}
 				}
 
-
-				/**
-				 * Gets the last position.
-				 * 
-				 * @return the last position
-				 */
 				public Vector3D getLastPosition() {
 					return lastPosition;
 				}
 
-				/**
-				 * Gets the new position.
-				 * 
-				 * @return the new position
-				 */
 				public Vector3D getNewPosition() {
 					return newPosition;
 				}
 
-				/**
-				 * Checks if is gesture aborted.
-				 * 
-				 * @return true, if is gesture aborted
-				 */
 				public boolean isGestureAborted() {
 					return gestureAborted;
+				}
+				
+				public InputCursor getCursor(){
+					return this.m;
 				}
 			}
 	
 	
-	
 	/* (non-Javadoc)
-	 * @see org.mt4j.input.inputAnalyzers.componentAnalyzers.AbstractComponentInputAnalyzer#getName()
+	 * @see org.mt4j.input.inputProcessors.componentProcessors.AbstractComponentProcessor#getName()
 	 */
 	@Override
 	public String getName() {

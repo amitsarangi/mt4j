@@ -68,7 +68,7 @@ public class ActiveCursorPool {
 	 * @param cursorID the cursor id
 	 * @param m the m
 	 */ //TODO automate because id = cursorID?
-	public void putActiveCursor(long cursorID ,InputCursor m){
+	public void putActiveCursor(long cursorID, InputCursor m){
 		cursorMap.put(cursorID, m);
 	}
 	

@@ -49,6 +49,13 @@ public class ComponentInputProcessorSupport implements IMTInputEventListener /*,
 	public boolean processInputEvent(MTInputEvent inEvt){
 //		/*
 		boolean handled = false;
+		
+		for (AbstractComponentProcessor p : registeredProcessors) {
+			if (p.isInterestedIn(inEvt)){
+				p.preProcess(inEvt);
+			}
+		}
+		
 		for (int i = 0; i < registeredProcessors.size(); i++) {
 			AbstractComponentProcessor inputProcessor = registeredProcessors.get(i);
 			//Send events
