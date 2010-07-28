@@ -936,8 +936,15 @@ public class MTPolygon extends AbstractShape implements CSSStylableComponent{
 	
 	private MTApplication mtApp;
 	private boolean cssStyled = false;
+	private boolean cssForceDisabled = false;
 	private CSSHelper cssHelper;
 	
+	
+	
+	public CSSHelper getCssHelper() {
+		return cssHelper;
+	}
+
 	@Override
 	public boolean isCSSStyled() {
 		return cssStyled;
@@ -949,6 +956,16 @@ public class MTPolygon extends AbstractShape implements CSSStylableComponent{
 			cssStyled = true;
 		}
 		applyStyleSheet();
+	}
+
+	
+	
+	public boolean isCssForceDisabled() {
+		return cssForceDisabled;
+	}
+
+	public void setCssForceDisable(boolean cssForceDisabled) {
+		this.cssForceDisabled = cssForceDisabled;
 	}
 
 	@Override

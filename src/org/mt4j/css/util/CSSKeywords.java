@@ -346,7 +346,8 @@ public class CSSKeywords {
 		/** The UNKNOWN. */
 		UNKNOWN,
 		/** The BACKGROUND. */
-		BACKGROUND
+		BACKGROUND,
+		OPACITY
 	}
 	
 	public enum Position {

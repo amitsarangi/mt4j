@@ -122,7 +122,7 @@ public class CSSHelper {
 	public void applyStyleSheet() {
 		if (c instanceof CSSStylableComponent) {
 			CSSStylableComponent sc = (CSSStylableComponent)c;
-			if ((sc.isCSSStyled() && !app.getCssStyleManager().isGloballyDisabled()) || app.getCssStyleManager().isGloballyEnabled()) {
+			if (!sc.isCssForceDisabled() && ((sc.isCSSStyled() && !app.getCssStyleManager().isGloballyDisabled()) || app.getCssStyleManager().isGloballyEnabled())) {
 				evaluateStyleSheets();
 				if ((c instanceof MTPolygon) || (c instanceof MTLine)) {
 					applyStyleSheetBasic((AbstractShape) c);
@@ -493,7 +493,11 @@ public class CSSHelper {
 				img.setPositionRelativeToParent(
 						p.getVerticesLocal()[0].addLocal(calcPos(p, virtualStyleSheet.getBackgroundImage(), xPos, yPos)));
 			
-			p.setChildClip(new Clip(p));
+				
+			Clip c = new Clip(app, p.getBounds().getVectorsLocal()[0].x,p.getBounds().getVectorsLocal()[0].y,p.getBounds().getWidthXY(TransformSpace.LOCAL),p.getBounds().getHeightXY(TransformSpace.LOCAL));	
+				
+			img.setClip(c);	
+			//p.setChildClip(new Clip(p));
 			
 			
 		}	else {
@@ -543,4 +547,11 @@ public class CSSHelper {
 		return new Vector3D((ta.width / 2)	+ xo, 
 				(ta.height / 2) + yo);
 	}
+
+	public CSSStyle getVirtualStyleSheet() {
+		evaluateStyleSheets();
+		return virtualStyleSheet;
+	}
+	
+	
 }

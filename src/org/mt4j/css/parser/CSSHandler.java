@@ -396,6 +396,14 @@ public class CSSHandler implements DocumentHandler{
 		case FONTWEIGHT:
 			handleFontWeight(value);
 			break;
+		case OPACITY:
+			if (CSSKeywords.isMeasuringUnit(value)) {
+				System.out.println("Raw Opacity: " + value.getFloatValue() + " Type: " + value.getLexicalUnitType());
+				float opacity = parseMeasuringUnit(value, 1);
+				System.out.println("Processed Opacity: " + opacity);
+				for (CSSStyle sty: activeStyles) sty.setOpacity(opacity * 255);
+			}
+			break;
 		case UNKNOWN:
 		default:
 			logger.error("Unknown Identifier: " + name.replace(" ", "").replace("-", "").toUpperCase());
@@ -827,6 +835,7 @@ public class CSSHandler implements DocumentHandler{
 		case LexicalUnit.SAC_INTEGER:
 			return (float) value.getIntegerValue();
 		case LexicalUnit.SAC_REAL:
+			return (float) value.getFloatValue();
 		case LexicalUnit.SAC_PERCENTAGE:
 			return (float) value.getFloatValue() / 100 *  referenceValue;
 			

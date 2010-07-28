@@ -28,4 +28,7 @@ public interface CSSStylableComponent {
 	 */
 	public void applyStyleSheet();
 	
+	
+	public boolean isCssForceDisabled();
+	public void setCssForceDisable(boolean cssForceDisabled);
 }

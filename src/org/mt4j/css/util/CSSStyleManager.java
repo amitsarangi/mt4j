@@ -259,6 +259,8 @@ public class CSSStyleManager {
 		return superclasses;
 	}
 	
+	IFont defaultFont = null;
+	
 	/**
 	 * Gets the default font.
 	 *
@@ -266,10 +268,14 @@ public class CSSStyleManager {
 	 * @return the default font
 	 */
 	public IFont getDefaultFont(MTApplication app) {
-		return FontManager.getInstance().createFont(app,
-				"dejavu/DejaVuSans.ttf", 16, // Font size
-				new MTColor(255,255,255,255), // Font fill color
-				new MTColor(255,255,255,255));
+		if (defaultFont == null)  {
+			defaultFont = FontManager.getInstance().createFont(app,
+					"SansSerif", 16, // Font size
+					new MTColor(255,255,255,255), // Font fill color
+					new MTColor(255,255,255,255));
+		}
+		
+		return defaultFont;
 	}
 	
 	

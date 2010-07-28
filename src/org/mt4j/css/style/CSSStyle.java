@@ -151,6 +151,28 @@ public class CSSStyle {
 	/** Has the visibility/zIndex been modified.*/
 	boolean modifiedVisibility = false, modifiedZIndex = false;
 	
+	float opacity = 255;
+	boolean modifiedOpacity = false;
+	
+	
+	
+	public float getOpacity() {
+		return opacity;
+	}
+
+	public void setOpacity(float opacity) {
+		this.modifiedOpacity = true;
+		this.opacity = opacity;
+	}
+
+	public boolean isModifiedOpacity() {
+		return modifiedOpacity;
+	}
+
+	public void setModifiedOpacity(boolean modifiedOpacity) {
+		this.modifiedOpacity = modifiedOpacity;
+	}
+
 	/**
 	 * Instantiates a new CSS style.
 	 *
@@ -220,7 +242,9 @@ public class CSSStyle {
 	 * @return the background color
 	 */
 	public MTColor getBackgroundColor() {
-		return backgroundColor;
+		System.out.println("Opacity:" + this.getOpacity());
+		MTColor newColor = new MTColor(this.backgroundColor.getR(), this.backgroundColor.getG(), this.backgroundColor.getB(), this.backgroundColor.getAlpha() * this.getOpacity() / 255f);
+		return newColor;
 	}
 	
 	/**
@@ -240,6 +264,7 @@ public class CSSStyle {
 	 */
 	public MTColor getColor() {
 		return color;
+		
 	}
 	
 	/**
@@ -648,16 +673,10 @@ public class CSSStyle {
 
 
 
-
-
-
-	
-
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((app == null) ? 0 : app.hashCode());
 		result = prime * result
 				+ ((backgroundColor == null) ? 0 : backgroundColor.hashCode());
 		result = prime * result
@@ -695,6 +714,7 @@ public class CSSStyle {
 		result = prime * result + (modifiedFontSize ? 1231 : 1237);
 		result = prime * result + (modifiedHeight ? 1231 : 1237);
 		result = prime * result + (modifiedHeightPercentage ? 1231 : 1237);
+		result = prime * result + (modifiedOpacity ? 1231 : 1237);
 		result = prime * result + (modifiedPaddingWidth ? 1231 : 1237);
 		result = prime * result + (modifiedSelector ? 1231 : 1237);
 		result = prime * result + (modifiedUri ? 1231 : 1237);
@@ -705,6 +725,7 @@ public class CSSStyle {
 		result = prime * result + (modifiedYpos ? 1231 : 1237);
 		result = prime * result + (modifiedZIndex ? 1231 : 1237);
 		result = prime * result + (modifiedZpos ? 1231 : 1237);
+		result = prime * result + Float.floatToIntBits(opacity);
 		result = prime * result + Float.floatToIntBits(paddingWidth);
 		result = prime * result
 				+ ((selector == null) ? 0 : selector.hashCode());
@@ -728,11 +749,6 @@ public class CSSStyle {
 		if (getClass() != obj.getClass())
 			return false;
 		CSSStyle other = (CSSStyle) obj;
-		if (app == null) {
-			if (other.app != null)
-				return false;
-		} else if (!app.equals(other.app))
-			return false;
 		if (backgroundColor == null) {
 			if (other.backgroundColor != null)
 				return false;
@@ -811,6 +827,8 @@ public class CSSStyle {
 			return false;
 		if (modifiedHeightPercentage != other.modifiedHeightPercentage)
 			return false;
+		if (modifiedOpacity != other.modifiedOpacity)
+			return false;
 		if (modifiedPaddingWidth != other.modifiedPaddingWidth)
 			return false;
 		if (modifiedSelector != other.modifiedSelector)
@@ -830,6 +848,9 @@ public class CSSStyle {
 		if (modifiedZIndex != other.modifiedZIndex)
 			return false;
 		if (modifiedZpos != other.modifiedZpos)
+			return false;
+		if (Float.floatToIntBits(opacity) != Float
+				.floatToIntBits(other.opacity))
 			return false;
 		if (Float.floatToIntBits(paddingWidth) != Float
 				.floatToIntBits(other.paddingWidth))
@@ -1381,6 +1402,9 @@ public class CSSStyle {
 		}
 		if (s.isModifiedZpos()) {
 			v.setZpos(s.getZpos());
+		}
+		if (s.isModifiedOpacity()) {
+			v.setOpacity(s.getOpacity());
 		}
 	}
 
