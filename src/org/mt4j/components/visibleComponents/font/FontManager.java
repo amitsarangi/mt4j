@@ -50,6 +50,13 @@ public class FontManager {
 	
 	private static final int CACHE_MAX_SIZE = 10;
 	
+	
+	public static String DEFAULT_FONT = "SansSerif";
+	public static int DEFAULT_FONT_SIZE = 14;
+	public static MTColor DEFAULT_FONT_FILL_COLOR = MTColor.BLACK;
+	public static MTColor DEFAULT_FONT_STROKE_COLOR = MTColor.BLACK;
+	public static boolean DEFAULT_FONT_ANTIALIASING = false;
+	
 	//TODO fonts seem to be one of the main memory eaters in MT4j!
 	//somehow the fontmanager seems to grow bigger and bigger (at least it seems at profiling
 	//although the same cached(!) fonts are used
@@ -92,6 +99,16 @@ public class FontManager {
 		}else{
 			return fontManager;
 		}
+	}
+	
+	/**
+	 * Gets the default font.
+	 *
+	 * @param app the app
+	 * @return the default font
+	 */
+	public IFont getDefaultFont(PApplet app){
+		return createFont(app, DEFAULT_FONT, DEFAULT_FONT_SIZE, new MTColor(DEFAULT_FONT_FILL_COLOR), new MTColor(DEFAULT_FONT_STROKE_COLOR), DEFAULT_FONT_ANTIALIASING);
 	}
 	
 	
