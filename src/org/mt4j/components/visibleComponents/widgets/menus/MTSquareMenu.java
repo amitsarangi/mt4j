@@ -12,6 +12,7 @@ import org.mt4j.components.visibleComponents.font.IFont;
 import org.mt4j.components.visibleComponents.shapes.MTPolygon;
 import org.mt4j.components.visibleComponents.shapes.MTRectangle;
 import org.mt4j.components.visibleComponents.widgets.MTTextArea;
+import org.mt4j.components.visibleComponents.widgets.menus.MTHexagonMenu.PolygonListeners;
 import org.mt4j.css.style.CSSFont;
 import org.mt4j.css.style.CSSStyle;
 import org.mt4j.css.util.CSSFontManager;
@@ -30,16 +31,41 @@ import org.mt4j.util.math.Vertex;
 import processing.core.PConstants;
 import processing.core.PImage;
 
+/**
+ * The Class MTSquareMenu.
+ * Menu that contains Squares as buttons containing text or images
+ */
 public class MTSquareMenu extends MTRectangle implements CSSStylableComponent {
 
+	/** The app. */
 	MTApplication app;
+	
+	/** The menu contents. */
 	List<MTRectangle> menuContents = new ArrayList<MTRectangle>();
+	
+	/** The layout. */
 	List<ArrayList<MTRectangle>> layout = new ArrayList<ArrayList<MTRectangle>>();
+	
+	/** The size. */
 	float size;
+	
+	/** The current item. */
 	int current = 0;
+	
+	/** The max per line. */
 	int maxPerLine = 0;
+	
+	/** The bezel. */
 	float bezel = 10f;
 
+	/**
+	 * Instantiates a new MTSquareMenu
+	 *
+	 * @param app the app
+	 * @param position the position of the Menu
+	 * @param menuItems the menu items
+	 * @param size the size of the squares
+	 */
 	public MTSquareMenu(MTApplication app, Vector3D position,
 			List<MenuItem> menuItems, float size) {
 		super(position.x, position.y, (float) (int) Math
@@ -47,8 +73,9 @@ public class MTSquareMenu extends MTRectangle implements CSSStylableComponent {
 				.sqrt(menuItems.size() + 1) * size, app);
 		this.app = app;
 		this.size = size;
+		
+		// Set the Rectangle to be invisible
 		this.setCssForceDisable(true);
-
 		this.setNoFill(true);
 		this.setNoStroke(true);
 
@@ -61,10 +88,11 @@ public class MTSquareMenu extends MTRectangle implements CSSStylableComponent {
 		for (MenuItem s : menuItems) {
 			
 			if (s != null && s.getType() == MenuItem.TEXT) {
+				//Create a new menu cell
 				MTRectangle container = new MTRectangle(0, 0, size, size, app);
 				this.addChild(container);
 
-
+				// Add MTTextArea Children to take single lines of the Menu Text
 				for (String t : s.getMenuText().split("\n")) {
 					MTTextArea menuItem = new MTTextArea(app);
 					menuItem.setText(t);
@@ -78,12 +106,13 @@ public class MTSquareMenu extends MTRectangle implements CSSStylableComponent {
 
 				container.setChildClip(new Clip(container));
 				container.setPickable(false);
-				
+				pl.add(new PolygonListeners(container, s.getGestureListener()));
 				menuContents.add(container);
 			} else if (s != null && s.getType() == MenuItem.PICTURE) {
 
 				if (s.getMenuImage() != null) {
 					PImage texture = null;
+					// If Image doesn't fit, make it fit!
 					if (s.getMenuImage().width != (int) size
 							|| s.getMenuImage().height != (int) size) {
 						texture = cropImage(s.getMenuImage(), (int) size, true);
@@ -91,14 +120,18 @@ public class MTSquareMenu extends MTRectangle implements CSSStylableComponent {
 						texture = s.getMenuImage();
 					}
 
+					
+					//Create a new menu cell
 					MTRectangle container = new MTRectangle(0, 0, size, size,
 							app);
 					this.addChild(container);
+					//Set the background texture
 					container.setTexture(texture);
 
 					container.setChildClip(new Clip(container));
 					container.setPickable(false);
-					
+					pl.add(new PolygonListeners(container, s
+							.getGestureListener()));
 					menuContents.add(container);
 
 				}
@@ -117,8 +150,19 @@ public class MTSquareMenu extends MTRectangle implements CSSStylableComponent {
 
 	}
 
+	/**
+	 * Crop image.
+	 *
+	 * @param image the image
+	 * @param size the size
+	 * @param resize Force-resize the image?
+	 * @return the cropped image
+	 */
 	private PImage cropImage(PImage image, int size, boolean resize) {
+		//Crops (and resizes) an Image to fit into the suqare
 		PImage returnImage = app.createImage(size, size, PConstants.RGB);
+		
+		//Resize Image
 		if (resize || image.width < size || image.height < size) {
 			if (image.width < image.height) {
 				image.resize(
@@ -131,9 +175,12 @@ public class MTSquareMenu extends MTRectangle implements CSSStylableComponent {
 			}
 
 		}
+		
+		// Crop Starting Points
 		int x = (image.width / 2) - (size / 2);
 		int y = (image.height / 2) - (size / 2);
-
+		
+		// Bugfixing: Don't Allow Out-of-Bounds coordinates
 		if (x + size > image.width)
 			x = image.width - size;
 		if (x < 0)
@@ -146,7 +193,8 @@ public class MTSquareMenu extends MTRectangle implements CSSStylableComponent {
 			y = 0;
 		if (y + size > image.height)
 			size = image.height - y;
-
+		
+		//Crop Image
 		returnImage.copy(image, x, y, size, size, 0, 0, size, size);
 
 		return returnImage;
@@ -154,32 +202,41 @@ public class MTSquareMenu extends MTRectangle implements CSSStylableComponent {
 
 
 
+	/**
+	 * Style the cells of the menu.
+	 *
+	 * @param fontsize the font-size
+	 */
 	private void styleChildren(int fontsize) {
 		organizeRectangles();
 		CSSStyle vss = this.getCssHelper().getVirtualStyleSheet();
 		CSSFont cf = this.getCssHelper().getVirtualStyleSheet().getCssfont();
+		// Style Font: Bold + fitting fontsize
 		cf.setFontsize(fontsize);
 		cf.setWeight(CSSFontWeight.BOLD);
+		
+		//Load Font
 		CSSFontManager cfm = new CSSFontManager(app);
 		IFont font = cfm.selectFont(cf);
 
-		// System.out.println("Fill Color: " + vss.getBackgroundColor());
 		for (MTRectangle c : menuContents) {
 
 			MTRectangle rect = c;
 
 			c.setWidthLocal(size);
 			c.setHeightLocal(size);
-
+			
+			
+			//Set Stroke/Border
 			rect.setStrokeColor(vss.getBorderColor());
-			// System.out.println("Border Color: " + vss.getBorderColor());
+			rect.setStrokeWeight(vss.getBorderWidth());
+
+			// Set Font and Position for the child MTTextAreas
 			if (((MTRectangle) c).getTexture() == null) {
 				rect.setFillColor(vss.getBackgroundColor());
 				for (MTComponent d : c.getChildren()) {
 					if (d instanceof MTTextArea) {
 						MTTextArea ta = (MTTextArea) d;
-						// System.out.println("Setting Font for Part " +
-						// ta.getText());
 						ta.setFont(font);
 					}
 				}
@@ -199,6 +256,7 @@ public class MTSquareMenu extends MTRectangle implements CSSStylableComponent {
 
 				}
 			} else {
+				//Set FillColor for the image (neutral white)
 				rect.setFillColor(MTColor.WHITE);
 			}
 
@@ -208,6 +266,8 @@ public class MTSquareMenu extends MTRectangle implements CSSStylableComponent {
 		float minx = 16000, maxx = -16000, miny = 16000, maxy = -16000;
 		
 		int currentRow = 0;
+		
+		// Position the Polygons in the grid
 		for (List<MTRectangle> lr : layout) {
 			int currentColumn = 0;
 			for (MTRectangle r : lr) {
@@ -234,6 +294,9 @@ public class MTSquareMenu extends MTRectangle implements CSSStylableComponent {
 		this.setVertices(new Vertex[] {new Vertex(minx,miny), new Vertex(maxx,miny), new Vertex(maxx,maxy), new Vertex(minx,maxy),new Vertex(minx,miny)});
 	}
 
+	/**
+	 * Distribute the menu cells on the rows.
+	 */
 	private void organizeRectangles() {
 		layout.clear();
 		layout.add(new ArrayList<MTRectangle>());
@@ -341,6 +404,12 @@ public class MTSquareMenu extends MTRectangle implements CSSStylableComponent {
 
 	}
 
+	/**
+	 * Returns the next n items
+	 *
+	 * @param next the number of items to return
+	 * @return the list of n next items
+	 */
 	private List<MTRectangle> next(int next) {
 		List<MTRectangle> returnValues = new ArrayList<MTRectangle>();
 		for (int i = 0; i < next; i++) {
@@ -350,6 +419,12 @@ public class MTSquareMenu extends MTRectangle implements CSSStylableComponent {
 		return returnValues;
 	}
 
+	/**
+	 * Calculates the total height of a number of MTTextAreas
+	 *
+	 * @param components the components
+	 * @return the height
+	 */
 	private float calcTotalHeight(MTComponent[] components) {
 		float height = 0;
 		for (MTComponent c : components) {
@@ -360,6 +435,13 @@ public class MTSquareMenu extends MTRectangle implements CSSStylableComponent {
 		return height;
 	}
 
+	/**
+	 * Gets the maximum font size for a certain width
+	 *
+	 * @param strings the strings
+	 * @param size the width
+	 * @return the maximum font size
+	 */
 	private int getNecessaryFontSize(List<MenuItem> strings, float size) {
 		int maxNumberCharacters = 0;
 
@@ -386,15 +468,37 @@ public class MTSquareMenu extends MTRectangle implements CSSStylableComponent {
 		int returnValue = (int)(-0.5 + 1.725 * spc); //Determined using Linear Regression
 		return returnValue;
 	}
+	
+	/**
+	 * The listener interface for receiving tap events.
+	 * The class that is interested in processing a tap
+	 * event implements this interface, and the object created
+	 * with that class is registered with a component using the
+	 * component's <code>addTapListener<code> method. When
+	 * the tap event occurs, that object's appropriate
+	 * method is invoked.
+	 *
+	 * @see TapEvent
+	 */
 	public class TapListener implements IGestureEventListener {
 		//Tap Listener to reach through TapListeners to children
 		
+		/** The children. */
 		List<PolygonListeners> children;
+		
+		/**
+		 * Instantiates a new tap listener.
+		 *
+		 * @param children the children
+		 */
 		public TapListener(List<PolygonListeners> children) {
 			this.children = children;
 		}
 		
 		
+		/* (non-Javadoc)
+		 * @see org.mt4j.input.inputProcessors.IGestureEventListener#processGestureEvent(org.mt4j.input.inputProcessors.MTGestureEvent)
+		 */
 		@Override
 		public boolean processGestureEvent(MTGestureEvent ge) {
 			if (ge instanceof TapEvent) {
@@ -424,10 +528,23 @@ public class MTSquareMenu extends MTRectangle implements CSSStylableComponent {
 
 	
 	
+	/**
+	 * The Class PolygonListeners.
+	 */
 	public class PolygonListeners {
+		
+		/** The component. */
 		public MTPolygon component;
+		
+		/** The listener. */
 		public IGestureEventListener listener;
 		
+		/**
+		 * Instantiates a new polygon listeners.
+		 *
+		 * @param component the component
+		 * @param listener the listener
+		 */
 		public PolygonListeners(MTPolygon component, IGestureEventListener listener) {
 			this.component = component;
 			this.listener = listener;
