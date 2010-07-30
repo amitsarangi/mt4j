@@ -474,6 +474,9 @@ public abstract class MTApplication extends PApplet {
 		//Set the framerate
 	    frameRate(MT4jSettings.getInstance().getMaxFrameRate());
 	    logger.info("Maximum framerate: \"" + MT4jSettings.getInstance().getMaxFrameRate() + "\"");
+	    
+	    //FIXME TODO add in settings.txt?
+	    hint(MTApplication.DISABLE_OPENGL_ERROR_REPORT);
 		
 		MT4jSettings.getInstance().programStartTime = System.currentTimeMillis();
 		
