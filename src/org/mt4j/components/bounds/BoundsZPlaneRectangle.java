@@ -308,7 +308,7 @@ public class BoundsZPlaneRectangle implements IBoundingShape {
 	public float getHeightXY(TransformSpace transformSpace) {
 		switch (transformSpace) {
 		case LOCAL:
-			return this.getHeightXYObjSpace();
+			return this.getHeightXYLocal();
 		case RELATIVE_TO_PARENT:
 			return this.getHeightXYRelativeToParent();
 		case GLOBAL:
@@ -324,7 +324,7 @@ public class BoundsZPlaneRectangle implements IBoundingShape {
 	 * 
 	 * @return the height xy obj space
 	 */
-	private float getHeightXYObjSpace() {
+	private float getHeightXYLocal() {
 		return this.getHeightXYVectLocal().length();
 	}
 	
@@ -382,7 +382,7 @@ public class BoundsZPlaneRectangle implements IBoundingShape {
 	public float getWidthXY(TransformSpace transformSpace) {
 		switch (transformSpace) {
 		case LOCAL:
-			return this.getWidthXYObjSpace();
+			return this.getWidthXYLocal();
 		case RELATIVE_TO_PARENT:
 			return this.getWidthXYRealtiveToParent();
 		case GLOBAL:
@@ -398,7 +398,7 @@ public class BoundsZPlaneRectangle implements IBoundingShape {
 	 * 
 	 * @return the width xy obj space
 	 */
-	private float getWidthXYObjSpace() {
+	private float getWidthXYLocal() {
 		return this.getWidthXYVectLocal().length();
 	}
 	

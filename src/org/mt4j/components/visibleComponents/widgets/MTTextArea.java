@@ -467,6 +467,10 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
 			}
 			*/
 			
+			//TODO avoid many stateChanges
+			//in bitmap font mode for example:
+			//enable textures, enable vertex arrays and color only once!
+			
 			if(!enableCaret && useDisplayList && this.displayListID != 0){
 				gl.glCallList(this.displayListID);
 			}else{

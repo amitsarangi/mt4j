@@ -276,7 +276,7 @@ public abstract class AbstractShape extends AbstractVisibleComponent {
 	
 	//TODO!!
 //	@Override
-	//INterface geometryNode mit getCenter getBounds etc? für Abstractshape und ShapeContainer?
+	//INterface geometryNode mit getCenter getBounds etc? fï¿½r Abstractshape und ShapeContainer?
 //	public void addChild(AbstractShape b){  
 //		
 //	}
@@ -1226,6 +1226,212 @@ public abstract class AbstractShape extends AbstractVisibleComponent {
 	 */
 	abstract public Vector3D getCenterPointLocal();
 
+//	
+//	/**
+//	 * Get the width of the shape in the XY-Plane. Uses the x and y coordinate
+//	 * values for calculation. Usually the calculation is delegated to the shapes
+//	 * bounding shape.
+//	 * 
+//	 * @param transformSpace the space the width is calculated in, can be global space, parent relative- or object space
+//	 * 
+//	 * @return the width xy
+//	 * 
+//	 * the width
+//	 */
+//	abstract public float getWidthXY(TransformSpace transformSpace);
+//	
+//	/**
+//	 * Get the height of the shape in the XY-Plane. Uses the x and y coordinate
+//	 * values for calculation. Usually the calculation is delegated to the shapes
+//	 * bounding shape.
+//	 * 
+//	 * @param transformSpace the space the width is calculated in, can be world space, parent relative- or object space
+//	 * 
+//	 * @return the height xy
+//	 * 
+//	 * the height
+//	 */
+//	abstract public float getHeightXY(TransformSpace transformSpace);
+//	
+	
+	/**
+	 * Get the height of the shape in the XY-Plane. Uses the x and y coordinate
+	 * values for calculation. Usually the calculation is delegated to the shapes
+	 * bounding shape.
+	 * 
+	 * @param transformSpace the space the width is calculated in, can be world space, parent relative- or object space
+	 * 
+	 * @return the height xy
+	 * 
+	 * the height
+	 */
+	public float getHeightXY(TransformSpace transformSpace) {
+		switch (transformSpace) {
+		case LOCAL:
+			return this.getHeightXYLocal();
+		case RELATIVE_TO_PARENT:
+			return this.getHeightXYRelativeToParent();
+		case GLOBAL:
+			return this.getHeightXYGlobal();
+		default:
+			return -1;
+		}
+	}
+	
+	
+	/**
+	 * Gets the height xy obj space.
+	 * @return the height xy obj space
+	 */
+	private float getHeightXYLocal() {
+		return this.getHeightXYVectLocal().length();
+	}
+	
+	/**
+	 * Gets the "height vector" and transforms it to parent relative space, then calculates
+	 * its length.
+	 * 
+	 * @return the height xy relative to parent
+	 * 
+	 * the height relative to its parent space frame
+	 */
+	protected float getHeightXYRelativeToParent() {
+		if (this.hasBounds()){
+			return this.getBounds().getHeightXY(TransformSpace.RELATIVE_TO_PARENT);
+		}else{
+			OrientedBoundingBox tempBounds = new OrientedBoundingBox(this);
+			return tempBounds.getHeightXY(TransformSpace.RELATIVE_TO_PARENT);
+		}
+	}
+	
+	
+	/**
+	 * Gets the "height vector" and transforms it to world space, then calculates
+	 * its length.
+	 * 
+	 * @return the height xy global
+	 * 
+	 * the height relative to the world space
+	 */
+	protected float getHeightXYGlobal() {
+		if (this.hasBounds()){
+			return this.getBounds().getHeightXY(TransformSpace.GLOBAL);
+		}else{
+			OrientedBoundingBox tempBounds = new OrientedBoundingBox(this);
+			return tempBounds.getHeightXY(TransformSpace.GLOBAL);
+		}
+	}
+	
+	
+	/**
+	 * Gets the "height vector" from its boundingshape. If no boundingshape is set,
+	 * a temporary bounding rectangle in the xy-plane is calculated and its height
+	 * is calculated as a vector with the height as its length in object space.
+	 * 
+	 * @return the height xy vect obj space
+	 * 
+	 * vector representing the height of the boundingshape of the shape
+	 * @deprecated this method should actually be private. Use getHeightXY(Transformspace.LOCAL) instead!
+	 */
+	public Vector3D getHeightXYVectLocal() {
+		if (this.hasBounds()){
+			return this.getBounds().getHeightXYVectLocal();
+		}else{
+			OrientedBoundingBox tempBounds = new OrientedBoundingBox(this);
+			return tempBounds.getHeightXYVectLocal();
+		}
+	}
+
+	
+	/**
+	 * Get the width of the shape in the XY-Plane. Uses the x and y coordinate
+	 * values for calculation. Usually the calculation is delegated to the shapes
+	 * bounding shape.
+	 * 
+	 * @param transformSpace the space the width is calculated in, can be global space, parent relative- or object space
+	 * 
+	 * @return the width xy
+	 * 
+	 * the width
+	 */
+	public float getWidthXY(TransformSpace transformSpace) {
+		switch (transformSpace) {
+		case LOCAL:
+			return this.getWidthXYLocal();
+		case RELATIVE_TO_PARENT:
+			return this.getWidthXYRelativeToParent();
+		case GLOBAL:
+			return this.getWidthXYGlobal();
+		default:
+			return -1;
+		}
+	}
+	
+	
+	/**
+	 * Gets the width xy obj space.
+	 * 
+	 * @return the width xy obj space
+	 */
+	private float getWidthXYLocal() {
+		return this.getWidthXYVectLocal().length();
+	}
+	
+	
+	/**
+	 * Calculates the width of this shape, by using its
+	 * bounding shape.
+	 * Uses the objects local transform. So the width will be
+	 * relative to the parent only - not the whole world
+	 * 
+	 * @return the width xy relative to parent
+	 * 
+	 * the width
+	 */
+	protected float getWidthXYRelativeToParent() {
+		if (this.hasBounds()){
+			return this.getBounds().getWidthXY(TransformSpace.RELATIVE_TO_PARENT);
+		}else{
+			OrientedBoundingBox tempBounds = new OrientedBoundingBox(this);
+			return tempBounds.getWidthXY(TransformSpace.RELATIVE_TO_PARENT);
+		}
+	}
+	
+	/**
+	 * Gets the "Width vector" and transforms it to world space, then calculates
+	 * its length.
+	 * 
+	 * @return the width xy global
+	 * 
+	 * the Width relative to the world space
+	 */
+	protected float getWidthXYGlobal() {
+		if (this.hasBounds()){
+			return this.getBounds().getWidthXY(TransformSpace.GLOBAL);
+		}else{
+			OrientedBoundingBox tempBounds = new OrientedBoundingBox(this);
+			return tempBounds.getWidthXY(TransformSpace.GLOBAL);
+		}
+	}
+	
+	/**
+	 * Gets the "width vector" from its boundingshape. If no boundingshape is set,
+	 * a temporary bounding rectangle in the xy-plane is calculated and its width
+	 * is calculated as a vector with the width as its length in object space.
+	 * 
+	 * @return the width xy vect obj space
+	 * 
+	 * vector representing the width of the boundingshape of the shape
+	 * @deprecated this method should actually be private. Use getWidthXY(Transformspace.LOCAL) instead!
+	 */
+	public Vector3D getWidthXYVectLocal() {
+		if (this.hasBounds()){
+			return this.getBounds().getWidthXYVectLocal();
+		}else{
+			OrientedBoundingBox tempBounds = new OrientedBoundingBox(this);
+			return tempBounds.getWidthXYVectLocal();
+		}
+	}
 	
 	
 	/**
@@ -1289,32 +1495,6 @@ public abstract class AbstractShape extends AbstractVisibleComponent {
 	
 	@Override
 	abstract protected void destroyComponent();
-	
-	/**
-	 * Get the width of the shape in the XY-Plane. Uses the x and y coordinate
-	 * values for calculation. Usually the calculation is delegated to the shapes
-	 * bounding shape.
-	 * 
-	 * @param transformSpace the space the width is calculated in, can be global space, parent relative- or object space
-	 * 
-	 * @return the width xy
-	 * 
-	 * the width
-	 */
-	abstract public float getWidthXY(TransformSpace transformSpace);
-	
-	/**
-	 * Get the height of the shape in the XY-Plane. Uses the x and y coordinate
-	 * values for calculation. Usually the calculation is delegated to the shapes
-	 * bounding shape.
-	 * 
-	 * @param transformSpace the space the width is calculated in, can be world space, parent relative- or object space
-	 * 
-	 * @return the height xy
-	 * 
-	 * the height
-	 */
-	abstract public float getHeightXY(TransformSpace transformSpace);
 	
 	
 	
