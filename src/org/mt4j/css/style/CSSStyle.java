@@ -242,7 +242,6 @@ public class CSSStyle {
 	 * @return the background color
 	 */
 	public MTColor getBackgroundColor() {
-		System.out.println("Opacity:" + this.getOpacity());
 		MTColor newColor = new MTColor(this.backgroundColor.getR(), this.backgroundColor.getG(), this.backgroundColor.getB(), this.backgroundColor.getAlpha() * this.getOpacity() / 255f);
 		return newColor;
 	}

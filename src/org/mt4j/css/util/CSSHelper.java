@@ -318,7 +318,7 @@ public class CSSHelper {
 	 * @param v2 the vertex to compare to
 	 * @return the x-distance
 	 */
-	private float getXDistance(float x, Vertex v2) {
+	public static float getXDistance(float x, Vertex v2) {
 		float distance = v2.x - x;
 		if (distance >= 0)
 			return distance;
@@ -334,7 +334,7 @@ public class CSSHelper {
 	 * @param v2 the vertex to compare to
 	 * @return the y-distance
 	 */
-	private float getYDistance(float y, Vertex v2) {
+	public static  float getYDistance(float y, Vertex v2) {
 		float distance = v2.y - y;
 		if (distance >= 0)
 			return distance;

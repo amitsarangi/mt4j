@@ -2,6 +2,7 @@ package org.mt4j.css.util;
 
 import java.util.Arrays;
 
+import org.mt4j.util.MTColor;
 import org.w3c.css.sac.LexicalUnit;
 
 // TODO: Auto-generated Javadoc
@@ -357,6 +358,23 @@ public class CSSKeywords {
 	
 	public enum PositionType {
 		ABSOLUTE, RELATIVE, KEYWORD;
+	}
+	
+	public final MTColor colorFromHex(String string) {
+		float red = 0;
+		float green = 0;
+		float blue = 0;
+		if (string.length() == 3) {
+			red = Integer.valueOf(string.substring(0, 0) + string.substring(0, 0)).intValue();
+			green = Integer.valueOf(string.substring(1, 1)+ string.substring(1, 1)).intValue();
+			blue = Integer.valueOf(string.substring(2, 2)+ string.substring(2, 2)).intValue();
+		} else if (string.length() == 6) {
+			red = Integer.valueOf(string.substring(0, 1)).intValue();
+			green = Integer.valueOf(string.substring(2, 3)).intValue();
+			blue = Integer.valueOf(string.substring(4, 5)).intValue();
+		} else return MTColor.WHITE;
+
+		return new MTColor(red,green,blue);
 	}
 	
 }
