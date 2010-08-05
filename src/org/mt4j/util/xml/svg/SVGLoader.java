@@ -345,7 +345,7 @@ public class SVGLoader implements SVGConstants{
 		logger.debug("Traversing: " + node.getNodeName());
 		
 		//Damit transformationen konsistent sind muss
-		//jedes tag, daß eine transform attribut hat
+		//jedes tag, daï¿½ eine transform attribut hat
 		//behandelt werden!
 		//Default
 		currentLocalTransformMatrix = new Matrix();
@@ -677,10 +677,12 @@ public class SVGLoader implements SVGConstants{
 							  //-> the first tspan textarea gets centered on the position 
 							  //but we would have to treat them (all in the same line) as 1 textarea when center positioning!
 							  
+							  //FIXME there are slight differences because we use a different SPACE character length and no font KERNING!
+							  
 							  //FIXME DO WIDHTOUT USERDATA
 							  //FIXME bitmap font has no top border, vector has.. why?
 							  //TODO -> eventuell doch in handleSvgNode machen?
-							  //-> statt graphicsnode /stylable node übergeben? - SVGOMTextElement is nicht instanceof graphicsnode..
+							  //-> statt graphicsnode /stylable node ï¿½bergeben? - SVGOMTextElement is nicht instanceof graphicsnode..
 							  
 							  // we have to check font/color etc at every character, not only at new positon because 
 							  //pos doesent change at tspans without new posinfo
@@ -699,16 +701,20 @@ public class SVGLoader implements SVGConstants{
 								  //for the DX and DY shift info for the next text area
 								  if (previousTextArea != null){
 									  PositionAnchor oldAnchor = previousTextArea.getAnchor();
-									  previousTextArea.setAnchor(PositionAnchor.LOWER_RIGHT);
+//									  previousTextArea.setAnchor(PositionAnchor.LOWER_RIGHT);
+									  previousTextArea.setAnchor(PositionAnchor.UPPER_LEFT);
 									  //Calculate last/current textposition for DX and DY use
 									  //add up the last textareas start position end position(width)
 									  Vector3D lastPos = previousTextArea.getPosition(TransformSpace.LOCAL);
-									  newXPos = lastPos.x - previousTextArea.getInnerPaddingLeft();
+//									  lastPos.addLocal(new Vector3D(previousTextArea.getWidthXY(TransformSpace.LOCAL) - 1 * previousTextArea.getInnerPaddingLeft(),0));
+									  lastPos.addLocal(new Vector3D(previousTextArea.getWidthXY(TransformSpace.LOCAL) - 2 * previousTextArea.getInnerPaddingLeft(),0));
+//									  newXPos = lastPos.x - previousTextArea.getInnerPaddingLeft();
+									  newXPos = lastPos.x;
 									  newXPos += (Float)previousTextArea.getUserData("XPos");
 
 									  newYPos = lastPos.y;
-									  newYPos -= previousTextArea.getInnerPaddingLeft();
-									  newYPos += fontToUse.getFontMaxDescent(); //FIXME WHY NEVESSARY?
+//									  newYPos -= previousTextArea.getInnerPaddingTop();
+//									  newYPos += fontToUse.getFontMaxDescent(); //FIXME WHY NEVESSARY?
 									  newYPos += (Float)previousTextArea.getUserData("YPos");
 									  previousTextArea.setAnchor(oldAnchor);
 								  }
@@ -722,13 +728,12 @@ public class SVGLoader implements SVGConstants{
 									  newXPos += (Float)charDX;
 								  if (charDY != null)
 									  newYPos += (Float)charDY;
-
-								  //Create the text area
+								  
+								  // Create the text area \\
 								  MTTextArea t = new MTTextArea(pa, fontToUse);
 								  t.setNoFill(true);
 								  t.setNoStroke(true);
 								  textAreas.add(t);
-
 								  try{
 									  t.setLocalMatrix(new Matrix(currentLocalTransformMatrix));
 								  }catch(Exception e){
@@ -747,19 +752,25 @@ public class SVGLoader implements SVGConstants{
 								  switch (v.getStringValue().charAt(0)) {
 								  case 'e':
 									  t.setAnchor(PositionAnchor.LOWER_RIGHT);
-									  t.setUserData("posRelParent", new Vector3D(newXPos -t.getInnerPaddingLeft(), newYPos - fontToUse.getFontMaxDescent()  +  t.getInnerPaddingLeft() , 0));
+									  t.setUserData("posRelParent", new Vector3D((newXPos + t.getInnerPaddingLeft()) , newYPos - fontToUse.getFontMaxDescent()  +  t.getInnerPaddingTop() , 0));
 //									  t.setPositionRelativeToParent(new Vector3D(newXPos, newYPos - font.getFontMaxDescent() , 0));
 									  logger.debug("Character '" + currentChar + "' -> Anchor: LOWER_RIGHT");
 									  break;
-								  case 'm':
+								  case 'm': //text-anchor="middle"
 									  t.setAnchor(PositionAnchor.CENTER);
-									  t.setUserData("posRelParent", new Vector3D(newXPos, newYPos - fontToUse.getFontMaxAscent()*0.5f - fontToUse.getFontMaxDescent()*0.5f , 0));
+//									  t.setUserData("posRelParent", new Vector3D(newXPos, newYPos - fontToUse.getFontMaxAscent()*0.5f - fontToUse.getFontMaxDescent()*0.5f , 0));
+//									  t.setUserData("posRelParent", new Vector3D(newXPos, newYPos - fontToUse.getFontAbsoluteHeight()*0.5f + t.getInnerPaddingTop() , 0));
 //									  t.setPositionRelativeToParent(new Vector3D(newXPos, newYPos - font.getFontMaxAscent()*0.5f - font.getFontMaxDescent()*0.5f, 0)); //- font.getFontMaxAscent()*0.5f
 									  logger.debug("Character '" + currentChar + "' -> Anchor: CENTER");
+									  t.setUserData("posRelParent", new Vector3D((newXPos), (newYPos - fontToUse.getFontMaxDescent() + t.getInnerPaddingTop()) - t.getHeightXY(TransformSpace.LOCAL)/2f , 0));
 									  break;
-								  default:
+								  default: //text-anchor="start" //default!
 									  t.setAnchor(PositionAnchor.LOWER_LEFT);
-								  t.setUserData("posRelParent", new Vector3D(newXPos -t.getInnerPaddingLeft(), newYPos - fontToUse.getFontMaxDescent() + t.getInnerPaddingLeft() , 0));
+//									  t.setUserData("posRelParent", new Vector3D(newXPos -t.getInnerPaddingLeft(), newYPos - fontToUse.getFontMaxDescent() + t.getInnerPaddingTop() , 0));
+									  t.setUserData("posRelParent", new Vector3D(newXPos -t.getInnerPaddingLeft(), newYPos - fontToUse.getFontMaxDescent() + t.getInnerPaddingTop() , 0));
+									  
+//									  t.setAnchor(PositionAnchor.UPPER_LEFT);
+//									  t.setUserData("posRelParent", new Vector3D(newXPos -t.getInnerPaddingLeft(), newYPos, 0));
 //								  t.setPositionRelativeToParent(new Vector3D(newXPos, newYPos - font.getFontMaxDescent() , 0));
 								  logger.debug("Character '" + currentChar + "' -> Anchor: LOWER_LEFT");
 								  }
@@ -1333,7 +1344,7 @@ public class SVGLoader implements SVGConstants{
 	// - spreadMethod implement linear
     // - linearGradient klasse machen mit der man ein gradient erstellen kann
     //	 mit stops[] offsets[] colors[] xy, bbox/userSpace
-    // - wie shapes ohne stroke mit outline= gradient zeichnen für antialiasing?
+    // - wie shapes ohne stroke mit outline= gradient zeichnen fï¿½r antialiasing?
     //	 evtl gradientshape normal zeichnen, aber mit realshape clipmasken?
     
     private FillPaint createRadialGradient(Element paintElement, SVGGraphicsElement gfxElem, float opacity, AbstractShape shape){
@@ -1724,7 +1735,7 @@ public class SVGLoader implements SVGConstants{
 			gradAngle*=-1;
 		}
 		
-		logger.debug("Gradient angle: " + gradAngle + "°");
+		logger.debug("Gradient angle: " + gradAngle + "ï¿½");
 		
 		logger.debug("Stops:");
 		for (Stop stop : stops)
