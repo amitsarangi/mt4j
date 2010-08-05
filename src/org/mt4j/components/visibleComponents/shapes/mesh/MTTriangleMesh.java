@@ -940,39 +940,29 @@ public class MTTriangleMesh extends AbstractShape{
 	
 	
 	/** The stroke r. */
-	private float strokeR = 255;
+	private float strokeR = 1;
 	
 	/** The stroke g. */
-	private float strokeG = 255;
+	private float strokeG = 1;
 	
 	/** The stroke b. */
-	private float strokeB = 255;
+	private float strokeB = 1;
 	
 	/** The stroke a. */
-	private float strokeA = 255;
-	
-	
-//	@Override
-//	public void setStrokeColor(float r, float g, float b, float a) {
-//		super.setStrokeColor(r, g, b, a);
-//		this.strokeR = r/255;
-//		this.strokeG = g/255;
-//		this.strokeB = b/255;
-//		this.strokeA = a/255;
-//	}
-	
+	private float strokeA = 1;
+
 	/* (non-Javadoc)
- * @see org.mt4j.components.visibleComponents.shapes.AbstractShape#setStrokeColor(org.mt4j.util.MTColor)
- */
-@Override
+	 * @see org.mt4j.components.visibleComponents.shapes.AbstractShape#setStrokeColor(org.mt4j.util.MTColor)
+	 */
+	@Override
 	public void setStrokeColor(MTColor strokeColor) {
 		super.setStrokeColor(strokeColor);
-		this.strokeR = strokeColor.getR()/255;
-		this.strokeG = strokeColor.getG()/255;
-		this.strokeB = strokeColor.getB()/255;
-		this.strokeA = strokeColor.getAlpha()/255;
+		this.strokeR = strokeColor.getR()/255f;
+		this.strokeG = strokeColor.getG()/255f;
+		this.strokeB = strokeColor.getB()/255f;
+		this.strokeA = strokeColor.getAlpha()/255f;
 	}
-	
+
 
 	/**
 	 * Sets the outline contours.

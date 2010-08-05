@@ -49,17 +49,14 @@ import org.mt4j.util.math.ConvexQuickHull2D;
 import org.mt4j.util.math.Matrix;
 import org.mt4j.util.math.Ray;
 import org.mt4j.util.math.Tools3D;
-import org.mt4j.util.math.ToolsMath;
 import org.mt4j.util.math.Vector3D;
 import org.mt4j.util.math.Vertex;
-import org.mt4j.util.opengl.GLTextureSettings;
 import org.mt4j.util.opengl.GLTexture;
+import org.mt4j.util.opengl.GLTextureSettings;
 import org.mt4j.util.opengl.GLTexture.EXPANSION_FILTER;
 import org.mt4j.util.opengl.GLTexture.SHRINKAGE_FILTER;
 import org.mt4j.util.opengl.GLTexture.TEXTURE_TARGET;
 import org.mt4j.util.opengl.GLTexture.WRAP_MODE;
-
-import com.sun.org.apache.bcel.internal.generic.LSTORE;
 
 import processing.core.PApplet;
 import processing.core.PConstants;
