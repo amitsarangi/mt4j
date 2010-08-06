@@ -205,7 +205,7 @@ public class FlickrScene extends AbstractScene {
 														MTImage card = fotos[i];
 														card.setUseDirectGL(true);
 														card.setDisplayCloseButton(true);
-														card.setPositionGlobal(new Vector3D(ToolsMath.getRandom(10, MT4jSettings.getInstance().getScreenWidth()-100), ToolsMath.getRandom(10, MT4jSettings.getInstance().getScreenHeight()-50),0 )  );
+														card.setPositionGlobal(new Vector3D(ToolsMath.getRandom(10, MT4jSettings.getInstance().getWindowWidth()-100), ToolsMath.getRandom(10, MT4jSettings.getInstance().getWindowHeight()-50),0 )  );
 														card.scale(0.6f, 0.6f, 0.6f, card.getCenterPointLocal(), TransformSpace.LOCAL);
 														card.addGestureListener(DragProcessor.class, new InertiaDragAction());
 														lassoProcessor.addClusterable(card); //make fotos lasso-able

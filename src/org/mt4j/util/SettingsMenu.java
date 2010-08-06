@@ -226,8 +226,8 @@ public class SettingsMenu extends JFrame{
 		MT4jSettings.getInstance().fullscreenExclusive = fullScreenExclusiveCheckBox.isSelected();
 		
 		//Set screen dimensions
-		MT4jSettings.getInstance().screenWidth = Integer.parseInt(widthField.getText().trim());
-		MT4jSettings.getInstance().screenHeight = Integer.parseInt(heightField.getText().trim());
+		MT4jSettings.getInstance().windowWidth = Integer.parseInt(widthField.getText().trim());
+		MT4jSettings.getInstance().windowHeight = Integer.parseInt(heightField.getText().trim());
 		
 		//Set Max framerate
 		MT4jSettings.getInstance().maxFrameRate = Integer.parseInt(frameRateField.getText().trim());
@@ -245,8 +245,8 @@ public class SettingsMenu extends JFrame{
 //		/*
 		//Print settings
 		System.out.println("Renderer: " + MT4jSettings.getInstance().getRendererMode());
-		System.out.println("Window Width: " + MT4jSettings.getInstance().getScreenWidth());
-		System.out.println("Window Height: " + MT4jSettings.getInstance().getScreenHeight());
+		System.out.println("Window Width: " + MT4jSettings.getInstance().getWindowWidth());
+		System.out.println("Window Height: " + MT4jSettings.getInstance().getWindowHeight());
 
 		System.out.println("Fullscreen: " + MT4jSettings.getInstance().isFullscreen());
 		System.out.println("Fullscreen Exclusive: " + MT4jSettings.getInstance().isFullscreenExclusive());
@@ -264,8 +264,8 @@ public class SettingsMenu extends JFrame{
 	    if (MT4jSettings.getInstance().isFullscreen()){
 	    	//Set screen size to screen dimensions if fullscreen and ignore custom sizes
 	    	Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-	    	MT4jSettings.getInstance().screenWidth = screenSize.width;
-	    	MT4jSettings.getInstance().screenHeight = screenSize.height;
+	    	MT4jSettings.getInstance().windowWidth = screenSize.width;
+	    	MT4jSettings.getInstance().windowHeight = screenSize.height;
 	    	
 	    	if (MT4jSettings.getInstance().isFullscreenExclusive()){
 	    		PApplet.main(new String[] {

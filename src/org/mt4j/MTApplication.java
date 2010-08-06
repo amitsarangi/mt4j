@@ -344,12 +344,12 @@ public abstract class MTApplication extends PApplet {
 			 //FIXME at fullscreen really use the screen dimension? -> we need to set the native resoultion ourselves!
 			 //so we can have a lower fullscreen resolution than the screen dimensions
 			 if (!MT4jSettings.getInstance().isFullscreen()){
-				 MT4jSettings.getInstance().screenWidth = Integer.parseInt(properties.getProperty("DisplayWidth", String.valueOf(MT4jSettings.getInstance().getScreenWidth())).trim());
-				 MT4jSettings.getInstance().screenHeight = Integer.parseInt(properties.getProperty("DisplayHeight", String.valueOf(MT4jSettings.getInstance().getScreenHeight())).trim());
+				 MT4jSettings.getInstance().windowWidth = Integer.parseInt(properties.getProperty("DisplayWidth", String.valueOf(MT4jSettings.getInstance().getWindowWidth())).trim());
+				 MT4jSettings.getInstance().windowHeight = Integer.parseInt(properties.getProperty("DisplayHeight", String.valueOf(MT4jSettings.getInstance().getWindowHeight())).trim());
 			 }else{
 				 Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-			    	MT4jSettings.getInstance().screenWidth = screenSize.width;
-			    	MT4jSettings.getInstance().screenHeight = screenSize.height;
+			    	MT4jSettings.getInstance().windowWidth = screenSize.width;
+			    	MT4jSettings.getInstance().windowHeight = screenSize.height;
 			 }
 			 
 			 MT4jSettings.getInstance().maxFrameRate = Integer.parseInt(properties.getProperty("MaximumFrameRate", String.valueOf(MT4jSettings.getInstance().getMaxFrameRate())).trim());
@@ -385,7 +385,7 @@ public abstract class MTApplication extends PApplet {
 
 		//Check if OS 32/64 Bit
 		String bit = System.getProperty("sun.arch.data.model");
-		logger.info("Platform: \"" + System.getProperty("os.name") + "\" -> JVM Bit: \"" + bit + "\"");
+		logger.info("Platform: \"" + System.getProperty("os.name") + "\" -> Version: \"" + System.getProperty("os.version") +  "\" -> JVM Bit: \"" + bit + "\""); 
 		MT4jSettings.getInstance().architecture = bit.contains("64")? MT4jSettings.ARCHITECTURE_64_BIT : MT4jSettings.ARCHITECTURE_32_BIT;
 
 		if (!settingsLoadedFromFile){
@@ -427,9 +427,9 @@ public abstract class MTApplication extends PApplet {
 	    
 		// Applet size - size() must be the first command in setup() method
 		if (MT4jSettings.getInstance().getRendererMode() == MT4jSettings.OPENGL_MODE)
-			this.size(MT4jSettings.getInstance().getScreenWidth(), MT4jSettings.getInstance().getScreenHeight(), MTApplication.CUSTOM_OPENGL_GRAPHICS);
+			this.size(MT4jSettings.getInstance().getWindowWidth(), MT4jSettings.getInstance().getWindowHeight(), MTApplication.CUSTOM_OPENGL_GRAPHICS);
 		else if (MT4jSettings.getInstance().getRendererMode() == MT4jSettings.P3D_MODE)
-			this.size(MT4jSettings.getInstance().getScreenWidth(), MT4jSettings.getInstance().getScreenHeight(), PApplet.P3D);
+			this.size(MT4jSettings.getInstance().getWindowWidth(), MT4jSettings.getInstance().getWindowHeight(), PApplet.P3D);
 	    
 	    /*
 	    //Processing Bug? seems to always use 2 samples 
@@ -465,7 +465,7 @@ public abstract class MTApplication extends PApplet {
 			e.printStackTrace();
 		}
 		
-		logger.info("MT4j window dimensions: \"" + MT4jSettings.getInstance().getScreenWidth() + " X " +  MT4jSettings.getInstance().getScreenHeight() + "\"");
+		logger.info("MT4j window dimensions: \"" + MT4jSettings.getInstance().getWindowWidth() + " X " +  MT4jSettings.getInstance().getWindowHeight() + "\"");
 		
 //		//Set background color
 //	    pContext.background(MT4jSettings.getInstance().getBackgroundClearColor());

@@ -102,8 +102,8 @@ public class TuioInputSource extends AbstractInputSource implements TuioListener
 		tuioIDToCursorID = new HashMap<Long, Long>();
 		tuioFiducialIDMap = new HashMap<Long, Long>();
 		
-		windowWidth = MT4jSettings.getInstance().getScreenWidth();
-		windowHeight = MT4jSettings.getInstance().getScreenHeight();
+		windowWidth = MT4jSettings.getInstance().getWindowWidth();
+		windowHeight = MT4jSettings.getInstance().getWindowHeight();
 	}
 	
 

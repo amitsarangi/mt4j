@@ -111,7 +111,7 @@ public class MTProgressBar extends MTRoundRectangle {
 	 * @param font the font
 	 */
 	public MTProgressBar(PApplet pApplet, IprogressInfoProvider progressInfo, PFont font) {
-		super(0,0,0, MT4jSettings.getInstance().getScreenWidth()/(3.5f), 100, 15, 15, pApplet);
+		super(0,0,0, MT4jSettings.getInstance().getWindowWidth()/(3.5f), 100, 15, 15, pApplet);
 //		super(0,0,0, ConstantsAndSettings.getInstance().getScreenWidth(),  ConstantsAndSettings.getInstance().getScreenHeight(), 15, 15, pApplet);
 		
 		this.progressInfo = progressInfo;
@@ -186,8 +186,8 @@ public class MTProgressBar extends MTRoundRectangle {
 		this.innerBar.scale(1, 1, 1, zero, TransformSpace.LOCAL);
 		
 		this.translateGlobal(new Vector3D(
-				MT4jSettings.getInstance().getScreenWidth()/2 - this.getWidthXY(TransformSpace.GLOBAL)/2, 
-				MT4jSettings.getInstance().getScreenHeight()/2  - this.getHeightXY(TransformSpace.GLOBAL)/2 , 
+				MT4jSettings.getInstance().getWindowWidth()/2 - this.getWidthXY(TransformSpace.GLOBAL)/2, 
+				MT4jSettings.getInstance().getWindowHeight()/2  - this.getHeightXY(TransformSpace.GLOBAL)/2 , 
 				0) );
 		
 		
@@ -249,7 +249,7 @@ public class MTProgressBar extends MTRoundRectangle {
 			int scissorHeight = (int)(lowerRightProjected.y - scissorStartY + 1);
 			
 			//Convert scissor start y to be upper left screen origin (0,0) relative
-			scissorStartY = MT4jSettings.getInstance().getScreenHeight() - scissorStartY - scissorHeight;
+			scissorStartY = MT4jSettings.getInstance().getWindowHeight() - scissorStartY - scissorHeight;
 			
 			gl.glScissor(scissorStartX, scissorStartY, scissorWidth, scissorHeight);
 			

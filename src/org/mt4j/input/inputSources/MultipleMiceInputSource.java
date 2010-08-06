@@ -77,8 +77,8 @@ public class MultipleMiceInputSource extends AbstractInputSource {
 	public MultipleMiceInputSource(MTApplication applet) {
 		super(applet);
 		
-		this.maxScreenW = MT4jSettings.getInstance().getScreenWidth();
-		this.maxScreenH = MT4jSettings.getInstance().getScreenHeight();
+		this.maxScreenW = MT4jSettings.getInstance().getWindowWidth();
+		this.maxScreenH = MT4jSettings.getInstance().getWindowHeight();
 		
 		mice = ManyMouse.Init();
 
@@ -541,7 +541,7 @@ public class MultipleMiceInputSource extends AbstractInputSource {
 				te = new MTFingerInputEvt(this, 0,0, MTFingerInputEvt.INPUT_ENDED, m);
 
 //			m.addEvent(te); //werden nicht hier geadded sondern synchroniesert mit dem PApplet thread in den analyzern, so dass immer nur 1
-			// 1 te geadded wird und dann wieder verarbeitet, dann der nächste
+			// 1 te geadded wird und dann wieder verarbeitet, dann der nï¿½chste
 
 			ActiveCursorPool.getInstance().removeCursor(device);
 			this.enqueueInputEvent(te);

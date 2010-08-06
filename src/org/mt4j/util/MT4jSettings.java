@@ -17,8 +17,6 @@
  ***********************************************************************/
 package org.mt4j.util;
 
-import java.io.File;
-
 import org.mt4j.MTApplication;
 
 /**
@@ -32,10 +30,10 @@ public class MT4jSettings {
 	private static MT4jSettings constAndSettings = null;
 	
 	/** Screen Size X. */
-	public int screenWidth = 1024;
+	public int windowWidth = 1024;
 	
 	/** Screen Size Y. */
-	public int screenHeight = 768;
+	public int windowHeight = 768;
 	
 	//Draw Modes
 	/** The Constant OPENGL_MODE. */
@@ -240,27 +238,58 @@ public class MT4jSettings {
 	 * Gets the screen height.
 	 * 
 	 * @return the screen height
+	 * @deprecated renamed to getWindowHeight() since this doesent return the screen height, but the MT4j window's height
 	 */
 	public int getScreenHeight() {
-		return screenHeight;
+		return windowHeight;
 	}
 
 	/**
 	 * Gets the screen width.
 	 * 
 	 * @return the screen width
+	 * @deprecated renamed to getWindowWidth() since this doesent return the screen width, but the MT4j window's width
 	 */
 	public int getScreenWidth() {
-		return screenWidth;
+		return windowWidth;
+	}
+	
+	
+	/**
+	 * Gets the MT4j's window height.
+	 * 
+	 * @return the window height
+	 */
+	public int getWindowHeight() {
+		return windowHeight;
+	}
+
+	/**
+	 * Gets the MT4j's window width.
+	 * 
+	 * @return the window width
+	 */
+	public int getWindowWidth() {
+		return windowWidth;
 	}
 
 	/**
 	 * Gets the screen center.
 	 * 
 	 * @return the screen center
+	 * @deprecated - use getWindowCenter()
 	 */
 	public float[] getScreenCenter(){
-		return new float[]{getScreenWidth()/2, getScreenHeight()/2 , 0};
+		return new float[]{getWindowWidth()/2, getWindowHeight()/2 , 0};
+	}
+	
+	/**
+	 * Gets the window center.
+	 *
+	 * @return the window center
+	 */
+	public float[] getWindowCenter(){
+		return new float[]{getWindowWidth()/2, getWindowHeight()/2 , 0};
 	}
 	
 	/**

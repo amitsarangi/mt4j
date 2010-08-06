@@ -52,10 +52,10 @@ public class FontManager {
 	
 	
 	public static String DEFAULT_FONT = "SansSerif";
-	public static int DEFAULT_FONT_SIZE = 14;
+	public static int DEFAULT_FONT_SIZE = 16;
 	public static MTColor DEFAULT_FONT_FILL_COLOR = MTColor.BLACK;
 	public static MTColor DEFAULT_FONT_STROKE_COLOR = MTColor.BLACK;
-	public static boolean DEFAULT_FONT_ANTIALIASING = false;
+	public static boolean DEFAULT_FONT_ANTIALIASING = true;
 	
 	//TODO fonts seem to be one of the main memory eaters in MT4j!
 	//somehow the fontmanager seems to grow bigger and bigger (at least it seems at profiling

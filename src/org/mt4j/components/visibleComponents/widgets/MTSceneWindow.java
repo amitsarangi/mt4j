@@ -71,7 +71,7 @@ extends MTRoundRectangle {
 	 * @param applet the applet
 	 */
 	public MTSceneWindow(final Iscene scene, float borderWidth, float borderHeight, MTApplication applet) {
-		this(scene, borderWidth, borderHeight, applet, Math.round(MT4jSettings.getInstance().getScreenWidth() * 0.6f), Math.round(MT4jSettings.getInstance().getScreenHeight() * 0.6f));
+		this(scene, borderWidth, borderHeight, applet, Math.round(MT4jSettings.getInstance().getWindowWidth() * 0.6f), Math.round(MT4jSettings.getInstance().getWindowHeight() * 0.6f));
 	}
 	
 	/**
@@ -86,7 +86,7 @@ extends MTRoundRectangle {
 	 */
 	public MTSceneWindow(final Iscene scene, float borderWidth, float borderHeight, final MTApplication applet, int fboWidth, int fboHeight) {
 //		super(0-borderWidth, 0-borderHeight, applet.width+2*borderWidth, applet.height+2*borderHeight, applet);
-		super(0-borderWidth, 0-borderHeight, 0, MT4jSettings.getInstance().getScreenWidth()+2*borderWidth, MT4jSettings.getInstance().getScreenHeight()+2*borderHeight, 30, 30, applet);
+		super(0-borderWidth, 0-borderHeight, 0, MT4jSettings.getInstance().getWindowWidth()+2*borderWidth, MT4jSettings.getInstance().getWindowHeight()+2*borderHeight, 30, 30, applet);
 		
 		this.setStrokeColor(new MTColor(0,0,0));
 		

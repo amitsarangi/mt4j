@@ -38,7 +38,6 @@ import org.mt4j.util.opengl.GLFboStack;
 import org.mt4j.util.opengl.GLFBO;
 import org.mt4j.util.opengl.GLTexture;
 
-import processing.core.PConstants;
 import processing.core.PGraphics;
 import processing.opengl.PGraphicsOpenGL;
 
@@ -66,11 +65,11 @@ public class MTSceneTexture extends MTRectangle {
 	private MTSceneMenu sceneMenu;
 	
 	public MTSceneTexture(MTApplication pa, float x,	float y, Iscene theScene){
-		this(pa, x, y, Math.round(MT4jSettings.getInstance().getScreenWidth() * 0.6f), Math.round(MT4jSettings.getInstance().getScreenHeight() * 0.6f), theScene);
+		this(pa, x, y, Math.round(MT4jSettings.getInstance().getWindowWidth() * 0.6f), Math.round(MT4jSettings.getInstance().getWindowHeight() * 0.6f), theScene);
 	}
 
 	public MTSceneTexture(MTApplication pa, float x,	float y, int fboWidth, int fboHeight, Iscene theScene){
-		super(x, y, 0, MT4jSettings.getInstance().getScreenWidth(), MT4jSettings.getInstance().getScreenHeight(), pa);
+		super(x, y, 0, MT4jSettings.getInstance().getWindowWidth(), MT4jSettings.getInstance().getWindowHeight(), pa);
 		
 		this.scene = theScene;
 		this.app = pa;
@@ -183,7 +182,7 @@ public class MTSceneTexture extends MTRectangle {
 	
 	/*TODO
 	 * 
-	 * - evtl scene kleiner zeichnen und kleineren fbo machen für kleines windows? ->performance
+	 * - evtl scene kleiner zeichnen und kleineren fbo machen fï¿½r kleines windows? ->performance
 	 * 
 	 * - make fullscreen ability! maximize/restore! 
 	 * 
@@ -194,15 +193,15 @@ public class MTSceneTexture extends MTRectangle {
 	 * 
 	 * - progressbar sizes wrong bei 512,512
 	 * 
-	 * - FBO: mehrere texture targets wenn supported ermöglichen 
+	 * - FBO: mehrere texture targets wenn supported ermï¿½glichen 
 	 * 
 	 * - FBO: multisampling fbo optional wenn supported machen siehe glgraphicsoffscreen
 	 * 
-	 * - FBO: bei RECTANGLE dimensions keine mipmaps möglich?? 
+	 * - FBO: bei RECTANGLE dimensions keine mipmaps mï¿½glich?? 
 	 * 
 	 * - FBO: hardware fbo mit glCopyTex2D
 	 * 
-	 * - nur sceneDrawAndUpdate() wenn sich was verändert hat - sonst kann man einfach alte textur lassen! setSceneNeedsUpdate()?
+	 * - nur sceneDrawAndUpdate() wenn sich was verï¿½ndert hat - sonst kann man einfach alte textur lassen! setSceneNeedsUpdate()?
 	 * 
 	 * (- add stencil buffer to frambufferobject - evtl checken if available/supported)
 	 * (- wenn camera changed richtig picken in scene)
@@ -247,7 +246,7 @@ public class MTSceneTexture extends MTRectangle {
 					e.printStackTrace();
 				}
 				this.oldCursorToNewCursor.put(posEvt.getCursor(), newCursor);
-				//TODO checken ob cursor bereits events enthält - überhaupt möglich?..
+				//TODO checken ob cursor bereits events enthï¿½lt - ï¿½berhaupt mï¿½glich?..
 				//ELSE -> CLONE AND ADD ALL OLD EVENTS TO THE NEW CURSOR!
 			}break;
 			case AbstractCursorInputEvt.INPUT_UPDATED:{

@@ -204,7 +204,7 @@ public class MapsScene extends AbstractScene implements MouseWheelListener, Mous
 		fotoButton.setNoStroke(true);
 		fotoButton.setDepthBufferDisabled(true); //Draw on top of everything
 //		fotoButton.translate(new Vector3D(MT4jSettings.getInstance().getScreenWidth() - fotoButton.getWidthXY(TransformSpace.RELATIVE_TO_PARENT) -5, MT4jSettings.getInstance().getScreenHeight()- fotoButton.getHeightXY(TransformSpace.RELATIVE_TO_PARENT) -5, 0));
-		fotoButton.translate(new Vector3D(0, MT4jSettings.getInstance().getScreenHeight()- fotoButton.getHeightXY(TransformSpace.RELATIVE_TO_PARENT) , 0));
+		fotoButton.translate(new Vector3D(0, MT4jSettings.getInstance().getWindowHeight()- fotoButton.getHeightXY(TransformSpace.RELATIVE_TO_PARENT) , 0));
 		fotoButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent ae) {
 				switch (ae.getID()) {
@@ -248,9 +248,9 @@ public class MapsScene extends AbstractScene implements MouseWheelListener, Mous
 		list.setPositionRelativeToParent(mapMenu.getCenterPointLocal());
 		mapMenu.addChild(list);
 		
-		list.addListElement(this.createListCell("Microsoft™ Aerial", font, new Microsoft.AerialProvider(), cellWidth, cellHeight, cellFillColor, cellPressedFillColor));
-		list.addListElement(this.createListCell("Microsoft™ Road", font, new Microsoft.RoadProvider(), cellWidth, cellHeight, cellFillColor, cellPressedFillColor));
-		list.addListElement(this.createListCell("Microsoft™ Hybrid", font, new Microsoft.HybridProvider(), cellWidth, cellHeight, cellFillColor, cellPressedFillColor));
+		list.addListElement(this.createListCell("Microsoftï¿½ Aerial", font, new Microsoft.AerialProvider(), cellWidth, cellHeight, cellFillColor, cellPressedFillColor));
+		list.addListElement(this.createListCell("Microsoftï¿½ Road", font, new Microsoft.RoadProvider(), cellWidth, cellHeight, cellFillColor, cellPressedFillColor));
+		list.addListElement(this.createListCell("Microsoftï¿½ Hybrid", font, new Microsoft.HybridProvider(), cellWidth, cellHeight, cellFillColor, cellPressedFillColor));
 		list.addListElement(this.createListCell("Open Street Maps", font, new OpenStreetMaps(), cellWidth, cellHeight, cellFillColor, cellPressedFillColor));
 		list.addListElement(this.createListCell("Cloudmade Tourist", font, new CloudMade.Tourist(), cellWidth, cellHeight, cellFillColor, cellPressedFillColor));
 		list.addListElement(this.createListCell("Blue Marble", font, new BlueMarble(), cellWidth, cellHeight, cellFillColor, cellPressedFillColor));
@@ -495,8 +495,8 @@ public class MapsScene extends AbstractScene implements MouseWheelListener, Mous
 	 */
 	private Point[] getScreenPoints(){
 		Point[] p = new Point[5];
-		int sw = MT4jSettings.getInstance().getScreenWidth();
-		int sh = MT4jSettings.getInstance().getScreenHeight();
+		int sw = MT4jSettings.getInstance().getWindowWidth();
+		int sh = MT4jSettings.getInstance().getWindowHeight();
 		
 		float wThird = sw/3f;
 		float wThirdHalf = wThird/2f;
@@ -521,7 +521,7 @@ public class MapsScene extends AbstractScene implements MouseWheelListener, Mous
 	 * @return the pictures
 	 */
 	private void getPictures(Location c, int theAccuracy, boolean usePlacesForGeoSearch) {
-		//TODO zwei verschiednen accuracies suchen? zb, citty und street? von jedem die hälfte zeigen
+		//TODO zwei verschiednen accuracies suchen? zb, citty und street? von jedem die hï¿½lfte zeigen
 		//TODO wenn keine im screen neu suchen -> erst punkte zeigen, erst foto zeigen laden bei click drauf
 		SearchParameters sp = new SearchParameters();
 		int radius = 3;
@@ -576,7 +576,7 @@ public class MapsScene extends AbstractScene implements MouseWheelListener, Mous
 		sp.setAccuracy(13);
 		*/
 		
-		//TODO radius so anpassen, dass ungefähr der momentane 
+		//TODO radius so anpassen, dass ungefï¿½hr der momentane 
 		//map ausschnitt (scale beachten) gesucht wird
 		System.out.println("Searching for fotos at map center location: " + c + " with radius: " + radius);
         String flickrApiKey = "";
@@ -802,8 +802,8 @@ public class MapsScene extends AbstractScene implements MouseWheelListener, Mous
 							//User direct gl..
 							image.setDisplayCloseButton(true);
 							image.scale(0.5f, 0.5f, 1, new Vector3D(0,0,0), TransformSpace.LOCAL);
-							image.translate(new Vector3D(MT4jSettings.getInstance().getScreenWidth(), 0, 0));
-							image.tweenTranslate(new Vector3D(-MT4jSettings.getInstance().getScreenWidth(), 0, 0), 600, 0.1f, 0.6f);
+							image.translate(new Vector3D(MT4jSettings.getInstance().getWindowWidth(), 0, 0));
+							image.tweenTranslate(new Vector3D(-MT4jSettings.getInstance().getWindowWidth(), 0, 0), 600, 0.1f, 0.6f);
 							fotoContainer.addChild(image);
 						}
 
