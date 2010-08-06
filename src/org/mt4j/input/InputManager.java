@@ -46,12 +46,15 @@ import org.mt4j.input.inputProcessors.globalProcessors.AbstractGlobalInputProces
 import org.mt4j.input.inputSources.AbstractInputSource;
 import org.mt4j.input.inputSources.IinputSourceListener;
 import org.mt4j.input.inputSources.KeyboardInputSource;
+import org.mt4j.input.inputSources.MacTrackpadSource;
 import org.mt4j.input.inputSources.MouseInputSource;
 import org.mt4j.input.inputSources.MultipleMiceInputSource;
 import org.mt4j.input.inputSources.TuioInputSource;
 import org.mt4j.input.inputSources.Win7NativeTouchSource;
 import org.mt4j.sceneManagement.Iscene;
 import org.mt4j.util.MT4jSettings;
+
+import processing.core.PApplet;
 
 
 
@@ -166,6 +169,11 @@ public class InputManager {
 	    	if (win7NativeInput.isSuccessfullySetup()){
 	    		this.registerInputSource(win7NativeInput);
 	    	}
+	    }
+	    
+	    //FIXME TEST! check which versions it supports and only start there!
+	    if (System.getProperty("os.name").toLowerCase().contains("mac os x")){
+	    	this.registerInputSource(new MacTrackpadSource(app));
 	    }
 
 	    KeyboardInputSource keyInput= new KeyboardInputSource(app);
