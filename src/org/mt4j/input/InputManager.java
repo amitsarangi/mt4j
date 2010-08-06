@@ -24,6 +24,9 @@ import java.awt.Toolkit;
 import java.awt.image.MemoryImageSource;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -43,11 +46,15 @@ import org.mt4j.input.inputProcessors.globalProcessors.AbstractGlobalInputProces
 import org.mt4j.input.inputSources.AbstractInputSource;
 import org.mt4j.input.inputSources.IinputSourceListener;
 import org.mt4j.input.inputSources.KeyboardInputSource;
+import org.mt4j.input.inputSources.MacTrackpadSource;
 import org.mt4j.input.inputSources.MouseInputSource;
 import org.mt4j.input.inputSources.MultipleMiceInputSource;
 import org.mt4j.input.inputSources.TuioInputSource;
 import org.mt4j.input.inputSources.Win7NativeTouchSource;
 import org.mt4j.sceneManagement.Iscene;
+import org.mt4j.util.MT4jSettings;
+
+import processing.core.PApplet;
 
 
 
@@ -103,22 +110,36 @@ public class InputManager {
 	protected void registerDefaultInputSources(){
 		boolean enableMultiMouse = false;
 		Properties properties = new Properties();
-	    try {
-	        properties.load(new FileInputStream(System.getProperty("user.dir") + File.separator + "Settings.txt"));
-	        enableMultiMouse = Boolean.parseBoolean(properties.getProperty("MultiMiceEnabled", "false"));
-	    } catch (Exception e) {
-	    	logger.error("Error while loading Settings.txt file. Using defaults.");
-	    }
 
-	    if (enableMultiMouse){
-	    	try {
-	    		//Register single or multiple mice input source
-	    		int connectedMice = MultipleMiceInputSource.getConnectedMouseCount();
-//	    		/*
-	    		logger.info("Found mice: " + connectedMice);
-	    		if (connectedMice >= 2){ //FIXME should be > 1, but manymouse often detects more that arent there!?
-	    			logger.info("-> Multiple Mice detected!");
-	    			MultipleMiceInputSource multipleMice = new MultipleMiceInputSource(app);
+		try {
+			FileInputStream fi = new FileInputStream(MT4jSettings.getInstance().getDefaultSettingsPath() + "Settings.txt");
+			properties.load(fi); 
+			enableMultiMouse = Boolean.parseBoolean(properties.getProperty("MultiMiceEnabled", "false").trim());
+		}catch (Exception e) {
+			logger.debug("Failed to load Settings.txt from the File system. Trying to load it from classpath..");
+			try {
+				InputStream in = Thread.currentThread().getContextClassLoader().getResourceAsStream("Settings.txt");
+				if (in != null){
+					properties.load(in);
+					enableMultiMouse = Boolean.parseBoolean(properties.getProperty("MultiMiceEnabled", "false").trim());
+				}else{
+					logger.debug("Couldnt load Settings.txt as a resource. Using defaults.");
+				}
+			} catch (IOException e1) {
+				logger.error("Couldnt load Settings.txt. Using defaults.");
+				e1.printStackTrace();
+			}
+		}
+
+		if (enableMultiMouse){
+			try {
+				//Register single or multiple mice input source
+				int connectedMice = MultipleMiceInputSource.getConnectedMouseCount();
+				//	    		/*
+				logger.info("Found mice: " + connectedMice);
+				if (connectedMice >= 2){ //FIXME should be > 1, but manymouse often detects more that arent there!?
+					logger.info("-> Multiple Mice detected!");
+					MultipleMiceInputSource multipleMice = new MultipleMiceInputSource(app);
 	    			multipleMice.setMTApp(app);
 	    			this.registerInputSource(multipleMice);
 	    			this.hideCursorInFrame();
@@ -148,6 +169,11 @@ public class InputManager {
 	    	if (win7NativeInput.isSuccessfullySetup()){
 	    		this.registerInputSource(win7NativeInput);
 	    	}
+	    }
+	    
+	    //FIXME TEST! check which versions it supports and only start there!
+	    if (System.getProperty("os.name").toLowerCase().contains("mac os x")){
+	    	this.registerInputSource(new MacTrackpadSource(app));
 	    }
 
 	    KeyboardInputSource keyInput= new KeyboardInputSource(app);

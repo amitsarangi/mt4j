@@ -43,11 +43,11 @@ public class ScaleProcessor extends AbstractCursorProcessor {
 	/** The applet. */
 	private PApplet applet;
 	
-	/** The unused cursors. */
-	private List<InputCursor> unUsedCursors;
-	
-	/** The locked cursors. */
-	private List<InputCursor> lockedCursors;
+//	/** The unused cursors. */
+//	private List<InputCursor> unUsedCursors;
+//	
+//	/** The locked cursors. */
+//	private List<InputCursor> lockedCursors;
 	
 	/** The scale context. */
 	private ScaleContext sc;
@@ -61,46 +61,93 @@ public class ScaleProcessor extends AbstractCursorProcessor {
 	 */
 	public ScaleProcessor(PApplet graphicsContext){
 		this.applet = graphicsContext;
-		this.unUsedCursors 	= new ArrayList<InputCursor>();
-		this.lockedCursors 	= new ArrayList<InputCursor>();
+//		this.unUsedCursors 	= new ArrayList<InputCursor>();
+//		this.lockedCursors 	= new ArrayList<InputCursor>();
 		this.setLockPriority(2);
 	}
 	
 	
 
 	@Override
-	public void cursorStarted(InputCursor m, MTFingerInputEvt fEvt) {
+	public void cursorStarted(InputCursor newCursor, MTFingerInputEvt fEvt) {
+//		IMTComponent3D comp = fEvt.getTargetComponent();
+//		if (lockedCursors.size() >= 2){ //scale with 2 fingers already in progress
+//			unUsedCursors.add(m);
+//			logger.debug(this.getName() + " has already enough cursors for this gesture - adding to unused ID:" + m.getId());
+//		}else{ //no scale in progress yet
+//			if (unUsedCursors.size() == 1){
+//				logger.debug(this.getName() + " has already has 1 unused cursor - we can try start gesture! used with ID:" + unUsedCursors.get(0).getId() + " and new cursor ID:" + m.getId());
+//				InputCursor otherCursor = unUsedCursors.get(0);
+//				//See if we can obtain a lock on both cursors
+//				if (this.canLock(otherCursor, m)){
+//					ScaleContext newContext = new ScaleContext(otherCursor, m, comp);
+//					if (!newContext.isGestureAborted()){
+//						sc = newContext;
+//						//we can - now lock them
+//						this.getLock(otherCursor, m);
+//						unUsedCursors.remove(otherCursor);
+//						lockedCursors.add(otherCursor);
+//						lockedCursors.add(m);
+//						logger.debug(this.getName() + " we could lock both cursors!");
+//						this.fireGestureEvent(new ScaleEvent(this, MTGestureEvent.GESTURE_DETECTED, comp, otherCursor, m, 1, 1, 1, sc.getSecondFingerNewPos()));
+//					}else{
+//						sc = null;
+//						unUsedCursors.add(m);
+//					}
+//				}else{
+//					logger.debug(this.getName() + " we could NOT lock both cursors!");
+//					unUsedCursors.add(m);	
+//				}
+//			}else{
+//				logger.debug(this.getName() + " we didnt have a unused cursor previously to start gesture now");
+//				unUsedCursors.add(m);
+//			}
+//		}
+		
 		IMTComponent3D comp = fEvt.getTargetComponent();
-		if (lockedCursors.size() >= 2){ //scale with 2 fingers already in progress
-			unUsedCursors.add(m);
-			logger.debug(this.getName() + " has already enough cursors for this gesture - adding to unused ID:" + m.getId());
-		}else{ //no scale in progress yet
-			if (unUsedCursors.size() == 1){
-				logger.debug(this.getName() + " has already has 1 unused cursor - we can try start gesture! used with ID:" + unUsedCursors.get(0).getId() + " and new cursor ID:" + m.getId());
-				InputCursor otherCursor = unUsedCursors.get(0);
-				//See if we can obtain a lock on both cursors
-				if (this.canLock(otherCursor, m)){
-					ScaleContext newContext = new ScaleContext(otherCursor, m, comp);
-					if (!newContext.isGestureAborted()){
-						sc = newContext;
-						//we can - now lock them
-						this.getLock(otherCursor, m);
-						unUsedCursors.remove(otherCursor);
-						lockedCursors.add(otherCursor);
-						lockedCursors.add(m);
+		logger.debug(this.getName() + " INPUT_STARTED, Cursor: " + newCursor.getId());
+		
+		List<InputCursor> alreadyLockedCursors = getLockedCursors();
+		if (alreadyLockedCursors.size() >= 2){ //this gesture with 2 fingers already in progress
+			//TODO get the 2 cursors which are most far away from each other
+			InputCursor firstCursor = alreadyLockedCursors.get(0);
+			InputCursor secondCursor = alreadyLockedCursors.get(1);
+			if (isCursorDistanceGreater(firstCursor, secondCursor, newCursor) && canLock(firstCursor, newCursor)){
+				ScaleContext newContext = new ScaleContext(firstCursor, newCursor, comp);
+				if (!newContext.isGestureAborted()){ //Check if we could start gesture (ie. if fingers on component)
+					sc = newContext;
+					//Lock new Second cursor
+					this.getLock(firstCursor, newCursor);
+					this.unLock(secondCursor);
+					logger.debug(this.getName() + " we could lock cursors: " + firstCursor.getId() +", and more far away cursor " + newCursor.getId());
+				}else{
+					logger.debug(this.getName() + " we could NOT exchange new second cursor - cursor not on component: " + firstCursor.getId() +", " + secondCursor.getId());
+				}
+			}else{
+				logger.debug(this.getName() + " has already enough cursors for this gesture and the new cursors distance to the first one ist greater (or we dont have the priority to lock it) - adding to unused ID:" + newCursor.getId());
+			}
+		}else{ //no gesture in progress yet
+			List<InputCursor> availableCursors = getFreeComponentCursors();
+			logger.debug(this.getName() + " Available cursors: " + availableCursors.size());
+			if (availableCursors.size() >= 2){
+				InputCursor otherCursor = getFarthestFreeComponentCursorTo(newCursor);
+				logger.debug(this.getName() + " already had 1 unused cursor - we can try start gesture! used Cursor ID:" + otherCursor.getId() + " and new cursor ID:" + newCursor.getId());
+				
+				if (this.canLock(otherCursor, newCursor)){ //TODO remove check, since alreday checked in getAvailableComponentCursors()?
+					sc = new ScaleContext(otherCursor, newCursor, comp);
+					if (!sc.isGestureAborted()){
+						this.getLock(otherCursor, newCursor);
 						logger.debug(this.getName() + " we could lock both cursors!");
-						this.fireGestureEvent(new ScaleEvent(this, MTGestureEvent.GESTURE_DETECTED, comp, otherCursor, m, 1, 1, 1, sc.getSecondFingerNewPos()));
+						this.fireGestureEvent(new ScaleEvent(this, MTGestureEvent.GESTURE_DETECTED, comp, otherCursor, newCursor, 1, 1, 1, sc.getSecondFingerNewPos()));
 					}else{
+						logger.debug(this.getName() + " gesture aborted, probably at least 1 finger not on component!");
 						sc = null;
-						unUsedCursors.add(m);
 					}
 				}else{
 					logger.debug(this.getName() + " we could NOT lock both cursors!");
-					unUsedCursors.add(m);	
 				}
 			}else{
-				logger.debug(this.getName() + " we didnt have a unused cursor previously to start gesture now");
-				unUsedCursors.add(m);
+				logger.debug(this.getName() + " still missing a cursor to start gesture");
 			}
 		}
 	}
@@ -110,9 +157,19 @@ public class ScaleProcessor extends AbstractCursorProcessor {
 	@Override
 	public void cursorUpdated(InputCursor m, MTFingerInputEvt fEvt) {
 		IMTComponent3D comp = fEvt.getTargetComponent();
-		if (lockedCursors.size() == 2 && lockedCursors.contains(m)){
+//		if (lockedCursors.size() == 2 && lockedCursors.contains(m)){
+//			float newFactor = sc.getUpdatedScaleFactor(m);
+//			//Use the other cursor as the scaling point
+//			if (m.equals(sc.getFirstFingerCursor())){
+//				this.fireGestureEvent(new ScaleEvent(this, MTGestureEvent.GESTURE_UPDATED, comp, sc.getFirstFingerCursor(), sc.getSecondFingerCursor(), newFactor, newFactor, 1, sc.getSecondFingerNewPos()));
+//			}else{
+//				this.fireGestureEvent(new ScaleEvent(this, MTGestureEvent.GESTURE_UPDATED, comp, sc.getFirstFingerCursor(), sc.getSecondFingerCursor(), newFactor, newFactor, 1, sc.getFirstFingerNewPos()));
+//			}
+//		}
+		
+		List<InputCursor> alreadyLockedCursors = getLockedCursors();
+		if (sc != null && alreadyLockedCursors.size() == 2 && alreadyLockedCursors.contains(m)){
 			float newFactor = sc.getUpdatedScaleFactor(m);
-			//Use the other cursor as the scaling point
 			if (m.equals(sc.getFirstFingerCursor())){
 				this.fireGestureEvent(new ScaleEvent(this, MTGestureEvent.GESTURE_UPDATED, comp, sc.getFirstFingerCursor(), sc.getSecondFingerCursor(), newFactor, newFactor, 1, sc.getSecondFingerNewPos()));
 			}else{
@@ -124,86 +181,64 @@ public class ScaleProcessor extends AbstractCursorProcessor {
 	
 	
 	@Override
-	public void cursorEnded(InputCursor m, MTFingerInputEvt fEvt) {
+	public void cursorEnded(InputCursor c, MTFingerInputEvt fEvt) {
 		IMTComponent3D comp = fEvt.getTargetComponent();
 		
-		logger.debug(this.getName() + " INPUT_ENDED RECIEVED - MOTION: " + m.getId());
-		
-		if (lockedCursors.size() == 2 && lockedCursors.contains(m)){
-			InputCursor firstCursor;
-			InputCursor secondCursor;
-			if (lockedCursors.get(0).equals(m)){
-				firstCursor = m;
-				secondCursor = lockedCursors.get(1);
-			}else{
-				firstCursor = lockedCursors.get(0);
-				secondCursor = m;
-			}
-			
-			lockedCursors.remove(m);
-			InputCursor leftOverCursor = lockedCursors.get(0);
-			
-			if (unUsedCursors.size() > 0){ //Check if there are other cursors we could use for scaling if one was removed
-				InputCursor futureCursor = unUsedCursors.get(0);
-				if (this.canLock(futureCursor)){ //check if we have priority to claim another cursor and use it
+		logger.debug(this.getName() + " INPUT_ENDED -> Active cursors: " + getCurrentComponentCursors().size() + " Available cursors: " + getFreeComponentCursors().size() +  " Locked cursors: " + getLockedCursors().size());
+		if (sc != null){
+			InputCursor firstCursor = sc.getFirstFingerCursor();
+			InputCursor secondCursor = sc.getSecondFingerCursor();
+			if (firstCursor.equals(c) || secondCursor.equals(c)){ //The leaving cursor was used by the processor
+				InputCursor leftOverCursor = firstCursor.equals(c) ? secondCursor : firstCursor;
+				//TODO check if cursor is on component, else take next farthest cursor
+				InputCursor futureCursor = getFarthestFreeCursorTo(leftOverCursor, getCurrentComponentCursorsArray());
+
+				if (futureCursor != null){ //already checked in getFartherstAvailableCursor() if we can lock it
 					ScaleContext newContext = new ScaleContext(futureCursor, leftOverCursor, comp);
 					if (!newContext.isGestureAborted()){
 						sc = newContext;
-						this.getLock(futureCursor);
-						unUsedCursors.remove(futureCursor);
-						lockedCursors.add(futureCursor);
+						this.getLock(leftOverCursor, futureCursor);
 						logger.debug(this.getName() + " continue with different cursors (ID: " + futureCursor.getId() + ")" + " " + "(ID: " + leftOverCursor.getId() + ")");
-						//TODO fire start evt?
-					}else{
-						endGesture(leftOverCursor, comp, firstCursor, secondCursor);
+					}else{ //couldnt start gesture - cursor's not on component 
+						this.endGesture(leftOverCursor, comp, firstCursor, secondCursor);
 					}
-				}else{ //we dont have permission to use other cursor  - End scale
-					endGesture(leftOverCursor, comp, firstCursor, secondCursor);
+				}else{ //we cant use another cursor  - End gesture
+					this.endGesture(leftOverCursor, comp, firstCursor, secondCursor);
 				}
-			}else{ //no more unused cursors on comp - End scale
-				endGesture(leftOverCursor, comp, firstCursor, secondCursor);
-			}
-			this.unLock(m); //FIXME TEST
-		}else{ //cursor was not a scaling involved cursor
-			if (unUsedCursors.contains(m)){
-				unUsedCursors.remove(m);
+				this.unLock(c); 
 			}
 		}
 	}
-	
 
 	private void endGesture(InputCursor leftOverCursor, IMTComponent3D component, InputCursor firstCursor, InputCursor secondCursor){
-		lockedCursors.clear();
-		unUsedCursors.add(leftOverCursor);
 		this.unLock(leftOverCursor);
 		this.fireGestureEvent(new ScaleEvent(this, MTGestureEvent.GESTURE_ENDED, component, firstCursor, secondCursor, 1, 1, 1, sc.getFirstFingerNewPos()));
 	}
 	
-
-	//TODO evtl bei finger_UP doch unlock() auf alle used cursors damit geringere cursors nochmal übernehmen können und dann wenn sie
-	//den fingerUP evt kriegen auch wirklich gestureENDED senden können, sonst wirds evtl nie gesended wenn nicht in usedCursors bei
-	//finger_UP 
-	//TODO oder eben doch bei locked steal ended senden und bei resume wieder start!? oder gilt oberes trotzdem?
-	
-	//suppose theres a priority 3 gesture
 	
 	/* (non-Javadoc)
 	 * @see org.mt4j.input.inputAnalyzers.IInputAnalyzer#cursorLocked(org.mt4j.input.inputData.InputCursor, org.mt4j.input.inputAnalyzers.IInputAnalyzer)
 	 */
 	@Override
-	public void cursorLocked(InputCursor m, IInputProcessor lockingAnalyzer) {
+	public void cursorLocked(InputCursor c, IInputProcessor lockingAnalyzer) {
 		if (lockingAnalyzer instanceof AbstractComponentProcessor){
-			logger.debug(this.getName() + " Recieved MOTION LOCKED by (" + ((AbstractComponentProcessor)lockingAnalyzer).getName()  + ") - cursor ID: " + m.getId());
+			logger.debug(this.getName() + " Recieved MOTION LOCKED by (" + ((AbstractComponentProcessor)lockingAnalyzer).getName()  + ") - cursor ID: " + c.getId());
 		}else{
-			logger.debug(this.getName() + " Recieved MOTION LOCKED by higher priority signal - cursor ID: " + m.getId());
+			logger.debug(this.getName() + " Recieved MOTION LOCKED by higher priority signal - cursor ID: " + c.getId());
 		}
 		
-		if (lockedCursors.contains(m)){ //cursors was used here! -> we have to stop the gesture
-			//put all used cursors in the unused cursor list and clear the usedcursorlist
-			unUsedCursors.addAll(lockedCursors); 
-			lockedCursors.clear();
-			//TODO fire ended evt?
-			logger.debug(this.getName() + " cursor:" + m.getId() + " MOTION LOCKED. Was an active cursor in this gesture!");
+//		if (lockedCursors.contains(m)){ //cursors was used here! -> we have to stop the gesture
+//			//put all used cursors in the unused cursor list and clear the usedcursorlist
+//			unUsedCursors.addAll(lockedCursors); 
+//			lockedCursors.clear();
+//			//TODO fire ended evt?
+//			logger.debug(this.getName() + " cursor:" + m.getId() + " MOTION LOCKED. Was an active cursor in this gesture!");
+//		}
+		if (sc != null && (sc.getFirstFingerCursor().equals(c) || sc.getSecondFingerCursor().equals(c))){
+			//TODO do we have to unlock the 2nd cursor, besides "c" ??
+			this.unLockAllCursors();
+			sc = null;
+			logger.debug(this.getName() + " cursor:" + c.getId() + " CURSOR LOCKED. Was an active cursor in this gesture!");
 		}
 	}
 	
@@ -212,41 +247,67 @@ public class ScaleProcessor extends AbstractCursorProcessor {
 	 * @see org.mt4j.input.inputAnalyzers.IInputAnalyzer#cursorUnlocked(org.mt4j.input.inputData.InputCursor)
 	 */
 	@Override
-	public void cursorUnlocked(InputCursor m) {
-		logger.debug(this.getName() + " Recieved UNLOCKED signal for cursor ID: " + m.getId());
+	public void cursorUnlocked(InputCursor c) {
+		logger.debug(this.getName() + " Recieved UNLOCKED signal for cursor ID: " + c.getId());
 		
-		if (lockedCursors.size() >= 2){ //we dont need the unlocked cursor, gesture still in progress
+//		if (lockedCursors.size() >= 2){ //we dont need the unlocked cursor, gesture still in progress
+//			return;
+//		}
+//		
+//		if (unUsedCursors.contains(c)){ //should always be true here!?
+//			if (unUsedCursors.size() >= 2){ //we can try to resume the gesture
+//				InputCursor firstCursor = unUsedCursors.get(0);
+//				InputCursor secondCursor = unUsedCursors.get(1);
+//
+//				if (this.canLock(firstCursor, secondCursor)){
+//					IMTComponent3D comp = firstCursor.getFirstEvent().getTargetComponent();
+//					ScaleContext newContext = new ScaleContext(firstCursor, secondCursor, comp);
+//					if (!newContext.isGestureAborted()){
+//						sc = newContext;
+//						this.getLock(firstCursor, secondCursor);
+//						unUsedCursors.remove(firstCursor);
+//						unUsedCursors.remove(secondCursor);
+//						lockedCursors.add(firstCursor);
+//						lockedCursors.add(secondCursor);
+//						logger.debug(this.getName() + " we could lock cursors: " + firstCursor.getId() +", " + secondCursor.getId());
+//						//TODO fire started evt?
+////						this.fireGestureEvent(new ScaleEvent(this, MTGestureEvent.GESTURE_DETECTED, comp, firstCursor, secondCursor, 1, 1, 1, sc.getSecondFingerNewPos()));
+//					}else{
+//						sc = null;
+//						logger.debug(this.getName() + " we could NOT resume gesture - cursors not on component: " + firstCursor.getId() +", " + secondCursor.getId());
+//					}
+//				}else{
+//					logger.debug(this.getName() + " we could NOT lock cursors: " + firstCursor.getId() +", " + secondCursor.getId());
+//				}
+//			}
+//		}else{
+//			logger.error(this.getName() + "hmmm - investigate why is cursor not in unusedList?");
+//		}
+		
+		if (getLockedCursors().size() >= 2){ //we dont need the unlocked cursor, gesture still in progress
 			return;
 		}
 		
-		if (unUsedCursors.contains(m)){ //should always be true here!?
-			if (unUsedCursors.size() >= 2){ //we can try to resume the gesture
-				InputCursor firstCursor = unUsedCursors.get(0);
-				InputCursor secondCursor = unUsedCursors.get(1);
+		//Dont we have to unlock the cursors if there could still 1 be locked?
+		//-> actually we always lock 2 cursors at once so should never be only 1 locked, but just for safety..
+		this.unLockAllCursors();
 
-				if (this.canLock(firstCursor, secondCursor)){
-					IMTComponent3D comp = firstCursor.getFirstEvent().getTargetComponent();
-					ScaleContext newContext = new ScaleContext(firstCursor, secondCursor, comp);
-					if (!newContext.isGestureAborted()){
-						sc = newContext;
-						this.getLock(firstCursor, secondCursor);
-						unUsedCursors.remove(firstCursor);
-						unUsedCursors.remove(secondCursor);
-						lockedCursors.add(firstCursor);
-						lockedCursors.add(secondCursor);
-						logger.debug(this.getName() + " we could lock cursors: " + firstCursor.getId() +", " + secondCursor.getId());
-						//TODO fire started evt?
-//						this.fireGestureEvent(new ScaleEvent(this, MTGestureEvent.GESTURE_DETECTED, comp, firstCursor, secondCursor, 1, 1, 1, sc.getSecondFingerNewPos()));
-					}else{
-						sc = null;
-						logger.debug(this.getName() + " we could NOT resume gesture - cursors not on component: " + firstCursor.getId() +", " + secondCursor.getId());
-					}
-				}else{
-					logger.debug(this.getName() + " we could NOT lock cursors: " + firstCursor.getId() +", " + secondCursor.getId());
-				}
+		List<InputCursor> availableCursors = getFreeComponentCursors();
+		if (availableCursors.size() >= 2){ //we can try to resume the gesture
+			InputCursor firstCursor = availableCursors.get(0);
+			InputCursor secondCursor = getFarthestFreeComponentCursorTo(firstCursor);
+
+			//See if we can obtain a lock on both cursors
+			IMTComponent3D comp = firstCursor.getFirstEvent().getTargetComponent();
+			ScaleContext newContext = new ScaleContext(firstCursor, secondCursor, comp);
+			if (!newContext.isGestureAborted()){ //Check if we could start gesture (ie. if fingers on component)
+				sc = newContext;
+				this.getLock(firstCursor, secondCursor);
+				logger.debug(this.getName() + " we could lock cursors: " + firstCursor.getId() +", " + secondCursor.getId());
+			}else{
+				sc = null;
+				logger.debug(this.getName() + " we could NOT resume gesture - cursors not on component: " + firstCursor.getId() +", " + secondCursor.getId());
 			}
-		}else{
-			logger.error(this.getName() + "hmmm - investigate why is cursor not in unusedList?");
 		}
 	}
 	
@@ -308,7 +369,7 @@ public class ScaleProcessor extends AbstractCursorProcessor {
 			this.secondFingerCursor = secondFingerCursor;
 			this.object = object;
 			
-			//irgendwo vorher checken ob der 1. finger überhaupt noch über dem obj ist? ist nur sicher der fall wenn mit 1 finger gedraggt wird..
+			//irgendwo vorher checken ob der 1. finger ï¿½berhaupt noch ï¿½ber dem obj ist? ist nur sicher der fall wenn mit 1 finger gedraggt wird..
 			Vector3D interPoint = object.getIntersectionGlobal(
 					Tools3D.getCameraPickRay(applet, object, firstFingerCursor.getCurrentEvent().getPosX(), firstFingerCursor.getCurrentEvent().getPosY()));
 			if (interPoint !=null)
@@ -421,7 +482,7 @@ public class ScaleProcessor extends AbstractCursorProcessor {
 						scalePlaneNormal, 
 						secondFingerStartPos.getCopy());
 				
-//				//TODO dragplane aus den beiden fingern ableiten -> wenn obj schräg im raum, dragplane entsprechend
+//				//TODO dragplane aus den beiden fingern ableiten -> wenn obj schrï¿½g im raum, dragplane entsprechend
 //				Vector3D newSecondFingerPos = ToolsIntersection.getRayPlaneIntersection(new Ray(rayStartPoint, newPointInRayDir), scalePlaneNormal, secondFingerStartPos.getCopy());
 				
 				//Update the field

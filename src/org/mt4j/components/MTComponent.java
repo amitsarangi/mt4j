@@ -393,6 +393,9 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 	 * @param inputListener the input listener
 	 */
 	public synchronized void addInputListener(IMTInputEventListener inputListener){
+		if (inputListener instanceof AbstractComponentProcessor) {
+			logger.warn("An abstract component processor (" + inputListener + ") was added to component '" + this + "' using addInputListener(). You probably need to use the registerInputProcessor() method instead!");
+		}
 		this.inputListeners.add(inputListener);
 	}
 	
@@ -825,7 +828,7 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 			//FIXME BOUNDS TEST
 			this.setBoundsGlobalDirty(true);
 			
-			//absolute matrix ändert sich damit auch auch wenn drüber parents geadded werden!
+			//absolute matrix ï¿½ndert sich damit auch auch wenn drï¿½ber parents geadded werden!
 			this.setGlobalMatrixDirty(true);
 			
 			this.setGlobalInverseMatrixDirty(true);
@@ -1727,7 +1730,7 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 //			this.setLocalBasisMatrix(m);
 			this.setLocalBasisMatrixInternal(m); 
 			
-			//TODO Funktionier auch? unterschied zu unten?? dann könnte man auch einfach setLocalBasisMatrix(m) aufrufen..
+			//TODO Funktionier auch? unterschied zu unten?? dann kï¿½nnte man auch einfach setLocalBasisMatrix(m) aufrufen..
 			this.setLocalInverseMatrixInternal(this.getLocalBasisMatrix().invert()); 
 			
 			//Inverse wird von hand unten berechnet und ist nicht die directe inverse
@@ -2553,7 +2556,7 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 			if (clip == null || (clip != null && clip.getClipShapeIntersectionLocal(invertedRay) != null)){
 				interSP = this.getIntersectionLocal(invertedRay);
 				if (interSP != null){
-					//FIXME TRIAL - muss für die distance messung der world ray genommen
+					//FIXME TRIAL - muss fï¿½r die distance messung der world ray genommen
 					//werden oder geht der invertierte ray?
 					interSP.transform(this.getGlobalMatrix());
 					//Get distance from raystart to the intersecting point
@@ -2750,7 +2753,7 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 			if (clip == null || (clip != null && clip.getClipShapeIntersectionLocal(invertedRay) != null)){
 				interSP = this.getIntersectionLocal(invertedRay);
 				if (interSP != null){
-					//FIXME TRIAL - muss für die distance messung der world ray genommen
+					//FIXME TRIAL - muss fï¿½r die distance messung der world ray genommen
 					//werden oder geht der invertierte ray? -> musss wohl der world ray sein
 					interSP.transform(this.getGlobalMatrix());
 					// Get distance from raystart to the intersecting point
@@ -2788,7 +2791,7 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 					//Add the composites picks to the overall picks
 					if (compositePickRes.getNearestPickResult() != null){
 //						System.out.println("In: " + this.getName() + " Composites child picked, pick resultDistance: " + compDistance);
-						/*//TODO müsste diese hier nach distanz geordnet in insgesamt pickresult einfügen..
+						/*//TODO mï¿½sste diese hier nach distanz geordnet in insgesamt pickresult einfï¿½gen..
 						ArrayList<MTBaseComponent> pickList = compositePickRes.getPickList();
 						for(MTBaseComponent comp : pickList){
 							pickResult.addPickedObject(comp, compositePickRes.getInterSectionPointOfPickedObj(comp), compositePickRes.getDistanceOfPickedObj(comp));
@@ -2888,7 +2891,7 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 //		return this.defaultViewPortSetting;
 //	}
 //	
-//	//TODO make function 2Dshift3DObj? das dann viewport ändert?
+//	//TODO make function 2Dshift3DObj? das dann viewport ï¿½ndert?
 //	/* (non-Javadoc)
 //	 * @see org.mt4j.components.interfaces.IMTComponent3D#getCustomViewportSetting()
 //	 */

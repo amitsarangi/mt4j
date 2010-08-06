@@ -24,6 +24,7 @@ import org.mt4j.components.MTComponent;
 import org.mt4j.components.TransformSpace;
 import org.mt4j.components.interfaces.IMTController;
 import org.mt4j.components.visibleComponents.shapes.MTRectangle;
+import org.mt4j.input.gestureAction.DefaultDragAction;
 import org.mt4j.input.inputProcessors.IGestureEventListener;
 import org.mt4j.input.inputProcessors.MTGestureEvent;
 import org.mt4j.input.inputProcessors.componentProcessors.AbstractComponentProcessor;
@@ -212,7 +213,16 @@ public class MTList extends MTClipRectangle {
 			if (!hasDragProcessor(item)){
 				item.registerInputProcessor(new DragProcessor(app));
 			}
-			item.removeAllGestureEventListeners(DragProcessor.class);
+			
+			//Remove the default drag listener from the cell for safety
+			IGestureEventListener[] l = item.getGestureListeners();
+	    	for (int j = 0; j < l.length; j++) {
+				IGestureEventListener gestureEventListener = l[j];
+				if (gestureEventListener.getClass().equals(DefaultDragAction.class)){
+					item.removeGestureEventListener(DragProcessor.class, gestureEventListener);
+				}
+			}
+	    	
 			item.addGestureListener(DragProcessor.class, new ListCellDragListener(this));
 			
 			//FIXME DEBUG REMOVE!
@@ -242,7 +252,6 @@ public class MTList extends MTClipRectangle {
 		}
 		
 		private boolean hasDragProcessor(MTComponent comp){
-//			List<AbstractComponentProcessor> list = Arrays.asList(comp.getInputProcessors());
 			AbstractComponentProcessor[] ps = comp.getInputProcessors();
 			for (int i = 0; i < ps.length; i++) {
 				AbstractComponentProcessor p = ps[i];

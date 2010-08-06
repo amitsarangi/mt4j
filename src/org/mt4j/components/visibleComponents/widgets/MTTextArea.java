@@ -19,14 +19,17 @@ package org.mt4j.components.visibleComponents.widgets;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import javax.media.opengl.GL;
+import javax.media.opengl.glu.GLU;
 
 import org.mt4j.MTApplication;
 import org.mt4j.components.TransformSpace;
 import org.mt4j.components.clipping.Clip;
 import org.mt4j.components.visibleComponents.font.BitmapFont;
 import org.mt4j.components.visibleComponents.font.BitmapFontCharacter;
+import org.mt4j.components.visibleComponents.font.FontManager;
 import org.mt4j.components.visibleComponents.font.IFont;
 import org.mt4j.components.visibleComponents.font.IFontCharacter;
 import org.mt4j.components.visibleComponents.shapes.MTRectangle;
@@ -55,6 +58,22 @@ import processing.core.PGraphics;
  */
 public class MTTextArea extends MTRectangle implements IdragClusterable, ITextInputListener, Comparable<Object>{
 	
+
+//Standard expand direction is {@link ExpandDirection#UP} for
+// backward compatibility.
+    /**
+     * Determines the vertical expand direction of the {@link MTTextArea}
+     * if the text area will expand itself to fit the text in.
+     *
+     * 
+     */
+    public enum ExpandDirection {
+        /** Expand the {@link MTTextArea} in top direction if necessary. */  
+        UP,
+        /** Expand the {@link MTTextArea} in bottom direction if necassary. */
+        DOWN;
+    }
+    
 	/** The pa. */
 	private PApplet pa;
 	
@@ -98,7 +117,64 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
 	private int mode;
 
 	private static ArtificalLineBreak artificialLineBreak;
+
+    private ExpandDirection expandDirection ;
 	
+    
+    
+    /**
+     * Instantiates a new text area. This constructor creates
+     * a text area with variable dimensions that expands itself when text is added.
+     * A default font is used.
+     *
+     * @param pApplet the applet
+     */
+	public MTTextArea(PApplet pApplet) {
+		this(pApplet, FontManager.getInstance().getDefaultFont(pApplet));
+	}
+	
+	
+	/**
+	 * Instantiates a new text area. This constructor creates
+	 * a text area with variable dimensions that expands itself when text is added.
+	 * 
+	 * @param pApplet the applet
+	 * @param font the font
+	 */
+	public MTTextArea(PApplet pApplet, IFont font) {
+		super(	0, 0, 	//upper left corner
+				0, 	//width
+				0,  //height
+				pApplet);
+		
+		init(pApplet, font, MODE_EXPAND);
+		
+		//Position textarea at 0,0
+		this.setUpperLeftPos(Vector3D.ZERO_VECTOR);
+		
+		//Expand vertically at enter 
+		this.setHeightLocal(this.getTotalLinesHeight());
+		this.setWidthLocal(getMaxLineWidth());
+	}
+	
+	
+    /**
+     * Instantiates a new mT text area.
+     * This constructor creates a textarea with fixed dimensions.
+     * If the text exceeds the dimensions the text is clipped.
+     * A default font is used.
+     * 
+     * @param x the x
+     * @param y the y
+     * @param width the width
+     * @param height the height
+     * @param pApplet the applet
+     */
+	public MTTextArea(float x, float y, float width, float height, PApplet pApplet) {
+		this(x, y, width, height, FontManager.getInstance().getDefaultFont(pApplet), pApplet);
+	}
+	
+    
 	/**
 	 * Instantiates a new mT text area. 
 	 * This constructor creates a textarea with fixed dimensions. 
@@ -111,11 +187,7 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
 	 * @param font the font
 	 * @param pApplet the applet
 	 */
-	public MTTextArea(float x, float y, float width, float height,IFont font, PApplet pApplet) {
-//		super(	0, -1 * font.getFontMaxAscent(), 	//upper left corner
-//				width, 	//width
-//				height,  //height
-//				pApplet);
+	public MTTextArea(float x, float y, float width, float height, IFont font, PApplet pApplet) {
 		super(	0, 0, 	//upper left corner
 				width, 	//width
 				height,  //height
@@ -124,41 +196,17 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
 		init(pApplet, font, MODE_WRAP);
 		
 		//Position textarea at x,y
-		PositionAnchor prevAnchor = this.getAnchor();
-		this.setAnchor(PositionAnchor.UPPER_LEFT);
-		this.setPositionGlobal(new Vector3D(x,y,0));
-		this.setAnchor(prevAnchor);
+		this.setUpperLeftPos(new Vector3D(x,y,0));
 	}
 	
-		
-	/**
-	 * Instantiates a new text area. This constructor creates
-	 * a text area with variable dimensions that expands itself when text is added.
-	 * 
-	 * @param pApplet the applet
-	 * @param font the font
-	 */
-	public MTTextArea(PApplet pApplet, IFont font) {
-//		super(	0, -1 * font.getFontMaxAscent(), 	//upper left corner
-//				0, 	//width
-//				0,  //height
-//				pApplet);
-		super(	0, 0, 	//upper left corner
-				0, 	//width
-				0,  //height
-				pApplet);
-		
-		init(pApplet, font, MODE_EXPAND);
-		
+	
+	
+	private void setUpperLeftPos(Vector3D pos){
 		//Position textarea at 0,0
 		PositionAnchor prevAnchor = this.getAnchor();
 		this.setAnchor(PositionAnchor.UPPER_LEFT);
-		this.setPositionGlobal(Vector3D.ZERO_VECTOR);
+		this.setPositionGlobal(pos);
 		this.setAnchor(prevAnchor);
-		
-		//Expand vertically at enter 
-		this.setHeightLocal(this.getTotalLinesHeight());
-		this.setWidthLocal(getMaxLineWidth());
 	}
 	
 	public MTTextArea(MTApplication app) {
@@ -168,6 +216,7 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
 	private void init(PApplet pApplet, IFont font, int mode){
 		this.pa = pApplet;
 		this.font = font;
+		this.expandDirection = ExpandDirection.DOWN;
 		
 		this.mode = mode;
 		switch (this.mode) {
@@ -231,6 +280,7 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
 		}
 	}
 
+	
 	@Override
 	public void updateComponent(long timeDelta) {
 		super.updateComponent(timeDelta);
@@ -284,12 +334,72 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
 	}
 	
 	
+	private boolean useDisplayList = false;
+	private boolean contentDisplayListDirty = true;
+	private void setContentDisplayListDirty(boolean dirty){
+		this.contentDisplayListDirty = dirty;
+		this.useDisplayList = (this.contentDisplayListDirty) ? false : true;
+	}
+	private int displayListID = 0;
+	
+	public int useContentDisplayList(){
+		if (enableCaret)
+			return -1;
+		
+		GL gl = GLU.getCurrentGL();
+		//Delete old one
+		if (this.displayListID != 0){
+			gl.glDeleteLists(this.displayListID, 1);
+		}
+		
+		//Create new list
+		int listIDFill = gl.glGenLists(1);
+		if (listIDFill == 0){
+			System.err.println("Failed to create fill display list");
+		}
+		
+		int thisLineTotalXAdvancement = 0;
+		int lastXAdvancement = innerPaddingLeft;
+		//To set caret at most left start pos when charlist empty (looks better)
+		if (enableCaret && showCaret && characterList.size() == 1){
+			lastXAdvancement = 0;
+		}
+		
+		//Record list
+		gl.glNewList(listIDFill, GL.GL_COMPILE);
+			drawCharactersGL(gl, characterList, characterList.size(), lastXAdvancement, thisLineTotalXAdvancement);
+		gl.glEndList();
+		
+		if (listIDFill != 0){
+			useDisplayList = true;
+			displayListID = listIDFill;
+		}
+
+		this.setContentDisplayListDirty(false);
+		return (listIDFill == 0)?  -1 : listIDFill;
+	}
+	
+	
+	@Override
+		protected void destroyComponent() {
+			super.destroyComponent();
+			
+			if (MT4jSettings.getInstance().isOpenGlMode() && this.displayListID != 0){
+				GL gl = GLU.getCurrentGL();
+				//Delete old one
+				if (gl != null){
+					gl.glDeleteLists(this.displayListID, 1);
+				}
+			}
+		}
+	
 	@Override
 	public void drawComponent(PGraphics g) {
 		super.drawComponent(g);
 		
-		//FIXME this doesent work if textarea is created at non-integer value!? and if Camera isnt default camera
-		//TODO test 0.5f round 
+		//FIXME snapping wont be useful if textarea is created at non-integer value!? and if Camera isnt default camera
+		//if global matrix set dirty and comp not scaled -> calculate new diff vector -> apply
+		//if snap enabled -> apply diff vector
 		boolean applySnap = false;
 		if (isBitmapFont && textPositionRounding){
 			if (snapVectorDirty){ //Calc new snap vector
@@ -298,7 +408,6 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
 					applySnap = true;
 					globalTranslation.setXYZ(m.m03, m.m13, m.m23);
 					rounded.setXYZ(Math.round(globalTranslation.x), Math.round(globalTranslation.y), Math.round(globalTranslation.z));
-//					rounded.setXYZ((int)Math.ceil(globalTranslation.x), (int)Math.ceil(globalTranslation.y), (int)Math.ceil(globalTranslation.z));
 //					rounded.setXYZ((int)globalTranslation.x, (int)globalTranslation.y, (int)globalTranslation.z);
 					rounded.subtractLocal(globalTranslation);
 					
@@ -318,9 +427,6 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
 			}
 		}
 		
-		//if global matrix set dirty and comp not scaled -> calculate new diff vector -> apply
-		//if snap enabled -> apply diff vector
-
 		//Add caret if its time 
 		if (enableCaret && showCaret){
 			characterList.add(this.getFont().getFontCharacterByUnicode("|"));
@@ -335,6 +441,8 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
 		switch (this.mode) {
 		case MODE_EXPAND:
 			//Dont need to translate for innerpadding TOP because we do that in setHeight() making the whole textarea bigger
+			g.pushMatrix(); //FIXME TEST
+			g.translate(0, innerPaddingTop);
 			break;
 		case MODE_WRAP:
 			//Need to translate innerpadding TOP because we shouldnt make the textarea bigger like in expand mode
@@ -354,54 +462,35 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
 		
 		if (this.isUseDirectGL()){
 			GL gl = Tools3D.beginGL(pa);
-			gl.glPushMatrix(); //FIXME TEST text scrolling 
-			
-			//FIXME TEST
-			gl.glTranslatef(0, font.getFontMaxAscent(), 0);
-			
-			gl.glTranslatef(totalScrollTextX, totalScrollTextY, 0);
-			for (int i = 0; i < charListSize; i++) {
-				IFontCharacter character = characterList.get(i);
-				//Step to the right by the amount of the last characters x advancement
-				gl.glTranslatef(lastXAdvancement, 0, 0);
-				//Save total amount gone to the right in this line 
-				thisLineTotalXAdvancement += lastXAdvancement;
-				lastXAdvancement = 0;
-
-				//Draw the letter
-				character.drawComponent(gl);
-
-				//Check if newLine occurs, goto start at new line
-				if (character.getUnicode().equals("\n")){
-					gl.glTranslatef(-thisLineTotalXAdvancement, fontHeight, 0);
-					thisLineTotalXAdvancement = 0;
-					lastXAdvancement = innerPaddingLeft;
-				}else{
-					//If caret is showing and we are at index one before caret calc the advancement to include the caret in the text area
-					if (enableCaret && showCaret && i == charListSize-2){
-						if (character.getUnicode().equals("\t")){
-							lastXAdvancement = character.getHorizontalDist() - character.getHorizontalDist() / 20;
-						}else{
-							//approximated value, cant get the real one
-							lastXAdvancement = 2 + character.getHorizontalDist() - (character.getHorizontalDist() / 3);
-						}
-					}else{
-						lastXAdvancement = character.getHorizontalDist();
-					}
-				}
+			if (totalScrollTextX != 0.0f && totalScrollTextY != 0.0f){
+				gl.glTranslatef(totalScrollTextX, totalScrollTextY + font.getFontMaxAscent(), 0);
+			}else{
+				gl.glTranslatef(0, font.getFontMaxAscent(), 0);
 			}
 			
-			gl.glPopMatrix(); //FIXME TEST text scrolling - but IMHO better done with parent list/scroll container
+			/*
+			//Disabled so that no new list is created everytime something changes
+			if (!enableCaret && useDisplayList && this.contentDisplayListDirty){
+				//Re-Create displaylist
+				this.useContentDisplayList();
+			}
+			*/
+			
+			//TODO avoid many stateChanges
+			//in bitmap font mode for example:
+			//enable textures, enable vertex arrays and color only once!
+			
+			if(!enableCaret && useDisplayList && this.displayListID != 0){
+				gl.glCallList(this.displayListID);
+			}else{
+				drawCharactersGL(gl, characterList, charListSize, lastXAdvancement, thisLineTotalXAdvancement);
+			}
 			
 			Tools3D.endGL(pa);
 		}
 		else{ //P3D rendering
 			g.pushMatrix(); //FIXME TEST text scrolling - but IMHO better done with parent list/scroll container
-			
-			//FIXME TEST
-			g.translate(0, font.getFontMaxAscent(), 0);
-			
-			g.translate(totalScrollTextX, totalScrollTextY, 0);
+			g.translate(totalScrollTextX, totalScrollTextY + font.getFontMaxAscent(), 0);
 			
 			for (int i = 0; i < charListSize; i++) {
 				IFontCharacter character = characterList.get(i);
@@ -439,6 +528,7 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
 		//FIXME TEST //Innerpadding TOP for wrapped textarea -> translates the text content downwards
 		switch (this.mode) {
 		case MODE_EXPAND:
+			g.popMatrix();
 			break;
 		case MODE_WRAP:
 			//Need to translate innerpadding because we shouldnt make the textarea bigger
@@ -459,6 +549,41 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
 		}
 	}
 	
+	
+	private void drawCharactersGL(GL gl, List<IFontCharacter> characterList, int charListSize, int lastXAdv, int lineTotalAdv){
+		int lastXAdvancement = lastXAdv;
+		int thisLineTotalXAdvancement = lineTotalAdv;
+		for (int i = 0; i < charListSize; i++) {
+			IFontCharacter character = characterList.get(i);
+			//Step to the right by the amount of the last characters x advancement
+			gl.glTranslatef(lastXAdvancement, 0, 0);
+			//Save total amount gone to the right in this line 
+			thisLineTotalXAdvancement += lastXAdvancement;
+			lastXAdvancement = 0;
+
+			//Draw the letter
+			character.drawComponent(gl);
+
+			//Check if newLine occurs, goto start at new line
+			if (character.getUnicode().equals("\n")){
+				gl.glTranslatef(-thisLineTotalXAdvancement, fontHeight, 0);
+				thisLineTotalXAdvancement = 0;
+				lastXAdvancement = innerPaddingLeft;
+			}else{
+				//If caret is showing and we are at index one before caret calc the advancement to include the caret in the text area
+				if (enableCaret && showCaret && i == charListSize-2){
+					if (character.getUnicode().equals("\t")){
+						lastXAdvancement = character.getHorizontalDist() - character.getHorizontalDist() / 20;
+					}else{
+						//approximated value, cant get the real one
+						lastXAdvancement = 2 + character.getHorizontalDist() - (character.getHorizontalDist() / 3);
+					}
+				}else{
+					lastXAdvancement = character.getHorizontalDist();
+				}
+			}
+		}
+	}
 	
 	private boolean noStrokeSettingSaved;
 	
@@ -517,42 +642,6 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
 		}
 	}
 	
-	//FIXME REMOVE!?
-//	private boolean filteringDone;
-//	private boolean isBitmapFont;
-//	
-//	@Override
-//	public void setMatricesDirty(boolean baseMatrixDirty) {
-//		super.setMatricesDirty(baseMatrixDirty);
-//		
-//		if (isBitmapFont && !filteringDone){
-////			filteringDone = true;
-//			
-//			MTComponent current = this;
-//			boolean hasScale;
-//			do {
-//				Matrix local = current.getLocalMatrix();
-//				current = current.getParent();
-//			} while (current != null);
-//			while (current.getParent() != null) {
-//				
-//				
-//			}
-//			
-//			//TODO change fonts' filtering from NEAREST to LINEAR once after scaling is done
-//		}
-//	}
-//	
-//	private boolean checkForScaling(){
-//		return checkForScalingRecursive(this);
-//	}
-//	
-//	private MTComponent checkForScalingRecursive(MTComponent current){
-//		//System.out.println("Processing: " + current.getName());
-//		if (current.getParent() != null){
-//			
-//		}
-//	}
 	
 	
 	/**
@@ -613,11 +702,17 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
 		switch (this.mode) {
 		case MODE_EXPAND:
 			this.setVertices(new Vertex[]{
-					new Vertex(v[0].x,	- innerPaddingTop, 		v[0].z, v[0].getTexCoordU(), v[0].getTexCoordV(), v[0].getR(), v[0].getG(), v[0].getB(), v[0].getA()), 
-					new Vertex(v[1].x, 	- innerPaddingTop, 		v[1].z, v[1].getTexCoordU(), v[1].getTexCoordV(), v[1].getR(), v[1].getG(), v[1].getB(), v[1].getA()), 
-					new Vertex(v[2].x, 	- innerPaddingTop + height + (2 * innerPaddingTop), 	v[2].z, v[2].getTexCoordU(), v[2].getTexCoordV(), v[2].getR(), v[2].getG(), v[2].getB(), v[2].getA()), 
-					new Vertex(v[3].x,	- innerPaddingTop + height + (2 * innerPaddingTop),	v[3].z, v[3].getTexCoordU(), v[3].getTexCoordV(), v[3].getR(), v[3].getG(), v[3].getB(), v[3].getA()), 
-					new Vertex(v[4].x,	- innerPaddingTop,			v[4].z, v[4].getTexCoordU(), v[4].getTexCoordV(), v[4].getR(), v[4].getG(), v[4].getB(), v[4].getA()), 
+//					new Vertex(v[0].x,	- innerPaddingTop, 		v[0].z, v[0].getTexCoordU(), v[0].getTexCoordV(), v[0].getR(), v[0].getG(), v[0].getB(), v[0].getA()), 
+//					new Vertex(v[1].x, 	- innerPaddingTop, 		v[1].z, v[1].getTexCoordU(), v[1].getTexCoordV(), v[1].getR(), v[1].getG(), v[1].getB(), v[1].getA()), 
+//					new Vertex(v[2].x, 	- innerPaddingTop + height + (2 * innerPaddingTop), 	v[2].z, v[2].getTexCoordU(), v[2].getTexCoordV(), v[2].getR(), v[2].getG(), v[2].getB(), v[2].getA()), 
+//					new Vertex(v[3].x,	- innerPaddingTop + height + (2 * innerPaddingTop),	v[3].z, v[3].getTexCoordU(), v[3].getTexCoordV(), v[3].getR(), v[3].getG(), v[3].getB(), v[3].getA()), 
+//					new Vertex(v[4].x,	- innerPaddingTop,			v[4].z, v[4].getTexCoordU(), v[4].getTexCoordV(), v[4].getR(), v[4].getG(), v[4].getB(), v[4].getA()), 
+					
+					new Vertex(v[0].x,	0, 								v[0].z, v[0].getTexCoordU(), v[0].getTexCoordV(), v[0].getR(), v[0].getG(), v[0].getB(), v[0].getA()), 
+					new Vertex(v[1].x, 	0, 								v[1].z, v[1].getTexCoordU(), v[1].getTexCoordV(), v[1].getR(), v[1].getG(), v[1].getB(), v[1].getA()), 
+					new Vertex(v[2].x, 	height + (2 * innerPaddingTop), v[2].z, v[2].getTexCoordU(), v[2].getTexCoordV(), v[2].getR(), v[2].getG(), v[2].getB(), v[2].getA()), 
+					new Vertex(v[3].x,	height + (2 * innerPaddingTop),	v[3].z, v[3].getTexCoordU(), v[3].getTexCoordV(), v[3].getR(), v[3].getG(), v[3].getB(), v[3].getA()), 
+					new Vertex(v[4].x,	0,								v[4].z, v[4].getTexCoordU(), v[4].getTexCoordV(), v[4].getR(), v[4].getG(), v[4].getB(), v[4].getA()),
 			});
 			break;
 		case MODE_WRAP:
@@ -634,19 +729,46 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
 			break;
 		}
 	}
-	
-	@Override
+
+    /**
+     * Returns the currently active expand direction of the text area.
+     * (Only has an impact if the wrap mode of the textarea equals MODE_EXPAND!)
+     *
+     * @return the active expand direction
+     */
+    public ExpandDirection getExpandDirection() {
+        return expandDirection;
+    }
+
+    /**
+     * Sets the expand direction to be used by the text area if a new line is added.
+     *(Only has an impact if the wrap mode of the textarea equals MODE_EXPAND!)
+     * @see {@link ExpandDirection}
+     * @param direction the expand direction to be used
+     */
+    public void setExpandDirection(ExpandDirection direction) {
+        expandDirection = direction;
+        this.updateLayout(); //This wont translate the area to its original place if expand mode was UP and is now down..
+    }
+
+    @Override
 	public void setSizeLocal(float width, float height) {
 		if (width > 0 && height > 0){
 			Vertex[] v = this.getVerticesLocal();
 			switch (this.mode) {
 			case MODE_EXPAND:
 				this.setVertices(new Vertex[]{
-						new Vertex(v[0].x,			- innerPaddingTop, 		v[0].z, v[0].getTexCoordU(), v[0].getTexCoordV(), v[0].getR(), v[0].getG(), v[0].getB(), v[0].getA()), 
-						new Vertex(v[0].x+width, 	- innerPaddingTop, 		v[1].z, v[1].getTexCoordU(), v[1].getTexCoordV(), v[1].getR(), v[1].getG(), v[1].getB(), v[1].getA()), 
-						new Vertex(v[0].x+width, 	- innerPaddingTop + height + (2 * innerPaddingTop), v[2].getTexCoordV(), v[2].getR(), v[2].getG(), v[2].getB(), v[2].getA()), 
-						new Vertex(v[3].x,			- innerPaddingTop + height + (2 * innerPaddingTop),	v[3].z, v[3].getTexCoordU(), v[3].getTexCoordV(), v[3].getR(), v[3].getG(), v[3].getB(), v[3].getA()), 
-						new Vertex(v[4].x,			- innerPaddingTop,			v[4].z, v[4].getTexCoordU(), v[4].getTexCoordV(), v[4].getR(), v[4].getG(), v[4].getB(), v[4].getA()), 
+//						new Vertex(v[0].x,			- innerPaddingTop, 		v[0].z, v[0].getTexCoordU(), v[0].getTexCoordV(), v[0].getR(), v[0].getG(), v[0].getB(), v[0].getA()), 
+//						new Vertex(v[0].x+width, 	- innerPaddingTop, 		v[1].z, v[1].getTexCoordU(), v[1].getTexCoordV(), v[1].getR(), v[1].getG(), v[1].getB(), v[1].getA()), 
+//						new Vertex(v[0].x+width, 	- innerPaddingTop + height + (2 * innerPaddingTop), v[2].getTexCoordV(), v[2].getR(), v[2].getG(), v[2].getB(), v[2].getA()), 
+//						new Vertex(v[3].x,			- innerPaddingTop + height + (2 * innerPaddingTop),	v[3].z, v[3].getTexCoordU(), v[3].getTexCoordV(), v[3].getR(), v[3].getG(), v[3].getB(), v[3].getA()), 
+//						new Vertex(v[4].x,			- innerPaddingTop,			v[4].z, v[4].getTexCoordU(), v[4].getTexCoordV(), v[4].getR(), v[4].getG(), v[4].getB(), v[4].getA()), 
+						
+						new Vertex(v[0].x,			0, 								v[0].z, v[0].getTexCoordU(), v[0].getTexCoordV(), v[0].getR(), v[0].getG(), v[0].getB(), v[0].getA()), 
+						new Vertex(v[0].x+width, 	0, 								v[1].z, v[1].getTexCoordU(), v[1].getTexCoordV(), v[1].getR(), v[1].getG(), v[1].getB(), v[1].getA()), 
+						new Vertex(v[0].x+width, 	height + (2 * innerPaddingTop), v[2].getTexCoordV(), v[2].getR(), v[2].getG(), v[2].getB(), v[2].getA()), 
+						new Vertex(v[3].x,			height + (2 * innerPaddingTop),	v[3].z, v[3].getTexCoordU(), v[3].getTexCoordV(), v[3].getR(), v[3].getG(), v[3].getB(), v[3].getA()), 
+						new Vertex(v[4].x,			0,								v[4].z, v[4].getTexCoordU(), v[4].getTexCoordV(), v[4].getR(), v[4].getG(), v[4].getB(), v[4].getA()), 
 				});
 				break;
 			case MODE_WRAP:
@@ -687,6 +809,26 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
 		for (int i = 0; i < string.length(); i++) {
 			appendCharByUnicode(string.substring(i, i+1));
 		}
+		
+		//FIXME TEST
+//		/*
+		if (MT4jSettings.getInstance().isOpenGlMode()){
+			if (getRenderer() instanceof MTApplication) {
+				MTApplication app = (MTApplication) getRenderer();
+				if (app.isRenderThreadCurrent()){
+					this.useContentDisplayList();
+				}else{
+					app.invokeLater(new Runnable() {
+						public void run() {
+							useContentDisplayList();
+						}
+					});
+				}
+			}else{
+				this.useContentDisplayList();
+			}
+		}
+//		*/
 	}
 	
 	
@@ -698,15 +840,6 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
 		for (Iterator<IFontCharacter> iter = this.characterList.iterator(); iter.hasNext();) {
 			IFontCharacter character = (IFontCharacter) iter.next();
 			String unicode = character.getUnicode();
-//			if (unicode.equalsIgnoreCase("tab")){ //TODO why was this here? tab is handled with "\t" !
-//				returnString += "    ";
-//			}
-//			else if (unicode.equalsIgnoreCase("\n")){
-//				returnString += " ";
-//			}
-//			else{
-//				returnString += unicode;
-//			}
 			if (!character.equals(MTTextArea.artificialLineBreak)){
 				returnString += unicode;
 			}
@@ -770,6 +903,8 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
 		this.characterList.add(character);
 		
 		this.characterAdded(character);
+		
+		this.setContentDisplayListDirty(true);
 	}
 	
 	/**
@@ -783,10 +918,10 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
 			if (character.getUnicode().equals("\n")){
 				//Expand vertically at enter 
 				this.setHeightLocal(this.getTotalLinesHeight());
-				//TODO make behaviour settable
-				//Moves the Textarea up at a enter character instead of down 
-				this.translate(new Vector3D(0, -fontHeight, 0));
-			}else{
+				//Moves the Textarea up at a enter character instead of down
+                if (getExpandDirection() == ExpandDirection.UP)
+                    this.translate(new Vector3D(0, -fontHeight, 0));
+            }else{
 				//Expand the textbox to the extend of the widest line width
 				this.setWidthLocal(getMaxLineWidth());
 			}
@@ -844,7 +979,8 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
 				//Reduce field vertically at enter
 				this.setHeightLocal(this.getTotalLinesHeight());
 				//makes the textarea go down when a line is removed instead staying at the same loc.
-				this.translate(new Vector3D(0, fontHeight, 0));
+				if (getExpandDirection() == ExpandDirection.UP)
+                    translate(new Vector3D(0, fontHeight, 0));
 			}else{
 				//Reduce field horizontally
 				this.setWidthLocal(getMaxLineWidth());
@@ -858,6 +994,18 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
 		}
 	}
 	
+	
+	
+	/**
+	 * resets the textarea, clears all characters.
+	 */
+	public void clear(){
+		while (!characterList.isEmpty()){
+			removeLastCharacter();
+		}
+	}
+	
+	
 	/**
 	 * Removes the last character in the textarea.
 	 */
@@ -870,16 +1018,8 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
 		this.characterList.remove(this.characterList.size()-1);
 		
 		this.characterRemoved(lastCharacter);
-	}
-	
-	
-	/**
-	 * resets the textarea, clears all characters.
-	 */
-	public void clear(){
-		while (!characterList.isEmpty()){
-			removeLastCharacter();
-		}
+		
+		this.setContentDisplayListDirty(true);
 	}
 	
 	
@@ -1087,6 +1227,8 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
 		}else{
 			System.err.println("Cant enable caret for this textfield, the font doesent include the letter '|'");
 		}
+		
+		this.setContentDisplayListDirty(true);
 	}
 
 

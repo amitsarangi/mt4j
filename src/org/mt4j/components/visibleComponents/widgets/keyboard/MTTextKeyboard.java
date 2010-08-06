@@ -21,10 +21,14 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import org.mt4j.components.MTComponent;
+import org.mt4j.components.StateChange;
+import org.mt4j.components.StateChangeEvent;
+import org.mt4j.components.StateChangeListener;
 import org.mt4j.components.visibleComponents.font.FontManager;
 import org.mt4j.components.visibleComponents.font.IFont;
 import org.mt4j.components.visibleComponents.shapes.AbstractShape;
 import org.mt4j.components.visibleComponents.widgets.MTTextArea;
+import org.mt4j.components.visibleComponents.widgets.MTTextArea.ExpandDirection;
 import org.mt4j.components.visibleComponents.widgets.buttons.MTSvgButton;
 import org.mt4j.input.gestureAction.DefaultDragAction;
 import org.mt4j.input.inputProcessors.MTGestureEvent;
@@ -223,7 +227,10 @@ public class MTTextKeyboard extends MTKeyboard {
  */
 	public void createNewTextArea(){
 		if (this.textInputListener == null){
-			MTTextArea t = new MTTextArea(pa, fontForTextField);
+			final MTTextArea t = new MTTextArea(pa, fontForTextField);
+			this.textInputListener = t;
+			
+			t.setExpandDirection(ExpandDirection.UP);
 			t.setStrokeColor(new MTColor(0,0 , 0, 255));
 			t.setFillColor(new MTColor(205,200,177, 255));
 			
@@ -235,12 +242,17 @@ public class MTTextKeyboard extends MTKeyboard {
 			t.addGestureListener(DragProcessor.class, dragFromKeybAction);
 			
 			t.setEnableCaret(true);
-			
 			t.snapToKeyboard(this);
-			this.textInputListener = t;
+			
 			this.addTextInputListener(this.textInputListener);
+			//Remove textarea from listening if destroyed
+			t.addStateChangeListener(StateChange.COMPONENT_DESTROYED, new StateChangeListener() {
+				public void stateChanged(StateChangeEvent evt) {
+					removeTextInputListener(t);
+				}
+			});
 		}else{
-			System.err.println("Cant create new textarea - Keyboard still has a textinputacceptor associated to it.");
+			System.err.println("Cant create new textarea - Keyboard still has a textarea attached.");
 		}
 	}
 	

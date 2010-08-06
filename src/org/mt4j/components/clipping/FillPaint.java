@@ -35,7 +35,7 @@ import processing.core.PGraphics;
  */
 public class FillPaint { 
 	/** The gradient shape. */
-	private MTComponent fillPaint;
+	protected MTComponent fillPaint;
 	
 	private GL gl;
 

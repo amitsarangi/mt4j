@@ -61,8 +61,8 @@ public abstract class AbstractComponentProcessor implements IMTInputEventListene
 	public AbstractComponentProcessor() {
 		super();
 		this.inputListeners = new ArrayList<IGestureEventListener>();
-		
-		debug = false;
+		this.disabled = false;
+		this.debug = false;
 	}
 
 
@@ -81,12 +81,15 @@ public abstract class AbstractComponentProcessor implements IMTInputEventListene
 	}
 	
 	
+	public void preProcess(MTInputEvent inEvt) {	}
+	
 	/**
 	 * Process input evt implementation.
 	 * 
 	 * @param inputEvent the input event
 	 */
 	abstract protected void processInputEvtImpl(MTInputEvent inputEvent);
+	
 	
 	
 	/**
@@ -207,6 +210,9 @@ public abstract class AbstractComponentProcessor implements IMTInputEventListene
 	public int compareTo(AbstractComponentProcessor o) {
 		return -1;
 	}
+
+
+	
 	
 	
 	

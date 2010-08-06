@@ -24,16 +24,13 @@ import java.util.List;
 
 import javax.media.opengl.GL;
 
-import org.mt4j.components.TransformSpace;
 import org.mt4j.components.bounds.BoundingSphere;
 import org.mt4j.components.bounds.IBoundingShape;
-import org.mt4j.components.bounds.OrientedBoundingBox;
 import org.mt4j.components.visibleComponents.GeometryInfo;
 import org.mt4j.components.visibleComponents.shapes.AbstractShape;
 import org.mt4j.util.MT4jSettings;
 import org.mt4j.util.MTColor;
 import org.mt4j.util.math.BezierVertex;
-import org.mt4j.util.math.Matrix;
 import org.mt4j.util.math.Ray;
 import org.mt4j.util.math.Tools3D;
 import org.mt4j.util.math.ToolsBuffers;
@@ -242,7 +239,7 @@ public class MTTriangleMesh extends AbstractShape{
 	private void createTriangles(GeometryInfo geom){
 		Vertex[] vertices = geom.getVertices();
 		
-		//TODO geometryInfo.getDrawMode()? bei tristrip müsste ein triangle erzeugt werden für jedes neue vertex!?
+		//TODO geometryInfo.getDrawMode()? bei tristrip mï¿½sste ein triangle erzeugt werden fï¿½r jedes neue vertex!?
 		ArrayList<Triangle> tris = new ArrayList<Triangle>();
 		
 		if (geom.isIndexed()){
@@ -403,12 +400,12 @@ public class MTTriangleMesh extends AbstractShape{
 	 * @return the number of intersecitons
 	 */
 	private int getNumIntersections(Ray ray){
-		//Evtl auch bbox prüfen?
+		//Evtl auch bbox prï¿½fen?
 		int intersectionsFound = 0;
 		
 		//Save intersections to check duplicates because at an edge
 		//bewteeen 2 triangles both intersections are counted but
-		//we still can say we´re on the inside
+		//we still can say weï¿½re on the inside
 		boolean checkThoroughly = true;
 		ArrayList<Vector3D> intersections = new ArrayList<Vector3D>();
 		
@@ -943,39 +940,29 @@ public class MTTriangleMesh extends AbstractShape{
 	
 	
 	/** The stroke r. */
-	private float strokeR = 255;
+	private float strokeR = 1;
 	
 	/** The stroke g. */
-	private float strokeG = 255;
+	private float strokeG = 1;
 	
 	/** The stroke b. */
-	private float strokeB = 255;
+	private float strokeB = 1;
 	
 	/** The stroke a. */
-	private float strokeA = 255;
-	
-	
-//	@Override
-//	public void setStrokeColor(float r, float g, float b, float a) {
-//		super.setStrokeColor(r, g, b, a);
-//		this.strokeR = r/255;
-//		this.strokeG = g/255;
-//		this.strokeB = b/255;
-//		this.strokeA = a/255;
-//	}
-	
+	private float strokeA = 1;
+
 	/* (non-Javadoc)
- * @see org.mt4j.components.visibleComponents.shapes.AbstractShape#setStrokeColor(org.mt4j.util.MTColor)
- */
-@Override
+	 * @see org.mt4j.components.visibleComponents.shapes.AbstractShape#setStrokeColor(org.mt4j.util.MTColor)
+	 */
+	@Override
 	public void setStrokeColor(MTColor strokeColor) {
 		super.setStrokeColor(strokeColor);
-		this.strokeR = strokeColor.getR()/255;
-		this.strokeG = strokeColor.getG()/255;
-		this.strokeB = strokeColor.getB()/255;
-		this.strokeA = strokeColor.getAlpha()/255;
+		this.strokeR = strokeColor.getR()/255f;
+		this.strokeG = strokeColor.getG()/255f;
+		this.strokeB = strokeColor.getB()/255f;
+		this.strokeA = strokeColor.getAlpha()/255f;
 	}
-	
+
 
 	/**
 	 * Sets the outline contours.
@@ -1013,7 +1000,7 @@ public class MTTriangleMesh extends AbstractShape{
 		super.generateDisplayLists();
 		int[] ids = this.getGeometryInfo().getDisplayListIDs();
 		//Delete default outline display list, not really usable in a mesh. To draw all triangles outlines..
-		//TODO nicht optimal, da erst eine displaylist erstellt wird, die gleich wieder gelöscht wird..
+		//TODO nicht optimal, da erst eine displaylist erstellt wird, die gleich wieder gelï¿½scht wird..
 		if (MT4jSettings.getInstance().isOpenGlMode()
 			&& this.outlineContours != null
 		){
@@ -1066,176 +1053,6 @@ public class MTTriangleMesh extends AbstractShape{
 		return listId;
 	}
 
-	
-	/* (non-Javadoc)
-	 * @see org.mt4j.components.visibleComponents.shapes.AbstractShape#getHeightXY(org.mt4j.components.TransformSpace)
-	 */
-	@Override
-	public float getHeightXY(TransformSpace transformSpace) {
-		switch (transformSpace) {
-		case LOCAL:
-			return this.getHeightXYObjSpace();
-		case RELATIVE_TO_PARENT:
-			return this.getHeightXYRelativeToParent();
-		case GLOBAL:
-			return this.getHeightXYGlobal();
-		default:
-			return -1;
-		}
-	}
-	
-	/**
-	 * Gets the height xy obj space.
-	 * 
-	 * @return the height xy obj space
-	 */
-	private float getHeightXYObjSpace() {
-		return this.getHeightXYVectObjSpace().length();
-	}
-	
-	/**
-	 * Calculates the Height of this shape, by using its
-	 * bounding rectangle.
-	 * <br><strong>NOTE: </strong> This method will only work, if the polygon is parallel
-	 * to the x/y plane in space AND has a boundingShape rectangle thats meets the same crieria
-	 * because the calculations are done with the bounding rectangle. (bounds instance of <code>BoundsZPlaneRectangle</code>)
-	 * 
-	 * @return the height
-	 */
-	private float getHeightXYRelativeToParent() {
-		Vector3D p = this.getHeightXYVectObjSpace();
-		Matrix m = new Matrix(this.getLocalMatrix());
-		m.removeTranslationFromMatrix();
-		p.transform(m);
-		return p.length();
-	}
-	
-	
-	/**
-	 * <br><strong>NOTE: </strong> This method will only work, if the polygon is parallel
-	 * to the x/y plane in space AND has a boundingShape rectangle thats meets the same crieria
-	 * because the calculations are done with the bounding rectangle. (bounds instance of <code>BoundsZPlaneRectangle</code>)
-	 * 
-	 * @return the height xy global
-	 */
-	private float getHeightXYGlobal() {
-		Vector3D p = this.getHeightXYVectObjSpace();
-		Matrix m = new Matrix(this.getGlobalMatrix());
-		m.removeTranslationFromMatrix();
-		p.transform(m);
-		return p.length();
-	}
-	
-	
-	/**
-	 * Gets the height xy vect obj space.
-	 * 
-	 * @return the height xy vect obj space
-	 */
-	public Vector3D getHeightXYVectObjSpace() {
-		if (this.hasBounds()
-//		&& (this.getBounds() instanceof BoundingBox)
-		){
-//			Vector3D[] boundRectVertsLocal = ((BoundsZPlaneRectangle)this.getBounds()).getVectorsObjSpace();
-//			Vector3D height = boundRectVertsLocal[2].getSubtracted(boundRectVertsLocal[1]);
-//			return height;
-//			return ((BoundingBox)this.getBounds()).getHeightXYVectObjSpace();
-			return this.getBounds().getHeightXYVectLocal();
-		}else{
-			OrientedBoundingBox tempBounds = new OrientedBoundingBox(this);
-//			Vector3D[] boundRectVertsLocal = tempBounds.getVectorsObjSpace();
-//			Vector3D height = boundRectVertsLocal[2].getSubtracted(boundRectVertsLocal[1]);
-//			return height;
-			return tempBounds.getHeightXYVectLocal();
-		}
-	}
-	
-	
-
-	/* (non-Javadoc)
-	 * @see org.mt4j.components.visibleComponents.shapes.AbstractShape#getWidthXY(org.mt4j.components.TransformSpace)
-	 */
-	@Override
-	public float getWidthXY(TransformSpace transformSpace) {
-		switch (transformSpace) {
-		case LOCAL:
-			return this.getWidthXYObjSpace();
-		case RELATIVE_TO_PARENT:
-			return this.getWidthXYRelativeToParent();
-		case GLOBAL:
-			return this.getWidthXYGlobal();
-		default:
-			return -1;
-		}
-	}
-
-	/**
-	 * Gets the width xy obj space.
-	 * 
-	 * @return the width xy obj space
-	 */
-	private float getWidthXYObjSpace() {
-		return this.getWidthXYVectObjSpace().length();
-	}
-	
-	
-	/**
-	 * Calculates the width of this shape, by using its
-	 * bounding rectangle.
-	 * Uses the objects local transform. So the width will be
-	 * relative to the parent only - not the whole world
-	 * <br><strong>NOTE: </strong> This method will only work, if the polygon is parallel
-	 * to the x/y plane in space AND has a boundingShape rectangle thats meets the same crieria
-	 * because the calculations are done with the bounding rectangle. (bounds instance of <code>BoundsZPlaneRectangle</code>)
-	 * 
-	 * @return the height
-	 */
-	private float getWidthXYRelativeToParent() {
-		Vector3D p = this.getWidthXYVectObjSpace();
-		Matrix m = new Matrix(this.getLocalMatrix());
-		m.removeTranslationFromMatrix();
-		p.transform(m);
-		return p.length();
-	}
-	
-	/**
-	 * <br><strong>NOTE: </strong> This method will only work, if the polygon is parallel
-	 * to the x/y plane in space AND/OR has a boundingShape rectangle thats meets the same crieria
-	 * because the calculations are done with the bounding rectangle. (bounds instance of <code>BoundsZPlaneRectangle</code>)
-	 * 
-	 * @return the width xy global
-	 */
-	private float getWidthXYGlobal() {
-		Vector3D p = this.getWidthXYVectObjSpace();
-		Matrix m = new Matrix(this.getGlobalMatrix());
-		m.removeTranslationFromMatrix();
-		p.transform(m);
-		return p.length();
-	}
-	
-	/**
-	 * Gets the width xy vect obj space.
-	 * 
-	 * @return the width xy vect obj space
-	 */
-	public Vector3D getWidthXYVectObjSpace() {
-		if (	this.hasBounds()
-//			&& (this.getBounds() instanceof BoundingBox)
-		){
-//			Vector3D[] boundRectVertsLocal = ((BoundsZPlaneRectangle)this.getBounds()).getVectorsObjSpace();
-//			Vector3D width = boundRectVertsLocal[1].getSubtracted(boundRectVertsLocal[0]);
-////			System.out.println("Width of " + this.getName()+ " :" + width);
-//			return width;
-//			return ((BoundingBox)this.getBounds()).getWidthXYVectObjSpace();
-			return this.getBounds().getWidthXYVectLocal();
-		}else{
-			OrientedBoundingBox tempBounds = new OrientedBoundingBox(this);
-//			Vector3D[] boundRectVertsLocal = tempBounds.getVectorsObjSpace();
-//			Vector3D width = boundRectVertsLocal[1].getSubtracted(boundRectVertsLocal[0]);
-//			return width;
-			return tempBounds.getWidthXYVectLocal();
-		}
-	}
 	
 
 	

@@ -19,6 +19,7 @@ package org.mt4j.input.inputData;
 
 import org.mt4j.components.interfaces.IMTComponent3D;
 import org.mt4j.input.inputSources.AbstractInputSource;
+import org.mt4j.util.math.Vector3D;
 
 
 /**
@@ -149,6 +150,16 @@ public abstract class AbstractCursorInputEvt extends MTInputEvent {
 	 */
 	public float getPosY() {
 		return positionY;
+	}
+	
+	
+	/**
+	 * Gets the position.
+	 *
+	 * @return the position
+	 */
+	public Vector3D getPosition(){
+		return new Vector3D(positionX, positionY, 0);
 	}
 	
 	

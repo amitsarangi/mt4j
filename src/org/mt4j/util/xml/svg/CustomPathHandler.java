@@ -528,6 +528,7 @@ public class CustomPathHandler implements PathHandler {
 
 			//Add partial path array to list of all partial paths of this glyph
 			subPaths.add(currentSplitPathArr);
+			currentSubPath.clear();
 		}
 	}
 

@@ -80,6 +80,15 @@ public class Vertex extends Vector3D {
 	/**
 	 * Instantiates a new vertex.
 	 * 
+	 * @param vector the vector
+	 */
+	public Vertex(Vertex vertex) {
+		this(vertex.x,vertex.y,vertex.z,vertex.w, vertex.getTexCoordU(), vertex.getTexCoordV(), vertex.getR(), vertex.getG(), vertex.getB(), vertex.getA());
+	}
+	
+	/**
+	 * Instantiates a new vertex.
+	 * 
 	 * @param x the x
 	 * @param y the y
 	 * @param z the z

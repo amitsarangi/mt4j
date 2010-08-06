@@ -19,11 +19,7 @@ package org.mt4j.input.gestureAction;
 
 import org.mt4j.components.MTComponent;
 import org.mt4j.components.TransformSpace;
-import org.mt4j.components.bounds.BoundsZPlaneRectangle;
-import org.mt4j.components.bounds.OrientedBoundingBox;
 import org.mt4j.components.visibleComponents.shapes.AbstractShape;
-import org.mt4j.components.visibleComponents.shapes.MTPolygon;
-import org.mt4j.components.visibleComponents.shapes.mesh.MTTriangleMesh;
 import org.mt4j.input.inputProcessors.IGestureEventListener;
 import org.mt4j.util.math.Matrix;
 import org.mt4j.util.math.Vector3D;
@@ -54,7 +50,7 @@ public class DefaultSvgButtonClickAction extends DefaultButtonClickAction implem
 		this.svgComp = svgComp;
 		this.width = this.getReferenceComp().getWidthXY(TransformSpace.RELATIVE_TO_PARENT);
 //		this.width = getCurrentUnscaledWidth();
-		this.widthObjSpace = this.getWidthObjSpaceVector();
+		this.widthObjSpace = this.getWidthVectorLocal();
 //		this.widthObjSpace  =  this.getReferenceComp().getWidthXYVectObjSpace();
 		this.centerObjSpace =  this.getReferenceComp().getCenterPointLocal();
 	}
@@ -65,26 +61,13 @@ public class DefaultSvgButtonClickAction extends DefaultButtonClickAction implem
 	 * 
 	 * @return the width obj space vector
 	 */
-	private Vector3D getWidthObjSpaceVector(){
-		if (this.getReferenceComp() instanceof MTPolygon){
-			MTPolygon p = (MTPolygon)this.getReferenceComp();
-			return p.getWidthXYVectLocal();
-		}else if (this.getReferenceComp() instanceof MTTriangleMesh){
-			MTTriangleMesh mesh = (MTTriangleMesh)this.getReferenceComp();
-			return mesh.getWidthXYVectObjSpace();
-		}else if (this.getReferenceComp().getBounds() != null){
-			if (this.getReferenceComp().getBounds() instanceof BoundsZPlaneRectangle) {
-				BoundsZPlaneRectangle bounds = (BoundsZPlaneRectangle) this.getReferenceComp().getBounds();
-				return bounds.getWidthXYVectLocal();
-			}else if (this.getReferenceComp().getBounds() instanceof OrientedBoundingBox) {
-				OrientedBoundingBox bounds = (OrientedBoundingBox) this.getReferenceComp().getBounds();
-				return bounds.getWidthXYVectLocal();
-			}
+	private Vector3D getWidthVectorLocal(){
+		if (this.getReferenceComp().hasBounds()){
+			return this.getReferenceComp().getBounds().getWidthXYVectLocal();
 		}else{
+//			return new Vector3D(Vector3D.ZERO_VECTOR);
 			throw new RuntimeException("Couldnt extract the width vector from the svg shape: '" + svgComp.getName() + "'. We need a component or boundingshape that defines the method getWidthXYVectObjSpace()");
 		}
-		
-		return null;
 	}
 	
 	/**
@@ -141,7 +124,7 @@ public class DefaultSvgButtonClickAction extends DefaultButtonClickAction implem
 	@Override
 	public float getCurrentUnscaledWidth(){
 //		Vector3D v = this.getReferenceComp().getWidthXYVectObjSpace();
-		Vector3D v = getWidthObjSpaceVector();
+		Vector3D v = getWidthVectorLocal();
 		
 		Matrix refCompLocalToWorld = new Matrix(this.getReferenceComp().getGlobalMatrix());
 		//Remove translation for direction vectors(width/height)
@@ -215,7 +198,7 @@ public class DefaultSvgButtonClickAction extends DefaultButtonClickAction implem
 		
 		//Svgbutton so scalen, dass reference comp auf unit width 1 gescaled wird
 		this.getCompToResize().scale(1/width, 1/width, 1, refCompCenter, TransformSpace.LOCAL);
-		//Svgbutton so scalen, dass reference comp auf unit gewünschte width gescaled wird
+		//Svgbutton so scalen, dass reference comp auf unit gewï¿½nschte width gescaled wird
 		this.getCompToResize().scale(newWidth, newWidth, 1, refCompCenter, TransformSpace.LOCAL);
 	}
 	

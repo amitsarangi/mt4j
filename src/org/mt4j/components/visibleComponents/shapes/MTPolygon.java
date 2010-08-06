@@ -631,50 +631,50 @@ public class MTPolygon extends AbstractShape implements CSSStylableComponent{
 		return this.getHeightXYVectLocal().length();
 	}
 	
-	/**
-	 * Gets the "height vector" and transforms it to parent relative space, then calculates
-	 * its length.
-	 * 
-	 * @return the height xy relative to parent
-	 * 
-	 * the height relative to its parent space frame
-	 */
-	private float getHeightXYRelativeToParent() {
-//		Vector3D p = this.getHeightXYVectLocal();
-//		Matrix m = new Matrix(this.getLocalMatrix());
-//		m.removeTranslationFromMatrix();
-//		p.transform(m);
-//		return p.length();
-		if (this.hasBounds()){
-			return this.getBounds().getHeightXY(TransformSpace.RELATIVE_TO_PARENT);
-		}else{
-			OrientedBoundingBox tempBounds = new OrientedBoundingBox(this);
-			return tempBounds.getHeightXY(TransformSpace.RELATIVE_TO_PARENT);
-		}
-	}
-	
-	
-	/**
-	 * Gets the "height vector" and transforms it to world space, then calculates
-	 * its length.
-	 * 
-	 * @return the height xy global
-	 * 
-	 * the height relative to the world space
-	 */
-	private float getHeightXYGlobal() {
-//		Vector3D p = this.getHeightXYVectLocal();
-//		Matrix m = new Matrix(this.getGlobalMatrix());
-//		m.removeTranslationFromMatrix();
-//		p.transform(m);
-//		return p.length();
-		if (this.hasBounds()){
-			return this.getBounds().getHeightXY(TransformSpace.GLOBAL);
-		}else{
-			OrientedBoundingBox tempBounds = new OrientedBoundingBox(this);
-			return tempBounds.getHeightXY(TransformSpace.GLOBAL);
-		}
-	}
+//	/**
+//	 * Gets the "height vector" and transforms it to parent relative space, then calculates
+//	 * its length.
+//	 * 
+//	 * @return the height xy relative to parent
+//	 * 
+//	 * the height relative to its parent space frame
+//	 */
+//	public float getHeightXYRelativeToParent() {
+////		Vector3D p = this.getHeightXYVectLocal();
+////		Matrix m = new Matrix(this.getLocalMatrix());
+////		m.removeTranslationFromMatrix();
+////		p.transform(m);
+////		return p.length();
+//		if (this.hasBounds()){
+//			return this.getBounds().getHeightXY(TransformSpace.RELATIVE_TO_PARENT);
+//		}else{
+//			OrientedBoundingBox tempBounds = new OrientedBoundingBox(this);
+//			return tempBounds.getHeightXY(TransformSpace.RELATIVE_TO_PARENT);
+//		}
+//	}
+//	
+//	
+//	/**
+//	 * Gets the "height vector" and transforms it to world space, then calculates
+//	 * its length.
+//	 * 
+//	 * @return the height xy global
+//	 * 
+//	 * the height relative to the world space
+//	 */
+//	private float getHeightXYGlobal() {
+////		Vector3D p = this.getHeightXYVectLocal();
+////		Matrix m = new Matrix(this.getGlobalMatrix());
+////		m.removeTranslationFromMatrix();
+////		p.transform(m);
+////		return p.length();
+//		if (this.hasBounds()){
+//			return this.getBounds().getHeightXY(TransformSpace.GLOBAL);
+//		}else{
+//			OrientedBoundingBox tempBounds = new OrientedBoundingBox(this);
+//			return tempBounds.getHeightXY(TransformSpace.GLOBAL);
+//		}
+//	}
 	
 	
 	/**
@@ -723,51 +723,51 @@ public class MTPolygon extends AbstractShape implements CSSStylableComponent{
 	}
 	
 	
-	/**
-	 * Calculates the width of this shape, by using its
-	 * bounding shape.
-	 * Uses the objects local transform. So the width will be
-	 * relative to the parent only - not the whole world
-	 * 
-	 * @return the width xy relative to parent
-	 * 
-	 * the width
-	 */
-	private float getWidthXYRelativeToParent() {
-//		Vector3D p = this.getWidthXYVectLocal();
-//		Matrix m = new Matrix(this.getLocalMatrix());
-//		m.removeTranslationFromMatrix();
-//		p.transform(m);
-//		return p.length();
-		if (this.hasBounds()){
-			return this.getBounds().getWidthXY(TransformSpace.RELATIVE_TO_PARENT);
-		}else{
-			OrientedBoundingBox tempBounds = new OrientedBoundingBox(this);
-			return tempBounds.getWidthXY(TransformSpace.RELATIVE_TO_PARENT);
-		}
-	}
-	
-	/**
-	 * Gets the "Width vector" and transforms it to world space, then calculates
-	 * its length.
-	 * 
-	 * @return the width xy global
-	 * 
-	 * the Width relative to the world space
-	 */
-	private float getWidthXYGlobal() {
-//		Vector3D p = this.getWidthXYVectLocal();
-//		Matrix m = new Matrix(this.getGlobalMatrix());
-//		m.removeTranslationFromMatrix();
-//		p.transform(m);
-//		return p.length();
-		if (this.hasBounds()){
-			return this.getBounds().getWidthXY(TransformSpace.GLOBAL);
-		}else{
-			OrientedBoundingBox tempBounds = new OrientedBoundingBox(this);
-			return tempBounds.getWidthXY(TransformSpace.GLOBAL);
-		}
-	}
+//	/**
+//	 * Calculates the width of this shape, by using its
+//	 * bounding shape.
+//	 * Uses the objects local transform. So the width will be
+//	 * relative to the parent only - not the whole world
+//	 * 
+//	 * @return the width xy relative to parent
+//	 * 
+//	 * the width
+//	 */
+//	private float getWidthXYRelativeToParent() {
+////		Vector3D p = this.getWidthXYVectLocal();
+////		Matrix m = new Matrix(this.getLocalMatrix());
+////		m.removeTranslationFromMatrix();
+////		p.transform(m);
+////		return p.length();
+//		if (this.hasBounds()){
+//			return this.getBounds().getWidthXY(TransformSpace.RELATIVE_TO_PARENT);
+//		}else{
+//			OrientedBoundingBox tempBounds = new OrientedBoundingBox(this);
+//			return tempBounds.getWidthXY(TransformSpace.RELATIVE_TO_PARENT);
+//		}
+//	}
+//	
+//	/**
+//	 * Gets the "Width vector" and transforms it to world space, then calculates
+//	 * its length.
+//	 * 
+//	 * @return the width xy global
+//	 * 
+//	 * the Width relative to the world space
+//	 */
+//	private float getWidthXYGlobal() {
+////		Vector3D p = this.getWidthXYVectLocal();
+////		Matrix m = new Matrix(this.getGlobalMatrix());
+////		m.removeTranslationFromMatrix();
+////		p.transform(m);
+////		return p.length();
+//		if (this.hasBounds()){
+//			return this.getBounds().getWidthXY(TransformSpace.GLOBAL);
+//		}else{
+//			OrientedBoundingBox tempBounds = new OrientedBoundingBox(this);
+//			return tempBounds.getWidthXY(TransformSpace.GLOBAL);
+//		}
+//	}
 	
 	/**
 	 * Gets the "width vector" from its boundingshape. If no boundingshape is set,

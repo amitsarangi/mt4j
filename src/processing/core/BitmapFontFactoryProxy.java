@@ -51,7 +51,7 @@ public class BitmapFontFactoryProxy implements IFontFactory {
 		logger.addAppender(ca);
 	}
 	
-	public static String defaultCharacters = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZÄÖÜabcdefghijklmnopqrstuvwxyzäöü<>|,;.:-_#'+*!\"§$%&/()=?´{[]}\\@";
+	public static String defaultCharacters = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZÃ„Ã–ÃœabcdefghijklmnopqrstuvwxyzÃ¤Ã¶Ã¼<>|,;.:-_#'+*!\"Â§$%&/()=?Â´{[]}\\@";
 	
 //	static{
 //		FontManager.getInstance().registerFontFactory("", new BitmapFontFactory());
@@ -215,34 +215,38 @@ public class BitmapFontFactoryProxy implements IFontFactory {
 	 */
 	private PFont getProcessingFont(PApplet pa, String fontFileName, int fontSize, boolean antiAliased) throws FileNotFoundException{
 		PFont p5Font;
-		//FIXME when loading the vlw font the font size and anti aliasing is already determined with the file
+		//When loading the vlw font the font size and anti aliasing is already determined with the file
 		//and our parameter isnt honored
 		if (fontFileName.endsWith(".vlw")){
-			int lastDirFileSeparator = fontFileName.lastIndexOf(java.io.File.separator);
-			int lastDirSeparator = fontFileName.lastIndexOf(MTApplication.separator);
-			if (lastDirFileSeparator != -1){
-//				p5Font = pa.createFont(fontFileName.substring(lastDirSeparator+1, fontFileName.length()), fontSize, false); //FIXME TEST
-				p5Font = pa.loadFont(fontFileName.substring(lastDirFileSeparator+1, fontFileName.length()));
-			}else if (lastDirSeparator != -1){
-				p5Font = pa.loadFont(fontFileName.substring(lastDirSeparator+1, fontFileName.length()));
-			}
-			else{
-				p5Font = pa.loadFont(fontFileName);
+			p5Font = pa.loadFont(fontFileName);
+			//If not found try to load from the "/data" directory
+			if (p5Font == null){
+				int lastDirFileSeparator = fontFileName.lastIndexOf(java.io.File.separator);
+				int lastDirSeparator = fontFileName.lastIndexOf(MTApplication.separator);
+				if (lastDirFileSeparator != -1){
+					p5Font = pa.loadFont(fontFileName.substring(lastDirFileSeparator+1, fontFileName.length()));
+				}else if (lastDirSeparator != -1){
+					p5Font = pa.loadFont(fontFileName.substring(lastDirSeparator+1, fontFileName.length()));
+				}
 			}
 		}
 		else if (fontFileName.endsWith(".ttf") || fontFileName.endsWith(".otf")){
-			int lastDirFileSeparator = fontFileName.lastIndexOf(java.io.File.separator);
-			int lastDirSeparator = fontFileName.lastIndexOf(MTApplication.separator);
-			 //FIXME this doesent use the actual file to load, but rather loads a system font again!?
-			if (lastDirFileSeparator != -1){
-				p5Font = pa.createFont(fontFileName.substring(lastDirFileSeparator+1, fontFileName.length()), fontSize, antiAliased); 
-			}else if (lastDirSeparator != -1){
-				p5Font = pa.createFont(fontFileName.substring(lastDirSeparator+1, fontFileName.length()), fontSize, antiAliased); 
-			}else{
-				p5Font = pa.loadFont(fontFileName);
+			p5Font = pa.createFont(fontFileName, fontSize, antiAliased); 
+			//If not found try to load from the "/data" directory
+			if (p5Font == null){
+				int lastDirFileSeparator = fontFileName.lastIndexOf(java.io.File.separator);
+				int lastDirSeparator = fontFileName.lastIndexOf(MTApplication.separator);
+				if (lastDirFileSeparator != -1){
+					p5Font = pa.createFont(fontFileName.substring(lastDirFileSeparator+1, fontFileName.length()), fontSize, antiAliased); 
+				}else if (lastDirSeparator != -1){
+					p5Font = pa.createFont(fontFileName.substring(lastDirSeparator+1, fontFileName.length()), fontSize, antiAliased); 
+				}else{
+					p5Font = pa.loadFont(fontFileName);
+				}
 			}
 		}
 		else{
+			//No file suffix -> Create font from a java/system font
 			int lastDirFileSeparator = fontFileName.lastIndexOf(java.io.File.separator);
 			int lastDirSeparator = fontFileName.lastIndexOf(MTApplication.separator);
 			if (lastDirFileSeparator != -1){

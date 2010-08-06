@@ -1098,5 +1098,13 @@ public class GLTexture extends PImage {
      border; POTS textures do support an optional 1-texel border.
 
 	 */
+	
+	
+	@Override
+	protected void finalize() throws Throwable {
+		super.finalize();
+		System.out.println("Finalizing GLTEXTURE - " + this);
+		this.destroy();
+	}
 
 }
