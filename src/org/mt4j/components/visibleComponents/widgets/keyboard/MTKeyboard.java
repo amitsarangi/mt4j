@@ -19,6 +19,7 @@ package org.mt4j.components.visibleComponents.widgets.keyboard;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -80,6 +81,9 @@ public class MTKeyboard extends MTRoundRectangle {
 	
 	/** The text input acceptors. */
 	private List<ITextInputListener> textInputAcceptors;
+	
+	private boolean hardwareInput;
+	
 
 	/**
 	 * Creates a new keyboard without an text input acceptor.
@@ -91,6 +95,9 @@ public class MTKeyboard extends MTRoundRectangle {
 		this.pa = pApplet;
 		//Set drawing mode
 		this.setDrawSmooth(true);
+		
+		//FIXME TEST
+		this.setHardwareInputEnabled(true);
 		
 		this.setName("unnamed mt-keyboard");
 		this.textInputAcceptors = new ArrayList<ITextInputListener>();
@@ -144,8 +151,8 @@ public class MTKeyboard extends MTRoundRectangle {
 		if (MT4jSettings.getInstance().isOpenGlMode()){
 			space.setUseDirectGL(true);
 //			System.out.println(SpaceF.getDisplayListIDs()[0] + "  - " + SpaceF.getDisplayListIDs()[1]);
-//			space.setDisplayListIDs(SpaceF.getDisplayListIDs()); //Wenn nicht displaylisten, müssen wir geometry auch übernehmen!
-			space.getGeometryInfo().setDisplayListIDs(SpaceF.getGeometryInfo().getDisplayListIDs()); //Wenn nicht displaylisten, müssen wir geometry auch übernehmen!
+//			space.setDisplayListIDs(SpaceF.getDisplayListIDs()); //Wenn nicht displaylisten, mï¿½ssen wir geometry auch ï¿½bernehmen!
+			space.getGeometryInfo().setDisplayListIDs(SpaceF.getGeometryInfo().getDisplayListIDs()); //Wenn nicht displaylisten, mï¿½ssen wir geometry auch ï¿½bernehmen!
 			space.setUseDisplayList(true);
 		}
 		space.setNoStroke(false);
@@ -166,118 +173,6 @@ public class MTKeyboard extends MTRoundRectangle {
 		keyList.add(space);
 		this.addChild(space);
 
-		/////////////////////
-		/*
-		ArrayList<KeyInfo> keyInfos = new ArrayList<KeyInfo>();
-		
-		float lineY = 35;
-//		float advanceMent = keyFont.getFontCharacterByUnicode("A").getHorizontalDist()-10;
-		float advanceMent = 42;
-		float startX = 60;
-//		keyInfos.add(new KeyInfo("^", "^", "^", new Vector3D(startX,lineY), 			  KeyInfo.NORMAL_KEY)); //ESC key
-		
-		keyInfos.add(new KeyInfo("1", "1", "1", new Vector3D(startX+1*advanceMent,lineY), KeyInfo.KEY_ONLY_VISIBLE_WHEN_SHIFT_NOTPRESSED));
-		keyInfos.add(new KeyInfo("!", "!", "!", new Vector3D(startX+1*advanceMent,lineY), KeyInfo.KEY_ONLY_VISIBLE_WHEN_SHIFT_PRESSED));
-		
-		keyInfos.add(new KeyInfo("2", "2", "2", new Vector3D(startX+2*advanceMent,lineY), KeyInfo.KEY_ONLY_VISIBLE_WHEN_SHIFT_NOTPRESSED));
-		keyInfos.add(new KeyInfo("\"", "\"", "\"", new Vector3D(startX+2*advanceMent,lineY), KeyInfo.KEY_ONLY_VISIBLE_WHEN_SHIFT_PRESSED));
-		
-		keyInfos.add(new KeyInfo("3", "3", "3", new Vector3D(startX+3*advanceMent,lineY), KeyInfo.NORMAL_KEY));
-		
-		keyInfos.add(new KeyInfo("4", "4", "4", new Vector3D(startX+4*advanceMent,lineY), KeyInfo.KEY_ONLY_VISIBLE_WHEN_SHIFT_NOTPRESSED));
-		keyInfos.add(new KeyInfo("$", "$", "$", new Vector3D(startX+4*advanceMent,lineY), KeyInfo.KEY_ONLY_VISIBLE_WHEN_SHIFT_PRESSED));
-		
-		keyInfos.add(new KeyInfo("5", "5", "5", new Vector3D(startX+5*advanceMent,lineY), KeyInfo.KEY_ONLY_VISIBLE_WHEN_SHIFT_NOTPRESSED));
-		keyInfos.add(new KeyInfo("%", "%", "%", new Vector3D(startX+5*advanceMent,lineY), KeyInfo.KEY_ONLY_VISIBLE_WHEN_SHIFT_PRESSED));
-		
-		keyInfos.add(new KeyInfo("6", "6", "6", new Vector3D(startX+6*advanceMent,lineY), KeyInfo.KEY_ONLY_VISIBLE_WHEN_SHIFT_NOTPRESSED));
-		keyInfos.add(new KeyInfo("&", "&", "&", new Vector3D(startX+6*advanceMent,lineY), KeyInfo.KEY_ONLY_VISIBLE_WHEN_SHIFT_PRESSED));
-		
-		keyInfos.add(new KeyInfo("7", "7", "7", new Vector3D(startX+7*advanceMent,lineY), KeyInfo.KEY_ONLY_VISIBLE_WHEN_SHIFT_NOTPRESSED));
-		keyInfos.add(new KeyInfo("/", "/", "/", new Vector3D(startX+7*advanceMent,lineY), KeyInfo.KEY_ONLY_VISIBLE_WHEN_SHIFT_PRESSED));
-		
-		keyInfos.add(new KeyInfo("8", "8", "8", new Vector3D(startX+8*advanceMent,lineY), KeyInfo.KEY_ONLY_VISIBLE_WHEN_SHIFT_NOTPRESSED));
-		keyInfos.add(new KeyInfo("(", "(", "(", new Vector3D(startX+8*advanceMent,lineY), KeyInfo.KEY_ONLY_VISIBLE_WHEN_SHIFT_PRESSED));
-		
-		keyInfos.add(new KeyInfo("9", "9", "9", new Vector3D(startX+9*advanceMent,lineY), KeyInfo.KEY_ONLY_VISIBLE_WHEN_SHIFT_NOTPRESSED));
-		keyInfos.add(new KeyInfo(")", ")", ")", new Vector3D(startX+9*advanceMent,lineY), KeyInfo.KEY_ONLY_VISIBLE_WHEN_SHIFT_PRESSED));
-		
-		keyInfos.add(new KeyInfo("0", "0", "0", new Vector3D(startX+10*advanceMent,lineY), KeyInfo.KEY_ONLY_VISIBLE_WHEN_SHIFT_NOTPRESSED));
-		keyInfos.add(new KeyInfo("=", "=", "=", new Vector3D(startX+10*advanceMent,lineY), KeyInfo.KEY_ONLY_VISIBLE_WHEN_SHIFT_PRESSED));
-		
-		keyInfos.add(new KeyInfo("\\", "\\", "\\", new Vector3D(startX+11*advanceMent,lineY), KeyInfo.KEY_ONLY_VISIBLE_WHEN_SHIFT_NOTPRESSED));
-		keyInfos.add(new KeyInfo("?", "?", "?", new Vector3D(startX+11*advanceMent,lineY), KeyInfo.KEY_ONLY_VISIBLE_WHEN_SHIFT_PRESSED));
-		
-		//////////////////
-		lineY = 77;
-		startX = 80; // | + 27
-		
-		keyInfos.add(new KeyInfo("Q", "q", "Q", new Vector3D(startX+1*advanceMent,lineY),  KeyInfo.NORMAL_KEY)); 
-		keyInfos.add(new KeyInfo("W", "w", "W", new Vector3D(startX+2*advanceMent,lineY),  KeyInfo.NORMAL_KEY));
-		keyInfos.add(new KeyInfo("E", "e", "E", new Vector3D(startX+3*advanceMent,lineY),  KeyInfo.NORMAL_KEY));
-		keyInfos.add(new KeyInfo("R", "r", "R", new Vector3D(startX+4*advanceMent,lineY),  KeyInfo.NORMAL_KEY));
-		keyInfos.add(new KeyInfo("T", "t", "T", new Vector3D(startX+5*advanceMent,lineY),  KeyInfo.NORMAL_KEY));
-		keyInfos.add(new KeyInfo("Z", "z", "Z", new Vector3D(startX+6*advanceMent,lineY),  KeyInfo.NORMAL_KEY));
-		keyInfos.add(new KeyInfo("U", "u", "U", new Vector3D(startX+7*advanceMent,lineY),  KeyInfo.NORMAL_KEY));
-		keyInfos.add(new KeyInfo("I", "i", "I", new Vector3D(startX+8*advanceMent,lineY),  KeyInfo.NORMAL_KEY));
-		keyInfos.add(new KeyInfo("O", "o", "O", new Vector3D(startX+9*advanceMent,lineY),  KeyInfo.NORMAL_KEY));
-		keyInfos.add(new KeyInfo("P", "p", "P", new Vector3D(startX+10*advanceMent,lineY), KeyInfo.NORMAL_KEY));
-		//Ü
-		keyInfos.add(new KeyInfo("111", "ü", "Ü", new Vector3D(startX+11*advanceMent,lineY), KeyInfo.NORMAL_KEY));
-		
-		keyInfos.add(new KeyInfo("+", "+", "+", new Vector3D(startX+12*advanceMent,lineY), KeyInfo.KEY_ONLY_VISIBLE_WHEN_SHIFT_NOTPRESSED));
-		keyInfos.add(new KeyInfo("*", "*", "*", new Vector3D(startX+12*advanceMent,lineY), KeyInfo.KEY_ONLY_VISIBLE_WHEN_SHIFT_PRESSED));
-		
-		lineY = 119;
-		startX = 136;  //+58
-		keyInfos.add(new KeyInfo("A", "a", "A", new Vector3D(startX,lineY), 			   KeyInfo.NORMAL_KEY)); //
-		keyInfos.add(new KeyInfo("S", "s", "S", new Vector3D(startX+1*advanceMent,lineY),  KeyInfo.NORMAL_KEY));
-		keyInfos.add(new KeyInfo("D", "d", "D", new Vector3D(startX+2*advanceMent,lineY),  KeyInfo.NORMAL_KEY));
-		keyInfos.add(new KeyInfo("F", "f", "F", new Vector3D(startX+3*advanceMent,lineY),  KeyInfo.NORMAL_KEY));
-		keyInfos.add(new KeyInfo("G", "g", "G", new Vector3D(startX+4*advanceMent,lineY),  KeyInfo.NORMAL_KEY));
-		keyInfos.add(new KeyInfo("H", "h", "H", new Vector3D(startX+5*advanceMent,lineY),  KeyInfo.NORMAL_KEY));
-		keyInfos.add(new KeyInfo("J", "j", "J", new Vector3D(startX+6*advanceMent,lineY),  KeyInfo.NORMAL_KEY));
-		keyInfos.add(new KeyInfo("K", "k", "K", new Vector3D(startX+7*advanceMent,lineY),  KeyInfo.NORMAL_KEY));
-		keyInfos.add(new KeyInfo("L", "l", "L", new Vector3D(startX+8*advanceMent,lineY),  KeyInfo.NORMAL_KEY));
-		//Ö
-		keyInfos.add(new KeyInfo("1111", "ö", "Ö", new Vector3D(startX+9*advanceMent,lineY),  KeyInfo.NORMAL_KEY));
-		//Ä
-		keyInfos.add(new KeyInfo("11", "ä", "Ä", new Vector3D(startX+10*advanceMent,lineY),  KeyInfo.NORMAL_KEY));
-		
-		
-		////////////////////
-		lineY = 161;
-		startX = 70; // -60
-		keyInfos.add(new KeyInfo("<", "<", "<", new Vector3D(startX+1*advanceMent,lineY), KeyInfo.KEY_ONLY_VISIBLE_WHEN_SHIFT_NOTPRESSED));
-		keyInfos.add(new KeyInfo(">", ">", ">", new Vector3D(startX+1*advanceMent,lineY), KeyInfo.KEY_ONLY_VISIBLE_WHEN_SHIFT_PRESSED));
-		
-		keyInfos.add(new KeyInfo("Y", "y", "Y", new Vector3D(startX+2*advanceMent,lineY), KeyInfo.NORMAL_KEY));
-		keyInfos.add(new KeyInfo("X", "x", "X", new Vector3D(startX+3*advanceMent,lineY), KeyInfo.NORMAL_KEY));
-		keyInfos.add(new KeyInfo("C", "c", "C", new Vector3D(startX+4*advanceMent,lineY), KeyInfo.NORMAL_KEY));
-		keyInfos.add(new KeyInfo("V", "v", "V", new Vector3D(startX+5*advanceMent,lineY), KeyInfo.NORMAL_KEY));
-		keyInfos.add(new KeyInfo("B", "b", "B", new Vector3D(startX+6*advanceMent,lineY), KeyInfo.NORMAL_KEY));
-		keyInfos.add(new KeyInfo("N", "n", "N", new Vector3D(startX+7*advanceMent,lineY), KeyInfo.NORMAL_KEY));
-		keyInfos.add(new KeyInfo("M", "m", "M", new Vector3D(startX+8*advanceMent,lineY), KeyInfo.NORMAL_KEY));
-		
-		keyInfos.add(new KeyInfo(",", ",", ",", new Vector3D(startX+9*advanceMent,lineY), KeyInfo.KEY_ONLY_VISIBLE_WHEN_SHIFT_NOTPRESSED));
-		keyInfos.add(new KeyInfo(";", ";", ";", new Vector3D(startX+9*advanceMent,lineY), KeyInfo.KEY_ONLY_VISIBLE_WHEN_SHIFT_PRESSED));
-		
-		keyInfos.add(new KeyInfo(".", ".", ".", new Vector3D(startX+10*advanceMent,lineY), KeyInfo.KEY_ONLY_VISIBLE_WHEN_SHIFT_NOTPRESSED));
-		keyInfos.add(new KeyInfo(":", ":", ":", new Vector3D(startX+10*advanceMent,lineY), KeyInfo.KEY_ONLY_VISIBLE_WHEN_SHIFT_PRESSED));
-		
-		keyInfos.add(new KeyInfo("-", "-", "-", new Vector3D(startX+11*advanceMent,lineY), KeyInfo.NORMAL_KEY));
-		
-		keyInfos.add(new KeyInfo("#", "#", "#", new Vector3D(startX+12*advanceMent,lineY),  KeyInfo.KEY_ONLY_VISIBLE_WHEN_SHIFT_NOTPRESSED));
-		keyInfos.add(new KeyInfo("'", "'", "'", new Vector3D(startX+12*advanceMent,lineY),  KeyInfo.KEY_ONLY_VISIBLE_WHEN_SHIFT_PRESSED));
-		
-		///////////
-		//Special keys
-		keyInfos.add(new KeyInfo("z", "back", "back", 	new Vector3D(580,35),  KeyInfo.NORMAL_KEY));//Backspace
-		keyInfos.add(new KeyInfo("v", "\t", "\t", 	new Vector3D(62,77),  KeyInfo.NORMAL_KEY)); //Tab
-		keyInfos.add(new KeyInfo("j", "shift", "shift", new Vector3D(78,120), KeyInfo.NORMAL_KEY)); //Shift
-		keyInfos.add(new KeyInfo("f", "\n", "\n", 		new Vector3D(615, 105),KeyInfo.NORMAL_KEY)); //Enter
-		*/
-		
 		KeyInfo[] keyInfos = this.getKeysLayout();
 		
 		//CREATE THE KEYS \\
@@ -434,8 +329,8 @@ public class MTKeyboard extends MTRoundRectangle {
 		keyInfos.add(new KeyInfo("I", "i", "I", new Vector3D(startX+8*advanceMent,lineY),  KeyInfo.NORMAL_KEY));
 		keyInfos.add(new KeyInfo("O", "o", "O", new Vector3D(startX+9*advanceMent,lineY),  KeyInfo.NORMAL_KEY));
 		keyInfos.add(new KeyInfo("P", "p", "P", new Vector3D(startX+10*advanceMent,lineY), KeyInfo.NORMAL_KEY));
-		//Ü
-		keyInfos.add(new KeyInfo("111", "ü", "Ü", new Vector3D(startX+11*advanceMent,lineY), KeyInfo.NORMAL_KEY));
+		//Ãœ
+		keyInfos.add(new KeyInfo("111", "Ã¼", "Ãœ", new Vector3D(startX+11*advanceMent,lineY), KeyInfo.NORMAL_KEY));
 		
 		keyInfos.add(new KeyInfo("+", "+", "+", new Vector3D(startX+12*advanceMent,lineY), KeyInfo.KEY_ONLY_VISIBLE_WHEN_SHIFT_NOTPRESSED));
 		keyInfos.add(new KeyInfo("*", "*", "*", new Vector3D(startX+12*advanceMent,lineY), KeyInfo.KEY_ONLY_VISIBLE_WHEN_SHIFT_PRESSED));
@@ -451,11 +346,10 @@ public class MTKeyboard extends MTRoundRectangle {
 		keyInfos.add(new KeyInfo("J", "j", "J", new Vector3D(startX+6*advanceMent,lineY),  KeyInfo.NORMAL_KEY));
 		keyInfos.add(new KeyInfo("K", "k", "K", new Vector3D(startX+7*advanceMent,lineY),  KeyInfo.NORMAL_KEY));
 		keyInfos.add(new KeyInfo("L", "l", "L", new Vector3D(startX+8*advanceMent,lineY),  KeyInfo.NORMAL_KEY));
-		//Ö
-		keyInfos.add(new KeyInfo("1111", "ö", "Ö", new Vector3D(startX+9*advanceMent,lineY),  KeyInfo.NORMAL_KEY));
-		//Ä
-		keyInfos.add(new KeyInfo("11", "ä", "Ä", new Vector3D(startX+10*advanceMent,lineY),  KeyInfo.NORMAL_KEY));
-		
+		//Ã–
+		keyInfos.add(new KeyInfo("1111", "Ã¶", "Ã–", new Vector3D(startX+9*advanceMent,lineY),  KeyInfo.NORMAL_KEY));
+		//Ã„
+        keyInfos.add(new KeyInfo("11", "Ã¤", "Ã„", new Vector3D(startX+10*advanceMent,lineY),  KeyInfo.NORMAL_KEY));
 		
 		////////////////////
 		lineY = 161;
@@ -494,10 +388,7 @@ public class MTKeyboard extends MTRoundRectangle {
 	
 	
 	
-	
 	//FIXME no "@" available in key font?
-	
-	
 	
 	private KeyInfo[] getUSLayout(){
 		ArrayList<KeyInfo> keyInfos = new ArrayList<KeyInfo>();
@@ -558,8 +449,8 @@ public class MTKeyboard extends MTRoundRectangle {
 		keyInfos.add(new KeyInfo("I", "i", "I", new Vector3D(startX+8*advanceMent,lineY),  KeyInfo.NORMAL_KEY));
 		keyInfos.add(new KeyInfo("O", "o", "O", new Vector3D(startX+9*advanceMent,lineY),  KeyInfo.NORMAL_KEY));
 		keyInfos.add(new KeyInfo("P", "p", "P", new Vector3D(startX+10*advanceMent,lineY), KeyInfo.NORMAL_KEY));
-		//Ü
-//		keyInfos.add(new KeyInfo("111", "ü", "Ü", new Vector3D(startX+11*advanceMent,lineY), KeyInfo.NORMAL_KEY));
+		//ï¿½
+//		keyInfos.add(new KeyInfo("111", "ï¿½", "ï¿½", new Vector3D(startX+11*advanceMent,lineY), KeyInfo.NORMAL_KEY));
 		
 		//FIXME woanders hin
 		keyInfos.add(new KeyInfo("\\", "\\", "\\", new Vector3D(startX+11*advanceMent,lineY), KeyInfo.NORMAL_KEY));
@@ -578,10 +469,10 @@ public class MTKeyboard extends MTRoundRectangle {
 		keyInfos.add(new KeyInfo("J", "j", "J", new Vector3D(startX+6*advanceMent,lineY),  KeyInfo.NORMAL_KEY));
 		keyInfos.add(new KeyInfo("K", "k", "K", new Vector3D(startX+7*advanceMent,lineY),  KeyInfo.NORMAL_KEY));
 		keyInfos.add(new KeyInfo("L", "l", "L", new Vector3D(startX+8*advanceMent,lineY),  KeyInfo.NORMAL_KEY));
-		//Ö
-//		keyInfos.add(new KeyInfo("1111", "ö", "Ö", new Vector3D(startX+9*advanceMent,lineY),  KeyInfo.NORMAL_KEY));
-		//Ä
-//		keyInfos.add(new KeyInfo("11", "ä", "Ä", new Vector3D(startX+10*advanceMent,lineY),  KeyInfo.NORMAL_KEY));
+		//ï¿½
+//		keyInfos.add(new KeyInfo("1111", "ï¿½", "ï¿½", new Vector3D(startX+9*advanceMent,lineY),  KeyInfo.NORMAL_KEY));
+		//ï¿½
+//		keyInfos.add(new KeyInfo("11", "ï¿½", "ï¿½", new Vector3D(startX+10*advanceMent,lineY),  KeyInfo.NORMAL_KEY));
 		
 		keyInfos.add(new KeyInfo(";", ";", ";", new Vector3D(startX+9*advanceMent,lineY), KeyInfo.KEY_ONLY_VISIBLE_WHEN_SHIFT_NOTPRESSED));
 		keyInfos.add(new KeyInfo(":", ":", ":", new Vector3D(startX+9*advanceMent,lineY), KeyInfo.KEY_ONLY_VISIBLE_WHEN_SHIFT_PRESSED));
@@ -611,11 +502,6 @@ public class MTKeyboard extends MTRoundRectangle {
 		keyInfos.add(new KeyInfo("/", "/", "/", new Vector3D(startX+11*advanceMent,lineY), KeyInfo.KEY_ONLY_VISIBLE_WHEN_SHIFT_NOTPRESSED));
 		keyInfos.add(new KeyInfo("?", "?", "?", new Vector3D(startX+11*advanceMent,lineY), KeyInfo.KEY_ONLY_VISIBLE_WHEN_SHIFT_PRESSED));
 		
-		
-		
-		
-		
-		
 		///////////
 		//Special keys
 		keyInfos.add(new KeyInfo("z", "back", "back", 	new Vector3D(580,35),  KeyInfo.NORMAL_KEY));//Backspace
@@ -627,22 +513,12 @@ public class MTKeyboard extends MTRoundRectangle {
 	}
 	
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 	private void scaleKey(MTKey key, float scale){
 //		Vector3D scalingPoint = new Vector3D(0,0,0);
 		Vector3D scalingPoint = key.getCenterPointLocal();
 		key.scale(1/key.getHeightXY(TransformSpace.RELATIVE_TO_PARENT), 1/key.getHeightXY(TransformSpace.RELATIVE_TO_PARENT), 1, scalingPoint);
 		key.scale(scale, scale, 1, scalingPoint);
 	}
-	
 	
 	
 	private boolean setWidthRelativeToParent(float width){
@@ -822,7 +698,7 @@ public class MTKeyboard extends MTRoundRectangle {
 			Vector3D centerPoint;
 			if (shape.hasBounds()){
 				centerPoint = shape.getBounds().getCenterPointLocal();
-				centerPoint.transform(shape.getLocalMatrix()); //TODO nötig?
+				centerPoint.transform(shape.getLocalMatrix()); //TODO nï¿½tig?
 			}else{
 				centerPoint = shape.getCenterPointGlobal();
 				centerPoint.transform(shape.getGlobalInverseMatrix());
@@ -875,23 +751,6 @@ public class MTKeyboard extends MTRoundRectangle {
 		
 	}
 	
-//	/**
-//	 * Gets the text input acceptor.
-//	 * 
-//	 * @return the text input acceptor
-//	 */
-//	public ITextInputAcceptor getTextInputAcceptor() {
-//		return textInputAcceptor;
-//	}
-//
-//	/**
-//	 * Sets the text input acceptor.
-//	 * 
-//	 * @param textInputAcceptor the new text input acceptor
-//	 */
-//	public void setTextInputAcceptor(ITextInputAcceptor textInputAcceptor) {
-//		this.textInputAcceptor = textInputAcceptor;
-//	}
 	
 	public synchronized void addTextInputListener(ITextInputListener textListener){
 		if (!this.textInputAcceptors.contains(textListener)){
@@ -946,6 +805,50 @@ public class MTKeyboard extends MTRoundRectangle {
 	}
 	
 	
+	public void setHardwareInputEnabled(boolean hardwareInput){
+		try {
+			PApplet app = getRenderer();
+			if (hardwareInput) {
+				app.registerKeyEvent(this);
+			}else{
+				app.unregisterKeyEvent(this);
+			}
+		} catch (Exception e) {
+			System.err.println(e.getMessage());
+		}
+		this.hardwareInput = hardwareInput;
+	}
+	
+	public boolean isHardwareInputEnabled(){
+		return this.hardwareInput;
+	}
+
+
+	public void keyEvent(KeyEvent e){
+		if (this.isEnabled()){
+			if (e.getID()!= KeyEvent.KEY_PRESSED) return;
+
+			String keyCode = String.valueOf(e.getKeyChar());
+			//System.out.println("Key input: " + keyCode);
+			ITextInputListener[] listeners = this.getTextInputListeners();
+			for (int i = 0; i < listeners.length; i++) {
+				ITextInputListener textInputListener = listeners[i];
+				if (e.getKeyCode() == KeyEvent.VK_BACK_SPACE){
+					textInputListener.removeLastCharacter();
+				}else if (e.getKeyCode() == KeyEvent.VK_SHIFT 
+						|| e.getKeyCode() == KeyEvent.VK_ALT
+						|| e.getKeyCode() == KeyEvent.VK_ALT_GRAPH
+						|| e.getKeyCode() == KeyEvent.VK_CONTROL
+				){
+					//do nothing
+				}else{
+					textInputListener.appendCharByUnicode(keyCode);
+				}
+			}
+		}
+	} 
+
+	
 	@Override
 	protected void destroyComponent() {
 		super.destroyComponent();
@@ -954,6 +857,14 @@ public class MTKeyboard extends MTRoundRectangle {
 		keyList.clear();
 		shiftChangers.clear();
 		textInputAcceptors.clear();
+		
+		if (this.isHardwareInputEnabled()){
+			try {
+				getRenderer().unregisterKeyEvent(this);
+			} catch (Exception e) {
+				System.err.println(e.getMessage());
+			}
+		}
 	}
 
 }

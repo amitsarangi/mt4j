@@ -554,13 +554,12 @@ public class MTHexagonMenu extends MTRectangle implements CSSStylableComponent {
 
 				TapEvent te = (TapEvent) ge;
 				if (te.getTapID() == TapEvent.BUTTON_CLICKED) {
-					Vector3D w = Tools3D.project(app, app.getCurrentScene()
-							.getSceneCam(), te.getLocationOnScreen());
+
 					for (PolygonListeners pl : children) {
 						pl.component.setPickable(true);
 						if (pl.component.getIntersectionGlobal(Tools3D
-								.getCameraPickRay(app, pl.component, w.getX(),
-										w.getY())) != null) {
+								.getCameraPickRay(app, pl.component, te.getCursor().getPosition().x,
+										te.getCursor().getPosition().y)) != null) {
 							pl.listener.processGestureEvent(ge);
 						} else {
 

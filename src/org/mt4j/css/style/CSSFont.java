@@ -315,4 +315,22 @@ public class CSSFont {
 		return true;
 	}
 	
+	public CSSFont clone() {
+		CSSFont newFont = new CSSFont();
+		newFont.color = this.color.getCopy();
+		newFont.customType = this.customType.substring(0);
+		newFont.family = this.family;
+		newFont.fontsize = this.fontsize;
+		newFont.modified = this.modified;
+		newFont.style = this.style;
+		newFont.weight =this.weight;
+		return newFont;
+	}
+	public CSSFont clone(int fontsize) {
+		CSSFont newFont = this.clone();
+		newFont.setFontsize(fontsize);
+		newFont.setModified(true);
+		return newFont;
+	}
+	
 }

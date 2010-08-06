@@ -54,12 +54,12 @@ import processing.core.PGraphics;
  * @author Christopher Ruff
  */
 public class MTTextArea extends MTRectangle implements IdragClusterable, ITextInputListener, Comparable<Object>{
-		
+	
 	/** The pa. */
 	private PApplet pa;
 	
 	/** The character list. */
-	private ArrayList<IFontCharacter> characterList;
+	private ArrayList<IFontCharacter> characterList =  new ArrayList<IFontCharacter>();
 	
 	/** The font. */
 	private IFont font;
@@ -223,10 +223,12 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
 	 * @param font the new font
 	 */
 	public void setFont(IFont font){
+		if (this.characterList != null) {
 		this.font = font;
 		this.fontHeight = font.getFontAbsoluteHeight();
 		this.isBitmapFont = (font instanceof BitmapFont)? true : false;
 		this.updateLayout();
+		}
 	}
 
 	@Override
