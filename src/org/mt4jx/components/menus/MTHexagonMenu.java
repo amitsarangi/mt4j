@@ -30,39 +30,137 @@ import processing.core.PConstants;
 import processing.core.PImage;
 
 /**
- * The Class MTHexagonMenu.
- * Menu that contains Hexagons as buttons containing text or images
+ * The Class MTHexagonMenu. Menu that contains Hexagons as buttons containing
+ * text or images
  */
 public class MTHexagonMenu extends MTRectangle implements CSSStylableComponent {
 
+	/**
+	 * The Class PolygonListeners.
+	 */
+	public class PolygonListeners {
+
+		/** The component. */
+		public MTPolygon component;
+
+		/** The listener. */
+		public IGestureEventListener listener;
+
+		/**
+		 * Instantiates a new polygon listeners mapping.
+		 *
+		 * @param component the component
+		 * @param listener the listener
+		 */
+		public PolygonListeners(MTPolygon component,
+				IGestureEventListener listener) {
+			this.component = component;
+			this.listener = listener;
+		}
+
+	}
+
+	/**
+	 * The listener interface for receiving tap events. The class that is
+	 * interested in processing a tap event implements this interface, and the
+	 * object created with that class is registered with a component using the
+	 * component's <code>addTapListener<code> method. When
+	 * the tap event occurs, that object's appropriate
+	 * method is invoked.
+	 * 
+	 * @see TapEvent
+	 */
+	public class TapListener implements IGestureEventListener {
+		// Tap Listener to reach through TapListeners to children
+
+		/** The children. */
+		List<PolygonListeners> children;
+
+		/**
+		 * Instantiates a new tap listener.
+		 * 
+		 * @param children
+		 *            the children
+		 */
+		public TapListener(List<PolygonListeners> children) {
+			this.children = children;
+		}
+
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see
+		 * org.mt4j.input.inputProcessors.IGestureEventListener#processGestureEvent
+		 * (org.mt4j.input.inputProcessors.MTGestureEvent)
+		 */
+		@Override
+		public boolean processGestureEvent(MTGestureEvent ge) {
+			if (ge instanceof TapEvent) {
+
+				TapEvent te = (TapEvent) ge;
+				if (te.getTapID() == TapEvent.BUTTON_CLICKED) {
+
+					for (PolygonListeners pl : children) {
+						pl.component.setPickable(true);
+						if (pl.component.getIntersectionGlobal(Tools3D
+								.getCameraPickRay(app, pl.component, te
+										.getCursor().getPosition().x, te
+										.getCursor().getPosition().y)) != null) {
+							pl.listener.processGestureEvent(ge);
+						} else {
+
+						}
+						pl.component.setPickable(false);
+					}
+				}
+			}
+			return false;
+		}
+
+	}
+
 	/** The app. */
 	MTApplication app;
-	
+
 	/** The menu contents. */
 	List<MTPolygon> menuContents = new ArrayList<MTPolygon>();
-	
+
 	/** The layout. */
 	List<ArrayList<MTPolygon>> layout = new ArrayList<ArrayList<MTPolygon>>();
-	
+
 	/** The size. */
 	float size;
-	
+
 	/** The current. */
 	int current = 0;
-	
+
 	/** The max per line. */
 	int maxPerLine = 0;
-	
+
 	/** The bezel. */
 	float bezel = 4f;
+	
+
+	// List of the Child Polygons and their IGestureEventListeners
+	/** The polygon listeners. */
+	List<PolygonListeners> polygonListeners = new ArrayList<PolygonListeners>();
+
+
+	/** The menu items. */
+	List<MenuItem> menuItems = new ArrayList<MenuItem>();
+
 
 	/**
 	 * Instantiates a new MTHexagonMenu.
-	 *
-	 * @param app the app
-	 * @param position the position of the Menu
-	 * @param menuItems the menu items
-	 * @param size the size (width of the Hexagon, the height is bigger)
+	 * 
+	 * @param app
+	 *            the app
+	 * @param position
+	 *            the position of the Menu
+	 * @param menuItems
+	 *            the menu items
+	 * @param size
+	 *            the size (width of the Hexagon, the height is bigger)
 	 */
 	public MTHexagonMenu(MTApplication app, Vector3D position,
 			List<MenuItem> menuItems, float size) {
@@ -77,9 +175,32 @@ public class MTHexagonMenu extends MTRectangle implements CSSStylableComponent {
 		this.setNoFill(true);
 		this.setNoStroke(true);
 
-		// List of the Child Polygons and their IGestureEventListeners
-		List<PolygonListeners> pl = new ArrayList<PolygonListeners>();
+		this.menuItems = menuItems;
 
+		this.createMenuItems();
+		
+		// Register the TapProcessor
+		this.setGestureAllowance(TapProcessor.class, true);
+		this.registerInputProcessor(new TapProcessor(app));
+		this.addGestureListener(TapProcessor.class, new TapListener(
+				polygonListeners));
+		this.setCssForceDisable(true);
+
+	}
+
+
+	/**
+	 * Re-Creates the menu items.
+	 */
+	public void createMenuItems() {
+
+		for (MTComponent c : this.getChildren()) {
+			c.destroy();
+		}
+		this.removeAllChildren();
+		menuContents.clear();
+		polygonListeners.clear();
+		
 		for (MenuItem s : menuItems) {
 
 			if (s != null && s.getType() == MenuItem.TEXT) {
@@ -100,7 +221,8 @@ public class MTHexagonMenu extends MTRectangle implements CSSStylableComponent {
 				}
 				container.setChildClip(new Clip(container));
 				container.setPickable(false);
-				pl.add(new PolygonListeners(container, s.getGestureListener()));
+				polygonListeners.add(new PolygonListeners(container, s
+						.getGestureListener()));
 				menuContents.add(container);
 			} else if (s != null && s.getType() == MenuItem.PICTURE) {
 
@@ -140,18 +262,16 @@ public class MTHexagonMenu extends MTRectangle implements CSSStylableComponent {
 
 					menuContents.add(container);
 					container.setPickable(false);
-					pl.add(new PolygonListeners(container, s
+					polygonListeners.add(new PolygonListeners(container, s
 							.getGestureListener()));
 				}
 
 			}
 
 		}
-		// Register the TapProcessor
-		this.setGestureAllowance(TapProcessor.class, true);
-		this.registerInputProcessor(new TapProcessor(app));
-		this.addGestureListener(TapProcessor.class, new TapListener(pl));
-		this.setCssForceDisable(true);
+
+	
+
 
 		// Apply Style to Children
 		this.styleChildren(getNecessaryFontSize(menuItems, size));
@@ -159,58 +279,299 @@ public class MTHexagonMenu extends MTRectangle implements CSSStylableComponent {
 	}
 
 	/**
-	 * Crop image.
+	 * Gets the size.
 	 *
-	 * @param image the image
-	 * @param width the width
-	 * @param height the height
-	 * @param resize resize the image?
+	 * @return the size
+	 */
+	public float getSize() {
+		return size;
+	}
+
+	/**
+	 * Sets the size.
+	 *
+	 * @param size the new size
+	 */
+	public void setSize(float size) {
+		this.size = size;
+		this.createMenuItems();
+	}
+
+	/**
+	 * Calculates the total height of a number of MTTextAreas.
+	 *
+	 * @param components the components
+	 * @return the height
+	 */
+	private float calcTotalHeight(MTComponent[] components) {
+		// Calculate the total height of several MTTextAreas
+		float height = 0;
+		for (MTComponent c : components) {
+			if (c instanceof MTTextArea)
+				height += ((MTTextArea) c).getHeightXY(TransformSpace.LOCAL);
+		}
+
+		return height;
+	}
+
+	/**
+	 * Crop image.
+	 * 
+	 * @param image
+	 *            the image
+	 * @param width
+	 *            the width
+	 * @param height
+	 *            the height
+	 * @param resize
+	 *            resize the image?
 	 * @return the cropped image
 	 */
 	private PImage cropImage(PImage image, int width, int height, boolean resize) {
+		PImage workingCopy;
+		try {
+			workingCopy= (PImage) image.clone();
+		} catch (CloneNotSupportedException e) {
+			System.out.println("Cloning not supported!");
+			workingCopy = image;
+		}
+		
 		// Crops an Image to fit to the Hexagon Size
 		PImage returnImage = app.createImage(width, height, PConstants.RGB);
 
 		// Resize Image to match size, but retain aspect ration
-		if (resize || image.width < size || image.height < size) {
-			if (((float) image.width / (float) width) < ((float) image.height / (float) height)) {
-				image.resize(
+		if (resize || workingCopy.width < size || workingCopy.height < size) {
+			if (((float) workingCopy.width / (float) width) < ((float) workingCopy.height / (float) height)) {
+				workingCopy.resize(
 						width,
-						(int) ((float) image.height / ((float) image.width / (float) width)));
+						(int) ((float) workingCopy.height / ((float) workingCopy.width / (float) width)));
 			} else {
-				image.resize(
-						(int) ((float) image.width / ((float) image.height / (float) height)),
+				workingCopy.resize(
+						(int) ((float) workingCopy.width / ((float) workingCopy.height / (float) height)),
 						height);
 			}
 
 		}
-
+		
+		
+		
 		// Crop Starting Points
-		int x = (image.width / 2) - (width / 2);
-		int y = (image.height / 2) - (height / 2);
+		int x = (workingCopy.width / 2) - (width / 2);
+		int y = (workingCopy.height / 2) - (height / 2);
 
 		// Bugfixing: Don't Allow Out-of-Bounds coordinates
-		if (x + width > image.width)
-			x = image.width - width;
+		if (x + width > workingCopy.width)
+			x = workingCopy.width - width;
 		if (x < 0)
 			x = 0;
-		if (x + width > image.width)
-			width = image.width - x;
-		if (y + height > image.height)
-			x = image.height - height;
+		if (x + width > workingCopy.width)
+			width = workingCopy.width - x;
+		if (y + height > workingCopy.height)
+			x = workingCopy.height - height;
 		if (y < 0)
 			y = 0;
-		if (y + height > image.height)
-			height = image.height - y;
+		if (y + height > workingCopy.height)
+			height = workingCopy.height - y;
 
 		// Crop Image
-		returnImage.copy(image, x, y, width, height, 0, 0, width, height);
+		returnImage.copy(workingCopy, x, y, width, height, 0, 0, width, height);
 
 		return returnImage;
 	}
 
 	/**
-	 * Style the cells of the menu
+	 * Creates a new Hexagon.
+	 *
+	 * @param size the width of the Hexagon
+	 * @return the hexagon
+	 */
+	private MTPolygon getHexagon(float size) {
+		// Create a new Polygon
+		float hypotenuse = (float) ((size / 2f) / Math.cos(Math.toRadians(30)));
+		float ankathete = (float) (Math.cos(Math.toRadians(30)) * hypotenuse);
+		float gegenkathete = (float) (Math.sin(Math.toRadians(30)) * hypotenuse);
+
+		Vertex v1 = new Vertex(0, gegenkathete);
+		Vertex v2 = new Vertex(size / 2f, 0);
+		Vertex v3 = new Vertex(size, gegenkathete);
+		Vertex v4 = new Vertex(size, gegenkathete + hypotenuse);
+		Vertex v5 = new Vertex(size / 2f, 2 * gegenkathete + hypotenuse);
+		Vertex v6 = new Vertex(0, gegenkathete + hypotenuse);
+		Vertex v7 = new Vertex(0, gegenkathete);
+
+		MTPolygon hexagon = new MTPolygon(app, new Vertex[] { v1, v2, v3, v4,
+				v5, v6, v7 });
+
+		return hexagon;
+	}
+
+	/**
+	 * Gets the maximum font size for a certain width.
+	 *
+	 * @param strings the strings
+	 * @param size the width
+	 * @return the maximum font size
+	 */
+	private int getNecessaryFontSize(List<MenuItem> strings, float size) {
+		// Calculate the Necessary font size for a SansSerif Bold font
+		int maxNumberCharacters = 0;
+
+		for (MenuItem s : strings) {
+
+			if (s.getType() == MenuItem.TEXT) {
+				if (s.getMenuText().contains("\n")) {
+					for (String t : s.getMenuText().split("\n")) {
+
+						if (t.length() > maxNumberCharacters)
+							maxNumberCharacters = t.length();
+
+					}
+				} else {
+
+					if (s.getMenuText().length() > maxNumberCharacters)
+						maxNumberCharacters = s.getMenuText().length();
+
+				}
+			}
+		}
+
+		float spc = size / (float) maxNumberCharacters; // Space Per Character
+		int returnValue = (int) (-0.5 + 1.725 * spc); // Determined using Linear
+		// Regression
+		return returnValue;
+
+	}
+
+	/**
+	 * Returns the next n items.
+	 *
+	 * @param next the number of items to return
+	 * @return the list of n next items
+	 */
+	private List<MTPolygon> next(int next) {
+		// Return the next n MTPolygons from the list of children
+		List<MTPolygon> returnValues = new ArrayList<MTPolygon>();
+		for (int i = 0; i < next; i++) {
+			returnValues.add(menuContents.get(current++));
+		}
+
+		return returnValues;
+	}
+
+	/**
+	 * Distribute the contents of the menu to the rows.
+	 */
+	private void organizeHexagons() {
+		// Distribute the items on the cell rows
+		layout.clear();
+		layout.add(new ArrayList<MTPolygon>());
+		layout.add(new ArrayList<MTPolygon>());
+		layout.add(new ArrayList<MTPolygon>());
+		layout.add(new ArrayList<MTPolygon>());
+		current = 0;
+		switch (menuContents.size()) {
+		case 0:
+		case -1:
+			break;
+
+		case 1:
+			layout.get(0).addAll(next(1));
+			maxPerLine = 1;
+			break;
+		case 2:
+			layout.get(0).addAll(next(2));
+			maxPerLine = 2;
+			break;
+		case 3:
+			layout.get(0).addAll(next(1));
+			layout.get(1).addAll(next(2));
+			maxPerLine = 2;
+			break;
+		case 4:
+			layout.get(0).addAll(next(1));
+			layout.get(1).addAll(next(2));
+			layout.get(2).addAll(next(1));
+			maxPerLine = 2;
+			break;
+		case 5:
+			layout.get(0).addAll(next(2));
+			layout.get(1).addAll(next(3));
+			maxPerLine = 3;
+			break;
+		case 6:
+			layout.get(0).addAll(next(1));
+			layout.get(1).addAll(next(2));
+			layout.get(1).addAll(next(3));
+			maxPerLine = 3;
+			break;
+		case 7:
+			layout.get(0).addAll(next(2));
+			layout.get(1).addAll(next(3));
+			layout.get(2).addAll(next(2));
+			maxPerLine = 3;
+			break;
+		case 8:
+			layout.get(0).addAll(next(3));
+			layout.get(1).addAll(next(2));
+			layout.get(2).addAll(next(3));
+			maxPerLine = 3;
+			break;
+		case 9:
+			layout.get(0).addAll(next(2));
+			layout.get(1).addAll(next(3));
+			layout.get(2).addAll(next(4));
+			maxPerLine = 4;
+			break;
+		case 10:
+			layout.get(0).addAll(next(3));
+			layout.get(1).addAll(next(4));
+			layout.get(2).addAll(next(3));
+			maxPerLine = 4;
+			break;
+		case 11:
+			layout.get(0).addAll(next(4));
+			layout.get(1).addAll(next(3));
+			layout.get(2).addAll(next(4));
+			maxPerLine = 4;
+			break;
+		case 12:
+			layout.get(0).addAll(next(3));
+			layout.get(1).addAll(next(4));
+			layout.get(2).addAll(next(5));
+			maxPerLine = 5;
+			break;
+		case 13:
+			layout.get(0).addAll(next(4));
+			layout.get(1).addAll(next(5));
+			layout.get(2).addAll(next(4));
+			maxPerLine = 5;
+			break;
+		case 14:
+			layout.get(0).addAll(next(3));
+			layout.get(1).addAll(next(4));
+			layout.get(2).addAll(next(3));
+			layout.get(3).addAll(next(4));
+			maxPerLine = 4;
+			break;
+		case 15:
+			layout.get(0).addAll(next(4));
+			layout.get(1).addAll(next(5));
+			layout.get(2).addAll(next(6));
+			maxPerLine = 6;
+			break;
+		case 16:
+			layout.get(1).addAll(next(5));
+			layout.get(2).addAll(next(6));
+			layout.get(3).addAll(next(5));
+			maxPerLine = 6;
+			break;
+
+		}
+
+	}
+
+	/**
+	 * Style the cells of the menu.
 	 *
 	 * @param fontsize the font-size
 	 */
@@ -309,293 +670,6 @@ public class MTHexagonMenu extends MTRectangle implements CSSStylableComponent {
 		this.setVertices(new Vertex[] { new Vertex(minx, miny),
 				new Vertex(maxx, miny), new Vertex(maxx, maxy),
 				new Vertex(minx, maxy), new Vertex(minx, miny) });
-	}
-
-	/**
-	 * Returns the next n items
-	 *
-	 * @param next the number of items to return
-	 * @return the list of n next items
-	 */
-	private List<MTPolygon> next(int next) {
-		// Return the next n MTPolygons from the list of children
-		List<MTPolygon> returnValues = new ArrayList<MTPolygon>();
-		for (int i = 0; i < next; i++) {
-			returnValues.add(menuContents.get(current++));
-		}
-
-		return returnValues;
-	}
-
-	/**
-	 * Calculates the total height of a number of MTTextAreas
-	 *
-	 * @param components the components
-	 * @return the height
-	 */
-	private float calcTotalHeight(MTComponent[] components) {
-		// Calculate the total height of several MTTextAreas
-		float height = 0;
-		for (MTComponent c : components) {
-			if (c instanceof MTTextArea)
-				height += ((MTTextArea) c).getHeightXY(TransformSpace.LOCAL);
-		}
-
-		return height;
-	}
-
-	/**
-	 * Gets the maximum font size for a certain width
-	 *
-	 * @param strings the strings
-	 * @param size the width
-	 * @return the maximum font size
-	 */
-	private int getNecessaryFontSize(List<MenuItem> strings, float size) {
-		// Calculate the Necessary font size for a SansSerif Bold font
-		int maxNumberCharacters = 0;
-
-		for (MenuItem s : strings) {
-
-			if (s.getType() == MenuItem.TEXT) {
-				if (s.getMenuText().contains("\n")) {
-					for (String t : s.getMenuText().split("\n")) {
-
-						if (t.length() > maxNumberCharacters)
-							maxNumberCharacters = t.length();
-
-					}
-				} else {
-
-					if (s.getMenuText().length() > maxNumberCharacters)
-						maxNumberCharacters = s.getMenuText().length();
-
-				}
-			}
-		}
-
-		float spc = size / (float) maxNumberCharacters; // Space Per Character
-		int returnValue = (int) (-0.5 + 1.725 * spc); // Determined using Linear
-														// Regression
-		return returnValue;
-
-	}
-
-	/**
-	 * Distribute the contents of the menu to the rows
-	 */
-	private void organizeHexagons() {
-		// Distribute the items on the cell rows
-		layout.clear();
-		layout.add(new ArrayList<MTPolygon>());
-		layout.add(new ArrayList<MTPolygon>());
-		layout.add(new ArrayList<MTPolygon>());
-		layout.add(new ArrayList<MTPolygon>());
-		current = 0;
-		switch (menuContents.size()) {
-		case 0:
-		case -1:
-			break;
-
-		case 1:
-			layout.get(0).addAll(next(1));
-			maxPerLine = 1;
-			break;
-		case 2:
-			layout.get(0).addAll(next(2));
-			maxPerLine = 2;
-			break;
-		case 3:
-			layout.get(0).addAll(next(1));
-			layout.get(1).addAll(next(2));
-			maxPerLine = 2;
-			break;
-		case 4:
-			layout.get(0).addAll(next(1));
-			layout.get(1).addAll(next(2));
-			layout.get(2).addAll(next(1));
-			maxPerLine = 2;
-			break;
-		case 5:
-			layout.get(0).addAll(next(2));
-			layout.get(1).addAll(next(3));
-			maxPerLine = 3;
-			break;
-		case 6:
-			layout.get(0).addAll(next(1));
-			layout.get(1).addAll(next(2));
-			layout.get(1).addAll(next(3));
-			maxPerLine = 3;
-			break;
-		case 7:
-			layout.get(0).addAll(next(2));
-			layout.get(1).addAll(next(3));
-			layout.get(2).addAll(next(2));
-			maxPerLine = 3;
-			break;
-		case 8:
-			layout.get(0).addAll(next(3));
-			layout.get(1).addAll(next(2));
-			layout.get(2).addAll(next(3));
-			maxPerLine = 3;
-			break;
-		case 9:
-			layout.get(0).addAll(next(2));
-			layout.get(1).addAll(next(3));
-			layout.get(2).addAll(next(4));
-			maxPerLine = 3;
-			break;
-		case 10:
-			layout.get(0).addAll(next(3));
-			layout.get(1).addAll(next(4));
-			layout.get(2).addAll(next(3));
-			maxPerLine = 4;
-			break;
-		case 11:
-			layout.get(0).addAll(next(4));
-			layout.get(1).addAll(next(3));
-			layout.get(2).addAll(next(4));
-			maxPerLine = 4;
-			break;
-		case 12:
-			layout.get(0).addAll(next(3));
-			layout.get(1).addAll(next(4));
-			layout.get(2).addAll(next(5));
-			maxPerLine = 4;
-			break;
-		case 13:
-			layout.get(0).addAll(next(4));
-			layout.get(1).addAll(next(5));
-			layout.get(2).addAll(next(4));
-			maxPerLine = 5;
-			break;
-		case 14:
-			layout.get(0).addAll(next(3));
-			layout.get(1).addAll(next(4));
-			layout.get(2).addAll(next(3));
-			layout.get(3).addAll(next(4));
-			maxPerLine = 4;
-			break;
-		case 15:
-			layout.get(0).addAll(next(4));
-			layout.get(1).addAll(next(5));
-			layout.get(2).addAll(next(6));
-			maxPerLine = 5;
-			break;
-		case 16:
-			layout.get(1).addAll(next(5));
-			layout.get(2).addAll(next(6));
-			layout.get(3).addAll(next(5));
-			maxPerLine = 4;
-			break;
-
-		}
-
-	}
-
-	/**
-	 * Creates a new Hexagon
-	 *
-	 * @param size the width of the Hexagon
-	 * @return the hexagon
-	 */
-	private MTPolygon getHexagon(float size) {
-		// Create a new Polygon
-		float hypotenuse = (float) ((size / 2f) / Math.cos(Math.toRadians(30)));
-		float ankathete = (float) (Math.cos(Math.toRadians(30)) * hypotenuse);
-		float gegenkathete = (float) (Math.sin(Math.toRadians(30)) * hypotenuse);
-
-		Vertex v1 = new Vertex(0, gegenkathete);
-		Vertex v2 = new Vertex(size / 2f, 0);
-		Vertex v3 = new Vertex(size, gegenkathete);
-		Vertex v4 = new Vertex(size, gegenkathete + hypotenuse);
-		Vertex v5 = new Vertex(size / 2f, 2 * gegenkathete + hypotenuse);
-		Vertex v6 = new Vertex(0, gegenkathete + hypotenuse);
-		Vertex v7 = new Vertex(0, gegenkathete);
-
-		MTPolygon hexagon = new MTPolygon(app, new Vertex[] { v1, v2, v3, v4,
-				v5, v6, v7 });
-
-		return hexagon;
-	}
-
-	/**
-	 * The listener interface for receiving tap events.
-	 * The class that is interested in processing a tap
-	 * event implements this interface, and the object created
-	 * with that class is registered with a component using the
-	 * component's <code>addTapListener<code> method. When
-	 * the tap event occurs, that object's appropriate
-	 * method is invoked.
-	 *
-	 * @see TapEvent
-	 */
-	public class TapListener implements IGestureEventListener {
-		// Tap Listener to reach through TapListeners to children
-
-		/** The children. */
-		List<PolygonListeners> children;
-
-		/**
-		 * Instantiates a new tap listener.
-		 *
-		 * @param children the children
-		 */
-		public TapListener(List<PolygonListeners> children) {
-			this.children = children;
-		}
-
-		/* (non-Javadoc)
-		 * @see org.mt4j.input.inputProcessors.IGestureEventListener#processGestureEvent(org.mt4j.input.inputProcessors.MTGestureEvent)
-		 */
-		@Override
-		public boolean processGestureEvent(MTGestureEvent ge) {
-			if (ge instanceof TapEvent) {
-
-				TapEvent te = (TapEvent) ge;
-				if (te.getTapID() == TapEvent.BUTTON_CLICKED) {
-
-					for (PolygonListeners pl : children) {
-						pl.component.setPickable(true);
-						if (pl.component.getIntersectionGlobal(Tools3D
-								.getCameraPickRay(app, pl.component, te.getCursor().getPosition().x,
-										te.getCursor().getPosition().y)) != null) {
-							pl.listener.processGestureEvent(ge);
-						} else {
-
-						}
-						pl.component.setPickable(false);
-					}
-				}
-			}
-			return false;
-		}
-
-	}
-
-	/**
-	 * The Class PolygonListeners.
-	 */
-	public class PolygonListeners {
-		
-		/** The component. */
-		public MTPolygon component;
-		
-		/** The listener. */
-		public IGestureEventListener listener;
-
-		/**
-		 * Instantiates a new polygon listeners mapping
-		 *
-		 * @param component the component
-		 * @param listener the listener
-		 */
-		public PolygonListeners(MTPolygon component,
-				IGestureEventListener listener) {
-			this.component = component;
-			this.listener = listener;
-		}
-
 	}
 
 }
