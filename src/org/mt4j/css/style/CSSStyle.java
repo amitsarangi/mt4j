@@ -196,7 +196,23 @@ public class CSSStyle {
 		this.app = app;
 	}
 	
+	/**
+	 * Instantiates a new CSS style using a font
+	 *
+	 * @param font the font (as CSSFont)
+	 * @param app the MTApplication
+	 */
+	public CSSStyle(CSSFont font,MTApplication app) {
+		super();
+		this.selector = new CSSSelector("Universal", CSSSelectorType.UNIVERSAL);
+		this.cssfont = font;
+		this.modifiedFont = true;
+		this.app = app;
+	}
 
+	
+	
+	
 	/**
 	 * Gets the selector.
 	 *

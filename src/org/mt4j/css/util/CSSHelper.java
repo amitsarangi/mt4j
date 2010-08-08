@@ -140,6 +140,9 @@ public class CSSHelper {
 				if (c instanceof MTEllipse) {
 					applyStyleSheetEllipse((MTEllipse) c);
 				}
+				
+				//TODO MTSuggestionTextArea
+				
 				for (MTComponent d : c.getChildren()) {
 					if (d instanceof CSSStylableComponent) {
 						CSSStylableComponent s = (CSSStylableComponent) d;
@@ -270,7 +273,8 @@ public class CSSHelper {
 	 */
 	private void applyStyleSheetTextArea(MTTextArea ta) {
 		if (!virtualStyleSheet.getFont().equals(
-				cssStyleManager.getDefaultFont(app))) {
+				cssStyleManager.getDefaultFont(app))
+				&& !ta.isIgnoreCSSFont()) {
 			ta.setFont(virtualStyleSheet.getFont());
 		}
 	}
