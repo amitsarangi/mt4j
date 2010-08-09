@@ -527,5 +527,10 @@ public class MTLine extends AbstractShape implements CSSStylableComponent{
 		this.cssForceDisabled = cssForceDisabled;
 		
 	}
+
+	@Override
+	public CSSHelper getCssHelper() {
+		return this.cssHelper;
+	}
 	
 }
