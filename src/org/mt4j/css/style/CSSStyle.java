@@ -289,6 +289,7 @@ public class CSSStyle {
 	 */
 	public void setColor(MTColor color) {
 		this.color = color;
+		this.getCssfont().setColor(color);
 		this.modifiedColor = true;
 	}
 	

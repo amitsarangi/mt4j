@@ -578,7 +578,7 @@ public class MTHexagonMenu extends MTRectangle implements CSSStylableComponent {
 	private void styleChildren(int fontsize) {
 		organizeHexagons();
 		CSSStyle vss = this.getCssHelper().getVirtualStyleSheet();
-		CSSFont cf = this.getCssHelper().getVirtualStyleSheet().getCssfont();
+		CSSFont cf = this.getCssHelper().getVirtualStyleSheet().getCssfont().clone();
 		// Style Font: Bold + fitting fontsize
 		cf.setFontsize(fontsize);
 		cf.setWeight(CSSFontWeight.BOLD);

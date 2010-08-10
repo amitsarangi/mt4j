@@ -63,21 +63,38 @@ public class MTSuggestionTextArea extends MTTextArea {
 		public boolean processGestureEvent(MTGestureEvent ge) {
 			if (ge instanceof TapEvent) {
 				TapEvent te = (TapEvent) ge;
-				if (keyboard == null
-						&& te.getTapID() == TapEvent.BUTTON_CLICKED) {
-					keyboard = new MTKeyboard(app);
-					addChild(keyboard);
-					keyboard.addTextInputListener(ta);
-					keyboard.addStateChangeListener(
-							StateChange.COMPONENT_DESTROYED,
-							new KeyboardListener());
-					keyboard.setPositionRelativeToParent(calcPos(
-							ta,
-							keyboard,
-							0,
-							ta.getHeightXY(TransformSpace.LOCAL)
-									+ suggestionBox
-											.getHeightXY(TransformSpace.LOCAL)));
+				System.out.println(te.getTapID());
+				if (te.getTapID() == TapEvent.BUTTON_CLICKED) {
+					if (keyboard == null
+							&& te.getTapID() == TapEvent.BUTTON_CLICKED) {
+						keyboard = new MTKeyboard(app);
+						addChild(keyboard);
+						keyboard.addTextInputListener(ta);
+						keyboard.addStateChangeListener(
+								StateChange.COMPONENT_DESTROYED,
+								new KeyboardListener());
+
+						keyboard.setCssForceDisable(true);
+
+						keyboard.setNoFill(ta.isNoFill());
+						keyboard.setNoStroke(ta.isNoStroke());
+						keyboard.setFillColor(ta.getFillColor());
+						keyboard.setStrokeColor(new MTColor(ta.getStrokeColor().getR(),
+								ta.getStrokeColor().getG(), ta.getStrokeColor().getG(),
+								ta.getStrokeColor().getAlpha() * 0.75f));
+						keyboard.setStrokeWeight(ta.getStrokeWeight());
+
+
+
+
+						keyboard.setPositionRelativeToParent(calcPos(
+								ta,
+								keyboard,
+								0,
+								ta.getHeightXY(TransformSpace.LOCAL)
+								+ suggestionBox
+								.getHeightXY(TransformSpace.LOCAL)));
+					}
 				}
 			}
 			return false;
@@ -174,7 +191,7 @@ public class MTSuggestionTextArea extends MTTextArea {
 	MTKeyboard keyboard;
 
 	/** The width. */
-	float width;
+	float width = -1f;
 
 	/** The current suggestions. */
 	List<String> currentSuggestions = new ArrayList<String>();
@@ -374,10 +391,15 @@ public class MTSuggestionTextArea extends MTTextArea {
 	 */
 	private void init(MTApplication app, float width, List<String> suggestions) {
 		this.width = width;
-		this.setWidthLocal(width);
+		
 		this.availableValues = suggestions;
 		this.app = app;
-
+		this.setFont(this.getCssHelper().getVirtualStyleSheet().getFont());
+		this.setWidthLocal(width);
+		
+		this.removeAllChildren();
+		this.removeAllGestureEventListeners(TapProcessor.class);
+		
 		// Add Tap listener to evoke Keyboard
 		this.setGestureAllowance(TapProcessor.class, true);
 		this.registerInputProcessor(new TapProcessor(app));
@@ -397,5 +419,13 @@ public class MTSuggestionTextArea extends MTTextArea {
 
 		this.addChild(suggestionBox);
 		drawSuggestionBox();
+	}
+	
+	public void init() {
+		if (app != null && width != -1f && this.availableValues != null) {
+			init(app, width, this.availableValues);
+		}
+		
+		
 	}
 }

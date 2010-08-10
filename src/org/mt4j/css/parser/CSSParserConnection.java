@@ -1,5 +1,6 @@
 package org.mt4j.css.parser;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
@@ -39,6 +40,15 @@ public class CSSParserConnection {
 		List<CSSStyle> styles= new ArrayList<CSSStyle>();
 		cssh = new CSSHandler(app, styles);
 		
+		boolean exists_data = (new File("data" + MTApplication.separator + source)).exists();
+		boolean exists_root =  (new File(source)).exists();
+		boolean exists_css = (new File("css" + MTApplication.separator + source)).exists();
+		
+		if (exists_data && !exists_css) source = "data" + MTApplication.separator + source; 
+		if (exists_css) source = "css" + MTApplication.separator + source; 
+		
+		if (exists_css || exists_data || exists_root) {
+		
 		pa = new Parser();
 		try {
 			fileReader = new FileReader(source);
@@ -55,6 +65,10 @@ public class CSSParserConnection {
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		}
+		} else {
+			System.out.println("File not found: " + source);
+			
 		}
 		
 		

@@ -7,6 +7,7 @@ import org.mt4j.MTApplication;
 import org.mt4j.components.MTComponent;
 import org.mt4j.components.visibleComponents.font.FontManager;
 import org.mt4j.components.visibleComponents.font.IFont;
+import org.mt4j.css.parser.CSSHandler;
 import org.mt4j.css.parser.CSSParserConnection;
 import org.mt4j.css.style.CSSSelector;
 import org.mt4j.css.style.CSSStyle;
@@ -58,9 +59,12 @@ public class CSSStyleManager {
 	 */
 	public void loadStyles(String uri) {
 		CSSParserConnection pc = new CSSParserConnection(uri, app);
-		List<CSSStyle> newStyles = pc.getCssh().getStyles();
-		for (CSSStyle s: newStyles) {
-			this.styles.add(new CSSStyleHierarchy(s));
+		CSSHandler handler = pc.getCssh();
+		if (handler != null) {
+			List<CSSStyle> newStyles = handler.getStyles();
+			for (CSSStyle s: newStyles) {
+				this.styles.add(new CSSStyleHierarchy(s));
+			}
 		}
 	}
 	
@@ -197,8 +201,21 @@ public class CSSStyleManager {
 			
 			
 		}
+		MTColor color = getBackgroundColor();
+		
 		components.removeAll(toDelete);
 	}
+	
+	private MTColor getBackgroundColor() {
+		MTColor color = null;
+		for (CSSStyleHierarchy s: styles) {
+			if (s.getStyle().isModifiedBackgroundColor()) color = s.getStyle().getBackgroundColor();
+		}
+		
+		
+		return color;
+	}
+	
 	
 	/**
 	 * Gets the first style which contains a specific selector.

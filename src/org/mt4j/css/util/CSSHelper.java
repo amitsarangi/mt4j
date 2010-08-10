@@ -33,6 +33,7 @@ import org.mt4j.util.opengl.GLTexture.EXPANSION_FILTER;
 import org.mt4j.util.opengl.GLTexture.SHRINKAGE_FILTER;
 import org.mt4j.util.opengl.GLTexture.TEXTURE_TARGET;
 import org.mt4j.util.opengl.GLTexture.WRAP_MODE;
+import org.mt4jx.components.generic.MTSuggestionTextArea;
 
 
 import processing.core.PImage;
@@ -120,6 +121,7 @@ public class CSSHelper {
 	 * Apply the style sheet. Disambiguate between different subclasses of MTComponent
 	 */
 	public void applyStyleSheet() {
+		
 		if (c instanceof CSSStylableComponent) {
 			CSSStylableComponent sc = (CSSStylableComponent)c;
 			if (!sc.isCssForceDisabled() && ((sc.isCSSStyled() && !app.getCssStyleManager().isGloballyDisabled()) || app.getCssStyleManager().isGloballyEnabled())) {
@@ -141,7 +143,10 @@ public class CSSHelper {
 					applyStyleSheetEllipse((MTEllipse) c);
 				}
 				
-				//TODO MTSuggestionTextArea
+				if (c instanceof MTSuggestionTextArea) {
+					MTSuggestionTextArea sta = (MTSuggestionTextArea)c;
+					sta.init();
+				}
 				
 				for (MTComponent d : c.getChildren()) {
 					if (d instanceof CSSStylableComponent) {

@@ -527,7 +527,7 @@ public class MTSquareMenu extends MTRectangle implements CSSStylableComponent {
 	private void styleChildren(int fontsize) {
 		organizeRectangles();
 		CSSStyle vss = this.getCssHelper().getVirtualStyleSheet();
-		CSSFont cf = this.getCssHelper().getVirtualStyleSheet().getCssfont();
+		CSSFont cf = this.getCssHelper().getVirtualStyleSheet().getCssfont().clone();
 		// Style Font: Bold + fitting fontsize
 		cf.setFontsize(fontsize);
 		cf.setWeight(CSSFontWeight.BOLD);
