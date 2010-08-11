@@ -389,7 +389,7 @@ public class CSSStyle {
 		case NONE:
 			return (short) 0;
 		case DOTTED:
-			return (short) 0xCCCC;
+			return (short) 0x0F0F;
 		case DASHED:
 			return (short) 0x00FF;
 		case HIDDEN:

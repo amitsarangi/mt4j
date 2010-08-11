@@ -63,7 +63,6 @@ public class MTSuggestionTextArea extends MTTextArea {
 		public boolean processGestureEvent(MTGestureEvent ge) {
 			if (ge instanceof TapEvent) {
 				TapEvent te = (TapEvent) ge;
-				System.out.println(te.getTapID());
 				if (te.getTapID() == TapEvent.BUTTON_CLICKED) {
 					if (keyboard == null
 							&& te.getTapID() == TapEvent.BUTTON_CLICKED) {
@@ -164,9 +163,7 @@ public class MTSuggestionTextArea extends MTTextArea {
 							.getHeightXY(TransformSpace.LOCAL)
 							/ (float) (suggestionBox.getLineCount() + 1);
 					int line = (int) ((x.y - zero) / heightPerLine);
-					System.out.println(line + " Line Count: "
-							+ suggestionBox.getLineCount()
-							+ " Height per Line: " + heightPerLine);
+
 					if (currentSuggestions.size() > line) {
 						setText(currentSuggestions.get(line));
 					}
