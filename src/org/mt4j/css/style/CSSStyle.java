@@ -1,9 +1,5 @@
 package org.mt4j.css.style;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 import org.mt4j.MTApplication;
 import org.mt4j.components.visibleComponents.font.IFont;
 import org.mt4j.css.util.CSSFontManager;
@@ -13,7 +9,6 @@ import org.mt4j.util.MTColor;
 
 import processing.core.PImage;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class CSSStyle.
  */
@@ -22,10 +17,10 @@ public class CSSStyle {
 	/** The MTApplication. */
 	MTApplication app;
 	
-	/** The uri of the style file */
+	/** The uri of the style file. */
 	String uri = "";
 	
-	/** Has the uri been modified */
+	/** Has the uri been modified. */
 	boolean modifiedUri = false;
 	
 
@@ -39,24 +34,22 @@ public class CSSStyle {
 	/** The background color. */
 	MTColor backgroundColor = new MTColor(0,0,0,0);
 	
-	/** The color. */
-	MTColor color= new MTColor(255,255,255,255);
 	
 	/** The border color. */
 	MTColor borderColor = new MTColor(255,255,255,255);
 	
 	/** Have the colors been modified. */
-	boolean modifiedBackgroundColor= false, modifiedColor = false, modifiedBorderColor = false;
+	boolean modifiedBackgroundColor= false, modifiedBorderColor = false;
 	
 	//Background Image
 	
 	/** The background image. */
 	PImage backgroundImage = null;
 	
-	/** The position of the background image */
+	/** The position of the background image. */
 	CSSBackgroundPosition backgroundPosition = new CSSBackgroundPosition();
 	
-	/** The background repeat options */
+	/** The background repeat options. */
 	BackgroundRepeat backgroundRepeat = BackgroundRepeat.REPEAT;
 	
 	/**
@@ -95,7 +88,7 @@ public class CSSStyle {
 	/** The width. */
 	float width = 0;
 	
-	/** Is the width relative */
+	/** Is the width relative. */
 	boolean widthPercentage = false;
 	
 	/** The height. */
@@ -107,24 +100,12 @@ public class CSSStyle {
 	/** The depth. */
 	float depth = 0;
 	
-	/** Have the width/height been modified */
+	/** Have the width/height been modified. */
 	boolean modifiedWidth = false, modifiedHeight = false, modifiedDepth = false;
 	
 	/** Have the relative options been modified. */
 	boolean modifiedWidthPercentage =false, modifiedHeightPercentage = false;
 	
-	
-	/** The x-position. */
-	float xpos = 0;
-	
-	/** The y-position. */
-	float ypos = 0;
-	
-	/** The z-position. */
-	float zpos = 0;
-	
-	/** Have x/y/z-pos been modified? */
-	boolean modifiedXpos = false, modifiedYpos = false, modifiedZpos = false;
 	
 	/** The border width. */
 	float borderWidth = 0;
@@ -135,40 +116,56 @@ public class CSSStyle {
 	/** Have the border/padding width been modified. */
 	boolean modifiedBorderWidth = false, modifiedPaddingWidth = false;
 	
-	/** The font size. */
-	int fontSize = 16;
-	
-	/** Has the font size been modified */
-	boolean modifiedFontSize = false;
-	
+
 	//General Properties
 	/** The visibility. */
 	boolean visibility = true;
 	
-	/** The zIndex. */
-	float zIndex = 0;
-	
+
 	/** Has the visibility/zIndex been modified.*/
 	boolean modifiedVisibility = false, modifiedZIndex = false;
 	
+	/** The opacity. */
 	float opacity = 255;
+	
+	/** The modified opacity. */
 	boolean modifiedOpacity = false;
 	
 	
 	
+	/**
+	 * Gets the opacity.
+	 *
+	 * @return the opacity
+	 */
 	public float getOpacity() {
 		return opacity;
 	}
 
+	/**
+	 * Sets the opacity.
+	 *
+	 * @param opacity the new opacity
+	 */
 	public void setOpacity(float opacity) {
 		this.modifiedOpacity = true;
 		this.opacity = opacity;
 	}
 
+	/**
+	 * Checks if is modified opacity.
+	 *
+	 * @return true, if is modified opacity
+	 */
 	public boolean isModifiedOpacity() {
 		return modifiedOpacity;
 	}
 
+	/**
+	 * Sets the modified opacity.
+	 *
+	 * @param modifiedOpacity the new modified opacity
+	 */
 	public void setModifiedOpacity(boolean modifiedOpacity) {
 		this.modifiedOpacity = modifiedOpacity;
 	}
@@ -184,7 +181,7 @@ public class CSSStyle {
 	}
 	
 	/**
-	 * Instantiates a new CSS style using a selector
+	 * Instantiates a new CSS style using a selector.
 	 *
 	 * @param selector the selector
 	 * @param app the MTApplication
@@ -197,7 +194,7 @@ public class CSSStyle {
 	}
 	
 	/**
-	 * Instantiates a new CSS style using a font
+	 * Instantiates a new CSS style using a font.
 	 *
 	 * @param font the font (as CSSFont)
 	 * @param app the MTApplication
@@ -277,21 +274,21 @@ public class CSSStyle {
 	 *
 	 * @return the color
 	 */
-	public MTColor getColor() {
-		return color;
-		
-	}
+//	public MTColor getColor() {
+//		return color;
+//		
+//	}
 	
 	/**
 	 * Sets the color.
 	 *
 	 * @param color the new color
 	 */
-	public void setColor(MTColor color) {
-		this.color = color;
-		this.getCssfont().setColor(color);
-		this.modifiedColor = true;
-	}
+//	public void setColor(MTColor color) {
+//		this.color = color;
+//		this.getCssfont().setColor(color);
+//		this.modifiedColor = true;
+//	}
 	
 	/**
 	 * Gets the border color.
@@ -497,62 +494,6 @@ public class CSSStyle {
 		this.modifiedDepth = true;
 	}
 	
-	/**
-	 * Gets the xpos.
-	 *
-	 * @return the xpos
-	 */
-	public float getXpos() {
-		return xpos;
-	}
-	
-	/**
-	 * Sets the xpos.
-	 *
-	 * @param xpos the new xpos
-	 */
-	public void setXpos(float xpos) {
-		this.xpos = xpos;
-		this.modifiedXpos = true;
-	}
-	
-	/**
-	 * Gets the ypos.
-	 *
-	 * @return the ypos
-	 */
-	public float getYpos() {
-		return ypos;
-	}
-	
-	/**
-	 * Sets the ypos.
-	 *
-	 * @param ypos the new ypos
-	 */
-	public void setYpos(float ypos) {
-		this.ypos = ypos;
-		this.modifiedYpos = true;
-	}
-	
-	/**
-	 * Gets the zpos.
-	 *
-	 * @return the zpos
-	 */
-	public float getZpos() {
-		return zpos;
-	}
-	
-	/**
-	 * Sets the zpos.
-	 *
-	 * @param zpos the new zpos
-	 */
-	public void setZpos(float zpos) {
-		this.zpos = zpos;
-		this.modifiedZpos = true;
-	}
 	
 	/**
 	 * Gets the border width.
@@ -592,24 +533,17 @@ public class CSSStyle {
 		this.modifiedPaddingWidth = true;
 	}
 	
-	/**
-	 * Gets the font size.
-	 *
-	 * @return the font size
-	 */
-	public int getFontSize() {
-		return fontSize;
-	}
+
 	
 	/**
 	 * Sets the font size.
 	 *
-	 * @param fontSize the new font size
+	 * @return true, if is visibility
 	 */
-	public void setFontSize(int fontSize) {
-		this.fontSize = fontSize;
-		this.modifiedFontSize = true;
-	}
+	//public void setFontSize(int fontSize) {
+	//	this.fontSize = fontSize;
+	//	this.modifiedFontSize = true;
+	//}
 	
 	/**
 	 * Checks if is visible.
@@ -630,24 +564,6 @@ public class CSSStyle {
 		this.modifiedVisibility = true;
 	}
 	
-	/**
-	 * Gets the z index.
-	 *
-	 * @return the z index
-	 */
-	public float getzIndex() {
-		return zIndex;
-	}
-	
-	/**
-	 * Sets the z index.
-	 *
-	 * @param zIndex the new z index
-	 */
-	public void setzIndex(float zIndex) {
-		this.zIndex = zIndex;
-		this.modifiedZIndex = true;
-	}
 
 	/**
 	 * Checks if the width is a percentage.
@@ -689,214 +605,7 @@ public class CSSStyle {
 
 
 
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result
-				+ ((backgroundColor == null) ? 0 : backgroundColor.hashCode());
-		result = prime * result
-				+ ((backgroundImage == null) ? 0 : backgroundImage.hashCode());
-		result = prime
-				* result
-				+ ((backgroundPosition == null) ? 0 : backgroundPosition
-						.hashCode());
-		result = prime
-				* result
-				+ ((backgroundRepeat == null) ? 0 : backgroundRepeat.hashCode());
-		result = prime * result
-				+ ((borderColor == null) ? 0 : borderColor.hashCode());
-		result = prime * result
-				+ ((borderStyle == null) ? 0 : borderStyle.hashCode());
-		result = prime * result + Float.floatToIntBits(borderWidth);
-		result = prime * result + ((color == null) ? 0 : color.hashCode());
-		result = prime * result + ((cssfont == null) ? 0 : cssfont.hashCode());
-		result = prime * result + Float.floatToIntBits(depth);
-		result = prime * result + ((font == null) ? 0 : font.hashCode());
-		result = prime * result + fontSize;
-		result = prime * result + Float.floatToIntBits(height);
-		result = prime * result + (heightPercentage ? 1231 : 1237);
-		result = prime * result + (modifiedBackgroundColor ? 1231 : 1237);
-		result = prime * result + (modifiedBackgroundImage ? 1231 : 1237);
-		result = prime * result + (modifiedBackgroundPosition ? 1231 : 1237);
-		result = prime * result + (modifiedBackgroundRepeat ? 1231 : 1237);
-		result = prime * result + (modifiedBorderColor ? 1231 : 1237);
-		result = prime * result + (modifiedBorderStyle ? 1231 : 1237);
-		result = prime * result + (modifiedBorderWidth ? 1231 : 1237);
-		result = prime * result + (modifiedColor ? 1231 : 1237);
-		result = prime * result + (modifiedCssfont ? 1231 : 1237);
-		result = prime * result + (modifiedDepth ? 1231 : 1237);
-		result = prime * result + (modifiedFont ? 1231 : 1237);
-		result = prime * result + (modifiedFontSize ? 1231 : 1237);
-		result = prime * result + (modifiedHeight ? 1231 : 1237);
-		result = prime * result + (modifiedHeightPercentage ? 1231 : 1237);
-		result = prime * result + (modifiedOpacity ? 1231 : 1237);
-		result = prime * result + (modifiedPaddingWidth ? 1231 : 1237);
-		result = prime * result + (modifiedSelector ? 1231 : 1237);
-		result = prime * result + (modifiedUri ? 1231 : 1237);
-		result = prime * result + (modifiedVisibility ? 1231 : 1237);
-		result = prime * result + (modifiedWidth ? 1231 : 1237);
-		result = prime * result + (modifiedWidthPercentage ? 1231 : 1237);
-		result = prime * result + (modifiedXpos ? 1231 : 1237);
-		result = prime * result + (modifiedYpos ? 1231 : 1237);
-		result = prime * result + (modifiedZIndex ? 1231 : 1237);
-		result = prime * result + (modifiedZpos ? 1231 : 1237);
-		result = prime * result + Float.floatToIntBits(opacity);
-		result = prime * result + Float.floatToIntBits(paddingWidth);
-		result = prime * result
-				+ ((selector == null) ? 0 : selector.hashCode());
-		result = prime * result + ((uri == null) ? 0 : uri.hashCode());
-		result = prime * result + (visibility ? 1231 : 1237);
-		result = prime * result + Float.floatToIntBits(width);
-		result = prime * result + (widthPercentage ? 1231 : 1237);
-		result = prime * result + Float.floatToIntBits(xpos);
-		result = prime * result + Float.floatToIntBits(ypos);
-		result = prime * result + Float.floatToIntBits(zIndex);
-		result = prime * result + Float.floatToIntBits(zpos);
-		return result;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		CSSStyle other = (CSSStyle) obj;
-		if (backgroundColor == null) {
-			if (other.backgroundColor != null)
-				return false;
-		} else if (!backgroundColor.equals(other.backgroundColor))
-			return false;
-		if (backgroundImage == null) {
-			if (other.backgroundImage != null)
-				return false;
-		} else if (!backgroundImage.equals(other.backgroundImage))
-			return false;
-		if (backgroundPosition == null) {
-			if (other.backgroundPosition != null)
-				return false;
-		} else if (!backgroundPosition.equals(other.backgroundPosition))
-			return false;
-		if (backgroundRepeat != other.backgroundRepeat)
-			return false;
-		if (borderColor == null) {
-			if (other.borderColor != null)
-				return false;
-		} else if (!borderColor.equals(other.borderColor))
-			return false;
-		if (borderStyle != other.borderStyle)
-			return false;
-		if (Float.floatToIntBits(borderWidth) != Float
-				.floatToIntBits(other.borderWidth))
-			return false;
-		if (color == null) {
-			if (other.color != null)
-				return false;
-		} else if (!color.equals(other.color))
-			return false;
-		if (cssfont == null) {
-			if (other.cssfont != null)
-				return false;
-		} else if (!cssfont.equals(other.cssfont))
-			return false;
-		if (Float.floatToIntBits(depth) != Float.floatToIntBits(other.depth))
-			return false;
-		if (font == null) {
-			if (other.font != null)
-				return false;
-		} else if (!font.equals(other.font))
-			return false;
-		if (fontSize != other.fontSize)
-			return false;
-		if (Float.floatToIntBits(height) != Float.floatToIntBits(other.height))
-			return false;
-		if (heightPercentage != other.heightPercentage)
-			return false;
-		if (modifiedBackgroundColor != other.modifiedBackgroundColor)
-			return false;
-		if (modifiedBackgroundImage != other.modifiedBackgroundImage)
-			return false;
-		if (modifiedBackgroundPosition != other.modifiedBackgroundPosition)
-			return false;
-		if (modifiedBackgroundRepeat != other.modifiedBackgroundRepeat)
-			return false;
-		if (modifiedBorderColor != other.modifiedBorderColor)
-			return false;
-		if (modifiedBorderStyle != other.modifiedBorderStyle)
-			return false;
-		if (modifiedBorderWidth != other.modifiedBorderWidth)
-			return false;
-		if (modifiedColor != other.modifiedColor)
-			return false;
-		if (modifiedCssfont != other.modifiedCssfont)
-			return false;
-		if (modifiedDepth != other.modifiedDepth)
-			return false;
-		if (modifiedFont != other.modifiedFont)
-			return false;
-		if (modifiedFontSize != other.modifiedFontSize)
-			return false;
-		if (modifiedHeight != other.modifiedHeight)
-			return false;
-		if (modifiedHeightPercentage != other.modifiedHeightPercentage)
-			return false;
-		if (modifiedOpacity != other.modifiedOpacity)
-			return false;
-		if (modifiedPaddingWidth != other.modifiedPaddingWidth)
-			return false;
-		if (modifiedSelector != other.modifiedSelector)
-			return false;
-		if (modifiedUri != other.modifiedUri)
-			return false;
-		if (modifiedVisibility != other.modifiedVisibility)
-			return false;
-		if (modifiedWidth != other.modifiedWidth)
-			return false;
-		if (modifiedWidthPercentage != other.modifiedWidthPercentage)
-			return false;
-		if (modifiedXpos != other.modifiedXpos)
-			return false;
-		if (modifiedYpos != other.modifiedYpos)
-			return false;
-		if (modifiedZIndex != other.modifiedZIndex)
-			return false;
-		if (modifiedZpos != other.modifiedZpos)
-			return false;
-		if (Float.floatToIntBits(opacity) != Float
-				.floatToIntBits(other.opacity))
-			return false;
-		if (Float.floatToIntBits(paddingWidth) != Float
-				.floatToIntBits(other.paddingWidth))
-			return false;
-		if (selector == null) {
-			if (other.selector != null)
-				return false;
-		} else if (!selector.equals(other.selector))
-			return false;
-		if (uri == null) {
-			if (other.uri != null)
-				return false;
-		} else if (!uri.equals(other.uri))
-			return false;
-		if (visibility != other.visibility)
-			return false;
-		if (Float.floatToIntBits(width) != Float.floatToIntBits(other.width))
-			return false;
-		if (widthPercentage != other.widthPercentage)
-			return false;
-		if (Float.floatToIntBits(xpos) != Float.floatToIntBits(other.xpos))
-			return false;
-		if (Float.floatToIntBits(ypos) != Float.floatToIntBits(other.ypos))
-			return false;
-		if (Float.floatToIntBits(zIndex) != Float.floatToIntBits(other.zIndex))
-			return false;
-		if (Float.floatToIntBits(zpos) != Float.floatToIntBits(other.zpos))
-			return false;
-		return true;
-	}
+	
 
 	/**
 	 * Gets the uri.
@@ -970,23 +679,7 @@ public class CSSStyle {
 		this.modifiedBackgroundColor = modifiedBackgroundColor;
 	}
 
-	/**
-	 * Checks if is modified color.
-	 *
-	 * @return true, if is modified color
-	 */
-	public boolean isModifiedColor() {
-		return modifiedColor;
-	}
 
-	/**
-	 * Sets, if the field has been modified: color.
-	 *
-	 * @param modifiedColor the new modified color
-	 */
-	public void setModifiedColor(boolean modifiedColor) {
-		this.modifiedColor = modifiedColor;
-	}
 
 	/**
 	 * Checks if is modified border color.
@@ -1204,59 +897,6 @@ public class CSSStyle {
 		this.modifiedHeightPercentage = modifiedHeightPercentage;
 	}
 
-	/**
-	 * Checks if is modified xpos.
-	 *
-	 * @return true, if is modified xpos
-	 */
-	public boolean isModifiedXpos() {
-		return modifiedXpos;
-	}
-
-	/**
-	 * Sets, if the field has been modified: xpos.
-	 *
-	 * @param modifiedXpos the new modified xpos
-	 */
-	public void setModifiedXpos(boolean modifiedXpos) {
-		this.modifiedXpos = modifiedXpos;
-	}
-
-	/**
-	 * Checks if is modified ypos.
-	 *
-	 * @return true, if is modified ypos
-	 */
-	public boolean isModifiedYpos() {
-		return modifiedYpos;
-	}
-
-	/**
-	 * Sets, if the field has been modified: ypos.
-	 *
-	 * @param modifiedYpos the new modified ypos
-	 */
-	public void setModifiedYpos(boolean modifiedYpos) {
-		this.modifiedYpos = modifiedYpos;
-	}
-
-	/**
-	 * Checks if is modified zpos.
-	 *
-	 * @return true, if is modified zpos
-	 */
-	public boolean isModifiedZpos() {
-		return modifiedZpos;
-	}
-
-	/**
-	 * Sets, if the field has been modified: zpos.
-	 *
-	 * @param modifiedZpos the new modified zpos
-	 */
-	public void setModifiedZpos(boolean modifiedZpos) {
-		this.modifiedZpos = modifiedZpos;
-	}
 
 	/**
 	 * Checks if is modified border width.
@@ -1294,23 +934,6 @@ public class CSSStyle {
 		this.modifiedPaddingWidth = modifiedPaddingWidth;
 	}
 
-	/**
-	 * Checks if is modified font size.
-	 *
-	 * @return true, if is modified font size
-	 */
-	public boolean isModifiedFontSize() {
-		return modifiedFontSize;
-	}
-
-	/**
-	 * Sets, if the field has been modified: font size.
-	 *
-	 * @param modifiedFontSize the new modified font size
-	 */
-	public void setModifiedFontSize(boolean modifiedFontSize) {
-		this.modifiedFontSize = modifiedFontSize;
-	}
 
 	/**
 	 * Checks if is modified visibility.
@@ -1349,7 +972,7 @@ public class CSSStyle {
 	}
 	
 	/**
-	 * Merges two style sheets
+	 * Merges two style sheets.
 	 *
 	 * @param s the style sheet to be added
 	 */
@@ -1378,21 +1001,14 @@ public class CSSStyle {
 		if (s.isModifiedBorderWidth()) {
 			v.setBorderWidth(s.getBorderWidth());
 		}
-		if (s.isModifiedColor()) {
-			v.setColor(s.getColor());
-		}
+
 		if (s.isModifiedCssfont()) {
 			v.setCssfont(s.getCssfont());
 		}
 		if (s.isModifiedDepth()) {
 			v.setDepth(s.getDepth());
 		}
-		//if (s.isModifiedFont()) {
-		//	v.setFont(s.getFont());
-		//}
-		if (s.isModifiedFontSize()) {
-			v.setFontSize(s.getFontSize());
-		}
+
 		if (s.isModifiedHeight()) {
 			v.setHeight(s.getHeight());
 			v.setHeightPercentage(s.isHeightPercentage());
@@ -1407,21 +1023,189 @@ public class CSSStyle {
 			v.setWidth(s.getWidth());
 			v.setWidthPercentage(s.isWidthPercentage());
 		}
-		if (s.isModifiedXpos()) {
-			v.setXpos(s.getXpos());
-		}
-		if (s.isModifiedYpos()) {
-			v.setYpos(s.getYpos());
-		}
-		if (s.isModifiedZIndex()) {
-			v.setzIndex(s.getzIndex());
-		}
-		if (s.isModifiedZpos()) {
-			v.setZpos(s.getZpos());
-		}
+
 		if (s.isModifiedOpacity()) {
 			v.setOpacity(s.getOpacity());
 		}
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((app == null) ? 0 : app.hashCode());
+		result = prime * result
+				+ ((backgroundColor == null) ? 0 : backgroundColor.hashCode());
+		result = prime * result
+				+ ((backgroundImage == null) ? 0 : backgroundImage.hashCode());
+		result = prime
+				* result
+				+ ((backgroundPosition == null) ? 0 : backgroundPosition
+						.hashCode());
+		result = prime
+				* result
+				+ ((backgroundRepeat == null) ? 0 : backgroundRepeat.hashCode());
+		result = prime * result
+				+ ((borderColor == null) ? 0 : borderColor.hashCode());
+		result = prime * result
+				+ ((borderStyle == null) ? 0 : borderStyle.hashCode());
+		result = prime * result + Float.floatToIntBits(borderWidth);
+		result = prime * result + ((cssfont == null) ? 0 : cssfont.hashCode());
+		result = prime * result + Float.floatToIntBits(depth);
+		result = prime * result + Float.floatToIntBits(height);
+		result = prime * result + (heightPercentage ? 1231 : 1237);
+		result = prime * result + (modifiedBackgroundColor ? 1231 : 1237);
+		result = prime * result + (modifiedBackgroundImage ? 1231 : 1237);
+		result = prime * result + (modifiedBackgroundPosition ? 1231 : 1237);
+		result = prime * result + (modifiedBackgroundRepeat ? 1231 : 1237);
+		result = prime * result + (modifiedBorderColor ? 1231 : 1237);
+		result = prime * result + (modifiedBorderStyle ? 1231 : 1237);
+		result = prime * result + (modifiedBorderWidth ? 1231 : 1237);
+		result = prime * result + (modifiedCssfont ? 1231 : 1237);
+		result = prime * result + (modifiedDepth ? 1231 : 1237);
+		result = prime * result + (modifiedFont ? 1231 : 1237);
+		result = prime * result + (modifiedHeight ? 1231 : 1237);
+		result = prime * result + (modifiedHeightPercentage ? 1231 : 1237);
+		result = prime * result + (modifiedOpacity ? 1231 : 1237);
+		result = prime * result + (modifiedPaddingWidth ? 1231 : 1237);
+		result = prime * result + (modifiedSelector ? 1231 : 1237);
+		result = prime * result + (modifiedUri ? 1231 : 1237);
+		result = prime * result + (modifiedVisibility ? 1231 : 1237);
+		result = prime * result + (modifiedWidth ? 1231 : 1237);
+		result = prime * result + (modifiedWidthPercentage ? 1231 : 1237);
+		result = prime * result + (modifiedZIndex ? 1231 : 1237);
+		result = prime * result + Float.floatToIntBits(opacity);
+		result = prime * result + Float.floatToIntBits(paddingWidth);
+		result = prime * result
+				+ ((selector == null) ? 0 : selector.hashCode());
+		result = prime * result + ((uri == null) ? 0 : uri.hashCode());
+		result = prime * result + (visibility ? 1231 : 1237);
+		result = prime * result + Float.floatToIntBits(width);
+		result = prime * result + (widthPercentage ? 1231 : 1237);
+		return result;
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		CSSStyle other = (CSSStyle) obj;
+		if (app == null) {
+			if (other.app != null)
+				return false;
+		} else if (!app.equals(other.app))
+			return false;
+		if (backgroundColor == null) {
+			if (other.backgroundColor != null)
+				return false;
+		} else if (!backgroundColor.equals(other.backgroundColor))
+			return false;
+		if (backgroundImage == null) {
+			if (other.backgroundImage != null)
+				return false;
+		} else if (!backgroundImage.equals(other.backgroundImage))
+			return false;
+		if (backgroundPosition == null) {
+			if (other.backgroundPosition != null)
+				return false;
+		} else if (!backgroundPosition.equals(other.backgroundPosition))
+			return false;
+		if (backgroundRepeat != other.backgroundRepeat)
+			return false;
+		if (borderColor == null) {
+			if (other.borderColor != null)
+				return false;
+		} else if (!borderColor.equals(other.borderColor))
+			return false;
+		if (borderStyle != other.borderStyle)
+			return false;
+		if (Float.floatToIntBits(borderWidth) != Float
+				.floatToIntBits(other.borderWidth))
+			return false;
+		if (cssfont == null) {
+			if (other.cssfont != null)
+				return false;
+		} else if (!cssfont.equals(other.cssfont))
+			return false;
+		if (Float.floatToIntBits(depth) != Float.floatToIntBits(other.depth))
+			return false;
+		if (Float.floatToIntBits(height) != Float.floatToIntBits(other.height))
+			return false;
+		if (heightPercentage != other.heightPercentage)
+			return false;
+		if (modifiedBackgroundColor != other.modifiedBackgroundColor)
+			return false;
+		if (modifiedBackgroundImage != other.modifiedBackgroundImage)
+			return false;
+		if (modifiedBackgroundPosition != other.modifiedBackgroundPosition)
+			return false;
+		if (modifiedBackgroundRepeat != other.modifiedBackgroundRepeat)
+			return false;
+		if (modifiedBorderColor != other.modifiedBorderColor)
+			return false;
+		if (modifiedBorderStyle != other.modifiedBorderStyle)
+			return false;
+		if (modifiedBorderWidth != other.modifiedBorderWidth)
+			return false;
+		if (modifiedCssfont != other.modifiedCssfont)
+			return false;
+		if (modifiedDepth != other.modifiedDepth)
+			return false;
+		if (modifiedFont != other.modifiedFont)
+			return false;
+		if (modifiedHeight != other.modifiedHeight)
+			return false;
+		if (modifiedHeightPercentage != other.modifiedHeightPercentage)
+			return false;
+		if (modifiedOpacity != other.modifiedOpacity)
+			return false;
+		if (modifiedPaddingWidth != other.modifiedPaddingWidth)
+			return false;
+		if (modifiedSelector != other.modifiedSelector)
+			return false;
+		if (modifiedUri != other.modifiedUri)
+			return false;
+		if (modifiedVisibility != other.modifiedVisibility)
+			return false;
+		if (modifiedWidth != other.modifiedWidth)
+			return false;
+		if (modifiedWidthPercentage != other.modifiedWidthPercentage)
+			return false;
+		if (modifiedZIndex != other.modifiedZIndex)
+			return false;
+		if (Float.floatToIntBits(opacity) != Float
+				.floatToIntBits(other.opacity))
+			return false;
+		if (Float.floatToIntBits(paddingWidth) != Float
+				.floatToIntBits(other.paddingWidth))
+			return false;
+		if (selector == null) {
+			if (other.selector != null)
+				return false;
+		} else if (!selector.equals(other.selector))
+			return false;
+		if (uri == null) {
+			if (other.uri != null)
+				return false;
+		} else if (!uri.equals(other.uri))
+			return false;
+		if (visibility != other.visibility)
+			return false;
+		if (Float.floatToIntBits(width) != Float.floatToIntBits(other.width))
+			return false;
+		if (widthPercentage != other.widthPercentage)
+			return false;
+		return true;
 	}
 
 

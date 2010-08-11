@@ -53,17 +53,14 @@ public class CSSParserConnection {
 		try {
 			fileReader = new FileReader(source);
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		pa.setDocumentHandler(cssh);
 		try {
 			pa.parseStyleSheet(new InputSource(fileReader));
 		} catch (CSSException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		} else {

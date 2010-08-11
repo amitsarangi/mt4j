@@ -388,7 +388,7 @@ public class MTHexagonMenu extends MTRectangle implements CSSStylableComponent {
 	private MTPolygon getHexagon(float size) {
 		// Create a new Polygon
 		float hypotenuse = (float) ((size / 2f) / Math.cos(Math.toRadians(30)));
-		float ankathete = (float) (Math.cos(Math.toRadians(30)) * hypotenuse);
+		//float ankathete = (float) (Math.cos(Math.toRadians(30)) * hypotenuse);
 		float gegenkathete = (float) (Math.sin(Math.toRadians(30)) * hypotenuse);
 
 		Vertex v1 = new Vertex(0, gegenkathete);

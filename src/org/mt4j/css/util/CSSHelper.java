@@ -38,7 +38,6 @@ import org.mt4jx.components.generic.MTSuggestionTextArea;
 
 import processing.core.PImage;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class CSSHelper.
  */

@@ -14,7 +14,6 @@ import org.mt4j.css.style.CSSStyle;
 import org.mt4j.css.style.CSSStyleHierarchy;
 import org.mt4j.util.MTColor;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class CSSStyleManager.
  */
@@ -201,21 +200,11 @@ public class CSSStyleManager {
 			
 			
 		}
-		MTColor color = getBackgroundColor();
 		
 		components.removeAll(toDelete);
 	}
 	
-	private MTColor getBackgroundColor() {
-		MTColor color = null;
-		for (CSSStyleHierarchy s: styles) {
-			if (s.getStyle().isModifiedBackgroundColor()) color = s.getStyle().getBackgroundColor();
-		}
-		
-		
-		return color;
-	}
-	
+
 	
 	/**
 	 * Gets the first style which contains a specific selector.
@@ -257,24 +246,6 @@ public class CSSStyleManager {
 		return relevantStyles;
 	}
 	
-
-	/**
-	 * Gets the superclasses of an Object.
-	 *
-	 * @param c the MTComponent
-	 * @return the superclasses
-	 */
-	private List<String> getSuperclasses(Class c) {
-		List<String> superclasses = new ArrayList<String>();
-		superclasses.add(c.getSimpleName().toUpperCase().replace(" ", ""));
-		while (c.getSuperclass() != null) {
-			c = c.getSuperclass();
-			superclasses.add(c.getSimpleName().toUpperCase().replace(" ", ""));
-		}
-		
-		
-		return superclasses;
-	}
 	
 	IFont defaultFont = null;
 	

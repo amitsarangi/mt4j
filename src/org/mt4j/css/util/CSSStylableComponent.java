@@ -14,7 +14,7 @@ public interface CSSStylableComponent {
 	public boolean isCSSStyled();
 	
 	/**
-	 * Enables the CSS (if everything is right)
+	 * Enables the CSS (if everything is right).
 	 */
 	public void enableCSS();
 	
@@ -24,13 +24,29 @@ public interface CSSStylableComponent {
 	public void disableCSS();
 	
 	/**
-	 * Applíes the (global) style sheets
+	 * Applíes the (global) style sheets.
 	 */
 	public void applyStyleSheet();
 	
+	/**
+	 * Gets the css helper.
+	 *
+	 * @return the css helper
+	 */
 	public CSSHelper getCssHelper();
 	
 	
+	/**
+	 * Checks if css is force disabled.
+	 *
+	 * @return true, if is css force disabled
+	 */
 	public boolean isCssForceDisabled();
+	
+	/**
+	 * Sets the css force disable.
+	 *
+	 * @param cssForceDisabled the new css force disable
+	 */
 	public void setCssForceDisable(boolean cssForceDisabled);
 }

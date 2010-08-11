@@ -1,6 +1,5 @@
 package org.mt4j.css.style;
 
-import org.apache.log4j.Logger;
 import org.mt4j.css.util.CSSKeywords.CSSFontFamily;
 import org.mt4j.css.util.CSSKeywords.CSSFontStyle;
 import org.mt4j.css.util.CSSKeywords.CSSFontWeight;

@@ -2,7 +2,6 @@ package org.mt4jx.components.generic;
 
 import org.mt4j.input.inputProcessors.componentProcessors.tapProcessor.TapProcessor;
 import org.mt4j.util.MTColor;
-import org.mt4jx.components.menus.MTHexagonMenu.TapListener;
 
 import processing.core.PApplet;
 

@@ -1,6 +1,5 @@
 package org.mt4jx.components.generic;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Interface BooleanForm for the MTCheckBox and MTOptionBox forms.
  */

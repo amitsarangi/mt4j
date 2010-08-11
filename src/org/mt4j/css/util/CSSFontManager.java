@@ -8,7 +8,6 @@ import org.mt4j.css.util.CSSKeywords.CSSFontWeight;
 import org.mt4j.util.MTColor;
 
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class CSSFontManager.
  */

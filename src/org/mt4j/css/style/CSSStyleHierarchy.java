@@ -1,6 +1,5 @@
 package org.mt4j.css.style;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class CSSStyleHierarchy: Adds hierarchical information to a CSSStyle (for prioritizing/sorting)
  */

@@ -3,12 +3,10 @@ package org.mt4j.css.style;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
 import org.mt4j.components.MTCanvas;
 import org.mt4j.components.MTComponent;
 import org.mt4j.css.util.CSSKeywords.CSSSelectorType;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class CSSSelector.
  */
@@ -696,7 +694,6 @@ public class CSSSelector {
 				return numberOfLevels(c.getParent()) + 1;
 			}
 		} catch (Exception e) {
-			//TODO: Is this right?	
 			return 0;
 		}
 	}

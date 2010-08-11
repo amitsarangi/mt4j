@@ -7,7 +7,6 @@ import org.mt4j.input.inputProcessors.componentProcessors.tapProcessor.TapEvent;
 
 import processing.core.PApplet;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class MTForm.
  */

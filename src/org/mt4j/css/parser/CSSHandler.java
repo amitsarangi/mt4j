@@ -6,7 +6,6 @@ import java.util.StringTokenizer;
 
 import org.apache.log4j.Logger;
 import org.mt4j.MTApplication;
-import org.mt4j.components.visibleComponents.font.BitmapFont;
 import org.mt4j.css.style.CSSBackgroundPosition;
 import org.mt4j.css.style.CSSFont;
 import org.mt4j.css.style.CSSSelector;
@@ -815,7 +814,6 @@ public class CSSHandler implements DocumentHandler{
 		float mmtopx = (1f/254f) * dpi;
 		float pointtopx = (1f/72f) * dpi;
 		float picatopx = (12f/72f) * dpi;
-		float rv;
 		try {
 		switch (value.getLexicalUnitType()) {
 		case LexicalUnit.SAC_CENTIMETER:
@@ -906,22 +904,19 @@ public class CSSHandler implements DocumentHandler{
 
 		
 		CSSSelector newSelector = null;
-		String debugoutput = "";
+
 		
 		if (selector.toString().contains(">")) {
 			String[] parts = selector.toString().split(">", 2);
 			newSelector = processElement(parts[0]);
 			newSelector.setChild(processElement(parts[1]));
-			String work0 = String.copyValueOf(parts[0].toCharArray());	
-			String work1 = String.copyValueOf(parts[1].toCharArray());	
-			debugoutput = "Parent: " + work0.replaceAll(" ", "_") + " Child: " + work1.replaceAll(" ", "_");
+
 		} else {
 			//No Children (yet)
 			newSelector = processElement(selector.toString());
-			debugoutput = "No Parent/Child: " + selector.toString().replaceAll(" ", "_");
 			
 		}
-		//logger.debug(debugoutput + "\n" + newSelector);
+
 		return newSelector;
 	}
 	

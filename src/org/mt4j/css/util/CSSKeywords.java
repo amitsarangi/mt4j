@@ -76,12 +76,10 @@ public class CSSKeywords {
 	}
 
 	/**
-	 * Checks if an Array of short contains a specific LexicalUnit-Type
-	 * 
-	 * @param keywords
-	 *            the keywords (short)
-	 * @param lu
-	 *            the LexicalUnit
+	 * Checks if an Array of short contains a specific LexicalUnit-Type.
+	 *
+	 * @param keywords the keywords (short)
+	 * @param lu the LexicalUnit
 	 * @return true, if successful
 	 */
 	private static boolean contains(short[] keywords, LexicalUnit lu) {
@@ -105,12 +103,10 @@ public class CSSKeywords {
 	}
 
 	/**
-	 * Checks, if an Array of String contains a certain string (Ignore Case)
-	 * 
-	 * @param keywords
-	 *            the keywords
-	 * @param lu
-	 *            the LexicalUnit
+	 * Checks, if an Array of String contains a certain string (Ignore Case).
+	 *
+	 * @param keywords the keywords
+	 * @param lu the LexicalUnit
 	 * @return true, if successful
 	 */
 	private static boolean contains(String[] keywords, LexicalUnit lu) {
@@ -348,18 +344,48 @@ public class CSSKeywords {
 		UNKNOWN,
 		/** The BACKGROUND. */
 		BACKGROUND,
+		
+		/** The OPACITY. */
 		OPACITY
 	}
 	
+	/**
+	 * The Enum Position.
+	 */
 	public enum Position {
-		LEFT, RIGHT, TOP, BOTTOM, CENTER;
+		
+		/** The LEFT. */
+		LEFT, 
+ /** The RIGHT. */
+ RIGHT, 
+ /** The TOP. */
+ TOP, 
+ /** The BOTTOM. */
+ BOTTOM, 
+ /** The CENTER. */
+ CENTER;
 	}
 	
 	
+	/**
+	 * The Enum PositionType.
+	 */
 	public enum PositionType {
-		ABSOLUTE, RELATIVE, KEYWORD;
+		
+		/** The ABSOLUTE. */
+		ABSOLUTE, 
+ /** The RELATIVE. */
+ RELATIVE, 
+ /** The KEYWORD. */
+ KEYWORD;
 	}
 	
+	/**
+	 * Create a color from the hex value String
+	 *
+	 * @param string the string
+	 * @return the mT color
+	 */
 	public final MTColor colorFromHex(String string) {
 		float red = 0;
 		float green = 0;
