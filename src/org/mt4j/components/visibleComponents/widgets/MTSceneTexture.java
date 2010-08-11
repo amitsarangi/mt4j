@@ -36,6 +36,7 @@ import org.mt4j.util.math.Vector3D;
 import org.mt4j.util.math.Vertex;
 import org.mt4j.util.opengl.GLFboStack;
 import org.mt4j.util.opengl.GLFBO;
+import org.mt4j.util.opengl.GLStencilUtil;
 import org.mt4j.util.opengl.GLTexture;
 
 import processing.core.PGraphics;
@@ -153,19 +154,44 @@ public class MTSceneTexture extends MTRectangle {
 	public void drawComponent(PGraphics g){
 		PGraphicsOpenGL pgl = (PGraphicsOpenGL)g; 
 		GL gl = pgl.gl;
-		
+
+//		boolean b = false;
+//		if (GLStencilUtil.getInstance().isClipActive()){
+//			GLStencilUtil.getInstance().endClipping(gl);
+//			b = true;
+//		}
+			
+			
 		fbo.startRenderToTexture();
 			//Change blending mode to avoid artifacts from alpha blending at antialiasing for example
 //			gl.glBlendFuncSeparate(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA, GL.GL_ZERO, GL.GL_ONE);
 			gl.glBlendFuncSeparate(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA, GL.GL_ONE, GL.GL_ONE_MINUS_SRC_ALPHA);
+			
+//			/*
+			boolean clipping = false;
+			if (GLStencilUtil.getInstance().isClipActive()){
+				clipping = true;
+				gl.glPushAttrib(GL.GL_STENCIL_BUFFER_BIT);
+				gl.glClearStencil(GLStencilUtil.getInstance().stencilValueStack.peek());
+				gl.glClear(GL.GL_STENCIL_BUFFER_BIT);
+				//			gl.glDisable(GL.GL_STENCIL_TEST);
+			}
+//			*/
 			
 //			gl.glEnable(gl.GL_ALPHA_TEST);
 //			gl.glAlphaFunc(gl.GL_GREATER, 0.0f);
 //			gl.glDisable(gl.GL_ALPHA_TEST);
 			//Draw scene to texture
 			scene.drawAndUpdate(pgl, this.lastUpdateTime);
+			
+//			/*
+			if (clipping){
+				gl.glPopAttrib();
+			}
+//			 */
+//			GLStencilUtil.getInstance().endClipping(gl, this);
 		fbo.stopRenderToTexture();
-
+			
 		if (GLFboStack.getInstance().peekFBO() == 0)
 			gl.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA); //Restore default blend mode //FIXME TEST -> neccessary?
 		
@@ -181,13 +207,6 @@ public class MTSceneTexture extends MTRectangle {
 	}
 	
 	/*TODO
-	 * 
-	 * - evtl scene kleiner zeichnen und kleineren fbo machen f�r kleines windows? ->performance
-	 * 
-	 * - make fullscreen ability! maximize/restore! 
-	 * 
-	 * - wenn scaling - scale viewport of scene to fit scale? ->pmt schaun
-	 * 
 	 * - fehler wenn gedreht x,y, axis und dann scale - wegen shearing?
 	 * - fehler scheint von rotation zu kommen nachdem rotiert x,y,
 	 * 
@@ -201,12 +220,9 @@ public class MTSceneTexture extends MTRectangle {
 	 * 
 	 * - FBO: hardware fbo mit glCopyTex2D
 	 * 
-	 * - nur sceneDrawAndUpdate() wenn sich was ver�ndert hat - sonst kann man einfach alte textur lassen! setSceneNeedsUpdate()?
+	 * - nur sceneDrawAndUpdate() wenn sich was ver�ndert hat - sonst kann man einfach alte textur lassen! scene.invalidate()?
 	 * 
-	 * (- add stencil buffer to frambufferobject - evtl checken if available/supported)
 	 * (- wenn camera changed richtig picken in scene)
-	 * (- neue posEvt schicken mit neuer cursor? eigenen inputretargeter verwenden?)
-	 * 
 	 * */
 	
 
@@ -267,7 +283,6 @@ public class MTSceneTexture extends MTRectangle {
 				}
 			}break;
 			case AbstractCursorInputEvt.INPUT_ENDED:{
-//				InputCursor newCursor = this.oldCursorToNewCursor.get(posEvt.getCursor());
 				InputCursor newCursor = this.oldCursorToNewCursor.remove(posEvt.getCursor());
 				if (newCursor != null){
 					try {
@@ -280,7 +295,6 @@ public class MTSceneTexture extends MTRectangle {
 					} catch (CloneNotSupportedException e) {
 						e.printStackTrace();
 					}
-//					this.oldCursorToNewCursor.remove(posEvt.getCursor());
 				}else{
 					System.err.println("Couldnt find new cursor!");
 				}

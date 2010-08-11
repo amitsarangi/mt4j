@@ -26,6 +26,7 @@ import javax.media.opengl.GL;
 import org.mt4j.util.math.Tools3D;
 import org.mt4j.util.math.ToolsGeometry;
 import org.mt4j.util.math.Vertex;
+import org.mt4j.util.opengl.GLStencilUtil;
 
 import processing.core.PApplet;
 import processing.core.PGraphics;
@@ -295,6 +296,8 @@ public class MTStencilPolygon extends MTPolygon {
 		
 //	    /*
 	    if (!this.isNoFill()){
+	    	
+	    	/*
 			///////////////////////
 			// Draw Into Stencil //
 		    ///////////////////////
@@ -347,7 +350,91 @@ public class MTStencilPolygon extends MTPolygon {
 			    gl.glEnd ();
 		    }
 		    
-		    gl.glDisable (GL.GL_STENCIL_TEST);	
+		    gl.glDisable (GL.GL_STENCIL_TEST);
+		    */	
+	    	
+			///////////////////////
+			// Draw Into Stencil //
+		    ///////////////////////
+//	    	GLStencilUtil.getInstance().beginDrawClipShape(gl);
+	    	
+	    	if (GLStencilUtil.getInstance().isClipActive()){
+	    		gl.glPushAttrib(GL.GL_STENCIL_BUFFER_BIT);
+	    	}else{
+	    		//Enable stencilbuffer
+				gl.glEnable(GL.GL_STENCIL_TEST);
+		    	gl.glClearStencil(GLStencilUtil.getInstance().stencilValueStack.peek());
+		    	gl.glClear(GL.GL_STENCIL_BUFFER_BIT);
+	    	}
+//	    	gl.glPushAttrib(GL.GL_STENCIL_TEST);
+//	    	gl.glDisable(GL.GL_STENCIL_TEST);
+//	    	gl.glClearStencil(GLStencilUtil.getInstance().stencilValueStack.peek());
+//			gl.glClearStencil(0);
+//	    	gl.glClear(GL.GL_STENCIL_BUFFER_BIT);
+			gl.glColorMask(false,false,false,false);
+			gl.glDisable(GL.GL_BLEND);
+			gl.glDepthMask(false);//remove..?
+			
+			
+//		    gl.glStencilMask (0x01);
+		    gl.glStencilOp(GL.GL_KEEP, GL.GL_KEEP, GL.GL_INVERT);
+		    gl.glStencilFunc (GL.GL_ALWAYS, 0, ~0);
+//		    gl.glStencilFunc (GL.GL_ALWAYS, GLStencilUtil.getInstance().stencilValueStack.peek(), ~GLStencilUtil.getInstance().stencilValueStack.peek());
+		    
+		    //Draw into stencil
+		    gl.glDrawArrays(GL.GL_TRIANGLE_FAN, 0, vertBuff.capacity()/3); 
+		    
+		    if (this.getGeometryInfo().isContainsNormals()){
+				gl.glDisableClientState(GL.GL_NORMAL_ARRAY);
+			}
+		    
+			//////////////////////
+			// Draw fill Overlay//
+		    ////////////////////// 
+		    gl.glDepthMask(true);
+			gl.glColorMask(true, true, true, true);
+			gl.glEnable (GL.GL_BLEND);
+			
+			
+			gl.glStencilOp (GL.GL_KEEP, GL.GL_KEEP, GL.GL_REPLACE);
+//		    gl.glStencilOp (GL.GL_ZERO, GL.GL_REPLACE, GL.GL_REPLACE);
+//			gl.glStencilOp (GL.GL_KEEP, GL.GL_KEEP, GL.GL_ZERO); 
+//		     gl.glStencilOp (GL.GL_ZERO, GL.GL_ZERO, GL.GL_ZERO); //Org
+//		    gl.glStencilFunc(GL.GL_EQUAL, 0x01, 0x01); //org
+//			if (GLStencilUtil.getInstance().isClipActive()){
+				gl.glStencilFunc(GL.GL_NOTEQUAL, GLStencilUtil.getInstance().stencilValueStack.peek(), GLStencilUtil.getInstance().stencilValueStack.peek());
+//				gl.glStencilFunc(GL.GL_NOTEQUAL, 0x01, 0x01);
+//			}else{
+//				gl.glStencilFunc(GL.GL_EQUAL, GLStencilUtil.getInstance().stencilValueStack.peek(), GLStencilUtil.getInstance().stencilValueStack.peek());
+//			}
+		    
+		    if (useGradient){
+			    gl.glBegin (GL.GL_QUADS);
+				    gl.glColor4f(x1R, x1G, x1B, x1A);
+				    gl.glVertex3d (minX, minY, 0.0);
+				    gl.glColor4f(x2R, x2G, x2B, x2A);
+				    gl.glVertex3d (maxX, minY, 0.0); 
+				    gl.glColor4f(x3R, x3G, x3B, x3A);
+				    gl.glVertex3d (maxX, maxY, 0.0); 
+				    gl.glColor4f(x4R, x4G, x4B, x4A);
+				    gl.glVertex3d (minX, maxY, 0.0); 
+			    gl.glEnd ();
+		    }else{
+		    	gl.glColor4d (colorBuff.get(0), colorBuff.get(1), colorBuff.get(2), colorBuff.get(3));
+			    gl.glBegin (GL.GL_QUADS);
+				    gl.glVertex3d (minX, minY, 0.0); 
+				    gl.glVertex3d (maxX, minY, 0.0); 
+				    gl.glVertex3d (maxX, maxY, 0.0); 
+				    gl.glVertex3d (minX, maxY, 0.0); 
+			    gl.glEnd ();
+		    }
+		    
+		    if (GLStencilUtil.getInstance().isClipActive()){
+			    gl.glPopAttrib();
+	    	}else{
+	    		 gl.glDisable (GL.GL_STENCIL_TEST);
+	    	}
+
 	    }
 	    
 	    //////////////////////////////

@@ -23,6 +23,8 @@ import javax.media.opengl.GL;
 
 import org.mt4j.components.visibleComponents.AbstractVisibleComponent;
 
+import processing.opengl.PGraphicsOpenGL;
+
 /**
  * Abstracts the OpenGL stencil buffer for
  * clipping use.
@@ -80,7 +82,8 @@ public class GLStencilUtil {
 	 * @param gl the gl
 	 */
 	public void beginDrawClipShape(GL gl){ //begin draw clip shape
-		gl.glPushAttrib(GL.GL_STENCIL_BUFFER_BIT | GL.GL_STENCIL_TEST); //FIXME do only at initialization??
+//		gl.glPushAttrib(GL.GL_STENCIL_BUFFER_BIT | GL.GL_STENCIL_TEST); //FIXME do only at initialization??
+		gl.glPushAttrib(GL.GL_STENCIL_BUFFER_BIT); //FIXME do only at initialization??
 		
 		if (!initialized){
 //			gl.glPushAttrib(GL.GL_STENCIL_BUFFER_BIT | GL.GL_STENCIL_TEST);
@@ -153,6 +156,10 @@ public class GLStencilUtil {
 	public void endClipping(GL gl){
 		this.endClipping(gl, null);
 	}
+	
+	public boolean isClipActive(){
+		return stencilValueStack.size() > 1;
+	}
 
 	/**
 	 * Ends the drawing to the clipped area and restores the previously used
@@ -180,8 +187,21 @@ public class GLStencilUtil {
 				gl.glColorMask(false,false,false,false);
 				gl.glDepthMask(false);//remove..?
 				
+//				/*
+				//ORIGINAL
+				//Decrease stencil value again where we increased it at drawing the clipping shape 
+				//(so the stencil values are same as before drawing the clip shape)
+				gl.glStencilFunc (GL.GL_EQUAL, currentStencilValue, currentStencilValue); 
+				gl.glStencilOp(GL.GL_KEEP, GL.GL_KEEP, GL.GL_DECR);
+				//FIXME this can be bad for performance if the clipshape is complex
+				clipShape.drawComponent(clipShape.getRenderer().g); 
+//				*/
+				gl.glDepthMask(true);
+				gl.glColorMask(true, true, true, true);
+			}else{
+				
 				//TODO use full screen quad technique if clipshape vertices > 10 ?
-				/*
+//				/*
 				//Draw fullscreen quad to restore stencil
 				//->peek last value and draw fullscreen quad writing last peek value everywhere 
 				//where lastPeekValue lesser to stencil value? 
@@ -217,19 +237,8 @@ public class GLStencilUtil {
 
 				gl.glMatrixMode(GL.GL_MODELVIEW);
 				((PGraphicsOpenGL)clipShape.getRenderer().g).endGL();
-				*/
-				
-//				/*
-				//ORIGINAL
-				//Decrease stencil value again where we increased it at drawing the clipping shape 
-				//(so the stencil values are same as before drawing the clip shape)
-				gl.glStencilFunc (GL.GL_EQUAL, currentStencilValue, currentStencilValue); 
-				gl.glStencilOp(GL.GL_KEEP, GL.GL_KEEP, GL.GL_DECR);
-				//FIXME this can be bad for performance if the clipshape is complex
-				clipShape.drawComponent(clipShape.getRenderer().g); 
 //				*/
-				gl.glDepthMask(true);
-				gl.glColorMask(true, true, true, true);
+				
 			}
 		}
 		
