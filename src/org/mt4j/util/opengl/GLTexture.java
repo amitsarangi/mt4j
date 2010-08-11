@@ -1111,7 +1111,7 @@ public class GLTexture extends PImage {
 				}
 			});
 		}else{
-			//use registerPre()?
+			//TODO use registerPre()?
 			//is the object even valid after finalize() is called??
 		}
 		super.finalize();

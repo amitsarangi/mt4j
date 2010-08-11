@@ -17,7 +17,6 @@
  ***********************************************************************/
 package org.mt4j.input.inputProcessors.componentProcessors.scaleProcessor;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.mt4j.components.interfaces.IMTComponent3D;
@@ -131,7 +130,7 @@ public class ScaleProcessor extends AbstractCursorProcessor {
 			logger.debug(this.getName() + " Available cursors: " + availableCursors.size());
 			if (availableCursors.size() >= 2){
 				InputCursor otherCursor = getFarthestFreeComponentCursorTo(newCursor);
-				logger.debug(this.getName() + " already had 1 unused cursor - we can try start gesture! used Cursor ID:" + otherCursor.getId() + " and new cursor ID:" + newCursor.getId());
+//				logger.debug(this.getName() + " already had 1 unused cursor - we can try start gesture! used Cursor ID:" + otherCursor.getId() + " and new cursor ID:" + newCursor.getId());
 				
 				if (this.canLock(otherCursor, newCursor)){ //TODO remove check, since alreday checked in getAvailableComponentCursors()?
 					sc = new ScaleContext(otherCursor, newCursor, comp);
@@ -185,7 +184,7 @@ public class ScaleProcessor extends AbstractCursorProcessor {
 		IMTComponent3D comp = fEvt.getTargetComponent();
 		
 		logger.debug(this.getName() + " INPUT_ENDED -> Active cursors: " + getCurrentComponentCursors().size() + " Available cursors: " + getFreeComponentCursors().size() +  " Locked cursors: " + getLockedCursors().size());
-		if (sc != null){
+		if (getLockedCursors().contains(c)){
 			InputCursor firstCursor = sc.getFirstFingerCursor();
 			InputCursor secondCursor = sc.getSecondFingerCursor();
 			if (firstCursor.equals(c) || secondCursor.equals(c)){ //The leaving cursor was used by the processor
@@ -213,6 +212,7 @@ public class ScaleProcessor extends AbstractCursorProcessor {
 	private void endGesture(InputCursor leftOverCursor, IMTComponent3D component, InputCursor firstCursor, InputCursor secondCursor){
 		this.unLock(leftOverCursor);
 		this.fireGestureEvent(new ScaleEvent(this, MTGestureEvent.GESTURE_ENDED, component, firstCursor, secondCursor, 1, 1, 1, sc.getFirstFingerNewPos()));
+		this.sc = null;
 	}
 	
 	

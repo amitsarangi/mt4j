@@ -17,11 +17,9 @@
  ***********************************************************************/
 package org.mt4j.input.inputProcessors.componentProcessors.rotateProcessor;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.mt4j.components.interfaces.IMTComponent3D;
-import org.mt4j.input.inputData.ActiveCursorPool;
 import org.mt4j.input.inputData.InputCursor;
 import org.mt4j.input.inputData.MTFingerInputEvt;
 import org.mt4j.input.inputProcessors.IInputProcessor;
@@ -127,7 +125,7 @@ public class RotateProcessor extends AbstractCursorProcessor {
 			logger.debug(this.getName() + " Available cursors: " + availableCursors.size());
 			if (availableCursors.size() >= 2){
 				InputCursor otherCursor = getFarthestFreeComponentCursorTo(newCursor);
-				logger.debug(this.getName() + " already had 1 unused cursor - we can try start gesture! used Cursor ID:" + otherCursor.getId() + " and new cursor ID:" + newCursor.getId());
+//				logger.debug(this.getName() + " already had 1 unused cursor - we can try start gesture! used Cursor ID:" + otherCursor.getId() + " and new cursor ID:" + newCursor.getId());
 				
 				if (this.canLock(otherCursor, newCursor)){ //TODO remove check, since alreday checked in getAvailableComponentCursors()?
 					rc = new RotationContext(otherCursor, newCursor, comp);
@@ -169,7 +167,7 @@ public class RotateProcessor extends AbstractCursorProcessor {
 		
 		logger.debug("Rotate ended -> Active cursors: " + getCurrentComponentCursors().size() + " Available cursors: " + getFreeComponentCursors().size() +  " Locked cursors: " + getLockedCursors().size());
 		
-		if (rc != null){
+		if (getLockedCursors().contains(c)){
 			InputCursor firstCursor = rc.getFirstCursor();
 			InputCursor secondCursor = rc.getSecondCursor();
 			if (firstCursor.equals(c) || secondCursor.equals(c)){ //The leaving cursor was used by the processor
@@ -196,6 +194,7 @@ public class RotateProcessor extends AbstractCursorProcessor {
 	private void endGesture(InputCursor leftOverCursor, IMTComponent3D component, InputCursor firstCursor, InputCursor secondCursor){
 		this.unLock(leftOverCursor);
 		this.fireGestureEvent(new RotateEvent(this, MTGestureEvent.GESTURE_ENDED, component, firstCursor, secondCursor, Vector3D.ZERO_VECTOR, rc.getRotationPoint(), 0));
+		this.rc = null;
 	}
 	
 

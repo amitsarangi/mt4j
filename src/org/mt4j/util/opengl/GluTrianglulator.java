@@ -24,6 +24,7 @@ import javax.media.opengl.glu.GLU;
 import javax.media.opengl.glu.GLUtessellator;
 import javax.media.opengl.glu.GLUtessellatorCallbackAdapter;
 
+import org.mt4j.MTApplication;
 import org.mt4j.components.visibleComponents.GeometryInfo;
 import org.mt4j.components.visibleComponents.shapes.mesh.MTTriangleMesh;
 import org.mt4j.util.math.Vertex;
@@ -99,8 +100,26 @@ public class GluTrianglulator extends GLUtessellatorCallbackAdapter{
      * Delete tess.
      */
     public void deleteTess(){
-    	glu.gluDeleteTess(tesselator);
-    	tesselator = null;
+    	if (tesselator != null){
+	    	glu.gluDeleteTess(tesselator);
+	    	tesselator = null;
+    	}
+    }
+    
+    @Override
+    protected void finalize() throws Throwable {
+    	if (this.p instanceof MTApplication ) {
+			MTApplication mtApp = (MTApplication) this.p;
+			mtApp.invokeLater(new Runnable() {
+				public void run() {
+					deleteTess();
+				}
+			});
+		}else{
+			//TODO use registerPre()?
+			//is the object even valid after finalize() is called??
+		}
+		super.finalize();
     }
     
     

@@ -548,6 +548,14 @@ public abstract class MTApplication extends PApplet {
 	    }
 	}
 	
+	public void setOpenGLErrorReportingEnabled(boolean reportErros){
+		if (reportErros){
+			hint(MTApplication.ENABLE_OPENGL_ERROR_REPORT);
+		}else{
+			hint(MTApplication.DISABLE_OPENGL_ERROR_REPORT);
+		}
+	}
+	
 	/**
 	 * ********************************************************************************************
 	 * Processings draw() gets called repeatedly by processings PApplet Class - unless noloop() is called

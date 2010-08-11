@@ -96,7 +96,7 @@ public class TuioInputSource extends AbstractInputSource implements TuioListener
 		this.port 	= port;
 		tuioClient 	= new TuioClient(this.port);
 		logger.info("Initializing TUIO input on port: " + this.port);
-		tuioClient.connect();
+//		tuioClient.connect();
 		tuioClient.addTuioListener(this);
 		
 		tuioIDToCursorID = new HashMap<Long, Long>();
@@ -106,7 +106,18 @@ public class TuioInputSource extends AbstractInputSource implements TuioListener
 		windowHeight = MT4jSettings.getInstance().getWindowHeight();
 	}
 	
+	
+	@Override
+	public void onRegistered() {
+		super.onRegistered();
+		tuioClient.connect();
+	}
 
+	@Override
+	public void onUnregistered() {
+		super.onUnregistered();
+		tuioClient.disconnect();
+	}
 	
 	//@Override
 	public void addTuioCursor(TuioCursor cursor) {

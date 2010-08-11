@@ -36,6 +36,7 @@ import org.mt4j.components.interfaces.IMTController;
 import org.mt4j.input.ComponentInputProcessorSupport;
 import org.mt4j.input.GestureEventSupport;
 import org.mt4j.input.IMTInputEventListener;
+import org.mt4j.input.inputData.InputCursor;
 import org.mt4j.input.inputData.MTInputEvent;
 import org.mt4j.input.inputProcessors.IGestureEventListener;
 import org.mt4j.input.inputProcessors.IInputProcessor;
@@ -2668,6 +2669,17 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 		this.pickRecursive(pickInfo, pickResult, Float.MAX_VALUE, pickInfo.getPickRay(), true);
 //		pickResult.printList();
 		return pickResult;
+	}
+	
+	
+	/**
+	 * Gets the intersection of this component with the input cursor.
+	 *
+	 * @param cursor the cursor
+	 * @return the intersection global or null if no intersection
+	 */
+	public Vector3D getIntersectionGlobal(InputCursor cursor){
+		return this.getIntersectionGlobal(Tools3D.getCameraPickRay(getRenderer(), this, cursor));
 	}
 	
 	
