@@ -18,6 +18,7 @@
 package org.mt4j.util;
 
 import org.mt4j.MTApplication;
+import org.mt4j.util.math.Vector3D;
 
 /**
  * A class with some configurations to read the current settings from.
@@ -288,8 +289,8 @@ public class MT4jSettings {
 	 *
 	 * @return the window center
 	 */
-	public float[] getWindowCenter(){
-		return new float[]{getWindowWidth()/2, getWindowHeight()/2 , 0};
+	public Vector3D getWindowCenter(){
+		return new Vector3D (getWindowWidth()/2, getWindowHeight()/2 , 0);
 	}
 	
 	/**

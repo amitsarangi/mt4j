@@ -248,9 +248,9 @@ public class MapsScene extends AbstractScene implements MouseWheelListener, Mous
 		list.setPositionRelativeToParent(mapMenu.getCenterPointLocal());
 		mapMenu.addChild(list);
 		
-		list.addListElement(this.createListCell("Microsoft� Aerial", font, new Microsoft.AerialProvider(), cellWidth, cellHeight, cellFillColor, cellPressedFillColor));
-		list.addListElement(this.createListCell("Microsoft� Road", font, new Microsoft.RoadProvider(), cellWidth, cellHeight, cellFillColor, cellPressedFillColor));
-		list.addListElement(this.createListCell("Microsoft� Hybrid", font, new Microsoft.HybridProvider(), cellWidth, cellHeight, cellFillColor, cellPressedFillColor));
+		list.addListElement(this.createListCell("Microsoft Aerial", font, new Microsoft.AerialProvider(), cellWidth, cellHeight, cellFillColor, cellPressedFillColor));
+		list.addListElement(this.createListCell("Microsoft Road", font, new Microsoft.RoadProvider(), cellWidth, cellHeight, cellFillColor, cellPressedFillColor));
+		list.addListElement(this.createListCell("Microsoft Hybrid", font, new Microsoft.HybridProvider(), cellWidth, cellHeight, cellFillColor, cellPressedFillColor));
 		list.addListElement(this.createListCell("Open Street Maps", font, new OpenStreetMaps(), cellWidth, cellHeight, cellFillColor, cellPressedFillColor));
 		list.addListElement(this.createListCell("Cloudmade Tourist", font, new CloudMade.Tourist(), cellWidth, cellHeight, cellFillColor, cellPressedFillColor));
 		list.addListElement(this.createListCell("Blue Marble", font, new BlueMarble(), cellWidth, cellHeight, cellFillColor, cellPressedFillColor));

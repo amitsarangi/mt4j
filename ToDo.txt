@@ -38,7 +38,6 @@ ToDo list:
 - how to create own gesture example
 - brainstorm example - textareas + draw links!
 
-- use hint(DISABLE_OPENGL_ERROR_REPORT)? put into Settings.txt?
 - mt4j as p5 library - difficult because mtapplication is derived from papplet
 - manymouse problem loadlibrary!? -> Compile on Mac!
 - remove MTVideoClip from core and put it into example with gsvideo and gstreamer?
@@ -130,7 +129,7 @@ ToDo list:
 
 
 -> Gestures/Input
-- support Linux HID touch and Mac Touch events
+- support Linux HID touch
 - win7touchsource detects touch when wacom tablet installed?
 - differentiate between manipulation s and gestures? (1 difference is: eg. flick is a gesture, drag a manipulation, we have to wait if it is a flick -> if not switch to drag but start drag from the 1st event, not resume at current)
 - add ability in component processors to get informed of other cursors, not from the component?
