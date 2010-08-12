@@ -8,11 +8,13 @@ advanced.physics
 advanced.physics.physicsShapes
 advanced.physics.scenes
 advanced.physics.util
+advanced.puzzle
 advanced.space3D
 advanced.touchTail
 advanced.water
 basic.fiducials
 basic.helloWorld
+basic.javaGUI
 basic.mtGestures
 basic.scenes
 basic.svgExample
@@ -50,6 +52,13 @@ org.mt4j.input.inputProcessors.globalProcessors
 org.mt4j.input.inputSources
 org.mt4j.sceneManagement
 org.mt4j.sceneManagement.transition
+org.mt4j.test
+org.mt4j.test.components
+org.mt4j.test.components.visibleComponents.font
+org.mt4j.test.components.visibleComponents.shapes
+org.mt4j.test.sceneManagement
+org.mt4j.test.testUtil
+org.mt4j.test.util.math
 org.mt4j.util
 org.mt4j.util.animation
 org.mt4j.util.camera
@@ -59,7 +68,6 @@ org.mt4j.util.modelImporter
 org.mt4j.util.modelImporter.file3ds
 org.mt4j.util.modelImporter.fileObj
 org.mt4j.util.opengl
-org.mt4j.util.opengl.shader
 org.mt4j.util.xml
 org.mt4j.util.xml.svg
-processing.opengl
+processing.core
