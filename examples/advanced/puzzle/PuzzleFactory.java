@@ -259,7 +259,8 @@ public class PuzzleFactory {
 					//Set the texture
 					tile.setTexture(p);
 //					tile.setNoStroke(true);
-					tile.setStrokeColor(MTColor.GREY);
+//					tile.setStrokeColor(MTColor.GREY);
+					tile.setStrokeColor(new MTColor(80,80,80));
 					tile.setStrokeWeight(0.7f);
 					
 					tiles.add(tile);

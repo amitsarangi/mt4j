@@ -224,7 +224,7 @@ public class MTShellScene extends AbstractScene {
 			public String getTitle() {
 				return "Maps";
 			}
-		}, app.loadImage(this.getPathToIcons() + "maps_s.png"));
+		}, app.loadImage(this.getPathToIcons() + "maps_ss.png"));
 		
 		this.addScene(new ICreateScene() {
 			public Iscene getNewScene() {
@@ -242,7 +242,7 @@ public class MTShellScene extends AbstractScene {
 			public String getTitle() {
 				return "Puzzle";
 			}
-		}, app.loadImage(this.getPathToIcons() + "puzzle_s.jpg"));
+		}, app.loadImage(this.getPathToIcons() + "puzz.png"));
 		
 		if (this.hasFBO){
 			this.addScene(new ICreateScene() {

@@ -25,6 +25,7 @@ import org.mt4j.components.visibleComponents.font.IFont;
 import org.mt4j.components.visibleComponents.shapes.AbstractShape;
 import org.mt4j.components.visibleComponents.shapes.MTRoundRectangle;
 import org.mt4j.components.visibleComponents.shapes.MTRectangle.PositionAnchor;
+import org.mt4j.components.visibleComponents.widgets.MTBackgroundImage;
 import org.mt4j.components.visibleComponents.widgets.MTList;
 import org.mt4j.components.visibleComponents.widgets.MTListCell;
 import org.mt4j.components.visibleComponents.widgets.MTTextArea;
@@ -65,10 +66,16 @@ public class PuzzleScene extends AbstractScene{
 
 	public PuzzleScene(MTApplication mtApplication, String name) {
 		super(mtApplication, name);
-		
+		if (!MT4jSettings.getInstance().isOpenGlMode()){
+			System.err.println(this.getName() + " is only usable with the OpenGL renderer.");
+		}
+
 		this.setClearColor(new MTColor(55,55,55));
 		this.registerGlobalInputProcessor(new CursorTracer(mtApplication, this));
 		this.getCanvas().setDepthBufferDisabled(true); //to avoid display errors because everything is 2D
+		
+		MTBackgroundImage background = new MTBackgroundImage(mtApplication, mtApplication.loadImage(imagesPath + "webtreats_wood-pattern1-512d.jpg") , true);
+		this.getCanvas().addChild(background);
 		
 		this.puzzleGroup = new MTComponent(mtApplication);
 		this.getCanvas().addChild(puzzleGroup);
@@ -103,7 +110,7 @@ public class PuzzleScene extends AbstractScene{
 		float cellHeight = 40;
 		MTColor cellFillColor = new MTColor(MTColor.BLACK);
 		MTColor cellPressedFillColor = new MTColor(new MTColor(105,105,105));
-		list = new MTList(r.getWidthXY(TransformSpace.GLOBAL) + 5, 0, cellWidth+2, 7* cellHeight + 7*3, getMTApplication());
+		list = new MTList(r.getWidthXY(TransformSpace.GLOBAL) + 5, 0, cellWidth+2, imagesNames.length* cellHeight + imagesNames.length*3, getMTApplication());
 		list.setNoFill(true);
 		list.setNoStroke(true);
 		list.unregisterAllInputProcessors();
