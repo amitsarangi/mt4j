@@ -279,7 +279,7 @@ public class MTShellScene extends AbstractScene {
 			public String getTitle() {
 				return "3D Models";
 			}
-		}, app.loadImage(this.getPathToIcons() + "models_s.png"));
+		}, app.loadImage(this.getPathToIcons() + "teapot.jpg"));
 		
 		this.addScene(new ICreateScene() {
 			public Iscene getNewScene() {

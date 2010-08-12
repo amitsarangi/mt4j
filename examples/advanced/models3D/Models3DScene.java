@@ -76,7 +76,7 @@ public class Models3DScene extends AbstractScene {
 		//Desired position for the meshes to appear at
 		Vector3D destinationPosition = new Vector3D(mtApplication.width/2, mtApplication.height/2, 50);
 		//Desired scale for the meshes
-		float destinationScale = mtApplication.width*0.94f;
+		float destinationScale = mtApplication.width*0.85f;
 
 		//Load the meshes with the ModelImporterFactory (A file can contain more than 1 mesh)
 		//Loads 3ds model
