@@ -60,6 +60,7 @@ import advanced.models3D.Models3DScene;
 import advanced.modestMapsMT.MapsScene;
 import advanced.physics.scenes.AirHockeyScene;
 import advanced.physics.scenes.PhysicsScene;
+import advanced.puzzle.PuzzleScene;
 import advanced.space3D.Space3DScene;
 import advanced.touchTail.TouchTailScene;
 
@@ -233,6 +234,15 @@ public class MTShellScene extends AbstractScene {
 				return "Air Hockey";
 			}
 		}, app.loadImage(this.getPathToIcons() + "airhockey_s.png"));
+		
+		this.addScene(new ICreateScene() {
+			public Iscene getNewScene() {
+				return new PuzzleScene(app, "Puzzle");
+			}
+			public String getTitle() {
+				return "Puzzle";
+			}
+		}, app.loadImage(this.getPathToIcons() + "puzzle_s.jpg"));
 		
 		if (this.hasFBO){
 			this.addScene(new ICreateScene() {

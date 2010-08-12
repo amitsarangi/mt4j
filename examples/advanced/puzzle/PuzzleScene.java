@@ -99,7 +99,7 @@ public class PuzzleScene extends AbstractScene{
 		this.getCanvas().addChild(r);
 		
 		//Image list
-		float cellWidth = 350;
+		float cellWidth = 180;
 		float cellHeight = 40;
 		MTColor cellFillColor = new MTColor(MTColor.BLACK);
 		MTColor cellPressedFillColor = new MTColor(new MTColor(105,105,105));
