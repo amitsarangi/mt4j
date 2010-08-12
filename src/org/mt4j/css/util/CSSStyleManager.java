@@ -1,5 +1,6 @@
 package org.mt4j.css.util;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,6 +15,7 @@ import org.mt4j.css.style.CSSStyle;
 import org.mt4j.css.style.CSSStyleHierarchy;
 import org.mt4j.util.MTColor;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class CSSStyleManager.
  */
@@ -65,6 +67,33 @@ public class CSSStyleManager {
 				this.styles.add(new CSSStyleHierarchy(s));
 			}
 		}
+	}
+	
+	/**
+	 * Load styles from InputStream.
+	 *
+	 * @param input the input
+	 */
+	public void loadStyles(InputStream input) {
+		CSSParserConnection pc = new CSSParserConnection(input, app);
+		CSSHandler handler = pc.getCssh();
+		
+		if (handler != null) {
+			List<CSSStyle> newStyles = handler.getStyles();
+			for (CSSStyle s: newStyles) {
+				this.styles.add(new CSSStyleHierarchy(s));
+			}
+		}
+	}
+	
+	/**
+	 * Load styles from src folder.
+	 * css source file has to be located in /src/data/css/ folder
+	 *
+	 * @param uri the uri
+	 */
+	public void loadStylesFromSrcFolder(String uri) {
+		this.loadStyles(Thread.currentThread().getContextClassLoader().getResourceAsStream("data/css/" + uri));
 	}
 	
 	/**
@@ -247,6 +276,7 @@ public class CSSStyleManager {
 	}
 	
 	
+	/** The default font. */
 	IFont defaultFont = null;
 	
 	/**

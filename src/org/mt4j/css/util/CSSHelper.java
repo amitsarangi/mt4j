@@ -281,6 +281,9 @@ public class CSSHelper {
 				&& !ta.isIgnoreCSSFont()) {
 			ta.setFont(virtualStyleSheet.getFont());
 		}
+		if (virtualStyleSheet.isModifiedPaddingWidth()) {
+			ta.setPadding(virtualStyleSheet.getPaddingWidth());
+		}
 	}
 
 	/**

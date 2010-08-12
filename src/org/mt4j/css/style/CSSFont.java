@@ -39,6 +39,7 @@ public class CSSFont {
 	public CSSFont(MTColor color) {
 		super();
 		this.color = color;
+		this.modified = true;
 	}
 	
 	/**
@@ -69,7 +70,6 @@ public class CSSFont {
 		super();
 		this.customType = customType;
 		this.modified = true;
-		debugOutput();
 	}
 
 	/**
@@ -81,7 +81,6 @@ public class CSSFont {
 		super();
 		this.style = style;
 		this.modified = true;
-		debugOutput();
 	}
 
 	/**
@@ -92,7 +91,7 @@ public class CSSFont {
 	public CSSFont(CSSFontFamily family) {
 		super();
 		this.family = family;
-		debugOutput();
+		this.modified = true;
 	}
 
 	/**
@@ -104,7 +103,6 @@ public class CSSFont {
 		super();
 		this.weight = weight;
 		this.modified = true;
-		debugOutput();
 	}
 
 	/**

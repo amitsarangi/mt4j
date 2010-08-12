@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,6 +16,7 @@ import org.w3c.css.sac.CSSException;
 import org.w3c.css.sac.InputSource;
 
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class CSSParserConnection.
  */
@@ -25,20 +28,19 @@ public class CSSParserConnection {
 	/** The file reader. */
 	FileReader fileReader = null;
 	
-	/** The CSSHandler, which contains the parsing instructions */
+	/** The CSSHandler, which contains the parsing instructions. */
 	CSSHandler cssh = null;
 	
 	
 	/**
-	 * Instantiates a new CSS Parser Connections
+	 * Instantiates a new CSS Parser Connection with an URL as argument.
 	 *
 	 * @param source the source file
 	 * @param app the MTApplication
 	 */
 	public CSSParserConnection(String source, MTApplication app) {
 		
-		List<CSSStyle> styles= new ArrayList<CSSStyle>();
-		cssh = new CSSHandler(app, styles);
+		
 		
 		boolean exists_data = (new File("data" + MTApplication.separator + source)).exists();
 		boolean exists_root =  (new File(source)).exists();
@@ -49,27 +51,66 @@ public class CSSParserConnection {
 		
 		if (exists_css || exists_data || exists_root) {
 		
-		pa = new Parser();
+		
 		try {
 			fileReader = new FileReader(source);
+			this.loadStyles(app, new InputSource(fileReader));
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
+		
+		} else {
+			InputStream stream = Thread.currentThread().getContextClassLoader().getResourceAsStream("data/css/" + source);
+			InputStreamReader streamReader = new InputStreamReader(stream);
+
+			this.loadStyles(app, new InputSource(streamReader));
+		}
+		
+		
+	}
+	
+	/**
+	 * Load styles from InputSource
+	 *
+	 * @param app the app
+	 * @param source the source
+	 */
+	private void loadStyles(MTApplication app, InputSource source) {
+		List<CSSStyle> styles= new ArrayList<CSSStyle>();
+		cssh = new CSSHandler(app, styles);
+		pa = new Parser();
 		pa.setDocumentHandler(cssh);
 		try {
-			pa.parseStyleSheet(new InputSource(fileReader));
+			pa.parseStyleSheet(source);
 		} catch (CSSException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		} else {
-			System.out.println("File not found: " + source);
+	}
+	
+	
+	/**
+	 * Instantiates a new CSS parser connection using an InputStream as argument.
+	 *
+	 * @param input the input
+	 * @param app the app
+	 */
+	public CSSParserConnection(InputStream input, MTApplication app) {
+		if (input != null) {
+			InputStreamReader streamReader = new InputStreamReader(input);
+
+			this.loadStyles(app, new InputSource(streamReader));
 			
+		
+		} else {
+			System.out.println("Stream is not valid");
+
 		}
 		
 		
 	}
+	
 
 
 	/**
@@ -83,7 +124,7 @@ public class CSSParserConnection {
 
 
 	/**
-	 * Sets the CSSHandler
+	 * Sets the CSSHandler.
 	 *
 	 * @param cssh the new CSSHandler
 	 */

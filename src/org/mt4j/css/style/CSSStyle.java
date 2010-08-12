@@ -149,7 +149,11 @@ public class CSSStyle {
 	 */
 	public void setOpacity(float opacity) {
 		this.modifiedOpacity = true;
-		this.opacity = opacity;
+		if (opacity <= 1) {
+			this.opacity = opacity * 255;
+		} else {
+			this.opacity = opacity;
+		}
 	}
 
 	/**
@@ -795,7 +799,7 @@ public class CSSStyle {
 	 * @return true, if is modified cssfont
 	 */
 	public boolean isModifiedCssfont() {
-		return modifiedCssfont;
+		return modifiedCssfont || cssfont.isModified();
 	}
 
 	/**
@@ -1003,7 +1007,7 @@ public class CSSStyle {
 		}
 
 		if (s.isModifiedCssfont()) {
-			v.setCssfont(s.getCssfont());
+			v.setCssfont(s.getCssfont().clone());
 		}
 		if (s.isModifiedDepth()) {
 			v.setDepth(s.getDepth());
