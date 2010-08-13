@@ -804,7 +804,7 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
 		}
 		
 		//FIXME TEST
-//		/*
+		/*
 		if (MT4jSettings.getInstance().isOpenGlMode()){
 			if (getRenderer() instanceof MTApplication) {
 				MTApplication app = (MTApplication) getRenderer();
@@ -821,7 +821,7 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
 				this.useContentDisplayList();
 			}
 		}
-//		*/
+		*/
 	}
 	
 	
