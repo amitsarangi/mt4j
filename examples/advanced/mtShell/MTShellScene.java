@@ -204,7 +204,7 @@ public class MTShellScene extends AbstractScene {
 		 */
 		
 		//TODO does the font exist on all platforms? fallback to arial.ttf?
-		font = FontManager.getInstance().createFont(app, "SansSerif", 18, new MTColor(255,255,255), new MTColor(255,255,255));
+		font = FontManager.getInstance().createFont(app, "SansSerif", 18, MTColor.WHITE, MTColor.WHITE);
 //		font = FontManager.getInstance().createFont(app, "arial.ttf", 18, new MTColor(255,255,255), new MTColor(255,255,255));
 		
 		

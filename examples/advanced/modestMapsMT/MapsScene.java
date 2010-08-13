@@ -226,18 +226,20 @@ public class MapsScene extends AbstractScene implements MouseWheelListener, Mous
 		tagToPhoto = new HashMap<MTEllipse, Photo>();
 		
 		/// Create map provider menu \\\
-		IFont font = FontManager.getInstance().createFont(p, "arial", 16, new MTColor(0,0,0), new MTColor(0,0,0));
+		IFont font = FontManager.getInstance().createFont(p, "SansSerif.Bold", 15, MTColor.WHITE, MTColor.WHITE);
 		MTRoundRectangle mapMenu = new MTRoundRectangle(0,0,0, 220,335, 20,20, p);
-		mapMenu.setFillColor(new MTColor(110,110,110,180));
-		mapMenu.setStrokeColor(new MTColor(110,110,110,180));
+//		mapMenu.setFillColor(new MTColor(110,110,110,180));
+//		mapMenu.setStrokeColor(new MTColor(110,110,110,180));
+		mapMenu.setFillColor(new MTColor(35,35,35,180));
+		mapMenu.setStrokeColor(new MTColor(35,35,35,180));
 		mapMenu.setPositionGlobal(new Vector3D(p.width/2f, p.height/2f));
 		mapMenu.translateGlobal(new Vector3D(-p.width/2f - 80,0));
 		getCanvas().addChild(mapMenu);
 		
-		float cellWidth = 150;
+		float cellWidth = 155;
 		float cellHeight = 40;
-		MTColor cellFillColor = new MTColor(new MTColor(255,255,255,200));
-		MTColor cellPressedFillColor = new MTColor(new MTColor(205,205,205,200));
+		MTColor cellFillColor = new MTColor(new MTColor(0,0,0,210));
+		MTColor cellPressedFillColor = new MTColor(new MTColor(20,20,20,220));
 		
 		MTList list = new MTList(0,0, 152, 7* cellHeight + 7*3, p);
 		list.setChildClip(null); //FIXME TEST -> do no clipping for performance
