@@ -976,7 +976,7 @@ public class TriangleNormalGenerator {
 	
 	/**
 	 * This influences the normal generation with crease angles.
-	 * </br>If <code>useNormalsEqualToFace</code> is set to true, normals
+	 * If <code>useNormalsEqualToFace</code> is set to true, normals
 	 * of neighbor faces, that have the same normal as the face and vertex were checking
 	 * against will be used in the calculation.
 	 * </br>If <code>useNormalsEqualToFace</code> is set to false, these normals equal to

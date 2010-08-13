@@ -40,7 +40,7 @@ import processing.core.PGraphics;
  * 
  * @author Christopher Ruff
  * @since 0.81
- * @see #org.mt4j.components.MTComponent.setClip()
+ * @see org.mt4j.components.MTComponent#setClip
  */
 public class Clip {
 	

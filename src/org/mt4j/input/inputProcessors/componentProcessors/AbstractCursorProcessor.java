@@ -244,7 +244,7 @@ public abstract class AbstractCursorProcessor extends AbstractComponentProcessor
 			}
 			
 			float distanceToCurrentCursor = currentCursor.getPosition().distance2D(cursorPos);
-			if (distanceToCurrentCursor >= currDist){
+			if (distanceToCurrentCursor >= currDist || distanceToCurrentCursor == 0.0f){
 				currDist = distanceToCurrentCursor;
 				fartherstCursor = currentCursor;
 			}

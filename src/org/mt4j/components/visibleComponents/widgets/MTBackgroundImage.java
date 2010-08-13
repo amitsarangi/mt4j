@@ -111,10 +111,11 @@ public class MTBackgroundImage extends MTPolygon {
 	
 	/**
 	 * Instantiates a new MT background image.
-	 * 
+	 *
 	 * @param pApplet the applet
 	 * @param svgImage the svg image
-	 * @param stretchToFit the stretch to fit
+	 * @param stretchToFitWidth the stretch to fit width
+	 * @param stretchToFitHeight the stretch to fit height
 	 */
 	public MTBackgroundImage(PApplet pApplet, MTSvg svgImage, boolean stretchToFitWidth, boolean stretchToFitHeight) {
 		super(new Vertex[]{new Vertex(0,0,0 , 0,0),new Vertex(pApplet.width,0,0, 1,0),new Vertex(pApplet.width,pApplet.height,0, 1,1),new Vertex(0,pApplet.height,0, 0,1)}, pApplet);

@@ -125,10 +125,8 @@ public class GluTrianglulator extends GLUtessellatorCallbackAdapter{
     
     /**
      * Triangulates the given vertex arrays and creates a single triangle mesh.
-     * 
+     *
      * @param contours the contours
-     * @param windingRule the winding rule
-     * 
      * @return the MT triangle mesh
      */
     public MTTriangleMesh toTriangleMesh(Vertex[] contours){
@@ -139,10 +137,8 @@ public class GluTrianglulator extends GLUtessellatorCallbackAdapter{
     
     /**
      * Triangulates the given vertex arrays and creates a single triangle mesh.
-     * 
+     *
      * @param contours the contours
-     * @param windingRule the winding rule
-     * 
      * @return the MT triangle mesh
      */
     public MTTriangleMesh toTriangleMesh(List<Vertex[]> contours){
@@ -212,14 +208,12 @@ public class GluTrianglulator extends GLUtessellatorCallbackAdapter{
 	    
 	    /**
     	 * Triangulates the given vertex contours and returns a list of triangles.
-    	 * 
+    	 *
     	 * @param contours the vertex arrays to triangulate into one list of triangles
     	 * @param windingRule the winding rule which determines which parts of the specified shape is "inside" or "outside" the shape.
+    	 * @return the produced triangles list
+    	 * @see GLU#GLU_TESS_WINDING_ODD
     	 * 
-    	 * @return the list< vertex>
-    	 * 
-    	 * @see for exmaple GLU.GLU_TESS_WINDING_ODD
-    	 * the produced triangles
     	 */
 	    public List<Vertex> tesselate(List<Vertex[]> contours, int windingRule){
 	    	this.triList.clear();

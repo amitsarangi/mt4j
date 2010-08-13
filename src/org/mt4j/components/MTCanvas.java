@@ -83,9 +83,9 @@ public class MTCanvas extends MTComponent implements IHitTestInfoProvider{
 	
 	/**
 	 * The Constructor.
-	 * 
+	 *
 	 * @param pApplet the applet
-	 * @param globalCamera the global camera
+	 * @param attachedCamera the attached camera
 	 */
 	public MTCanvas(PApplet pApplet, Icamera attachedCamera) {
 		this(pApplet, "unnamed MT Canvas", attachedCamera);
@@ -212,7 +212,7 @@ public class MTCanvas extends MTComponent implements IHitTestInfoProvider{
 			lastTimeHitTest = now;
 			
 	//		/*//TODO anders machen..z.b. geclusterte comps einfach als kinder von
-			//übergeordnetem clusterpoly machen? aber mit clusterPoly.setComposite(TRUE);
+			//ï¿½bergeordnetem clusterpoly machen? aber mit clusterPoly.setComposite(TRUE);
 			//Clusterpoly pickable machen damit das hier nicht gebraucht wird?
 			Cluster sel = this.getClusterManager().getCluster(closest3DComp);
 			  if (sel != null){
@@ -379,9 +379,9 @@ public class MTCanvas extends MTComponent implements IHitTestInfoProvider{
 				//Restores the transforms of the previous camera etc
 				graphics.popMatrix(); 
 			}else{//If no custom camera was set
-				//TODO in abstactvisiblecomp wird outine über gradients und clips
+				//TODO in abstactvisiblecomp wird outine ï¿½ber gradients und clips
 				//gezeichnet obwohl hier invisble war! FIXME!
-				//evtl applymatrix unapply in eigene methode? dann nur das ausführen, kein pre/post draw!
+				//evtl applymatrix unapply in eigene methode? dann nur das ausfï¿½hren, kein pre/post draw!
 				
 				//TODO vater an kinder listener -> resize - new geometry -> resize own 
 				

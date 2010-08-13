@@ -106,7 +106,6 @@ public class MTSphere extends MTTriangleMesh {
      *            The samples along the radial.
      * @param radius
      *            Radius of the sphere.
-     * @see #Sphere(java.lang.String, com.jme.math.Vector3D, int, int, float)
      */
     public MTSphere(PApplet pa, String name, int zSamples, int radialSamples, float radius,  TextureMode texMode) {
         this(pa, name, new Vector3D(0, 0, 0), zSamples, radialSamples, radius);
@@ -125,7 +124,6 @@ public class MTSphere extends MTTriangleMesh {
      *            The samples along the radial.
      * @param radius
      *            Radius of the sphere.
-     * @see #Sphere(java.lang.String, com.jme.math.Vector3D, int, int, float)
      */
     public MTSphere(PApplet pa, String name, int zSamples, int radialSamples, float radius) {
         this(pa, name, new Vector3D(0, 0, 0), zSamples, radialSamples, radius);
@@ -819,7 +817,7 @@ public class MTSphere extends MTTriangleMesh {
     /**
      * @param textureMode
      *            The textureMode to set.
-     * @Deprecated Use enum version of setTextureMode
+     * @deprecated Use enum version of setTextureMode
      */
     @Deprecated
     public void setTextureMode(int textureMode) {

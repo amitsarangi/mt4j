@@ -2000,7 +2000,7 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 	 * @param i the i
 	 * @param tangibleComp the tangible comp
 	 * 
-	 * @see addChild
+	 * @see MTComponent#addChild
 	 */
 	public void addChild(int i, MTComponent tangibleComp){
 		MTComponent oldParent = tangibleComp.getParent();
@@ -3090,7 +3090,7 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 	 * 
 	 * @param key the key
 	 * @param value the value
-	 * @see org.mt4j.component.MTComponent#getUserData()
+	 * @see #getUserData
 	 */
 	public void setUserData(Object key, Object value){
 		if (userData == null){ //lazily initialize map

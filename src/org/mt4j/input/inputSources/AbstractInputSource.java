@@ -48,8 +48,8 @@ public abstract class AbstractInputSource {
 	
 	/**
 	 * Instantiates a new abstract input source.
-	 * 
-	 * @param applet the applet
+	 *
+	 * @param mtApp the mt app
 	 */
 	public AbstractInputSource(MTApplication mtApp) {
 		this.inputListeners = new ArrayList<IinputSourceListener>();

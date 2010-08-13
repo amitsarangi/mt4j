@@ -66,9 +66,8 @@ public class MTKey extends
 	
 	/**
 	 * Instantiates a new mT key.
-	 * 
-	 * @param vertices the vertices
-	 * @param contours the contours
+	 *
+	 * @param geom the geom
 	 * @param pApplet the applet
 	 * @param characterUnicodeToWrite the character unicode to write
 	 * @param characterUnicodeToWriteShifted the character unicode to write shifted

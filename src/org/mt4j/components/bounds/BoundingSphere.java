@@ -159,9 +159,10 @@ import processing.core.PGraphics;
 	    
 	    /**
     	 * The Constructor.
-    	 * 
+    	 *
     	 * @param peerComponent the peer component
-    	 * @param vectors the vectors
+    	 * @param center the center
+    	 * @param radius the radius
     	 */
 	    public BoundingSphere(MTComponent peerComponent, Vector3D center, float radius){
 	    	this.peerComponent = peerComponent;

@@ -348,8 +348,8 @@ public class TapAndHoldProcessor extends AbstractCursorProcessor {
 
 	/**
 	 * Sets the holding time for the gesture.
-	 * 
-	 * @param HoldTime the new tHoldap time
+	 *
+	 * @param tapTime the new hold time
 	 */
 	public void setHoldTime(int tapTime) {
 		this.holdTime = tapTime;

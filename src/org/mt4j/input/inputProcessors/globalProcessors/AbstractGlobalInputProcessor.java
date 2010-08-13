@@ -135,8 +135,8 @@ public abstract class AbstractGlobalInputProcessor implements IinputSourceListen
 	
 	/**
 	 * Fire gesture event.
-	 * 
-	 * @param ge the ge
+	 *
+	 * @param ie the ie
 	 */
 	protected void fireInputEvent(MTInputEvent ie) {
 		for (IMTInputEventListener listener : inputListeners){
