@@ -57,7 +57,7 @@ public class SelectorIntegrationTest extends AbstractWindowTestcase {
 		logger.addAppender(ca);
 		
 
-		app.getCssStyleManager().loadStyles("integrationtest.css");
+		app.getCssStyleManager().loadStyles("junit/integrationtest.css");
 		app.getCssStyleManager().setGloballyEnabled(true);
 	}
 	
@@ -98,36 +98,6 @@ public class SelectorIntegrationTest extends AbstractWindowTestcase {
 		assertTrue(e.getStrokeColor().equals(MTColor.BLUE));
 	}
 	
-	@Test
-	public void testFontIntegration() {
-		this.runTest(new TestRunnable() {
-			@Override
-			public void runMTTestCode() {
-				IFont font = app.getCssStyleManager().getDefaultFont(app);
-				IFont comparableFont = FontManager.getInstance().createFont(app,
-						"dejavu/DejaVuSans.ttf", 16, // Font size
-						MTColor.WHITE, // Font fill color
-						MTColor.WHITE);
-				assertTrue(font.equals(comparableFont));
-				
-				MTTextArea ta = new MTTextArea(app);
-				getCanvas().addChild(ta);
-				//ta.enableCSS();
-				assertTrue(ta.getFillColor().equals(MTColor.PURPLE));
-				
-				MTTextArea ta2 = new MTTextArea(app);
-				ta2.setCSSID("fonttest");
-				//ta2.enableCSS();
-				getCanvas().addChild(ta2);
-				ta2.applyStyleSheet();
-				IFont lightfont = FontManager.getInstance().createFont(app,"dejavu/DejaVuSans-ExtraLight.ttf", 16,MTColor.WHITE,MTColor.WHITE);
-				
-				assertTrue(ta2.getFont().equals(lightfont));
-			}
-		});
-		
-		
-	}
 	
 	@Test
 	public void testCascadingSelectors() {

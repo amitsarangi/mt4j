@@ -37,7 +37,7 @@ public class SelectorTest extends TestCase {
 	public void setUp() {
 		logger.addAppender(ca);
 		
-		pc = new CSSParserConnection("selectortest.css", app);
+		pc = new CSSParserConnection("junit/selectortest.css", app);
 		styles= pc.getCssh().getStyles();
 
 		hm.clear();

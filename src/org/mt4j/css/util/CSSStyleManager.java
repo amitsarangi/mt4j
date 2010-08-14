@@ -96,6 +96,25 @@ public class CSSStyleManager {
 		this.loadStyles(Thread.currentThread().getContextClassLoader().getResourceAsStream("data/css/" + uri));
 	}
 	
+	
+	/**
+	 * Load styles and override selectors.
+	 *
+	 * @param uri the uri
+	 * @param selector the selector
+	 */
+	public void loadStylesAndOverrideSelector(String uri, CSSSelector selector) {
+		CSSParserConnection pc = new CSSParserConnection(uri, app);
+		CSSHandler handler = pc.getCssh();
+		if (handler != null) {
+			List<CSSStyle> newStyles = handler.getStyles();
+			for (CSSStyle s: newStyles) {
+				s.setSelector(selector);
+				this.styles.add(new CSSStyleHierarchy(s));
+			}
+		}
+	}
+	
 	/**
 	 * Clear all styles.
 	 */

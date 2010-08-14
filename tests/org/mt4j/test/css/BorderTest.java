@@ -34,7 +34,7 @@ public class BorderTest extends TestCase {
 	public void setUp() {
 		logger.addAppender(ca);
 		
-		pc = new CSSParserConnection("bordertest.css", app);
+		pc = new CSSParserConnection("junit/bordertest.css", app);
 		styles= pc.getCssh().getStyles();
 
 		

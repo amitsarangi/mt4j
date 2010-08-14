@@ -45,7 +45,7 @@ public class FontParserTest extends TestCase{
 		logger.addAppender(ca);
 
 
-		pc = new CSSParserConnection("fonttest.css", app);
+		pc = new CSSParserConnection("junit/fonttest.css", app);
 		styles= pc.getCssh().getStyles();
 		hm.clear();
 		for (CSSStyle s: styles) {

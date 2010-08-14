@@ -33,6 +33,7 @@ import org.mt4j.components.bounds.IBoundingShape;
 import org.mt4j.components.clipping.Clip;
 import org.mt4j.components.interfaces.IMTComponent3D;
 import org.mt4j.components.interfaces.IMTController;
+import org.mt4j.css.util.CSSStylableComponent;
 import org.mt4j.input.ComponentInputProcessorSupport;
 import org.mt4j.input.GestureEventSupport;
 import org.mt4j.input.IMTInputEventListener;
@@ -86,6 +87,10 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 
 	public void setCSSID(String cSSID) {
 		CSSID = cSSID;
+		if (this instanceof CSSStylableComponent) {
+			CSSStylableComponent csc = (CSSStylableComponent)this;
+			csc.applyStyleSheet();
+		}
 	}
 	//CSS Enhancements
 	

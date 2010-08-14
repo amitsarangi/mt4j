@@ -64,6 +64,7 @@ public class MTSuggestionTextArea extends MTTextArea {
 			if (ge instanceof TapEvent) {
 				TapEvent te = (TapEvent) ge;
 				if (te.getTapID() == TapEvent.BUTTON_CLICKED) {
+					System.out.println(ta.getText() + ": " + te.getTapID() + " (" + te.getId() + ")");
 					if (keyboard == null
 							&& te.getTapID() == TapEvent.BUTTON_CLICKED) {
 						keyboard = new MTKeyboard(app);

@@ -49,15 +49,14 @@ public class IntegrationTestApp extends AbstractScene{
 			
 			logger.addAppender(ca);
 			
-			pc = new CSSParserConnection("integrationtest.css", app);
+			pc = new CSSParserConnection("junit/integrationtest.css", app);
 			styles= pc.getCssh().getStyles();
 			cssm = new CSSStyleManager(styles, app);
 		
 			MTRectangle r = new MTRectangle(500, 500, 500, 500, app);
 			r.enableCSS();
 			this.getCanvas().addChild(r);
-			PImage bgImage = app.loadImage("beamer_test.jpg");
-			//r.tiledBackground(bgImage);
+
 			
 			Vertex[] vtcs = {new Vertex(100,100), new Vertex(200, 20), new Vertex(300, 200) ,new Vertex(100,100)};
 			MTPolygon p = new MTPolygon(app, vtcs);

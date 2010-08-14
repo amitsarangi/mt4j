@@ -2,7 +2,11 @@ package org.mt4jx.components.generic;
 
 import org.mt4j.components.visibleComponents.shapes.MTEllipse;
 import org.mt4j.css.style.CSSStyle;
+import org.mt4j.input.inputProcessors.componentProcessors.dragProcessor.DragProcessor;
+import org.mt4j.input.inputProcessors.componentProcessors.rotateProcessor.RotateProcessor;
+import org.mt4j.input.inputProcessors.componentProcessors.scaleProcessor.ScaleProcessor;
 import org.mt4j.input.inputProcessors.componentProcessors.tapProcessor.TapProcessor;
+import org.mt4j.input.inputProcessors.componentProcessors.zoomProcessor.ZoomProcessor;
 import org.mt4j.util.MTColor;
 import org.mt4j.util.math.Vector3D;
 
@@ -49,25 +53,7 @@ public class MTOptionBox extends MTForm implements BooleanForm {
 		this.addChild(optionBox);
 		
 		
-		//Check if it's CSS styled
-		if (this.getCssHelper() != null) {
-			CSSStyle vss = this.getCssHelper().virtualStyleSheet;
-			if (vss.isModifiedBorderColor()) optionBox.setStrokeColor(vss.getBorderColor());
-			else optionBox.setStrokeColor(MTColor.WHITE);
-			
-			if (vss.isModifiedBackgroundColor()) optionBox.setFillColor(vss.getBackgroundColor());
-			else optionBox.setFillColor(MTColor.YELLOW);
-			
-			if (vss.isModifiedBorderWidth()) optionBox.setStrokeWeight(vss.getBorderWidth());
-			else optionBox.setStrokeWeight(2f);
-			
-			
-		} else {
-			//Else set default values
-			optionBox.setStrokeColor(MTColor.WHITE);
-			optionBox.setFillColor(MTColor.YELLOW);
-			optionBox.setStrokeWeight(2f);
-		}
+		this.style();
 		
 		optionBox.setPickable(false);
 		optionBox.setNoFill(true);
@@ -76,8 +62,64 @@ public class MTOptionBox extends MTForm implements BooleanForm {
 		this.registerInputProcessor(new TapProcessor(app));
 		this.addGestureListener(TapProcessor.class, new BooleanTapListener());
 		
+		this.setGestureAllowance(DragProcessor.class, false);
+		this.setGestureAllowance(ScaleProcessor.class, false);
+		this.setGestureAllowance(ZoomProcessor.class, false);
+		this.setGestureAllowance(RotateProcessor.class, false);
+		
 	}
 
+	private void style() {
+		
+		//Check if it's CSS styled
+		if (this.isCSSStyled() && optionBox != null && this.getCssHelper() != null) {
+			
+			CSSStyle vss = this.getCssHelper().getVirtualStyleSheet();
+			
+			this.setStrokeWeight(vss.getBorderWidth());
+			this.setLineStipple(vss.getBorderStylePattern());
+			
+			
+			if (vss.isModifiedBorderColor()) optionBox.setStrokeColor(vss.getBorderColor());
+			else optionBox.setStrokeColor(MTColor.WHITE);
+			
+			if (vss.isModifiedBackgroundColor() && brightEnough(vss.getBackgroundColor())) {
+				if (vss.getBackgroundColor().getAlpha() < 220) {
+					MTColor color = vss.getBackgroundColor().getCopy();
+					color.setAlpha(220);
+					optionBox.setFillColor(color);
+				} else optionBox.setFillColor(vss.getBackgroundColor());
+			}
+			else optionBox.setFillColor(MTColor.YELLOW);
+			
+			if (vss.isModifiedBorderWidth()) optionBox.setStrokeWeight(vss.getBorderWidth());
+			else optionBox.setStrokeWeight(2f);
+			
+			
+		} else if (optionBox != null){
+			//Else set default values
+			optionBox.setStrokeColor(MTColor.WHITE);
+			optionBox.setFillColor(MTColor.YELLOW);
+			optionBox.setStrokeWeight(2f);
+		}
+	}
+	
+	private boolean brightEnough(MTColor color) {
+		return color.getR() + color.getG() + color.getB() > 200 && color.getAlpha() > 200;
+		
+		
+		
+	}
+	
+	@Override
+	public void applyStyleSheet() {
+		super.applyStyleSheet();
+		System.out.println("Styling now. CSSID: " + this.getCSSID());
+		style();
+		
+	}
+	
+	
 	/* (non-Javadoc)
 	 * @see org.mt4jx.components.generic.MTForm#getBooleanValue()
 	 */

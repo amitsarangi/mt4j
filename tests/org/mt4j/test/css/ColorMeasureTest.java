@@ -39,7 +39,7 @@ public class ColorMeasureTest extends TestCase {
 		logger.addAppender(ca);
 
 		
-		pc = new CSSParserConnection("colormeasuretest.css", app);
+		pc = new CSSParserConnection("junit/colormeasuretest.css", app);
 		styles= pc.getCssh().getStyles();
 	}
 	
