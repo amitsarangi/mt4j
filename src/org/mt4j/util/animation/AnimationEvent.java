@@ -97,7 +97,7 @@ public class AnimationEvent extends MTEvent {
 	 * @return the current step delta
 	 */
 	public float getCurrentStepDelta(){
-		return this.getAnimation().getInterpolator().getCurrentStepDelta();
+		return this.getAnimation().getCurrentStepDelta();
 	}
 	
 	/**
@@ -106,7 +106,7 @@ public class AnimationEvent extends MTEvent {
 	 * @return the current value
 	 */
 	public float getCurrentValue(){
-		return this.getAnimation().getInterpolator().getCurrentValue();
+		return this.getAnimation().getCurrentValue();
 	}
 
 	/**

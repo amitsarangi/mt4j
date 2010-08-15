@@ -111,8 +111,6 @@ tapProcessor.setDoubleTapTime(300); in (ms) -> to check if a TapEvent is a doubl
 * added ShapeBuilder utility class to create polygons using simple commands
 * many little fixes
 
-
-
 === Version 0.9 (02/23/2010): ===
 === Input: ===
 * new WM_TOUCH windows 7 input source -> supporting native windows 7 touch input, registered by default if possible

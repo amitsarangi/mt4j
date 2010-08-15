@@ -143,7 +143,7 @@ public abstract class AbstractScene implements Iscene {
 	
 	
 	/* (non-Javadoc)
-	 * @see mTouch.sceneManagement.Iscene#drawAndUpdate(long)
+	 * @see org.mt4j.sceneManagement.Iscene#drawAndUpdate(processing.core.PGraphics, long)
 	 */
 	public void drawAndUpdate(PGraphics graphics, long timeDelta){
 		//Process preDrawActions
@@ -232,7 +232,7 @@ public abstract class AbstractScene implements Iscene {
 	
 
 	/* (non-Javadoc)
-	 * @see mTouch.sceneManagement.Iscene#getMainCanvas()
+	 * @see org.mt4j.sceneManagement.Iscene#getCanvas()
 	 */
 	public MTCanvas getCanvas() {
 		return mainCanvas;
@@ -240,7 +240,7 @@ public abstract class AbstractScene implements Iscene {
 
 	
 	/* (non-Javadoc)
-	 * @see mTouch.sceneManagement.Iscene#getSceneCam()
+	 * @see org.mt4j.sceneManagement.Iscene#getSceneCam()
 	 */
 	public Icamera getSceneCam() {
 		return sceneCam;
