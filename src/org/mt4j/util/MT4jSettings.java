@@ -81,32 +81,28 @@ public class MT4jSettings {
 	
 
 	/** The DEFAUL t_ fon t_ path. */
-	public static String DEFAULT_SETTINGS_PATH = new String(/* MTApplication.separator */ "" );
+	public static String DEFAULT_SETTINGS_PATH = "";
 
 	/** The DEFAUL t_ dat a_ folde r_ path. */
-	public static String DEFAULT_DATA_FOLDER_PATH = new String(/* MTApplication.separator + */ "data" + MTApplication.separator);
+	public static String DEFAULT_DATA_FOLDER_PATH = "data" + MTApplication.separator;
 	
 	/** The DEFAUL t_ fon t_ path. */
 	public static String DEFAULT_FONT_PATH = DEFAULT_DATA_FOLDER_PATH;
 	
 	/** The DEFAUL t_ image s_ path. */
-	public static String DEFAULT_IMAGES_PATH = new String(
-			/* 
-			 System.getProperty("user.dir") + 
-			 */
-			/* MTApplication.separator + */  "data" + MTApplication.separator + "images"  +  MTApplication.separator);
+	public static String DEFAULT_IMAGES_PATH = "data" + MTApplication.separator + "images" + MTApplication.separator;
 			 
 	
 //	public static String DEFAULT_VIDEOS_PATH = new String(System.getProperty("user.dir") + File.separator + "data" /*+ File.separator + "videos"  */ +  File.separator);
 	//Since gsvideo looks into the ./data directory by itself
 	/** The DEFAUL t_ video s_ path. */
-	public static String DEFAULT_VIDEOS_PATH = new String("");
+	public static String DEFAULT_VIDEOS_PATH = "";
 	
 	/** The DEFAUL t_ sv g_ path. */
-	public static String DEFAULT_SVG_PATH = new String(/* MTApplication.separator + */  "data" + MTApplication.separator + "svg"  +  MTApplication.separator);
+	public static String DEFAULT_SVG_PATH = "data" + MTApplication.separator + "svg" + MTApplication.separator;
 	
 	/** The DEFAUL t_3 d_ mode l_ path. */
-	public static String DEFAULT_3D_MODEL_PATH = new String(/* MTApplication.separator + */ "data" + MTApplication.separator + "models"  +  MTApplication.separator);
+	public static String DEFAULT_3D_MODEL_PATH = "data" + MTApplication.separator + "models" + MTApplication.separator;
 	
 
 	/**
