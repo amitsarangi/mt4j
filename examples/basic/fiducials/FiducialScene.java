@@ -110,7 +110,7 @@ public class FiducialScene extends AbstractScene implements IMTInputEventListene
 		comp.unregisterAllInputProcessors(); //Dont process input/gestures on this component
 		
 		MTTextArea text = new MTTextArea(app, font);
-		text.appendText(new Integer(id).toString());
+		text.appendText(Integer.toString(id));
 		text.setFillColor(new MTColor(0, 0, 0, 0));
 		text.setStrokeColor(new MTColor(0, 0, 0, 0));
 		text.unregisterAllInputProcessors();

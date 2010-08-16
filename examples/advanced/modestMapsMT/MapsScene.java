@@ -71,6 +71,7 @@ import org.mt4j.util.MT4jSettings;
 import org.mt4j.util.MTColor;
 import org.mt4j.util.animation.Animation;
 import org.mt4j.util.animation.AnimationEvent;
+import org.mt4j.util.animation.IAnimation;
 import org.mt4j.util.animation.IAnimationListener;
 import org.mt4j.util.animation.MultiPurposeInterpolator;
 import org.mt4j.util.camera.MTCamera;
@@ -259,7 +260,7 @@ public class MapsScene extends AbstractScene implements MouseWheelListener, Mous
 		list.addListElement(this.createListCell("Daily Planet", font, new DailyPlanet(), cellWidth, cellHeight, cellFillColor, cellPressedFillColor));
 		
 		MultiPurposeInterpolator in = new MultiPurposeInterpolator(0,170, 700, 0.1f, 0.7f, 1);
-		final Animation slideOut = new Animation("slide out animation", in, mapMenu);
+		final IAnimation slideOut = new Animation("slide out animation", in, mapMenu);
 		slideOut.addAnimationListener(new IAnimationListener() {
 			public void processAnimationEvent(AnimationEvent ae) {
 				float delta = ae.getCurrentStepDelta();
@@ -273,7 +274,7 @@ public class MapsScene extends AbstractScene implements MouseWheelListener, Mous
 			}
 		});
 		
-		final Animation slideIn = new Animation("slide out animation", in, mapMenu);
+		final IAnimation slideIn = new Animation("slide out animation", in, mapMenu);
 		slideIn.addAnimationListener(new IAnimationListener() {
 			public void processAnimationEvent(AnimationEvent ae) {
 				float delta = -ae.getCurrentStepDelta();
@@ -529,8 +530,8 @@ public class MapsScene extends AbstractScene implements MouseWheelListener, Mous
 		int radius = 3;
 		
 //		/*
-		sp.setLatitude(new Float(c.lat).toString());
-		sp.setLongitude(new Float(c.lon).toString());
+		sp.setLatitude(Float.toString(c.lat));
+		sp.setLongitude(Float.toString(c.lon));
 		sp.setRadius(radius);
 		sp.setRadiusUnits("km");
 		sp.setHasGeo(true);
