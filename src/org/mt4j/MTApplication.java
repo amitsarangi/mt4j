@@ -335,9 +335,9 @@ public abstract class MTApplication extends PApplet {
 				 }
 			}
 
-			 MT4jSettings.fullscreen = Boolean.parseBoolean(properties.getProperty("Fullscreen", new Boolean(MT4jSettings.getInstance().isFullscreen()).toString()).trim());
+			 MT4jSettings.fullscreen = Boolean.parseBoolean(properties.getProperty("Fullscreen", Boolean.valueOf(MT4jSettings.getInstance().isFullscreen()).toString()).trim());
 			 //Use java's fullscreen exclusive mode (real fullscreen) or just use an undecorated window at fullscreen size 
-			 MT4jSettings.getInstance().fullscreenExclusive = Boolean.parseBoolean(properties.getProperty("FullscreenExclusive", new Boolean(MT4jSettings.getInstance().isFullscreenExclusive()).toString()).trim());
+			 MT4jSettings.getInstance().fullscreenExclusive = Boolean.parseBoolean(properties.getProperty("FullscreenExclusive", Boolean.valueOf(MT4jSettings.getInstance().isFullscreenExclusive()).toString()).trim());
 			 //Which display to use for fullscreen
 			 MT4jSettings.getInstance().display = Integer.parseInt(properties.getProperty("Display", String.valueOf(MT4jSettings.getInstance().getDisplay())).trim());
 
@@ -356,7 +356,7 @@ public abstract class MTApplication extends PApplet {
 			 MT4jSettings.getInstance().renderer = Integer.parseInt(properties.getProperty("Renderer", String.valueOf(MT4jSettings.getInstance().getRendererMode())).trim());
 			 MT4jSettings.getInstance().numSamples = Integer.parseInt(properties.getProperty("OpenGLAntialiasing", String.valueOf(MT4jSettings.getInstance().getNumSamples())).trim());
 
-			 MT4jSettings.getInstance().vSync = Boolean.parseBoolean(properties.getProperty("Vertical_sync", new Boolean(MT4jSettings.getInstance().isVerticalSynchronization()).toString()).trim());
+			 MT4jSettings.getInstance().vSync = Boolean.parseBoolean(properties.getProperty("Vertical_sync", Boolean.valueOf(MT4jSettings.getInstance().isVerticalSynchronization()).toString()).trim());
 
 			 //Set frametitle
 			 String frameTitle = properties.getProperty("Frametitle", MT4jSettings.getInstance().getFrameTitle().trim());
