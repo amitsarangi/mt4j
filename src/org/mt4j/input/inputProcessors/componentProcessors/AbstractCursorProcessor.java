@@ -237,11 +237,15 @@ public abstract class AbstractCursorProcessor extends AbstractComponentProcessor
 			if (currentCursor.equals(cursor) || !currentCursor.canLock(this) || currentCursor.isLockedBy(this))
 				continue;
 			
+			boolean continueLoop = false;
 			for (InputCursor excludedCursor : excludedFromSearch) {
 				if (currentCursor.equals(excludedCursor)){
-					continue;
+					continueLoop = true;
+//					continue; //FIXME this exits only this loop, not the outer
 				}
 			}
+			if (continueLoop)
+				continue;
 			
 			float distanceToCurrentCursor = currentCursor.getPosition().distance2D(cursorPos);
 			if (distanceToCurrentCursor >= currDist || distanceToCurrentCursor == 0.0f){
