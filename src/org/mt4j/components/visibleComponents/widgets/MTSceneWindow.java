@@ -33,6 +33,7 @@ import org.mt4j.util.MT4jSettings;
 import org.mt4j.util.MTColor;
 import org.mt4j.util.animation.Animation;
 import org.mt4j.util.animation.AnimationEvent;
+import org.mt4j.util.animation.IAnimation;
 import org.mt4j.util.animation.IAnimationListener;
 import org.mt4j.util.animation.MultiPurposeInterpolator;
 import org.mt4j.util.math.Vector3D;
@@ -175,14 +176,14 @@ extends MTRoundRectangle {
 	
 	public void close(){
 		float width = this.getWidthXY(TransformSpace.RELATIVE_TO_PARENT);
-		Animation closeAnim = new Animation("Window Fade", new MultiPurposeInterpolator(width, 1, 350, 0.2f, 0.5f, 1), this);
+		IAnimation closeAnim = new Animation("Window Fade", new MultiPurposeInterpolator(width, 1, 350, 0.2f, 0.5f, 1), this);
 		closeAnim.addAnimationListener(new IAnimationListener(){
 			public void processAnimationEvent(AnimationEvent ae) {
 //				float delta = ae.getAnimation().getInterpolator().getCurrentStepDelta();
 				switch (ae.getId()) {
 				case AnimationEvent.ANIMATION_STARTED:
 				case AnimationEvent.ANIMATION_UPDATED:
-					float currentVal = ae.getAnimation().getInterpolator().getCurrentValue();
+					float currentVal = ae.getAnimation().getCurrentValue();
 					setWidthXYRelativeToParent(currentVal);
 					break;
 				case AnimationEvent.ANIMATION_ENDED:

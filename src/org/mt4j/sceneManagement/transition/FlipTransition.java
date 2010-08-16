@@ -91,17 +91,18 @@ public class FlipTransition extends AbstractTransition {
 		this.duration = duration;
 		this.finished = true;
 		
-		anim2 = new Animation("Flip animation 2", new MultiPurposeInterpolator(0,90, this.duration/2f, 0, 0.5f, 1) , this).addAnimationListener(new IAnimationListener(){
+		anim2 = new Animation("Flip animation 2", new MultiPurposeInterpolator(0,90, this.duration/2f, 0, 0.5f, 1) , this);
+		anim2.addAnimationListener(new IAnimationListener(){
 			//@Override
 			public void processAnimationEvent(AnimationEvent ae) {
 				switch (ae.getId()) {
 				case AnimationEvent.ANIMATION_STARTED:
 				case AnimationEvent.ANIMATION_UPDATED:
 //					nextSceneWindow.rotateYGlobal(lastSceneWindow.getCenterPointGlobal(), ae.getAnimation().getInterpolator().getCurrentStepDelta());
-					nextSceneRectangle.rotateYGlobal(lastSceneWindow.getCenterPointGlobal(), ae.getAnimation().getInterpolator().getCurrentStepDelta());
+					nextSceneRectangle.rotateYGlobal(lastSceneWindow.getCenterPointGlobal(), ae.getCurrentStepDelta());
 					break;
 				case AnimationEvent.ANIMATION_ENDED:
-					nextSceneRectangle.rotateYGlobal(lastSceneWindow.getCenterPointGlobal(), ae.getAnimation().getInterpolator().getCurrentStepDelta());
+					nextSceneRectangle.rotateYGlobal(lastSceneWindow.getCenterPointGlobal(), ae.getCurrentStepDelta());
 					finished = true;
 					break;
 				default:
@@ -110,17 +111,18 @@ public class FlipTransition extends AbstractTransition {
 			}});
 		anim2.setResetOnFinish(true);
 		
-        anim = new Animation("Flip animation 1", new MultiPurposeInterpolator(0,90, this.duration/2f, 0.5f, 1, 1) , this).addAnimationListener(new IAnimationListener(){
+        anim = new Animation("Flip animation 1", new MultiPurposeInterpolator(0,90, this.duration/2f, 0.5f, 1, 1) , this);
+        anim.addAnimationListener(new IAnimationListener(){
         	//@Override
         	public void processAnimationEvent(AnimationEvent ae) {
         		switch (ae.getId()) {
 				case AnimationEvent.ANIMATION_STARTED:
 				case AnimationEvent.ANIMATION_UPDATED:
 //					lastSceneWindow.rotateYGlobal(lastSceneWindow.getCenterPointGlobal(), ae.getAnimation().getInterpolator().getCurrentStepDelta());
-					lastSceneRectangle.rotateYGlobal(lastSceneWindow.getCenterPointGlobal(), ae.getAnimation().getInterpolator().getCurrentStepDelta());
+					lastSceneRectangle.rotateYGlobal(lastSceneWindow.getCenterPointGlobal(), ae.getCurrentStepDelta());
 					break;
 				case AnimationEvent.ANIMATION_ENDED:
-					lastSceneRectangle.rotateYGlobal(lastSceneWindow.getCenterPointGlobal(), ae.getAnimation().getInterpolator().getCurrentStepDelta());
+					lastSceneRectangle.rotateYGlobal(lastSceneWindow.getCenterPointGlobal(), ae.getAnimation().getCurrentStepDelta());
 //					nextSceneWindow.setVisible(true);
 //					lastSceneWindow.setVisible(false);
 					lastSceneRectangle.setVisible(false);

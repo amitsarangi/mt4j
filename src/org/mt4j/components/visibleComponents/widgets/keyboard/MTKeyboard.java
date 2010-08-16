@@ -45,6 +45,7 @@ import org.mt4j.util.MT4jSettings;
 import org.mt4j.util.MTColor;
 import org.mt4j.util.animation.Animation;
 import org.mt4j.util.animation.AnimationEvent;
+import org.mt4j.util.animation.IAnimation;
 import org.mt4j.util.animation.IAnimationListener;
 import org.mt4j.util.animation.MultiPurposeInterpolator;
 import org.mt4j.util.math.Vector3D;
@@ -776,14 +777,14 @@ public class MTKeyboard extends MTRoundRectangle {
 	
 	protected void closeKeyboard(){
 		float width = this.getWidthXY(TransformSpace.RELATIVE_TO_PARENT);
-		Animation keybCloseAnim = new Animation("Keyboard Fade", new MultiPurposeInterpolator(width, 1, 300, 0.2f, 0.5f, 1), this);
+		IAnimation keybCloseAnim = new Animation("Keyboard Fade", new MultiPurposeInterpolator(width, 1, 300, 0.2f, 0.5f, 1), this);
 		keybCloseAnim.addAnimationListener(new IAnimationListener(){
 			public void processAnimationEvent(AnimationEvent ae) {
 //				float delta = ae.getAnimation().getInterpolator().getCurrentStepDelta();
 				switch (ae.getId()) {
 				case AnimationEvent.ANIMATION_STARTED:
 				case AnimationEvent.ANIMATION_UPDATED:
-					float currentVal = ae.getAnimation().getInterpolator().getCurrentValue();
+					float currentVal = ae.getAnimation().getCurrentValue();
 //					keyboard.setWidthXYRelativeToParent(currentVal);
 					setWidthRelativeToParent(currentVal);
 					break;

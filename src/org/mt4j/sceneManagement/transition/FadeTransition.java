@@ -88,16 +88,17 @@ public class FadeTransition extends AbstractTransition {
 			
 		finished = false;
 		
-		anim2 = new Animation("Fade animation 2", new MultiPurposeInterpolator(255,0, this.duration/2f, 0, 0.8f, 1) , this).addAnimationListener(new IAnimationListener(){
+		anim2 = new Animation("Fade animation 2", new MultiPurposeInterpolator(255,0, this.duration/2f, 0, 0.8f, 1) , this);
+		anim2.addAnimationListener(new IAnimationListener(){
 			//@Override
 			public void processAnimationEvent(AnimationEvent ae) {
 				switch (ae.getId()) {
 				case AnimationEvent.ANIMATION_STARTED:
 				case AnimationEvent.ANIMATION_UPDATED:
-					fullScreenQuad.setFillColor(new MTColor(0,0,0, ae.getAnimation().getInterpolator().getCurrentValue()));
+					fullScreenQuad.setFillColor(new MTColor(0,0,0, ae.getCurrentValue()));
 					break;
 				case AnimationEvent.ANIMATION_ENDED:
-					fullScreenQuad.setFillColor(new MTColor(0,0,0, ae.getAnimation().getInterpolator().getCurrentValue()));
+					fullScreenQuad.setFillColor(new MTColor(0,0,0, ae.getCurrentValue()));
 					finished = true;
 					break;
 				default:
@@ -106,13 +107,14 @@ public class FadeTransition extends AbstractTransition {
 			}});
 		anim2.setResetOnFinish(true);
 		
-        anim = new Animation("Fade animation 1", new MultiPurposeInterpolator(0,255, this.duration/2f, 0, 1, 1) , this).addAnimationListener(new IAnimationListener(){
+        anim = new Animation("Fade animation 1", new MultiPurposeInterpolator(0,255, this.duration/2f, 0, 1, 1) , this);
+        anim.addAnimationListener(new IAnimationListener(){
         	//@Override
         	public void processAnimationEvent(AnimationEvent ae) {
         		switch (ae.getId()) {
 				case AnimationEvent.ANIMATION_STARTED:
 				case AnimationEvent.ANIMATION_UPDATED:
-					fullScreenQuad.setFillColor(new MTColor(0,0,0, ae.getAnimation().getInterpolator().getCurrentValue()));
+					fullScreenQuad.setFillColor(new MTColor(0,0,0, ae.getCurrentValue()));
 					break;
 				case AnimationEvent.ANIMATION_ENDED:
 					sceneToDraw = nextScene;

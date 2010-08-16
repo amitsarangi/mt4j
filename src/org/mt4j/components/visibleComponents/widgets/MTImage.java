@@ -32,6 +32,7 @@ import org.mt4j.util.MT4jSettings;
 import org.mt4j.util.MTColor;
 import org.mt4j.util.animation.Animation;
 import org.mt4j.util.animation.AnimationEvent;
+import org.mt4j.util.animation.IAnimation;
 import org.mt4j.util.animation.IAnimationListener;
 import org.mt4j.util.animation.MultiPurposeInterpolator;
 import org.mt4j.util.math.Vector3D;
@@ -222,13 +223,13 @@ public class MTImage extends MTRectangle implements IdragClusterable{
 					}
 					float width = referencePoly.getWidthXY(TransformSpace.RELATIVE_TO_PARENT);
 
-					Animation closeAnim = new Animation("comp Fade", new MultiPurposeInterpolator(width, 1, 300, 0.5f, 0.8f, 1), referencePoly);
+					IAnimation closeAnim = new Animation("comp Fade", new MultiPurposeInterpolator(width, 1, 300, 0.5f, 0.8f, 1), referencePoly);
 					closeAnim.addAnimationListener(new IAnimationListener(){
 						public void processAnimationEvent(AnimationEvent ae) {
 							switch (ae.getId()) {
 							case AnimationEvent.ANIMATION_STARTED:
 							case AnimationEvent.ANIMATION_UPDATED:
-								float currentVal = ae.getAnimation().getInterpolator().getCurrentValue();
+								float currentVal = ae.getAnimation().getCurrentValue();
 								resize(referencePoly, comps[0], currentVal, currentVal);
 								break;
 							case AnimationEvent.ANIMATION_ENDED:

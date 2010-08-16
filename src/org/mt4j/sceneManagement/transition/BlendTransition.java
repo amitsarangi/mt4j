@@ -82,9 +82,10 @@ public class BlendTransition extends AbstractTransition {
 		this.duration = duration;
 		this.finished = true;
 		
-		anim = new Animation("Blend animation ", new MultiPurposeInterpolator(255,0, this.duration, 0, 0.7f, 1) , this).addAnimationListener(new IAnimationListener(){
+		anim = new Animation("Blend animation ", new MultiPurposeInterpolator(255,0, this.duration, 0, 0.7f, 1) , this);
+		anim.addAnimationListener(new IAnimationListener(){
 			public void processAnimationEvent(AnimationEvent ae) {
-				float val = ae.getAnimation().getInterpolator().getCurrentValue();
+				float val = ae.getCurrentValue();
 				switch (ae.getId()) {
 				case AnimationEvent.ANIMATION_STARTED:
 					lastSceneRectangle.setVisible(true);

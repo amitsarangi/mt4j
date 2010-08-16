@@ -88,18 +88,18 @@ public class SlideTransition extends AbstractTransition {
 		this.duration = duration;
 		this.finished = true;
 		
-		anim = new Animation("Flip animation 2", new MultiPurposeInterpolator(app.width, 0, this.duration, 0.0f, 0.7f, 1) , this).addAnimationListener(new IAnimationListener(){
-			//@Override
+		anim = new Animation("Flip animation 2", new MultiPurposeInterpolator(app.width, 0, this.duration, 0.0f, 0.7f, 1) , this);
+		anim.addAnimationListener(new IAnimationListener(){
 			public void processAnimationEvent(AnimationEvent ae) {
 				switch (ae.getId()) {
 				case AnimationEvent.ANIMATION_STARTED:
 				case AnimationEvent.ANIMATION_UPDATED:
-					nextSceneRectangle.translateGlobal(new Vector3D(ae.getAnimation().getInterpolator().getCurrentStepDelta(),0,0));
-					lastSceneRectangle.translateGlobal(new Vector3D(ae.getAnimation().getInterpolator().getCurrentStepDelta(),0,0));
+					nextSceneRectangle.translateGlobal(new Vector3D(ae.getCurrentStepDelta(),0,0));
+					lastSceneRectangle.translateGlobal(new Vector3D(ae.getCurrentStepDelta(),0,0));
 					break;
 				case AnimationEvent.ANIMATION_ENDED:
-					nextSceneRectangle.translateGlobal(new Vector3D(ae.getAnimation().getInterpolator().getCurrentStepDelta(),0,0));
-					lastSceneRectangle.translateGlobal(new Vector3D(ae.getAnimation().getInterpolator().getCurrentStepDelta(),0,0));
+					nextSceneRectangle.translateGlobal(new Vector3D(ae.getCurrentStepDelta(),0,0));
+					lastSceneRectangle.translateGlobal(new Vector3D(ae.getCurrentStepDelta(),0,0));
 					finished = true;
 					break;
 				default:

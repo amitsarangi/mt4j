@@ -70,7 +70,7 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
         /** Expand the {@link MTTextArea} in top direction if necessary. */  
         UP,
         /** Expand the {@link MTTextArea} in bottom direction if necassary. */
-        DOWN;
+        DOWN
     }
     
 	/** The pa. */
@@ -1026,8 +1026,8 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
 		for (int i = 0; i < this.characterList.size(); i++) {
 			IFontCharacter character = this.characterList.get(i);
 			if (character.getUnicode().equals("\n")){
-				currentLineWidth = 2 * this.getInnerPaddingLeft() + caretWidth;; 
-			}else{
+				currentLineWidth = 2 * this.getInnerPaddingLeft() + caretWidth;
+            }else{
 				currentLineWidth += character.getHorizontalDist();
 			}
 		}

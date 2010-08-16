@@ -43,6 +43,7 @@ import org.mt4j.util.MTColor;
 import org.mt4j.util.animation.Animation;
 import org.mt4j.util.animation.AnimationEvent;
 import org.mt4j.util.animation.AnimationManager;
+import org.mt4j.util.animation.IAnimation;
 import org.mt4j.util.animation.IAnimationListener;
 import org.mt4j.util.animation.MultiPurposeInterpolator;
 import org.mt4j.util.math.ConvexQuickHull2D;
@@ -1507,15 +1508,15 @@ public abstract class AbstractShape extends AbstractVisibleComponent {
 	 * @param decelerationStartTime the deceleration start time - normalized value 0..1
 	 * @return the animation
 	 */
-	public Animation tweenTranslateTo(float x, float y, float z, float interpolationDuration, float accelerationEndTime, float decelerationStartTime){
+	public IAnimation tweenTranslateTo(float x, float y, float z, float interpolationDuration, float accelerationEndTime, float decelerationStartTime){
 		Vector3D from 			= this.getCenterPointGlobal();
 		Vector3D targetPoint 	= new Vector3D(x, y, z);
 		Vector3D directionVect 	= targetPoint.getSubtracted(from);
 		
 		//GO through all animations for this shape
-		Animation[] animations = AnimationManager.getInstance().getAnimationsForTarget(this);
+		IAnimation[] animations = AnimationManager.getInstance().getAnimationsForTarget(this);
 		for (int i = 0; i < animations.length; i++) {
-			Animation animation = animations[i];
+			IAnimation animation = animations[i];
 			
 			//Go through all listeners of these animations
 			IAnimationListener[] animationListeners = animation.getAnimationListeners();
@@ -1539,7 +1540,7 @@ public abstract class AbstractShape extends AbstractVisibleComponent {
 	 * @param decelerationStartTime the deceleration start time - normalized value 0..1
 	 * @return the animation
 	 */
-	public Animation tweenTranslate(Vector3D directionVect, float interpolationDuration, float accelerationEndTime, float decelerationStartTime){
+	public IAnimation tweenTranslate(Vector3D directionVect, float interpolationDuration, float accelerationEndTime, float decelerationStartTime){
 		return this.tweenTranslate(directionVect, interpolationDuration, accelerationEndTime, decelerationStartTime, 0);
 	}
 	
@@ -1553,7 +1554,7 @@ public abstract class AbstractShape extends AbstractVisibleComponent {
 	 * @param triggerDelay the trigger delay
 	 * @return the animation
 	 */
-	public Animation tweenTranslate(Vector3D directionVect, float interpolationDuration, float accelerationEndTime, float decelerationStartTime, int triggerDelay){
+	public IAnimation tweenTranslate(Vector3D directionVect, float interpolationDuration, float accelerationEndTime, float decelerationStartTime, int triggerDelay){
 		float distance = directionVect.length();
 		MultiPurposeInterpolator interpolator = new MultiPurposeInterpolator(0, distance, interpolationDuration , accelerationEndTime, decelerationStartTime , 1);
 		Animation animation = new Animation("Tween translate of " + this.getName(), interpolator, this, triggerDelay);
@@ -1598,7 +1599,7 @@ public abstract class AbstractShape extends AbstractVisibleComponent {
 			Object target = ae.getTargetObject();
 			if (target != null && target.equals(this.shape)){
 				AbstractShape shape = (AbstractShape)target;
-				float amount = ae.getAnimation().getInterpolator().getCurrentStepDelta();
+				float amount = ae.getAnimation().getCurrentStepDelta();
 				
 				Vector3D newTranslationVect = this.normalizedDirVect.getCopy();
 				newTranslationVect.scaleLocal(amount);
