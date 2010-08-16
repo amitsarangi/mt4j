@@ -36,6 +36,7 @@ import org.mt4j.util.animation.AnimationEvent;
 import org.mt4j.util.animation.IAnimation;
 import org.mt4j.util.animation.IAnimationListener;
 import org.mt4j.util.animation.MultiPurposeInterpolator;
+import org.mt4j.util.animation.ani.AniAnimation;
 import org.mt4j.util.math.Vector3D;
 
 import processing.core.PImage;
@@ -176,7 +177,8 @@ extends MTRoundRectangle {
 	
 	public void close(){
 		float width = this.getWidthXY(TransformSpace.RELATIVE_TO_PARENT);
-		IAnimation closeAnim = new Animation("Window Fade", new MultiPurposeInterpolator(width, 1, 350, 0.2f, 0.5f, 1), this);
+//		IAnimation closeAnim = new Animation("Window Fade", new MultiPurposeInterpolator(width, 1, 350, 0.2f, 0.5f, 1), this);
+		IAnimation closeAnim = new AniAnimation(width, 1, 350, AniAnimation.SINE_IN, this);
 		closeAnim.addAnimationListener(new IAnimationListener(){
 			public void processAnimationEvent(AnimationEvent ae) {
 //				float delta = ae.getAnimation().getInterpolator().getCurrentStepDelta();
@@ -185,6 +187,8 @@ extends MTRoundRectangle {
 				case AnimationEvent.ANIMATION_UPDATED:
 					float currentVal = ae.getAnimation().getCurrentValue();
 					setWidthXYRelativeToParent(currentVal);
+					
+					rotateZ(getCenterPointRelativeToParent(), ae.getCurrentStepDelta()*0.4f);
 					break;
 				case AnimationEvent.ANIMATION_ENDED:
 					setVisible(false);

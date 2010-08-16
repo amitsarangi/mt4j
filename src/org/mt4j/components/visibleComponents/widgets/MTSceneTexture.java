@@ -30,6 +30,7 @@ import org.mt4j.input.inputProcessors.globalProcessors.AbstractGlobalInputProces
 import org.mt4j.input.inputProcessors.globalProcessors.CursorTracer;
 import org.mt4j.sceneManagement.Iscene;
 import org.mt4j.util.MT4jSettings;
+import org.mt4j.util.camera.Icamera;
 import org.mt4j.util.math.Plane;
 import org.mt4j.util.math.Tools3D;
 import org.mt4j.util.math.Vector3D;
@@ -237,7 +238,11 @@ public class MTSceneTexture extends MTRectangle {
 			float newX = 0;
 			float newY = 0;
 			//Check intersection with infinite plane, this rect lies in
-			Vector3D interSP = p.getIntersectionLocal(this.globalToLocal(Tools3D.getCameraPickRay(app, this, x, y)));
+			Icamera camera = this.getViewingCamera();
+			if (camera == null){ //If the comp gets destroyed while still recieving input it might cause a nullpointer error
+				return false;
+			}
+			Vector3D interSP = p.getIntersectionLocal(this.globalToLocal(Tools3D.getCameraPickRay(app, camera, x, y)));
 			if (interSP != null){
 				//System.out.println(interSP);
 				newX = interSP.x;
