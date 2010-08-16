@@ -185,7 +185,7 @@ public abstract class AbstractCursorInputEvt extends MTInputEvent {
 	 * @see java.lang.Object#toString()
 	 */
 	public String toString(){
-		return new String(super.toString() + "; " + " PosX: " + positionX + " PosY: " + positionY + " InputSource: " + this.getSource()); 
+		return super.toString() + "; " + " PosX: " + positionX + " PosY: " + positionY + " InputSource: " + this.getSource(); 
 	}
 	
 	
