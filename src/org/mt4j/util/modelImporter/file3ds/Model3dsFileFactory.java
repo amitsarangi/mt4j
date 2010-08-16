@@ -222,7 +222,7 @@ public class Model3dsFileFactory extends ModelImporterFactory{
 
 						//If not, create a new group and save it in map
 						if (group == null){
-							group = new Group(new Integer(fmat.matIndex()).toString());
+							group = new Group(Integer.toString(fmat.matIndex()));
 							materialIdToGroup.put(fmat.matIndex(), group);
 						}
 
@@ -275,7 +275,7 @@ public class Model3dsFileFactory extends ModelImporterFactory{
 							MTTriangleMesh mesh = new MTTriangleMesh(pa, geometry);
 
 							if (mesh != null){
-								mesh.setName(m.name() + " material: " + new Integer(currentGroupName).toString());
+								mesh.setName(m.name() + " material: " + Integer.toString(currentGroupName));
 								//Assign texture
 								this.assignMaterial(pathToModel, file, scene, m, currentGroupName, mesh);
 

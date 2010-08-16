@@ -973,8 +973,8 @@ public class ToolsGeometry {
 	private enum PolygonTestPlane{
 		XY,
 		XZ,
-		YZ;
-	}
+		YZ
+    }
 
    /**
     * Checks if is point2 d in polygon.

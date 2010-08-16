@@ -198,7 +198,7 @@ class ObjectFileMaterials implements ImageObserver {
     	if (st.ttype == ObjectFileParser.TT_WORD) {
 
     		if (curName != null) materials.put(curName, cur);
-    		curName = new String(st.sval);
+    		curName = st.sval;
     		cur = new ObjectFileMaterial();
     	}
     	st.skipToNextLine();

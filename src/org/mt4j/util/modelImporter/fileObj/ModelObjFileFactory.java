@@ -902,7 +902,7 @@ public class ModelObjFileFactory  extends ModelImporterFactory {
 	void readMaterialName(ObjectFileParser st) throws ParsingErrorException {
 		st.getToken();
 		if (st.ttype == ObjectFileParser.TT_WORD) {
-			String useMaterialName = new String(st.sval);
+			String useMaterialName = st.sval;
 			
 			//////FIXME ADDED! added, to group by material if no groups are in obj file!
 //			if (curGroup.equalsIgnoreCase("default")){

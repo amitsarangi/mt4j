@@ -601,7 +601,7 @@ public class SVGLoader implements SVGConstants{
 
 							  /////////////////////////////////////
 							  //Get the character information - font, colors
-							  String newFamilyName = new String(fontFamily);
+							  String newFamilyName = fontFamily;
 							  float newFontSize = fontSize;
 							  MTColor newFillColor = new MTColor(fillColor);
 							  MTColor newStrokeColor = new MTColor(strokeColor);
@@ -780,7 +780,7 @@ public class SVGLoader implements SVGConstants{
 							  }
 							  //Add character to the current textarea in the list
 							  if (!textAreas.isEmpty()){
-								  textAreas.get(textAreas.size()-1).appendCharByUnicode(new Character(currentChar).toString());							
+								  textAreas.get(textAreas.size()-1).appendCharByUnicode(Character.toString(currentChar));
 							  }
 						  }
 						  //Set the positions of the textareas
@@ -1972,7 +1972,7 @@ public class SVGLoader implements SVGConstants{
 	    
 	
     private CycleMethodEnum getSpreadMethod(Element paintElement){
-    	String s = new String();
+    	String s = "";
         //SPREADMETHOD 'spreadMethod' attribute - default is pad
         CycleMethodEnum spreadMethod = MultipleGradientPaint.NO_CYCLE;
         s = SVGUtilities.getChainableAttributeNS(paintElement, null, SVG_SPREAD_METHOD_ATTRIBUTE, ctx);
@@ -1994,7 +1994,7 @@ public class SVGLoader implements SVGConstants{
     
     
     private AffineTransform getGradientTransform(Element paintElement){
-    	String s = new String();
+    	String s = "";
     	  //'gradientTransform' attribute - default is an Identity matrix
         AffineTransform transform;
         s = SVGUtilities.getChainableAttributeNS(paintElement, null, SVG_GRADIENT_TRANSFORM_ATTRIBUTE, ctx);

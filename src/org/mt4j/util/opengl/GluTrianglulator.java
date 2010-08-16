@@ -18,6 +18,7 @@
 package org.mt4j.util.opengl;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.media.opengl.glu.GLU;
@@ -254,9 +255,10 @@ public class GluTrianglulator extends GLUtessellatorCallbackAdapter{
     	 */
     	private List<Vertex> tesselateContour(Vertex[] contour, int windingRule){
     		if (contour.length == 3){
-    			for (Vertex v : contour){
-    				triList.add(v);
-    			}
+                triList.addAll(Arrays.asList(contour));
+                //for (Vertex v : contour){
+    			//	triList.add(v);
+    			//}
     			return this.triList;
     		}
     		

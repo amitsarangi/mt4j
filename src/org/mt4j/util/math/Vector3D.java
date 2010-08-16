@@ -1035,7 +1035,7 @@ public class Vector3D {
      * @see java.lang.Object#toString()
      */
     public String toString(){
-    	return new String(/*super.toString() +*/ " X:" + this.getX()+ " Y:" + this.getY() + " Z:" + this.getZ() + " W:" + this.getW());
+    	return " X:" + this.getX() + " Y:" + this.getY() + " Z:" + this.getZ() + " W:" + this.getW();
     }
     
 //    //TODO CHECK IF THIS WORKS; TOO
