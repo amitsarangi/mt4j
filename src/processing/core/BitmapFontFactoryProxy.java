@@ -390,7 +390,7 @@ public class BitmapFontFactoryProxy implements IFontFactory {
 //				}
 				
 				//Create bitmap font character
-				String StringChar = new Character(c).toString();
+				String StringChar = Character.toString(c);
 				BitmapFontCharacter character = new BitmapFontCharacter(charImage, pa, StringChar, leftExtend, topOffset, widthDisplacement);
 				character.setName(StringChar);
 				character.setFillColor(new MTColor(fillColor));
