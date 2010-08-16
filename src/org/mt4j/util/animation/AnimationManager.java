@@ -27,7 +27,7 @@ import java.util.Iterator;
 public class AnimationManager {
 	
 	/** The animations. */
-	private ArrayList<Animation> animations;
+	private ArrayList<IAnimation> animations;
 	
 	/** The instance. */
 	private static AnimationManager instance = new AnimationManager();
@@ -39,7 +39,7 @@ public class AnimationManager {
 	 * Instantiates a new animation manager.
 	 */
 	private AnimationManager(){
-		animations = new ArrayList<Animation>();
+		animations = new ArrayList<IAnimation>();
 		animationMgrListener = new ArrayList<IAnimationManagerListener>();
 		
 		animUpdateEvt = new AnimationUpdateEvent(this, 0);
@@ -75,39 +75,6 @@ public class AnimationManager {
 		//allocated each frame! => the creation timestampt is wrong
 		animUpdateEvt.setDeltaTime(timeDelta);
 		fireAnimationUpdateEvent(animUpdateEvt);
-		
-		/*
-		for (int i = 0; i < animations.size(); i++) {
-			Animation a = animations.get(i);
-			
-			Iinterpolator interpolator = a.getInterpolator();
-			//System.out.println("animating " + a.getName());
-			
-			if (a.isEnabled() && !interpolator.isFinished()){
-				// Do the next interpolation iteration
-				interpolator.interpolate(timeDelta);
-				
-				if (!interpolator.isFinished()){
-					if (a.getStartedTime() == 0){ //Animation hasnt begun yet
-						if (a.getTriggerTime() > 0){ //Check for trigger time up
-							
-						}else{
-							a.setStartedTime(System.currentTimeMillis());
-							a.postEvent(new AnimationEvent(this, AnimationEvent.ANIMATION_STARTED, a, a.getTargetObject()));
-						}
-					}else{
-//						System.out.println("Animation UPDATED: " + a.getName());
-						a.postEvent(new AnimationEvent(this, AnimationEvent.ANIMATION_UPDATED, a, a.getTargetObject()));
-					}
-				}else{
-					a.postEvent(new AnimationEvent(this, AnimationEvent.ANIMATION_ENDED, a, a.getTargetObject()));
-					this.removeAnimation(a);
-					//TODO rather call smth like a.endAntionmation()
-				}
-			}
-			
-		}
-		*/
 	}
 	
 	
@@ -116,7 +83,7 @@ public class AnimationManager {
 	 * 
 	 * @param a the a
 	 */
-	public void addAnimation(Animation a){
+	public void registerAnimation(IAnimation a){
 		if (!this.contains(a))
 			animations.add(a);
 	}
@@ -126,7 +93,7 @@ public class AnimationManager {
 	 * 
 	 * @param a the a
 	 */
-	public void removeAnimation(Animation a){
+	public void unregisterAnimation(IAnimation a){
 		if (animations.contains(a))
 			animations.remove(a);
 	}
@@ -135,11 +102,15 @@ public class AnimationManager {
 	 * Clear.
 	 */
 	public void clear() {
-		Iterator<Animation> i = animations.iterator();
+		Iterator<IAnimation> i = animations.iterator();
 		while (i.hasNext()) {
-			Animation a = (Animation)i.next();
+			IAnimation a = (IAnimation)i.next();
 //			a.stop();
-			removeAnimationManagerListener(a);
+			if (a instanceof IAnimationManagerListener) {
+				IAnimationManagerListener ial = (IAnimationManagerListener) a;
+				removeAnimationManagerListener(ial);
+			}
+			a.stop();
 		}
 		animations.clear();
 	}
@@ -151,16 +122,16 @@ public class AnimationManager {
 	 * 
 	 * @return the animations for target
 	 */
-	public Animation[] getAnimationsForTarget(Object target){
-		Iterator<Animation> i = animations.iterator();
-		ArrayList<Animation> animations = new ArrayList<Animation>();
+	public IAnimation[] getAnimationsForTarget(Object target){
+		Iterator<IAnimation> i = animations.iterator();
+		ArrayList<IAnimation> animations = new ArrayList<IAnimation>();
 		while (i.hasNext()) {
-			Animation a = (Animation)i.next();
+			IAnimation a = (IAnimation)i.next();
 			if (a.getTargetObject().equals(target)){
 				animations.add(a);
 			}
 		}
-		return (animations.toArray(new Animation[animations.size()]));
+		return (animations.toArray(new IAnimation[animations.size()]));
 	}
 
 	/**
@@ -170,7 +141,7 @@ public class AnimationManager {
 	 * 
 	 * @return true, if successful
 	 */
-	public boolean contains(Animation arg0) {
+	public boolean contains(IAnimation arg0) {
 		return animations.contains(arg0);
 	}
 

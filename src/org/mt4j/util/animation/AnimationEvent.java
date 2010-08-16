@@ -29,7 +29,7 @@ public class AnimationEvent extends MTEvent {
 	private int id;
 	
 	/** The animation. */
-	private Animation animation;
+	private IAnimation animation;
 	
 	/** The target object. */
 	private Object targetObject;
@@ -51,7 +51,7 @@ public class AnimationEvent extends MTEvent {
 	 * @param id the id
 	 * @param animation the animation
 	 */
-	public AnimationEvent(Object source, int id, Animation animation) {
+	public AnimationEvent(Object source, int id, IAnimation animation) {
 		this(source, id, animation, null);
 	}
 	
@@ -63,7 +63,7 @@ public class AnimationEvent extends MTEvent {
 	 * @param animation the animation
 	 * @param targetObject the target object
 	 */
-	public AnimationEvent(Object source, int id, Animation animation, Object targetObject) {
+	public AnimationEvent(Object source, int id, IAnimation animation, Object targetObject) {
 		super(source);
 		
 		this.id = id;
@@ -87,7 +87,7 @@ public class AnimationEvent extends MTEvent {
 	 * 
 	 * @return the animation
 	 */
-	public Animation getAnimation() {
+	public IAnimation getAnimation() {
 		return animation;
 	}
 	
