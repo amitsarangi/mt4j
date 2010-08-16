@@ -17,10 +17,7 @@
  ***********************************************************************/
 package org.mt4j.components;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
 
 /**
@@ -199,17 +196,21 @@ public class StateChangeSupport {
 
         StateChangeListener[] listeners = this.statesToListener.get(null);
         if (listeners != null) {
-            for (StateChangeListener listener : listeners) {
-                list.add(listener);
-            }
+            list.addAll(Arrays.asList(listeners));
+
+           //  for (StateChangeListener listener : listeners) {
+           //     list.add(listener);
+           // }
         }
         
         for (Entry<StateChange, StateChangeListener[]> entry : this.statesToListener.entrySet()) {
         	StateChange state = entry.getKey();
             if (state != null) {
-                for (StateChangeListener listener : entry.getValue()) {
-                    list.add(listener);
-                }
+                list.addAll(Arrays.asList(entry.getValue()));
+
+                 // for (StateChangeListener listener : entry.getValue()) {
+                 //   list.add(listener);
+                //}
             }
         }
         return list.toArray(newArray(list.size()));

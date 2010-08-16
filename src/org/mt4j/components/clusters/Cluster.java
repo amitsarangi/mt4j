@@ -19,6 +19,7 @@ package org.mt4j.components.clusters;
 
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import org.mt4j.components.MTComponent;
 import org.mt4j.components.TransformSpace;
@@ -134,10 +135,11 @@ public class Cluster extends MTComponent { //extends MTComponent/implements IMTC
 					verts = b.getVectorsGlobal();
 //					 verts = shape.getVerticesGlobal();
 				}
-				
-				for (Vector3D v : verts){
-					allClusteredVerts.add(v);
-				}
+
+                allClusteredVerts.addAll(Arrays.asList(verts));
+                //for (Vector3D v : verts){
+				//	allClusteredVerts.add(v);
+				//}
 			}
 		}
 		

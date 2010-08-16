@@ -813,7 +813,7 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 	 */
 	public void setMatricesDirty(boolean matricesDirty) {
 //		System.out.println("Setting matrices dirty->" + matricesDirty + " on: "  + this.getName());
-		if (matricesDirty == true){
+		if (matricesDirty){
 			//FIXME BOUNDS TEST
 			this.setBoundsGlobalDirty(true);
 			

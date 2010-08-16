@@ -31,7 +31,7 @@ public enum TransformSpace {
 	RELATIVE_TO_PARENT, 
 	
 	/** The RELATIVe_ to_ world. */
-	GLOBAL;
-	
-	
+	GLOBAL
+
+
 }
