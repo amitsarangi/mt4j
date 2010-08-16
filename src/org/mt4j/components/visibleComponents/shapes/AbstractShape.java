@@ -46,6 +46,7 @@ import org.mt4j.util.animation.AnimationManager;
 import org.mt4j.util.animation.IAnimation;
 import org.mt4j.util.animation.IAnimationListener;
 import org.mt4j.util.animation.MultiPurposeInterpolator;
+import org.mt4j.util.animation.ani.AniAnimation;
 import org.mt4j.util.math.ConvexQuickHull2D;
 import org.mt4j.util.math.Matrix;
 import org.mt4j.util.math.Ray;
@@ -1556,10 +1557,21 @@ public abstract class AbstractShape extends AbstractVisibleComponent {
 	 */
 	public IAnimation tweenTranslate(Vector3D directionVect, float interpolationDuration, float accelerationEndTime, float decelerationStartTime, int triggerDelay){
 		float distance = directionVect.length();
+		IAnimation animation = null;
+		
+//		/*
 		MultiPurposeInterpolator interpolator = new MultiPurposeInterpolator(0, distance, interpolationDuration , accelerationEndTime, decelerationStartTime , 1);
-		Animation animation = new Animation("Tween translate of " + this.getName(), interpolator, this, triggerDelay);
+		animation = new Animation("Tween translate of " + this.getName(), interpolator, this, triggerDelay);
 		animation.addAnimationListener(new TranslationAnimationListener(this, directionVect));
-		animation.setResetOnFinish(false);
+		((Animation)animation).setResetOnFinish(false);
+//		*/
+		
+		/*
+		animation = new AniAnimation(0, distance, Math.round(interpolationDuration), AniAnimation.QUAD_IN_OUT, this);
+		animation.addAnimationListener(new TranslationAnimationListener(this, directionVect));
+		((AniAnimation)animation).setTriggerTime(triggerDelay);
+		*/
+		
 		animation.start();
 		return animation;
 	}

@@ -74,6 +74,7 @@ import org.mt4j.util.animation.AnimationEvent;
 import org.mt4j.util.animation.IAnimation;
 import org.mt4j.util.animation.IAnimationListener;
 import org.mt4j.util.animation.MultiPurposeInterpolator;
+import org.mt4j.util.animation.ani.AniAnimation;
 import org.mt4j.util.camera.MTCamera;
 import org.mt4j.util.math.Matrix;
 import org.mt4j.util.math.Vector3D;
@@ -228,11 +229,11 @@ public class MapsScene extends AbstractScene implements MouseWheelListener, Mous
 		
 		/// Create map provider menu \\\
 		IFont font = FontManager.getInstance().createFont(p, "SansSerif.Bold", 15, MTColor.WHITE, MTColor.WHITE);
-		MTRoundRectangle mapMenu = new MTRoundRectangle(0,0,0, 220,335, 20,20, p);
+		MTRoundRectangle mapMenu = new MTRoundRectangle(0,0,0, 240,335, 20,20, p);
 //		mapMenu.setFillColor(new MTColor(110,110,110,180));
 //		mapMenu.setStrokeColor(new MTColor(110,110,110,180));
-		mapMenu.setFillColor(new MTColor(35,35,35,180));
-		mapMenu.setStrokeColor(new MTColor(35,35,35,180));
+		mapMenu.setFillColor(new MTColor(45,45,45,180));
+		mapMenu.setStrokeColor(new MTColor(45,45,45,180));
 		mapMenu.setPositionGlobal(new Vector3D(p.width/2f, p.height/2f));
 		mapMenu.translateGlobal(new Vector3D(-p.width/2f - 80,0));
 		getCanvas().addChild(mapMenu);
@@ -259,8 +260,9 @@ public class MapsScene extends AbstractScene implements MouseWheelListener, Mous
 		list.addListElement(this.createListCell("Blue Marble", font, new BlueMarble(), cellWidth, cellHeight, cellFillColor, cellPressedFillColor));
 		list.addListElement(this.createListCell("Daily Planet", font, new DailyPlanet(), cellWidth, cellHeight, cellFillColor, cellPressedFillColor));
 		
-		MultiPurposeInterpolator in = new MultiPurposeInterpolator(0,170, 700, 0.1f, 0.7f, 1);
-		final IAnimation slideOut = new Animation("slide out animation", in, mapMenu);
+//		MultiPurposeInterpolator in = new MultiPurposeInterpolator(0,170, 700, 0.1f, 0.7f, 1);
+//		final IAnimation slideOut = new Animation("slide out animation", in, mapMenu);
+		final IAnimation slideOut = new AniAnimation(0, 170, 700, AniAnimation.BACK_OUT, mapMenu);
 		slideOut.addAnimationListener(new IAnimationListener() {
 			public void processAnimationEvent(AnimationEvent ae) {
 				float delta = ae.getCurrentStepDelta();
@@ -274,7 +276,8 @@ public class MapsScene extends AbstractScene implements MouseWheelListener, Mous
 			}
 		});
 		
-		final IAnimation slideIn = new Animation("slide out animation", in, mapMenu);
+//		final IAnimation slideIn = new Animation("slide out animation", in, mapMenu);
+		final IAnimation slideIn = new AniAnimation(0, 170, 700, AniAnimation.BACK_OUT, mapMenu);
 		slideIn.addAnimationListener(new IAnimationListener() {
 			public void processAnimationEvent(AnimationEvent ae) {
 				float delta = -ae.getCurrentStepDelta();
