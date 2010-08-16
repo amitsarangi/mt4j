@@ -49,6 +49,7 @@ import org.mt4j.sceneManagement.transition.ITransition;
 import org.mt4j.util.MT4jSettings;
 import org.mt4j.util.SettingsMenu;
 import org.mt4j.util.animation.AnimationManager;
+import org.mt4j.util.animation.ani.AniAnimation;
 import org.mt4j.util.math.Tools3D;
 import org.mt4j.util.opengl.GLFBO;
 
@@ -486,9 +487,8 @@ public abstract class MTApplication extends PApplet {
 		//Create a new inputsourcePool
 		this.setInputManager(new InputManager(this));
 		
-		//Call startup at the end of setup(). Should be overridden in extending classes
-		this.startUp();
-
+		AniAnimation.init(this); //Initialize Ani animation library
+		
 		/*
 		* Resizable Window test
 		* Problems:
@@ -503,6 +503,9 @@ public abstract class MTApplication extends PApplet {
 			}
 		} );
 		*/ 
+		
+		//Call startup at the end of setup(). Should be overridden in extending classes
+		this.startUp();
 	}
 	
 	/**
