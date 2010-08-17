@@ -305,7 +305,7 @@ class ObjectFileMaterials implements ImageObserver {
 
     	st.lowerCaseMode(true);
 
-    	if (tFile != "") {
+    	if (!tFile.equals("")) {
     		
     		PImage texture = null;
     		
@@ -505,7 +505,7 @@ class ObjectFileMaterials implements ImageObserver {
 
     	st.lowerCaseMode(true);
 
-    	if (tFile != "") {
+    	if (!tFile.equals("")) {
     		PImage alphaMap;
     		// Check for filename with no extension
     		if (tFile.lastIndexOf('.') != -1) {

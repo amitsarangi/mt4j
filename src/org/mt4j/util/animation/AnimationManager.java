@@ -83,7 +83,7 @@ public class AnimationManager {
 	 * 
 	 * @param a the a
 	 */
-	public void registerAnimation(IAnimation a){
+	public synchronized  void registerAnimation(IAnimation a){
 		if (!this.contains(a))
 			animations.add(a);
 	}
@@ -93,7 +93,7 @@ public class AnimationManager {
 	 * 
 	 * @param a the a
 	 */
-	public void unregisterAnimation(IAnimation a){
+	public  synchronized void unregisterAnimation(IAnimation a){
 		if (animations.contains(a))
 			animations.remove(a);
 	}
@@ -106,12 +106,12 @@ public class AnimationManager {
 		while (i.hasNext()) {
 			IAnimation a = (IAnimation)i.next();
 //			a.stop();
-			if (a instanceof IAnimationManagerListener) {
-				IAnimationManagerListener ial = (IAnimationManagerListener) a;
-				removeAnimationManagerListener(ial);
-			}
-			a.stop();
-		}
+            if (a instanceof IAnimationManagerListener) {
+                IAnimationManagerListener ial = (IAnimationManagerListener) a;
+                removeAnimationManagerListener(ial);
+            }
+            a.stop();
+        }
 		animations.clear();
 	}
 	
@@ -126,7 +126,7 @@ public class AnimationManager {
 		Iterator<IAnimation> i = animations.iterator();
 		ArrayList<IAnimation> animations = new ArrayList<IAnimation>();
 		while (i.hasNext()) {
-			IAnimation a = (IAnimation)i.next();
+			IAnimation a = i.next();
 			if (a.getTargetObject().equals(target)){
 				animations.add(a);
 			}
@@ -160,15 +160,16 @@ public class AnimationManager {
 	 * 
 	 * @param up the up
 	 */
-	private void fireAnimationUpdateEvent(AnimationUpdateEvent up) {
-//		synchronized(animationMgrListener) {
-			for (int i = 0; i < animationMgrListener.size(); i++) {
-				IAnimationManagerListener listener = (IAnimationManagerListener)animationMgrListener.get(i);
-				listener.updateAnimation(up);
-			}
-//		}
+	private synchronized void fireAnimationUpdateEvent(AnimationUpdateEvent up) {
+		//		synchronized(animationMgrListener) {
+//		for (IAnimationManagerListener listener : animationMgrListener) {
+
+						for (int i = 0; i < animationMgrListener.size(); i++) {
+							IAnimationManagerListener listener = (IAnimationManagerListener)animationMgrListener.get(i);
+			listener.updateAnimation(up);
+		}
 	}
-	
+
 
 	/**
 	 * Adds the animation manager listener.
@@ -206,7 +207,7 @@ public class AnimationManager {
 	 * @return the animation manager listeners
 	 */
 	public synchronized IAnimationManagerListener[] getAnimationManagerListeners(){
-		return (IAnimationManagerListener[])animationMgrListener.toArray(new IAnimationManagerListener[this.animationMgrListener.size()]);
+		return animationMgrListener.toArray(new IAnimationManagerListener[this.animationMgrListener.size()]);
 	}
 	
 }

@@ -85,7 +85,7 @@ public class GLFboStack{
 	 * Pushes the currently used render target ID on the stack.
 	 */
 	public void pushFBO(){
-		fboNameStack.push(new Integer(currentFBO));
+		fboNameStack.push(currentFBO);
 	}
 
 	/**
@@ -132,7 +132,7 @@ public class GLFboStack{
 		if (fboNameStack.isEmpty()){
 			logger.error("Trying to pop() from an empty framebuffer stack!"); //TODO -> just bind 0 !?
 		}else{
-			currentFBO = fboNameStack.pop().intValue();
+			currentFBO = fboNameStack.pop();
 			gl.glBindFramebufferEXT(GL.GL_FRAMEBUFFER_EXT, currentFBO);
 		}
 	}

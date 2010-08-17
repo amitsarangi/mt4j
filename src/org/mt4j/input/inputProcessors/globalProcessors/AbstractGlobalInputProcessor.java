@@ -130,7 +130,7 @@ public abstract class AbstractGlobalInputProcessor implements IinputSourceListen
 	 * @return the processor listeners
 	 */
 	public synchronized IMTInputEventListener[] getProcessorListeners(){
-		return (IMTInputEventListener[])inputListeners.toArray(new IMTInputEventListener[this.inputListeners.size()]);
+		return inputListeners.toArray(new IMTInputEventListener[this.inputListeners.size()]);
 	}
 	
 	/**

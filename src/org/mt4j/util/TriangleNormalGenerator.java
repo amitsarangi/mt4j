@@ -136,10 +136,11 @@ public class TriangleNormalGenerator {
 		
 		//Gen texcoord array as same as indices array
 		int[] texIndices = new int[indices.length];
-		for (int i = 0; i < indices.length; i++) {
-			texIndices[i] = indices[i];
-		}
-		
+        System.arraycopy(indices, 0, texIndices, 0, indices.length);
+        //		for (int i = 0; i < indices.length; i++) {
+		//	texIndices[i] = indices[i];
+		//}
+
 		//Generate normals
 		GeometryInfo geom = null;
 		if (creaseAngle == 180){
@@ -699,72 +700,68 @@ public class TriangleNormalGenerator {
 				//Durch alle selbst kreierten faces gehen, und schauen ob ein vertex des faces mit einem seiner
 				//nachbar faces einen "sharp edge" hat oder smooth ist.
 				//wenn smooth -> als smooth neighbor des face pointers hinzuf�gen
-				for (int j = 0; j < faces.size(); j++) {
-					MyFace currentFace = faces.get(j);
-	
-					//Get vertex pointers of face to vertices in vertices list
-					int indexP0 = currentFace.p0;
-					int indexP1 = currentFace.p1;
-					int indexP2 = currentFace.p2;
-	
-					//Get the vertexdatas out of the list with the pointers
-					VertexData vdP0 = vertexDatas.get(indexP0);
-					VertexData vdP1 = vertexDatas.get(indexP1);
-					VertexData vdP2 = vertexDatas.get(indexP2);
-	
-	
-					int[] currentFaceVertIndices = currentFace.getVertexIndices();
-					//Go through all 3 vertexdata entries in the current face and check for its smooth neighbors
-					for (int faceVD = 0; faceVD < currentFaceVertIndices.length /*currentFace.getVertexIndices().length*/; faceVD++) {
-	
-						VertexData currentFaceVertexData = null;
-						if 	   (faceVD == 0)	{currentFaceVertexData 	= vdP0; /*logger.debug("Face: " + j + " - P0");*/}
-						else if(faceVD == 1) 	{currentFaceVertexData 	= vdP1; /*logger.debug("Face: " + j + " - P1");*/}
-						else if(faceVD == 2)	{currentFaceVertexData 	= vdP2; /*logger.debug("Face: " + j + " - P2");*/}
-	
-						ArrayList<MyFace> facesVDIsIn = currentFaceVertexData.getFacesContainedIn();
-	
-						//Go through all neighbor faces that the vertex(data) is a part of
-						for (int k = 0; k < facesVDIsIn.size(); k++) {
-							MyFace anotherFaceVDisIn = facesVDIsIn.get(k);
-	
-							//Check that we are not considering the same face as the currentFace
-							if (!anotherFaceVDisIn.equals(currentFace)){
-	
-								boolean onSameSurface = isOnSameSurfaceRadians(currentFace, anotherFaceVDisIn, creaseAngleRad);
-//								boolean onSameSurface = isOnSameSurfaceCosAngle(currentFace, anotherFaceVDisIn, creaseCosinus);
-								
-								//Check if the current face and the other face VD are connected
-								//by an angle < cos_angle degrees, 
-								//if so, add the faces to the vds smooth neighbor list (for later normal generation)
-								//if NOT so, create new VertexData, as a copy of the current one at the end of
-								//the vertexdata list, adjust the face pointers of the current face to the new one
-								//(we need another vertex so we have two different normals for them if the two faces arent smoothly connected)
-								if (onSameSurface){
-									if 	   (faceVD == 0)	{
-										logger.debug("Face: " + (currentFace.index) + " (P0:" + currentFace.p0 + " P1:" + currentFace.p1 + " P2:" + currentFace.p2 + ")" + " is smooth with face: " + (anotherFaceVDisIn.index) + " (P0:" + anotherFaceVDisIn.p0 + " P1:" + anotherFaceVDisIn.p1 + " P2:" + anotherFaceVDisIn.p2 + ") at currentFaces' pointer: " +  currentFace.p0 + " (" + vdP0.getVertex()+ " )");
-									}
-									else if(faceVD == 1) 	{
-										logger.debug("Face: " + (currentFace.index) + " (P0:" + currentFace.p0 + " P1:" + currentFace.p1 + " P2:" + currentFace.p2 + ")" + " is smooth with face: " + (anotherFaceVDisIn.index) + " (P0:" + anotherFaceVDisIn.p0 + " P1:" + anotherFaceVDisIn.p1 + " P2:" + anotherFaceVDisIn.p2 + ") at currentFaces' pointer: " +  currentFace.p1+ " (" + vdP1.getVertex()+ " )");
-									}
-									else if(faceVD == 2)	{
-										logger.debug("Face: " + (currentFace.index) + " (P0:" + currentFace.p0 + " P1:" + currentFace.p1 + " P2:" + currentFace.p2 + ")" + " is smooth with face: " + (anotherFaceVDisIn.index) + " (P0:" + anotherFaceVDisIn.p0 + " P1:" + anotherFaceVDisIn.p1 + " P2:" + anotherFaceVDisIn.p2 + ") at currentFaces' pointer: " +  currentFace.p2+ " (" + vdP2.getVertex()+ " )");
-									}
+                for (MyFace currentFace : faces) {
+                    //Get vertex pointers of face to vertices in vertices list
+                    int indexP0 = currentFace.p0;
+                    int indexP1 = currentFace.p1;
+                    int indexP2 = currentFace.p2;
 
-									if 	   (faceVD == 0)	{
-										currentFace.addSmoothNeighborP0(anotherFaceVDisIn);
-									}
-									else if(faceVD == 1) 	{
-										currentFace.addSmoothNeighborP1(anotherFaceVDisIn);
-									}
-									else if(faceVD == 2)	{
-										currentFace.addSmoothNeighborP2(anotherFaceVDisIn);
-									}
-								}//if smooth
-							}//if not checking against this same face
-						}//for loop through all faces the current vertex is in
-					}//for loop through all 3 vertexdatas of the current face 
-				}//for loop through all previously created faces
+                    //Get the vertexdatas out of the list with the pointers
+                    VertexData vdP0 = vertexDatas.get(indexP0);
+                    VertexData vdP1 = vertexDatas.get(indexP1);
+                    VertexData vdP2 = vertexDatas.get(indexP2);
+
+
+                    int[] currentFaceVertIndices = currentFace.getVertexIndices();
+                    //Go through all 3 vertexdata entries in the current face and check for its smooth neighbors
+                    for (int faceVD = 0; faceVD < currentFaceVertIndices.length /*currentFace.getVertexIndices().length*/; faceVD++) {
+
+                        VertexData currentFaceVertexData = null;
+                        if (faceVD == 0) {
+                            currentFaceVertexData = vdP0; /*logger.debug("Face: " + j + " - P0");*/
+                        } else if (faceVD == 1) {
+                            currentFaceVertexData = vdP1; /*logger.debug("Face: " + j + " - P1");*/
+                        } else if (faceVD == 2) {
+                            currentFaceVertexData = vdP2; /*logger.debug("Face: " + j + " - P2");*/
+                        }
+
+                        ArrayList<MyFace> facesVDIsIn = currentFaceVertexData.getFacesContainedIn();
+
+                        //Go through all neighbor faces that the vertex(data) is a part of
+                        for (MyFace anotherFaceVDisIn : facesVDIsIn) {
+                            //Check that we are not considering the same face as the currentFace
+                            if (!anotherFaceVDisIn.equals(currentFace)) {
+
+                                boolean onSameSurface = isOnSameSurfaceRadians(currentFace, anotherFaceVDisIn, creaseAngleRad);
+//								boolean onSameSurface = isOnSameSurfaceCosAngle(currentFace, anotherFaceVDisIn, creaseCosinus);
+
+                                //Check if the current face and the other face VD are connected
+                                //by an angle < cos_angle degrees,
+                                //if so, add the faces to the vds smooth neighbor list (for later normal generation)
+                                //if NOT so, create new VertexData, as a copy of the current one at the end of
+                                //the vertexdata list, adjust the face pointers of the current face to the new one
+                                //(we need another vertex so we have two different normals for them if the two faces arent smoothly connected)
+                                if (onSameSurface) {
+                                    if (faceVD == 0) {
+                                        logger.debug("Face: " + (currentFace.index) + " (P0:" + currentFace.p0 + " P1:" + currentFace.p1 + " P2:" + currentFace.p2 + ")" + " is smooth with face: " + (anotherFaceVDisIn.index) + " (P0:" + anotherFaceVDisIn.p0 + " P1:" + anotherFaceVDisIn.p1 + " P2:" + anotherFaceVDisIn.p2 + ") at currentFaces' pointer: " + currentFace.p0 + " (" + vdP0.getVertex() + " )");
+                                    } else if (faceVD == 1) {
+                                        logger.debug("Face: " + (currentFace.index) + " (P0:" + currentFace.p0 + " P1:" + currentFace.p1 + " P2:" + currentFace.p2 + ")" + " is smooth with face: " + (anotherFaceVDisIn.index) + " (P0:" + anotherFaceVDisIn.p0 + " P1:" + anotherFaceVDisIn.p1 + " P2:" + anotherFaceVDisIn.p2 + ") at currentFaces' pointer: " + currentFace.p1 + " (" + vdP1.getVertex() + " )");
+                                    } else if (faceVD == 2) {
+                                        logger.debug("Face: " + (currentFace.index) + " (P0:" + currentFace.p0 + " P1:" + currentFace.p1 + " P2:" + currentFace.p2 + ")" + " is smooth with face: " + (anotherFaceVDisIn.index) + " (P0:" + anotherFaceVDisIn.p0 + " P1:" + anotherFaceVDisIn.p1 + " P2:" + anotherFaceVDisIn.p2 + ") at currentFaces' pointer: " + currentFace.p2 + " (" + vdP2.getVertex() + " )");
+                                    }
+
+                                    if (faceVD == 0) {
+                                        currentFace.addSmoothNeighborP0(anotherFaceVDisIn);
+                                    } else if (faceVD == 1) {
+                                        currentFace.addSmoothNeighborP1(anotherFaceVDisIn);
+                                    } else if (faceVD == 2) {
+                                        currentFace.addSmoothNeighborP2(anotherFaceVDisIn);
+                                    }
+                                }//if smooth
+                            }//if not checking against this same face
+                        }
+                    }//for loop through all 3 vertexdatas of the current face
+                }
 	
 			}//end if creaseAngle != 0.0
 	///////////////////////////////////////////////////////////////////////////		
@@ -1071,7 +1068,7 @@ public class TriangleNormalGenerator {
 	 */
 	private boolean isOnSameSurfaceCosAngle(MyFace face1, MyFace face2, float cosAngle) { //FIXME really correct?
 		float cosineBetweenNormals 	= face1.normal.dot(face2.normal);
-		boolean smooth 	= cosineBetweenNormals > (float)Math.abs(cosAngle);
+		boolean smooth 	= cosineBetweenNormals > Math.abs(cosAngle);
 		
 		if (Float.isNaN(cosineBetweenNormals))
 			smooth = true;
@@ -1259,39 +1256,37 @@ public class TriangleNormalGenerator {
 					ArrayList<Vector3D> alreadyAddedInP0 = new ArrayList<Vector3D>();
 //					vertexNormalP0 = this.normal.getCopy(); //Init with own faces face normal
 					vertexNormalP0 = normalizedFaceNormal.getCopy();
-					for (int i = 0; i < smoothNeighborsP0.size(); i++) {
-						MyFace neighborFaceP0 = smoothNeighborsP0.get(i);
+                    for (MyFace neighborFaceP0 : smoothNeighborsP0) {
+                        Vector3D nextSmoothNeighborNormal = neighborFaceP0.normal;
+                        Vector3D nextSmoothNeighborNormalNormalized = nextSmoothNeighborNormal.getCopy();
+                        //TODO doch nochmal probieren mit vorher ausgerechneter normal? sonst performance loss!
+                        nextSmoothNeighborNormalNormalized.normalizeLocal();//neighborFaceP0.normalNormalized;
+                        boolean alreadyAddedSameNormalIn = false;
 
-						Vector3D nextSmoothNeighborNormal 			= neighborFaceP0.normal;
-						Vector3D nextSmoothNeighborNormalNormalized = nextSmoothNeighborNormal.getCopy(); 
-						//TODO doch nochmal probieren mit vorher ausgerechneter normal? sonst performance loss!
-						nextSmoothNeighborNormalNormalized.normalizeLocal();//neighborFaceP0.normalNormalized; 
-						boolean alreadyAddedSameNormalIn = false;
-						
-						
-						//Dont add faces normals that are equal to this faces normals
-						if (!useNormalsEqualToFace && nextSmoothNeighborNormalNormalized.equalsVectorWithTolerance(normalizedFaceNormal, ToolsMath.ZERO_TOLERANCE)){
-							alreadyAddedSameNormalIn = true;
-							logger.debug("Not using normal: " + nextSmoothNeighborNormalNormalized + " of face " + neighborFaceP0.index + " in vertex norm calc because its equal to this faces normal.");
-						}
+
+                        //Dont add faces normals that are equal to this faces normals
+                        if (!useNormalsEqualToFace && nextSmoothNeighborNormalNormalized.equalsVectorWithTolerance(normalizedFaceNormal, ToolsMath.ZERO_TOLERANCE)) {
+                            alreadyAddedSameNormalIn = true;
+                            logger.debug("Not using normal: " + nextSmoothNeighborNormalNormalized + " of face " + neighborFaceP0.index + " in vertex norm calc because its equal to this faces normal.");
+                        }
 //						else //Dont add face normals that are equal to one already added 
 //						{
-						if (!useEqualNeighborNormalsAgain){
-							for(Vector3D neighBorNorm : alreadyAddedInP0){
-								if(neighBorNorm.equalsVectorWithTolerance(nextSmoothNeighborNormalNormalized, ToolsMath.ZERO_TOLERANCE)){
-									alreadyAddedSameNormalIn = true;
-									logger.debug("Already added same normal -> dont add again N: " + neighBorNorm);
-								}
-							}
-						}
+                        if (!useEqualNeighborNormalsAgain) {
+                            for (Vector3D neighBorNorm : alreadyAddedInP0) {
+                                if (neighBorNorm.equalsVectorWithTolerance(nextSmoothNeighborNormalNormalized, ToolsMath.ZERO_TOLERANCE)) {
+                                    alreadyAddedSameNormalIn = true;
+                                    logger.debug("Already added same normal -> dont add again N: " + neighBorNorm);
+                                }
+                            }
+                        }
 //						}
 
-						if (!alreadyAddedSameNormalIn){
-							vertexNormalP0.addLocal(nextSmoothNeighborNormalNormalized);
-							alreadyAddedInP0.add(nextSmoothNeighborNormalNormalized);
-							logger.debug("Added normal: " + nextSmoothNeighborNormalNormalized + " of face: " + neighborFaceP0.index);
-						}
-					}
+                        if (!alreadyAddedSameNormalIn) {
+                            vertexNormalP0.addLocal(nextSmoothNeighborNormalNormalized);
+                            alreadyAddedInP0.add(nextSmoothNeighborNormalNormalized);
+                            logger.debug("Added normal: " + nextSmoothNeighborNormalNormalized + " of face: " + neighborFaceP0.index);
+                        }
+                    }
 					vertexNormalP0.normalizeLocal();
 
 					logger.debug("P1");
@@ -1300,39 +1295,37 @@ public class TriangleNormalGenerator {
 					ArrayList<Vector3D> alreadyAddedInP1 = new ArrayList<Vector3D>();
 //					vertexNormalP1 = this.normal.getCopy(); //Init with own faces face normal
 					vertexNormalP1 = normalizedFaceNormal.getCopy();
-					for (int i = 0; i < smoothNeighborsP1.size(); i++) {
-						MyFace neighborFaceP1 = smoothNeighborsP1.get(i);
+                    for (MyFace neighborFaceP1 : smoothNeighborsP1) {
+                        Vector3D nextSmoothNeighborNormal = neighborFaceP1.normal;
+                        Vector3D nextSmoothNeighborNormalNormalized = nextSmoothNeighborNormal.getCopy();
+                        //TODO doch nochmal probieren mit vorher ausgerechneter normal? sonst performance loss!
+                        nextSmoothNeighborNormalNormalized.normalizeLocal();//neighborFaceP1.normalNormalized;
+                        boolean alreadyAddedSameNormalIn = false;
 
-						Vector3D nextSmoothNeighborNormal 			= neighborFaceP1.normal;
-						Vector3D nextSmoothNeighborNormalNormalized = nextSmoothNeighborNormal.getCopy(); 
-						//TODO doch nochmal probieren mit vorher ausgerechneter normal? sonst performance loss!
-						nextSmoothNeighborNormalNormalized.normalizeLocal();//neighborFaceP1.normalNormalized; 
-						boolean alreadyAddedSameNormalIn = false;
-						
-						//Dont add faces normals that are equal to this faces normals
-						if (!useNormalsEqualToFace && nextSmoothNeighborNormalNormalized.equalsVectorWithTolerance(normalizedFaceNormal, ToolsMath.ZERO_TOLERANCE)){
-							alreadyAddedSameNormalIn = true;
-							logger.debug("Not using normal: " + nextSmoothNeighborNormalNormalized + " of face " + neighborFaceP1.index + " in vertex norm calc because its equal to this faces normal.");
-						}
+                        //Dont add faces normals that are equal to this faces normals
+                        if (!useNormalsEqualToFace && nextSmoothNeighborNormalNormalized.equalsVectorWithTolerance(normalizedFaceNormal, ToolsMath.ZERO_TOLERANCE)) {
+                            alreadyAddedSameNormalIn = true;
+                            logger.debug("Not using normal: " + nextSmoothNeighborNormalNormalized + " of face " + neighborFaceP1.index + " in vertex norm calc because its equal to this faces normal.");
+                        }
 //						else //Dont add face normals that are equal to one already added 
 //						{
-						if (!useEqualNeighborNormalsAgain){
-							for(Vector3D neighBorNorm : alreadyAddedInP1){
-								if(neighBorNorm.equalsVectorWithTolerance(nextSmoothNeighborNormalNormalized, ToolsMath.ZERO_TOLERANCE)){
-									alreadyAddedSameNormalIn = true;
-									logger.debug("Already added same normal -> dont add again N: " + neighBorNorm);
-								}
-							}
-						}
+                        if (!useEqualNeighborNormalsAgain) {
+                            for (Vector3D neighBorNorm : alreadyAddedInP1) {
+                                if (neighBorNorm.equalsVectorWithTolerance(nextSmoothNeighborNormalNormalized, ToolsMath.ZERO_TOLERANCE)) {
+                                    alreadyAddedSameNormalIn = true;
+                                    logger.debug("Already added same normal -> dont add again N: " + neighBorNorm);
+                                }
+                            }
+                        }
 //						}
 
-						if (!alreadyAddedSameNormalIn){
-							vertexNormalP1.addLocal(nextSmoothNeighborNormalNormalized);
+                        if (!alreadyAddedSameNormalIn) {
+                            vertexNormalP1.addLocal(nextSmoothNeighborNormalNormalized);
 
-							alreadyAddedInP1.add(nextSmoothNeighborNormalNormalized);
-							logger.debug("Added normal: " + nextSmoothNeighborNormalNormalized + " of face: " + neighborFaceP1.index);
-						}
-					}
+                            alreadyAddedInP1.add(nextSmoothNeighborNormalNormalized);
+                            logger.debug("Added normal: " + nextSmoothNeighborNormalNormalized + " of face: " + neighborFaceP1.index);
+                        }
+                    }
 					vertexNormalP1.normalizeLocal();
 
 					
@@ -1342,65 +1335,60 @@ public class TriangleNormalGenerator {
 					ArrayList<Vector3D> alreadyAddedInP2 = new ArrayList<Vector3D>();
 //					vertexNormalP2 = this.normal.getCopy(); //Init with own faces face normal
 					vertexNormalP2 = normalizedFaceNormal.getCopy();
-					for (int i = 0; i < smoothNeighborsP2.size(); i++) {
-						MyFace neighborFaceP2 = smoothNeighborsP2.get(i);
+                    for (MyFace neighborFaceP2 : smoothNeighborsP2) {
+                        Vector3D nextSmoothNeighborNormal = neighborFaceP2.normal;
+                        Vector3D nextSmoothNeighborNormalNormalized = nextSmoothNeighborNormal.getCopy();
+                        //TODO doch nochmal probieren mit vorher ausgerechneter normal? sonst performance loss!
+                        nextSmoothNeighborNormalNormalized.normalizeLocal();//neighborFaceP2.normalNormalized;
+                        boolean alreadyAddedSameNormalIn = false;
 
-						Vector3D nextSmoothNeighborNormal 			= neighborFaceP2.normal;
-						Vector3D nextSmoothNeighborNormalNormalized = nextSmoothNeighborNormal.getCopy(); 
-						//TODO doch nochmal probieren mit vorher ausgerechneter normal? sonst performance loss!
-						nextSmoothNeighborNormalNormalized.normalizeLocal();//neighborFaceP2.normalNormalized; 
-						boolean alreadyAddedSameNormalIn = false;
-						
-						
-						//Dont add faces normals that are equal to this faces normals
-						if (!useNormalsEqualToFace && nextSmoothNeighborNormalNormalized.equalsVectorWithTolerance(normalizedFaceNormal, ToolsMath.ZERO_TOLERANCE)){
-							alreadyAddedSameNormalIn = true;
-							logger.debug("Not using normal: " + nextSmoothNeighborNormalNormalized + " of face " + neighborFaceP2.index + " in vertex norm calc because its equal to this faces normal.");
-						}
+
+                        //Dont add faces normals that are equal to this faces normals
+                        if (!useNormalsEqualToFace && nextSmoothNeighborNormalNormalized.equalsVectorWithTolerance(normalizedFaceNormal, ToolsMath.ZERO_TOLERANCE)) {
+                            alreadyAddedSameNormalIn = true;
+                            logger.debug("Not using normal: " + nextSmoothNeighborNormalNormalized + " of face " + neighborFaceP2.index + " in vertex norm calc because its equal to this faces normal.");
+                        }
 //						else //Dont add face normals that are equal to one already added 
 //						{
-						if (!useEqualNeighborNormalsAgain){
-							for(Vector3D neighBorNorm : alreadyAddedInP2){
-								if(neighBorNorm.equalsVectorWithTolerance(nextSmoothNeighborNormalNormalized, ToolsMath.ZERO_TOLERANCE)){
-									alreadyAddedSameNormalIn = true;
-									logger.debug("Already added same normal -> dont add again N: " + neighBorNorm);
-								}
-							}
-						}
+                        if (!useEqualNeighborNormalsAgain) {
+                            for (Vector3D neighBorNorm : alreadyAddedInP2) {
+                                if (neighBorNorm.equalsVectorWithTolerance(nextSmoothNeighborNormalNormalized, ToolsMath.ZERO_TOLERANCE)) {
+                                    alreadyAddedSameNormalIn = true;
+                                    logger.debug("Already added same normal -> dont add again N: " + neighBorNorm);
+                                }
+                            }
+                        }
 //						}
 
-						if (!alreadyAddedSameNormalIn){
-							vertexNormalP2.addLocal(nextSmoothNeighborNormalNormalized);
-							alreadyAddedInP2.add(nextSmoothNeighborNormalNormalized);
-							logger.debug("Added normal: " + nextSmoothNeighborNormalNormalized + " of face: " + neighborFaceP2.index);
-						}
-					}
+                        if (!alreadyAddedSameNormalIn) {
+                            vertexNormalP2.addLocal(nextSmoothNeighborNormalNormalized);
+                            alreadyAddedInP2.add(nextSmoothNeighborNormalNormalized);
+                            logger.debug("Added normal: " + nextSmoothNeighborNormalNormalized + " of face: " + neighborFaceP2.index);
+                        }
+                    }
 					vertexNormalP2.normalizeLocal();
 				}else{
 					//Just add up all smooth neighbors and normalize after
 					
 					//P0 Normal
 					vertexNormalP0 = this.normal.getCopy();
-					for (int i = 0; i < smoothNeighborsP0.size(); i++) {
-						MyFace neighborFaceP0 = smoothNeighborsP0.get(i);
-						vertexNormalP0.addLocal(neighborFaceP0.normal);
-					}
+                    for (MyFace neighborFaceP0 : smoothNeighborsP0) {
+                        vertexNormalP0.addLocal(neighborFaceP0.normal);
+                    }
 					vertexNormalP0.normalizeLocal();
 					
 					//P1 Normal
 					vertexNormalP1 = this.normal.getCopy();
-					for (int i = 0; i < smoothNeighborsP1.size(); i++) {
-						MyFace neighborFaceP1 = smoothNeighborsP1.get(i);
-						vertexNormalP1.addLocal(neighborFaceP1.normal);
-					}
+                    for (MyFace neighborFaceP1 : smoothNeighborsP1) {
+                        vertexNormalP1.addLocal(neighborFaceP1.normal);
+                    }
 					vertexNormalP1.normalizeLocal();
 					
 					
 					vertexNormalP2 = this.normal.getCopy();
-					for (int i = 0; i < smoothNeighborsP2.size(); i++) {
-						MyFace neighborFaceP2 = smoothNeighborsP2.get(i);
-						vertexNormalP2.addLocal(neighborFaceP2.normal);
-					}
+                    for (MyFace neighborFaceP2 : smoothNeighborsP2) {
+                        vertexNormalP2.addLocal(neighborFaceP2.normal);
+                    }
 					vertexNormalP2.normalizeLocal();
 				}
 
@@ -1618,12 +1606,11 @@ public class TriangleNormalGenerator {
 				if (allNeighborsNormal == null ){
 					//Add up face normals of smooth neighbors
 					Vector3D allNeighborNormal = new Vector3D(0,0,0);
-					for (int i = 0; i < faces.size(); i++) {
-						MyFace neighbor = faces.get(i);
-						allNeighborNormal.addLocal(neighbor.normal);
-						
-						logger.debug("Vertex index:" + this.getArrayIndex() + " calcing in neighbor normal of face: " + neighbor.index);
-					}
+                    for (MyFace neighbor : faces) {
+                        allNeighborNormal.addLocal(neighbor.normal);
+
+                        logger.debug("Vertex index:" + this.getArrayIndex() + " calcing in neighbor normal of face: " + neighbor.index);
+                    }
 					//Normalize in the end
 					allNeighborNormal.normalizeLocal();
 					allNeighborsNormal = allNeighborNormal;
@@ -1650,12 +1637,11 @@ public class TriangleNormalGenerator {
 	 */
 			public int getVertDuplicateSameVertDiffTextureCoordListIndex(Vertex vertex){
 				//Go through list of all duplicates
-				for (int i = 0; i < duplicationsWithDiffTexCoords.size(); i++) {
-					VertexData possibleDuplicate = duplicationsWithDiffTexCoords.get(i);
-					if (possibleDuplicate.equalsVertex(vertex)){
-						return possibleDuplicate.getArrayIndex();
-					}
-				}
+        for (VertexData possibleDuplicate : duplicationsWithDiffTexCoords) {
+            if (possibleDuplicate.equalsVertex(vertex)) {
+                return possibleDuplicate.getArrayIndex();
+            }
+        }
 				return -1;
 			}
 			
@@ -1740,12 +1726,11 @@ public class TriangleNormalGenerator {
 			 */
 			public int getVertDuplicateSameVertDiffNormalListIndex(Vector3D normalToCheckWith) {
 	//			Go through list of all duplicates
-				for (int i = 0; i < duplicationsWithDiffNormal.size(); i++) {
-					VertexData possibleDuplicate = duplicationsWithDiffNormal.get(i);
-					if (possibleDuplicate.getUniqueVertexNormal().equalsVectorWithTolerance(normalToCheckWith, ToolsMath.ZERO_TOLERANCE)){
-						return possibleDuplicate.getArrayIndex();
-					}
-				}
+                for (VertexData possibleDuplicate : duplicationsWithDiffNormal) {
+                    if (possibleDuplicate.getUniqueVertexNormal().equalsVectorWithTolerance(normalToCheckWith, ToolsMath.ZERO_TOLERANCE)) {
+                        return possibleDuplicate.getArrayIndex();
+                    }
+                }
 				return -1;
 			}
 	///////////// Handle vertices with same vertex but different Vertex normal

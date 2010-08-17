@@ -162,7 +162,7 @@ public abstract class AbstractComponentProcessor implements IMTInputEventListene
 	 * @return the processor listeners
 	 */
 	public synchronized IGestureEventListener[] getGestureListeners(){
-		return (IGestureEventListener[])inputListeners.toArray(new IGestureEventListener[this.inputListeners.size()]);
+		return inputListeners.toArray(new IGestureEventListener[this.inputListeners.size()]);
 	}
 	
 	/**

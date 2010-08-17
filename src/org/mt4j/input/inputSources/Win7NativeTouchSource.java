@@ -149,7 +149,7 @@ public class Win7NativeTouchSource extends AbstractInputSource {
 		Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
 			public void run() {
 				if (isSuccessfullySetup()){
-					logger.info("Cleaning up Win7 touch source..");
+					logger.debug("Cleaning up Win7 touch source..");
 					quit();
 				}
 			}

@@ -221,8 +221,7 @@ public class SettingsMenu extends JFrame{
 		MT4jSettings.getInstance().display = Integer.parseInt(displayComboBox.getSelectedItem().toString());
 		
 		//Set Fullscreen mode
-		boolean fullscreen = fullScreenCheckBox.isSelected();
-		MT4jSettings.fullscreen = fullscreen;
+		MT4jSettings.fullscreen = fullScreenCheckBox.isSelected();
 		MT4jSettings.getInstance().fullscreenExclusive = fullScreenExclusiveCheckBox.isSelected();
 		
 		//Set screen dimensions
@@ -236,8 +235,7 @@ public class SettingsMenu extends JFrame{
 		MT4jSettings.getInstance().vSync = verticalSyncCheckbox.isSelected();
 
 		//Set Renderer
-		int renderer = (rendererComboBox.getSelectedItem().toString().startsWith("Open"))? MT4jSettings.OPENGL_MODE : MT4jSettings.P3D_MODE;
-		MT4jSettings.getInstance().renderer = renderer;
+		MT4jSettings.getInstance().renderer = (rendererComboBox.getSelectedItem().toString().startsWith("Open"))? MT4jSettings.OPENGL_MODE : MT4jSettings.P3D_MODE;
 		
 		//Set opengl multisampling value
 		MT4jSettings.getInstance().numSamples = Integer.parseInt(numSamplesComboBox.getSelectedItem().toString());

@@ -171,7 +171,7 @@ public class InputCursor{
 			SortedMap<AbstractCursorProcessor, Integer> m = lockSeekingProcessorsToPriority.headMap(ia);
 			Set<AbstractCursorProcessor> k = m.keySet();
 			for (Iterator<AbstractCursorProcessor> iterator = k.iterator(); iterator.hasNext();) {
-				AbstractCursorProcessor processor = (AbstractCursorProcessor) iterator.next();
+				AbstractCursorProcessor processor = iterator.next();
 				logger.debug("itereating and removing old, lower priority processor: "  + processor);
 				iterator.remove();
 			}
@@ -202,15 +202,12 @@ public class InputCursor{
 		if (!interestedProcessorsToPriority.isEmpty()){
 			SortedMap<AbstractCursorProcessor, Integer> lesserPriorityGestureMap = interestedProcessorsToPriority.headMap(ia); //get analyzers with strictly lower priority than the locking one 
 			Set<AbstractCursorProcessor> lesserPriorityGestureKeys = lesserPriorityGestureMap.keySet();
-			for (Iterator<AbstractCursorProcessor> iterator = lesserPriorityGestureKeys.iterator(); iterator.hasNext();) {
-				AbstractCursorProcessor processor = (AbstractCursorProcessor) iterator.next();
-				//Only send lock signal to the processors whos priority is lower than the current locking cursor priority
-					if (processor instanceof AbstractCursorProcessor){
-						AbstractCursorProcessor a = (AbstractCursorProcessor)processor;
-						logger.debug("Cursor: " + this.getId() + " Sending cursor LOCKED signal to: " + a.getName());
-					}
-					processor.cursorLocked(this, ia);
-			}
+            for (AbstractCursorProcessor processor : lesserPriorityGestureKeys) {
+                //Only send lock signal to the processors whos priority is lower than the current locking cursor priority
+                AbstractCursorProcessor a = processor;
+                logger.debug("Cursor: " + this.getId() + " Sending cursor LOCKED signal to: " + a.getName());
+                processor.cursorLocked(this, ia);
+            }
 		}
 	}
 	
@@ -234,7 +231,7 @@ public class InputCursor{
 	public void unregisterForLocking(AbstractCursorProcessor ia){
 		Set<AbstractCursorProcessor> keys = interestedProcessorsToPriority.keySet();
 		for (Iterator<AbstractCursorProcessor> iterator = keys.iterator(); iterator.hasNext();) {
-			AbstractCursorProcessor inputAnalyzer = (AbstractCursorProcessor) iterator.next();
+			AbstractCursorProcessor inputAnalyzer = iterator.next();
 			if (inputAnalyzer.equals(ia)){
 				iterator.remove();
 			}
@@ -288,19 +285,17 @@ public class InputCursor{
 					SortedMap<AbstractCursorProcessor, Integer> lesserPriorityGestureMap = interestedProcessorsToPriority.headMap(interestedProcessorsToPriority.lastKey());
 //					SortedMap<IInputAnalyzer, Integer> lesserPriorityGestureMap = watchingAnalyzersToPriority.headMap(ia);
 					Set<AbstractCursorProcessor> lesserPriorityGestureKeys = lesserPriorityGestureMap.keySet();
-					for (Iterator<AbstractCursorProcessor> iterator = lesserPriorityGestureKeys.iterator(); iterator.hasNext();) {
-						AbstractCursorProcessor processor = (AbstractCursorProcessor) iterator.next();
-						
-						//Only send released signal to the analyzers whos priority is higher than the current cursor priority
-						//the current highest priority of the cursor can change when released is called on a gesture that successfully
-						//locks this cursor, so check each loop iteration
-						if (   processor.getLockPriority() <  unlockingGesturePriority //Only call on gestures with a lower priority than the one releasing the lock
-						    && this.getCurrentLockPriority()   <= processor.getLockPriority() //only call unLocked on analyzers with a lower or equal lockpriority
-						){
-							processor.cursorUnlocked(this); 
-							//FIXME funktioniert das, wenn bei claim in anderer geste wieder was in die liste geadded wird etc?
-						}
-					}
+                    for (AbstractCursorProcessor processor : lesserPriorityGestureKeys) {
+                        //Only send released signal to the analyzers whos priority is higher than the current cursor priority
+                        //the current highest priority of the cursor can change when released is called on a gesture that successfully
+                        //locks this cursor, so check each loop iteration
+                        if (processor.getLockPriority() < unlockingGesturePriority //Only call on gestures with a lower priority than the one releasing the lock
+                                && this.getCurrentLockPriority() <= processor.getLockPriority() //only call unLocked on analyzers with a lower or equal lockpriority
+                                ) {
+                            processor.cursorUnlocked(this);
+                            //FIXME funktioniert das, wenn bei claim in anderer geste wieder was in die liste geadded wird etc?
+                        }
+                    }
 				}
 			}
 		
@@ -591,10 +586,9 @@ public class InputCursor{
 	public void printLockSeekingAnalyzerList() {
 		Set<AbstractCursorProcessor> claimed = lockSeekingProcessorsToPriority.keySet();
 		logger.debug("Lock seeking processors list of cursor: " + this.getId());
-		for (Iterator<AbstractCursorProcessor> iterator = claimed.iterator(); iterator.hasNext();) {
-			AbstractCursorProcessor inputAnalyzer = (AbstractCursorProcessor) iterator.next();
-			logger.debug(inputAnalyzer.getClass() + " " + " Priority: " + inputAnalyzer.getLockPriority());
-		}
+        for (AbstractCursorProcessor inputAnalyzer : claimed) {
+            logger.debug(inputAnalyzer.getClass() + " " + " Priority: " + inputAnalyzer.getLockPriority());
+        }
 	}
 
 
@@ -602,10 +596,9 @@ public class InputCursor{
 	public void printInterestedAnalyzersList() {
 		Set<AbstractCursorProcessor> watching = interestedProcessorsToPriority.keySet();
 		logger.debug("Interested processors list of cursor: " + this.getId());
-		for (Iterator<AbstractCursorProcessor> iterator = watching.iterator(); iterator.hasNext();) {
-			AbstractCursorProcessor inputAnalyzer = (AbstractCursorProcessor) iterator.next();
-			logger.debug(inputAnalyzer.getClass() + " " + " Priority: " + inputAnalyzer.getLockPriority());
-		}
+        for (AbstractCursorProcessor inputAnalyzer : watching) {
+            logger.debug(inputAnalyzer.getClass() + " " + " Priority: " + inputAnalyzer.getLockPriority());
+        }
 	}
 
 

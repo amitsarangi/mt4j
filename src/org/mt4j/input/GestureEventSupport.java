@@ -200,9 +200,10 @@ public class GestureEventSupport {
 
         IGestureEventListener[] listeners = this.gestureSenderToGestureListener.get(null);
         if (listeners != null) {
-            for (IGestureEventListener listener : listeners) {
-                list.add(listener);
-            }
+            list.addAll(Arrays.asList(listeners));
+            //for (IGestureEventListener listener : listeners) {
+             //   list.add(listener);
+            //}
         }
         
         for (Entry<Class<? extends IInputProcessor>, IGestureEventListener[]> entry : this.gestureSenderToGestureListener.entrySet()) {

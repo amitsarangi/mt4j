@@ -140,7 +140,7 @@ public class TuioInputSource extends AbstractInputSource implements TuioListener
 		float absoluteX =	cursor.getX() * windowWidth;
 		float abosulteY =	cursor.getY() * windowHeight;
 		long sessionID = cursor.getSessionID();
-		Long tuioID =  (Long)tuioIDToCursorID.get(sessionID) ;
+		Long tuioID = tuioIDToCursorID.get(sessionID);
 		if (tuioID != null ){
 //			logger.info("TUIO INPUT UPDATE FINGER - TUIO ID: " + sessionID);
 			InputCursor c = ActiveCursorPool.getInstance().getActiveCursorByID(tuioID);
@@ -162,7 +162,7 @@ public class TuioInputSource extends AbstractInputSource implements TuioListener
 //			logger.info("TUIO INPUT REMOVE FINGER - TUIO ID: " + sessionID);
 			Long lCursorID = tuioIDToCursorID.get(sessionID);
 			if (lCursorID != null){
-				long cursorID = (long)lCursorID;
+				long cursorID = lCursorID;
 				InputCursor c = ActiveCursorPool.getInstance().getActiveCursorByID(cursorID);
 				if (c != null){
 					MTFingerInputEvt te = new MTFingerInputEvt(this, absoluteX, abosulteY, MTFingerInputEvt.INPUT_ENDED, c);
@@ -222,7 +222,7 @@ public class TuioInputSource extends AbstractInputSource implements TuioListener
 		float absoluteX =	tuioObject.getX() * windowWidth;
 		float abosulteY =	tuioObject.getY() * windowHeight;
 		
-		Long tuioID = (Long)tuioFiducialIDMap.get(session_id) ;
+		Long tuioID = tuioFiducialIDMap.get(session_id);
 		if (tuioID != null ){
 			InputCursor c = ActiveCursorPool.getInstance().getActiveCursorByID(tuioID);
 			if (c != null){
@@ -241,7 +241,7 @@ public class TuioInputSource extends AbstractInputSource implements TuioListener
 
 		Long cursorIDL = tuioFiducialIDMap.get(session_id);
 		if (cursorIDL != null){
-			long cursorID = (long)cursorIDL;
+			long cursorID = cursorIDL;
 			InputCursor c = ActiveCursorPool.getInstance().getActiveCursorByID(cursorID);
 			if (c != null){
 				MTFiducialInputEvt te;

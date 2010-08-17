@@ -240,7 +240,7 @@ public class LassoProcessor extends AbstractCursorProcessor {
 	 * @return the tracked selectables
 	 */
 	public IdragClusterable[] getTrackedSelectables(){
-		return (IdragClusterable[])dragSelectables.toArray(new IdragClusterable[this.dragSelectables.size()]);
+		return dragSelectables.toArray(new IdragClusterable[this.dragSelectables.size()]);
 	}
 	
 	
@@ -340,16 +340,15 @@ public class LassoProcessor extends AbstractCursorProcessor {
 		 */
 		public IdragClusterable[] getselectedComps() {
 			selectedComps.clear();
-			for (int i = 0; i < dragSelectables.size(); i++) {
-				IdragClusterable currentCard = dragSelectables.get(i);
-				Vector3D globCenter = new Vector3D(currentCard.getCenterPointGlobal());
-				globCenter.setZ(0);
+            for (IdragClusterable currentCard : dragSelectables) {
+                Vector3D globCenter = new Vector3D(currentCard.getCenterPointGlobal());
+                globCenter.setZ(0);
 //				if (this.getPolygon().containsPointGlobal(currentCard.getCenterPointGlobal())){
-				if (this.getPolygon().containsPointGlobal(globCenter)){
-					selectedComps.add(currentCard);
-				}
-			}
-			return (IdragClusterable[])selectedComps.toArray(new IdragClusterable[this.selectedComps.size()]);
+                if (this.getPolygon().containsPointGlobal(globCenter)) {
+                    selectedComps.add(currentCard);
+                }
+            }
+			return selectedComps.toArray(new IdragClusterable[this.selectedComps.size()]);
 		}
 
 		

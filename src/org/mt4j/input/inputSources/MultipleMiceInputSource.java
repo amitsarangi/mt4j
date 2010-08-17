@@ -256,25 +256,24 @@ public class MultipleMiceInputSource extends AbstractInputSource {
 		
 		System.out.println("Removing multiple mice cursors from old and add to new canvas.");
 		Collection<MouseInfo> mouseInfos = deviceToMouseInfo.values();
-		for (Iterator<MouseInfo> iter = mouseInfos.iterator(); iter.hasNext();) {
-			MouseInfo mouseInfo = (MouseInfo) iter.next();
-			if (mouseInfo.ellipse != null){
-				float currentEllipseWidth = 6;
-				Vector3D v = new Vector3D(currentEllipseWidth,0,0);
-				v.transformDirectionVector(currentScene.getCanvas().getGlobalInverseMatrix());
-				float newEllipseWidth = currentEllipseWidth = v.length();
-				mouseInfo.ellipse.setWidthXYGlobal(newEllipseWidth*2);
-				try {
-					oldCanvas.removeChild(mouseInfo.ellipse);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}finally{
-					newCanvas.addChild(mouseInfo.ellipse);
-				}
+        for (MouseInfo mouseInfo : mouseInfos) {
+            if (mouseInfo.ellipse != null) {
+                float currentEllipseWidth = 6;
+                Vector3D v = new Vector3D(currentEllipseWidth, 0, 0);
+                v.transformDirectionVector(currentScene.getCanvas().getGlobalInverseMatrix());
+                float newEllipseWidth = currentEllipseWidth = v.length();
+                mouseInfo.ellipse.setWidthXYGlobal(newEllipseWidth * 2);
+                try {
+                    oldCanvas.removeChild(mouseInfo.ellipse);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                } finally {
+                    newCanvas.addChild(mouseInfo.ellipse);
+                }
 //				mouseInfo.ellipse.setCustomAndGlobalCam(currentScene.getSceneCam(), defaultCenterCam);
-				mouseInfo.ellipse.attachCamera(defaultCenterCam);
-			}
-		}
+                mouseInfo.ellipse.attachCamera(defaultCenterCam);
+            }
+        }
 	}
 	
 	/**

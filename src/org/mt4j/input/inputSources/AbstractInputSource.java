@@ -186,10 +186,10 @@ public abstract class AbstractInputSource {
 	private void fireInputEvent(MTInputEvent inputEvt){
 		//Adds the events to the cursors one by one before firing
 		inputEvt.preFire();
-		
-		for (int i=0; i<inputProcessorsToFireTo.size(); i++) {
-			inputProcessorsToFireTo.get(i).processInputEvent(inputEvt);
-		}
+
+        for (IinputSourceListener anInputProcessorsToFireTo : inputProcessorsToFireTo) {
+            anInputProcessorsToFireTo.processInputEvent(inputEvt);
+        }
 		/*
 		for (IinputSourceListener listener : inputListeners){
 		listener.processInputEvent(inputEvt);
@@ -224,7 +224,7 @@ public abstract class AbstractInputSource {
 	 * @return the input listeners
 	 */
 	public synchronized IinputSourceListener[] getInputListeners(){
-		return (IinputSourceListener[])inputListeners.toArray(new IinputSourceListener[this.inputListeners.size()]);
+		return inputListeners.toArray(new IinputSourceListener[this.inputListeners.size()]);
 	}
 	
 	

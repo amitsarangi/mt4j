@@ -62,7 +62,7 @@ public abstract class AbstractAnimation implements IAnimation {
 	 * @return the animation listeners
 	 */
 	public synchronized IAnimationListener[] getAnimationListeners(){
-		return (IAnimationListener[])animationListeners.toArray(new IAnimationListener[this.animationListeners.size()]);
+		return animationListeners.toArray(new IAnimationListener[this.animationListeners.size()]);
 	}
 	
 	

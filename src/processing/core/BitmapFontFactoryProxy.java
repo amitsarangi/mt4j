@@ -148,7 +148,7 @@ public class BitmapFontFactoryProxy implements IFontFactory {
 //		int spaceIndex = p5Font.index('-');
 //		int spaceAdvancex = p5Font.width[spaceIndex];
 //		int spaceAdvancex = p5Font.getGlyph('-').width;
-		int spaceAdvancex = Math.round(((float) p5Font.width('i') * (float) fontSize));
+		int spaceAdvancex = Math.round((p5Font.width('i') * (float) fontSize));
 //		int spaceAdvancex = Math.round(pa.textWidth(' '));
 //		int spaceAdvancex = Math.round(p5Font.width(' ') * p5Font.size);
 		BitmapFontCharacter space = new BitmapFontCharacter(dummy, pa, " ", 0, 0, spaceAdvancex);
@@ -261,7 +261,7 @@ public class BitmapFontFactoryProxy implements IFontFactory {
 		}
 		
 		if (p5Font == null){
-			throw new NullPointerException("Couldnt load the font: " + fontFileName);
+			throw new FileNotFoundException("Couldn't load the font: " + fontFileName);
 		}
 		return p5Font;
 	}

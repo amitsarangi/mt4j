@@ -199,12 +199,11 @@ public class InputManager {
 		if (!registeredInputSources.contains(newInputSource)){
 			registeredInputSources.add(newInputSource);
 			//Add all processors to the new input source
-			Set<AbstractGlobalInputProcessor> set = inputProcessorsToScene.keySet(); 
-			for (Iterator<AbstractGlobalInputProcessor> iter = set.iterator(); iter.hasNext();) {
-				AbstractGlobalInputProcessor processor = (AbstractGlobalInputProcessor) iter.next();
-				//newInputSource.addInputListener(processor);
-				this.saveAddInputListenerToSource(newInputSource, processor);
-			}
+			Set<AbstractGlobalInputProcessor> set = inputProcessorsToScene.keySet();
+            for (AbstractGlobalInputProcessor processor : set) {
+                //newInputSource.addInputListener(processor);
+                this.saveAddInputListenerToSource(newInputSource, processor);
+            }
 			
 			//Inform the input source that it is now registered with the application
 			newInputSource.onRegistered();
@@ -343,14 +342,12 @@ public class InputManager {
 	public AbstractGlobalInputProcessor[] getGlobalInputProcessors(Iscene scene){
 		List<AbstractGlobalInputProcessor> processors = new ArrayList<AbstractGlobalInputProcessor>();
 		
-		Set<AbstractGlobalInputProcessor> set = inputProcessorsToScene.keySet(); 
-		for (Iterator<AbstractGlobalInputProcessor> iter = set.iterator(); iter.hasNext();) {
-			AbstractGlobalInputProcessor processor = (AbstractGlobalInputProcessor) iter.next();
-			
-			if (inputProcessorsToScene.get(processor).equals(scene)){
-				processors.add(processor);	
-			}
-		}
+		Set<AbstractGlobalInputProcessor> set = inputProcessorsToScene.keySet();
+        for (AbstractGlobalInputProcessor processor : set) {
+            if (inputProcessorsToScene.get(processor).equals(scene)) {
+                processors.add(processor);
+            }
+        }
 		return processors.toArray(new AbstractGlobalInputProcessor[processors.size()]);
 	}
 	
@@ -360,13 +357,12 @@ public class InputManager {
 	 * @param scene the scene
 	 */
 	public void enableGlobalInputProcessors(Iscene scene){
-		Set<AbstractGlobalInputProcessor> set = inputProcessorsToScene.keySet(); 
-		for (Iterator<AbstractGlobalInputProcessor> iter = set.iterator(); iter.hasNext();) {
-			AbstractGlobalInputProcessor processor = (AbstractGlobalInputProcessor) iter.next();
-			if (inputProcessorsToScene.get(processor).equals(scene)){
-				processor.setDisabled(false);
-			}
-		}
+		Set<AbstractGlobalInputProcessor> set = inputProcessorsToScene.keySet();
+        for (AbstractGlobalInputProcessor processor : set) {
+            if (inputProcessorsToScene.get(processor).equals(scene)) {
+                processor.setDisabled(false);
+            }
+        }
 	}
 	
 	/**
@@ -375,13 +371,12 @@ public class InputManager {
 	 * @param scene the scene
 	 */
 	public void disableGlobalInputProcessors(Iscene scene){
-		Set<AbstractGlobalInputProcessor> set = inputProcessorsToScene.keySet(); 
-		for (Iterator<AbstractGlobalInputProcessor> iter = set.iterator(); iter.hasNext();) {
-			AbstractGlobalInputProcessor processor = (AbstractGlobalInputProcessor) iter.next();
-			if (inputProcessorsToScene.get(processor).equals(scene)){
-				processor.setDisabled(true);
-			}
-		}
+		Set<AbstractGlobalInputProcessor> set = inputProcessorsToScene.keySet();
+        for (AbstractGlobalInputProcessor processor : set) {
+            if (inputProcessorsToScene.get(processor).equals(scene)) {
+                processor.setDisabled(true);
+            }
+        }
 	}
 	
 	
@@ -392,10 +387,9 @@ public class InputManager {
 	 */
 	public void removeGlobalInputProcessors(Iscene scene){
 		AbstractGlobalInputProcessor[] sceneProcessors = this.getGlobalInputProcessors(scene);
-		for (int i = 0; i < sceneProcessors.length; i++) {
-			AbstractGlobalInputProcessor abstractGlobalInputProcessor = sceneProcessors[i];
-			this.unregisterGlobalInputProcessor(abstractGlobalInputProcessor);
-		}
+        for (AbstractGlobalInputProcessor abstractGlobalInputProcessor : sceneProcessors) {
+            this.unregisterGlobalInputProcessor(abstractGlobalInputProcessor);
+        }
 	}
 
 

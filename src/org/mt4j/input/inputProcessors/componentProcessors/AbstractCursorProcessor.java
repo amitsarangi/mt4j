@@ -217,7 +217,7 @@ public abstract class AbstractCursorProcessor extends AbstractComponentProcessor
 	 * @return the farthest free component cursor to
 	 */
 	public InputCursor getFarthestFreeComponentCursorTo(InputCursor cursor){
-		return getFarthestFreeCursorTo(cursor,  new InputCursor[]{});
+		return getFarthestFreeCursorTo(cursor);
 	}
 	
 	/**
@@ -332,12 +332,11 @@ public abstract class AbstractCursorProcessor extends AbstractComponentProcessor
 	 */
 	protected boolean canLock(InputCursor... cursors){
 		int locked = 0;
-		for (int i = 0; i < cursors.length; i++) {
-			InputCursor m = cursors[i];
-			if (m.canLock(this)){
-				locked++;
-			}
-		}
+        for (InputCursor m : cursors) {
+            if (m.canLock(this)) {
+                locked++;
+            }
+        }
 		return locked == cursors.length;
 	}
 	
@@ -353,12 +352,11 @@ public abstract class AbstractCursorProcessor extends AbstractComponentProcessor
 	 */
 	protected boolean getLock(InputCursor... cursors){
 		int locked = 0;
-		for (int i = 0; i < cursors.length; i++) {
-			InputCursor m = cursors[i];
-			if (m.getLock(this)){
-				locked++;
-			}
-		}
+        for (InputCursor m : cursors) {
+            if (m.getLock(this)) {
+                locked++;
+            }
+        }
 		return locked == cursors.length;
 	}
 	
@@ -373,10 +371,9 @@ public abstract class AbstractCursorProcessor extends AbstractComponentProcessor
 	 * @param cursors the cursors
 	 */
 	protected void unLock(InputCursor... cursors){
-		for (int i = 0; i < cursors.length; i++) {
-			InputCursor inputCursor = cursors[i];
-			inputCursor.unlock(this);
-		}
+        for (InputCursor inputCursor : cursors) {
+            inputCursor.unlock(this);
+        }
 	}
 	
 	

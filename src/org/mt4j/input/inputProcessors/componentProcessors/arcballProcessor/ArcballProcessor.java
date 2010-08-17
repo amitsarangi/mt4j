@@ -412,13 +412,8 @@ public class ArcballProcessor extends AbstractCursorProcessor {
 				camDistToInterSection = Vector3D.distance(camPos, is); 
 				//bSphere.distanceToEdge(camPos);
 			}
-			
-			if (bSphere.containsPointLocal(camPos)){
-				//logger.debug("inside the sphere");
-				camInSphere = true;
-			}else{
-				camInSphere = false;
-			}
+
+            camInSphere = bSphere.containsPointLocal(camPos);
 			return is;
 		}
 		

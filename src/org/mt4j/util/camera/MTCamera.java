@@ -70,8 +70,8 @@ public class MTCamera implements Icamera, IFrustum{
 	 * @param processingApplet the processing applet
 	 */
 	public MTCamera(PApplet processingApplet){
-		this((float)(processingApplet.width/2.0f), (float)(processingApplet.height/2.0f), (float)(processingApplet.height/2.0f) / PApplet.tan((float)(PApplet.PI*60.0f / 360.0f)),
-				(float)(processingApplet.width/2.0f), (float)(processingApplet.height/2.0f), 0, 0, 1,0, processingApplet);
+		this(processingApplet.width/2.0f, processingApplet.height/2.0f, processingApplet.height/2.0f / PApplet.tan(PApplet.PI*60.0f / 360.0f),
+                processingApplet.width/2.0f, processingApplet.height/2.0f, 0, 0, 1,0, processingApplet);
 	}
 	
 	
