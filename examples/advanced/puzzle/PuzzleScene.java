@@ -39,6 +39,7 @@ import org.mt4j.sceneManagement.AbstractScene;
 import org.mt4j.sceneManagement.IPreDrawAction;
 import org.mt4j.util.MT4jSettings;
 import org.mt4j.util.MTColor;
+import org.mt4j.util.animation.ani.AniAnimation;
 import org.mt4j.util.math.ToolsMath;
 import org.mt4j.util.math.Vector3D;
 
@@ -216,7 +217,8 @@ public class PuzzleScene extends AbstractScene{
 									getMTApplication().invokeLater(new Runnable() {
 										public void run() {
 											puzzleGroup.addChild(sh);
-											sh.tweenTranslateTo(x, y, 0, 400, 0f, 1.0f);
+//											sh.tweenTranslateTo(x, y, 0, 400, 0f, 1.0f);
+											sh.tweenTranslateTo(x, y, 0, 400, AniAnimation.CIRC_OUT, 0);
 										}
 									});
 								}

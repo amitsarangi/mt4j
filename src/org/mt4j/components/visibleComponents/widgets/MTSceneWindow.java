@@ -31,11 +31,9 @@ import org.mt4j.input.inputProcessors.componentProcessors.tapProcessor.TapEvent;
 import org.mt4j.sceneManagement.Iscene;
 import org.mt4j.util.MT4jSettings;
 import org.mt4j.util.MTColor;
-import org.mt4j.util.animation.Animation;
 import org.mt4j.util.animation.AnimationEvent;
 import org.mt4j.util.animation.IAnimation;
 import org.mt4j.util.animation.IAnimationListener;
-import org.mt4j.util.animation.MultiPurposeInterpolator;
 import org.mt4j.util.animation.ani.AniAnimation;
 import org.mt4j.util.math.Vector3D;
 
@@ -187,8 +185,7 @@ extends MTRoundRectangle {
 				case AnimationEvent.ANIMATION_UPDATED:
 					float currentVal = ae.getAnimation().getCurrentValue();
 					setWidthXYRelativeToParent(currentVal);
-					
-					rotateZ(getCenterPointRelativeToParent(), ae.getCurrentStepDelta()*0.4f);
+					rotateZ(getCenterPointRelativeToParent(), -ae.getCurrentStepDelta()*0.4f);
 					break;
 				case AnimationEvent.ANIMATION_ENDED:
 					setVisible(false);
