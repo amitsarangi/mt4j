@@ -64,8 +64,7 @@ public class Ray {
 	 * @return the ray direction
 	 */
 	public Vector3D getRayDirection(){
-		Vector3D rayDirectionVect = pointInRayDirection.getSubtracted(rayStartPoint);
-		return rayDirectionVect;
+		return pointInRayDirection.getSubtracted(rayStartPoint);
 	}
 	
 	/**

@@ -170,18 +170,13 @@ public class BoundsZPlaneRectangle implements IBoundingShape {
 
 	
 	public boolean containsPointLocal(Vector3D testPoint) {
-		if (		testPoint.x >= this.boundingPointsLocal[0].x
-			    && 	testPoint.x <= this.boundingPointsLocal[1].x
-			    
-			    && 	testPoint.y >= this.boundingPointsLocal[0].y
-			    && 	testPoint.y <= this.boundingPointsLocal[2].y
-			    
-			    &&  Math.abs(testPoint.z - this.boundingPointsLocal[0].z) < IN_PLANE_TOLERANCE //Check if point roughly in same z plane as the rect with tolerance
-			){
-				return true;
-			}else{
-				return false;
-			}
+        return testPoint.x >= this.boundingPointsLocal[0].x
+                && testPoint.x <= this.boundingPointsLocal[1].x
+
+                && testPoint.y >= this.boundingPointsLocal[0].y
+                && testPoint.y <= this.boundingPointsLocal[2].y
+
+                && Math.abs(testPoint.z - this.boundingPointsLocal[0].z) < IN_PLANE_TOLERANCE;
 	}
 	
 	
@@ -192,12 +187,12 @@ public class BoundsZPlaneRectangle implements IBoundingShape {
 		Vector3D globalCenterR2 = boundingRect.getCenterPointGlobal();
 		boolean colliding = false;
 		//Check if rectangle points lie inside of this rectangle
-		for (int i = 0; i < globalBoundingVectorsR2.length; i++) {
-			Vector3D localVectorR2 = peerComponent.globalToLocal(globalBoundingVectorsR2[i]);
-			if (this.containsPointLocal(localVectorR2)){
-				colliding = true;
-			}
-		}
+        for (Vector3D aGlobalBoundingVectorsR2 : globalBoundingVectorsR2) {
+            Vector3D localVectorR2 = peerComponent.globalToLocal(aGlobalBoundingVectorsR2);
+            if (this.containsPointLocal(localVectorR2)) {
+                colliding = true;
+            }
+        }
 		//Check rectangle center
 		if (this.containsPointLocal(peerComponent.globalToLocal(globalCenterR2))){
 			colliding = true;
@@ -458,25 +453,20 @@ public class BoundsZPlaneRectangle implements IBoundingShape {
 
 	public boolean isContainedInFrustum(IFrustum frustum) {
 		Vector3D[] points = this.getVectorsGlobal();
-		for (int i = 0; i < points.length; i++) {
-			Vector3D vector3D = points[i];
-			int test = frustum.isPointInFrustum(vector3D); 
-			if (   test == IFrustum.INSIDE
-				|| test == IFrustum.INTERSECT
-			){
-				return true;
-			}
-		}
+        for (Vector3D vector3D : points) {
+            int test = frustum.isPointInFrustum(vector3D);
+            if (test == IFrustum.INSIDE
+                    || test == IFrustum.INTERSECT
+                    ) {
+                return true;
+            }
+        }
 		//Also check if center point is in frustum
 		Vector3D center = this.getCenterPointGlobal();
-		int test = frustum.isPointInFrustum(center); 
-		if (   test == IFrustum.INSIDE
-			|| test == IFrustum.INTERSECT
-		){
-			return true;
-		}
-		return false;
-	}
+		int test = frustum.isPointInFrustum(center);
+        return test == IFrustum.INSIDE
+                || test == IFrustum.INTERSECT;
+    }
 
 	
 }

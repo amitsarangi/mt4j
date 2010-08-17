@@ -177,12 +177,11 @@ public class MTSlider extends MTRectangle {
 		knob = new MTEllipse(applet,  new Vector3D(0,0,0), knobWidth*0.5f, knobHeight*0.5f);
 		knob.setFillColor(new MTColor(140, 140, 140, 255));
 		AbstractComponentProcessor[] inputPs = knob.getInputProcessors();
-		for (int i = 0; i < inputPs.length; i++) {
-			AbstractComponentProcessor p = inputPs[i];
-			if (!(p instanceof DragProcessor)){
-				knob.unregisterInputProcessor(p);
-			}
-		}
+        for (AbstractComponentProcessor p : inputPs) {
+            if (!(p instanceof DragProcessor)) {
+                knob.unregisterInputProcessor(p);
+            }
+        }
 		knob.removeAllGestureEventListeners(DragProcessor.class);
 		
 		outerShape.addChild(knob);

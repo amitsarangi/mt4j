@@ -887,24 +887,23 @@ public abstract class MTApplication extends PApplet {
 	private void sendEndedEvents(Iscene lastScene){
 		logger.debug("Sending INPUT_ENDED events to the last scene, Active motions: " + ActiveCursorPool.getInstance().getActiveCursorCount());
 		InputCursor[] activeCursors = ActiveCursorPool.getInstance().getActiveCursors();
-		for (int i = 0; i < activeCursors.length; i++) {
-			InputCursor inputCursor = activeCursors[i];
-			if (inputCursor.getCurrentEvent() != null){
-				AbstractCursorInputEvt lastEvt = inputCursor.getCurrentEvent();
-				if (lastEvt.getId() != AbstractCursorInputEvt.INPUT_ENDED){
-					try {
-						AbstractCursorInputEvt endedEvt = (AbstractCursorInputEvt) lastEvt.clone();
-						endedEvt.setId(AbstractCursorInputEvt.INPUT_ENDED);
-						endedEvt.preFire();
-						
-						this.sendEvtToSceneProcessors(lastScene, endedEvt);
-						logger.debug("Sending INPUT_ENDED evt to scene: " + lastScene.getName() + " Cursor: " + endedEvt.getCursor());
-					} catch (CloneNotSupportedException e) {
-						e.printStackTrace();
-					}
-				}
-			}
-		}
+        for (InputCursor inputCursor : activeCursors) {
+            if (inputCursor.getCurrentEvent() != null) {
+                AbstractCursorInputEvt lastEvt = inputCursor.getCurrentEvent();
+                if (lastEvt.getId() != AbstractCursorInputEvt.INPUT_ENDED) {
+                    try {
+                        AbstractCursorInputEvt endedEvt = (AbstractCursorInputEvt) lastEvt.clone();
+                        endedEvt.setId(AbstractCursorInputEvt.INPUT_ENDED);
+                        endedEvt.preFire();
+
+                        this.sendEvtToSceneProcessors(lastScene, endedEvt);
+                        logger.debug("Sending INPUT_ENDED evt to scene: " + lastScene.getName() + " Cursor: " + endedEvt.getCursor());
+                    } catch (CloneNotSupportedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
 	}
 	
 	
@@ -921,32 +920,31 @@ public abstract class MTApplication extends PApplet {
 	private void sendStartedEvents(Iscene newScene){
 		logger.debug("Sending INPUT_DETECTED events to the new scene, Active motions: " + ActiveCursorPool.getInstance().getActiveCursorCount());
 		InputCursor[] activeCursors = ActiveCursorPool.getInstance().getActiveCursors();
-		for (int i = 0; i < activeCursors.length; i++) {
-			InputCursor inputCursor = activeCursors[i];
-			if (inputCursor.getCurrentEvent() != null){
-				//PROBLEM: if in lastscene last event in cursor was input_started enqueued
-				//but not added to cursor yet,
-				//shall we send it again in new scene? -> will input_started be sent twice?
-				//- what if input started was enqueued during transition and not sent to any scene 
-				AbstractCursorInputEvt lastEvt = inputCursor.getCurrentEvent();
-				/*
-				if (//lastEvt.getId() != AbstractCursorInputEvt.INPUT_DETECTED
-						true
-					){
-				*/
-					try {
-						AbstractCursorInputEvt startedEvt = (AbstractCursorInputEvt) lastEvt.clone();
-						startedEvt.setId(AbstractCursorInputEvt.INPUT_DETECTED);
-						startedEvt.preFire();
-						
-						this.sendEvtToSceneProcessors(newScene, startedEvt);
-						logger.debug("Sending INPUT_DETECTED evt to scene: " + newScene.getName() + " Cursor: " + startedEvt.getCursor());
-					} catch (CloneNotSupportedException e) {
-						e.printStackTrace();
-					}
+        for (InputCursor inputCursor : activeCursors) {
+            if (inputCursor.getCurrentEvent() != null) {
+                //PROBLEM: if in lastscene last event in cursor was input_started enqueued
+                //but not added to cursor yet,
+                //shall we send it again in new scene? -> will input_started be sent twice?
+                //- what if input started was enqueued during transition and not sent to any scene
+                AbstractCursorInputEvt lastEvt = inputCursor.getCurrentEvent();
+                /*
+                    if (//lastEvt.getId() != AbstractCursorInputEvt.INPUT_DETECTED
+                            true
+                        ){
+                    */
+                try {
+                    AbstractCursorInputEvt startedEvt = (AbstractCursorInputEvt) lastEvt.clone();
+                    startedEvt.setId(AbstractCursorInputEvt.INPUT_DETECTED);
+                    startedEvt.preFire();
+
+                    this.sendEvtToSceneProcessors(newScene, startedEvt);
+                    logger.debug("Sending INPUT_DETECTED evt to scene: " + newScene.getName() + " Cursor: " + startedEvt.getCursor());
+                } catch (CloneNotSupportedException e) {
+                    e.printStackTrace();
+                }
 //				}
-			}
-		}
+            }
+        }
 	}
 	
 	
@@ -958,12 +956,11 @@ public abstract class MTApplication extends PApplet {
 	 */
 	private void sendEvtToSceneProcessors(Iscene scene, AbstractCursorInputEvt evtToFire){
 		AbstractGlobalInputProcessor[] sceneInputProcessors = this.getInputManager().getGlobalInputProcessors(scene);
-		for (int i = 0; i < sceneInputProcessors.length; i++) {
-			AbstractGlobalInputProcessor a = sceneInputProcessors[i];
-			//Hack, because processInputEvt() is disabled at this moment! -> not anymore..
+        for (AbstractGlobalInputProcessor a : sceneInputProcessors) {
+            //Hack, because processInputEvt() is disabled at this moment! -> not anymore..
 //			a.processInputEvtImpl(evtToFire);
-			a.processInputEvent(evtToFire);
-		}
+            a.processInputEvent(evtToFire);
+        }
 	}
 	
 	/**
@@ -1011,11 +1008,10 @@ public abstract class MTApplication extends PApplet {
 //		if (this.getSceneCount() == 0 && scenes[0] != null){
 //			this.currentScene = scenes[0];
 //		}
-		for (int i = 0; i < scenes.length; i++) {
-			Iscene scene = scenes[i];
-//			sceneList.add(scene);
-			this.addScene(scene);
-		}
+        for (Iscene scene : scenes) {
+            //			sceneList.add(scene);
+            this.addScene(scene);
+        }
 	}
 	
 	/**
@@ -1062,7 +1058,7 @@ public abstract class MTApplication extends PApplet {
 	 * @return the scenes
 	 */
 	public Iscene[] getScenes(){
-		return ((Iscene[])sceneList.toArray(new Iscene[sceneList.size()]) );
+		return sceneList.toArray(new Iscene[sceneList.size()]);
 	}
 	
 	/**
@@ -1152,7 +1148,7 @@ public abstract class MTApplication extends PApplet {
 	 * @return the scene change listeners
 	 */
 	public synchronized ISceneChangeListener[] getSceneChangeListener(){
-		return (ISceneChangeListener[])sceneChangedListeners.toArray(new ISceneChangeListener[this.sceneChangedListeners.size()]);
+		return sceneChangedListeners.toArray(new ISceneChangeListener[this.sceneChangedListeners.size()]);
 	}
 /////////////////////////////////	
 

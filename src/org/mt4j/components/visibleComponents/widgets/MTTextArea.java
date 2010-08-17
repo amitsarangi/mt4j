@@ -259,7 +259,7 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
 			artificialLineBreak = new ArtificalLineBreak();
 		}
 		
-		this.isBitmapFont = (font instanceof BitmapFont)? true : false;
+		this.isBitmapFont = (font instanceof BitmapFont);
 	}
 	
 	
@@ -270,7 +270,7 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
 	public void setFont(IFont font){
 		this.font = font;
 		this.fontHeight = font.getFontAbsoluteHeight();
-		this.isBitmapFont = (font instanceof BitmapFont)? true : false;
+		this.isBitmapFont = (font instanceof BitmapFont);
 		this.updateLayout();
 	}
 
@@ -332,7 +332,7 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
 	private boolean contentDisplayListDirty = true;
 	private void setContentDisplayListDirty(boolean dirty){
 		this.contentDisplayListDirty = dirty;
-		this.useDisplayList = (this.contentDisplayListDirty) ? false : true;
+		this.useDisplayList = (!this.contentDisplayListDirty);
 	}
 	private int displayListID = 0;
 	
@@ -625,13 +625,12 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
 		if (MT4jSettings.getInstance().isOpenGlMode() && this.getFont() instanceof BitmapFont){
 			BitmapFont font = (BitmapFont)this.getFont();
 			IFontCharacter[] characters = font.getCharacters();
-			for (int i = 0; i < characters.length; i++) {
-				IFontCharacter fontCharacter = characters[i];
-				if (fontCharacter instanceof BitmapFontCharacter) {
-					BitmapFontCharacter bChar = (BitmapFontCharacter) fontCharacter;
-					bChar.setTextureFiltered(scalable);
-				}
-			}
+            for (IFontCharacter fontCharacter : characters) {
+                if (fontCharacter instanceof BitmapFontCharacter) {
+                    BitmapFontCharacter bChar = (BitmapFontCharacter) fontCharacter;
+                    bChar.setTextureFiltered(scalable);
+                }
+            }
 		}
 	}
 	
@@ -830,13 +829,12 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
 	 */
 	public String getText(){
 		String returnString = "";
-		for (Iterator<IFontCharacter> iter = this.characterList.iterator(); iter.hasNext();) {
-			IFontCharacter character = (IFontCharacter) iter.next();
-			String unicode = character.getUnicode();
-			if (!character.equals(MTTextArea.artificialLineBreak)){
-				returnString += unicode;
-			}
-		}
+        for (IFontCharacter character : this.characterList) {
+            String unicode = character.getUnicode();
+            if (!character.equals(MTTextArea.artificialLineBreak)) {
+                returnString += unicode;
+            }
+        }
 		return returnString;
 	}
 	
@@ -1023,14 +1021,13 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
 	 */
 	protected float getLastLineWidth(){
 		float currentLineWidth = 2 * this.getInnerPaddingLeft() + caretWidth;
-		for (int i = 0; i < this.characterList.size(); i++) {
-			IFontCharacter character = this.characterList.get(i);
-			if (character.getUnicode().equals("\n")){
-				currentLineWidth = 2 * this.getInnerPaddingLeft() + caretWidth;
-            }else{
-				currentLineWidth += character.getHorizontalDist();
-			}
-		}
+        for (IFontCharacter character : this.characterList) {
+            if (character.getUnicode().equals("\n")) {
+                currentLineWidth = 2 * this.getInnerPaddingLeft() + caretWidth;
+            } else {
+                currentLineWidth += character.getHorizontalDist();
+            }
+        }
 		return currentLineWidth;
 	}
 	
@@ -1043,22 +1040,20 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
 	protected float getMaxLineWidth(){
 		float currentLineWidth = 2 * this.getInnerPaddingLeft() + caretWidth;
 		float maxWidth = currentLineWidth;
-		
-		for (int i = 0; i < this.characterList.size(); i++) {
-			IFontCharacter character = this.characterList.get(i);
-			
-			if (character.getUnicode().equals("\n")){
-				if (currentLineWidth > maxWidth){
-					maxWidth = currentLineWidth;
-				}
-				currentLineWidth = 2 * this.getInnerPaddingLeft() + caretWidth;
-			}else{
-				currentLineWidth += character.getHorizontalDist();
-				if (currentLineWidth > maxWidth){
-					maxWidth = currentLineWidth;
-				}
-			}
-		}
+
+        for (IFontCharacter character : this.characterList) {
+            if (character.getUnicode().equals("\n")) {
+                if (currentLineWidth > maxWidth) {
+                    maxWidth = currentLineWidth;
+                }
+                currentLineWidth = 2 * this.getInnerPaddingLeft() + caretWidth;
+            } else {
+                currentLineWidth += character.getHorizontalDist();
+                if (currentLineWidth > maxWidth) {
+                    maxWidth = currentLineWidth;
+                }
+            }
+        }
 		return maxWidth;
 	}
 
@@ -1070,12 +1065,11 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
 	 */
 	protected float getTotalLinesHeight(){
 		float height = fontHeight ;//
-		for (int i = 0; i < this.characterList.size(); i++) {
-			IFontCharacter character = this.characterList.get(i);
-			if (character.getUnicode().equals("\n")){
-				height += fontHeight;
-			}
-		}
+        for (IFontCharacter character : this.characterList) {
+            if (character.getUnicode().equals("\n")) {
+                height += fontHeight;
+            }
+        }
 		return height;
 	}
 	
@@ -1146,12 +1140,11 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
 	 */
 	public int getLineCount(){
 		int count = 0;
-		for (int i = 0; i < this.characterList.size(); i++) {
-			IFontCharacter character = this.characterList.get(i);
-			if (character.getUnicode().equals("\n")){
-				count++;
-			}
-		}
+        for (IFontCharacter character : this.characterList) {
+            if (character.getUnicode().equals("\n")) {
+                count++;
+            }
+        }
 		return count;
 	}
 	

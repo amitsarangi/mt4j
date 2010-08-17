@@ -81,7 +81,7 @@ public class MTSvg extends MTComponent {
 		this.addChild(svg);
 		
 		
-		//so lange MTSvg noch nicht an einem vater hängt und transform=identity, ist die world width die
+		//so lange MTSvg noch nicht an einem vater hï¿½ngt und transform=identity, ist die world width die
 		//parent relative width (und local width?)
 		//wenn added to parent -> parentrelative width vect * globalMatrix
 //		Tools3D.getMinXYMaxXY(Vector3DLists)
@@ -134,17 +134,16 @@ public class MTSvg extends MTComponent {
 		if (currentComp instanceof AbstractShape){
 			AbstractShape shape = (AbstractShape)currentComp;
 			Vertex[] globalVecs = shape.getVerticesGlobal();
-			for (int j = 0; j < globalVecs.length; j++) {
-				Vertex v = globalVecs[j];
-				if (v.x < bounds[0])
-					bounds[0] = v.x;
-				if (v.x > bounds[1])
-					bounds[1] = v.x;
-				if (v.y < bounds[2])
-					bounds[2] = v.y;
-				if (v.y > bounds[3])
-					bounds[3] = v.y;
-			}
+            for (Vertex v : globalVecs) {
+                if (v.x < bounds[0])
+                    bounds[0] = v.x;
+                if (v.x > bounds[1])
+                    bounds[1] = v.x;
+                if (v.y < bounds[2])
+                    bounds[2] = v.y;
+                if (v.y > bounds[3])
+                    bounds[3] = v.y;
+            }
 		}
 		
 		for(MTComponent child : currentComp.getChildren()){
@@ -263,7 +262,7 @@ public class MTSvg extends MTComponent {
 	 */
 	public boolean setHeightXYRelativeToParent(float height){
 		if (height > 0){
-			Vector3D centerPoint = this.getCenterPointGlobal();
+			Vector3D centerPoint = this.getCenterPointRelativeToParent();
 			this.scale(1/this.getHeightXYRelativeToParent(), 1/this.getHeightXYRelativeToParent(), 1, centerPoint);
 			this.scale(height, height, 1, centerPoint);
 			return true;
@@ -306,7 +305,7 @@ public class MTSvg extends MTComponent {
 	 */
 	public boolean setWidthXYRelativeToParent(float width){
 		if (width > 0){
-			Vector3D centerPoint = this.getCenterPointGlobal();
+			Vector3D centerPoint = this.getCenterPointRelativeToParent();
 			this.scale(1/this.getWidthXYRelativeToParent(), 1/this.getWidthXYRelativeToParent(), 1, centerPoint);
 			this.scale(width, width, 1, centerPoint);
 			return true;
@@ -346,7 +345,7 @@ public class MTSvg extends MTComponent {
 	 */
 	public boolean setSizeXYRelativeToParent(float width, float height){
 		if (width > 0 && height > 0){
-			Vector3D centerPoint = this.getCenterPointGlobal(); //FIXME use centerRelToParent?
+			Vector3D centerPoint = this.getCenterPointRelativeToParent();
 			this.scale(1/this.getWidthXYRelativeToParent(), 1/this.getHeightXYRelativeToParent(), 1, centerPoint);
 			this.scale(width, height, 1, centerPoint);
 			return true;
@@ -489,9 +488,8 @@ public class MTSvg extends MTComponent {
 		if (!current.equals(this))
 				current.setPickable(pickable);
 		MTComponent[] children = current.getChildren();
-		for (int i = 0; i < children.length; i++) {
-			MTComponent child = children[i];
-			setPickableRecursive(child, pickable);
-		}
+        for (MTComponent child : children) {
+            setPickableRecursive(child, pickable);
+        }
 	}
 }

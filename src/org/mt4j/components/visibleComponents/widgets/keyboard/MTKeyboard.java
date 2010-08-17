@@ -179,78 +179,76 @@ public class MTKeyboard extends MTRoundRectangle {
 		//CREATE THE KEYS \\
 //		for (int i = 0; i < keyInfos.size(); i++) {
 //			KeyInfo keyInfo = keyInfos.get(i);
-		for (int i = 0; i < keyInfos.length; i++) {
-			KeyInfo keyInfo = keyInfos[i];
-			
-			VectorFontCharacter fontChar = (VectorFontCharacter) keyFont.getFontCharacterByUnicode(keyInfo.keyfontUnicode);
-			//FIXME expensive..
+        for (KeyInfo keyInfo : keyInfos) {
+            VectorFontCharacter fontChar = (VectorFontCharacter) keyFont.getFontCharacterByUnicode(keyInfo.keyfontUnicode);
+            //FIXME expensive..
 //			MTKey key = new MTKey(fontChar.getGeometryInfo().getVertices(), fontChar.getContours(),pa, keyInfo.charUnicodeToWrite, keyInfo.charUnicodeToWriteShifted);
 //			MTKey key = new MTKey(new Vertex[]{new Vertex(0,0,0),new Vertex(10,0,0),new Vertex(0,10,0),}, /*fontChar.getContours(),*/ pa, keyInfo.charUnicodeToWrite, keyInfo.charUnicodeToWriteShifted);
-			MTKey key = new MTKey(fontChar.getGeometryInfo(),  pa, keyInfo.charUnicodeToWrite, keyInfo.charUnicodeToWriteShifted);
+            MTKey key = new MTKey(fontChar.getGeometryInfo(), pa, keyInfo.charUnicodeToWrite, keyInfo.charUnicodeToWriteShifted);
 //			key.setGeometryInfo(fontChar.getGeometryInfo());
-			key.setName(fontChar.getName());
-			key.setPickable(true);
-			key.unregisterAllInputProcessors();
-			
-			key.setOutlineContours(fontChar.getContours());
-			if (MT4jSettings.getInstance().isOpenGlMode()){
-				key.setUseDirectGL(true);
-				//Use the display lists already created for the font characters of the key-font
-				key.getGeometryInfo().setDisplayListIDs(fontChar.getGeometryInfo().getDisplayListIDs());
-				key.setUseDisplayList(true);
-			}
+            key.setName(fontChar.getName());
+            key.setPickable(true);
+            key.unregisterAllInputProcessors();
+
+            key.setOutlineContours(fontChar.getContours());
+            if (MT4jSettings.getInstance().isOpenGlMode()) {
+                key.setUseDirectGL(true);
+                //Use the display lists already created for the font characters of the key-font
+                key.getGeometryInfo().setDisplayListIDs(fontChar.getGeometryInfo().getDisplayListIDs());
+                key.setUseDisplayList(true);
+            }
 //			key.setOutlineContours(fontChar.getContours());
-			
-			//Translate to 0,0
+
+            //Translate to 0,0
 //			key.translate(new Vector3D(0,key.getOriginalHeight(),0));
-			//Translate to its designated position
+            //Translate to its designated position
 //			key.translate(keyInfo.position);
-			
-			scaleKey(key, 40);
-			
-			//Scale ENTER and BACKSPACE
-			if (key.getCharacterToWrite().equals("\n")){
+
+            scaleKey(key, 40);
+
+            //Scale ENTER and BACKSPACE
+            if (key.getCharacterToWrite().equals("\n")) {
 //				key.scale(1.60f, 1.60f, 1, key.getCenterPointLocal());
 //				key.scale(1.70f, 1.70f, 1, new Vector3D(0,0,0), TransformSpace.LOCAL);
-				key.scale(1.70f, 1.70f, 1, key.getCenterPointLocal(), TransformSpace.LOCAL);
-			}
-			
-			key.setPositionRelativeToParent(keyInfo.position);
-			
-			//this is a hack to fit the bounding shape of the "enter" key to its non-rectangular shape
-			if (key.getCharacterToWrite().equals("\n")){
-				Vector3D[] v = key.getBounds().getVectorsLocal();
-				float indent = (v[1].getX()-v[0].getX())/2f;
-				Vertex[] vNew = new Vertex[]{
-						 new Vertex(v[0].getX(),v[0].getY()+indent,0)
-						,new Vertex(v[0].getX()+indent  -indent/8f ,v[0].getY()+indent,0) //
-						,new Vertex(v[0].getX()+indent  -indent/8f,v[0].getY(),0) //
-						,new Vertex(v[1])
-						,new Vertex(v[2])
-						,new Vertex(v[3])
-						,new Vertex(v[0].getX(),v[0].getY()+indent,0)
-				};
-				BoundsArbitraryPlanarPolygon newBounds = new BoundsArbitraryPlanarPolygon(key, vNew); //Expensive..
-				key.setBoundsBehaviour(AbstractShape.BOUNDS_ONLY_CHECK);
-				key.setBounds(newBounds);
-			}
-			
-			keyList.add(key); 
-			key.setGestureAllowance(TapProcessor.class, true);
-			key.registerInputProcessor(new TapProcessor(pa));
-			key.addGestureListener(TapProcessor.class, keyClickAction);
-			
-			//Add keys that change during SHIFT to a list
-			if (keyInfo.visibilityInfo 			== KeyInfo.KEY_ONLY_VISIBLE_WHEN_SHIFT_NOTPRESSED){
-				shiftChangers.add(key);
-			}else if (keyInfo.visibilityInfo 	== KeyInfo.KEY_ONLY_VISIBLE_WHEN_SHIFT_PRESSED){
-				key.setVisible(false);
-				shiftChangers.add(key);
-			}
-			
-			fontChar = null;
-			this.addChild(key); 
-		}
+                key.scale(1.70f, 1.70f, 1, key.getCenterPointLocal(), TransformSpace.LOCAL);
+            }
+
+            key.setPositionRelativeToParent(keyInfo.position);
+
+            //this is a hack to fit the bounding shape of the "enter" key to its non-rectangular shape
+            if (key.getCharacterToWrite().equals("\n")) {
+                Vector3D[] v = key.getBounds().getVectorsLocal();
+                float indent = (v[1].getX() - v[0].getX()) / 2f;
+                Vertex[] vNew = new Vertex[]{
+                        new Vertex(v[0].getX(), v[0].getY() + indent, 0)
+                        , new Vertex(v[0].getX() + indent - indent / 8f, v[0].getY() + indent, 0) //
+                        , new Vertex(v[0].getX() + indent - indent / 8f, v[0].getY(), 0) //
+                        , new Vertex(v[1])
+                        , new Vertex(v[2])
+                        , new Vertex(v[3])
+                        , new Vertex(v[0].getX(), v[0].getY() + indent, 0)
+                };
+                BoundsArbitraryPlanarPolygon newBounds = new BoundsArbitraryPlanarPolygon(key, vNew); //Expensive..
+                key.setBoundsBehaviour(AbstractShape.BOUNDS_ONLY_CHECK);
+                key.setBounds(newBounds);
+            }
+
+            keyList.add(key);
+            key.setGestureAllowance(TapProcessor.class, true);
+            key.registerInputProcessor(new TapProcessor(pa));
+            key.addGestureListener(TapProcessor.class, keyClickAction);
+
+            //Add keys that change during SHIFT to a list
+            if (keyInfo.visibilityInfo == KeyInfo.KEY_ONLY_VISIBLE_WHEN_SHIFT_NOTPRESSED) {
+                shiftChangers.add(key);
+            } else if (keyInfo.visibilityInfo == KeyInfo.KEY_ONLY_VISIBLE_WHEN_SHIFT_PRESSED) {
+                key.setVisible(false);
+                shiftChangers.add(key);
+            }
+
+            fontChar = null;
+            this.addChild(key);
+        }
 		
 		//Draw this component and its children above 
 		//everything previously drawn and avoid z-fighting
@@ -719,17 +717,16 @@ public class MTKeyboard extends MTRoundRectangle {
 	 */
 	protected void keyboardButtonDown(MTKey clickedKey, boolean shiftPressed){
 		ITextInputListener[] listeners = this.getTextInputListeners();
-		for (int i = 0; i < listeners.length; i++) {
-			ITextInputListener textInputListener = listeners[i];
-			if (clickedKey.getCharacterToWrite().equals("back")){
-				textInputListener.removeLastCharacter();
-			}else if (clickedKey.getCharacterToWrite().equals("shift")){
-					//no nothing
-			}else{
-				String charToAdd = shiftPressed ? clickedKey.getCharacterToWriteShifted() : clickedKey.getCharacterToWrite();
-				textInputListener.appendCharByUnicode(charToAdd);
-			}
-		}
+        for (ITextInputListener textInputListener : listeners) {
+            if (clickedKey.getCharacterToWrite().equals("back")) {
+                textInputListener.removeLastCharacter();
+            } else if (clickedKey.getCharacterToWrite().equals("shift")) {
+                //no nothing
+            } else {
+                String charToAdd = shiftPressed ? clickedKey.getCharacterToWriteShifted() : clickedKey.getCharacterToWrite();
+                textInputListener.appendCharByUnicode(charToAdd);
+            }
+        }
 	}
 	
 	/**
@@ -832,20 +829,19 @@ public class MTKeyboard extends MTRoundRectangle {
 			String keyCode = String.valueOf(e.getKeyChar());
 			//System.out.println("Key input: " + keyCode);
 			ITextInputListener[] listeners = this.getTextInputListeners();
-			for (int i = 0; i < listeners.length; i++) {
-				ITextInputListener textInputListener = listeners[i];
-				if (e.getKeyCode() == KeyEvent.VK_BACK_SPACE){
-					textInputListener.removeLastCharacter();
-				}else if (e.getKeyCode() == KeyEvent.VK_SHIFT 
-						|| e.getKeyCode() == KeyEvent.VK_ALT
-						|| e.getKeyCode() == KeyEvent.VK_ALT_GRAPH
-						|| e.getKeyCode() == KeyEvent.VK_CONTROL
-				){
-					//do nothing
-				}else{
-					textInputListener.appendCharByUnicode(keyCode);
-				}
-			}
+            for (ITextInputListener textInputListener : listeners) {
+                if (e.getKeyCode() == KeyEvent.VK_BACK_SPACE) {
+                    textInputListener.removeLastCharacter();
+                } else if (e.getKeyCode() == KeyEvent.VK_SHIFT
+                        || e.getKeyCode() == KeyEvent.VK_ALT
+                        || e.getKeyCode() == KeyEvent.VK_ALT_GRAPH
+                        || e.getKeyCode() == KeyEvent.VK_CONTROL
+                        ) {
+                    //do nothing
+                } else {
+                    textInputListener.appendCharByUnicode(keyCode);
+                }
+            }
 		}
 	} 
 

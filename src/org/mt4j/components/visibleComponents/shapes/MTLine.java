@@ -133,8 +133,7 @@ public class MTLine extends AbstractShape {
 					bv2,
 					bv3,
 			};
-			BoundsArbitraryPlanarPolygon b = new BoundsArbitraryPlanarPolygon(this, v);
-			return b;
+			return new BoundsArbitraryPlanarPolygon(this, v);
 		}else{
 			return null;
 		}

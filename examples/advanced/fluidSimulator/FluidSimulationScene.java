@@ -192,7 +192,7 @@ public class FluidSimulationScene extends AbstractScene{
 	        }
 	        
 	        float colorMult = 5;
-	        float velocityMult = 30.0f;
+	        float velocityMult = 20.0f;
 	 
 	        int index = fluidSolver.getIndexForNormalizedPosition(x, y);
 	 

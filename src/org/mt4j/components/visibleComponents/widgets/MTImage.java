@@ -170,13 +170,12 @@ public class MTImage extends MTRectangle implements IdragClusterable{
 		}else{
 			//Remove svg button and destroy child display lists
 			MTComponent[] childs = this.getChildren();
-			for (int i = 0; i < childs.length; i++) {
-				MTComponent component = childs[i];
-				if (component.getName().equals("closeButton")) {
-					MTSvgButton svgButton = (MTSvgButton) component;
-					svgButton.destroy();
-				}
-			}
+            for (MTComponent component : childs) {
+                if (component.getName().equals("closeButton")) {
+                    MTSvgButton svgButton = (MTSvgButton) component;
+                    svgButton.destroy();
+                }
+            }
 		}
 	}
 	
@@ -212,15 +211,14 @@ public class MTImage extends MTRectangle implements IdragClusterable{
 				switch (arg0.getID()) {
 				case TapEvent.BUTTON_CLICKED:
 					//Get the first polygon type out of the array
-					for (int i = 0; i < comps.length; i++) { //TODO this is stupid.. redo this whole thing
-						MTComponent comp = comps[i];
-						if (comp instanceof MTPolygon) {
-							MTPolygon poly = (MTPolygon) comp;
-							if (referencePoly == null){//nur 1. occur zuweisen
-								referencePoly = poly;
-							}
-						}
-					}
+                    for (MTComponent comp : comps) { //TODO this is stupid.. redo this whole thing
+                        if (comp instanceof MTPolygon) {
+                            MTPolygon poly = (MTPolygon) comp;
+                            if (referencePoly == null) {//nur 1. occur zuweisen
+                                referencePoly = poly;
+                            }
+                        }
+                    }
 					float width = referencePoly.getWidthXY(TransformSpace.RELATIVE_TO_PARENT);
 
 					IAnimation closeAnim = new Animation("comp Fade", new MultiPurposeInterpolator(width, 1, 300, 0.5f, 0.8f, 1), referencePoly);

@@ -1341,20 +1341,19 @@ public class ToolsGeometry {
 		float minY = Float.MAX_VALUE;
 		float maxX = Float.MIN_VALUE;
 		float maxY = Float.MIN_VALUE;
-		for (int j = 0; j < Vector3DLists.size(); j++) {
-			Vector3D[] vertices = Vector3DLists.get(j);
-			for (int i = 0; i < vertices.length; i++) {
-				Vector3D Vector3D = vertices[i];
-				if (Vector3D.getX() < minX)
-					minX = Vector3D.getX();
-				if (Vector3D.getX() > maxX)
-					maxX = Vector3D.getX();
-				if (Vector3D.getY() < minY)
-					minY = Vector3D.getY();
-				if (Vector3D.getY() > maxY)
-					maxY = Vector3D.getY();
-			}
-		}
+        for (Vertex[] Vector3DList : Vector3DLists) {
+            Vector3D[] vertices = Vector3DList;
+            for (Vector3D Vector3D : vertices) {
+                if (Vector3D.getX() < minX)
+                    minX = Vector3D.getX();
+                if (Vector3D.getX() > maxX)
+                    maxX = Vector3D.getX();
+                if (Vector3D.getY() < minY)
+                    minY = Vector3D.getY();
+                if (Vector3D.getY() > maxY)
+                    maxY = Vector3D.getY();
+            }
+        }
 		return new float[]{minX, minY, maxX, maxY};
 	}
 
@@ -1372,17 +1371,16 @@ public class ToolsGeometry {
 		float minY = Float.POSITIVE_INFINITY;
 		float maxX = Float.NEGATIVE_INFINITY;
 		float maxY = Float.NEGATIVE_INFINITY;
-		for (int i = 0; i < Vector3DList.length; i++) {
-			Vector3D Vector3D = Vector3DList[i];
-			if (Vector3D.getX() < minX)
-				minX = Vector3D.getX();
-			if (Vector3D.getX() > maxX)
-				maxX = Vector3D.getX();
-			if (Vector3D.getY() < minY)
-				minY = Vector3D.getY();
-			if (Vector3D.getY() > maxY)
-				maxY = Vector3D.getY();
-		}
+        for (Vector3D Vector3D : Vector3DList) {
+            if (Vector3D.getX() < minX)
+                minX = Vector3D.getX();
+            if (Vector3D.getX() > maxX)
+                maxX = Vector3D.getX();
+            if (Vector3D.getY() < minY)
+                minY = Vector3D.getY();
+            if (Vector3D.getY() > maxY)
+                maxY = Vector3D.getY();
+        }
 		return new float[]{minX, minY, maxX, maxY};
 	}
 
@@ -1394,12 +1392,11 @@ public class ToolsGeometry {
 	 * @return true, if contains bezier vertices
 	 */
 	public static boolean containsBezierVertices(Vertex[] originalPointsArray) {
-		for (int i = 0; i < originalPointsArray.length; i++) {
-			Vertex vertex = originalPointsArray[i];
-			if (vertex instanceof BezierVertex){
-				return true;
-			}
-		}
+        for (Vertex vertex : originalPointsArray) {
+            if (vertex instanceof BezierVertex) {
+                return true;
+            }
+        }
 		return false;
 	}
 
@@ -1436,25 +1433,24 @@ public class ToolsGeometry {
 						segments
 				);	
 				//Add all the curve vertices
-				for (int j = 0; j < curve.length; j++) {
-					Vertex curveVertex = curve[j];
-					//							allVerticesWithCurves.add(new Vertex(curveVertex.getX(), curveVertex.getY(), 0, vertex.getR(),vertex.getG(),vertex.getB(),vertex.getA()));
-					curveVertex.setRGBA(vertex.getR(), vertex.getG(), vertex.getB(), vertex.getA());
-					if (allVerticesWithCurves.size() > 0){
-						//Only add if not equal to last one in list
-						if (!allVerticesWithCurves.get(allVerticesWithCurves.size()-1).equalsVector(curveVertex)){
-							allVerticesWithCurves.add(curveVertex);	
-						}
-					}else{
-						allVerticesWithCurves.add(curveVertex);	
-					}
-				}
+                for (Vertex curveVertex : curve) {
+                    //							allVerticesWithCurves.add(new Vertex(curveVertex.getX(), curveVertex.getY(), 0, vertex.getR(),vertex.getG(),vertex.getB(),vertex.getA()));
+                    curveVertex.setRGBA(vertex.getR(), vertex.getG(), vertex.getB(), vertex.getA());
+                    if (allVerticesWithCurves.size() > 0) {
+                        //Only add if not equal to last one in list
+                        if (!allVerticesWithCurves.get(allVerticesWithCurves.size() - 1).equalsVector(curveVertex)) {
+                            allVerticesWithCurves.add(curveVertex);
+                        }
+                    } else {
+                        allVerticesWithCurves.add(curveVertex);
+                    }
+                }
 			}else{
 				//Add the normal vertices
 				allVerticesWithCurves.add(new Vertex(vertex));
 			}//else
 		}//For
-		return (Vertex[])allVerticesWithCurves.toArray(new Vertex[allVerticesWithCurves.size()]);
+		return allVerticesWithCurves.toArray(new Vertex[allVerticesWithCurves.size()]);
 	}
 
 
@@ -1469,11 +1465,10 @@ public class ToolsGeometry {
 	 */
 	public static List<Vertex[]> createVertexArrFromBezierVertexArrays(List<Vertex[]> vertexArrays, int resolution){
 		ArrayList<Vertex[]> partialPathsListCurves = new ArrayList<Vertex[]>() ;
-		for (int i = 0; i < vertexArrays.size(); i++) {
-			Vertex[] partArray = vertexArrays.get(i);
-			partArray = createVertexArrFromBezierArr(partArray, resolution);
-			partialPathsListCurves.add(partArray);
-		}
+        for (Vertex[] partArray : vertexArrays) {
+            partArray = createVertexArrFromBezierArr(partArray, resolution);
+            partialPathsListCurves.add(partArray);
+        }
 		return partialPathsListCurves;
 	}
 

@@ -305,10 +305,9 @@ public class MTCanvas extends MTComponent implements IHitTestInfoProvider{
 		//FIXME THIS IS A HACK! WE SHOULD REPLACE CLUSTERS WITH NORMAL COMPONENTS INSTEAD!
 		//Update cluster components 
 		Cluster[] clusters = getClusterManager().getClusters();
-		for (int i = 0; i < clusters.length; i++) {
-			Cluster cluster = clusters[i];
-			cluster.updateComponent(updateTime);
-		}
+        for (Cluster cluster : clusters) {
+            cluster.updateComponent(updateTime);
+        }
 		
 		this.drawUpdateRecursive(this, updateTime, graphics);
 //		System.out.println("Culled objects: " + culledObjects);

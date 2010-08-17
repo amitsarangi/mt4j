@@ -90,14 +90,13 @@ public class MTSceneTexture extends MTRectangle {
 		
 		//Invert y texture coord (FBO texture is flipped)
 		Vertex[] v = this.getVerticesLocal();
-		for (int i = 0; i < v.length; i++) {
-			Vertex vertex = v[i];
-			if (vertex.getTexCoordV() == 1.0f){
-				vertex.setTexCoordV(0.0f);
-			}else if (vertex.getTexCoordV() == 0.0f){
-				vertex.setTexCoordV(1.0f);
-			}
-		}
+        for (Vertex vertex : v) {
+            if (vertex.getTexCoordV() == 1.0f) {
+                vertex.setTexCoordV(0.0f);
+            } else if (vertex.getTexCoordV() == 0.0f) {
+                vertex.setTexCoordV(1.0f);
+            }
+        }
 		this.setVertices(v);
 		
 		//Apply the texture to this component
@@ -314,15 +313,14 @@ public class MTSceneTexture extends MTRectangle {
 			
 			//Send similar event to the windowed scenes global input processors
 			AbstractGlobalInputProcessor[] globalAnalyzer = app.getInputManager().getGlobalInputProcessors(scene);
-			for (int i = 0; i < globalAnalyzer.length; i++) {
-				AbstractGlobalInputProcessor a = globalAnalyzer[i];
-				if (!(a instanceof CursorTracer)){
-					//Hack because actually processors are disabled so they dont recieve
-					//input directly, so we dont call processInputEvt()!
-					a.processInputEvtImpl(evtToFire);	
-				}
-				
-			}
+            for (AbstractGlobalInputProcessor a : globalAnalyzer) {
+                if (!(a instanceof CursorTracer)) {
+                    //Hack because actually processors are disabled so they dont recieve
+                    //input directly, so we dont call processInputEvt()!
+                    a.processInputEvtImpl(evtToFire);
+                }
+
+            }
 			return false;
 		}else{
 			return super.processInputEvent(inEvt);

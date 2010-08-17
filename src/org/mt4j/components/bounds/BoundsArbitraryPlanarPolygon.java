@@ -82,9 +82,9 @@ public class BoundsArbitraryPlanarPolygon implements IBoundingShape {
 		g.fill(150,180);
 		g.beginShape();
 		Vector3D[] vectors = this.getVectorsLocal();
-		for (int i = 0; i < vectors.length; i++) {
-			g.vertex(vectors[i].x, vectors[i].y, vectors[i].z);
-		}
+        for (Vector3D vector : vectors) {
+            g.vertex(vector.x, vector.y, vector.z);
+        }
 		g.endShape();
 		g.popMatrix();
 	}
@@ -321,15 +321,14 @@ public class BoundsArbitraryPlanarPolygon implements IBoundingShape {
 	//@Override
 	public boolean isContainedInFrustum(IFrustum frustum) {
 		Vector3D[] points = this.getVectorsGlobal();
-		for (int i = 0; i < points.length; i++) {
-			Vector3D vector3D = points[i];
-			int test = frustum.isPointInFrustum(vector3D); 
-			if (   test == IFrustum.INSIDE
-				|| test == IFrustum.INTERSECT
-			){
-				return true;
-			}
-		}
+        for (Vector3D vector3D : points) {
+            int test = frustum.isPointInFrustum(vector3D);
+            if (test == IFrustum.INSIDE
+                    || test == IFrustum.INTERSECT
+                    ) {
+                return true;
+            }
+        }
 		return false;
 	}
 

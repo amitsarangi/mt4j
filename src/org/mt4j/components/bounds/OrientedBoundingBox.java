@@ -434,25 +434,25 @@ public class OrientedBoundingBox implements IBoundingShape {
         maxZ = vertices[0].z;
     	
         Vector3D v;
-    	for(int i = 0; i < vertices.length; i++){
-    		v = vertices[i];
+        for (Vector3D vertice : vertices) {
+            v = vertice;
 
-    		 if (v.x < minX)
-                 minX = v.x;
-             else if (v.x > maxX)
-                 maxX = v.x;
+            if (v.x < minX)
+                minX = v.x;
+            else if (v.x > maxX)
+                maxX = v.x;
 
-             if (v.y < minY)
-                 minY = v.y;
-             else if (v.y > maxY)
-                 maxY = v.y;
+            if (v.y < minY)
+                minY = v.y;
+            else if (v.y > maxY)
+                maxY = v.y;
 
-             if (v.z < minZ)
-                 minZ = v.z;
-             else if (v.z > maxZ)
-                 maxZ = v.z;
+            if (v.z < minZ)
+                minZ = v.z;
+            else if (v.z > maxZ)
+                maxZ = v.z;
 
-    	}
+        }
     	
     	this.center.setXYZ(minX + maxX, minY + maxY, minZ + maxZ);
     	this.center.scaleLocal(0.5f);
@@ -870,15 +870,14 @@ public class OrientedBoundingBox implements IBoundingShape {
 
 	public boolean isContainedInFrustum(IFrustum frustum) {
 		Vector3D[] points = this.getVectorsGlobal();
-		for (int i = 0; i < points.length; i++) {
-			Vector3D vector3D = points[i];
-			int test = frustum.isPointInFrustum(vector3D); 
-			if (   test == IFrustum.INSIDE
-				|| test == IFrustum.INTERSECT
-			){
-				return true;
-			}
-		}
+        for (Vector3D vector3D : points) {
+            int test = frustum.isPointInFrustum(vector3D);
+            if (test == IFrustum.INSIDE
+                    || test == IFrustum.INTERSECT
+                    ) {
+                return true;
+            }
+        }
 		return false;
 	}
 

@@ -141,7 +141,7 @@ public abstract class AbstractShape extends AbstractVisibleComponent {
 		super(pApplet,"unnamed  AbstractShape", /*null,*/ null);
 		
 		//Initialize fields 
-		this.drawDirectGL = MT4jSettings.getInstance().isOpenGlMode()? true : false;
+		this.drawDirectGL = MT4jSettings.getInstance().isOpenGlMode();
 		this.useVBOs 			= false;
 		this.useDisplayList 	= false;
 		this.textureMode = PConstants.NORMALIZED;
@@ -767,12 +767,11 @@ public abstract class AbstractShape extends AbstractVisibleComponent {
 	public Vector3D[] getConvexHullXYGlobal(){
 		ArrayList<Vector3D> vers = new ArrayList<Vector3D>();
 		Vertex[] transVerts = this.getVerticesGlobal();
-		for (int i = 0; i < transVerts.length; i++) {
-			Vertex vertex = transVerts[i];
-			vers.add(vertex);
-		}
+        for (Vertex vertex : transVerts) {
+            vers.add(vertex);
+        }
 		ArrayList<Vector3D> edgeList = ConvexQuickHull2D.getConvexHull2D(vers);
-		return (edgeList.toArray(new Vertex[edgeList.size()]));
+		return (edgeList.toArray(new Vector3D[edgeList.size()]));
 	}
 
 	
@@ -945,33 +944,30 @@ public abstract class AbstractShape extends AbstractVisibleComponent {
 	
 	
 	private void unNormalizeFromPOTtoRectMode(PImage newTexture, Vertex[] verts){
-		for (int i = 0; i < verts.length; i++) {
-    		Vertex vertex = verts[i];
-    		vertex.setTexCoordU(vertex.getTexCoordU() *  (float)newTexture.width);
-    		vertex.setTexCoordV(vertex.getTexCoordV() *  (float)newTexture.height);
+        for (Vertex vertex : verts) {
+            vertex.setTexCoordU(vertex.getTexCoordU() * (float) newTexture.width);
+            vertex.setTexCoordV(vertex.getTexCoordV() * (float) newTexture.height);
 //    		System.out.println("TexU:" + vertex.getTexCoordU() + " TexV:" + vertex.getTexCoordV()); //FIXME REMOVE
-    	}
+        }
 		this.getGeometryInfo().updateTextureBuffer(this.isUseVBOs());
 	}
 	
 	private void normalizeFromRectMode(PImage newTexture, Vertex[] verts, float oldTexWidth, float oldTexHeight){
-		for (int i = 0; i < verts.length; i++) {
-    		Vertex vertex = verts[i];
-//    		vertex.setTexCoordU(ToolsMath.map(vertex.getTexCoordU(), 0, oldTexWidth, 0, 1));
+        for (Vertex vertex : verts) {
+            //    		vertex.setTexCoordU(ToolsMath.map(vertex.getTexCoordU(), 0, oldTexWidth, 0, 1));
 //    		vertex.setTexCoordV(ToolsMath.map(vertex.getTexCoordV(), 0, oldTexWidth, 0, 1));
-    		
-    		vertex.setTexCoordU(vertex.getTexCoordU() / oldTexWidth);
-    		vertex.setTexCoordV(vertex.getTexCoordV() / oldTexHeight);
-    	}
+
+            vertex.setTexCoordU(vertex.getTexCoordU() / oldTexWidth);
+            vertex.setTexCoordV(vertex.getTexCoordV() / oldTexHeight);
+        }
 		this.getGeometryInfo().updateTextureBuffer(this.isUseVBOs());
 	}
 	
 	private void fromRectModeToRectMode(PImage newTexture, Vertex[] verts, float oldTexWidth, float oldTexHeight){
-		for (int i = 0; i < verts.length; i++) {
-    		Vertex vertex = verts[i];
-    		vertex.setTexCoordU( (vertex.getTexCoordU() / oldTexWidth)  *  (float)newTexture.width);
-			vertex.setTexCoordV( (vertex.getTexCoordV() / oldTexHeight) *  (float)newTexture.height);
-    	}
+        for (Vertex vertex : verts) {
+            vertex.setTexCoordU((vertex.getTexCoordU() / oldTexWidth) * (float) newTexture.width);
+            vertex.setTexCoordV((vertex.getTexCoordV() / oldTexHeight) * (float) newTexture.height);
+        }
 		this.getGeometryInfo().updateTextureBuffer(this.isUseVBOs());
 	}
 	
