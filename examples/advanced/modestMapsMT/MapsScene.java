@@ -212,11 +212,10 @@ public class MapsScene extends AbstractScene implements MouseWheelListener, Mous
 				switch (ae.getID()) {
 				case TapEvent.BUTTON_CLICKED:
 					Point[] p = getScreenPoints();
-					for (int i = 0; i < p.length; i++) {
-						Point point = p[i];
-						Location loc = map.pointLocation(point.x ,point.y);
-						getPictures(loc, getAccuracyForZoom(map), true);
-					}
+                    for (Point point : p) {
+                        Location loc = map.pointLocation(point.x, point.y);
+                        getPictures(loc, getAccuracyForZoom(map), true);
+                    }
 					getPictures(map.getCenter(), getAccuracyForZoom(map), false);
 				}
 			}
@@ -468,15 +467,14 @@ public class MapsScene extends AbstractScene implements MouseWheelListener, Mous
 	private void updateTagShapeScale(float scale){
 		MTComponent[] tags = tagContainer.getChildren();
 		float scX = 1f/scale;
-		for (int i = 0; i < tags.length; i++) {
-			MTComponent baseComponent = tags[i];
-			if (baseComponent instanceof AbstractShape) {
-				AbstractShape shape = (AbstractShape) baseComponent;
+        for (MTComponent baseComponent : tags) {
+            if (baseComponent instanceof AbstractShape) {
+                AbstractShape shape = (AbstractShape) baseComponent;
 //				System.out.println("Scaling: " + scX + " " + scY);
 //				shape.scale(scX, scY, 1, shape.getCenterPointGlobal(), TransformSpace.GLOBAL);
-				shape.scale(scX, scX, 1, shape.getCenterPointRelativeToParent(), TransformSpace.RELATIVE_TO_PARENT);
-			}
-		}
+                shape.scale(scX, scX, 1, shape.getCenterPointRelativeToParent(), TransformSpace.RELATIVE_TO_PARENT);
+            }
+        }
 	}
 
 	
@@ -612,141 +610,140 @@ public class MapsScene extends AbstractScene implements MouseWheelListener, Mous
 					public void processAction() {
 						progressBar.setVisible(false);
 						Photo[] photos = flickrLoader.getPhotos();
-						for (int i = 0; i < photos.length; i++) {
-							Photo foto = photos[i];
-							String id = foto.getId();
-							//System.out.println("Foto ID:" + id);
-							boolean alreadyContained = false;
-							Collection<Photo> vlaues = tagToPhoto.values();
-							for (Iterator<Photo> iterator = vlaues.iterator(); iterator.hasNext();) {
-								Photo photo = (Photo) iterator.next();
-								if (photo.getId().equalsIgnoreCase(foto.getId())){
-									alreadyContained = true;
-								}
-							}
-							
-							if (!alreadyContained/*!tagToPhoto.containsValue(foto)*/){
-								String fotoName = foto.getTitle();
-								if (foto.hasGeoData()){
-									GeoData geo = foto.getGeoData();
-									float lat = geo.getLatitude();
-									float lon = geo.getLongitude();
-									System.out.println("\"" + fotoName + "\"" + " Has GeoData! -> Lat:" + lat + " Lon:" + lon + " PlaceID: " + foto.getPlaceId());
+                        for (Photo foto : photos) {
+                            String id = foto.getId();
+                            //System.out.println("Foto ID:" + id);
+                            boolean alreadyContained = false;
+                            Collection<Photo> vlaues = tagToPhoto.values();
+                            for (Photo photo : vlaues) {
+                                if (photo.getId().equalsIgnoreCase(foto.getId())) {
+                                    alreadyContained = true;
+                                }
+                            }
 
-									Point2f pointOnScreen 	= map.locationPoint(new Location(lat, lon));
+                            if (!alreadyContained/*!tagToPhoto.containsValue(foto)*/) {
+                                String fotoName = foto.getTitle();
+                                if (foto.hasGeoData()) {
+                                    GeoData geo = foto.getGeoData();
+                                    float lat = geo.getLatitude();
+                                    float lon = geo.getLongitude();
+                                    System.out.println("\"" + fotoName + "\"" + " Has GeoData! -> Lat:" + lat + " Lon:" + lon + " PlaceID: " + foto.getPlaceId());
+
+                                    Point2f pointOnScreen = map.locationPoint(new Location(lat, lon));
 //									System.out.println(" -> Point on Screen: " + pointOnScreen);
 
-									Vector3D vecOnScreen 	= new Vector3D(0,0,0f);
+                                    Vector3D vecOnScreen = new Vector3D(0, 0, 0f);
 //									Vector3D vecOnScreen 	= new Vector3D(pointOnScreen.x , pointOnScreen.y , 0.01f);
 //									Vector3D vecOnScreen 	= new Vector3D(pointOnScreen.x -p.width/2 +128, pointOnScreen.y -p.height/2 +128, 0.01f);
 
-									//System.out.println("-> Creating tag at: " + vecOnScreen);
-									if (	pointOnScreen.x >= 0 && pointOnScreen.x <= p.width 
-										&&  pointOnScreen.y >= 0 && pointOnScreen.y <= p.height
-									){
-										final MTEllipse tagCircle = new MTEllipse(p, vecOnScreen, 15, 15, 30);
-										tagCircle.setPickable(true);
-										tagCircle.setFillColor(new MTColor(90, 205, 230, 200));
-										tagCircle.setDrawSmooth(true);
-										tagCircle.setStrokeWeight(2);
-										tagCircle.setStrokeColor(new MTColor(40, 130, 220, 255));
-										tagCircle.translate(new Vector3D(pointOnScreen.x, pointOnScreen.y , 0.0f));
-										tagCircle.transform(tagContainer.getGlobalInverseMatrix());
-										tagCircle.setName(id);
-										
-										tagToPhoto.put(tagCircle, foto);
-										
-										tagContainer.addChild(tagCircle);
-										
-										tagCircle.unregisterAllInputProcessors();
-										tagCircle.registerInputProcessor(new TapProcessor(p));
-										tagCircle.addGestureListener(TapProcessor.class, new IGestureEventListener(){
-											//@Override
-											public boolean processGestureEvent(MTGestureEvent g) {
-												if (g instanceof TapEvent) {
-													TapEvent ce = (TapEvent) g;
-													switch (ce.getTapID()) {
-													case TapEvent.BUTTON_DOWN:
-														IMTComponent3D e = ce.getTargetComponent();
-														Photo foto = tagToPhoto.get(e);
-														if (foto != null){
-															SinglePhotoLoader fotoLoader = new SinglePhotoLoader(foto, 50);
-															fotoLoader.start();
-															
-															//Disable and remove the fototag
-															tagCircle.setGestureAllowance(TapProcessor.class, false);
-															
-															p.getCurrentScene().registerPreDrawAction(new IPreDrawAction(){
-																public boolean isLoop() {
-																	return false;
-																}
-																public void processAction() {
+                                    //System.out.println("-> Creating tag at: " + vecOnScreen);
+                                    if (pointOnScreen.x >= 0 && pointOnScreen.x <= p.width
+                                            && pointOnScreen.y >= 0 && pointOnScreen.y <= p.height
+                                            ) {
+                                        final MTEllipse tagCircle = new MTEllipse(p, vecOnScreen, 15, 15, 30);
+                                        tagCircle.setPickable(true);
+                                        tagCircle.setFillColor(new MTColor(90, 205, 230, 200));
+                                        tagCircle.setDrawSmooth(true);
+                                        tagCircle.setStrokeWeight(2);
+                                        tagCircle.setStrokeColor(new MTColor(40, 130, 220, 255));
+                                        tagCircle.translate(new Vector3D(pointOnScreen.x, pointOnScreen.y, 0.0f));
+                                        tagCircle.transform(tagContainer.getGlobalInverseMatrix());
+                                        tagCircle.setName(id);
+
+                                        tagToPhoto.put(tagCircle, foto);
+
+                                        tagContainer.addChild(tagCircle);
+
+                                        tagCircle.unregisterAllInputProcessors();
+                                        tagCircle.registerInputProcessor(new TapProcessor(p));
+                                        tagCircle.addGestureListener(TapProcessor.class, new IGestureEventListener() {
+                                            //@Override
+                                            public boolean processGestureEvent(MTGestureEvent g) {
+                                                if (g instanceof TapEvent) {
+                                                    TapEvent ce = (TapEvent) g;
+                                                    switch (ce.getTapID()) {
+                                                        case TapEvent.BUTTON_DOWN:
+                                                            IMTComponent3D e = ce.getTargetComponent();
+                                                            Photo foto = tagToPhoto.get(e);
+                                                            if (foto != null) {
+                                                                SinglePhotoLoader fotoLoader = new SinglePhotoLoader(foto, 50);
+                                                                fotoLoader.start();
+
+                                                                //Disable and remove the fototag
+                                                                tagCircle.setGestureAllowance(TapProcessor.class, false);
+
+                                                                p.getCurrentScene().registerPreDrawAction(new IPreDrawAction() {
+                                                                    public boolean isLoop() {
+                                                                        return false;
+                                                                    }
+
+                                                                    public void processAction() {
 //																	fotoTagContainer.removeChild(tagCircle);
-																	tagToPhoto.remove(tagCircle);
-																	tagCircle.destroy();
-																}
+                                                                        tagToPhoto.remove(tagCircle);
+                                                                        tagCircle.destroy();
+                                                                    }
 
-															});
-														}
-														break;
-													default:
-														break;
-													}
-												}
-												return true;
-											}
-										});
-									}//if point is on screen
-									else{
-										System.out.println("Foto not on screen: position:" + pointOnScreen +  " Title: "+ foto.getTitle() + " id:" + id);
-									}
-							}else{
-								System.out.println("Foto already loaded: "+ foto.getTitle() + " id:" + id);
-							}
-								
-								/*
-								ImageCard[] images = flickrLoader.getMtFotos();
-								ImageCard image = images[i];
-								if (image != null){
+                                                                });
+                                                            }
+                                                            break;
+                                                        default:
+                                                            break;
+                                                    }
+                                                }
+                                                return true;
+                                            }
+                                        });
+                                    }//if point is on screen
+                                    else {
+                                        System.out.println("Foto not on screen: position:" + pointOnScreen + " Title: " + foto.getTitle() + " id:" + id);
+                                    }
+                                } else {
+                                    System.out.println("Foto already loaded: " + foto.getTitle() + " id:" + id);
+                                }
 
-									if (pointOnScreen.x >= 0 && pointOnScreen.x <= p.width 
-									 && pointOnScreen.y >= 0 && pointOnScreen.y <= p.height){
+                                /*
+                                        ImageCard[] images = flickrLoader.getMtFotos();
+                                        ImageCard image = images[i];
+                                        if (image != null){
 
-										image.setUseDirectGL(true);
-										image.setDisplayCloseButton(true);
+                                            if (pointOnScreen.x >= 0 && pointOnScreen.x <= p.width
+                                             && pointOnScreen.y >= 0 && pointOnScreen.y <= p.height){
 
-//										image.translate(new Vector3D((float)(-image.getWidthLocal()/2f) , (float)(-image.getHeightLocal()/2f) , 0.0f));
+                                                image.setUseDirectGL(true);
+                                                image.setDisplayCloseButton(true);
 
-										image.translate(new Vector3D(pointOnScreen.x, pointOnScreen.y , 0.1f));
+        //										image.translate(new Vector3D((float)(-image.getWidthLocal()/2f) , (float)(-image.getHeightLocal()/2f) , 0.0f));
 
-										image.transform(
-												fotoTagContainer.getAbsoluteWorldToLocalMatrix()
-										);
+                                                image.translate(new Vector3D(pointOnScreen.x, pointOnScreen.y , 0.1f));
 
-//										image.scale((float)(1f/map.sc), (float)(1f/map.sc), 1, image.getCenterPointGlobal(), TransformSpace.RELATIVE_TO_WORLD);
+                                                image.transform(
+                                                        fotoTagContainer.getAbsoluteWorldToLocalMatrix()
+                                                );
 
-										fotoContainer.addChild(image);
+        //										image.scale((float)(1f/map.sc), (float)(1f/map.sc), 1, image.getCenterPointGlobal(), TransformSpace.RELATIVE_TO_WORLD);
 
-//										Vector3D centerPoint = image.getCenterPointGlobal(); //TODO rename ..Local to ParentRelative
-//										float width = 15;
-//										image.scaleGlobal(1/image.getWidthGlobal(), 1/image.getWidthGlobal(), 1, centerPoint);
-//										image.scaleGlobal(width, width, 1, centerPoint);
+                                                fotoContainer.addChild(image);
 
-//										Vector3D centerPoint = image.getCenterPointLocal(); //TODO rename ..Local to ParentRelative
-//										float width = 15;
-//										image.scale(1/image.getWidthLocal(), 1/image.getWidthLocal(), 1, centerPoint, TransformSpace.RELATIVE_TO_PARENT);
-//										image.scale(width, width, 1, centerPoint, TransformSpace.RELATIVE_TO_PARENT);
+        //										Vector3D centerPoint = image.getCenterPointGlobal(); //TODO rename ..Local to ParentRelative
+        //										float width = 15;
+        //										image.scaleGlobal(1/image.getWidthGlobal(), 1/image.getWidthGlobal(), 1, centerPoint);
+        //										image.scaleGlobal(width, width, 1, centerPoint);
 
-//										image.translate(new Vector3D(pointOnScreen.x , pointOnScreen.y , 0.01f));
-//										image.setPositionGlobal(new Vector3D(pointOnScreen.x , pointOnScreen.y , 0.01f));
-									}else{
-										System.out.println("Image '" + image.getName() + "' out of screen -> remove.");
-										image.destroy();
-									}
-								}
-								*/
-							}//if has geo
-						}//for fotos
+        //										Vector3D centerPoint = image.getCenterPointLocal(); //TODO rename ..Local to ParentRelative
+        //										float width = 15;
+        //										image.scale(1/image.getWidthLocal(), 1/image.getWidthLocal(), 1, centerPoint, TransformSpace.RELATIVE_TO_PARENT);
+        //										image.scale(width, width, 1, centerPoint, TransformSpace.RELATIVE_TO_PARENT);
+
+        //										image.translate(new Vector3D(pointOnScreen.x , pointOnScreen.y , 0.01f));
+        //										image.setPositionGlobal(new Vector3D(pointOnScreen.x , pointOnScreen.y , 0.01f));
+                                            }else{
+                                                System.out.println("Image '" + image.getName() + "' out of screen -> remove.");
+                                                image.destroy();
+                                            }
+                                        }
+                                        */
+                            }//if has geo
+                        }
 					}//prcessPreDrawAction()
 				});//registerPreAction()
 			}//ProcessMTEvent()
@@ -1003,11 +1000,10 @@ public class MapsScene extends AbstractScene implements MouseWheelListener, Mous
 			break;
 		case KeyEvent.VK_F3:
 			Point[] p = this.getScreenPoints();
-			for (int i = 0; i < p.length; i++) {
-				Point point = p[i];
-				Location loc = map.pointLocation(point.x ,point.y);
-				this.getPictures(loc, this.getAccuracyForZoom(map), true);
-			}
+            for (Point point : p) {
+                Location loc = map.pointLocation(point.x, point.y);
+                this.getPictures(loc, this.getAccuracyForZoom(map), true);
+            }
 			this.getPictures(map.getCenter(), this.getAccuracyForZoom(map), false);
 			break;
 		case KeyEvent.VK_F9:

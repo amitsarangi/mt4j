@@ -100,30 +100,28 @@ public class Models3DScene extends AbstractScene {
 		
 		//Inverts the normals, if they are calculated pointing inside of the mesh instead of outside
 		boolean invertNormals = true;
-		
-		for (int i = 0; i < meshes.length; i++) {
-			MTTriangleMesh mesh = meshes[i];
-			meshGroup.addChild(mesh);
-			mesh.unregisterAllInputProcessors(); //Clear previously registered input processors
-			mesh.setPickable(true);
 
-			if (invertNormals){
-				Vector3D[] normals = mesh.getGeometryInfo().getNormals();
-				for (int j = 0; j < normals.length; j++) {
-					Vector3D vector3d = normals[j];
-					vector3d.scaleLocal(-1);
-				}
-				mesh.getGeometryInfo().setNormals(mesh.getGeometryInfo().getNormals(), mesh.isUseDirectGL(), mesh.isUseVBOs());
-			}
+        for (MTTriangleMesh mesh : meshes) {
+            meshGroup.addChild(mesh);
+            mesh.unregisterAllInputProcessors(); //Clear previously registered input processors
+            mesh.setPickable(true);
 
-			//If the mesh has more than 20 vertices, use a display list for faster rendering
-			if (mesh.getVertexCount() > 20)
-				mesh.generateAndUseDisplayLists();
-			//Set the material to the mesh  (determines the reaction to the lightning)
-			if (mesh.getMaterial() == null)
-				mesh.setMaterial(material);
-			mesh.setDrawNormals(false);
-		}
+            if (invertNormals) {
+                Vector3D[] normals = mesh.getGeometryInfo().getNormals();
+                for (Vector3D vector3d : normals) {
+                    vector3d.scaleLocal(-1);
+                }
+                mesh.getGeometryInfo().setNormals(mesh.getGeometryInfo().getNormals(), mesh.isUseDirectGL(), mesh.isUseVBOs());
+            }
+
+            //If the mesh has more than 20 vertices, use a display list for faster rendering
+            if (mesh.getVertexCount() > 20)
+                mesh.generateAndUseDisplayLists();
+            //Set the material to the mesh  (determines the reaction to the lightning)
+            if (mesh.getMaterial() == null)
+                mesh.setMaterial(material);
+            mesh.setDrawNormals(false);
+        }
 		
 		//Register arcball gesture manipulation to the whole mesh-group
 		meshGroup.setComposite(true); //-> Group gets picked instead of its children
@@ -156,14 +154,13 @@ public class Models3DScene extends AbstractScene {
 		MTTriangleMesh currentBiggestMesh = null;
 		//Get the biggest mesh and extract its width
 		float currentBiggestWidth = Float.MIN_VALUE;
-		for (int i = 0; i < meshes.length; i++) {
-			MTTriangleMesh triangleMesh = meshes[i];
-			float width = triangleMesh.getWidthXY(TransformSpace.GLOBAL);
-			if (width >= currentBiggestWidth || currentBiggestWidth == Float.MIN_VALUE){
-				currentBiggestWidth = width;
-				currentBiggestMesh = triangleMesh;
-			}
-		}
+        for (MTTriangleMesh triangleMesh : meshes) {
+            float width = triangleMesh.getWidthXY(TransformSpace.GLOBAL);
+            if (width >= currentBiggestWidth || currentBiggestWidth == Float.MIN_VALUE) {
+                currentBiggestWidth = width;
+                currentBiggestMesh = triangleMesh;
+            }
+        }
 		return currentBiggestMesh;
 	}
 	

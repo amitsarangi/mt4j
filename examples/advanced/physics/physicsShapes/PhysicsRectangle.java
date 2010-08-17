@@ -411,11 +411,10 @@ public class PhysicsRectangle extends MTRectangle implements IPhysicsComponent{
 				g.fill(100);
 				g.stroke(50);
 				g.beginShape();
-				for (int i = 0; i < boundVecs.length; i++) {
-					Vector3D v = boundVecs[i];
-//					app.vertex(v.x*scale, v.y*scale, v.z);
-					g.vertex(v.x, v.y, v.z);
-				}
+                for (Vector3D v : boundVecs) {
+                    //					app.vertex(v.x*scale, v.y*scale, v.z);
+                    g.vertex(v.x, v.y, v.z);
+                }
 				g.endShape();
 			}
 		}

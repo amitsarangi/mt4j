@@ -242,18 +242,17 @@ public class PuzzleFactory {
 //					float upperLeftX = bounds.getVectorsLocal()[0].x  + j* tileWidth ;
 //					float upperLeftY = bounds.getVectorsLocal()[0].y  + i * tileHeight;
 					Vertex[] verts = tile.getVerticesLocal();
-					for (int n = 0; n < verts.length; n++) {
-						Vertex vertex = verts[n];
-//						vertex.setTexCoordU((vertex.x-upperLeftX )/width);
+                    for (Vertex vertex : verts) {
+                        //						vertex.setTexCoordU((vertex.x-upperLeftX )/width);
 //						vertex.setTexCoordV((vertex.y-upperLeftY)/height);
 //						vertex.setTexCoordU((vertex.x - upperLeftX  + (j * tileWidth)) / p.width);
 //						vertex.setTexCoordV((vertex.y - upperLeftY + (i * tileHeight)) / p.height);
-						
-						vertex.setTexCoordU((vertex.x  + (j * tileWidth)) / p.width);
-						vertex.setTexCoordV((vertex.y  + (i * tileHeight)) / p.height);
-						
-						//System.out.println("TexU:" + vertex.getTexCoordU() + " TexV:" + vertex.getTexCoordV());
-					}
+
+                        vertex.setTexCoordU((vertex.x + (j * tileWidth)) / p.width);
+                        vertex.setTexCoordV((vertex.y + (i * tileHeight)) / p.height);
+
+                        //System.out.println("TexU:" + vertex.getTexCoordU() + " TexV:" + vertex.getTexCoordV());
+                    }
 					tile.getGeometryInfo().updateTextureBuffer(tile.isUseVBOs());
 					
 					//Set the texture
@@ -277,14 +276,13 @@ public class PuzzleFactory {
 		if (currentI-1 < 0){
 			return TileSide.linear;
 		}
-		for (Iterator<AbstractShape> iterator = list.iterator(); iterator.hasNext();) {
-			AbstractShape tile = (AbstractShape) iterator.next();
-			int i = (Integer) tile.getUserData("i");
-			int j = (Integer) tile.getUserData("j");
-			if (i == currentI -1 && j == currentJ){
-				return (TileSide) tile.getUserData("bottom");
-			}
-		}
+        for (AbstractShape tile : list) {
+            int i = (Integer) tile.getUserData("i");
+            int j = (Integer) tile.getUserData("j");
+            if (i == currentI - 1 && j == currentJ) {
+                return (TileSide) tile.getUserData("bottom");
+            }
+        }
 		return TileSide.linear;
 	}
 	
@@ -292,14 +290,13 @@ public class PuzzleFactory {
 		if (currentJ-1 < 0){
 			return TileSide.linear;
 		}
-		for (Iterator<AbstractShape> iterator = list.iterator(); iterator.hasNext();) {
-			AbstractShape tile = (AbstractShape) iterator.next();
-			int i = (Integer) tile.getUserData("i");
-			int j = (Integer) tile.getUserData("j");
-			if (i == currentI && j == currentJ-1){
-				return (TileSide) tile.getUserData("right");
-			}
-		}
+        for (AbstractShape tile : list) {
+            int i = (Integer) tile.getUserData("i");
+            int j = (Integer) tile.getUserData("j");
+            if (i == currentI && j == currentJ - 1) {
+                return (TileSide) tile.getUserData("right");
+            }
+        }
 		return TileSide.linear;
 	}
 	
@@ -414,10 +411,9 @@ public class PuzzleFactory {
 	
 	
 	private void addAll(Vertex[] vertices, List<Vertex> list){
-		for (int i = 0; i < vertices.length; i++) {
-			Vertex vertex = vertices[i];
-			list.add(vertex);
-		}
+        for (Vertex vertex : vertices) {
+            list.add(vertex);
+        }
 	}
 	
 	

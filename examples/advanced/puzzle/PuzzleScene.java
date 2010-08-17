@@ -118,10 +118,9 @@ public class PuzzleScene extends AbstractScene{
 		list.setAnchor(PositionAnchor.UPPER_LEFT);
 //		list.setPositionGlobal(Vector3D.ZERO_VECTOR);
 		list.setVisible(false);
-		for (int i = 0; i < imagesNames.length; i++) {
-			String imageName = imagesNames[i];
-			list.addListElement(this.createListCell(imageName, font, cellWidth, cellHeight, cellFillColor, cellPressedFillColor));
-		}
+        for (String imageName : imagesNames) {
+            list.addListElement(this.createListCell(imageName, font, cellWidth, cellHeight, cellFillColor, cellPressedFillColor));
+        }
 		this.getCanvas().addChild(list);
 		
 		//Loading window
@@ -203,34 +202,39 @@ public class PuzzleScene extends AbstractScene{
 		}
 		PImage p = getMTApplication().loadImage(imagesPath + imageName);
 		AbstractShape[] tiles = pf.createTiles(p, this.horizontalTiles, this.verticalTiles);
-		for (int i = 0; i < tiles.length; i++) {
-			final AbstractShape sh = tiles[i];
-			//Delay to smooth the animation because of loading hickups
-			final float x = ToolsMath.getRandom(0, MT4jSettings.getInstance().getWindowWidth());
-			final float y = ToolsMath.getRandom(0, MT4jSettings.getInstance().getWindowHeight());
-			registerPreDrawAction(new IPreDrawAction() {
-				public void processAction() {
-					getMTApplication().invokeLater(new Runnable() {
-						public void run() {
-							registerPreDrawAction(new IPreDrawAction() {
-								public void processAction() {
-									getMTApplication().invokeLater(new Runnable() {
-										public void run() {
-											puzzleGroup.addChild(sh);
+        for (final AbstractShape sh : tiles) {
+            //Delay to smooth the animation because of loading hickups
+            final float x = ToolsMath.getRandom(0, MT4jSettings.getInstance().getWindowWidth());
+            final float y = ToolsMath.getRandom(0, MT4jSettings.getInstance().getWindowHeight());
+            registerPreDrawAction(new IPreDrawAction() {
+                public void processAction() {
+                    getMTApplication().invokeLater(new Runnable() {
+                        public void run() {
+                            registerPreDrawAction(new IPreDrawAction() {
+                                public void processAction() {
+                                    getMTApplication().invokeLater(new Runnable() {
+                                        public void run() {
+                                            puzzleGroup.addChild(sh);
 //											sh.tweenTranslateTo(x, y, 0, 400, 0f, 1.0f);
-											sh.tweenTranslateTo(x, y, 0, 400, AniAnimation.CIRC_OUT, 0);
-										}
-									});
-								}
-								public boolean isLoop() {return false;}
-							});
-						}
-					});
-				}
-				public boolean isLoop() {return false;}
-			});
-			sh.rotateZ(sh.getCenterPointRelativeToParent(), ToolsMath.getRandom(0, 359));
-		}
+                                            sh.tweenTranslateTo(x, y, 0, 400, AniAnimation.CIRC_OUT, 0);
+                                        }
+                                    });
+                                }
+
+                                public boolean isLoop() {
+                                    return false;
+                                }
+                            });
+                        }
+                    });
+                }
+
+                public boolean isLoop() {
+                    return false;
+                }
+            });
+            sh.rotateZ(sh.getCenterPointRelativeToParent(), ToolsMath.getRandom(0, 359));
+        }
 	}
 	
 

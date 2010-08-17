@@ -131,7 +131,7 @@ public class MTShellScene extends AbstractScene {
 		this.hasFBO = GLFBO.isSupported(app);
 //		this.hasFBO = false; // TEST
 		//IF we have no FBO directly switch to scene and ignore setting
-		this.switchDirectlyToScene = !this.hasFBO? true : switchDirectlyToScene; 
+		this.switchDirectlyToScene = !this.hasFBO || switchDirectlyToScene;
 		
 		this.registerGlobalInputProcessor(new CursorTracer(app, this));
 		
