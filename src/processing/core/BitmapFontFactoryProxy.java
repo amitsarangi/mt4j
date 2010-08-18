@@ -362,7 +362,7 @@ public class BitmapFontFactoryProxy implements IFontFactory {
 				
 //				PImage copy = new PImage(ToolsMath.nearestPowerOfTwo(charWidth + shiftAmount), ToolsMath.nearestPowerOfTwo(charHeight + shiftAmount), PImage.ARGB);
 //				
-				PImage copy = new PImage(nextPowerOfTwo(charImage.width + leftShiftAmount + 1), nextPowerOfTwo(charImage.height + topShiftAmount), PImage.ARGB);
+				PImage copy = new PImage(nextPowerOfTwo(charImage.width + leftShiftAmount + 1), nextPowerOfTwo(charImage.height + topShiftAmount +1), PImage.ARGB);
 //				PImage copy = new PImage(charImage.width + leftShiftAmount + 1, charImage.height + topShiftAmount, PImage.ARGB);
 				
 				copy.copy(charImage, 0, 0, charWidth, charHeight, leftShiftAmount, topShiftAmount, charWidth, charHeight);

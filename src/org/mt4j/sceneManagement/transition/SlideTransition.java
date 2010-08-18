@@ -24,8 +24,10 @@ import org.mt4j.sceneManagement.Iscene;
 import org.mt4j.util.MTColor;
 import org.mt4j.util.animation.Animation;
 import org.mt4j.util.animation.AnimationEvent;
+import org.mt4j.util.animation.IAnimation;
 import org.mt4j.util.animation.IAnimationListener;
 import org.mt4j.util.animation.MultiPurposeInterpolator;
+import org.mt4j.util.animation.ani.AniAnimation;
 import org.mt4j.util.math.Vector3D;
 
 /**
@@ -54,10 +56,10 @@ public class SlideTransition extends AbstractTransition {
 	private MTSceneTexture nextSceneWindow;
 	
 	/** The anim. */
-	private Animation anim;
+	private IAnimation anim;
 	
 	/** The duration. */
-	private long duration;
+	private int duration;
 	
 	/** The last scene rectangle. */
 	private MTRectangle lastSceneRectangle;
@@ -85,10 +87,11 @@ public class SlideTransition extends AbstractTransition {
 	public SlideTransition(MTApplication mtApplication, long duration) {
 		super(mtApplication, "Slide Transition");
 		this.app = mtApplication;
-		this.duration = duration;
+		this.duration = (int) duration;
 		this.finished = true;
 		
-		anim = new Animation("Flip animation 2", new MultiPurposeInterpolator(app.width, 0, this.duration, 0.0f, 0.7f, 1) , this);
+//		anim = new Animation("Flip animation 2", new MultiPurposeInterpolator(app.width, 0, this.duration, 0.0f, 0.7f, 1) , this);
+		anim = new AniAnimation(app.width, 0, this.duration, AniAnimation.CIRC_OUT, this);
 		anim.addAnimationListener(new IAnimationListener(){
 			public void processAnimationEvent(AnimationEvent ae) {
 				switch (ae.getId()) {
@@ -106,7 +109,7 @@ public class SlideTransition extends AbstractTransition {
 					break;
 				}
 			}});
-		anim.setResetOnFinish(true);
+//		((Animation)anim).setResetOnFinish(true);
 	}
 
 

@@ -69,6 +69,7 @@ public class AniAdapter extends Ani {
 	
 	@Override
 	protected void dispatchOnEnd() {
+		this.currentStepDelta = 0.0f; //Else we get the same delta as from the last step twice!
 		super.dispatchOnEnd();
 		correspondingAnimation.fireAnimationEvent(new AnimationEvent(this, AnimationEvent.ANIMATION_ENDED, correspondingAnimation, animationTarget));
 	}

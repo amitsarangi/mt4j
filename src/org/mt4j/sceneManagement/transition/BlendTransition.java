@@ -24,8 +24,10 @@ import org.mt4j.sceneManagement.Iscene;
 import org.mt4j.util.MTColor;
 import org.mt4j.util.animation.Animation;
 import org.mt4j.util.animation.AnimationEvent;
+import org.mt4j.util.animation.IAnimation;
 import org.mt4j.util.animation.IAnimationListener;
 import org.mt4j.util.animation.MultiPurposeInterpolator;
+import org.mt4j.util.animation.ani.AniAnimation;
 
 import processing.core.PGraphics;
 
@@ -52,10 +54,10 @@ public class BlendTransition extends AbstractTransition {
 	private MTSceneTexture lastSceneWindow;
 	
 	/** The anim. */
-	private Animation anim;
+	private IAnimation anim;
 	
 	/** The duration. */
-	private long duration;
+	private int duration;
 	
 	/** The last scene rectangle. */
 	private MTRectangle lastSceneRectangle;
@@ -76,13 +78,14 @@ public class BlendTransition extends AbstractTransition {
 	 * @param mtApplication the mt application
 	 * @param duration the duration
 	 */
-	public BlendTransition(MTApplication mtApplication, long duration) {
+	public BlendTransition(MTApplication mtApplication, int duration) {
 		super(mtApplication, "Blend Transition");
 		this.app = mtApplication;
 		this.duration = duration;
 		this.finished = true;
 		
-		anim = new Animation("Blend animation ", new MultiPurposeInterpolator(255,0, this.duration, 0, 0.7f, 1) , this);
+//		anim = new Animation("Blend animation ", new MultiPurposeInterpolator(255,0, this.duration, 0, 0.7f, 1) , this);
+		anim = new AniAnimation(255,0, this.duration, AniAnimation.CIRC_OUT, this);
 		anim.addAnimationListener(new IAnimationListener(){
 			public void processAnimationEvent(AnimationEvent ae) {
 				float val = ae.getCurrentValue();
@@ -101,7 +104,7 @@ public class BlendTransition extends AbstractTransition {
 					break;
 				}
 			}});
-		anim.setResetOnFinish(true);
+//		((Animation)anim).setResetOnFinish(true);
 	}
 
 
