@@ -244,8 +244,9 @@ public class MTSceneTexture extends MTRectangle {
 			Vector3D interSP = p.getIntersectionLocal(this.globalToLocal(Tools3D.getCameraPickRay(app, camera, x, y)));
 			if (interSP != null){
 				//System.out.println(interSP);
-				newX = interSP.x;
-				newY = interSP.y;
+				Vertex v0 = this.getVerticesLocal()[0];
+			    newX = interSP.x - v0.x;
+			    newY = interSP.y - v0.y;
 			}
 			
 			AbstractCursorInputEvt newEvt = null;
