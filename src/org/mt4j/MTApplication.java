@@ -18,8 +18,15 @@
 
 package org.mt4j;
 
+import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.DisplayMode;
+import java.awt.EventQueue;
+import java.awt.Frame;
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
 import java.awt.Toolkit;
+import java.awt.event.WindowAdapter;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
@@ -30,6 +37,9 @@ import java.util.List;
 import java.util.Properties;
 
 import javax.media.opengl.GL;
+import javax.media.opengl.GLAutoDrawable;
+import javax.media.opengl.GLEventListener;
+import javax.sound.midi.SysexMessage;
 import javax.swing.ImageIcon;
 
 import org.apache.log4j.ConsoleAppender;
@@ -54,6 +64,7 @@ import org.mt4j.util.math.Tools3D;
 import org.mt4j.util.opengl.GLFBO;
 
 import processing.core.PApplet;
+import processing.opengl.PGraphicsOpenGL;
 
 
 
@@ -342,16 +353,22 @@ public abstract class MTApplication extends PApplet {
 			 //Which display to use for fullscreen
 			 MT4jSettings.getInstance().display = Integer.parseInt(properties.getProperty("Display", String.valueOf(MT4jSettings.getInstance().getDisplay())).trim());
 
+			 MT4jSettings.getInstance().windowWidth = Integer.parseInt(properties.getProperty("DisplayWidth", String.valueOf(MT4jSettings.getInstance().getWindowWidth())).trim());
+			 MT4jSettings.getInstance().windowHeight = Integer.parseInt(properties.getProperty("DisplayHeight", String.valueOf(MT4jSettings.getInstance().getWindowHeight())).trim());
+			 
 			 //FIXME at fullscreen really use the screen dimension? -> we need to set the native resoultion ourselves!
 			 //so we can have a lower fullscreen resolution than the screen dimensions
-			 if (!MT4jSettings.getInstance().isFullscreen()){
-				 MT4jSettings.getInstance().windowWidth = Integer.parseInt(properties.getProperty("DisplayWidth", String.valueOf(MT4jSettings.getInstance().getWindowWidth())).trim());
-				 MT4jSettings.getInstance().windowHeight = Integer.parseInt(properties.getProperty("DisplayHeight", String.valueOf(MT4jSettings.getInstance().getWindowHeight())).trim());
-			 }else{
+			 if (MT4jSettings.getInstance().isFullscreen() && !MT4jSettings.getInstance().isFullscreenExclusive()){
 				 Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-			    	MT4jSettings.getInstance().windowWidth = screenSize.width;
-			    	MT4jSettings.getInstance().windowHeight = screenSize.height;
+				 MT4jSettings.getInstance().windowWidth = screenSize.width;
+				 MT4jSettings.getInstance().windowHeight = screenSize.height;
 			 }
+			 /*
+			 //Comment this to not change the window width to the screen width in fullscreen mode
+			 else{
+				 
+			 }
+			 */
 			 
 			 MT4jSettings.getInstance().maxFrameRate = Integer.parseInt(properties.getProperty("MaximumFrameRate", String.valueOf(MT4jSettings.getInstance().getMaxFrameRate())).trim());
 			 MT4jSettings.getInstance().renderer = Integer.parseInt(properties.getProperty("Renderer", String.valueOf(MT4jSettings.getInstance().getRendererMode())).trim());
@@ -369,8 +386,113 @@ public abstract class MTApplication extends PApplet {
 		 settingsLoadedFromFile = true;
 	}
 
-	
-	
+
+	protected void switchResolution() {
+		logger.debug("Switching resolution..");
+		try {
+			frame.enableInputMethods(false);
+			frame.setIgnoreRepaint(true);
+			final GraphicsDevice myGraphicsDevice = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
+			
+			// Get the current display mode
+	        final DisplayMode previousDisplayMode= myGraphicsDevice.getDisplayMode();
+			
+//			final int width = 1280;
+//			final int height = 768;
+			final int width = MT4jSettings.getInstance().getWindowWidth();
+			final int height = MT4jSettings.getInstance().getWindowHeight();
+			int bitDepth = 32;
+			int refreshRate = myGraphicsDevice.getDisplayMode().getRefreshRate();
+			
+			myGraphicsDevice.setFullScreenWindow(this.frame); 
+			
+            // Check if display mode changes are supported by the OS
+            if (myGraphicsDevice.isDisplayChangeSupported()) {
+                // Get all available display modes
+                DisplayMode[] displayModes = myGraphicsDevice.getDisplayModes();
+                DisplayMode multiBitsDepthSupportedDisplayMode = null;
+                DisplayMode refreshRateUnknownDisplayMode = null;
+                DisplayMode multiBitsDepthSupportedAndRefreshRateUnknownDisplayMode = null;
+                DisplayMode matchingDisplayMode = null;
+                DisplayMode currentDisplayMode;
+                // Look for the display mode that matches with our parameters
+                // Look for some display modes that are close to these parameters
+                // and that could be used as substitutes
+                // On some machines, the refresh rate is unknown and/or multi bit
+                // depths are supported. If you try to force a particular refresh 
+                // rate or a bit depth, you might find no available display mode
+                // that matches exactly with your parameters
+                for (int i = 0; i < displayModes.length && matchingDisplayMode == null; i++) {
+                    currentDisplayMode = displayModes[i];
+                    if (currentDisplayMode.getWidth()  == width &&
+                        currentDisplayMode.getHeight() == height) {
+                        if (currentDisplayMode.getBitDepth() == bitDepth) {
+                            if (currentDisplayMode.getRefreshRate() == refreshRate) {
+                                matchingDisplayMode = currentDisplayMode;
+                            } else if (currentDisplayMode.getRefreshRate() == DisplayMode.REFRESH_RATE_UNKNOWN) {
+                                refreshRateUnknownDisplayMode = currentDisplayMode;
+                            }
+                        } else if (currentDisplayMode.getBitDepth() == DisplayMode.BIT_DEPTH_MULTI) {
+                            if (currentDisplayMode.getRefreshRate() == refreshRate) {
+                                multiBitsDepthSupportedDisplayMode = currentDisplayMode;
+                            } else if (currentDisplayMode.getRefreshRate() == DisplayMode.REFRESH_RATE_UNKNOWN) {
+                                multiBitsDepthSupportedAndRefreshRateUnknownDisplayMode = currentDisplayMode;
+                            }
+                        }
+                    }
+                }
+                DisplayMode nextDisplayMode = null;
+                if (matchingDisplayMode != null) {
+                    nextDisplayMode = matchingDisplayMode;                    
+                } else if (multiBitsDepthSupportedDisplayMode != null) {
+                    nextDisplayMode = multiBitsDepthSupportedDisplayMode;
+                } else if (refreshRateUnknownDisplayMode != null) {
+                    nextDisplayMode = refreshRateUnknownDisplayMode;
+                } else if (multiBitsDepthSupportedAndRefreshRateUnknownDisplayMode != null) {
+                    nextDisplayMode = multiBitsDepthSupportedAndRefreshRateUnknownDisplayMode;
+                } else {
+//                    isFullScreenSupported = false;
+                	logger.error("No matching fullscreen display mode found!");
+                }
+
+                if (nextDisplayMode != null){
+                	/*
+                		DisplayMode myDisplayMode = new DisplayMode(
+                				width,
+                				height,
+                				myGraphicsDevice.getDisplayMode().getBitDepth(),
+                				DisplayMode.REFRESH_RATE_UNKNOWN);
+                				myGraphicsDevice.setDisplayMode(myDisplayMode);
+                	 */
+
+                	myGraphicsDevice.setDisplayMode(nextDisplayMode);
+
+                	Component[] myComponents = frame.getComponents();
+                	for (int i = 0; i < myComponents.length; i++) {
+                		if (myComponents[i] instanceof PApplet) {
+                			myComponents[i].setLocation(0, 0);
+                		}
+                	}
+                	
+                	frame.addWindowListener(new WindowAdapter() {
+                		 @Override
+                		public void windowClosing(java.awt.event.WindowEvent e) {
+                			// If required, restore the previous display mode
+                                myGraphicsDevice.setDisplayMode(previousDisplayMode);
+                            // If required, get back to the windowed mode
+                            if (myGraphicsDevice.getFullScreenWindow() == frame) {
+                            	myGraphicsDevice.setFullScreenWindow(null);
+                            }
+                		}
+                    });
+                }
+            }
+		} 
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
 	/**
 	 * ***********************************************************
 	 * Processings setup. this is called once when the applet is started
@@ -393,45 +515,18 @@ public abstract class MTApplication extends PApplet {
 			getSettingsFromFile();
 		}
 		
-//		//Load some properties from Settings.txt file
-//		Properties properties = new Properties();
-//	    try {
-//	    	FileInputStream fi = new FileInputStream(MT4jSettings.getInstance().getDefaultSettingsPath() + "Settings.txt");
-//	    	if (fi != null){
-//	    		properties.load(fi);	
-//	    	}else{
-//	    		InputStream in = Thread.currentThread().getContextClassLoader().getResourceAsStream("Settings.txt");
-//	    		if (in != null){
-//	    			properties.load(in);	
-//	    		}else{
-//	    			properties.load(getClass().getResourceAsStream("Settings.txt"));	
-//	    		}
-//	    	}
-//	        
-//	        //FIXME at fullscreen really use the screen dimension? -> we need to set the native resoultion ourselves!
-//	        //so we can have a lower fullscreen resolution than the screen dimensions
-//	        if (!MT4jSettings.getInstance().isFullscreen()){
-//		        MT4jSettings.getInstance().setScreenWidth(Integer.parseInt(properties.getProperty("DisplayWidth", "1024")));
-//			    MT4jSettings.getInstance().setScreenHeight(Integer.parseInt(properties.getProperty("DisplayHeight", "768")));
-//	        }
-//		    MT4jSettings.getInstance().setMaxFrameRate(Integer.parseInt(properties.getProperty("MaximumFrameRate", "60")));
-//		    MT4jSettings.getInstance().setRendererMode(Integer.parseInt(properties.getProperty("Renderer", new Integer(MT4jSettings.P3D_MODE).toString())));
-//		    MT4jSettings.getInstance().setNumSamples((Integer.parseInt(properties.getProperty("OpenGLAntialiasing", new Integer(0).toString()))));
-//		    
-//		    vSync = Boolean.parseBoolean(properties.getProperty("Vertical_sync", "false"));
-//		    //Set frametitle
-//		    String frameTitle = properties.getProperty("Frametitle", "MT-Application");
-//		    MT4jSettings.getInstance().setFrameTitle(frameTitle);
-//	    } catch (Exception e) {
-//	    	logger.error("Error while loading Settings.txt file. Using defaults. (" + e.getMessage() + ")");
-//	    }
-	    
 		// Applet size - size() must be the first command in setup() method
 		if (MT4jSettings.getInstance().getRendererMode() == MT4jSettings.OPENGL_MODE)
 			this.size(MT4jSettings.getInstance().getWindowWidth(), MT4jSettings.getInstance().getWindowHeight(), MTApplication.CUSTOM_OPENGL_GRAPHICS);
 		else if (MT4jSettings.getInstance().getRendererMode() == MT4jSettings.P3D_MODE)
 			this.size(MT4jSettings.getInstance().getWindowWidth(), MT4jSettings.getInstance().getWindowHeight(), PApplet.P3D);
-	    
+		
+		//Switch to different resolution in fullscreen exclusive mode if neccessary
+		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+		if (MT4jSettings.getInstance().isFullscreen() && MT4jSettings.getInstance().isFullscreenExclusive() && MT4jSettings.getInstance().getWindowWidth() != screenSize.width && MT4jSettings.getInstance().getWindowHeight() != screenSize.height){
+			switchResolution();
+		}
+		
 	    /*
 	    //Processing Bug? seems to always use 2 samples 
 	    if (MT4jSettings.getInstance().getNumSamples() <= 0){

@@ -261,10 +261,6 @@ public class SettingsMenu extends JFrame{
 		// Launch processing PApplet main() function
 	    if (MT4jSettings.getInstance().isFullscreen()){
 	    	//Set screen size to screen dimensions if fullscreen and ignore custom sizes
-	    	Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-	    	MT4jSettings.getInstance().windowWidth = screenSize.width;
-	    	MT4jSettings.getInstance().windowHeight = screenSize.height;
-	    	
 	    	if (MT4jSettings.getInstance().isFullscreenExclusive()){
 	    		PApplet.main(new String[] {
 	    				displayString,
@@ -275,6 +271,9 @@ public class SettingsMenu extends JFrame{
 						   classToInstantiate
 	    		}); 
 	    	}else{
+	    		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+		    	MT4jSettings.getInstance().windowWidth = screenSize.width;
+		    	MT4jSettings.getInstance().windowHeight = screenSize.height;
 	    		PApplet.main(new String[] {
 	    				displayString,
 						   "--present", 
