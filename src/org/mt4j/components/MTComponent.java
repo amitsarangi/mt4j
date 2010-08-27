@@ -374,53 +374,6 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 	
 	
 	
-	// INPUT LISTENER STUF ////
-	/**
-	 * Adds an input listener to this component. The listener will be informed if
-	 * this component recieves an input event.
-	 * 
-	 * @param inputListener the input listener
-	 */
-	public synchronized void addInputListener(IMTInputEventListener inputListener){
-		if (inputListener instanceof AbstractComponentProcessor) {
-			logger.warn("An abstract component processor (" + inputListener + ") was added to component '" + this + "' using addInputListener(). You probably need to use the registerInputProcessor() method instead!");
-		}
-		this.inputListeners.add(inputListener);
-	}
-	
-	/**
-	 * Removes the input listener.
-	 * @param inputListener the input listener
-	 */
-	public synchronized void removeInputListener(IMTInputEventListener inputListener){
-		this.inputListeners.remove(inputListener);
-	}
-	
-	/**
-	 * Gets the input listeners.
-	 * @return the input listeners
-	 */
-	public IMTInputEventListener[] getInputListeners(){
-		return this.inputListeners.toArray(new IMTInputEventListener[this.inputListeners.size()]);
-	}
-	
-	/**
-	 * Fire input event.
-	 * 
-	 * @param iEvt the i evt
-	 */
-	protected boolean fireInputEvent(MTInputEvent iEvt){
-		boolean handled = false; //TODO REALLY IMPLEMENT, CHECK LISTENERS WHAT THEY RETURN, PROPAGET ETC!
-		for (IMTInputEventListener listener : inputListeners){
-			boolean handledListener = listener.processInputEvent(iEvt);
-			if (!handled && handledListener){
-				handled = true;
-			}
-		}
-		return handled;
-	}
-	// INPUT LISTENER STUF ////
-	
 /// CAMERA SETTINGS /////////////////////////////////////	
 	/* (non-Javadoc)
 	 * @see org.mt4j.components.interfaces.IMTComponent3D#getViewingCamera()
@@ -518,107 +471,7 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 	/// CAMERA SETTINGS /////////////////////////////////////
 	
 	
-	// INPUT HANDLER ////////////////////////////////////////
-	/**
-	 * Registers an component input processor with this component. Input processors are used to process
-	 * the input events a component recieves by checking them for special patterns and conditions and
-	 * firing gesture events back to the component.
-	 * To recognize a multi-touch drag gesture on a component for example, we would register a
-	 * <code>DragProcessor</code> object with this component.
-	 * 
-	 * @param inputProcessor the input processor
-	 */
-	public void registerInputProcessor(AbstractComponentProcessor inputProcessor) {
-		AbstractComponentProcessor[] processors = inputProcessorsSupport.getInputProcessors();
-        for (AbstractComponentProcessor abstractComponentProcessor : processors) {
-            if (inputProcessor.getClass() == abstractComponentProcessor.getClass()) {
-                logger.warn("Warning: The same type of input processor (" + inputProcessor.getName() + ") is already registered at component: " + this);
-            }
-        }
-		inputProcessorsSupport.registerInputProcessor(inputProcessor);
-		this.setGestureAllowance(inputProcessor.getClass(), true); //Enable by default
-	}
 	
-	/**
-	 * Unregister a component input processor.
-	 * @param inputProcessor the input processor
-	 */
-	public void unregisterInputProcessor(AbstractComponentProcessor inputProcessor) {
-		inputProcessorsSupport.unregisterInputProcessor(inputProcessor);
-	}
-	
-	/**
-	 * Unregister all previously registered component input processors.
-	 */
-	public void unregisterAllInputProcessors() {
-		AbstractComponentProcessor[] ps = inputProcessorsSupport.getInputProcessors();
-        for (AbstractComponentProcessor p : ps) {
-            inputProcessorsSupport.unregisterInputProcessor(p);
-        }
-	}
-	
-	/**
-	 * Gets the component input processors.
-	 * @return the input processors
-	 */
-	public AbstractComponentProcessor[] getInputProcessors() {
-		return inputProcessorsSupport.getInputProcessors();
-	}
-	// INPUT HANDLER ////////////////////////////////////////
-
-	
-	// GESTURE LISTENER EVENT SUPPORT ///////////////////////////////////////
-	/**
-	 * Adds a gesture listener to this component. The specified gesture listener's 
-	 * <code>processGestureEvent(..)</code> method will be called when a gesture event 
-	 * is processed by this component. The <code>IInputProcessor</code> paramter type specifies the source of
-	 * the gesture event we are interested in. So to listen to drag events only for example, we would specify
-	 * the <code>DragProcessor.class</code> as the first parameter.
-	 * 
-	 * @param gestureEvtSender the gesture evt sender
-	 * @param listener the listener
-	 */
-	public void addGestureListener(Class<? extends IInputProcessor> gestureEvtSender, IGestureEventListener listener){
-		this.gestureEvtSupport.addGestureEvtListener(gestureEvtSender, listener);
-	}
-	
-	/**
-	 * Removes the gesture event listener.
-	 * @param gestureEvtSender the gesture evt sender
-	 * @param listener the listener
-	 */
-	public void removeGestureEventListener(Class<? extends IInputProcessor> gestureEvtSender, IGestureEventListener listener) {
-		gestureEvtSupport.removeGestureEventListener(gestureEvtSender, listener);
-	}
-	
-	/**
-	 * Removes the all gesture event listeners.
-	 */
-	public void removeAllGestureEventListeners() {
-		this.gestureEvtSupport.clearListeners();
-	}
-	
-	/**
-	 * Removes the all gesture event listeners who listen to the specified input processor.
-	 * @param gestureEvtSender the gesture evt sender
-	 */
-	public void removeAllGestureEventListeners(Class<? extends IInputProcessor> gestureEvtSender) {
-		IGestureEventListener[] l = this.getGestureListeners();
-        for (IGestureEventListener gestureEventListener : l) {
-            this.removeGestureEventListener(gestureEvtSender, gestureEventListener);
-        }
-	}
-	
-	/**
-	 * Returns the gesture listeners.
-	 * @return the gesture listeners
-	 */
-	public final IGestureEventListener[] getGestureListeners() {
-		return gestureEvtSupport.getListeners();
-	}
-	// GESTURE LISTENER EVENT SUPPORT ///////////////////////////////////////
-
-
 	
 //Property Change Support ////////////////////
 	/*
@@ -2170,24 +2023,32 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 	 * the ancestor - the upper most parent in the hierarchy of this component
 	 */
 	public MTComponent getRoot(){
-		return getRootRecursive(this);
+		MTComponent root = this.getParent();
+		if (root == null)
+			return root;
+		
+		while (root.getParent() != null){
+			root = root.getParent();
+		}
+		return root;
+//		return getRootRecursive(this);
 	}
 	
-	/* careful not to have cycles in the hierarchy! */
-	/**
-	 * Gets the ancestor recursive.
-	 * 
-	 * @param current the current
-	 * 
-	 * @return the ancestor recursive
-	 */
-	private MTComponent getRootRecursive(MTComponent current){
-		if (current.getParent() == null){
-			return current;
-		}else{
-			return getRootRecursive(current.getParent());
-		}
-	}
+//	/* careful not to have cycles in the hierarchy! */
+//	/**
+//	 * Gets the ancestor recursive.
+//	 * 
+//	 * @param current the current
+//	 * 
+//	 * @return the ancestor recursive
+//	 */
+//	private MTComponent getRootRecursive(MTComponent current){
+//		if (current.getParent() == null){
+//			return current;
+//		}else{
+//			return getRootRecursive(current.getParent());
+//		}
+//	}
 	
 	/**
 	 * Gets the child count.
@@ -2713,8 +2574,9 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 //		currObjDist = pickResult.getDistanceNearestPickObj();
 		
 //		System.out.println("At: " + this.getName() + " Current Distance: " + currObjDist);
+		
 		if (this.isVisible() && 
-			((onlyPickables && this.isPickable()) || !onlyPickables) 
+			( (onlyPickables && this.isPickable()) || !onlyPickables) 
 		){
 			//Get the real ray for this obj, takes the viewing camera and viewport of this obj into account
 			//-> changes rayStartPoint and point in ray direction
@@ -2722,12 +2584,7 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 				currentRay	= getChangedCameraPickRay(this.getRenderer(), this, pickInfo);
 			}
 			
-			Ray invertedRay;
-			if (this.getGlobalInverseMatrix().isIdentity()){
-				invertedRay = currentRay;
-			}else{
-				invertedRay = this.globalToLocal(currentRay);
-			}
+			Ray invertedRay = this.getGlobalInverseMatrix().isIdentity()? currentRay : this.globalToLocal(currentRay);
 			
 			/*
 			//FIXME REMOVE!!!!! 
@@ -2766,6 +2623,12 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 			//Check for child clipping shape intersection, if not intersecting -> dont try to pick children
 			Clip childClip = this.getChildClip();
 			if (childClip != null && childClip.getClipShapeIntersectionLocal(invertedRay) == null){
+				return currObjDist;
+			}
+		}else if (this.isVisible() && this.getChildClip() != null){
+			//Check for child clipping shape intersection, if not intersecting -> dont try to pick children
+			Ray invertedRay = this.getGlobalInverseMatrix().isIdentity()? currentRay : this.globalToLocal(currentRay);
+			if (this.getChildClip().getClipShapeIntersectionLocal(invertedRay) == null){
 				return currObjDist;
 			}
 		}
@@ -2907,6 +2770,161 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 //	}
 
 
+	
+	
+	
+	
+	// INPUT LISTENER STUF ////
+	/**
+	 * Adds an input listener to this component. The listener will be informed if
+	 * this component recieves an input event.
+	 * 
+	 * @param inputListener the input listener
+	 */
+	public synchronized void addInputListener(IMTInputEventListener inputListener){
+		if (inputListener instanceof AbstractComponentProcessor) {
+			logger.warn("An abstract component processor (" + inputListener + ") was added to component '" + this + "' using addInputListener(). You probably need to use the registerInputProcessor() method instead!");
+		}
+		this.inputListeners.add(inputListener);
+	}
+	
+	/**
+	 * Removes the input listener.
+	 * @param inputListener the input listener
+	 */
+	public synchronized void removeInputListener(IMTInputEventListener inputListener){
+		this.inputListeners.remove(inputListener);
+	}
+	
+	/**
+	 * Gets the input listeners.
+	 * @return the input listeners
+	 */
+	public IMTInputEventListener[] getInputListeners(){
+		return this.inputListeners.toArray(new IMTInputEventListener[this.inputListeners.size()]);
+	}
+	
+	/**
+	 * Fire input event.
+	 * 
+	 * @param iEvt the i evt
+	 */
+	protected boolean dispatchInputEvent(MTInputEvent iEvt){
+		boolean handled = false; //TODO REALLY IMPLEMENT, CHECK LISTENERS WHAT THEY RETURN, PROPAGET ETC!
+		for (IMTInputEventListener listener : inputListeners){
+			boolean handledListener = listener.processInputEvent(iEvt);
+			if (!handled && handledListener){
+				handled = true;
+			}
+		}
+		return handled;
+	}
+	// INPUT LISTENER STUF ////
+	
+	
+	// INPUT HANDLER ////////////////////////////////////////
+	/**
+	 * Registers an component input processor with this component. Input processors are used to process
+	 * the input events a component recieves by checking them for special patterns and conditions and
+	 * firing gesture events back to the component.
+	 * To recognize a multi-touch drag gesture on a component for example, we would register a
+	 * <code>DragProcessor</code> object with this component.
+	 * 
+	 * @param inputProcessor the input processor
+	 */
+	public void registerInputProcessor(AbstractComponentProcessor inputProcessor) {
+		AbstractComponentProcessor[] processors = inputProcessorsSupport.getInputProcessors();
+        for (AbstractComponentProcessor abstractComponentProcessor : processors) {
+            if (inputProcessor.getClass() == abstractComponentProcessor.getClass()) {
+                logger.warn("Warning: The same type of input processor (" + inputProcessor.getName() + ") is already registered at component: " + this);
+            }
+        }
+		inputProcessorsSupport.registerInputProcessor(inputProcessor);
+		this.setGestureAllowance(inputProcessor.getClass(), true); //Enable by default
+	}
+	
+	/**
+	 * Unregister a component input processor.
+	 * @param inputProcessor the input processor
+	 */
+	public void unregisterInputProcessor(AbstractComponentProcessor inputProcessor) {
+		inputProcessorsSupport.unregisterInputProcessor(inputProcessor);
+	}
+	
+	/**
+	 * Unregister all previously registered component input processors.
+	 */
+	public void unregisterAllInputProcessors() {
+		AbstractComponentProcessor[] ps = inputProcessorsSupport.getInputProcessors();
+        for (AbstractComponentProcessor p : ps) {
+            inputProcessorsSupport.unregisterInputProcessor(p);
+        }
+	}
+	
+	/**
+	 * Gets the component input processors.
+	 * @return the input processors
+	 */
+	public AbstractComponentProcessor[] getInputProcessors() {
+		return inputProcessorsSupport.getInputProcessors();
+	}
+	// INPUT HANDLER ////////////////////////////////////////
+
+	
+	// GESTURE LISTENER EVENT SUPPORT ///////////////////////////////////////
+	/**
+	 * Adds a gesture listener to this component. The specified gesture listener's 
+	 * <code>processGestureEvent(..)</code> method will be called when a gesture event 
+	 * is processed by this component. The <code>IInputProcessor</code> paramter type specifies the source of
+	 * the gesture event we are interested in. So to listen to drag events only for example, we would specify
+	 * the <code>DragProcessor.class</code> as the first parameter.
+	 * 
+	 * @param gestureEvtSender the gesture evt sender
+	 * @param listener the listener
+	 */
+	public void addGestureListener(Class<? extends IInputProcessor> gestureEvtSender, IGestureEventListener listener){
+		this.gestureEvtSupport.addGestureEvtListener(gestureEvtSender, listener);
+	}
+	
+	/**
+	 * Removes the gesture event listener.
+	 * @param gestureEvtSender the gesture evt sender
+	 * @param listener the listener
+	 */
+	public void removeGestureEventListener(Class<? extends IInputProcessor> gestureEvtSender, IGestureEventListener listener) {
+		gestureEvtSupport.removeGestureEventListener(gestureEvtSender, listener);
+	}
+	
+	/**
+	 * Removes the all gesture event listeners.
+	 */
+	public void removeAllGestureEventListeners() {
+		this.gestureEvtSupport.clearListeners();
+	}
+	
+	/**
+	 * Removes the all gesture event listeners who listen to the specified input processor.
+	 * @param gestureEvtSender the gesture evt sender
+	 */
+	public void removeAllGestureEventListeners(Class<? extends IInputProcessor> gestureEvtSender) {
+		IGestureEventListener[] l = this.getGestureListeners();
+        for (IGestureEventListener gestureEventListener : l) {
+            this.removeGestureEventListener(gestureEvtSender, gestureEventListener);
+        }
+	}
+	
+	/**
+	 * Returns the gesture listeners.
+	 * @return the gesture listeners
+	 */
+	public final IGestureEventListener[] getGestureListeners() {
+		return gestureEvtSupport.getListeners();
+	}
+	// GESTURE LISTENER EVENT SUPPORT ///////////////////////////////////////
+
+
+	
+	
 	//TODO bubble events up and down hierarchy?
 	//@Override
 	/* (non-Javadoc)
@@ -2921,7 +2939,13 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 				this.processGestureEvent((MTGestureEvent)inEvt);
 			}else{
 				//Fire the same input event to all of this components' input listeners
-				this.fireInputEvent(inEvt);
+				this.dispatchInputEvent(inEvt);
+				
+				//TODO if (inEvt.getTarget().equals(this) && inEvt.bubbles() && !inEvt.isConsumed()){
+				// inEvt.setPhase(MTInputEvent.PHASE_BUBBLING);
+				//if (this.getParent() != null){
+				//	this.getParent().processInputEvent(inEvt);
+				//}
 			}
 			return false;
 		}else{
