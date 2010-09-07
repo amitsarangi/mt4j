@@ -127,7 +127,7 @@ public class AnimationManager {
 		ArrayList<IAnimation> animations = new ArrayList<IAnimation>();
 		while (i.hasNext()) {
 			IAnimation a = i.next();
-			if (a.getTargetObject().equals(target)){
+			if (a.getTarget().equals(target)){
 				animations.add(a);
 			}
 		}

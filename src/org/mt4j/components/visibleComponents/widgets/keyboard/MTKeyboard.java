@@ -33,6 +33,9 @@ import org.mt4j.components.visibleComponents.font.VectorFontCharacter;
 import org.mt4j.components.visibleComponents.shapes.AbstractShape;
 import org.mt4j.components.visibleComponents.shapes.MTRoundRectangle;
 import org.mt4j.components.visibleComponents.widgets.buttons.MTSvgButton;
+import org.mt4j.input.gestureAction.DefaultDragAction;
+import org.mt4j.input.gestureAction.DefaultRotateAction;
+import org.mt4j.input.gestureAction.DefaultScaleAction;
 import org.mt4j.input.gestureAction.InertiaDragAction;
 import org.mt4j.input.inputProcessors.IGestureEventListener;
 import org.mt4j.input.inputProcessors.MTGestureEvent;
@@ -235,7 +238,10 @@ public class MTKeyboard extends MTRoundRectangle {
 
             keyList.add(key);
             key.setGestureAllowance(TapProcessor.class, true);
-            key.registerInputProcessor(new TapProcessor(pa));
+            TapProcessor tp = new TapProcessor(pa);
+            tp.setLockPriority(1.5f); //FIXME TEST
+            tp.setStopPropagation(false);
+            key.registerInputProcessor(tp);
             key.addGestureListener(TapProcessor.class, keyClickAction);
 
             //Add keys that change during SHIFT to a list
@@ -542,8 +548,24 @@ public class MTKeyboard extends MTRoundRectangle {
 	
 	@Override
 	protected void setDefaultGestureActions() {
-		super.setDefaultGestureActions();
+//		super.setDefaultGestureActions();
+		
 		this.addGestureListener(DragProcessor.class, new InertiaDragAction());
+		
+		DragProcessor dp = new DragProcessor(getRenderer());
+		dp.setLockPriority(0.5f);
+		registerInputProcessor(dp);
+		addGestureListener(DragProcessor.class, new DefaultDragAction());
+		
+		RotateProcessor rp = new RotateProcessor(getRenderer());
+		rp.setLockPriority(0.8f);
+		registerInputProcessor(rp);
+		addGestureListener(RotateProcessor.class, new DefaultRotateAction());
+		
+		ScaleProcessor sp = new ScaleProcessor(getRenderer());
+		sp.setLockPriority(0.8f);
+		registerInputProcessor(sp);
+		addGestureListener(ScaleProcessor.class, new DefaultScaleAction());
 	}
 	
 	
@@ -781,7 +803,7 @@ public class MTKeyboard extends MTRoundRectangle {
 				switch (ae.getId()) {
 				case AnimationEvent.ANIMATION_STARTED:
 				case AnimationEvent.ANIMATION_UPDATED:
-					float currentVal = ae.getAnimation().getCurrentValue();
+					float currentVal = ae.getAnimation().getValue();
 //					keyboard.setWidthXYRelativeToParent(currentVal);
 					setWidthRelativeToParent(currentVal);
 					break;

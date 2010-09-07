@@ -70,16 +70,21 @@ public class TapAndHoldProcessor extends AbstractCursorProcessor {
 	 * @param pa the pa
 	 */
 	public TapAndHoldProcessor(PApplet pa) {
-		this(pa, 1800);
+		this(pa, 1800, true);
 	}
-
+	
+	public TapAndHoldProcessor(PApplet pa, int duration){
+		this(pa, duration, true);
+	}
+	
 	/**
 	 * Instantiates a new tap and hold processor.
 	 * @param pa the pa
 	 * @param duration the duration
+	 * @param stopPropatation 
 	 */
-	public TapAndHoldProcessor(PApplet pa, int duration) {
-		super();
+	public TapAndHoldProcessor(PApplet pa, int duration, boolean stopPropatation) {
+		super(stopPropatation);
 		this.applet = pa;
 		
 		this.maxFingerUpDist = 17.0f;
@@ -109,7 +114,7 @@ public class TapAndHoldProcessor extends AbstractCursorProcessor {
 					buttonDownScreenPos = c.getPosition();
 					tapStartTime = System.currentTimeMillis();
 					
-					this.fireGestureEvent(new TapAndHoldEvent(this, MTGestureEvent.GESTURE_DETECTED, positionEvent.getTargetComponent(), c, false, c.getPosition(), this.holdTime, 0, 0));
+					this.fireGestureEvent(new TapAndHoldEvent(this, MTGestureEvent.GESTURE_DETECTED, positionEvent.getCurrentTarget(), c, false, c.getPosition(), this.holdTime, 0, 0));
 					
 					try {
 						applet.registerPre(this);
@@ -135,6 +140,7 @@ public class TapAndHoldProcessor extends AbstractCursorProcessor {
 	public void pre(){
 		if (lockedCursors.size() == 1){
 			IMTComponent3D comp = lockedCursors.get(0).getTarget();
+			IMTComponent3D currentTarget = lockedCursors.get(0).getCurrentEvent().getCurrentTarget(); //FIXME this will probably return the wrong target since we are not in a processInputEvent() method!
 			InputCursor c = lockedCursors.get(0);
 			long nowTime = System.currentTimeMillis();
 			long elapsedTime = nowTime - this.tapStartTime;
@@ -150,10 +156,10 @@ public class TapAndHoldProcessor extends AbstractCursorProcessor {
 						&& 
 					Vector3D.distance2D(buttonDownScreenPos, screenPos) <= this.maxFingerUpDist
 				){
-					this.fireGestureEvent(new TapAndHoldEvent(this, MTGestureEvent.GESTURE_ENDED, comp, c, true, screenPos, this.holdTime, elapsedTime, normalized));
+					this.fireGestureEvent(new TapAndHoldEvent(this, MTGestureEvent.GESTURE_ENDED, currentTarget, c, true, screenPos, this.holdTime, elapsedTime, normalized));
 				}else{
 					logger.debug("DISTANCE TOO FAR OR NO INTERSECTION");
-					this.fireGestureEvent(new TapAndHoldEvent(this, MTGestureEvent.GESTURE_ENDED, comp, c, false, screenPos, this.holdTime, elapsedTime, normalized));
+					this.fireGestureEvent(new TapAndHoldEvent(this, MTGestureEvent.GESTURE_ENDED, currentTarget, c, false, screenPos, this.holdTime, elapsedTime, normalized));
 				}
 				lockedCursors.remove(c);
 				this.unLock(c); 
@@ -163,7 +169,7 @@ public class TapAndHoldProcessor extends AbstractCursorProcessor {
 					System.err.println(e.getMessage());
 				}
 			}else{
-				this.fireGestureEvent(new TapAndHoldEvent(this, MTGestureEvent.GESTURE_UPDATED, comp, c, false, screenPos, this.holdTime, elapsedTime, normalized));
+				this.fireGestureEvent(new TapAndHoldEvent(this, MTGestureEvent.GESTURE_UPDATED, currentTarget, c, false, screenPos, this.holdTime, elapsedTime, normalized));
 			}
 		}
 	}
@@ -190,7 +196,7 @@ public class TapAndHoldProcessor extends AbstractCursorProcessor {
 				} catch (Exception e) {
 					System.err.println(e.getMessage());
 				}
-				this.fireGestureEvent(new TapAndHoldEvent(this, MTGestureEvent.GESTURE_ENDED, comp, c, false, screenPos, this.holdTime, elapsedTime, normalized));
+				this.fireGestureEvent(new TapAndHoldEvent(this, MTGestureEvent.GESTURE_ENDED, positionEvent.getCurrentTarget(), c, false, screenPos, this.holdTime, elapsedTime, normalized));
 			}
 		}
 	}
@@ -220,7 +226,7 @@ public class TapAndHoldProcessor extends AbstractCursorProcessor {
 					buttonDownScreenPos = otherCursor.getPosition();
 				}else{
 					//Other cursor has higher prior -> end this gesture
-					this.fireGestureEvent(new TapAndHoldEvent(this, MTGestureEvent.GESTURE_ENDED, c.getTarget(), c, false,  c.getPosition(), this.holdTime, elapsedTime, normalized));
+					this.fireGestureEvent(new TapAndHoldEvent(this, MTGestureEvent.GESTURE_ENDED, positionEvent.getCurrentTarget(), c, false,  c.getPosition(), this.holdTime, elapsedTime, normalized));
 					try {
 						applet.unregisterPre(this);
 					} catch (Exception e) {
@@ -229,7 +235,7 @@ public class TapAndHoldProcessor extends AbstractCursorProcessor {
 				}
 			}else{
 				//We have no other cursor to continure gesture -> end
-				this.fireGestureEvent(new TapAndHoldEvent(this, MTGestureEvent.GESTURE_ENDED, c.getTarget(), c, false,  c.getPosition(), this.holdTime, elapsedTime, normalized));
+				this.fireGestureEvent(new TapAndHoldEvent(this, MTGestureEvent.GESTURE_ENDED, positionEvent.getCurrentTarget(), c, false,  c.getPosition(), this.holdTime, elapsedTime, normalized));
 				try {
 					applet.unregisterPre(this);
 				} catch (Exception e) {
@@ -262,7 +268,7 @@ public class TapAndHoldProcessor extends AbstractCursorProcessor {
 			long elapsedTime = nowTime - this.tapStartTime;
 			float normalized = (float)elapsedTime / (float)this.holdTime;
 			
-			this.fireGestureEvent(new TapAndHoldEvent(this, MTGestureEvent.GESTURE_ENDED, c.getTarget(), c, false, c.getPosition(), this.holdTime, elapsedTime, normalized));
+			this.fireGestureEvent(new TapAndHoldEvent(this, MTGestureEvent.GESTURE_ENDED, c.getCurrentEvent().getCurrentTarget(), c, false, c.getPosition(), this.holdTime, elapsedTime, normalized));
 			
 			try {
 				applet.unregisterPre(this);

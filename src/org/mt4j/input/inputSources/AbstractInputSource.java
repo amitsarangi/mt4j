@@ -185,7 +185,7 @@ public abstract class AbstractInputSource {
 	 */
 	private void fireInputEvent(MTInputEvent inputEvt){
 		//Adds the events to the cursors one by one before firing
-		inputEvt.preFire();
+		inputEvt.onFired();
 
         for (IinputSourceListener anInputProcessorsToFireTo : inputProcessorsToFireTo) {
             anInputProcessorsToFireTo.processInputEvent(inputEvt);

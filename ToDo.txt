@@ -53,7 +53,6 @@ ToDo list:
 - (dropshadows - with custom created pimage?)
 - (bug when drawing outline after clipping on frustum culled object, dont draw outline then!)
 - (b4 picking, check if object in frustum ? - update cam - check if obj in frustum)
-- (particles not working in fullscreen (fluidscene))? -> cuz of depth buffer and p5 drawing (p5 drawing and pure opengl mix -> z-problems)
 - (use render bins and sort object automagically (2d, 3d, Hud, transparent))? 
 - (make class SceneDrawIterator? that implements the drawAndUpdateCanvas of MTCanvas so it can be called for single nodes to draw nodes with all children)
 

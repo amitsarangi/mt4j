@@ -114,6 +114,10 @@ public class MTKey extends
 //		}
 	}
 	
+	@Override
+	protected void setDefaultGestureActions() {
+//		super.setDefaultGestureActions();
+	}
 	
 	@Override
 	public void setOutlineContours(List<Vertex[]> contours) {

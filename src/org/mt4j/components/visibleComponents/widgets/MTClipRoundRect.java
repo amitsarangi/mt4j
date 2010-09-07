@@ -65,5 +65,16 @@ public class MTClipRoundRect extends MTRoundRectangle {
 		}
         
 	}
+	
+	
+	@Override
+	public void setSizeLocal(float width, float height) {
+		super.setSizeLocal(width, height);
+		if (MT4jSettings.getInstance().isOpenGlMode() && this.getClip() != null && this.getClip().getClipShape() instanceof MTRectangle){ 
+			MTRectangle clipRect = (MTRectangle)this.getClip().getClipShape();
+			//clipRect.setVertices(Vertex.getDeepVertexArrayCopy(this.getVerticesLocal()));
+			clipRect.setVertices(this.getVerticesLocal());
+		}
+	}
 
 }

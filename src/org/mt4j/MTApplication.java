@@ -989,7 +989,7 @@ public abstract class MTApplication extends PApplet {
                     try {
                         AbstractCursorInputEvt endedEvt = (AbstractCursorInputEvt) lastEvt.clone();
                         endedEvt.setId(AbstractCursorInputEvt.INPUT_ENDED);
-                        endedEvt.preFire();
+                        endedEvt.onFired();
 
                         this.sendEvtToSceneProcessors(lastScene, endedEvt);
                         logger.debug("Sending INPUT_ENDED evt to scene: " + lastScene.getName() + " Cursor: " + endedEvt.getCursor());
@@ -1030,7 +1030,7 @@ public abstract class MTApplication extends PApplet {
                 try {
                     AbstractCursorInputEvt startedEvt = (AbstractCursorInputEvt) lastEvt.clone();
                     startedEvt.setId(AbstractCursorInputEvt.INPUT_DETECTED);
-                    startedEvt.preFire();
+                    startedEvt.onFired();
 
                     this.sendEvtToSceneProcessors(newScene, startedEvt);
                     logger.debug("Sending INPUT_DETECTED evt to scene: " + newScene.getName() + " Cursor: " + startedEvt.getCursor());

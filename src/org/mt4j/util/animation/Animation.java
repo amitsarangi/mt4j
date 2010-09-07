@@ -142,13 +142,13 @@ public class Animation extends AbstractAnimation implements IAnimationManagerLis
 					if (!interpolator.isFinished()){
 						if (!hasStarted){
 							hasStarted = true;
-							this.fireAnimationEvent(new AnimationEvent(this, AnimationEvent.ANIMATION_STARTED, this, this.getTargetObject()));
+							this.fireAnimationEvent(new AnimationEvent(this, AnimationEvent.ANIMATION_STARTED, this, this.getTarget()));
 						}else{
-							this.fireAnimationEvent(new AnimationEvent(this, AnimationEvent.ANIMATION_UPDATED, this, this.getTargetObject()));
+							this.fireAnimationEvent(new AnimationEvent(this, AnimationEvent.ANIMATION_UPDATED, this, this.getTarget()));
 						}
 					}else{
 						//FIXME wenn gefinished, sollte der interpolator bei lastStepdelta und 0 zur�ckgeben, oder??
-						this.fireAnimationEvent(new AnimationEvent(this, AnimationEvent.ANIMATION_ENDED, this, this.getTargetObject()));
+						this.fireAnimationEvent(new AnimationEvent(this, AnimationEvent.ANIMATION_ENDED, this, this.getTarget()));
 						AnimationManager.getInstance().unregisterAnimation(this);
 						AnimationManager.getInstance().removeAnimationManagerListener(this);
 						this.triggerCountDown = this.getTriggerTime();
@@ -166,12 +166,12 @@ public class Animation extends AbstractAnimation implements IAnimationManagerLis
 				if (!this.interpolator.isFinished()){
 					if (!this.hasStarted){ //Animation hasnt begun yet
 						this.hasStarted = true;
-						this.fireAnimationEvent(new AnimationEvent(this, AnimationEvent.ANIMATION_STARTED, this, this.getTargetObject()));
+						this.fireAnimationEvent(new AnimationEvent(this, AnimationEvent.ANIMATION_STARTED, this, this.getTarget()));
 					}else{
-						this.fireAnimationEvent(new AnimationEvent(this, AnimationEvent.ANIMATION_UPDATED, this, this.getTargetObject()));
+						this.fireAnimationEvent(new AnimationEvent(this, AnimationEvent.ANIMATION_UPDATED, this, this.getTarget()));
 					}
 				}else{
-					this.fireAnimationEvent(new AnimationEvent(this, AnimationEvent.ANIMATION_ENDED, this, this.getTargetObject()));
+					this.fireAnimationEvent(new AnimationEvent(this, AnimationEvent.ANIMATION_ENDED, this, this.getTarget()));
 					AnimationManager.getInstance().unregisterAnimation(this);
 					AnimationManager.getInstance().removeAnimationManagerListener(this);
 					
@@ -266,14 +266,14 @@ public class Animation extends AbstractAnimation implements IAnimationManagerLis
 	/* (non-Javadoc)
 	 * @see org.mt4j.util.animation.IAnimation#getCurrentStepDelta()
 	 */
-	public float getCurrentStepDelta() {
+	public float getDelta() {
 		return this.getInterpolator().getCurrentStepDelta();
 	}
 
 	/* (non-Javadoc)
 	 * @see org.mt4j.util.animation.IAnimation#getCurrentValue()
 	 */
-	public float getCurrentValue() {
+	public float getValue() {
 		return this.getInterpolator().getCurrentValue();
 	}
 

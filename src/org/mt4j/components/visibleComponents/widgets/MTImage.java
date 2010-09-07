@@ -227,7 +227,7 @@ public class MTImage extends MTRectangle implements IdragClusterable{
 							switch (ae.getId()) {
 							case AnimationEvent.ANIMATION_STARTED:
 							case AnimationEvent.ANIMATION_UPDATED:
-								float currentVal = ae.getAnimation().getCurrentValue();
+								float currentVal = ae.getAnimation().getValue();
 								resize(referencePoly, comps[0], currentVal, currentVal);
 								break;
 							case AnimationEvent.ANIMATION_ENDED:

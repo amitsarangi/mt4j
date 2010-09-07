@@ -2931,6 +2931,10 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 	 * @see org.mt4j.components.interfaces.IMTComponent#processInputEvent(org.mt4j.input.inputData.MTInputEvent)
 	 */
 	public boolean processInputEvent(MTInputEvent inEvt) {
+		if (inEvt.getEventPhase() != MTInputEvent.BUBBLING_PHASE && inEvt.getTarget().equals(this) /*&& inEvt.bubbles()*/){
+			inEvt.setEventPhase(MTInputEvent.AT_TARGET);
+		}
+		
 		if (this.isEnabled()){
 //			System.out.println("Comp: " + this.getName() + " Evt: " + inEvt);
 			//TODO do only if not handled maybe?
@@ -2947,10 +2951,43 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 				//	this.getParent().processInputEvent(inEvt);
 				//}
 			}
-			return false;
-		}else{
-			return false;
 		}
+		
+		
+		if (inEvt.getBubbles() && !inEvt.isPropagationStopped() && inEvt.getEventPhase() == MTInputEvent.AT_TARGET){
+			inEvt.setEventPhase(MTInputEvent.BUBBLING_PHASE);	
+		}
+
+		if (inEvt.getBubbles() && !inEvt.isPropagationStopped() && inEvt.getEventPhase() == MTInputEvent.BUBBLING_PHASE){
+			MTComponent theParent = this.getParent();
+			if (theParent != null){
+				inEvt.setCurrentTarget(theParent);
+				theParent.processInputEvent(inEvt);
+				//TODO (register interest in cursors -> done automatically?)
+				//TODO use getCurrentTarget in all inputProcessors, at least at sending the event - also at canvas processors?
+				//TODO (check if currentTarget = this component in processorsupport? -> not really needed, make optional?)
+				//TODO remove default input processors form AbstractShape! -> make helper instead -> also remove from SVGs
+				//TODO in inputprocessors always intersect current target -> is the actual target also chcked then? -> to get composite effect..
+				//TODO in inputprocessors get intersection points using the cursors getTarget() -> because one cursors target may be different than the other cursor now 
+				//TODO if no input processor is registered all events are bubbled up - prevent that by default? - how?
+				//TODO also allow bubbling of MTGestureEvents?
+				//TODO in inputprocessors intersect with target and if no hit- with currenttarget?
+				
+				//FIXME if cursor is unlocked in dispatchInputEvent(), unlocked() may be called in an I.P. up the tree, but currentTarget is still the same as target!
+				
+				//TODO send locked() signal only to those who currently lock the cursor (not all lower priority ones)
+				
+				//FIXME use headMap -> inclusive = false? so it doesent send cursorLocked to some with same priority in cursorLockedByHigherPriorityGesture
+				
+				//TODO why only rotate processor registered at Keyboard when switching to rot/scale at parent?
+				
+				//TODO priorities-> float
+				//TODO tap prior > drag prior -> really default that?
+				//TODO (abort tap if moved too much -> start drag/scale)
+			}
+		}
+		
+		return false;
 	}
 
 	

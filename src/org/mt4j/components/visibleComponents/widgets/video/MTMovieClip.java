@@ -482,7 +482,7 @@ public class MTMovieClip extends MTRectangle implements IdragClusterable {
 				switch (ae.getId()) {
 				case AnimationEvent.ANIMATION_STARTED:
 				case AnimationEvent.ANIMATION_UPDATED:
-					float currentVal = ae.getAnimation().getCurrentValue();
+					float currentVal = ae.getAnimation().getValue();
 					setWidthXYRelativeToParent(currentVal);
 					break;
 				case AnimationEvent.ANIMATION_ENDED:

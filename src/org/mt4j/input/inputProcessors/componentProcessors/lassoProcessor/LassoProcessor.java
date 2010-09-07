@@ -107,13 +107,13 @@ public class LassoProcessor extends AbstractCursorProcessor {
 	 */
 	@Override
 	public void cursorStarted(InputCursor m, MTFingerInputEvt positionEvent) {
-		if (this.canLock(m)){
+		if (this.getLock(m)){
 			ClusteringContext context = new ClusteringContext(m);
 			if (!context.gestureAborted){
 				cursorToContext.put(m, context);
 				//To speed things up, selection is only checked at the end of the gesture
 				IdragClusterable[] selectedComps = new IdragClusterable[0]; //no things selected anyway yet
-				this.fireGestureEvent(new LassoEvent(this,MTGestureEvent.GESTURE_DETECTED, canvas, m, context.getPolygon(), selectedComps));
+				this.fireGestureEvent(new LassoEvent(this, MTGestureEvent.GESTURE_DETECTED, canvas, m, context.getPolygon(), selectedComps));
 			}
 		}
 		
@@ -132,7 +132,7 @@ public class LassoProcessor extends AbstractCursorProcessor {
 				context.update(m);
 				//TODO visually mark selected cards and give back real selected cards again..
 				IdragClusterable[] selectedComps = new IdragClusterable[0];
-				this.fireGestureEvent(new LassoEvent(this,MTGestureEvent.GESTURE_UPDATED, canvas, m, context.getPolygon(), selectedComps));
+				this.fireGestureEvent(new LassoEvent(this, MTGestureEvent.GESTURE_UPDATED, canvas, m, context.getPolygon(), selectedComps));
 			}
 		}
 	}
@@ -148,16 +148,13 @@ public class LassoProcessor extends AbstractCursorProcessor {
 		if (context != null){ //cursor was used here
 			cursorToContext.remove(m); 
 			IdragClusterable[] selectedComps = context.getselectedComps();
-			this.fireGestureEvent(new LassoEvent(this,MTGestureEvent.GESTURE_ENDED, canvas, m, context.getPolygon(), selectedComps));
+			this.fireGestureEvent(new LassoEvent(this, MTGestureEvent.GESTURE_ENDED, canvas, m, context.getPolygon(), selectedComps));
 			this.unLock(m);
 		}
 	}
 
 
 
-	/* (non-Javadoc)
-	 * @see org.mt4j.input.inputAnalyzers.IInputAnalyzer#cursorLocked(org.mt4j.input.inputData.InputCursor, org.mt4j.input.inputAnalyzers.IInputAnalyzer)
-	 */
 	@Override
 	public void cursorLocked(InputCursor m, IInputProcessor lockingAnalyzer) {
 		if (lockingAnalyzer instanceof AbstractComponentProcessor){
@@ -170,9 +167,6 @@ public class LassoProcessor extends AbstractCursorProcessor {
 
 
 
-	/* (non-Javadoc)
-	 * @see org.mt4j.input.inputAnalyzers.IInputAnalyzer#cursorUnlocked(org.mt4j.input.inputData.InputCursor)
-	 */
 	@Override
 	public void cursorUnlocked(InputCursor m) {
 		logger.debug(this.getName() + " Recieved UNLOCKED signal for cursor ID: " + m.getId());
@@ -280,7 +274,7 @@ public class LassoProcessor extends AbstractCursorProcessor {
 			this.cursor = cursor;
 			
 			Vector3D newPos = ToolsGeometry.getRayPlaneIntersection(
-					Tools3D.getCameraPickRay(pa, camera, cursor.getCurrentEvent().getPosX(), cursor.getCurrentEvent().getPosY()), 
+					Tools3D.getCameraPickRay(pa, camera, cursor.getCurrentEvent().getScreenX(), cursor.getCurrentEvent().getScreenY()), 
 					planeNormal, 
 					pointInPlane);
 			
@@ -367,7 +361,7 @@ public class LassoProcessor extends AbstractCursorProcessor {
 //				this.newPosition = Tools3D.unprojectScreenCoords(pa, cursor.getLastEvent().getPositionX(), cursor.getLastEvent().getPositionY());			
 //				pa.popMatrix();
 
-				this.newPosition = Tools3D.unprojectScreenCoords(pa, camera, cursor.getCurrentEvent().getPosX(), cursor.getCurrentEvent().getPosY());
+				this.newPosition = Tools3D.unprojectScreenCoords(pa, camera, cursor.getCurrentEvent().getScreenX(), cursor.getCurrentEvent().getScreenY());
 
 				Vector3D rayStartPoint = camera.getPosition(); //default cam
 				Vector3D newPos = ToolsGeometry.getRayPlaneIntersection(new Ray(rayStartPoint, newPosition), planeNormal, pointInPlane);

@@ -26,11 +26,11 @@ public interface IAnimation {
 	 */
 	public abstract void removeAnimationListener(IAnimationListener listener);
 
-	public abstract float getCurrentStepDelta();
+	public abstract float getDelta();
 
-	public abstract float getCurrentValue();
+	public abstract float getValue();
 	
-	public Object getTargetObject();
+	public Object getTarget();
 
 	public abstract IAnimationListener[] getAnimationListeners();
 

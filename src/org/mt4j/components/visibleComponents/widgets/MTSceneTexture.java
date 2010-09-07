@@ -256,11 +256,11 @@ public class MTSceneTexture extends MTRectangle {
 				InputCursor newCursor = new InputCursor();
 				try {
 					newEvt = (AbstractCursorInputEvt) posEvt.clone();
-					newEvt.setPositionX(newX);
-					newEvt.setPositionY(newY);
+					newEvt.setScreenX(newX);
+					newEvt.setScreenY(newY);
 //					newCursor.addEvent(newEvt);
 					newEvt.setCursor(newCursor);
-					newEvt.preFire();
+					newEvt.onFired();
 					//Note: We dont set a target for the event! this can be
 					//handled newly in the wondowed scenes InputRetargeter processor
 				} catch (CloneNotSupportedException e) {
@@ -275,11 +275,11 @@ public class MTSceneTexture extends MTRectangle {
 				if (newCursor != null){
 					try {
 						newEvt = (AbstractCursorInputEvt) posEvt.clone();
-						newEvt.setPositionX(newX);
-						newEvt.setPositionY(newY);
+						newEvt.setScreenX(newX);
+						newEvt.setScreenY(newY);
 //						newCursor.addEvent(newEvt);
 						newEvt.setCursor(newCursor);
-						newEvt.preFire();
+						newEvt.onFired();
 					} catch (CloneNotSupportedException e) {
 						e.printStackTrace();
 					}
@@ -292,11 +292,11 @@ public class MTSceneTexture extends MTRectangle {
 				if (newCursor != null){
 					try {
 						newEvt = (AbstractCursorInputEvt) posEvt.clone();
-						newEvt.setPositionX(newX);
-						newEvt.setPositionY(newY);
+						newEvt.setScreenX(newX);
+						newEvt.setScreenY(newY);
 //						newCursor.addEvent(newEvt);
 						newEvt.setCursor(newCursor);
-						newEvt.preFire();
+						newEvt.onFired();
 					} catch (CloneNotSupportedException e) {
 						e.printStackTrace();
 					}

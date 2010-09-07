@@ -129,7 +129,7 @@ public class ArcballProcessor extends AbstractCursorProcessor {
 					lockedCursors.add(m);
 					ac = new MyArcBall(m);
 					logger.debug(this.getName() + " successfully locked cursor (id:" + m.getId() + ")");
-					this.fireGestureEvent(new ArcBallGestureEvent(this, ArcBallGestureEvent.GESTURE_DETECTED, positionEvent.getTargetComponent(), identityDummy));
+					this.fireGestureEvent(new ArcBallGestureEvent(this, ArcBallGestureEvent.GESTURE_DETECTED, positionEvent.getCurrentTarget(), identityDummy));
 				}else{
 					unUsedCursors.add(m);
 				}
@@ -144,7 +144,7 @@ public class ArcballProcessor extends AbstractCursorProcessor {
 	public void cursorUpdated(InputCursor m, MTFingerInputEvt positionEvent) {
 		if (lockedCursors.contains(m)){
 			Matrix mat = ac.getNewRotation(m);
-			this.fireGestureEvent(new ArcBallGestureEvent(this, ArcBallGestureEvent.GESTURE_UPDATED, positionEvent.getTargetComponent(), mat));
+			this.fireGestureEvent(new ArcBallGestureEvent(this, ArcBallGestureEvent.GESTURE_UPDATED, positionEvent.getCurrentTarget(), mat));
 		}
 	}
 	
@@ -164,10 +164,10 @@ public class ArcballProcessor extends AbstractCursorProcessor {
 					lockedCursors.add(otherCursor);
 					ac = new MyArcBall(otherCursor);
 				}else{
-					this.fireGestureEvent(new ArcBallGestureEvent(this, ArcBallGestureEvent.GESTURE_ENDED, positionEvent.getTargetComponent(), identityDummy));
+					this.fireGestureEvent(new ArcBallGestureEvent(this, ArcBallGestureEvent.GESTURE_ENDED, positionEvent.getCurrentTarget(), identityDummy));
 				}
 			}else{
-				this.fireGestureEvent(new ArcBallGestureEvent(this, ArcBallGestureEvent.GESTURE_ENDED, positionEvent.getTargetComponent(), identityDummy));
+				this.fireGestureEvent(new ArcBallGestureEvent(this, ArcBallGestureEvent.GESTURE_ENDED, positionEvent.getCurrentTarget(), identityDummy));
 			}
 			this.unLock(m);
 		}else{ //cursor was not used for dragging

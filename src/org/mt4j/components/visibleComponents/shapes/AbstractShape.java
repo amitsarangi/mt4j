@@ -1666,7 +1666,7 @@ public abstract class AbstractShape extends AbstractVisibleComponent {
 			Object target = ae.getTargetObject();
 			if (target != null && target.equals(this.shape)){
 				AbstractShape shape = (AbstractShape)target;
-				float amount = ae.getAnimation().getCurrentStepDelta();
+				float amount = ae.getAnimation().getDelta();
 				
 				Vector3D newTranslationVect = this.normalizedDirVect.getCopy();
 				newTranslationVect.scaleLocal(amount);

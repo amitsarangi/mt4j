@@ -417,10 +417,10 @@ public class MTCanvas extends MTComponent implements IHitTestInfoProvider{
 	@Override
 	public boolean processInputEvent(MTInputEvent inEvt) {
 		//TODO not very elegant - better approach??
-		if (inEvt.hasTarget()){
-			if (!inEvt.getTargetComponent().equals(this)){ //Avoid recursion
+		if (inEvt.hasTarget() && inEvt.getEventPhase() != MTInputEvent.BUBBLING_PHASE){
+			if (!inEvt.getTarget().equals(this)){ //Avoid recursion
 				//Send directed event to the target component
-				return inEvt.getTargetComponent().processInputEvent(inEvt);
+				return inEvt.getTarget().processInputEvent(inEvt);
 			}
 		}
 		

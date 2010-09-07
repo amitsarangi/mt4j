@@ -37,8 +37,8 @@ import org.mt4j.input.inputProcessors.MTGestureEvent;
 public abstract class AbstractComponentProcessor implements IMTInputEventListener, IInputProcessor,  Comparable<AbstractComponentProcessor> {
 	protected static final Logger logger = Logger.getLogger(AbstractComponentProcessor.class.getName());
 	static{
-//		logger.setLevel(Level.ERROR);
-		logger.setLevel(Level.WARN);
+		logger.setLevel(Level.ERROR);
+//		logger.setLevel(Level.WARN);
 //		logger.setLevel(Level.DEBUG);
 		SimpleLayout l = new SimpleLayout();
 		ConsoleAppender ca = new ConsoleAppender(l);
@@ -55,14 +55,26 @@ public abstract class AbstractComponentProcessor implements IMTInputEventListene
 	/** The debug. */
 	private boolean debug;
 	
+	private boolean stopPropagation;
+
 	/**
 	 * Instantiates a new abstract component input processor.
 	 */
 	public AbstractComponentProcessor() {
-		super();
+		this(true);
+	}
+
+	/**
+	 * Instantiates a new abstract component processor.
+	 *
+	 * @param stopPropagation indicates whether to stop event bubbling
+	 */
+	public AbstractComponentProcessor(boolean stopPropagation){
 		this.inputListeners = new ArrayList<IGestureEventListener>();
 		this.disabled = false;
 		this.debug = false;
+
+		this.stopPropagation = stopPropagation;
 	}
 
 
@@ -74,6 +86,11 @@ public abstract class AbstractComponentProcessor implements IMTInputEventListene
 //	public void processInputEvent(MTInputEvent inEvt){
 		if(!this.isDisabled() && inEvt.hasTarget()){ //Allow component processors to recieve inputevts only if they have a target (Canvas is target if null is picked..)
 			this.processInputEvtImpl(inEvt);
+			
+			//FIXME TEST 
+			if (this.stopPropagation){
+				inEvt.stopPropagation();
+			}
 			return true;
 		}else{
 			return false;
@@ -81,6 +98,11 @@ public abstract class AbstractComponentProcessor implements IMTInputEventListene
 	}
 	
 	
+	/**
+	 * Pre process. Called before {@link #processInputEvent(MTInputEvent)} is called.
+	 *
+	 * @param inEvt the in evt
+	 */
 	public void preProcess(MTInputEvent inEvt) {	}
 	
 	/**
@@ -206,14 +228,18 @@ public abstract class AbstractComponentProcessor implements IMTInputEventListene
 	
 	
 	
-	
 	public int compareTo(AbstractComponentProcessor o) {
 		return -1;
 	}
 
+	
+	public boolean isStopPropagation() {
+		return this.stopPropagation;
+	}
 
-	
-	
+	public void setStopPropagation(boolean stopPropagation) {
+		this.stopPropagation = stopPropagation;
+	}
 	
 	
 

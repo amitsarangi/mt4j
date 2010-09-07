@@ -71,7 +71,7 @@ public abstract class AbstractAnimation implements IAnimation {
 	 * 
 	 * @return the target object
 	 */
-	public Object getTargetObject() {
+	public Object getTarget() {
 		return targetObject;
 	}
 

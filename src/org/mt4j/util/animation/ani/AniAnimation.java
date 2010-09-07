@@ -113,11 +113,11 @@ public class AniAnimation extends AbstractAnimation /*implements AniConstants*/{
 		super.fireAnimationEvent(ae);
 	}
 	
-	public float getCurrentStepDelta() {
+	public float getDelta() {
 		return this.getAni().getCurrentStepDelta();
 	}
 
-	public float getCurrentValue() {
+	public float getValue() {
 		return this.getAni().getPosition();
 	}
 	

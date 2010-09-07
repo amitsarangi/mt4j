@@ -178,4 +178,6 @@ public interface IMTComponent {
 	 */
 	public boolean processInputEvent(MTInputEvent inEvt);
 	
+	public IMTComponent3D getRoot();
+	
 }

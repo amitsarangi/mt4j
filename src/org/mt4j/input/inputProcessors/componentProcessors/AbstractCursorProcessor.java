@@ -17,8 +17,12 @@
  ***********************************************************************/
 package org.mt4j.input.inputProcessors.componentProcessors;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Deque;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 
 import org.mt4j.components.interfaces.IMTComponent3D;
 import org.mt4j.input.inputData.ActiveCursorPool;
@@ -26,7 +30,9 @@ import org.mt4j.input.inputData.InputCursor;
 import org.mt4j.input.inputData.MTFingerInputEvt;
 import org.mt4j.input.inputData.MTInputEvent;
 import org.mt4j.input.inputProcessors.IInputProcessor;
+import org.mt4j.input.inputProcessors.MTGestureEvent;
 import org.mt4j.util.math.Tools3D;
+import org.mt4j.util.math.ToolsGeometry;
 import org.mt4j.util.math.Vector3D;
 
 import processing.core.PApplet;
@@ -36,17 +42,24 @@ public abstract class AbstractCursorProcessor extends AbstractComponentProcessor
 	
 	
 	/** The lock priority. */
-	private int lockPriority;
+	private float lockPriority;
 
 
 	private ArrayList<InputCursor> activeCursorsWithEndedOnes;
 	
 	
 	public AbstractCursorProcessor(){
+		 this(true);
+	}
+	
+	
+	public AbstractCursorProcessor(boolean stopPropagation){
+		super(stopPropagation);
 		activeCursors = new ArrayList<InputCursor>();
 		activeCursorsWithEndedOnes = new ArrayList<InputCursor>();
-		this.lockPriority = 1;
+		this.lockPriority = 1.0f;
 	}
+	
 
 	@Override
 	public boolean isInterestedIn(MTInputEvent inputEvt) {
@@ -84,6 +97,27 @@ public abstract class AbstractCursorProcessor extends AbstractComponentProcessor
 //		AbstractCursorInputEvt posEvt = (AbstractCursorInputEvt)inputEvent;
 		MTFingerInputEvt posEvt = (MTFingerInputEvt)inputEvent;
 		InputCursor c = posEvt.getCursor();
+		
+		//FIXME TEST/////////////////// TODO CLEAN UP / DO MORE ELEGANTLY
+		Set<InputCursor> cursorLockLostKeys = this.cursorToLockLostInputProcessor.keySet();
+		for (Object element : cursorLockLostKeys) {
+			InputCursor inputCursor = (InputCursor) element;
+			AbstractCursorProcessor ip = this.cursorToLockLostInputProcessor.get(element);
+			this.cursorLocked(inputCursor, ip);
+		}
+		this.cursorToLockLostInputProcessor.clear();
+		
+//		while (!this.cursorToLockLostInputProcessor.isEmpty()){
+//			InputCursor cursorLockLost = this.cursorLocked.poll();
+//			this.cursorLocked(cursorLockLost, lockingprocessor)
+//		}
+		
+		while (!this.cursorUnlocked.isEmpty()){
+			InputCursor cursorUnloccked = this.cursorUnlocked.pollFirst();
+			this.cursorUnlocked(cursorUnloccked);
+		}
+		////////////////////////////
+		
 		switch (posEvt.getId()) {
 		case MTFingerInputEvt.INPUT_DETECTED:
 //			activeCursors.add(c);
@@ -107,7 +141,29 @@ public abstract class AbstractCursorProcessor extends AbstractComponentProcessor
 		}
 	}
 	
+	@Override
+	protected void fireGestureEvent(MTGestureEvent ge) {
+		switch (ge.getId()) { //FIXME TEST
+		case MTGestureEvent.GESTURE_DETECTED:
+			gestureInProgress = true;
+			break;
+		case MTGestureEvent.GESTURE_UPDATED:
+			break;
+		case MTGestureEvent.GESTURE_ENDED:
+			gestureInProgress = false;
+			break;
+		default:
+			break;
+		}
+		
+		super.fireGestureEvent(ge);
+	}
 	
+	private boolean gestureInProgress;
+	public boolean isGestureInProgress() {
+		return this.gestureInProgress;
+	}
+
 	/**
 	 * Gets all active cursors which started on this component.
 	 * It is not check whether this input processor could lock any of them.
@@ -284,6 +340,19 @@ public abstract class AbstractCursorProcessor extends AbstractComponentProcessor
 		return a.getPosition().distance2D(b.getPosition());
 	}
 	
+	
+	/**
+	 * Gets the intersection point of a cursor and a specified component.
+	 * Can return null if the cursor doesent intersect the component.
+	 *
+	 * @param app the app
+	 * @param c the c
+	 * @return the intersection
+	 */
+	public Vector3D getIntersection(PApplet app, InputCursor c){
+		return this.getIntersection(app, c.getTarget(), c);
+	}
+	
 	/**
 	 * Gets the intersection point of a cursor and a specified component.
 	 * Can return null if the cursor doesent intersect the component.
@@ -294,7 +363,29 @@ public abstract class AbstractCursorProcessor extends AbstractComponentProcessor
 	 * @return the intersection
 	 */
 	public Vector3D getIntersection(PApplet app, IMTComponent3D component, InputCursor c){
-		return component.getIntersectionGlobal(Tools3D.getCameraPickRay(app, component, c));
+		Vector3D ret = component.getIntersectionGlobal(Tools3D.getCameraPickRay(app, component, c));
+		
+		IMTComponent3D currentTarget = c.getCurrentEvent().getCurrentTarget();
+		if (ret == null && currentTarget != component && currentTarget != null){
+			ret = c.getCurrentEvent().getCurrentTarget().getIntersectionGlobal(Tools3D.getCameraPickRay(app, currentTarget, c));
+		}
+		return ret;
+	}
+	
+	public Vector3D getPlaneIntersection(PApplet app, Vector3D planeNormal, Vector3D pointInPlane, InputCursor c){
+		Vector3D intersection = ToolsGeometry.getRayPlaneIntersection(
+				Tools3D.getCameraPickRay(app, c.getTarget(), c.getCurrentEvtPosX(), c.getCurrentEvtPosY()), 
+				planeNormal, 
+				pointInPlane);
+		
+		IMTComponent3D currentTarget = c.getCurrentEvent().getCurrentTarget();
+		if (intersection == null && currentTarget != c.getTarget() && currentTarget != null){
+			intersection = ToolsGeometry.getRayPlaneIntersection(
+					Tools3D.getCameraPickRay(app, currentTarget, c.getCurrentEvtPosX(), c.getCurrentEvtPosY()), 
+					planeNormal, 
+					pointInPlane);
+		}
+		return intersection;
 	}
 	
 
@@ -307,17 +398,18 @@ public abstract class AbstractCursorProcessor extends AbstractComponentProcessor
 	 * 
 	 * @return the input cursor locking priority
 	 */
-	public int getLockPriority() {
+	public float getLockPriority() {
 		return lockPriority;
 	}
 
 
 	/**
 	 * Sets the  input cursor locking priority.
+	 * This should only be set once before usage of the processor.
 	 * 
 	 * @param gesturePriority the new input cursor locking priority
 	 */
-	public void setLockPriority(int gesturePriority) {
+	public void setLockPriority(float gesturePriority) {
 		this.lockPriority = gesturePriority;
 	}
 	
@@ -398,6 +490,42 @@ public abstract class AbstractCursorProcessor extends AbstractComponentProcessor
 			return 1;
 		}
 	}	
+
+
+	//FIXME TEST
+	private Deque<InputCursor> cursorUnlocked = new ArrayDeque<InputCursor>();
+//	private Deque<InputCursor> cursorLocked = new ArrayDeque<InputCursor>();
+	private HashMap<InputCursor, AbstractCursorProcessor> cursorToLockLostInputProcessor = new HashMap<InputCursor, AbstractCursorProcessor>();
+	
+	public void cursorFreed(InputCursor cursor){
+		if (!cursorUnlocked.contains(cursor)){
+			cursorUnlocked.addLast(cursor);
+		}
+		
+//		if (cursorLocked.contains(cursor)){
+//			cursorLocked.remove(cursor);
+//		}
+		
+		if (cursorToLockLostInputProcessor.containsKey(cursor)){  //FIXME REMOVE?
+			cursorToLockLostInputProcessor.remove(cursor);
+		}
+		
+//		cursorUnlocked(cursor);
+	}
+
+	public void cursorLostLock(InputCursor cursor, AbstractCursorProcessor lockinProcessor){
+//		if (!cursorLocked.contains(cursor)){
+//			cursorLocked.addLast(cursor);
+//		}
+		cursorToLockLostInputProcessor.put(cursor, lockinProcessor);
+		
+		if (cursorUnlocked.contains(cursor)){ //FIXME REMOVE?
+			cursorUnlocked.remove(cursor);
+		}
+		
+//		cursorLocked(cursor, lockinProcessor);
+	}
+
 	
 	/**
 	 * This method is called if a input processor with a higher locking-priority than this one sucessfully
@@ -408,6 +536,7 @@ public abstract class AbstractCursorProcessor extends AbstractComponentProcessor
 	 * @param lockingprocessor the locking processor
 	 */
 	abstract public void cursorLocked(InputCursor cursor, IInputProcessor lockingprocessor);
+
 	
 	/**
 	 * This method is called if a input processor with a higher locking-priority than this one removes his lock on the specified

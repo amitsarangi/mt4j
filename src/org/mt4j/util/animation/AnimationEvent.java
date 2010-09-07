@@ -95,18 +95,30 @@ public class AnimationEvent extends MTEvent {
 	 * Gets the current step delta - the difference between the last value and the current value.
 	 * 
 	 * @return the current step delta
+	 * @deprecated use getDelta() instead
+	 * @see #getDelta()
 	 */
 	public float getCurrentStepDelta(){
-		return this.getAnimation().getCurrentStepDelta();
+		return this.getAnimation().getDelta();
 	}
 	
 	/**
 	 * Gets the current absolute value of the interpolated value.
 	 * 
 	 * @return the current value
+	 * @deprecated use getValue() instead
+	 * @see #getValue()
 	 */
 	public float getCurrentValue(){
-		return this.getAnimation().getCurrentValue();
+		return this.getAnimation().getValue();
+	}
+	
+	public float getValue(){
+		return this.getAnimation().getValue();
+	}
+	
+	public float getDelta(){
+		return this.getAnimation().getDelta();
 	}
 
 	/**
@@ -114,9 +126,21 @@ public class AnimationEvent extends MTEvent {
 	 * <br>Note: can be null!.
 	 * 
 	 * @return the target object of this animation - if it is set
+	 * @deprecated use getTaget() instead
+	 * @see #getTarget()
 	 */
 	public Object getTargetObject() {
 		return targetObject;
+	}
+	
+	/**
+	 * returns the target for the animation
+	 * <br>Note: can be null!.
+	 * 
+	 * @return the target object of this animation - if it is set
+	 */
+	public Object getTarget(){
+		return this.targetObject;
 	}
 	
 	

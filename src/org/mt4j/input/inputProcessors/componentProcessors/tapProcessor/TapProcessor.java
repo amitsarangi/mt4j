@@ -103,7 +103,11 @@ public class TapProcessor extends AbstractCursorProcessor {
 	 * @param doubleTapTime the double tap time
 	 */
 	public TapProcessor(PApplet pa, float maxFingerUpDistance, boolean enableDoubleTap, int doubleTapTime){
-		super();
+		this(pa, maxFingerUpDistance, enableDoubleTap, doubleTapTime, true);
+	}
+
+	public TapProcessor(PApplet pa, float maxFingerUpDistance, boolean enableDoubleTap, int doubleTapTime, boolean stopEventPropagation){
+		super(stopEventPropagation);
 		this.applet = pa;
 		this.maxFingerUpDist = maxFingerUpDistance;
 		this.unUsedCursors 	= new ArrayList<InputCursor>();
@@ -111,21 +115,17 @@ public class TapProcessor extends AbstractCursorProcessor {
 		this.setLockPriority(1);
 		this.setDebug(false);
 		
-		
 		this.enableDoubleTap = enableDoubleTap;
 		this.doubleTapTime = doubleTapTime;
 		this.timeLastTap = -1;
 		//System.out.println("Double click default time:" + Toolkit.getDefaultToolkit().getDesktopProperty("awt.multiClickInterval"));
 	}
 
-
-
 	/* (non-Javadoc)
 	 * @see org.mt4j.input.inputProcessors.componentProcessors.AbstractCursorProcessor#cursorStarted(org.mt4j.input.inputData.InputCursor, org.mt4j.input.inputData.MTFingerInputEvt)
 	 */
 	@Override
 	public void cursorStarted(InputCursor m, MTFingerInputEvt positionEvent) {
-		IMTComponent3D comp = positionEvent.getTargetComponent();
 		if (lockedCursors.size() >= 1){ //We assume that the gesture is already in progress and add this new cursor to the unUsedList 
 			unUsedCursors.add(m); 
 		}else{
@@ -134,8 +134,8 @@ public class TapProcessor extends AbstractCursorProcessor {
 					this.getLock(m);
 					logger.debug(this.getName() + " successfully locked cursor (id:" + m.getId() + ")");
 					lockedCursors.add(m);
-					buttonDownScreenPos = new Vector3D(m.getCurrentEvent().getPosX(), m.getCurrentEvent().getPosY(), 0);
-					this.fireGestureEvent(new TapEvent(this, MTGestureEvent.GESTURE_DETECTED, comp, m, buttonDownScreenPos, TapEvent.BUTTON_DOWN));
+					buttonDownScreenPos = m.getPosition();
+					this.fireGestureEvent(new TapEvent(this, MTGestureEvent.GESTURE_DETECTED, positionEvent.getCurrentTarget(), m, buttonDownScreenPos, TapEvent.BUTTON_DOWN));
 				}else{
 					unUsedCursors.add(m);
 				}
@@ -150,8 +150,21 @@ public class TapProcessor extends AbstractCursorProcessor {
 	 * @see org.mt4j.input.inputProcessors.componentProcessors.AbstractCursorProcessor#cursorUpdated(org.mt4j.input.inputData.InputCursor, org.mt4j.input.inputData.MTFingerInputEvt)
 	 */
 	@Override
-	public void cursorUpdated(InputCursor m, MTFingerInputEvt positionEvent) {
-		
+	public void cursorUpdated(InputCursor c, MTFingerInputEvt positionEvent) {
+		if (lockedCursors.contains(c)){ //cursor is a actual used cursor
+			IMTComponent3D comp = c.getTarget();
+			IMTComponent3D currentTarget = c.getCurrentEvent().getCurrentTarget();
+			Vector3D screenPos = c.getPosition();
+
+			//logger.debug("Distance between buttondownScreenPos: " + buttonDownScreenPos + " and upScrPos: " + buttonUpScreenPos +  " is: " + Vector3D.distance(buttonDownScreenPos, buttonUpScreenPos));
+			if (Vector3D.distance2D(buttonDownScreenPos, screenPos) > this.maxFingerUpDist){
+				logger.debug("DISTANCE TOO FAR OR NO INTERSECTION");
+				lockedCursors.remove(c);
+//				this.fireGestureEvent(new TapAndHoldEvent(this, MTGestureEvent.GESTURE_ENDED, positionEvent.getCurrentTarget(), c, false, screenPos, this.holdTime, elapsedTime, normalized));
+				this.endGesture(c, positionEvent);
+				this.unLock(c); 
+			}
+		}
 	}
 	
 	
@@ -160,7 +173,7 @@ public class TapProcessor extends AbstractCursorProcessor {
 	 */
 	@Override
 	public void cursorEnded(InputCursor m, MTFingerInputEvt positionEvent) {
-		IMTComponent3D comp = positionEvent.getTargetComponent();
+		IMTComponent3D comp = positionEvent.getTarget();
 		logger.debug(this.getName() + " INPUT_ENDED RECIEVED - CURSOR: " + m.getId());
 
 		if (lockedCursors.contains(m)){ //cursor was a actual gesture cursor
@@ -173,10 +186,10 @@ public class TapProcessor extends AbstractCursorProcessor {
 					lockedCursors.add(otherCursor);
 					//TODO fire started? maybe not.. do we have to?
 				}else{
-					this.endGesture(m, comp);
+					this.endGesture(m, positionEvent);
 				}
 			}else{
-				this.endGesture(m, comp);
+				this.endGesture(m, positionEvent);
 			}
 			this.unLock(m); //FIXME TEST
 		}else{ //cursor was not used here
@@ -193,43 +206,43 @@ public class TapProcessor extends AbstractCursorProcessor {
 	 * End gesture.
 	 * 
 	 * @param m the m
-	 * @param comp the comp
+	 * @param positionEvent.getCurrentTarget() the comp
 	 */
-	private void endGesture(InputCursor m, IMTComponent3D comp){
+	private void endGesture(InputCursor m, MTFingerInputEvt positionEvent){
 		//Default where for the event if no intersections are found
-		Vector3D buttonUpScreenPos = new Vector3D(m.getCurrentEvent().getPosX(), m.getCurrentEvent().getPosY(), 0);
+		Vector3D buttonUpScreenPos = m.getPosition();
 		
 		//If component is detached from tree, destroyed etc
-		if (comp.getViewingCamera() == null){
-			this.fireGestureEvent(new TapEvent(this, MTGestureEvent.GESTURE_ENDED, comp, m, buttonUpScreenPos, TapEvent.BUTTON_CLICKED));			
+		if (positionEvent.getCurrentTarget().getViewingCamera() == null){
+			this.fireGestureEvent(new TapEvent(this, MTGestureEvent.GESTURE_ENDED, positionEvent.getCurrentTarget(), m, buttonUpScreenPos, TapEvent.BUTTON_CLICKED));			
 			return;
 		}
 		
-		Vector3D intersection = comp.getIntersectionGlobal(Tools3D.getCameraPickRay(applet, comp, m.getCurrentEvent().getPosX(), m.getCurrentEvent().getPosY()));
+		Vector3D intersection = positionEvent.getCurrentTarget().getIntersectionGlobal(Tools3D.getCameraPickRay(applet, positionEvent.getCurrentTarget(), m.getCurrentEvent().getPosX(), m.getCurrentEvent().getPosY()));
 		//logger.debug("Distance between buttondownScreenPos: " + buttonDownScreenPos + " and upScrPos: " + buttonUpScreenPos +  " is: " + Vector3D.distance(buttonDownScreenPos, buttonUpScreenPos));
 		//Check if at finger_Up the cursor is still on that object or if the cursor has moved too much 
-		if ((intersection != null || comp instanceof MTCanvas)
+		if ((intersection != null || positionEvent.getCurrentTarget() instanceof MTCanvas)
 				&& 
-			Vector3D.distance(buttonDownScreenPos, buttonUpScreenPos) <= this.maxFingerUpDist
+			Vector3D.distance2D(buttonDownScreenPos, buttonUpScreenPos) <= this.maxFingerUpDist
 		){
 			//We have a valid TAP!
 			if (this.isEnableDoubleTap()){
 				//Check if it was a double tap by comparing the now time to the time of the last valid tap
-				long now = m.getCurrentEvent().getWhen();
+				long now = m.getCurrentEvent().getTimeStamp();
 				if (this.timeLastTap != -1 && (now - this.timeLastTap) <= this.getDoubleTapTime()){
 					//Its a Double tap
 					this.timeLastTap = -1;
-					this.fireGestureEvent(new TapEvent(this, MTGestureEvent.GESTURE_ENDED, comp, m, buttonUpScreenPos, TapEvent.BUTTON_DOUBLE_CLICKED));
+					this.fireGestureEvent(new TapEvent(this, MTGestureEvent.GESTURE_ENDED, positionEvent.getCurrentTarget(), m, buttonUpScreenPos, TapEvent.BUTTON_DOUBLE_CLICKED));
 				}else{
 					this.timeLastTap = now;
-					this.fireGestureEvent(new TapEvent(this, MTGestureEvent.GESTURE_ENDED, comp, m, buttonUpScreenPos, TapEvent.BUTTON_CLICKED));
+					this.fireGestureEvent(new TapEvent(this, MTGestureEvent.GESTURE_ENDED, positionEvent.getCurrentTarget(), m, buttonUpScreenPos, TapEvent.BUTTON_CLICKED));
 				}
 			}else{
-				this.fireGestureEvent(new TapEvent(this, MTGestureEvent.GESTURE_ENDED, comp, m, buttonUpScreenPos, TapEvent.BUTTON_CLICKED));
+				this.fireGestureEvent(new TapEvent(this, MTGestureEvent.GESTURE_ENDED, positionEvent.getCurrentTarget(), m, buttonUpScreenPos, TapEvent.BUTTON_CLICKED));
 			}
 		}else{
 			//logger.debug("FINGER UP NOT ON SAME OBJ!");
-			this.fireGestureEvent(new TapEvent(this, MTGestureEvent.GESTURE_ENDED, comp, m, buttonUpScreenPos, TapEvent.BUTTON_UP));
+			this.fireGestureEvent(new TapEvent(this, MTGestureEvent.GESTURE_ENDED, positionEvent.getCurrentTarget(), m, buttonUpScreenPos, TapEvent.BUTTON_UP));
 		}
 	}
 
@@ -252,7 +265,7 @@ public class TapProcessor extends AbstractCursorProcessor {
 			
 			//FIXME TEST -> dont allow resuming of gesture if the cursor was locked by a higher priority gesture
 			//-> fire gesture ended
-			this.fireGestureEvent(new TapEvent(this, MTGestureEvent.GESTURE_ENDED, m.getCurrentEvent().getTargetComponent(), m, new Vector3D(m.getCurrentEvent().getPosX(), m.getCurrentEvent().getPosY()), TapEvent.BUTTON_UP));	
+			this.fireGestureEvent(new TapEvent(this, MTGestureEvent.GESTURE_ENDED, m.getCurrentEvent().getCurrentTarget(), m, new Vector3D(m.getCurrentEvent().getPosX(), m.getCurrentEvent().getPosY()), TapEvent.BUTTON_UP));	
 			
 		}else{ //Else is just for debug
 			if (unUsedCursors.contains(m)){
