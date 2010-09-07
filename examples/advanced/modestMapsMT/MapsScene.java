@@ -30,7 +30,6 @@ import java.io.FileInputStream;
 import java.nio.DoubleBuffer;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
 
@@ -69,11 +68,10 @@ import org.mt4j.sceneManagement.AbstractScene;
 import org.mt4j.sceneManagement.IPreDrawAction;
 import org.mt4j.util.MT4jSettings;
 import org.mt4j.util.MTColor;
-import org.mt4j.util.animation.Animation;
 import org.mt4j.util.animation.AnimationEvent;
+import org.mt4j.util.animation.AnimationManager;
 import org.mt4j.util.animation.IAnimation;
 import org.mt4j.util.animation.IAnimationListener;
-import org.mt4j.util.animation.MultiPurposeInterpolator;
 import org.mt4j.util.animation.ani.AniAnimation;
 import org.mt4j.util.camera.MTCamera;
 import org.mt4j.util.math.Matrix;
@@ -128,6 +126,8 @@ public class MapsScene extends AbstractScene implements MouseWheelListener, Mous
 	
 	/** The tag to photo. */
 	private Map<MTEllipse, Photo> tagToPhoto;
+	
+	private boolean animateToBestZoomLevel = true;
 	
 	//TODO button/gesture for optimal zoom level - map.setZoom(map.bestZoomForScale((float) map.sc)); ?
 
@@ -387,6 +387,38 @@ public class MapsScene extends AbstractScene implements MouseWheelListener, Mous
 				//System.out.println("X:" + x + " Y:" +y);
 				//Scale the map and the tags
 				scaleMap(scaleX);
+
+				if (animateToBestZoomLevel){
+					//Stop previous animations
+					IAnimation[] currentAnims = AnimationManager.getInstance().getAnimationsForTarget(map);
+					for (IAnimation iAnimation : currentAnims) {
+						iAnimation.stop();
+					}
+
+					//Animate to the best zoom level for better clarity
+					if (se.getId() == MTGestureEvent.GESTURE_ENDED){
+						double current = map.sc;
+						float currentF = (float)current;
+						final int best = map.bestZoomForScale((float) map.sc);
+						map.setZoom(best);
+						float bestZoom = (float) map.sc;
+						map.sc = current;
+						//					System.out.println("current: " + currentF + " bestZoom: " + bestZoom);
+
+						AniAnimation anim = new AniAnimation(currentF, bestZoom, 1000, map);
+						anim.addAnimationListener(new IAnimationListener() {
+							public void processAnimationEvent(AnimationEvent ae) {
+								map.sc += ae.getDelta();
+								if (ae.getId() == AnimationEvent.ANIMATION_ENDED){
+									map.setZoom(best);
+									map.setZoom(map.bestZoomForScale((float) map.sc));
+									//								System.out.println("Ended: " + map.sc);
+								}
+							}
+						});
+						anim.start();
+					}
+				}
 			}
 			return false;
 		}
@@ -908,6 +940,8 @@ public class MapsScene extends AbstractScene implements MouseWheelListener, Mous
 		int b = arg0.getButton();
 		switch (b) {
 		case MouseEvent.BUTTON2:
+//			/*
+			System.out.println("Current zoom: " + map.sc);
 			map.setZoom(map.bestZoomForScale((float) map.sc));
 			 p.getCurrentScene().registerPreDrawAction(new IPreDrawAction(){
 					public boolean isLoop() {
@@ -917,6 +951,38 @@ public class MapsScene extends AbstractScene implements MouseWheelListener, Mous
 						updateTagContainerScale();
 					}
 	    	   });
+//			*/
+			
+			/*
+			double current = map.sc;
+			float currentF = (float)current;
+			final int best = map.bestZoomForScale((float) map.sc);
+			map.setZoom(best);
+			float bestZoom = (float) map.sc;
+			map.sc = current;
+			System.out.println("current: " + currentF + " bestZoom: " + bestZoom);
+			AniAnimation anim = new AniAnimation(currentF, bestZoom, 1000, map);
+			anim.addAnimationListener(new IAnimationListener() {
+				public void processAnimationEvent(AnimationEvent ae) {
+					map.sc += ae.getDelta();
+					if (ae.getId() == AnimationEvent.ANIMATION_ENDED){
+						map.setZoom(best);
+						map.setZoom(map.bestZoomForScale((float) map.sc));
+						System.out.println("Ended: " + map.sc);
+						p.getCurrentScene().registerPreDrawAction(new IPreDrawAction(){
+							public boolean isLoop() {
+								return false;
+							}
+							public void processAction() {
+								updateTagContainerScale();
+							}
+						});
+					}
+				}
+			});
+			anim.start();
+			*/
+			
 			break;
 		case MouseEvent.BUTTON3:
 			this.getPictures(map.pointLocation(p.mouseX, p.mouseY), this.getAccuracyForZoom(map), true);
