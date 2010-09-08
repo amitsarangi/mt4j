@@ -29,6 +29,7 @@ import org.mt4j.input.inputData.ActiveCursorPool;
 import org.mt4j.input.inputData.InputCursor;
 import org.mt4j.input.inputData.MTFingerInputEvt;
 import org.mt4j.input.inputData.MTInputEvent;
+import org.mt4j.input.inputProcessors.GestureUtils;
 import org.mt4j.input.inputProcessors.IInputProcessor;
 import org.mt4j.input.inputProcessors.MTGestureEvent;
 import org.mt4j.util.math.Tools3D;
@@ -323,10 +324,7 @@ public abstract class AbstractCursorProcessor extends AbstractComponentProcessor
 	 * @return true, if is cursor distance greater
 	 */
 	public boolean isCursorDistanceGreater(InputCursor reference, InputCursor oldCursor, InputCursor newCursor){
-//		float distanceToOldCursor = reference.getPosition().distance2D(oldCursor.getPosition());
-//		float distanceToNewCursor = reference.getPosition().distance2D(newCursor.getPosition());
-//		return distanceToNewCursor > distanceToOldCursor;
-		return getDistance(reference, newCursor) > getDistance(reference, oldCursor);
+		return GestureUtils.isCursorDistanceGreater(reference, oldCursor, newCursor);
 	}
 	
 	/**
@@ -337,7 +335,7 @@ public abstract class AbstractCursorProcessor extends AbstractComponentProcessor
 	 * @return the distance
 	 */
 	public float getDistance(InputCursor a, InputCursor b){
-		return a.getPosition().distance2D(b.getPosition());
+		return GestureUtils.getDistance(a, b);
 	}
 	
 	
@@ -350,7 +348,7 @@ public abstract class AbstractCursorProcessor extends AbstractComponentProcessor
 	 * @return the intersection
 	 */
 	public Vector3D getIntersection(PApplet app, InputCursor c){
-		return this.getIntersection(app, c.getTarget(), c);
+		return GestureUtils.getIntersection(app, c.getTarget(), c);
 	}
 	
 	/**
@@ -363,32 +361,12 @@ public abstract class AbstractCursorProcessor extends AbstractComponentProcessor
 	 * @return the intersection
 	 */
 	public Vector3D getIntersection(PApplet app, IMTComponent3D component, InputCursor c){
-		Vector3D ret = component.getIntersectionGlobal(Tools3D.getCameraPickRay(app, component, c));
-		
-		IMTComponent3D currentTarget = c.getCurrentEvent().getCurrentTarget();
-		if (ret == null && currentTarget != component && currentTarget != null){
-			ret = c.getCurrentEvent().getCurrentTarget().getIntersectionGlobal(Tools3D.getCameraPickRay(app, currentTarget, c));
-		}
-		return ret;
+		return GestureUtils.getIntersection(app, component, c);
 	}
 	
 	public Vector3D getPlaneIntersection(PApplet app, Vector3D planeNormal, Vector3D pointInPlane, InputCursor c){
-		Vector3D intersection = ToolsGeometry.getRayPlaneIntersection(
-				Tools3D.getCameraPickRay(app, c.getTarget(), c.getCurrentEvtPosX(), c.getCurrentEvtPosY()), 
-				planeNormal, 
-				pointInPlane);
-		
-		IMTComponent3D currentTarget = c.getCurrentEvent().getCurrentTarget();
-		if (intersection == null && currentTarget != c.getTarget() && currentTarget != null){
-			intersection = ToolsGeometry.getRayPlaneIntersection(
-					Tools3D.getCameraPickRay(app, currentTarget, c.getCurrentEvtPosX(), c.getCurrentEvtPosY()), 
-					planeNormal, 
-					pointInPlane);
-		}
-		return intersection;
+		return GestureUtils.getPlaneIntersection(app, planeNormal, pointInPlane, c);
 	}
-	
-
 	///////////////////////////////////////////////////////
 	
 	
