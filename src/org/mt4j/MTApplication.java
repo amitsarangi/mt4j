@@ -21,8 +21,6 @@ package org.mt4j;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.DisplayMode;
-import java.awt.EventQueue;
-import java.awt.Frame;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.Toolkit;
@@ -37,9 +35,6 @@ import java.util.List;
 import java.util.Properties;
 
 import javax.media.opengl.GL;
-import javax.media.opengl.GLAutoDrawable;
-import javax.media.opengl.GLEventListener;
-import javax.sound.midi.SysexMessage;
 import javax.swing.ImageIcon;
 
 import org.apache.log4j.ConsoleAppender;
@@ -64,7 +59,6 @@ import org.mt4j.util.math.Tools3D;
 import org.mt4j.util.opengl.GLFBO;
 
 import processing.core.PApplet;
-import processing.opengl.PGraphicsOpenGL;
 
 
 
