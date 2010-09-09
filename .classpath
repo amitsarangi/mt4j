@@ -3,6 +3,7 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="examples"/>
 	<classpathentry kind="src" path="tests"/>
+	<classpathentry kind="src" path="extensions"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="mt4jLibs/core.jar"/>
 	<classpathentry kind="lib" path="mt4jLibs/mri.jar"/>
@@ -48,9 +49,6 @@
 	</classpathentry>
 	<classpathentry kind="lib" path="examples/advanced/physics/lib/jbox2d.jar"/>
 	<classpathentry kind="lib" path="examples/advanced/water/lib/waterScene.jar"/>
-	<classpathentry kind="lib" path="mt4jLibs/gsvideo/jna-3.1.0.jar"/>
-	<classpathentry kind="lib" path="mt4jLibs/gsvideo/gstreamer-java-bin-1.2.jar"/>
-	<classpathentry kind="lib" path="mt4jLibs/gsvideo/gsvideo06pre.jar"/>
 	<classpathentry kind="lib" path="mt4jLibs/jogl/opengl.jar"/>
 	<classpathentry kind="lib" path="mt4jLibs/GlulogicMT.jar">
 		<attributes>
@@ -58,5 +56,8 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="lib" path="mt4jLibs/ani.jar"/>
+	<classpathentry kind="lib" path="extensions/lib/gsvideo/gstreamer-java-bin-1.2.jar"/>
+	<classpathentry kind="lib" path="extensions/lib/gsvideo/jna-3.1.0.jar"/>
+	<classpathentry kind="lib" path="extensions/lib/gsvideo/gsvideo06pre.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
