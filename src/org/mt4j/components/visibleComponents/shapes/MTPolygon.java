@@ -564,7 +564,6 @@ public class MTPolygon extends AbstractShape {
 	
 	/**
 	 * Calculates the center of mass of the polygon.
-	 * The coordinates are transformed to world space first. THIS IS NOT CHEAP!
 	 * NOTE: works only if the last vertex is equal to the first (polygon is closed correctly)
 	 * NOTE: polygon needs to be coplanar and in the X,Y plane!
 	 * 

@@ -68,7 +68,7 @@ public class UnistrokeUtils {
 	/**
 	 * The Enum DollarGesture.
 	 */
-	public enum DollarGesture {
+	public enum UnistrokeGesture {
 		
 		/** The TRIANGLE. */
 		TRIANGLE, 
@@ -211,7 +211,7 @@ public class UnistrokeUtils {
 		 * @param gesture the gesture
 		 * @param direction the direction
 		 */
-		public void addTemplate(DollarGesture gesture, Direction direction) {
+		public void addTemplate(UnistrokeGesture gesture, Direction direction) {
 			dollarTemplates.addTemplate(gesture, direction);
 		}
 		
@@ -222,14 +222,14 @@ public class UnistrokeUtils {
 		 * @param points the points
 		 * @return the dollar gesture
 		 */
-		DollarGesture Recognize(List<Vector3D> points) {
+		UnistrokeGesture Recognize(List<Vector3D> points) {
 				points = Resample(points, getNumPoints(), Direction.CLOCKWISE);
 			points = RotateToZero(points);
 			points = ScaleToSquare(points, getSquareSize());
 			points = TranslateToOrigin(points);
 			float best = getInfinity();
 			float sndBest = getInfinity();
-			DollarGesture g = null;
+			UnistrokeGesture g = null;
 			Direction di = null;
 
 			for (Template template : Templates) {
@@ -253,7 +253,7 @@ public class UnistrokeUtils {
 				return g;
 			} else {
 				
-				return DollarGesture.NOGESTURE;
+				return UnistrokeGesture.NOGESTURE;
 			}
 		}
 
