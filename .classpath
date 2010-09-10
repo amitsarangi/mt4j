@@ -3,6 +3,7 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="examples"/>
 	<classpathentry kind="src" path="tests"/>
+	<classpathentry kind="src" path="extensions"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="mt4jLibs/core.jar"/>
 	<classpathentry kind="lib" path="mt4jLibs/mri.jar"/>
@@ -29,7 +30,6 @@
 	<classpathentry kind="lib" path="mt4jLibs/whirlylib/commons-collections-3.1.jar"/>
 	<classpathentry kind="lib" path="mt4jLibs/whirlylib/commons-logging.jar"/>
 	<classpathentry kind="lib" path="mt4jLibs/whirlylib/concurrent-1.3.4.jar"/>
-	<classpathentry kind="lib" path="mt4jLibs/whirlylib/junit-3.8.1.jar"/>
 	<classpathentry kind="lib" path="mt4jLibs/whirlylib/log4j-1.2.8.jar"/>
 	<classpathentry kind="lib" path="mt4jLibs/whirlylib/whirlycache-1.0.1.jar"/>
 	<classpathentry kind="lib" path="mt4jLibs/jogl/jogl.jar">
@@ -48,11 +48,16 @@
 	</classpathentry>
 	<classpathentry kind="lib" path="examples/advanced/physics/lib/jbox2d.jar"/>
 	<classpathentry kind="lib" path="examples/advanced/water/lib/waterScene.jar"/>
-	<classpathentry kind="lib" path="mt4jLibs/gsvideo/jna-3.1.0.jar"/>
-	<classpathentry kind="lib" path="mt4jLibs/gsvideo/gstreamer-java-bin-1.2.jar"/>
-	<classpathentry kind="lib" path="mt4jLibs/gsvideo/gsvideo06pre.jar"/>
 	<classpathentry kind="lib" path="mt4jLibs/jogl/opengl.jar"/>
-	<classpathentry kind="lib" path="mt4jLibs/GlulogicMT.jar"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
+	<classpathentry kind="lib" path="mt4jLibs/GlulogicMT.jar">
+		<attributes>
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="MT4j"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="mt4jLibs/ani.jar"/>
+	<classpathentry kind="lib" path="extensions/lib/gsvideo/gstreamer-java-bin-1.2.jar"/>
+	<classpathentry kind="lib" path="extensions/lib/gsvideo/jna-3.1.0.jar"/>
+	<classpathentry kind="lib" path="extensions/lib/gsvideo/gsvideo06pre.jar"/>
+	<classpathentry kind="lib" path="/gstreamer-java/lib/junit4.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

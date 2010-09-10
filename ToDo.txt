@@ -38,7 +38,6 @@ ToDo list:
 - how to create own gesture example
 - brainstorm example - textareas + draw links!
 
-- use hint(DISABLE_OPENGL_ERROR_REPORT)? put into Settings.txt?
 - mt4j as p5 library - difficult because mtapplication is derived from papplet
 - manymouse problem loadlibrary!? -> Compile on Mac!
 - remove MTVideoClip from core and put it into example with gsvideo and gstreamer?
@@ -54,7 +53,6 @@ ToDo list:
 - (dropshadows - with custom created pimage?)
 - (bug when drawing outline after clipping on frustum culled object, dont draw outline then!)
 - (b4 picking, check if object in frustum ? - update cam - check if obj in frustum)
-- (particles not working in fullscreen (fluidscene))? -> cuz of depth buffer and p5 drawing (p5 drawing and pure opengl mix -> z-problems)
 - (use render bins and sort object automagically (2d, 3d, Hud, transparent))? 
 - (make class SceneDrawIterator? that implements the drawAndUpdateCanvas of MTCanvas so it can be called for single nodes to draw nodes with all children)
 
@@ -130,8 +128,10 @@ ToDo list:
 
 
 -> Gestures/Input
+- support Linux HID touch
 - win7touchsource detects touch when wacom tablet installed?
 - differentiate between manipulation s and gestures? (1 difference is: eg. flick is a gesture, drag a manipulation, we have to wait if it is a flick -> if not switch to drag but start drag from the 1st event, not resume at current)
+- add ability in component processors to get informed of other cursors, not from the component?
 - GestureUtil class? -> getDistance(cursor1, cursor2) getAngle(cursor1, movedCursor); etc
 - abort tapGesture if finger moved too much -> check on update as in PressAndHold gesture
 - Test if intalled multitouch vista driver + win7 touch screen make problems
@@ -142,7 +142,6 @@ ToDo list:
 - add GenericTwoFingerGesture that delivers the touch points on the drag-plane -> methods for getLastRotation etc
 - at mouseinputsource send mouseInputEvt extends mtinputposEvt/MTFingerInputEvt -> attach mouse button information for pure mouse applications
 - resume some gestures only if the cursor is still on the object -> else abort -> make abortGesture() method in all processors!
-- simplify writing of gestures
 - implement logically meaningful returns of boolean processInputEvent() - when return true, when false, how to react?
 - add keyboard input source sending keyboard events to the focused/selected component -> FocusManager?
 - (if object that is dragged, scaled etc is destroyed while during gesture -> nullpointer error -> check if viewing cam is null!)
@@ -161,6 +160,7 @@ ToDo list:
 - more transition effects (grid exploding)
 - rename init() and shutdown() to "onEnter()" and "onLeaving()"?
 - add a generic scene loading scene?
+- create Abstract2DScene withouth depthbuffer writing and orthographic camera? (maybe also different intersection tests)
 
 
 -> Animations:
