@@ -15,7 +15,6 @@ import org.mt4j.input.inputData.MTInputEvent;
 import org.mt4j.input.inputProcessors.globalProcessors.RawFiducialProcessor;
 import org.mt4j.sceneManagement.AbstractScene;
 import org.mt4j.util.MTColor;
-import org.mt4j.util.math.Tools3D;
 import org.mt4j.util.math.ToolsMath;
 import org.mt4j.util.math.Vector3D;
 
@@ -28,28 +27,27 @@ public class FiducialScene extends AbstractScene implements IMTInputEventListene
 	public FiducialScene(MTApplication mtApplication, String name) {
 		super(mtApplication, name);
 		this.app = mtApplication;
+		this.setClearColor(new MTColor(220, 220, 200, 255));
 		
+		//Listen to _all_ fiducial events
 		RawFiducialProcessor fiducialProcessor = new RawFiducialProcessor();
 		fiducialProcessor.addProcessorListener(this);
 		registerGlobalInputProcessor(fiducialProcessor);
 		
+		//Maps the fiducial IDs to the visible component so we can keep track
 		fiducialIDToComp = new HashMap<Integer, AbstractShape>();
 		
 		font = FontManager.getInstance().createFont(app, "arial.ttf", 30, 
 				new MTColor(255,255,255,255), //Fill color 
 				new MTColor(255,255,255,255)); //Stroke color
-		
-		setClearColor(new MTColor(220, 220, 200, 255));
 	}
 
-
-
-	//@Override
+	//Global input processor listener implementation (IMTInputEventListener)
 	public boolean processInputEvent(MTInputEvent inEvt) {
 		if (inEvt instanceof MTFiducialInputEvt) {
 			MTFiducialInputEvt fEvt = (MTFiducialInputEvt)inEvt;
 			int fID = fEvt.getFiducialId();
-			Vector3D position = new Vector3D(fEvt.getPosX(), fEvt.getPosY());
+			Vector3D position = fEvt.getPosition();
 
 			AbstractShape comp;
 			switch (fEvt.getId()) {
@@ -99,7 +97,6 @@ public class FiducialScene extends AbstractScene implements IMTInputEventListene
 	}
 
 
-	
 	private AbstractShape createComponent(int id, Vector3D pos){
 		MTEllipse comp = new MTEllipse(app, new Vector3D(pos), 50,50, 50);
 		comp.setNoFill(false);
@@ -113,7 +110,7 @@ public class FiducialScene extends AbstractScene implements IMTInputEventListene
 		comp.unregisterAllInputProcessors(); //Dont process input/gestures on this component
 		
 		MTTextArea text = new MTTextArea(app, font);
-		text.appendText(new Integer(id).toString());
+		text.appendText(Integer.toString(id));
 		text.setFillColor(new MTColor(0, 0, 0, 0));
 		text.setStrokeColor(new MTColor(0, 0, 0, 0));
 		text.unregisterAllInputProcessors();
@@ -122,14 +119,8 @@ public class FiducialScene extends AbstractScene implements IMTInputEventListene
 		return comp;
 	}
 	
-	
-	
-	//@Override
-	public void init() {
-	}
+	public void init() {}
 
-	//@Override
-	public void shutDown() {
-	}
+	public void shutDown() {}
 
 }

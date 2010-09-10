@@ -35,6 +35,7 @@ import org.mt4j.util.MT4jSettings;
 import org.mt4j.util.math.Vector3D;
 
 import processing.core.PApplet;
+import processing.core.PConstants;
 import processing.core.PGraphics;
 import processing.core.PImage;
 import processing.opengl.PGraphicsOpenGL;
@@ -191,7 +192,7 @@ public class FluidSimulationScene extends AbstractScene{
 	        }
 	        
 	        float colorMult = 5;
-	        float velocityMult = 30.0f;
+	        float velocityMult = 20.0f;
 	 
 	        int index = fluidSolver.getIndexForNormalizedPosition(x, y);
 	 
@@ -234,7 +235,7 @@ public class FluidSimulationScene extends AbstractScene{
 	        
 //	        app.image(imgFluid, 0, 0, app.width, app.height); //FIXME this messes up blend transition!
 	        
-	        app.textureMode(app.NORMALIZED);
+	        app.textureMode(PConstants.NORMALIZED);
 //	        app.textureMode(app.IMAGE);
 	        app.beginShape(app.QUADS);
 	        app.texture(imgFluid);

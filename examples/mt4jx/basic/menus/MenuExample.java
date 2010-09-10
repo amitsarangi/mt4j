@@ -112,7 +112,6 @@ public class MenuExample  extends AbstractScene{
 		}
 		
 		
-		@Override
 		public boolean processGestureEvent(MTGestureEvent ge) {
 
 			if (ge instanceof TapEvent) {

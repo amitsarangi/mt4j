@@ -68,12 +68,11 @@ public class StartSwingExample extends JFrame {
 					instance.invokeLater(new Runnable() {
 						public void run() {
 							MTComponent[] ch = instance.getCurrentScene().getCanvas().getChildren();
-							for (int i = 0; i < ch.length; i++) {
-								MTComponent mtComponent = ch[i];
-								if (!(mtComponent instanceof MTOverlayContainer)){
-									mtComponent.destroy();	
-								}
-							}
+                            for (MTComponent mtComponent : ch) {
+                                if (!(mtComponent instanceof MTOverlayContainer)) {
+                                    mtComponent.destroy();
+                                }
+                            }
 						}
 					});
 					

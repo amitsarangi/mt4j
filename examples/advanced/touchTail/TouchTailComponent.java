@@ -18,6 +18,7 @@ import org.mt4j.util.math.Ray;
 import org.mt4j.util.math.Vector3D;
 
 import processing.core.PApplet;
+import processing.core.PConstants;
 import processing.core.PGraphics;
 import processing.core.PImage;
 import processing.opengl.PGraphicsOpenGL;
@@ -123,7 +124,7 @@ public class TouchTailComponent extends AbstractVisibleComponent {
 		}
 		
 		if (useTexture){
-			g.textureMode(g.NORMALIZED);
+			g.textureMode(PConstants.NORMALIZED);
 		}
 		
 		/*

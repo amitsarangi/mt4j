@@ -13,8 +13,8 @@ import org.mt4j.components.TransformSpace;
 import org.mt4j.components.visibleComponents.font.FontManager;
 import org.mt4j.components.visibleComponents.shapes.AbstractShape;
 import org.mt4j.components.visibleComponents.widgets.MTImage;
-import org.mt4j.components.visibleComponents.widgets.MTSceneWindow;
 import org.mt4j.components.visibleComponents.widgets.MTTextArea;
+import org.mt4j.components.visibleComponents.widgets.MTTextArea.ExpandDirection;
 import org.mt4j.components.visibleComponents.widgets.buttons.MTImageButton;
 import org.mt4j.components.visibleComponents.widgets.buttons.MTSvgButton;
 import org.mt4j.components.visibleComponents.widgets.keyboard.MTKeyboard;
@@ -40,8 +40,6 @@ import org.mt4j.util.math.ToolsMath;
 import org.mt4j.util.math.Vector3D;
 
 import processing.core.PImage;
-
-import advanced.touchTail.TouchTailScene;
 
 import com.aetrion.flickr.photos.SearchParameters;
 
@@ -118,6 +116,7 @@ public class FlickrScene extends AbstractScene {
 			        final MTTextArea t = new MTTextArea(app, FontManager.getInstance().createFont(app, "arial.ttf", 50, 
 			        		new MTColor(0,0,0,255), //Fill color 
 							new MTColor(0,0,0,255))); //Stroke color
+			        t.setExpandDirection(ExpandDirection.UP);
 					t.setStrokeColor(new MTColor(0,0 , 0, 255));
 					t.setFillColor(new MTColor(205,200,177, 255));
 					t.unregisterAllInputProcessors();
@@ -166,12 +165,29 @@ public class FlickrScene extends AbstractScene {
 							        String flickrApiKey = "";
 							        String flickrSecret = "";
 							        Properties properties = new Properties();
-								    try {
-								        properties.load(new FileInputStream( "advanced" + MTApplication.separator + "flickrMT" + MTApplication.separator + "data" + MTApplication.separator + "FlickrApiKey.txt"));
-								        flickrApiKey = properties.getProperty("FlickrApiKey", " ");
-								        flickrSecret = properties.getProperty("FlickrSecret", " ");
+							        try {
+							        	InputStream in = null;
+							        	try {
+							        		in = new FileInputStream( "examples" + MTApplication.separator + "advanced" + MTApplication.separator + "flickrMT" + MTApplication.separator + "data" + MTApplication.separator + "FlickrApiKey.txt");
+										} catch (Exception e) {
+											System.err.println(e.getLocalizedMessage());
+										}
+										
+							        	if (in == null){
+							        		try {
+							        			in = Thread.currentThread().getContextClassLoader().getResourceAsStream("advanced" + MTApplication.separator + "flickrMT" + MTApplication.separator + "data" + MTApplication.separator + "FlickrApiKey.txt");
+											} catch (Exception e) {
+												System.err.println(e.getLocalizedMessage());
+											}
+							        	}
+							        	properties.load(in);
+
+							        	flickrApiKey = properties.getProperty("FlickrApiKey", " ");
+							        	flickrSecret = properties.getProperty("FlickrSecret", " ");
 								    } catch (Exception e) {
-								    	System.err.println("Error while loading Settings.txt file. Using defaults.");
+								    	System.err.println("Error while loading FlickrApiKey.txt file.");
+								    	e.printStackTrace();
+								    	
 								    }
 							        
 							        //Create flickr loader thread
@@ -185,16 +201,15 @@ public class FlickrScene extends AbstractScene {
 											registerPreDrawAction(new IPreDrawAction(){
 												public void processAction() {
 													MTImage[] fotos = flickrLoader.getMtFotos();
-													for (int i = 0; i < fotos.length; i++) {
-														MTImage card = fotos[i];
-														card.setUseDirectGL(true);
-														card.setDisplayCloseButton(true);
-														card.setPositionGlobal(new Vector3D(ToolsMath.getRandom(10, MT4jSettings.getInstance().getScreenWidth()-100), ToolsMath.getRandom(10, MT4jSettings.getInstance().getScreenHeight()-50),0 )  );
-														card.scale(0.6f, 0.6f, 0.6f, card.getCenterPointLocal(), TransformSpace.LOCAL);
-														card.addGestureListener(DragProcessor.class, new InertiaDragAction());
-														lassoProcessor.addClusterable(card); //make fotos lasso-able
-														pictureLayer.addChild(card);
-													}
+                                                    for (MTImage card : fotos) {
+                                                        card.setUseDirectGL(true);
+                                                        card.setDisplayCloseButton(true);
+                                                        card.setPositionGlobal(new Vector3D(ToolsMath.getRandom(10, MT4jSettings.getInstance().getWindowWidth() - 100), ToolsMath.getRandom(10, MT4jSettings.getInstance().getWindowHeight() - 50), 0));
+                                                        card.scale(0.6f, 0.6f, 0.6f, card.getCenterPointLocal(), TransformSpace.LOCAL);
+                                                        card.addGestureListener(DragProcessor.class, new InertiaDragAction());
+                                                        lassoProcessor.addClusterable(card); //make fotos lasso-able
+                                                        pictureLayer.addChild(card);
+                                                    }
 													progressBar.setVisible(false);
 												}
 												

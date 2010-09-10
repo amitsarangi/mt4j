@@ -76,14 +76,11 @@ public class Models3DScene extends AbstractScene {
 		//Desired position for the meshes to appear at
 		Vector3D destinationPosition = new Vector3D(mtApplication.width/2, mtApplication.height/2, 50);
 		//Desired scale for the meshes
-		float destinationScale = mtApplication.width*0.94f;
+		float destinationScale = mtApplication.width*0.85f;
 
 		//Load the meshes with the ModelImporterFactory (A file can contain more than 1 mesh)
 		//Loads 3ds model
-//		MTTriangleMesh[] meshes = ModelImporterFactory.loadModel(mtApplication, modelsPath + "kentosaurus" + MTApplication.separator + "kentrosaurus.3ds", 180, true, false );
 		MTTriangleMesh[] meshes = ModelImporterFactory.loadModel(mtApplication, modelsPath + "jazz_Obj" + MTApplication.separator + "honda_jazz.obj", 180, true, false );
-		//Load obj model
-//		MTTriangleMesh[] meshes = ModelImporterFactory.loadModel(mtApplication,  modelsPath + "trashbin.obj", 180, false, false );
 		
 		//Get the biggest mesh in the group to use as a reference for setting the position/scale
 		final MTTriangleMesh biggestMesh = this.getBiggestMesh(meshes);
@@ -103,30 +100,28 @@ public class Models3DScene extends AbstractScene {
 		
 		//Inverts the normals, if they are calculated pointing inside of the mesh instead of outside
 		boolean invertNormals = true;
-		
-		for (int i = 0; i < meshes.length; i++) {
-			MTTriangleMesh mesh = meshes[i];
-			meshGroup.addChild(mesh);
-			mesh.unregisterAllInputProcessors(); //Clear previously registered input processors
-			mesh.setPickable(true);
 
-			if (invertNormals){
-				Vector3D[] normals = mesh.getGeometryInfo().getNormals();
-				for (int j = 0; j < normals.length; j++) {
-					Vector3D vector3d = normals[j];
-					vector3d.scaleLocal(-1);
-				}
-				mesh.getGeometryInfo().setNormals(mesh.getGeometryInfo().getNormals(), mesh.isUseDirectGL(), mesh.isUseVBOs());
-			}
+        for (MTTriangleMesh mesh : meshes) {
+            meshGroup.addChild(mesh);
+            mesh.unregisterAllInputProcessors(); //Clear previously registered input processors
+            mesh.setPickable(true);
 
-			//If the mesh has more than 20 vertices, use a display list for faster rendering
-			if (mesh.getVertexCount() > 20)
-				mesh.generateAndUseDisplayLists();
-			//Set the material to the mesh  (determines the reaction to the lightning)
-			if (mesh.getMaterial() == null)
-				mesh.setMaterial(material);
-			mesh.setDrawNormals(false);
-		}
+            if (invertNormals) {
+                Vector3D[] normals = mesh.getGeometryInfo().getNormals();
+                for (Vector3D vector3d : normals) {
+                    vector3d.scaleLocal(-1);
+                }
+                mesh.getGeometryInfo().setNormals(mesh.getGeometryInfo().getNormals(), mesh.isUseDirectGL(), mesh.isUseVBOs());
+            }
+
+            //If the mesh has more than 20 vertices, use a display list for faster rendering
+            if (mesh.getVertexCount() > 20)
+                mesh.generateAndUseDisplayLists();
+            //Set the material to the mesh  (determines the reaction to the lightning)
+            if (mesh.getMaterial() == null)
+                mesh.setMaterial(material);
+            mesh.setDrawNormals(false);
+        }
 		
 		//Register arcball gesture manipulation to the whole mesh-group
 		meshGroup.setComposite(true); //-> Group gets picked instead of its children
@@ -159,14 +154,13 @@ public class Models3DScene extends AbstractScene {
 		MTTriangleMesh currentBiggestMesh = null;
 		//Get the biggest mesh and extract its width
 		float currentBiggestWidth = Float.MIN_VALUE;
-		for (int i = 0; i < meshes.length; i++) {
-			MTTriangleMesh triangleMesh = meshes[i];
-			float width = triangleMesh.getWidthXY(TransformSpace.GLOBAL);
-			if (width >= currentBiggestWidth || currentBiggestWidth == Float.MIN_VALUE){
-				currentBiggestWidth = width;
-				currentBiggestMesh = triangleMesh;
-			}
-		}
+        for (MTTriangleMesh triangleMesh : meshes) {
+            float width = triangleMesh.getWidthXY(TransformSpace.GLOBAL);
+            if (width >= currentBiggestWidth || currentBiggestWidth == Float.MIN_VALUE) {
+                currentBiggestWidth = width;
+                currentBiggestMesh = triangleMesh;
+            }
+        }
 		return currentBiggestMesh;
 	}
 	

@@ -37,6 +37,7 @@ import org.jbox2d.dynamics.joints.JointType;
 import org.jbox2d.dynamics.joints.MouseJoint;
 import org.jbox2d.dynamics.joints.MouseJointDef;
 import org.jbox2d.util.nonconvex.Polygon;
+import org.jbox2d.util.nonconvex.Triangle;
 import org.mt4j.MTApplication;
 import org.mt4j.components.MTComponent;
 import org.mt4j.input.inputProcessors.IGestureEventListener;
@@ -173,12 +174,11 @@ public class PhysicsHelper {
 			
 			boolean hasDragProcessor = false;
 			AbstractComponentProcessor[] p = comp.getInputProcessors();
-			for (int i = 0; i < p.length; i++) {
-				AbstractComponentProcessor abstractComponentProcessor = p[i];
-				if (abstractComponentProcessor instanceof DragProcessor) {
-					hasDragProcessor = true;
-				}
-			}
+            for (AbstractComponentProcessor abstractComponentProcessor : p) {
+                if (abstractComponentProcessor instanceof DragProcessor) {
+                    hasDragProcessor = true;
+                }
+            }
 			if (!hasDragProcessor){
 				comp.registerInputProcessor(new DragProcessor(comp.getRenderer()));
 			}
@@ -219,12 +219,11 @@ public class PhysicsHelper {
 	public static List<Vertex> triangulateEarClips(List<Vertex> vertices){
 		org.jbox2d.util.nonconvex.Triangle[] tri = getEarClipTriangles(vertices);
 		List<Vertex> tris = new ArrayList<Vertex>();
-		for (int i = 0; i < tri.length; i++) {
-			org.jbox2d.util.nonconvex.Triangle triangle = tri[i];
-			tris.add(new Vertex(triangle.x[0], triangle.y[0],0));
-			tris.add(new Vertex(triangle.x[1], triangle.y[1],0));
-			tris.add(new Vertex(triangle.x[2], triangle.y[2],0));
-		}
+        for (Triangle triangle : tri) {
+            tris.add(new Vertex(triangle.x[0], triangle.y[0], 0));
+            tris.add(new Vertex(triangle.x[1], triangle.y[1], 0));
+            tris.add(new Vertex(triangle.x[2], triangle.y[2], 0));
+        }
 		return tris;
 	}
 	
@@ -265,8 +264,7 @@ public class PhysicsHelper {
 		System.err.println("Trying glu triangulation..");
 		GluTrianglulator triangulator = new GluTrianglulator(app);
 		Vertex[] vertexArray = vertices.toArray(new Vertex[vertices.size()]);
-		List<Vertex> triVerts = triangulator.tesselate(vertexArray, GLU.GLU_TESS_WINDING_NONZERO);
-		return triVerts;
+		return triangulator.tesselate(vertexArray, GLU.GLU_TESS_WINDING_NONZERO);
 	}
 	
 	

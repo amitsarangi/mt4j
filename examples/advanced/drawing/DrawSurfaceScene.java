@@ -167,37 +167,6 @@ public class DrawSurfaceScene extends AbstractScene {
 
 	}
 	
-
-	
-//	private AbstractShape getDefaultBrush(){
-//		PImage brushImage = getMTApplication().loadImage(System.getProperty("user.dir")+File.separator + "examples"+  File.separator +"advanced"+ File.separator + File.separator +"drawing"+ File.separator + File.separator +"data"+ File.separator +  File.separator +"images"+ File.separator +
-//		"brush1.png");
-////		"brush2.png"); 
-////		/*
-//		MTRectangle brush = new MTRectangle(brushImage, getMTApplication());
-//		brush.setPickable(false);
-//		brush.setNoFill(false);
-//		brush.setNoStroke(true);
-//		brush.setDrawSmooth(true);
-//		brush.setFillColor(new MTColor(0,0,0));
-////		*/
-//		
-//		/*
-//		MTEllipse brush = new MTEllipse(mtApp, new Vector3D(0,0,0), 12, 12, 10);
-//		brush.setPickable(false);
-//		brush.setNoFill(false);
-//		brush.setNoStroke(true);
-//		brush.setDrawSmooth(true);
-////		brush.setDrawSmooth(false);
-////		brush.setStrokeWeight(2);
-////		brush.setStrokeColor(40, 130, 250, 255);
-////		brush.setTexture(brushImage);
-//		brush.setFillColor(new MTColor(40, 130, 250, 255));
-//		*/
-//		return brush;
-//	}
-	
-	
 	
 	public void setBrush(AbstractShape brush){
 		this.drawShape = brush;

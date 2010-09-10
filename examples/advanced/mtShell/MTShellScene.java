@@ -60,6 +60,7 @@ import advanced.models3D.Models3DScene;
 import advanced.modestMapsMT.MapsScene;
 import advanced.physics.scenes.AirHockeyScene;
 import advanced.physics.scenes.PhysicsScene;
+import advanced.puzzle.PuzzleScene;
 import advanced.space3D.Space3DScene;
 import advanced.touchTail.TouchTailScene;
 
@@ -130,7 +131,7 @@ public class MTShellScene extends AbstractScene {
 		this.hasFBO = GLFBO.isSupported(app);
 //		this.hasFBO = false; // TEST
 		//IF we have no FBO directly switch to scene and ignore setting
-		this.switchDirectlyToScene = !this.hasFBO? true : switchDirectlyToScene; 
+		this.switchDirectlyToScene = !this.hasFBO || switchDirectlyToScene;
 		
 		this.registerGlobalInputProcessor(new CursorTracer(app, this));
 		
@@ -203,7 +204,7 @@ public class MTShellScene extends AbstractScene {
 		 */
 		
 		//TODO does the font exist on all platforms? fallback to arial.ttf?
-		font = FontManager.getInstance().createFont(app, "Comic Sans MS", 18, new MTColor(255,255,255), new MTColor(255,255,255));
+		font = FontManager.getInstance().createFont(app, "SansSerif", 18, MTColor.WHITE, MTColor.WHITE);
 //		font = FontManager.getInstance().createFont(app, "arial.ttf", 18, new MTColor(255,255,255), new MTColor(255,255,255));
 		
 		
@@ -223,7 +224,7 @@ public class MTShellScene extends AbstractScene {
 			public String getTitle() {
 				return "Maps";
 			}
-		}, app.loadImage(this.getPathToIcons() + "maps_s.png"));
+		}, app.loadImage(this.getPathToIcons() + "maps_ss.png"));
 		
 		this.addScene(new ICreateScene() {
 			public Iscene getNewScene() {
@@ -233,6 +234,15 @@ public class MTShellScene extends AbstractScene {
 				return "Air Hockey";
 			}
 		}, app.loadImage(this.getPathToIcons() + "airhockey_s.png"));
+		
+		this.addScene(new ICreateScene() {
+			public Iscene getNewScene() {
+				return new PuzzleScene(app, "Puzzle");
+			}
+			public String getTitle() {
+				return "Puzzle";
+			}
+		}, app.loadImage(this.getPathToIcons() + "puzz.png"));
 		
 		if (this.hasFBO){
 			this.addScene(new ICreateScene() {
@@ -279,7 +289,7 @@ public class MTShellScene extends AbstractScene {
 			public String getTitle() {
 				return "3D Models";
 			}
-		}, app.loadImage(this.getPathToIcons() + "models_s.png"));
+		}, app.loadImage(this.getPathToIcons() + "teapot.jpg"));
 		
 		this.addScene(new ICreateScene() {
 			public Iscene getNewScene() {
