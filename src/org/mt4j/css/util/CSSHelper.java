@@ -108,7 +108,6 @@ public class CSSHelper {
 	private void addListeners() {
 		c.addStateChangeListener(StateChange.ADDED_TO_PARENT,
 				new StateChangeListener() {
-					@Override
 					public void stateChanged(StateChangeEvent evt) {
 						applyStyleSheet();
 					}

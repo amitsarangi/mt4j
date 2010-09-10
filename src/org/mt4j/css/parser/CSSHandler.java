@@ -71,7 +71,6 @@ public class CSSHandler implements DocumentHandler{
 	/* (non-Javadoc)
 	 * @see org.w3c.css.sac.DocumentHandler#comment(java.lang.String)
 	 */
-	@Override
 	public void comment(String arg0) throws CSSException {
 		//Don't hand comments
 	}
@@ -79,7 +78,7 @@ public class CSSHandler implements DocumentHandler{
 	/* (non-Javadoc)
 	 * @see org.w3c.css.sac.DocumentHandler#endDocument(org.w3c.css.sac.InputSource)
 	 */
-	@Override
+	
 	public void endDocument(InputSource arg0) throws CSSException {
 		//Document done, nothing to do
 		
@@ -88,7 +87,6 @@ public class CSSHandler implements DocumentHandler{
 	/* (non-Javadoc)
 	 * @see org.w3c.css.sac.DocumentHandler#endFontFace()
 	 */
-	@Override
 	public void endFontFace() throws CSSException {
 		//
 		
@@ -97,7 +95,7 @@ public class CSSHandler implements DocumentHandler{
 	/* (non-Javadoc)
 	 * @see org.w3c.css.sac.DocumentHandler#endMedia(org.w3c.css.sac.SACMediaList)
 	 */
-	@Override
+	
 	public void endMedia(SACMediaList arg0) throws CSSException {
 		//
 		
@@ -106,7 +104,7 @@ public class CSSHandler implements DocumentHandler{
 	/* (non-Javadoc)
 	 * @see org.w3c.css.sac.DocumentHandler#endPage(java.lang.String, java.lang.String)
 	 */
-	@Override
+	
 	public void endPage(String arg0, String arg1) throws CSSException {
 		//
 		
@@ -115,7 +113,7 @@ public class CSSHandler implements DocumentHandler{
 	/* (non-Javadoc)
 	 * @see org.w3c.css.sac.DocumentHandler#endSelector(org.w3c.css.sac.SelectorList)
 	 */
-	@Override
+	
 	public void endSelector(SelectorList arg0) throws CSSException {
 		if (currentFont != null && currentFont.isModified()) {
 			for (CSSStyle s: activeStyles) {
@@ -132,7 +130,7 @@ public class CSSHandler implements DocumentHandler{
 	/* (non-Javadoc)
 	 * @see org.w3c.css.sac.DocumentHandler#ignorableAtRule(java.lang.String)
 	 */
-	@Override
+	
 	public void ignorableAtRule(String arg0) throws CSSException {
 		//
 		
@@ -141,7 +139,7 @@ public class CSSHandler implements DocumentHandler{
 	/* (non-Javadoc)
 	 * @see org.w3c.css.sac.DocumentHandler#importStyle(java.lang.String, org.w3c.css.sac.SACMediaList, java.lang.String)
 	 */
-	@Override
+	
 	public void importStyle(String arg0, SACMediaList arg1, String arg2)
 			throws CSSException {
 		//
@@ -151,7 +149,7 @@ public class CSSHandler implements DocumentHandler{
 	/* (non-Javadoc)
 	 * @see org.w3c.css.sac.DocumentHandler#namespaceDeclaration(java.lang.String, java.lang.String)
 	 */
-	@Override
+	
 	public void namespaceDeclaration(String arg0, String arg1)
 			throws CSSException {
 		//
@@ -161,7 +159,7 @@ public class CSSHandler implements DocumentHandler{
 	/* (non-Javadoc)
 	 * @see org.w3c.css.sac.DocumentHandler#property(java.lang.String, org.w3c.css.sac.LexicalUnit, boolean)
 	 */
-	@Override
+	
 	public void property(String name, LexicalUnit value, boolean important)
 			throws CSSException {
 		try {
@@ -849,7 +847,7 @@ public class CSSHandler implements DocumentHandler{
 	/* (non-Javadoc)
 	 * @see org.w3c.css.sac.DocumentHandler#startDocument(org.w3c.css.sac.InputSource)
 	 */
-	@Override
+	
 	public void startDocument(InputSource arg0) throws CSSException {
 		
 	}
@@ -857,7 +855,7 @@ public class CSSHandler implements DocumentHandler{
 	/* (non-Javadoc)
 	 * @see org.w3c.css.sac.DocumentHandler#startFontFace()
 	 */
-	@Override
+	
 	public void startFontFace() throws CSSException {
 		
 	}
@@ -865,7 +863,7 @@ public class CSSHandler implements DocumentHandler{
 	/* (non-Javadoc)
 	 * @see org.w3c.css.sac.DocumentHandler#startMedia(org.w3c.css.sac.SACMediaList)
 	 */
-	@Override
+	
 	public void startMedia(SACMediaList arg0) throws CSSException {
 		
 	}
@@ -873,7 +871,7 @@ public class CSSHandler implements DocumentHandler{
 	/* (non-Javadoc)
 	 * @see org.w3c.css.sac.DocumentHandler#startPage(java.lang.String, java.lang.String)
 	 */
-	@Override
+	
 	public void startPage(String arg0, String arg1) throws CSSException {
 		
 	}
@@ -881,7 +879,7 @@ public class CSSHandler implements DocumentHandler{
 	/* (non-Javadoc)
 	 * @see org.w3c.css.sac.DocumentHandler#startSelector(org.w3c.css.sac.SelectorList)
 	 */
-	@Override
+	
 	public void startSelector(SelectorList selectors) throws CSSException {
 		
 		for (int i=0; i < selectors.getLength(); i++) {

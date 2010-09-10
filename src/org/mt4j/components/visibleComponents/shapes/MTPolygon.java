@@ -940,12 +940,10 @@ public class MTPolygon extends AbstractShape implements CSSStylableComponent{
 		return cssHelper;
 	}
 
-	@Override
 	public boolean isCSSStyled() {
 		return cssStyled;
 	}
 
-	@Override
 	public void enableCSS() {
 		if (mtApp != null && cssHelper != null) {
 			cssStyled = true;
@@ -963,13 +961,11 @@ public class MTPolygon extends AbstractShape implements CSSStylableComponent{
 		this.cssForceDisabled = cssForceDisabled;
 	}
 
-	@Override
 	public void disableCSS() {
 		cssStyled = false;
 		
 	}
 
-	@Override
 	public void applyStyleSheet() {
 		if (cssStyled && mtApp != null && cssHelper != null) {
 			cssHelper.applyStyleSheet();

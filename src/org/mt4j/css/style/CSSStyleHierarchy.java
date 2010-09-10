@@ -136,7 +136,6 @@ public class CSSStyleHierarchy implements Comparable{
 	/* (non-Javadoc)
 	 * @see java.lang.Comparable#compareTo(java.lang.Object)
 	 */
-	@Override
 	public int compareTo(Object arg0) {
 		if (arg0 instanceof CSSStyleHierarchy) {
 			CSSStyleHierarchy cs = (CSSStyleHierarchy) arg0;

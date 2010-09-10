@@ -487,12 +487,10 @@ public class MTLine extends AbstractShape implements CSSStylableComponent{
 	private boolean cssStyled = false;
 	private CSSHelper cssHelper;
 	
-	@Override
 	public boolean isCSSStyled() {
 		return cssStyled;
 	}
 
-	@Override
 	public void enableCSS() {
 		if (mtApp != null && cssHelper != null) {
 			cssStyled = true;
@@ -500,13 +498,11 @@ public class MTLine extends AbstractShape implements CSSStylableComponent{
 		applyStyleSheet();
 	}
 
-	@Override
 	public void disableCSS() {
 		cssStyled = false;
 		
 	}
 
-	@Override
 	public void applyStyleSheet() {
 		if (cssStyled && mtApp != null && cssHelper != null) {
 			cssHelper.applyStyleSheet();
@@ -516,18 +512,15 @@ public class MTLine extends AbstractShape implements CSSStylableComponent{
 	
 	private boolean cssForceDisabled = false;
 	
-	@Override
 	public boolean isCssForceDisabled() {
 		return cssForceDisabled;
 	}
 
-	@Override
 	public void setCssForceDisable(boolean cssForceDisabled) {
 		this.cssForceDisabled = cssForceDisabled;
 		
 	}
 
-	@Override
 	public CSSHelper getCssHelper() {
 		return this.cssHelper;
 	}
