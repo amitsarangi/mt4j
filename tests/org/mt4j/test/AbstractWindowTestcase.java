@@ -144,12 +144,11 @@ implements UncaughtExceptionHandler
 			
 			public void run() {
 				Iscene[] scenes = appToDestroy.getScenes();
-				for (int i = 0; i < scenes.length; i++) {
-					Iscene iscene = scenes[i];
-					if (!iscene.destroy()){
-						iscene.getCanvas().destroy();
-					}
-				}
+                for (Iscene iscene : scenes) {
+                    if (!iscene.destroy()) {
+                        iscene.getCanvas().destroy();
+                    }
+                }
 			}
 		});
 //		getMTApplication().exit();
