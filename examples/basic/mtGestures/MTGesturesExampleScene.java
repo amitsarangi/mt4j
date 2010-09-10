@@ -309,7 +309,7 @@ public class MTGesturesExampleScene extends AbstractScene {
 		getCanvas().addGestureListener(LassoProcessor.class, new DefaultLassoAction(app, getCanvas().getClusterManager(), getCanvas()));
 		
 		
-		
+		//Add uni-stroke gesture example
 		MTTextArea strokeText = new MTTextArea(mtApplication, font);
 		strokeText.setFillColor(textAreaColor);
 		strokeText.setStrokeColor(textAreaColor);
@@ -333,11 +333,11 @@ public class MTGesturesExampleScene extends AbstractScene {
 		strokeGestureRect.addChild(recognizedGestureText);
 		recognizedGestureText.setPositionRelativeToParent(strokeGestureRect.getPosition(TransformSpace.LOCAL));
 		
-		
 		getCanvas().addChild(strokeGestureRect);
 		strokeGestureRect.setAnchor(PositionAnchor.CENTER);
 		strokeGestureRect.setPositionGlobal(new Vector3D(strokeGestureRect.getWidthXY(TransformSpace.GLOBAL)/2f ,9*verticalPad,0));
 		this.clearAllGestures(strokeGestureRect);
+		
 		UnistrokeProcessor up = new UnistrokeProcessor(getMTApplication());
 		up.addTemplate(UnistrokeGesture.CIRCLE, Direction.CLOCKWISE);
 		up.addTemplate(UnistrokeGesture.CIRCLE, Direction.COUNTERCLOCKWISE);
