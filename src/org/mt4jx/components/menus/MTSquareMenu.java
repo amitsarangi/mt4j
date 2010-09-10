@@ -90,7 +90,6 @@ public class MTSquareMenu extends MTRectangle implements CSSStylableComponent {
 		/* (non-Javadoc)
 		 * @see org.mt4j.input.inputProcessors.IGestureEventListener#processGestureEvent(org.mt4j.input.inputProcessors.MTGestureEvent)
 		 */
-		@Override
 		public boolean processGestureEvent(MTGestureEvent ge) {
 			if (ge instanceof TapEvent) {
 				

@@ -93,7 +93,6 @@ public class MTHexagonMenu extends MTRectangle implements CSSStylableComponent {
 		 * org.mt4j.input.inputProcessors.IGestureEventListener#processGestureEvent
 		 * (org.mt4j.input.inputProcessors.MTGestureEvent)
 		 */
-		@Override
 		public boolean processGestureEvent(MTGestureEvent ge) {
 			if (ge instanceof TapEvent) {
 
