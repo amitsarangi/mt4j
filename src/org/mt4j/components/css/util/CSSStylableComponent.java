@@ -1,4 +1,4 @@
-package org.mt4j.css.util;
+package org.mt4j.components.css.util;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -24,7 +24,7 @@ public interface CSSStylableComponent {
 	public void disableCSS();
 	
 	/**
-	 * Applíes the (global) style sheets.
+	 * Applï¿½es the (global) style sheets.
 	 */
 	public void applyStyleSheet();
 	

@@ -1,4 +1,4 @@
-package org.mt4j.css.style;
+package org.mt4j.components.css.style;
 
 /**
  * The Class CSSStyleHierarchy: Adds hierarchical information to a CSSStyle (for prioritizing/sorting)

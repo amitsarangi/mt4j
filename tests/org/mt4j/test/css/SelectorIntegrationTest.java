@@ -20,6 +20,8 @@ import org.mt4j.util.math.Vector3D;
 import org.mt4j.components.MTCanvas;
 import org.mt4j.components.MTComponent;
 import org.mt4j.components.TransformSpace;
+import org.mt4j.components.css.parser.CSSParserConnection;
+import org.mt4j.components.css.style.CSSStyle;
 import org.mt4j.components.visibleComponents.font.FontManager;
 import org.mt4j.components.visibleComponents.font.IFont;
 import org.mt4j.components.visibleComponents.font.IFontCharacter;
@@ -27,8 +29,6 @@ import org.mt4j.components.visibleComponents.shapes.MTEllipse;
 import org.mt4j.components.visibleComponents.shapes.MTLine;
 import org.mt4j.components.visibleComponents.shapes.MTRectangle;
 import org.mt4j.components.visibleComponents.widgets.MTTextArea;
-import org.mt4j.css.parser.CSSParserConnection;
-import org.mt4j.css.style.CSSStyle;
 
 
 

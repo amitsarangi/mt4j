@@ -12,9 +12,9 @@ import org.apache.log4j.Logger;
 import org.apache.log4j.SimpleLayout;
 import org.junit.Before;
 import org.junit.Test;
-import org.mt4j.css.parser.CSSHandler;
-import org.mt4j.css.style.CSSSelector;
-import org.mt4j.css.style.CSSStyle;
+import org.mt4j.components.css.parser.CSSHandler;
+import org.mt4j.components.css.style.CSSSelector;
+import org.mt4j.components.css.style.CSSStyle;
 
 
 

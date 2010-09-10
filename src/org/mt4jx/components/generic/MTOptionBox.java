@@ -1,7 +1,7 @@
 package org.mt4jx.components.generic;
 
+import org.mt4j.components.css.style.CSSStyle;
 import org.mt4j.components.visibleComponents.shapes.MTEllipse;
-import org.mt4j.css.style.CSSStyle;
 import org.mt4j.input.inputProcessors.componentProcessors.dragProcessor.DragProcessor;
 import org.mt4j.input.inputProcessors.componentProcessors.rotateProcessor.RotateProcessor;
 import org.mt4j.input.inputProcessors.componentProcessors.scaleProcessor.ScaleProcessor;

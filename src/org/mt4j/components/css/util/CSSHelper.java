@@ -1,4 +1,4 @@
-package org.mt4j.css.util;
+package org.mt4j.components.css.util;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -11,6 +11,10 @@ import org.mt4j.components.StateChangeEvent;
 import org.mt4j.components.StateChangeListener;
 import org.mt4j.components.TransformSpace;
 import org.mt4j.components.clipping.Clip;
+import org.mt4j.components.css.style.CSSStyle;
+import org.mt4j.components.css.style.CSSStyleHierarchy;
+import org.mt4j.components.css.style.CSSStyle.BackgroundRepeat;
+import org.mt4j.components.css.util.CSSKeywords.Position;
 import org.mt4j.components.visibleComponents.shapes.AbstractShape;
 import org.mt4j.components.visibleComponents.shapes.MTEllipse;
 import org.mt4j.components.visibleComponents.shapes.MTLine;
@@ -18,10 +22,6 @@ import org.mt4j.components.visibleComponents.shapes.MTPolygon;
 import org.mt4j.components.visibleComponents.shapes.MTRectangle;
 import org.mt4j.components.visibleComponents.widgets.MTImage;
 import org.mt4j.components.visibleComponents.widgets.MTTextArea;
-import org.mt4j.css.style.CSSStyle;
-import org.mt4j.css.style.CSSStyleHierarchy;
-import org.mt4j.css.style.CSSStyle.BackgroundRepeat;
-import org.mt4j.css.util.CSSKeywords.Position;
 import org.mt4j.util.MT4jSettings;
 import org.mt4j.util.MTColor;
 import org.mt4j.util.math.Tools3D;

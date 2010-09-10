@@ -10,11 +10,11 @@ import org.apache.log4j.Logger;
 import org.apache.log4j.SimpleLayout;
 import org.junit.Before;
 import org.junit.Test;
-import org.mt4j.css.parser.CSSParserConnection;
-import org.mt4j.css.style.CSSSelector;
-import org.mt4j.css.style.CSSStyle;
-import org.mt4j.css.util.CSSKeywords.CSSBorderStyle;
-import org.mt4j.css.util.CSSKeywords.CSSSelectorType;
+import org.mt4j.components.css.parser.CSSParserConnection;
+import org.mt4j.components.css.style.CSSSelector;
+import org.mt4j.components.css.style.CSSStyle;
+import org.mt4j.components.css.util.CSSKeywords.CSSBorderStyle;
+import org.mt4j.components.css.util.CSSKeywords.CSSSelectorType;
 import org.mt4j.util.MTColor;
 
 

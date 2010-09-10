@@ -1,11 +1,11 @@
-package org.mt4j.css.style;
+package org.mt4j.components.css.style;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.mt4j.components.MTCanvas;
 import org.mt4j.components.MTComponent;
-import org.mt4j.css.util.CSSKeywords.CSSSelectorType;
+import org.mt4j.components.css.util.CSSKeywords.CSSSelectorType;
 
 /**
  * The Class CSSSelector.

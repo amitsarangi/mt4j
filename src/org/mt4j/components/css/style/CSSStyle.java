@@ -1,10 +1,10 @@
-package org.mt4j.css.style;
+package org.mt4j.components.css.style;
 
 import org.mt4j.MTApplication;
+import org.mt4j.components.css.util.CSSFontManager;
+import org.mt4j.components.css.util.CSSKeywords.CSSBorderStyle;
+import org.mt4j.components.css.util.CSSKeywords.CSSSelectorType;
 import org.mt4j.components.visibleComponents.font.IFont;
-import org.mt4j.css.util.CSSFontManager;
-import org.mt4j.css.util.CSSKeywords.CSSBorderStyle;
-import org.mt4j.css.util.CSSKeywords.CSSSelectorType;
 import org.mt4j.util.MTColor;
 
 import processing.core.PImage;

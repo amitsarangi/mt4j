@@ -1,4 +1,4 @@
-package org.mt4j.css.parser;
+package org.mt4j.components.css.parser;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -11,7 +11,7 @@ import java.util.List;
 
 import org.apache.batik.css.parser.Parser;
 import org.mt4j.MTApplication;
-import org.mt4j.css.style.CSSStyle;
+import org.mt4j.components.css.style.CSSStyle;
 import org.w3c.css.sac.CSSException;
 import org.w3c.css.sac.InputSource;
 

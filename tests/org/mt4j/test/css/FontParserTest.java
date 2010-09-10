@@ -15,14 +15,14 @@ import org.apache.log4j.SimpleLayout;
 import org.junit.Before;
 import org.junit.Test;
 import org.mt4j.components.MTComponent;
+import org.mt4j.components.css.parser.CSSParserConnection;
+import org.mt4j.components.css.style.CSSSelector;
+import org.mt4j.components.css.style.CSSStyle;
+import org.mt4j.components.css.util.CSSKeywords.CSSSelectorType;
 import org.mt4j.components.visibleComponents.font.FontManager;
 import org.mt4j.components.visibleComponents.font.IFont;
 import org.mt4j.components.visibleComponents.font.IFontCharacter;
 import org.mt4j.components.visibleComponents.widgets.MTTextArea;
-import org.mt4j.css.parser.CSSParserConnection;
-import org.mt4j.css.style.CSSSelector;
-import org.mt4j.css.style.CSSStyle;
-import org.mt4j.css.util.CSSKeywords.CSSSelectorType;
 import org.mt4j.util.MTColor;
 
 

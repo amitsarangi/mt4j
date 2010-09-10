@@ -1,7 +1,7 @@
-package org.mt4j.css.style;
+package org.mt4j.components.css.style;
 
-import org.mt4j.css.util.CSSKeywords.Position;
-import org.mt4j.css.util.CSSKeywords.PositionType;
+import org.mt4j.components.css.util.CSSKeywords.Position;
+import org.mt4j.components.css.util.CSSKeywords.PositionType;
 
 /**
  * The Class CSSBackgroundPosition.

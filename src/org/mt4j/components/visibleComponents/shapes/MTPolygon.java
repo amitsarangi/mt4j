@@ -27,6 +27,8 @@ import org.mt4j.components.TransformSpace;
 import org.mt4j.components.bounds.BoundingSphere;
 import org.mt4j.components.bounds.IBoundingShape;
 import org.mt4j.components.bounds.OrientedBoundingBox;
+import org.mt4j.components.css.util.CSSHelper;
+import org.mt4j.components.css.util.CSSStylableComponent;
 import org.mt4j.components.visibleComponents.GeometryInfo;
 import org.mt4j.util.MT4jSettings;
 import org.mt4j.util.MTColor;
@@ -37,8 +39,6 @@ import org.mt4j.util.math.ToolsGeometry;
 import org.mt4j.util.math.Vector3D;
 import org.mt4j.util.math.Vertex;
 import org.mt4j.util.opengl.GLTexture;
-import org.mt4j.css.util.CSSHelper;
-import org.mt4j.css.util.CSSStylableComponent;
 
 import processing.core.PApplet;
 import processing.core.PGraphics;

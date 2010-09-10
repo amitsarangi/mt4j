@@ -1,4 +1,4 @@
-package org.mt4j.css.util;
+package org.mt4j.components.css.util;
 
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -6,13 +6,13 @@ import java.util.List;
 
 import org.mt4j.MTApplication;
 import org.mt4j.components.MTComponent;
+import org.mt4j.components.css.parser.CSSHandler;
+import org.mt4j.components.css.parser.CSSParserConnection;
+import org.mt4j.components.css.style.CSSSelector;
+import org.mt4j.components.css.style.CSSStyle;
+import org.mt4j.components.css.style.CSSStyleHierarchy;
 import org.mt4j.components.visibleComponents.font.FontManager;
 import org.mt4j.components.visibleComponents.font.IFont;
-import org.mt4j.css.parser.CSSHandler;
-import org.mt4j.css.parser.CSSParserConnection;
-import org.mt4j.css.style.CSSSelector;
-import org.mt4j.css.style.CSSStyle;
-import org.mt4j.css.style.CSSStyleHierarchy;
 import org.mt4j.util.MTColor;
 
 // TODO: Auto-generated Javadoc

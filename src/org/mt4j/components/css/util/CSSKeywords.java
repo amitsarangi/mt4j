@@ -1,4 +1,4 @@
-package org.mt4j.css.util;
+package org.mt4j.components.css.util;
 
 import java.util.Arrays;
 

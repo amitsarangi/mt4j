@@ -9,17 +9,17 @@ import org.apache.log4j.SimpleLayout;
 import org.mt4j.MTApplication;
 import org.mt4j.components.MTCanvas;
 import org.mt4j.components.MTComponent;
+import org.mt4j.components.css.parser.CSSParserConnection;
+import org.mt4j.components.css.style.CSSStyle;
+import org.mt4j.components.css.util.*;
 import org.mt4j.components.visibleComponents.shapes.MTPolygon;
 import org.mt4j.components.visibleComponents.shapes.MTRectangle;
 import org.mt4j.components.visibleComponents.widgets.MTBackgroundImage;
-import org.mt4j.css.parser.CSSParserConnection;
-import org.mt4j.css.style.CSSStyle;
 import org.mt4j.sceneManagement.AbstractScene;
 import org.mt4j.sceneManagement.Iscene;
 import org.mt4j.test.testUtil.DummyScene;
 import org.mt4j.util.MTColor;
 import org.mt4j.util.math.Vertex;
-import org.mt4j.css.util.*;
 import processing.core.PImage;
 
 public class IntegrationTestApp extends AbstractScene{
