@@ -99,16 +99,14 @@ public class PanProcessorTwoFingers extends AbstractCursorProcessor {
 				
 				//See if we can obtain a lock on both cursors
 				if (this.canLock(otherCursor, m)){
-					float newDistance = Vector3D.distance(
-							new Vector3D(otherCursor.getCurrentEvent().getPosX(), otherCursor.getCurrentEvent().getPosY(),0),
-							new Vector3D(m.getCurrentEvent().getPosX(), m.getCurrentEvent().getPosY(),0));
+					float newDistance = Vector3D.distance(otherCursor.getPosition(), m.getPosition());
 					if (newDistance < detectRadius) {
 						this.getLock(otherCursor, m);
 						logger.debug(this.getName() + " we could lock both cursors! And fingers in distance! - " + newDistance);
 						unUsedCursors.remove(otherCursor);
 						lockedCursors.add(otherCursor);
 						lockedCursors.add(m);
-						this.fireGestureEvent(new PanTwoFingerEvent(this, MTGestureEvent.GESTURE_DETECTED, positionEvent.getTargetComponent(), otherCursor, m, new Vector3D(0,0,0), positionEvent.getTargetComponent().getViewingCamera()));
+						this.fireGestureEvent(new PanTwoFingerEvent(this, MTGestureEvent.GESTURE_DETECTED, positionEvent.getTarget(), otherCursor, m, new Vector3D(0,0,0), positionEvent.getTarget().getViewingCamera()));
 					}else{
 						logger.debug(this.getName() + " Cursors not close enough to start gesture. Distance: " + newDistance);
 					}
@@ -128,16 +126,16 @@ public class PanProcessorTwoFingers extends AbstractCursorProcessor {
 		if (lockedCursors.size() == 2 && lockedCursors.contains(m)){
 			InputCursor firstCursor = lockedCursors.get(0);
 			InputCursor secondCursor = lockedCursors.get(1);
-			Vector3D distance = (m.equals(firstCursor))? getNewTranslation(positionEvent.getTargetComponent(), firstCursor, secondCursor) : getNewTranslation(positionEvent.getTargetComponent(), secondCursor, firstCursor);
+			Vector3D distance = (m.equals(firstCursor))? getNewTranslation(positionEvent.getTarget(), firstCursor, secondCursor) : getNewTranslation(positionEvent.getTarget(), secondCursor, firstCursor);
 //			//logger.debug("DIST: " + distance);
-			this.fireGestureEvent(new PanTwoFingerEvent(this, MTGestureEvent.GESTURE_UPDATED, positionEvent.getTargetComponent(), firstCursor, secondCursor, new Vector3D(distance.getX(),distance.getY(),0), positionEvent.getTargetComponent().getViewingCamera()));
+			this.fireGestureEvent(new PanTwoFingerEvent(this, MTGestureEvent.GESTURE_UPDATED, positionEvent.getTarget(), firstCursor, secondCursor, new Vector3D(distance.getX(),distance.getY(),0), positionEvent.getTarget().getViewingCamera()));
 		}
 	}
 	
 	
 	@Override
 	public void cursorEnded(InputCursor m, MTFingerInputEvt positionEvent) {
-		IMTComponent3D comp = positionEvent.getTargetComponent();
+		IMTComponent3D comp = positionEvent.getTarget();
 		logger.debug(this.getName() + " INPUT_ENDED RECIEVED - MOTION: " + m.getId());
 		
 		if (lockedCursors.size() == 2 && lockedCursors.contains(m)){
@@ -147,9 +145,7 @@ public class PanProcessorTwoFingers extends AbstractCursorProcessor {
 			if (unUsedCursors.size() > 0){ //Check if there are other cursors we could use for scaling if one was removed
 				InputCursor futureCursor = unUsedCursors.get(0);
 				if (this.canLock(futureCursor)){ //check if we have priority to lock another cursor and use it
-					float newDistance = Vector3D.distance(
-							new Vector3D(leftOverCursor.getCurrentEvent().getPosX(), leftOverCursor.getCurrentEvent().getPosY(),0),
-							new Vector3D(futureCursor.getCurrentEvent().getPosX(), futureCursor.getCurrentEvent().getPosY(),0));
+					float newDistance = Vector3D.distance(leftOverCursor.getPosition(), futureCursor.getPosition());
 					if (newDistance < detectRadius) {//Check if other cursor is in distance 
 						this.getLock(futureCursor);
 						unUsedCursors.remove(futureCursor);
@@ -191,9 +187,6 @@ public class PanProcessorTwoFingers extends AbstractCursorProcessor {
 	
 	
 
-	/* (non-Javadoc)
-	 * @see org.mt4j.input.inputAnalyzers.IInputAnalyzer#cursorLocked(org.mt4j.input.inputData.InputCursor, org.mt4j.input.inputAnalyzers.IInputAnalyzer)
-	 */
 	@Override
 	public void cursorLocked(InputCursor m, IInputProcessor lockingAnalyzer) {
 		if (lockingAnalyzer instanceof AbstractComponentProcessor){
@@ -213,9 +206,6 @@ public class PanProcessorTwoFingers extends AbstractCursorProcessor {
 
 	
 	
-	/* (non-Javadoc)
-	 * @see org.mt4j.input.inputAnalyzers.IInputAnalyzer#cursorUnlocked(org.mt4j.input.inputData.InputCursor)
-	 */
 	@Override
 	public void cursorUnlocked(InputCursor m) {
 		logger.debug(this.getName() + " Recieved UNLOCKED signal for cursor ID: " + m.getId());
@@ -231,9 +221,7 @@ public class PanProcessorTwoFingers extends AbstractCursorProcessor {
 
 				//See if we can obtain a lock on both cursors
 				if (this.canLock(firstCursor, secondCursor)){
-					float newDistance = Vector3D.distance(
-							new Vector3D(firstCursor.getCurrentEvent().getPosX(), firstCursor.getCurrentEvent().getPosY(),0),
-							new Vector3D(secondCursor.getCurrentEvent().getPosX(), secondCursor.getCurrentEvent().getPosY(),0));
+					float newDistance = Vector3D.distance(firstCursor.getPosition(),secondCursor.getPosition());
 					if (newDistance < detectRadius) {//Check if other cursor is in distance 
 						this.getLock(firstCursor, secondCursor);
 						unUsedCursors.remove(firstCursor);
@@ -269,19 +257,19 @@ public class PanProcessorTwoFingers extends AbstractCursorProcessor {
 	 */
 	private Vector3D getNewTranslation(IMTComponent3D comp, InputCursor movingCursor, InputCursor otherCursor){
 		Vector3D fromFirstFinger = ToolsGeometry.getRayPlaneIntersection(
-				Tools3D.getCameraPickRay(applet, comp.getViewingCamera(), movingCursor.getPreviousEvent().getPosX(), movingCursor.getPreviousEvent().getPosY()), 
+				Tools3D.getCameraPickRay(applet, comp.getViewingCamera(), movingCursor.getPreviousEvent().getScreenX(), movingCursor.getPreviousEvent().getScreenY()), 
 				planeNormal, 
 				pointInPlane);
 		
 		Vector3D fromSecondFinger = ToolsGeometry.getRayPlaneIntersection(
-				Tools3D.getCameraPickRay(applet, comp.getViewingCamera(), otherCursor.getCurrentEvent().getPosX(), otherCursor.getCurrentEvent().getPosY()), 
+				Tools3D.getCameraPickRay(applet, comp.getViewingCamera(), otherCursor.getCurrentEvent().getScreenX(), otherCursor.getCurrentEvent().getScreenY()), 
 				planeNormal, 
 				pointInPlane);
 		
 		Vector3D oldMiddlePoint = getMiddlePointBetweenFingers(fromSecondFinger, fromFirstFinger);
 		
 		Vector3D toFirstFinger = ToolsGeometry.getRayPlaneIntersection(
-				Tools3D.getCameraPickRay(applet, comp.getViewingCamera(), movingCursor.getCurrentEvent().getPosX(), movingCursor.getCurrentEvent().getPosY()), 
+				Tools3D.getCameraPickRay(applet, comp.getViewingCamera(), movingCursor.getCurrentEvent().getScreenX(), movingCursor.getCurrentEvent().getScreenY()), 
 				planeNormal, 
 				pointInPlane);
 		
@@ -307,9 +295,6 @@ public class PanProcessorTwoFingers extends AbstractCursorProcessor {
 	
 	
 	
-	/* (non-Javadoc)
-	 * @see org.mt4j.input.inputAnalyzers.componentAnalyzers.AbstractComponentInputAnalyzer#getName()
-	 */
 	@Override
 	public String getName() {
 		return "two finger pan detector";

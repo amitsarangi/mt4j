@@ -22,9 +22,7 @@ import java.awt.Image;
 import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.image.MemoryImageSource;
-import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -46,15 +44,12 @@ import org.mt4j.input.inputProcessors.globalProcessors.AbstractGlobalInputProces
 import org.mt4j.input.inputSources.AbstractInputSource;
 import org.mt4j.input.inputSources.IinputSourceListener;
 import org.mt4j.input.inputSources.KeyboardInputSource;
-import org.mt4j.input.inputSources.MacTrackpadSource;
 import org.mt4j.input.inputSources.MouseInputSource;
 import org.mt4j.input.inputSources.MultipleMiceInputSource;
 import org.mt4j.input.inputSources.TuioInputSource;
 import org.mt4j.input.inputSources.Win7NativeTouchSource;
 import org.mt4j.sceneManagement.Iscene;
 import org.mt4j.util.MT4jSettings;
-
-import processing.core.PApplet;
 
 
 
@@ -92,16 +87,24 @@ public class InputManager {
 	 * @param pa the processing context
 	 */
 	public InputManager(MTApplication pa) {
-		super();
-		this.registeredInputSources	= new ArrayList<AbstractInputSource>();
-
-		this.inputProcessorsToScene = new HashMap<AbstractGlobalInputProcessor, Iscene>();
-		
-		this.app = pa;
-		
-		this.registerDefaultInputSources();
+		this(pa, true);
 	}
 	
+	
+	/**
+	 * Instantiates a new input manager.
+	 * 
+	 * @param pa the processing context
+	 */
+	public InputManager(MTApplication pa, boolean registerDefaultSources) {
+		super();
+		this.registeredInputSources	= new ArrayList<AbstractInputSource>();
+		this.inputProcessorsToScene = new HashMap<AbstractGlobalInputProcessor, Iscene>();
+		this.app = pa;
+		
+		if (registerDefaultSources)
+			this.registerDefaultInputSources();
+	}
 	
 	
 	/**
@@ -171,10 +174,12 @@ public class InputManager {
 	    	}
 	    }
 	    
-	    //FIXME TEST! check which versions it supports and only start there!
+	    //check which versions it supports and only start there!
+	    /*
 	    if (System.getProperty("os.name").toLowerCase().contains("mac os x")){
 	    	this.registerInputSource(new MacTrackpadSource(app));
 	    }
+	    */
 
 	    KeyboardInputSource keyInput= new KeyboardInputSource(app);
 		TuioInputSource tuioInput 	= new TuioInputSource(app);
@@ -194,12 +199,11 @@ public class InputManager {
 		if (!registeredInputSources.contains(newInputSource)){
 			registeredInputSources.add(newInputSource);
 			//Add all processors to the new input source
-			Set<AbstractGlobalInputProcessor> set = inputProcessorsToScene.keySet(); 
-			for (Iterator<AbstractGlobalInputProcessor> iter = set.iterator(); iter.hasNext();) {
-				AbstractGlobalInputProcessor processor = (AbstractGlobalInputProcessor) iter.next();
-				//newInputSource.addInputListener(processor);
-				this.saveAddInputListenerToSource(newInputSource, processor);
-			}
+			Set<AbstractGlobalInputProcessor> set = inputProcessorsToScene.keySet();
+            for (AbstractGlobalInputProcessor processor : set) {
+                //newInputSource.addInputListener(processor);
+                this.saveAddInputListenerToSource(newInputSource, processor);
+            }
 			
 			//Inform the input source that it is now registered with the application
 			newInputSource.onRegistered();
@@ -338,14 +342,12 @@ public class InputManager {
 	public AbstractGlobalInputProcessor[] getGlobalInputProcessors(Iscene scene){
 		List<AbstractGlobalInputProcessor> processors = new ArrayList<AbstractGlobalInputProcessor>();
 		
-		Set<AbstractGlobalInputProcessor> set = inputProcessorsToScene.keySet(); 
-		for (Iterator<AbstractGlobalInputProcessor> iter = set.iterator(); iter.hasNext();) {
-			AbstractGlobalInputProcessor processor = (AbstractGlobalInputProcessor) iter.next();
-			
-			if (inputProcessorsToScene.get(processor).equals(scene)){
-				processors.add(processor);	
-			}
-		}
+		Set<AbstractGlobalInputProcessor> set = inputProcessorsToScene.keySet();
+        for (AbstractGlobalInputProcessor processor : set) {
+            if (inputProcessorsToScene.get(processor).equals(scene)) {
+                processors.add(processor);
+            }
+        }
 		return processors.toArray(new AbstractGlobalInputProcessor[processors.size()]);
 	}
 	
@@ -355,13 +357,12 @@ public class InputManager {
 	 * @param scene the scene
 	 */
 	public void enableGlobalInputProcessors(Iscene scene){
-		Set<AbstractGlobalInputProcessor> set = inputProcessorsToScene.keySet(); 
-		for (Iterator<AbstractGlobalInputProcessor> iter = set.iterator(); iter.hasNext();) {
-			AbstractGlobalInputProcessor processor = (AbstractGlobalInputProcessor) iter.next();
-			if (inputProcessorsToScene.get(processor).equals(scene)){
-				processor.setDisabled(false);
-			}
-		}
+		Set<AbstractGlobalInputProcessor> set = inputProcessorsToScene.keySet();
+        for (AbstractGlobalInputProcessor processor : set) {
+            if (inputProcessorsToScene.get(processor).equals(scene)) {
+                processor.setDisabled(false);
+            }
+        }
 	}
 	
 	/**
@@ -370,13 +371,12 @@ public class InputManager {
 	 * @param scene the scene
 	 */
 	public void disableGlobalInputProcessors(Iscene scene){
-		Set<AbstractGlobalInputProcessor> set = inputProcessorsToScene.keySet(); 
-		for (Iterator<AbstractGlobalInputProcessor> iter = set.iterator(); iter.hasNext();) {
-			AbstractGlobalInputProcessor processor = (AbstractGlobalInputProcessor) iter.next();
-			if (inputProcessorsToScene.get(processor).equals(scene)){
-				processor.setDisabled(true);
-			}
-		}
+		Set<AbstractGlobalInputProcessor> set = inputProcessorsToScene.keySet();
+        for (AbstractGlobalInputProcessor processor : set) {
+            if (inputProcessorsToScene.get(processor).equals(scene)) {
+                processor.setDisabled(true);
+            }
+        }
 	}
 	
 	
@@ -387,10 +387,9 @@ public class InputManager {
 	 */
 	public void removeGlobalInputProcessors(Iscene scene){
 		AbstractGlobalInputProcessor[] sceneProcessors = this.getGlobalInputProcessors(scene);
-		for (int i = 0; i < sceneProcessors.length; i++) {
-			AbstractGlobalInputProcessor abstractGlobalInputProcessor = sceneProcessors[i];
-			this.unregisterGlobalInputProcessor(abstractGlobalInputProcessor);
-		}
+        for (AbstractGlobalInputProcessor abstractGlobalInputProcessor : sceneProcessors) {
+            this.unregisterGlobalInputProcessor(abstractGlobalInputProcessor);
+        }
 	}
 
 

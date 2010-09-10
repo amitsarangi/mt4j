@@ -222,27 +222,26 @@ public class Model3dsFileFactory extends ModelImporterFactory{
 
 						//If not, create a new group and save it in map
 						if (group == null){
-							group = new Group(new Integer(fmat.matIndex()).toString());
+							group = new Group(Integer.toString(fmat.matIndex()));
 							materialIdToGroup.put(fmat.matIndex(), group);
 						}
 
 						//Go through all pointers to the faces for this material 
 						//and get the corresponding face
-						for (int j = 0; j < faceIndicesForMaterial.length; j++) {
-							int k = faceIndicesForMaterial[j];
-							Face3ds face = m.face(k);
+                        for (int k : faceIndicesForMaterial) {
+                            Face3ds face = m.face(k);
 
-							AFace aFace = new AFace();
-							aFace.p0 = face.P0;
-							aFace.p1 = face.P1;
-							aFace.p2 = face.P2;
+                            AFace aFace = new AFace();
+                            aFace.p0 = face.P0;
+                            aFace.p1 = face.P1;
+                            aFace.p2 = face.P2;
 
-							aFace.t0 = face.P0;
-							aFace.t1 = face.P1;
-							aFace.t2 = face.P2;
+                            aFace.t0 = face.P0;
+                            aFace.t1 = face.P1;
+                            aFace.t2 = face.P2;
 
-							group.addFace(aFace);
-						}
+                            group.addFace(aFace);
+                        }
 					}
 
 					Iterator<Integer> it = materialIdToGroup.keySet().iterator();
@@ -275,7 +274,7 @@ public class Model3dsFileFactory extends ModelImporterFactory{
 							MTTriangleMesh mesh = new MTTriangleMesh(pa, geometry);
 
 							if (mesh != null){
-								mesh.setName(m.name() + " material: " + new Integer(currentGroupName).toString());
+								mesh.setName(m.name() + " material: " + Integer.toString(currentGroupName));
 								//Assign texture
 								this.assignMaterial(pathToModel, file, scene, m, currentGroupName, mesh);
 
@@ -333,7 +332,7 @@ public class Model3dsFileFactory extends ModelImporterFactory{
 		long timeB = System.currentTimeMillis();
 		long delta = timeB-timeA;
 		logger.debug("Loaded model in: " + delta + " ms");
-		return (MTTriangleMesh[])returnMeshList.toArray(new MTTriangleMesh[returnMeshList.size()]);
+		return returnMeshList.toArray(new MTTriangleMesh[returnMeshList.size()]);
 	}
 			
 			
@@ -356,8 +355,8 @@ public class Model3dsFileFactory extends ModelImporterFactory{
 				String materialName = mat.name();
 				if (debug)
 					logger.debug("Material name for mesh \"" + mesh.getName() + ":-> \"" + materialName + "\"");
-				materialName.trim();
-				materialName.toLowerCase();
+				materialName = materialName.trim();
+				materialName = materialName.toLowerCase();
 
 				//Try to load texture
 				try {

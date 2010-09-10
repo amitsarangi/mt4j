@@ -26,7 +26,7 @@ package org.mt4j.sceneManagement;
  * the SceneChange event occurs, that object's appropriate
  * method is invoked.
  * 
- * @see #org.mt4j.sceneManagement.SceneChangeEvent
+ * @see org.mt4j.sceneManagement.SceneChangeEvent
  * 
  * @author Christopher Ruff
  */

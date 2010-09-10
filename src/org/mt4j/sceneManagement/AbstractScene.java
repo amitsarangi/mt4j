@@ -72,7 +72,7 @@ public abstract class AbstractScene implements Iscene {
 	private String name;
 
 	/** The pre draw actions. */
-	private Deque<IPreDrawAction> preDrawActions;
+	private final Deque<IPreDrawAction> preDrawActions;
 	
 	/** The clear color. */
 	private MTColor clearColor;
@@ -143,13 +143,13 @@ public abstract class AbstractScene implements Iscene {
 	
 	
 	/* (non-Javadoc)
-	 * @see mTouch.sceneManagement.Iscene#drawAndUpdate(long)
+	 * @see org.mt4j.sceneManagement.Iscene#drawAndUpdate(processing.core.PGraphics, long)
 	 */
 	public void drawAndUpdate(PGraphics graphics, long timeDelta){
 		//Process preDrawActions
 		synchronized (preDrawActions) {
 			for (Iterator<IPreDrawAction> iter = preDrawActions.iterator(); iter.hasNext();) {
-				IPreDrawAction action = (IPreDrawAction) iter.next();
+				IPreDrawAction action = iter.next();
 				action.processAction();
 				if (!action.isLoop()){
 					iter.remove();
@@ -232,7 +232,7 @@ public abstract class AbstractScene implements Iscene {
 	
 
 	/* (non-Javadoc)
-	 * @see mTouch.sceneManagement.Iscene#getMainCanvas()
+	 * @see org.mt4j.sceneManagement.Iscene#getCanvas()
 	 */
 	public MTCanvas getCanvas() {
 		return mainCanvas;
@@ -240,7 +240,7 @@ public abstract class AbstractScene implements Iscene {
 
 	
 	/* (non-Javadoc)
-	 * @see mTouch.sceneManagement.Iscene#getSceneCam()
+	 * @see org.mt4j.sceneManagement.Iscene#getSceneCam()
 	 */
 	public Icamera getSceneCam() {
 		return sceneCam;
@@ -379,10 +379,9 @@ public abstract class AbstractScene implements Iscene {
 				public void run() {
 					//Remove all global input processors of this scene from listening the the input sources
 					AbstractGlobalInputProcessor[] inputProcessors = getGlobalInputProcessors();
-					for (int i = 0; i < inputProcessors.length; i++) {
-						AbstractGlobalInputProcessor abstractGlobalInputProcessor = inputProcessors[i];
-						unregisterGlobalInputProcessor(abstractGlobalInputProcessor);
-					}
+                    for (AbstractGlobalInputProcessor abstractGlobalInputProcessor : inputProcessors) {
+                        unregisterGlobalInputProcessor(abstractGlobalInputProcessor);
+                    }
 				}
 			});
 			

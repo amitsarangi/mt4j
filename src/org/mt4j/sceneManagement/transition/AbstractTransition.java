@@ -41,10 +41,9 @@ public abstract class AbstractTransition extends AbstractScene implements ITrans
 
 		//Remove all global input processors - we dont want the transition to respond to input
 		AbstractGlobalInputProcessor[] inputProcessors = this.getGlobalInputProcessors();
-		for (int i = 0; i < inputProcessors.length; i++) {
-			AbstractGlobalInputProcessor abstractGlobalInputProcessor = inputProcessors[i];
-			this.unregisterGlobalInputProcessor(abstractGlobalInputProcessor);
-		}
+        for (AbstractGlobalInputProcessor abstractGlobalInputProcessor : inputProcessors) {
+            this.unregisterGlobalInputProcessor(abstractGlobalInputProcessor);
+        }
 		//		this.previousScene = previousScene;
 		//		this.nextScene = nextScene;
 	}

@@ -27,7 +27,7 @@ public class MTEvent {
 	private Object source;
 	
 	/** The creation time stamp. */
-	private long creationTimeStamp;
+	private long timeStamp;
 	
 	/** The consumed. */
 	private boolean consumed;
@@ -41,7 +41,7 @@ public class MTEvent {
 		super();
 		consumed = false;
 		this.source = source;
-		this.creationTimeStamp = System.currentTimeMillis();
+		this.timeStamp = System.currentTimeMillis();
 	}
 
 	/**
@@ -58,27 +58,27 @@ public class MTEvent {
 	 * 
 	 * @return the when
 	 */
-	public long getWhen(){
-		return creationTimeStamp;
+	public long getTimeStamp(){
+		return timeStamp;
 	}
 
-	/**
-	 * Checks if is consumed.
-	 * 
-	 * @return true, if is consumed
-	 */
-	public boolean isConsumed() {
-		return consumed;
-	}
-
-	/**
-	 * Sets the consumed.
-	 * 
-	 * @param consumed the new consumed
-	 */
-	public void setConsumed(boolean consumed) {
-		this.consumed = consumed;
-	}
+//	/**
+//	 * Checks if is consumed.
+//	 * 
+//	 * @return true, if is consumed
+//	 */
+//	public boolean isConsumed() {
+//		return consumed;
+//	}
+//
+//	/**
+//	 * Sets the consumed.
+//	 * 
+//	 * @param consumed the new consumed
+//	 */
+//	public void setConsumed(boolean consumed) {
+//		this.consumed = consumed;
+//	}
 
 	
 }

@@ -37,7 +37,7 @@ import org.mt4j.input.inputData.MTInputEvent;
  * @author Christopher Ruff
  */
 public class InputRetargeter extends AbstractGlobalInputProcessor {
-	private Map<InputCursor, IMTComponent3D> motionToObjectMap;
+	private Map<InputCursor, IMTComponent3D> cursorToObjectMap;
 	
 	/** The app info provider. */
 	private IHitTestInfoProvider appInfoProvider;
@@ -45,7 +45,7 @@ public class InputRetargeter extends AbstractGlobalInputProcessor {
 	public InputRetargeter(IHitTestInfoProvider appInfoProvider) {
 		super();
 		this.appInfoProvider = appInfoProvider;
-		this.motionToObjectMap = new HashMap<InputCursor, IMTComponent3D>();
+		this.cursorToObjectMap = new HashMap<InputCursor, IMTComponent3D>();
 	}
 
 
@@ -59,19 +59,25 @@ public class InputRetargeter extends AbstractGlobalInputProcessor {
 //				logger.debug("Finger DOWN-> " + " ID:" + posEvt.getId() + "; X:" + posEvt.getPosX() + " Y:" + posEvt.getPosY() + "; Source: " + posEvt.getSource());
 //				System.out.println("Finger DOWN-> " + " ID:" + posEvt.getId() + "; X:" + posEvt.getPosX() + " Y:" + posEvt.getPosY() + "; Source: " + posEvt.getSource()+  " CursorID: " + m.getId() + " appInfoProv: " + appInfoProvider);
 				//Check if there is an object under the cursor and save it to a hashtable with the event if so
-				IMTComponent3D obj = appInfoProvider.getComponentAt(posEvt.getPosX(), posEvt.getPosY());
+				IMTComponent3D obj = appInfoProvider.getComponentAt(posEvt.getScreenX(), posEvt.getScreenY());
 				if (obj != null){
-					motionToObjectMap.put(m, obj);
-					posEvt.setTargetComponent(obj);
+					cursorToObjectMap.put(m, obj);
+					posEvt.setTarget(obj);
+//					posEvt.setCurrentTarget(obj.getRoot()); //Enable this if using event CAPTURING PHASE
+					posEvt.setCurrentTarget(obj);
+					posEvt.setEventPhase(MTInputEvent.CAPTURING_PHASE);
 					this.fireInputEvent(posEvt);
 				}
 			}
 			break;
 			case AbstractCursorInputEvt.INPUT_UPDATED:{
 //				logger.debug("Finger UPDATE-> " + " ID:" + posEvt.getId() + "; X:" + posEvt.getPositionX() + " Y:" + posEvt.getPositionY() + "; Source: " + posEvt.getSource());
-				IMTComponent3D associatedObj = motionToObjectMap.get(m);
+				IMTComponent3D associatedObj = cursorToObjectMap.get(m);
 				if (associatedObj != null){
-					posEvt.setTargetComponent(associatedObj);
+					posEvt.setTarget(associatedObj);
+//					posEvt.setCurrentTarget(associatedObj.getRoot());//Enable this if using event CAPTURING PHASE
+					posEvt.setCurrentTarget(associatedObj);
+					posEvt.setEventPhase(MTInputEvent.CAPTURING_PHASE);
 					this.fireInputEvent(posEvt);
 				}
 			}
@@ -79,9 +85,12 @@ public class InputRetargeter extends AbstractGlobalInputProcessor {
 			case AbstractCursorInputEvt.INPUT_ENDED:{
 //				logger.debug("Finger UP-> " + " ID:" + posEvt.getId() + "; X:" + posEvt.getPositionX() + " Y:" + posEvt.getPositionY() + "; Source: " + posEvt.getSource());
 //				IMTComponent3D associatedObj = motionToObjectMap.get(m);
-				IMTComponent3D associatedObj = motionToObjectMap.remove(m);
+				IMTComponent3D associatedObj = cursorToObjectMap.remove(m);
 				if (associatedObj != null){
-					posEvt.setTargetComponent(associatedObj);
+					posEvt.setTarget(associatedObj);
+//					posEvt.setCurrentTarget(associatedObj.getRoot());//Enable this if using event CAPTURING PHASE
+					posEvt.setCurrentTarget(associatedObj);
+					posEvt.setEventPhase(MTInputEvent.CAPTURING_PHASE);
 					this.fireInputEvent(posEvt);
 //					motionToObjectMap.remove(m);
 				}

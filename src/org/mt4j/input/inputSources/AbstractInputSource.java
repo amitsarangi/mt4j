@@ -48,8 +48,8 @@ public abstract class AbstractInputSource {
 	
 	/**
 	 * Instantiates a new abstract input source.
-	 * 
-	 * @param applet the applet
+	 *
+	 * @param mtApp the mt app
 	 */
 	public AbstractInputSource(MTApplication mtApp) {
 		this.inputListeners = new ArrayList<IinputSourceListener>();
@@ -185,11 +185,11 @@ public abstract class AbstractInputSource {
 	 */
 	private void fireInputEvent(MTInputEvent inputEvt){
 		//Adds the events to the cursors one by one before firing
-		inputEvt.preFire();
-		
-		for (int i=0; i<inputProcessorsToFireTo.size(); i++) {
-			inputProcessorsToFireTo.get(i).processInputEvent(inputEvt);
-		}
+		inputEvt.onFired();
+
+        for (IinputSourceListener anInputProcessorsToFireTo : inputProcessorsToFireTo) {
+            anInputProcessorsToFireTo.processInputEvent(inputEvt);
+        }
 		/*
 		for (IinputSourceListener listener : inputListeners){
 		listener.processInputEvent(inputEvt);
@@ -224,7 +224,7 @@ public abstract class AbstractInputSource {
 	 * @return the input listeners
 	 */
 	public synchronized IinputSourceListener[] getInputListeners(){
-		return (IinputSourceListener[])inputListeners.toArray(new IinputSourceListener[this.inputListeners.size()]);
+		return inputListeners.toArray(new IinputSourceListener[this.inputListeners.size()]);
 	}
 	
 	

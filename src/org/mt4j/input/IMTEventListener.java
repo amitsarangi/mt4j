@@ -28,7 +28,7 @@ package org.mt4j.input;
  * the IMTEvent event occurs, that object's appropriate
  * method is invoked.
  * 
- * @see #org.mt4j.input.MTEvent
+ * @see org.mt4j.input.MTEvent
  */
 public interface IMTEventListener { 
 	

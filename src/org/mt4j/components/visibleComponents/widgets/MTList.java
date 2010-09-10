@@ -216,12 +216,11 @@ public class MTList extends MTClipRectangle {
 			
 			//Remove the default drag listener from the cell for safety
 			IGestureEventListener[] l = item.getGestureListeners();
-	    	for (int j = 0; j < l.length; j++) {
-				IGestureEventListener gestureEventListener = l[j];
-				if (gestureEventListener.getClass().equals(DefaultDragAction.class)){
-					item.removeGestureEventListener(DragProcessor.class, gestureEventListener);
-				}
-			}
+            for (IGestureEventListener gestureEventListener : l) {
+                if (gestureEventListener.getClass().equals(DefaultDragAction.class)) {
+                    item.removeGestureEventListener(DragProcessor.class, gestureEventListener);
+                }
+            }
 	    	
 			item.addGestureListener(DragProcessor.class, new ListCellDragListener(this));
 			
@@ -253,12 +252,11 @@ public class MTList extends MTClipRectangle {
 		
 		private boolean hasDragProcessor(MTComponent comp){
 			AbstractComponentProcessor[] ps = comp.getInputProcessors();
-			for (int i = 0; i < ps.length; i++) {
-				AbstractComponentProcessor p = ps[i];
-				if (p instanceof DragProcessor){
-					return true;
-				}
-			}
+            for (AbstractComponentProcessor p : ps) {
+                if (p instanceof DragProcessor) {
+                    return true;
+                }
+            }
 			return false;
 		}
 		
@@ -287,15 +285,14 @@ public class MTList extends MTClipRectangle {
 			if (this.cells.size() > 0 && !this.cells.get(0).isNoStroke()){//FIXME TEST so that stroke isnt cut off TOP because of clipping
 				offset = this.cells.get(0).getStrokeWeight();
 			}
-			for (int i = 0; i < this.cells.size(); i++) {
-				MTListCell cell = this.cells.get(i);
-				cell.setAnchor(PositionAnchor.UPPER_LEFT);
+            for (MTListCell cell : this.cells) {
+                cell.setAnchor(PositionAnchor.UPPER_LEFT);
 //				Vector3D pos = new Vector3D(0, offset, 0);
-				//FIXME TEST so that stroke isnt cut off left because of clipping
-				Vector3D pos = new Vector3D(listContainerUpperLeftLocal.x + cell.getStrokeWeight(), listContainerUpperLeftLocal.y + offset, 0); 
-				cell.setPositionRelativeToParent(pos);
-				offset += cellYPadding + cell.getHeightXY(TransformSpace.RELATIVE_TO_PARENT); //TODO take strokeweight into account here,too
-			}
+                //FIXME TEST so that stroke isnt cut off left because of clipping
+                Vector3D pos = new Vector3D(listContainerUpperLeftLocal.x + cell.getStrokeWeight(), listContainerUpperLeftLocal.y + offset, 0);
+                cell.setPositionRelativeToParent(pos);
+                offset += cellYPadding + cell.getHeightXY(TransformSpace.RELATIVE_TO_PARENT); //TODO take strokeweight into account here,too
+            }
 		}
 		
 		/**
@@ -322,13 +319,12 @@ public class MTList extends MTClipRectangle {
 		
 		private float calcAllCellsWidth() {
 			float biggest = Float.MIN_VALUE;
-			for (int i = 0; i < this.cells.size(); i++) {
-				MTListCell cell = this.cells.get(i);
-				float cellWidth = cell.getWidthXY(TransformSpace.RELATIVE_TO_PARENT);
-				if (cellWidth >= biggest){
-					biggest = cellWidth;
-				}
-			}
+            for (MTListCell cell : this.cells) {
+                float cellWidth = cell.getWidthXY(TransformSpace.RELATIVE_TO_PARENT);
+                if (cellWidth >= biggest) {
+                    biggest = cellWidth;
+                }
+            }
 			return biggest;
 //			return preferredCellWidth;
 		}

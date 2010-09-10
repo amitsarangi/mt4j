@@ -32,8 +32,8 @@ public class MacTrackpadSource extends AbstractInputSource implements Observer {
 		this.tpo = TouchpadObservable.getInstance();
 		this.tpo.addObserver(this);
 		
-		this.windowWidth = MT4jSettings.getInstance().getScreenWidth();
-		this.windowHeight = MT4jSettings.getInstance().getScreenHeight();
+		this.windowWidth = MT4jSettings.getInstance().getWindowWidth();
+		this.windowHeight = MT4jSettings.getInstance().getWindowHeight();
 		
 		this.fingerIdToCursorId = new HashMap<Integer, Long>();
 	}

@@ -175,7 +175,7 @@ public abstract class ModelImporterFactory {
 		String suffix;
 		if (indexOfPoint != -1){
 			suffix = pathToFile.substring(indexOfPoint, pathToFile.length());
-			suffix.toLowerCase();
+			suffix = suffix.toLowerCase();
 		}else{
 			suffix = "";
 		}

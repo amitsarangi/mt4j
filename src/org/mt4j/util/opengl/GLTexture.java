@@ -1102,9 +1102,19 @@ public class GLTexture extends PImage {
 	
 	@Override
 	protected void finalize() throws Throwable {
+		//System.out.println("Finalizing GLTEXTURE - " + this);
+		if (this.app instanceof MTApplication) {
+			MTApplication mtApp = (MTApplication) this.app;
+			mtApp.invokeLater(new Runnable() {
+				public void run() {
+					destroy();
+				}
+			});
+		}else{
+			//TODO use registerPre()?
+			//is the object even valid after finalize() is called??
+		}
 		super.finalize();
-		System.out.println("Finalizing GLTEXTURE - " + this);
-		this.destroy();
 	}
 
 }

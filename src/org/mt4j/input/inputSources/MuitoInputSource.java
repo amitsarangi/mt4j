@@ -51,8 +51,8 @@ public class MuitoInputSource extends AbstractInputSource implements MotionProvi
 	 */
 	public MuitoInputSource(MTApplication pa, String server, int port){
 		super(pa);
-	    Settings.getInstance().setScreensizeX(MT4jSettings.getInstance().getScreenWidth());
-	    Settings.getInstance().setScreensizeY(MT4jSettings.getInstance().getScreenHeight());
+	    Settings.getInstance().setScreensizeX(MT4jSettings.getInstance().getWindowWidth());
+	    Settings.getInstance().setScreensizeY(MT4jSettings.getInstance().getWindowHeight());
 		MuitoMotionTrackerPorvider muitoProvider = new MuitoMotionTrackerPorvider(server, port);
 	    muitoProvider.addListener(this);
 //	    muitoProvider.addMotionFilter(new CalibrationFilter());

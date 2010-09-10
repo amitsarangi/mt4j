@@ -31,10 +31,10 @@ import org.mt4j.input.inputProcessors.componentProcessors.tapProcessor.TapEvent;
 import org.mt4j.sceneManagement.Iscene;
 import org.mt4j.util.MT4jSettings;
 import org.mt4j.util.MTColor;
-import org.mt4j.util.animation.Animation;
 import org.mt4j.util.animation.AnimationEvent;
+import org.mt4j.util.animation.IAnimation;
 import org.mt4j.util.animation.IAnimationListener;
-import org.mt4j.util.animation.MultiPurposeInterpolator;
+import org.mt4j.util.animation.ani.AniAnimation;
 import org.mt4j.util.math.Vector3D;
 
 import processing.core.PImage;
@@ -71,7 +71,7 @@ extends MTRoundRectangle {
 	 * @param applet the applet
 	 */
 	public MTSceneWindow(final Iscene scene, float borderWidth, float borderHeight, MTApplication applet) {
-		this(scene, borderWidth, borderHeight, applet, Math.round(MT4jSettings.getInstance().getScreenWidth() * 0.6f), Math.round(MT4jSettings.getInstance().getScreenHeight() * 0.6f));
+		this(scene, borderWidth, borderHeight, applet, Math.round(MT4jSettings.getInstance().getWindowWidth() * 0.6f), Math.round(MT4jSettings.getInstance().getWindowHeight() * 0.6f));
 	}
 	
 	/**
@@ -86,7 +86,7 @@ extends MTRoundRectangle {
 	 */
 	public MTSceneWindow(final Iscene scene, float borderWidth, float borderHeight, final MTApplication applet, int fboWidth, int fboHeight) {
 //		super(0-borderWidth, 0-borderHeight, applet.width+2*borderWidth, applet.height+2*borderHeight, applet);
-		super(0-borderWidth, 0-borderHeight, 0, MT4jSettings.getInstance().getScreenWidth()+2*borderWidth, MT4jSettings.getInstance().getScreenHeight()+2*borderHeight, 30, 30, applet);
+		super(0-borderWidth, 0-borderHeight, 0, MT4jSettings.getInstance().getWindowWidth()+2*borderWidth, MT4jSettings.getInstance().getWindowHeight()+2*borderHeight, 30, 30, applet);
 		
 		this.setStrokeColor(new MTColor(0,0,0));
 		
@@ -175,15 +175,17 @@ extends MTRoundRectangle {
 	
 	public void close(){
 		float width = this.getWidthXY(TransformSpace.RELATIVE_TO_PARENT);
-		Animation closeAnim = new Animation("Window Fade", new MultiPurposeInterpolator(width, 1, 350, 0.2f, 0.5f, 1), this);
+//		IAnimation closeAnim = new Animation("Window Fade", new MultiPurposeInterpolator(width, 1, 350, 0.2f, 0.5f, 1), this);
+		IAnimation closeAnim = new AniAnimation(width, 1, 350, AniAnimation.SINE_IN, this);
 		closeAnim.addAnimationListener(new IAnimationListener(){
 			public void processAnimationEvent(AnimationEvent ae) {
 //				float delta = ae.getAnimation().getInterpolator().getCurrentStepDelta();
 				switch (ae.getId()) {
 				case AnimationEvent.ANIMATION_STARTED:
 				case AnimationEvent.ANIMATION_UPDATED:
-					float currentVal = ae.getAnimation().getInterpolator().getCurrentValue();
+					float currentVal = ae.getAnimation().getValue();
 					setWidthXYRelativeToParent(currentVal);
+					rotateZ(getCenterPointRelativeToParent(), -ae.getCurrentStepDelta()*0.4f);
 					break;
 				case AnimationEvent.ANIMATION_ENDED:
 					setVisible(false);

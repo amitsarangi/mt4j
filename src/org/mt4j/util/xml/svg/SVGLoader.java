@@ -289,7 +289,7 @@ public class SVGLoader implements SVGConstants{
                 //FIXME HACK! this seems to help the "org.apache.batik.bridge.BridgeException: Unable to make sense of URL for connection" error
                 //occuring with windmill.svg if loading from inputstream instead of local file system file
                 //FIXME but this might create errors when loading external file like images from the relative svg path?
-            	((SVGDocument)doc).setDocumentURI("") ; 
+            	doc.setDocumentURI("") ; 
 //                String sub = filedescr.substring(0, filedescr.lastIndexOf(MTApplication.separator));
 //                System.out.println("F: " + filedescr + " sub; " + sub);
 //                svgDoc.setDocumentURI(sub+ MTApplication.separator) ; 
@@ -328,7 +328,7 @@ public class SVGLoader implements SVGConstants{
 		traverseSVGDoc(svgDoc, components);
 		opacityStack.pop();
 		
-		MTComponent[] comps = (MTComponent[])components.toArray(new MTComponent[components.size()]);
+		MTComponent[] comps = components.toArray(new MTComponent[components.size()]);
 		//Only returning the 1st component, since this should be the top-level <svg> element and only 1!?
 		return comps[0];
 	}
@@ -376,7 +376,7 @@ public class SVGLoader implements SVGConstants{
 			  SVGGraphicsElement svgGfx = (SVGGraphicsElement)node;
 			  //Handle inherited opacity settings
 			  float opac = queryPrimitiveFloatValue(svgGfx, "opacity", 1f);
-			  opacityStack.push(opac *= opacityStack.peek().floatValue());
+			  opacityStack.push(opac *= opacityStack.peek());
 		  }
 
 		  // if G (GROUP) element, add all children to this element
@@ -463,7 +463,7 @@ public class SVGLoader implements SVGConstants{
 			  //Traverse the children and add them to a new arraylist
 			  traverseChildren(gElem, groupChildren);
 			  
-			  MTComponent[] childComps = (MTComponent[])groupChildren.toArray(new MTComponent[groupChildren.size()]);
+			  MTComponent[] childComps = groupChildren.toArray(new MTComponent[groupChildren.size()]);
 			  //Add the children to the group
 			  group.addChildren(childComps);
 			  //Add the group to the arraylist of the parent
@@ -601,7 +601,7 @@ public class SVGLoader implements SVGConstants{
 
 							  /////////////////////////////////////
 							  //Get the character information - font, colors
-							  String newFamilyName = new String(fontFamily);
+							  String newFamilyName = fontFamily;
 							  float newFontSize = fontSize;
 							  MTColor newFillColor = new MTColor(fillColor);
 							  MTColor newStrokeColor = new MTColor(strokeColor);
@@ -626,13 +626,12 @@ public class SVGLoader implements SVGConstants{
 							  if (gvtFonts!=null){
 								  if (gvtFonts instanceof List) {
 									  List<?> fonts = (List<?>) gvtFonts;
-									  for (Iterator<?> iterator = fonts.iterator(); iterator.hasNext();) {
-										  Object o = (Object) iterator.next();
-										  if (o instanceof GVTFont) {
-											  aGvtFont = (GVTFont) o;
-											  //logger.debug("Char font family: " + aGvtFont.getFamilyName() + " Size:" + aGvtFont.getSize());
-										  }
-									  }
+                                      for (Object o : fonts) {
+                                          if (o instanceof GVTFont) {
+                                              aGvtFont = (GVTFont) o;
+                                              //logger.debug("Char font family: " + aGvtFont.getFamilyName() + " Size:" + aGvtFont.getSize());
+                                          }
+                                      }
 								  }
 							  }
 							  if (aGvtFont != null){
@@ -780,15 +779,14 @@ public class SVGLoader implements SVGConstants{
 							  }
 							  //Add character to the current textarea in the list
 							  if (!textAreas.isEmpty()){
-								  textAreas.get(textAreas.size()-1).appendCharByUnicode(new Character(currentChar).toString());							
+								  textAreas.get(textAreas.size()-1).appendCharByUnicode(Character.toString(currentChar));
 							  }
 						  }
 						  //Set the positions of the textareas
-						  for (Iterator<MTTextArea> iterator = textAreas.iterator(); iterator.hasNext();) {
-							  MTTextArea textArea = (MTTextArea) iterator.next();
-							  logger.debug("Adding text area at: " + (Vector3D) textArea.getUserData("posRelParent"));
-							  textArea.setPositionRelativeToParent((Vector3D) textArea.getUserData("posRelParent"));
-						  }
+                          for (MTTextArea textArea : textAreas) {
+                              logger.debug("Adding text area at: " + (Vector3D) textArea.getUserData("posRelParent"));
+                              textArea.setPositionRelativeToParent((Vector3D) textArea.getUserData("posRelParent"));
+                          }
 						  comps.addAll(textAreas);
 					  }
 
@@ -883,7 +881,7 @@ public class SVGLoader implements SVGConstants{
 		  // Opacity, not as a style attribute but a separate 
 		  // as group opacity doesnt get computed right, so we 
 		  // mannually track it on a stack
-		  float opacity = opacityStack.peek().floatValue(); 
+		  float opacity = opacityStack.peek();
 		  //logger.debug("INHERITED OPACITY: " + opacity);
 		  
 		  
@@ -901,9 +899,7 @@ public class SVGLoader implements SVGConstants{
 		  
 		  
 		  // Fill Opacity \\
-		  Value fillOpacValue = CSSUtilities.getComputedStyle(gfxElem, SVGCSSEngine.FILL_OPACITY_INDEX);
-		  float computedfillOpac = PaintServer.convertOpacity(fillOpacValue);
-		  fillOpacity = computedfillOpac;
+		  fillOpacity =  PaintServer.convertOpacity(CSSUtilities.getComputedStyle(gfxElem, SVGCSSEngine.FILL_OPACITY_INDEX));
 		  //Multiplicate inherited opacity with this components opacities
 		  fillOpacity 	*= opacity;
 		  //Save for eventual lineargradient creation later that needs the not interpolated value
@@ -939,9 +935,7 @@ public class SVGLoader implements SVGConstants{
 		  
 		  
 		  // Stroke Opacity \\
-		  Value strokeOpacValue = CSSUtilities.getComputedStyle(gfxElem, SVGCSSEngine.STROKE_OPACITY_INDEX);
-		  float computedStrokeOpacity = PaintServer.convertOpacity(strokeOpacValue);
-		  strokeOpacity = computedStrokeOpacity;
+		  strokeOpacity = PaintServer.convertOpacity(CSSUtilities.getComputedStyle(gfxElem, SVGCSSEngine.STROKE_OPACITY_INDEX));
 		  // Multiplicate inherited opacity with this components group opacities
 		  strokeOpacity *= opacity;
 		  
@@ -1364,7 +1358,7 @@ public class SVGLoader implements SVGConstants{
         java.awt.Color [] colors  = new java.awt.Color[stopLength];
         Iterator<Stop> iter = stops.iterator();
         for (int i=0; iter.hasNext(); ++i) {
-        	Stop stop = (Stop)iter.next();
+        	Stop stop = iter.next();
         	offsets[i] = stop.offset;
         	colors[i] = stop.color;
         }
@@ -1833,10 +1827,9 @@ public class SVGLoader implements SVGConstants{
 		
 		//Put gradient rectangle quads into a list
 		List<Vertex> gradientRectQuads = new ArrayList<Vertex>();
-		for (int i = 0; i < newBounds.length; i++) {
-			Vertex vertex = newBounds[i];
-			gradientRectQuads.add(vertex);
-		}
+        for (Vertex vertex : newBounds) {
+            gradientRectQuads.add(vertex);
+        }
 		
 		/* Bounding shape with gradient rectangle inside (can also overlap outlines)
 		 invBoundsVecs[0]   		invBoundsVecs[1]
@@ -1972,7 +1965,7 @@ public class SVGLoader implements SVGConstants{
 	    
 	
     private CycleMethodEnum getSpreadMethod(Element paintElement){
-    	String s = new String();
+    	String s = "";
         //SPREADMETHOD 'spreadMethod' attribute - default is pad
         CycleMethodEnum spreadMethod = MultipleGradientPaint.NO_CYCLE;
         s = SVGUtilities.getChainableAttributeNS(paintElement, null, SVG_SPREAD_METHOD_ATTRIBUTE, ctx);
@@ -1994,7 +1987,7 @@ public class SVGLoader implements SVGConstants{
     
     
     private AffineTransform getGradientTransform(Element paintElement){
-    	String s = new String();
+    	String s = "";
     	  //'gradientTransform' attribute - default is an Identity matrix
         AffineTransform transform;
         s = SVGUtilities.getChainableAttributeNS(paintElement, null, SVG_GRADIENT_TRANSFORM_ATTRIBUTE, ctx);
@@ -2305,7 +2298,7 @@ public class SVGLoader implements SVGConstants{
 			}else{
 				pathPoints.addAll(pathHandler.getReverseMoveToStack());
 			}
-			Vertex[] pathVertsStencilPrepared = (Vertex[])pathPoints.toArray(new Vertex[pathPoints.size()]);
+			Vertex[] pathVertsStencilPrepared = pathPoints.toArray(new Vertex[pathPoints.size()]);
 //			*/
 			
 			//Check if path vertices are empty
@@ -2529,9 +2522,8 @@ public class SVGLoader implements SVGConstants{
 		}
 		
 		//For lines or polygons do this
-//		MTPolygon poly = new MTPolygon(verts , pa);
-		MTPolygon poly = new SvgPolygon(verts,pa);
-		return poly;
+//		return new MTPolygon(verts , pa);
+		return new SvgPolygon(verts,pa);
 	}
 	
 	/**

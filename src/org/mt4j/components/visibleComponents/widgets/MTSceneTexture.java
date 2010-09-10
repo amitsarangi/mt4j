@@ -30,15 +30,16 @@ import org.mt4j.input.inputProcessors.globalProcessors.AbstractGlobalInputProces
 import org.mt4j.input.inputProcessors.globalProcessors.CursorTracer;
 import org.mt4j.sceneManagement.Iscene;
 import org.mt4j.util.MT4jSettings;
+import org.mt4j.util.camera.Icamera;
 import org.mt4j.util.math.Plane;
 import org.mt4j.util.math.Tools3D;
 import org.mt4j.util.math.Vector3D;
 import org.mt4j.util.math.Vertex;
 import org.mt4j.util.opengl.GLFboStack;
 import org.mt4j.util.opengl.GLFBO;
+import org.mt4j.util.opengl.GLStencilUtil;
 import org.mt4j.util.opengl.GLTexture;
 
-import processing.core.PConstants;
 import processing.core.PGraphics;
 import processing.opengl.PGraphicsOpenGL;
 
@@ -66,11 +67,11 @@ public class MTSceneTexture extends MTRectangle {
 	private MTSceneMenu sceneMenu;
 	
 	public MTSceneTexture(MTApplication pa, float x,	float y, Iscene theScene){
-		this(pa, x, y, Math.round(MT4jSettings.getInstance().getScreenWidth() * 0.6f), Math.round(MT4jSettings.getInstance().getScreenHeight() * 0.6f), theScene);
+		this(pa, x, y, Math.round(MT4jSettings.getInstance().getWindowWidth() * 0.6f), Math.round(MT4jSettings.getInstance().getWindowHeight() * 0.6f), theScene);
 	}
 
 	public MTSceneTexture(MTApplication pa, float x,	float y, int fboWidth, int fboHeight, Iscene theScene){
-		super(x, y, 0, MT4jSettings.getInstance().getScreenWidth(), MT4jSettings.getInstance().getScreenHeight(), pa);
+		super(x, y, 0, MT4jSettings.getInstance().getWindowWidth(), MT4jSettings.getInstance().getWindowHeight(), pa);
 		
 		this.scene = theScene;
 		this.app = pa;
@@ -89,14 +90,13 @@ public class MTSceneTexture extends MTRectangle {
 		
 		//Invert y texture coord (FBO texture is flipped)
 		Vertex[] v = this.getVerticesLocal();
-		for (int i = 0; i < v.length; i++) {
-			Vertex vertex = v[i];
-			if (vertex.getTexCoordV() == 1.0f){
-				vertex.setTexCoordV(0.0f);
-			}else if (vertex.getTexCoordV() == 0.0f){
-				vertex.setTexCoordV(1.0f);
-			}
-		}
+        for (Vertex vertex : v) {
+            if (vertex.getTexCoordV() == 1.0f) {
+                vertex.setTexCoordV(0.0f);
+            } else if (vertex.getTexCoordV() == 0.0f) {
+                vertex.setTexCoordV(1.0f);
+            }
+        }
 		this.setVertices(v);
 		
 		//Apply the texture to this component
@@ -154,19 +154,44 @@ public class MTSceneTexture extends MTRectangle {
 	public void drawComponent(PGraphics g){
 		PGraphicsOpenGL pgl = (PGraphicsOpenGL)g; 
 		GL gl = pgl.gl;
-		
+
+//		boolean b = false;
+//		if (GLStencilUtil.getInstance().isClipActive()){
+//			GLStencilUtil.getInstance().endClipping(gl);
+//			b = true;
+//		}
+			
+			
 		fbo.startRenderToTexture();
 			//Change blending mode to avoid artifacts from alpha blending at antialiasing for example
 //			gl.glBlendFuncSeparate(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA, GL.GL_ZERO, GL.GL_ONE);
 			gl.glBlendFuncSeparate(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA, GL.GL_ONE, GL.GL_ONE_MINUS_SRC_ALPHA);
+			
+//			/*
+			boolean clipping = false;
+			if (GLStencilUtil.getInstance().isClipActive()){
+				clipping = true;
+				gl.glPushAttrib(GL.GL_STENCIL_BUFFER_BIT);
+				gl.glClearStencil(GLStencilUtil.getInstance().stencilValueStack.peek());
+				gl.glClear(GL.GL_STENCIL_BUFFER_BIT);
+				//			gl.glDisable(GL.GL_STENCIL_TEST);
+			}
+//			*/
 			
 //			gl.glEnable(gl.GL_ALPHA_TEST);
 //			gl.glAlphaFunc(gl.GL_GREATER, 0.0f);
 //			gl.glDisable(gl.GL_ALPHA_TEST);
 			//Draw scene to texture
 			scene.drawAndUpdate(pgl, this.lastUpdateTime);
+			
+//			/*
+			if (clipping){
+				gl.glPopAttrib();
+			}
+//			 */
+//			GLStencilUtil.getInstance().endClipping(gl, this);
 		fbo.stopRenderToTexture();
-
+			
 		if (GLFboStack.getInstance().peekFBO() == 0)
 			gl.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA); //Restore default blend mode //FIXME TEST -> neccessary?
 		
@@ -182,32 +207,22 @@ public class MTSceneTexture extends MTRectangle {
 	}
 	
 	/*TODO
-	 * 
-	 * - evtl scene kleiner zeichnen und kleineren fbo machen für kleines windows? ->performance
-	 * 
-	 * - make fullscreen ability! maximize/restore! 
-	 * 
-	 * - wenn scaling - scale viewport of scene to fit scale? ->pmt schaun
-	 * 
 	 * - fehler wenn gedreht x,y, axis und dann scale - wegen shearing?
 	 * - fehler scheint von rotation zu kommen nachdem rotiert x,y,
 	 * 
 	 * - progressbar sizes wrong bei 512,512
 	 * 
-	 * - FBO: mehrere texture targets wenn supported ermöglichen 
+	 * - FBO: mehrere texture targets wenn supported ermï¿½glichen 
 	 * 
 	 * - FBO: multisampling fbo optional wenn supported machen siehe glgraphicsoffscreen
 	 * 
-	 * - FBO: bei RECTANGLE dimensions keine mipmaps möglich?? 
+	 * - FBO: bei RECTANGLE dimensions keine mipmaps mï¿½glich?? 
 	 * 
 	 * - FBO: hardware fbo mit glCopyTex2D
 	 * 
-	 * - nur sceneDrawAndUpdate() wenn sich was verändert hat - sonst kann man einfach alte textur lassen! setSceneNeedsUpdate()?
+	 * - nur sceneDrawAndUpdate() wenn sich was verï¿½ndert hat - sonst kann man einfach alte textur lassen! scene.invalidate()?
 	 * 
-	 * (- add stencil buffer to frambufferobject - evtl checken if available/supported)
 	 * (- wenn camera changed richtig picken in scene)
-	 * (- neue posEvt schicken mit neuer cursor? eigenen inputretargeter verwenden?)
-	 * 
 	 * */
 	
 
@@ -222,11 +237,16 @@ public class MTSceneTexture extends MTRectangle {
 			float newX = 0;
 			float newY = 0;
 			//Check intersection with infinite plane, this rect lies in
-			Vector3D interSP = p.getIntersectionLocal(this.globalToLocal(Tools3D.getCameraPickRay(app, this, x, y)));
+			Icamera camera = this.getViewingCamera();
+			if (camera == null){ //If the comp gets destroyed while still recieving input it might cause a nullpointer error
+				return false;
+			}
+			Vector3D interSP = p.getIntersectionLocal(this.globalToLocal(Tools3D.getCameraPickRay(app, camera, x, y)));
 			if (interSP != null){
 				//System.out.println(interSP);
-				newX = interSP.x;
-				newY = interSP.y;
+				Vertex v0 = this.getVerticesLocal()[0];
+			    newX = interSP.x - v0.x;
+			    newY = interSP.y - v0.y;
 			}
 			
 			AbstractCursorInputEvt newEvt = null;
@@ -236,18 +256,18 @@ public class MTSceneTexture extends MTRectangle {
 				InputCursor newCursor = new InputCursor();
 				try {
 					newEvt = (AbstractCursorInputEvt) posEvt.clone();
-					newEvt.setPositionX(newX);
-					newEvt.setPositionY(newY);
+					newEvt.setScreenX(newX);
+					newEvt.setScreenY(newY);
 //					newCursor.addEvent(newEvt);
 					newEvt.setCursor(newCursor);
-					newEvt.preFire();
+					newEvt.onFired();
 					//Note: We dont set a target for the event! this can be
 					//handled newly in the wondowed scenes InputRetargeter processor
 				} catch (CloneNotSupportedException e) {
 					e.printStackTrace();
 				}
 				this.oldCursorToNewCursor.put(posEvt.getCursor(), newCursor);
-				//TODO checken ob cursor bereits events enthält - überhaupt möglich?..
+				//TODO checken ob cursor bereits events enthï¿½lt - ï¿½berhaupt mï¿½glich?..
 				//ELSE -> CLONE AND ADD ALL OLD EVENTS TO THE NEW CURSOR!
 			}break;
 			case AbstractCursorInputEvt.INPUT_UPDATED:{
@@ -255,11 +275,11 @@ public class MTSceneTexture extends MTRectangle {
 				if (newCursor != null){
 					try {
 						newEvt = (AbstractCursorInputEvt) posEvt.clone();
-						newEvt.setPositionX(newX);
-						newEvt.setPositionY(newY);
+						newEvt.setScreenX(newX);
+						newEvt.setScreenY(newY);
 //						newCursor.addEvent(newEvt);
 						newEvt.setCursor(newCursor);
-						newEvt.preFire();
+						newEvt.onFired();
 					} catch (CloneNotSupportedException e) {
 						e.printStackTrace();
 					}
@@ -268,20 +288,18 @@ public class MTSceneTexture extends MTRectangle {
 				}
 			}break;
 			case AbstractCursorInputEvt.INPUT_ENDED:{
-//				InputCursor newCursor = this.oldCursorToNewCursor.get(posEvt.getCursor());
 				InputCursor newCursor = this.oldCursorToNewCursor.remove(posEvt.getCursor());
 				if (newCursor != null){
 					try {
 						newEvt = (AbstractCursorInputEvt) posEvt.clone();
-						newEvt.setPositionX(newX);
-						newEvt.setPositionY(newY);
+						newEvt.setScreenX(newX);
+						newEvt.setScreenY(newY);
 //						newCursor.addEvent(newEvt);
 						newEvt.setCursor(newCursor);
-						newEvt.preFire();
+						newEvt.onFired();
 					} catch (CloneNotSupportedException e) {
 						e.printStackTrace();
 					}
-//					this.oldCursorToNewCursor.remove(posEvt.getCursor());
 				}else{
 					System.err.println("Couldnt find new cursor!");
 				}
@@ -296,15 +314,14 @@ public class MTSceneTexture extends MTRectangle {
 			
 			//Send similar event to the windowed scenes global input processors
 			AbstractGlobalInputProcessor[] globalAnalyzer = app.getInputManager().getGlobalInputProcessors(scene);
-			for (int i = 0; i < globalAnalyzer.length; i++) {
-				AbstractGlobalInputProcessor a = globalAnalyzer[i];
-				if (!(a instanceof CursorTracer)){
-					//Hack because actually processors are disabled so they dont recieve
-					//input directly, so we dont call processInputEvt()!
-					a.processInputEvtImpl(evtToFire);	
-				}
-				
-			}
+            for (AbstractGlobalInputProcessor a : globalAnalyzer) {
+                if (!(a instanceof CursorTracer)) {
+                    //Hack because actually processors are disabled so they dont recieve
+                    //input directly, so we dont call processInputEvt()!
+                    a.processInputEvtImpl(evtToFire);
+                }
+
+            }
 			return false;
 		}else{
 			return super.processInputEvent(inEvt);

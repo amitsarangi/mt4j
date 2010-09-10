@@ -61,5 +61,37 @@ public class MTClipRectangle extends MTRectangle {
 			this.setChildClip(clipMask);
 		}
 	}
+	
+	@Override
+	public void setSizeLocal(float width, float height) {
+		super.setSizeLocal(width, height);
+		if (MT4jSettings.getInstance().isOpenGlMode() && this.getClip() != null && this.getClip().getClipShape() instanceof MTRectangle){ 
+			MTRectangle clipRect = (MTRectangle)this.getClip().getClipShape();
+			//clipRect.setVertices(Vertex.getDeepVertexArrayCopy(this.getVerticesLocal()));
+			clipRect.setVertices(this.getVerticesLocal());
+		}
+	}
+	
+	@Override
+	public void setWidthLocal(float width) {
+		super.setWidthLocal(width);
+		if (MT4jSettings.getInstance().isOpenGlMode() && this.getClip() != null && this.getClip().getClipShape() instanceof MTRectangle){ 
+			MTRectangle clipRect = (MTRectangle)this.getClip().getClipShape();
+			//clipRect.setVertices(Vertex.getDeepVertexArrayCopy(this.getVerticesLocal()));
+			clipRect.setVertices(this.getVerticesLocal());
+		}
+	}
+	
+	@Override
+	public void setHeightLocal(float height) {
+		super.setHeightLocal(height);
+		if (MT4jSettings.getInstance().isOpenGlMode() && this.getClip() != null && this.getClip().getClipShape() instanceof MTRectangle){ 
+			MTRectangle clipRect = (MTRectangle)this.getClip().getClipShape();
+			//clipRect.setVertices(Vertex.getDeepVertexArrayCopy(this.getVerticesLocal()));
+			clipRect.setVertices(this.getVerticesLocal());
+		}
+	}
+	
+	
 
 }

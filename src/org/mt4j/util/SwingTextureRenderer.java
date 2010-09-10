@@ -235,7 +235,7 @@ public class SwingTextureRenderer {
 	 * @return the buffered image
 	 */
 	private BufferedImage paintComponentOffscreen(Component c, Container con, Rectangle rect) {
-		//FIXME nötig? paintComponent added anscheinend c nochmal zu con!?
+		//FIXME nï¿½tig? paintComponent added anscheinend c nochmal zu con!?
 		con.remove(c);
 		/*
 		BufferedImage img = new BufferedImage(rect.width, rect.height, BufferedImage.TYPE_INT_ARGB);  

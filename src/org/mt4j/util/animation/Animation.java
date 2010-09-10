@@ -17,26 +17,19 @@
  ***********************************************************************/
 package org.mt4j.util.animation;
 
-import java.util.ArrayList;
 
 
 /**
  * The Class Animation.
  * @author Christopher Ruff
  */
-public class Animation implements IAnimationManagerListener{
+public class Animation extends AbstractAnimation implements IAnimationManagerListener, IAnimation{
 	
 	/** The name. */
 	private String name;
 	
 	/** The interpolator. */
 	private Iinterpolator interpolator;
-	
-	/** The target object. */
-	private Object targetObject; 
-	
-	/** The animation listeners. */
-	private ArrayList<IAnimationListener> animationListeners; 
 	
 	/** The reset on finish. */
 	private boolean resetOnFinish;
@@ -74,53 +67,34 @@ public class Animation implements IAnimationManagerListener{
 	 * @param triggerTime the trigger time
 	 */
 	public Animation(String name, Iinterpolator interpolator, Object targetObject, int triggerTime) {
-		super();
+		super(targetObject);
 		this.resetOnFinish = true; //Default
 		this.name = name;
 		
 		this.interpolator = interpolator;
-		this.targetObject = targetObject;
-		
-		animationListeners = new ArrayList<IAnimationListener>();
 		
 		this.triggerTime = triggerTime;
 		this.triggerCountDown = triggerTime;
 		this.hasStarted = false;
 	}
+
 	
-	
-//	/**
-//	 * makes this animation object fire an animation event,
-//	 * should ony get called by the AnimationManager class
-//	 * @param e
-//	 */
-//	public void postEvent(AnimationEvent e){
-//		fireAnimationEvent(e);
-//		
-//		if (e.getId() == AnimationEvent.ANIMATION_ENDED){
-//			this.setEnabled(false);
-//			if (this.isResetOnFinish())
-//				this.getInterpolator().resetInterpolator();
-////			System.out.println("Animation FINISHED: " + this.getName());
-//		}
-//	}
-	
-	/**
- * Start.
- */
-public void start(){
+	/* (non-Javadoc)
+	 * @see org.mt4j.util.animation.IAnimation#start()
+	 */
+	public void start(){
 		if (this.getInterpolator().isFinished()){
 			System.err.println("Animation: " + this.getName() + " has finished! To start it again, call restart() or set Animation.setResetOnFinish(true)");
 			return;
 		}
-		
-		AnimationManager.getInstance().addAnimation(this);
+
+		AnimationManager.getInstance().registerAnimation(this);
 		AnimationManager.getInstance().addAnimationManagerListener(this);
-		
-//		System.out.println("Animation STARTED: " + this.getName());
-//		fireAnimationEvent(new AnimationEvent(this, AnimationEvent.ANIMATION_STARTED, this, this.getTargetObject()));
+
+		//		System.out.println("Animation STARTED: " + this.getName());
+		//		fireAnimationEvent(new AnimationEvent(this, AnimationEvent.ANIMATION_STARTED, this, this.getTargetObject()));
 	}
-	
+
 	/**
 	 * Restart.
 	 */
@@ -129,7 +103,7 @@ public void start(){
 		
 		this.triggerCountDown = this.getTriggerTime();
 		this.hasStarted = false;
-		AnimationManager.getInstance().addAnimation(this);
+		AnimationManager.getInstance().registerAnimation(this);
 		AnimationManager.getInstance().addAnimationManagerListener(this);
 		
 //		System.out.println("Animation RESTARTED: " + this.getName());
@@ -137,11 +111,11 @@ public void start(){
 	}
 	
 	
-	/**
-	 * Stop.
+	/* (non-Javadoc)
+	 * @see org.mt4j.util.animation.IAnimation#stop()
 	 */
 	public void stop(){
-		AnimationManager.getInstance().removeAnimation(this);
+		AnimationManager.getInstance().unregisterAnimation(this);
 		AnimationManager.getInstance().removeAnimationManagerListener(this);
 		
 //		System.out.println("Animation FINISHED: " + this.getName());
@@ -168,14 +142,14 @@ public void start(){
 					if (!interpolator.isFinished()){
 						if (!hasStarted){
 							hasStarted = true;
-							this.fireAnimationEvent(new AnimationEvent(this, AnimationEvent.ANIMATION_STARTED, this, this.getTargetObject()));
+							this.fireAnimationEvent(new AnimationEvent(this, AnimationEvent.ANIMATION_STARTED, this, this.getTarget()));
 						}else{
-							this.fireAnimationEvent(new AnimationEvent(this, AnimationEvent.ANIMATION_UPDATED, this, this.getTargetObject()));
+							this.fireAnimationEvent(new AnimationEvent(this, AnimationEvent.ANIMATION_UPDATED, this, this.getTarget()));
 						}
 					}else{
-						//FIXME wenn gefinished, sollte der interpolator bei lastStepdelta und 0 zurückgeben, oder??
-						this.fireAnimationEvent(new AnimationEvent(this, AnimationEvent.ANIMATION_ENDED, this, this.getTargetObject()));
-						AnimationManager.getInstance().removeAnimation(this);
+						//FIXME wenn gefinished, sollte der interpolator bei lastStepdelta und 0 zurï¿½ckgeben, oder??
+						this.fireAnimationEvent(new AnimationEvent(this, AnimationEvent.ANIMATION_ENDED, this, this.getTarget()));
+						AnimationManager.getInstance().unregisterAnimation(this);
 						AnimationManager.getInstance().removeAnimationManagerListener(this);
 						this.triggerCountDown = this.getTriggerTime();
 						
@@ -192,13 +166,13 @@ public void start(){
 				if (!this.interpolator.isFinished()){
 					if (!this.hasStarted){ //Animation hasnt begun yet
 						this.hasStarted = true;
-						this.fireAnimationEvent(new AnimationEvent(this, AnimationEvent.ANIMATION_STARTED, this, this.getTargetObject()));
+						this.fireAnimationEvent(new AnimationEvent(this, AnimationEvent.ANIMATION_STARTED, this, this.getTarget()));
 					}else{
-						this.fireAnimationEvent(new AnimationEvent(this, AnimationEvent.ANIMATION_UPDATED, this, this.getTargetObject()));
+						this.fireAnimationEvent(new AnimationEvent(this, AnimationEvent.ANIMATION_UPDATED, this, this.getTarget()));
 					}
 				}else{
-					this.fireAnimationEvent(new AnimationEvent(this, AnimationEvent.ANIMATION_ENDED, this, this.getTargetObject()));
-					AnimationManager.getInstance().removeAnimation(this);
+					this.fireAnimationEvent(new AnimationEvent(this, AnimationEvent.ANIMATION_ENDED, this, this.getTarget()));
+					AnimationManager.getInstance().unregisterAnimation(this);
 					AnimationManager.getInstance().removeAnimationManagerListener(this);
 					
 					if (this.isResetOnFinish()){
@@ -208,70 +182,6 @@ public void start(){
 					}
 				}//end else interpol !finished
 			}//end else trigger not set
-			
-		
-		
-		/*
-		if (this.isEnabled() && !this.interpolator.isFinished()){
-			
-			
-			triggerCountDown -= ev.getDeltaTime();
-			if (triggerCountDown <= 0){
-				if (!this.hasStarted){ 
-					this.hasStarted = true;
-					interpolator.interpolate(ev.getDeltaTime());
-					this.fireAnimationEvent(new AnimationEvent(this, AnimationEvent.ANIMATION_STARTED, this, this.getTargetObject()));
-				}else{
-					interpolator.interpolate(ev.getDeltaTime());
-					this.fireAnimationEvent(new AnimationEvent(this, AnimationEvent.ANIMATION_STARTED, this, this.getTargetObject()));
-					
-					
-				}
-			}
-			
-			// Do the next interpolation iteration
-			interpolator.interpolate(ev.getDeltaTime());
-			
-			if (!this.interpolator.isFinished()){
-				if (!this.hasStarted){ //Animation hasnt begun yet
-					
-					triggerCountDown -= ev.getDeltaTime();
-					if (triggerCountDown <= 0){
-						this.hasStarted = true;
-						this.fireAnimationEvent(new AnimationEvent(this, AnimationEvent.ANIMATION_STARTED, this, this.getTargetObject()));
-					}
-					
-//					if (this.getTriggerTime() > 0){
-//						this.setStartedTime(System.currentTimeMillis());
-//						if (System.currentTimeMillis() - this.getStartedTime() >= this.getTriggerTime()){
-//							
-//						}
-//					}else{
-//						hasStarted = true;
-//						this.fireAnimationEvent(new AnimationEvent(this, AnimationEvent.ANIMATION_STARTED, this, this.getTargetObject()));
-//					}
-					
-				}else{
-					//System.out.println("Animation UPDATED: " + a.getName());
-					this.fireAnimationEvent(new AnimationEvent(this, AnimationEvent.ANIMATION_UPDATED, this, this.getTargetObject()));
-				}
-			}else{ //If interpolation has reached target
-				this.fireAnimationEvent(new AnimationEvent(this, AnimationEvent.ANIMATION_ENDED, this, this.getTargetObject()));
-				AnimationManager.getInstance().removeAnimation(this);
-				AnimationManager.getInstance().removeAnimationManagerListener(this);
-				this.triggerCountDown = this.getTriggerTime();
-				
-				this.setEnabled(false);
-				
-				if (this.isResetOnFinish()){
-					this.getInterpolator().resetInterpolator();
-					this.triggerCountDown = this.getTriggerTime();
-					this.hasStarted = false;
-				}
-			}
-		}
-		*/
-		
 	}
 	
 
@@ -296,22 +206,6 @@ public void start(){
 	
 	
 	/**
-	 * Fire animation event.
-	 * 
-	 * @param anev the anev
-	 */
-	private void fireAnimationEvent(AnimationEvent anev) {
-		synchronized(animationListeners) {
-			for (int i = 0; i < animationListeners.size(); i++) {
-				IAnimationListener listener = (IAnimationListener)animationListeners.get(i);
-				listener.processAnimationEvent(anev);
-			}
-		}
-	}
-
-	
-	
-	/**
 	 * Checks if is reset on finish.
 	 * 
 	 * @return true, if is reset on finish
@@ -329,67 +223,6 @@ public void start(){
 		this.resetOnFinish = resetOnFinish;
 	}
 
-	/**
-	 * Adds the animation listener.
-	 * 
-	 * @param listener the listener
-	 */
-	public synchronized Animation addAnimationListener(IAnimationListener listener){
-		if (!animationListeners.contains(listener)){
-			animationListeners.add(listener);
-		}
-		return this;
-	}
-	
-	/**
-	 * Removes the animation listener.
-	 * 
-	 * @param listener the listener
-	 */
-	public synchronized void removeAnimationListener(IAnimationListener listener){
-		if (animationListeners.contains(listener)){
-			animationListeners.remove(listener);
-		}
-	}
-	
-	/**
-	 * Removes the all animation listeners.
-	 */
-	public synchronized void removeAllAnimationListeners(){
-		animationListeners.clear();
-	}
-	
-	/**
-	 * Gets the animation listeners.
-	 * 
-	 * @return the animation listeners
-	 */
-	public synchronized IAnimationListener[] getAnimationListeners(){
-		return (IAnimationListener[])animationListeners.toArray(new IAnimationListener[this.animationListeners.size()]);
-	}
-	
-	
-
-	/**
-	 * Gets the target object.
-	 * 
-	 * @return the target object
-	 */
-	public Object getTargetObject() {
-		return targetObject;
-	}
-
-
-	/**
-	 * Sets the target object.
-	 * 
-	 * @param targetObject the new target object
-	 */
-	public void setTargetObject(Object targetObject) {
-		this.targetObject = targetObject;
-	}
-
-	
 
 	/**
 	 * Gets the interpolator.
@@ -430,7 +263,21 @@ public void start(){
 		this.name = name;
 	}
 
-	
+	/* (non-Javadoc)
+	 * @see org.mt4j.util.animation.IAnimation#getCurrentStepDelta()
+	 */
+	public float getDelta() {
+		return this.getInterpolator().getCurrentStepDelta();
+	}
+
+	/* (non-Javadoc)
+	 * @see org.mt4j.util.animation.IAnimation#getCurrentValue()
+	 */
+	public float getValue() {
+		return this.getInterpolator().getCurrentValue();
+	}
+
+		
 	
 	
 

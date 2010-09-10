@@ -123,8 +123,8 @@ public abstract class AbstractCursorInputEvt extends MTInputEvent {
 	 * Here, the event is added to its cursor.
 	 */
 	@Override
-	public void preFire() {
-		super.preFire();
+	public void onFired() {
+		super.onFired();
 		if (this.getCursor() != null){
 			this.getCursor().addEvent(this);
 		}else{
@@ -137,6 +137,7 @@ public abstract class AbstractCursorInputEvt extends MTInputEvent {
 	 * Gets the position x.
 	 * 
 	 * @return the position x
+	 * @deprecated use getScreenX()
 	 */
 	public float getPosX() {
 		return positionX;
@@ -147,9 +148,18 @@ public abstract class AbstractCursorInputEvt extends MTInputEvent {
 	 * Gets the position y.
 	 * 
 	 * @return the position y
+	 * @deprecated use getScreenY()
 	 */
 	public float getPosY() {
 		return positionY;
+	}
+	
+	public float getScreenX(){
+		return this.positionX;
+	}
+	
+	public float getScreenY(){
+		return this.positionY;
 	}
 	
 	
@@ -163,11 +173,11 @@ public abstract class AbstractCursorInputEvt extends MTInputEvent {
 	}
 	
 	
-	public void setPositionX(float positionX) {
+	public void setScreenX(float positionX) {
 		this.positionX = positionX;
 	}
 
-	public void setPositionY(float positionY) {
+	public void setScreenY(float positionY) {
 		this.positionY = positionY;
 	}
 
@@ -185,7 +195,7 @@ public abstract class AbstractCursorInputEvt extends MTInputEvent {
 	 * @see java.lang.Object#toString()
 	 */
 	public String toString(){
-		return new String(super.toString() + "; " + " PosX: " + positionX + " PosY: " + positionY + " InputSource: " + this.getSource()); 
+		return super.toString() + "; " + " PosX: " + positionX + " PosY: " + positionY + " InputSource: " + this.getSource(); 
 	}
 	
 	
@@ -207,5 +217,11 @@ public abstract class AbstractCursorInputEvt extends MTInputEvent {
 	
 	abstract public void setAddedTocursor(boolean addedTocursor);
 	*/
+	
+	
+	
+	
+
+    
 	
 }

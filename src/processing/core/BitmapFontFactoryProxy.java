@@ -148,7 +148,7 @@ public class BitmapFontFactoryProxy implements IFontFactory {
 //		int spaceIndex = p5Font.index('-');
 //		int spaceAdvancex = p5Font.width[spaceIndex];
 //		int spaceAdvancex = p5Font.getGlyph('-').width;
-		int spaceAdvancex = Math.round(((float) p5Font.width('i') * (float) fontSize));
+		int spaceAdvancex = Math.round((p5Font.width('i') * (float) fontSize));
 //		int spaceAdvancex = Math.round(pa.textWidth(' '));
 //		int spaceAdvancex = Math.round(p5Font.width(' ') * p5Font.size);
 		BitmapFontCharacter space = new BitmapFontCharacter(dummy, pa, " ", 0, 0, spaceAdvancex);
@@ -261,7 +261,7 @@ public class BitmapFontFactoryProxy implements IFontFactory {
 		}
 		
 		if (p5Font == null){
-			throw new NullPointerException("Couldnt load the font: " + fontFileName);
+			throw new FileNotFoundException("Couldn't load the font: " + fontFileName);
 		}
 		return p5Font;
 	}
@@ -362,7 +362,7 @@ public class BitmapFontFactoryProxy implements IFontFactory {
 				
 //				PImage copy = new PImage(ToolsMath.nearestPowerOfTwo(charWidth + shiftAmount), ToolsMath.nearestPowerOfTwo(charHeight + shiftAmount), PImage.ARGB);
 //				
-				PImage copy = new PImage(nextPowerOfTwo(charImage.width + leftShiftAmount + 1), nextPowerOfTwo(charImage.height + topShiftAmount), PImage.ARGB);
+				PImage copy = new PImage(nextPowerOfTwo(charImage.width + leftShiftAmount + 1), nextPowerOfTwo(charImage.height + topShiftAmount +1), PImage.ARGB);
 //				PImage copy = new PImage(charImage.width + leftShiftAmount + 1, charImage.height + topShiftAmount, PImage.ARGB);
 				
 				copy.copy(charImage, 0, 0, charWidth, charHeight, leftShiftAmount, topShiftAmount, charWidth, charHeight);
@@ -390,7 +390,7 @@ public class BitmapFontFactoryProxy implements IFontFactory {
 //				}
 				
 				//Create bitmap font character
-				String StringChar = new Character(c).toString();
+				String StringChar = Character.toString(c);
 				BitmapFontCharacter character = new BitmapFontCharacter(charImage, pa, StringChar, leftExtend, topOffset, widthDisplacement);
 				character.setName(StringChar);
 				character.setFillColor(new MTColor(fillColor));

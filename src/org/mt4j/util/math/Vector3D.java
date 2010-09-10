@@ -570,8 +570,7 @@ public class Vector3D {
      * @return  the dot product
      */     
     public float dot(Vector3D v) {
-        float dot = this.x * v.x + this.y * v.y + this.z * v.z;
-        return dot;
+        return this.x * v.x + this.y * v.y + this.z * v.z;
     } //(x * v.x + y * v.y + z * v.z);
     
     /**
@@ -1035,7 +1034,7 @@ public class Vector3D {
      * @see java.lang.Object#toString()
      */
     public String toString(){
-    	return new String(/*super.toString() +*/ " X:" + this.getX()+ " Y:" + this.getY() + " Z:" + this.getZ() + " W:" + this.getW());
+    	return " X:" + this.getX() + " Y:" + this.getY() + " Z:" + this.getZ() + " W:" + this.getW();
     }
     
 //    //TODO CHECK IF THIS WORKS; TOO

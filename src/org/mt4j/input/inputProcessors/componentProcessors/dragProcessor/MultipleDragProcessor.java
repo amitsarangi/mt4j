@@ -25,8 +25,6 @@ import org.mt4j.input.inputData.MTFingerInputEvt;
 import org.mt4j.input.inputProcessors.IInputProcessor;
 import org.mt4j.input.inputProcessors.MTGestureEvent;
 import org.mt4j.input.inputProcessors.componentProcessors.AbstractCursorProcessor;
-import org.mt4j.util.math.Tools3D;
-import org.mt4j.util.math.ToolsGeometry;
 import org.mt4j.util.math.Vector3D;
 
 import processing.core.PApplet;
@@ -63,7 +61,7 @@ public class MultipleDragProcessor extends AbstractCursorProcessor {
 	@Override
 	public void cursorStarted(InputCursor inputCursor,	MTFingerInputEvt positionEvent) {
 		DragContext dc = new DragContext(inputCursor);
-		IMTComponent3D comp = positionEvent.getTargetComponent();
+		IMTComponent3D comp = positionEvent.getTarget();
 		if (!dc.gestureAborted){
 			motionToDragContext.put(inputCursor, dc);
 			this.fireGestureEvent(new DragEvent(this, DragEvent.GESTURE_DETECTED, comp, inputCursor, dc.lastPosition, dc.newPosition));
@@ -75,7 +73,7 @@ public class MultipleDragProcessor extends AbstractCursorProcessor {
 	 */
 	@Override
 	public void cursorUpdated(InputCursor inputCursor, MTFingerInputEvt positionEvent) {
-		IMTComponent3D comp = positionEvent.getTargetComponent();
+		IMTComponent3D comp = positionEvent.getTarget();
 		DragContext dc = motionToDragContext.get(inputCursor);
 		if (dc != null && dc.dragObject.getViewingCamera() != null){
 			dc.updateDragPosition();
@@ -88,7 +86,7 @@ public class MultipleDragProcessor extends AbstractCursorProcessor {
 	 */
 	@Override
 	public void cursorEnded(InputCursor inputCursor, MTFingerInputEvt positionEvent) {
-		IMTComponent3D comp = positionEvent.getTargetComponent();
+		IMTComponent3D comp = positionEvent.getTarget();
 		DragContext dc = motionToDragContext.get(inputCursor);
 		if (dc != null){
 			this.fireGestureEvent(new DragEvent(this, MTGestureEvent.GESTURE_ENDED, comp, inputCursor, dc.lastPosition, dc.newPosition));
@@ -145,15 +143,17 @@ public class MultipleDragProcessor extends AbstractCursorProcessor {
 		 * @param m the m
 		 */
 		public DragContext(InputCursor m){	
-			this.dragObject = m.getCurrentEvent().getTargetComponent();
+			this.dragObject = m.getCurrentEvent().getTarget();
 			this.m = m;
 			gestureAborted = false;
 			//Calculate the normal of the plane we will be dragging at (useful if camera isnt default)
 			this.dragPlaneNormal =  dragObject.getViewingCamera().getPosition().getSubtracted(dragObject.getViewingCamera().getViewCenterPos()).normalizeLocal();
 			//Set the Drag Startposition
-			Vector3D interSectP = dragObject.getIntersectionGlobal(
-					Tools3D.getCameraPickRay(app, dragObject, m.getCurrentEvent().getPosX(), m.getCurrentEvent().getPosY()));
+//			Vector3D interSectP = dragObject.getIntersectionGlobal(
+//					Tools3D.getCameraPickRay(app, dragObject, m.getCurrentEvent().getPosX(), m.getCurrentEvent().getPosY()));
 
+			Vector3D interSectP = getIntersection(app, m);
+			
 			if (interSectP != null)
 				this.startPosition = interSectP;
 			else{
@@ -170,10 +170,12 @@ public class MultipleDragProcessor extends AbstractCursorProcessor {
 		 * Update drag position.
 		 */
 		public void updateDragPosition(){
-			Vector3D newPos = ToolsGeometry.getRayPlaneIntersection(
-					Tools3D.getCameraPickRay(app, dragObject, m.getCurrentEvent().getPosX(), m.getCurrentEvent().getPosY()), 
-					dragPlaneNormal, 
-					startPosition);
+//			Vector3D newPos = ToolsGeometry.getRayPlaneIntersection(
+//					Tools3D.getCameraPickRay(app, dragObject, m.getCurrentEvent().getPosX(), m.getCurrentEvent().getPosY()), 
+//					dragPlaneNormal, 
+//					startPosition);
+			
+			Vector3D newPos = getPlaneIntersection(app, dragPlaneNormal, startPosition, m);
 			if (newPos != null){
 				lastPosition = newPosition;
 				newPosition = newPos;

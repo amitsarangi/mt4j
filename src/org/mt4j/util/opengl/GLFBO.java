@@ -27,6 +27,7 @@ import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.log4j.SimpleLayout;
+import org.mt4j.MTApplication;
 import org.mt4j.util.math.Tools3D;
 import org.mt4j.util.math.ToolsBuffers;
 import org.mt4j.util.math.ToolsMath;
@@ -256,12 +257,12 @@ public class GLFBO {
 		this.bind();
 		gl.glBindTexture(tex.getTextureTarget(), tex.getTextureID());
 		/*
-		//Für OHNE mipmapping
+		//Fï¿½r OHNE mipmapping
 		gl.glTexParameteri(tex.getTextureTarget(),GL.GL_TEXTURE_MAG_FILTER, GL.GL_NEAREST);
 		gl.glTexParameteri(tex.getTextureTarget(),GL.GL_TEXTURE_MIN_FILTER, GL.GL_NEAREST);
 		*/
 //		/*
-		//Für MIIPMAPPING
+		//Fï¿½r MIIPMAPPING
 //		gl.glTexParameteri(tex.getTextureTarget(), GL.GL_GENERATE_MIPMAP, GL.GL_TRUE); // automatic mipmap
 		gl.glTexParameterf(tex.getTextureTarget(), GL.GL_TEXTURE_WRAP_S, GL.GL_CLAMP_TO_EDGE);
 		gl.glTexParameterf(tex.getTextureTarget(), GL.GL_TEXTURE_WRAP_T, GL.GL_CLAMP_TO_EDGE);
@@ -294,7 +295,7 @@ public class GLFBO {
 	/*
 	 In this instance we are creating a normal RGBA image of the same width and height as the renderbuffer we created earlier; 
 	 this is important as ALL attachments to a FBO have to be the same width and height. 
-	 Note that we don’t upload any data, the space is just reserved by OpenGL so we can use it later.
+	 Note that we donï¿½t upload any data, the space is just reserved by OpenGL so we can use it later.
 	 */
 	
 	/**
@@ -341,15 +342,15 @@ public class GLFBO {
 		this.fboStack.useFBO(this);
 		
 		/*
-		//TODO für mehrere texturen,
-		 - check wieviele buffers (color attachments) möglich
-		 - für jede texture ein color attachment binden 
+		//TODO fï¿½r mehrere texturen,
+		 - check wieviele buffers (color attachments) mï¿½glich
+		 - fï¿½r jede texture ein color attachment binden 
 		  => gl.glFramebufferTexture2DEXT(
 				GL.GL_FRAMEBUFFER_EXT, 
 				GL.GL_COLOR_ATTACHMENT0_EXT, //GL.GL_COLOR_ATTACHMENT1_EXT, ..
 				tex.getTextureTarget(), tex.getTextureID(), 0);
 		 - glDrawBuffers aufrufen //und glReadBuffers
-        setDrawBuffer(GL.GL_NONE); //wenn kein mutliple texture draw möglich
+        setDrawBuffer(GL.GL_NONE); //wenn kein mutliple texture draw mï¿½glich
         setReadBuffer(GL.GL_NONE);
 		*/
 		
@@ -413,12 +414,28 @@ public class GLFBO {
 			id.put(depthRBID);
 			id.rewind();
 			gl.glDeleteRenderbuffersEXT(id.limit(), id);
+			depthRBID = 0;
 		}
 		
 		this.textures.clear();
 	}
 	
-	
+	@Override
+	protected void finalize() throws Throwable {
+		logger.debug("Finalizing - " + this);
+		if (this.pa instanceof MTApplication) {
+			MTApplication mtApp = (MTApplication) this.pa;
+			mtApp.invokeLater(new Runnable() {
+				public void run() {
+					destroy();
+				}
+			});
+		}else{
+			//TODO use registerPre()?
+			//is the object even valid after finalize() is called??
+		}
+		super.finalize();
+	}
 
 	public boolean isStencilBufferAttached() {
 		return stencilBufferAttached;

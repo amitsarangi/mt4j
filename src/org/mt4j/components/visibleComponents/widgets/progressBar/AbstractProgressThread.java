@@ -139,7 +139,7 @@ public abstract class AbstractProgressThread extends Thread implements Iprogress
 	 */
 	public float getPercentageFinished() {
 		if (this.autoComputePercentage){
-			this.setPercentageFinished(100f/(float)this.getTarget() * (float)this.getCurrent());
+			this.setPercentageFinished(100f/ this.getTarget() * this.getCurrent());
 			return this.percentageFinished;
 		}else{
 			return percentageFinished;
@@ -264,7 +264,7 @@ protected void fireEvent(MTEvent e) {
 	 * @return the listeners
 	 */
 	public synchronized IMTEventListener[] getListeners(){
-		return (IMTEventListener[])loadingFinishedListeners.toArray(new IMTEventListener[this.loadingFinishedListeners.size()]);
+		return loadingFinishedListeners.toArray(new IMTEventListener[this.loadingFinishedListeners.size()]);
 	}
 /////////////////////////////////////////////////////	
 	

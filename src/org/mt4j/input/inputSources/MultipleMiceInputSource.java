@@ -77,8 +77,8 @@ public class MultipleMiceInputSource extends AbstractInputSource {
 	public MultipleMiceInputSource(MTApplication applet) {
 		super(applet);
 		
-		this.maxScreenW = MT4jSettings.getInstance().getScreenWidth();
-		this.maxScreenH = MT4jSettings.getInstance().getScreenHeight();
+		this.maxScreenW = MT4jSettings.getInstance().getWindowWidth();
+		this.maxScreenH = MT4jSettings.getInstance().getWindowHeight();
 		
 		mice = ManyMouse.Init();
 
@@ -256,25 +256,24 @@ public class MultipleMiceInputSource extends AbstractInputSource {
 		
 		System.out.println("Removing multiple mice cursors from old and add to new canvas.");
 		Collection<MouseInfo> mouseInfos = deviceToMouseInfo.values();
-		for (Iterator<MouseInfo> iter = mouseInfos.iterator(); iter.hasNext();) {
-			MouseInfo mouseInfo = (MouseInfo) iter.next();
-			if (mouseInfo.ellipse != null){
-				float currentEllipseWidth = 6;
-				Vector3D v = new Vector3D(currentEllipseWidth,0,0);
-				v.transformDirectionVector(currentScene.getCanvas().getGlobalInverseMatrix());
-				float newEllipseWidth = currentEllipseWidth = v.length();
-				mouseInfo.ellipse.setWidthXYGlobal(newEllipseWidth*2);
-				try {
-					oldCanvas.removeChild(mouseInfo.ellipse);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}finally{
-					newCanvas.addChild(mouseInfo.ellipse);
-				}
+        for (MouseInfo mouseInfo : mouseInfos) {
+            if (mouseInfo.ellipse != null) {
+                float currentEllipseWidth = 6;
+                Vector3D v = new Vector3D(currentEllipseWidth, 0, 0);
+                v.transformDirectionVector(currentScene.getCanvas().getGlobalInverseMatrix());
+                float newEllipseWidth = currentEllipseWidth = v.length();
+                mouseInfo.ellipse.setWidthXYGlobal(newEllipseWidth * 2);
+                try {
+                    oldCanvas.removeChild(mouseInfo.ellipse);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                } finally {
+                    newCanvas.addChild(mouseInfo.ellipse);
+                }
 //				mouseInfo.ellipse.setCustomAndGlobalCam(currentScene.getSceneCam(), defaultCenterCam);
-				mouseInfo.ellipse.attachCamera(defaultCenterCam);
-			}
-		}
+                mouseInfo.ellipse.attachCamera(defaultCenterCam);
+            }
+        }
 	}
 	
 	/**
@@ -541,7 +540,7 @@ public class MultipleMiceInputSource extends AbstractInputSource {
 				te = new MTFingerInputEvt(this, 0,0, MTFingerInputEvt.INPUT_ENDED, m);
 
 //			m.addEvent(te); //werden nicht hier geadded sondern synchroniesert mit dem PApplet thread in den analyzern, so dass immer nur 1
-			// 1 te geadded wird und dann wieder verarbeitet, dann der nächste
+			// 1 te geadded wird und dann wieder verarbeitet, dann der nï¿½chste
 
 			ActiveCursorPool.getInstance().removeCursor(device);
 			this.enqueueInputEvent(te);

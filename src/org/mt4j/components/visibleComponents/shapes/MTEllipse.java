@@ -168,12 +168,11 @@ public class MTEllipse extends MTPolygon {
 		float height = radiusY*2;
 		float upperLeftX = centerPoint.x-radiusX;
 		float upperLeftY = centerPoint.y-radiusY;
-		for (int i = 0; i < verts.length; i++) {
-			Vertex vertex = verts[i];
-			vertex.setTexCoordU((vertex.x-upperLeftX)/width);
-			vertex.setTexCoordV((vertex.y-upperLeftY)/height);
+        for (Vertex vertex : verts) {
+            vertex.setTexCoordU((vertex.x - upperLeftX) / width);
+            vertex.setTexCoordV((vertex.y - upperLeftY) / height);
 //			System.out.println("TexU:" + vertex.getTexCoordU() + " TexV:" + vertex.getTexCoordV());
-		}
+        }
 		
 		return verts;
 	}
@@ -219,8 +218,7 @@ public class MTEllipse extends MTPolygon {
  */
 @Override
 	public Vector3D getCenterPointLocal() {
-		Vector3D center = new Vector3D(this.centerPoint);
-		return center;
+		return new Vector3D(this.centerPoint);
 	}
 	
 

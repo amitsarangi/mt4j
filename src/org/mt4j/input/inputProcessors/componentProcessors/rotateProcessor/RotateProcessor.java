@@ -17,11 +17,9 @@
  ***********************************************************************/
 package org.mt4j.input.inputProcessors.componentProcessors.rotateProcessor;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.mt4j.components.interfaces.IMTComponent3D;
-import org.mt4j.input.inputData.ActiveCursorPool;
 import org.mt4j.input.inputData.InputCursor;
 import org.mt4j.input.inputData.MTFingerInputEvt;
 import org.mt4j.input.inputProcessors.IInputProcessor;
@@ -57,12 +55,17 @@ public class RotateProcessor extends AbstractCursorProcessor {
 	private Vector3D dragPlaneNormal;
 	
 	
+	public RotateProcessor(PApplet graphicsContext){
+		this(graphicsContext, true);
+	}
+	
 	/**
 	 * Instantiates a new rotate processor.
 	 * 
 	 * @param graphicsContext the graphics context
 	 */
-	public RotateProcessor(PApplet graphicsContext){
+	public RotateProcessor(PApplet graphicsContext, boolean stopEventPropagation){
+		super(stopEventPropagation);
 		this.applet = graphicsContext;
 //		this.unUsedCursors 	= new ArrayList<InputCursor>();
 //		this.lockedCursors 	= new ArrayList<InputCursor>();
@@ -127,14 +130,14 @@ public class RotateProcessor extends AbstractCursorProcessor {
 			logger.debug(this.getName() + " Available cursors: " + availableCursors.size());
 			if (availableCursors.size() >= 2){
 				InputCursor otherCursor = getFarthestFreeComponentCursorTo(newCursor);
-				logger.debug(this.getName() + " already had 1 unused cursor - we can try start gesture! used Cursor ID:" + otherCursor.getId() + " and new cursor ID:" + newCursor.getId());
+//				logger.debug(this.getName() + " already had 1 unused cursor - we can try start gesture! used Cursor ID:" + otherCursor.getId() + " and new cursor ID:" + newCursor.getId());
 				
 				if (this.canLock(otherCursor, newCursor)){ //TODO remove check, since alreday checked in getAvailableComponentCursors()?
 					rc = new RotationContext(otherCursor, newCursor, comp);
 					if (!rc.isGestureAborted()){
 						this.getLock(otherCursor, newCursor);
 						logger.debug(this.getName() + " we could lock both cursors!");
-						this.fireGestureEvent(new RotateEvent(this, MTGestureEvent.GESTURE_DETECTED, comp, otherCursor, newCursor, Vector3D.ZERO_VECTOR, rc.getRotationPoint(), 0f));
+						this.fireGestureEvent(new RotateEvent(this, MTGestureEvent.GESTURE_DETECTED, positionEvent.getCurrentTarget(), otherCursor, newCursor, Vector3D.ZERO_VECTOR, rc.getRotationPoint(), 0f));
 					}else{
 						logger.debug(this.getName() + " gesture aborted, probably at least 1 finger not on component!");
 						rc = null;
@@ -151,30 +154,73 @@ public class RotateProcessor extends AbstractCursorProcessor {
 
 	@Override
 	public void cursorUpdated(InputCursor m, MTFingerInputEvt positionEvent) {
-		IMTComponent3D comp = positionEvent.getTargetComponent();
+		IMTComponent3D comp = positionEvent.getTarget();
 		
 //		if (lockedCursors.size() == 2 && lockedCursors.contains(m)){
 		List<InputCursor> alreadyLockedCursors = getLockedCursors();
 		if (rc != null && alreadyLockedCursors.size() == 2 && alreadyLockedCursors.contains(m)){
 			float rotationAngleDegrees = rc.updateAndGetRotationAngle(m);
-			this.fireGestureEvent(new RotateEvent(this, MTGestureEvent.GESTURE_UPDATED, comp, rc.getPinFingerCursor(), rc.getRotateFingerCursor(), Vector3D.ZERO_VECTOR, rc.getRotationPoint(), rotationAngleDegrees));
+			this.fireGestureEvent(new RotateEvent(this, MTGestureEvent.GESTURE_UPDATED, positionEvent.getCurrentTarget(), rc.getPinFingerCursor(), rc.getRotateFingerCursor(), Vector3D.ZERO_VECTOR, rc.getRotationPoint(), rotationAngleDegrees));
 		}
+//		else{
+//			List<InputCursor> availableCursors = getFreeComponentCursors();
+//			if (this.getLockedCursors().isEmpty() && availableCursors.size() >= 2 && this.canLock(getCurrentComponentCursorsArray()) ){ //we can try to resume the gesture
+//				InputCursor firstCursor = m;
+//				InputCursor secondCursor = getFarthestFreeComponentCursorTo(firstCursor);
+//				//See if we can obtain a lock on both cursors
+//				RotationContext newContext = new RotationContext(firstCursor, secondCursor, comp);
+//				if (!newContext.isGestureAborted()){ //Check if we could start gesture (ie. if fingers on component)
+//					rc = newContext;
+//					this.getLock(firstCursor, secondCursor);
+//					logger.debug(this.getName() + " we could lock cursors: " + firstCursor.getId() +", " + secondCursor.getId());
+//					float rotationAngleDegrees = rc.updateAndGetRotationAngle(m);
+//					this.fireGestureEvent(new RotateEvent(this, MTGestureEvent.GESTURE_UPDATED, positionEvent.getCurrentTarget(), rc.getPinFingerCursor(), rc.getRotateFingerCursor(), Vector3D.ZERO_VECTOR, rc.getRotationPoint(), rotationAngleDegrees));
+//				}else{
+//					rc = null;
+//					logger.debug(this.getName() + " we could NOT resume gesture - cursors not on component: " + firstCursor.getId() +", " + secondCursor.getId());
+//				}
+//			}
+//		}
 	}
 
+	
+	//TODO CLEAN UP - rethink logic, scenrios
+	//TODO mtkeyboard make all keys use the bubbling tapprocessor
+	//TODO check other gestures if they need fixing / resuming gesture in cursorUpdated() or cursorEnded()
+	//TODO speedup
+	//TODO test with many cursors, simulator
+	
+	//TODO really by default intersect target AND currenttarget? 
+	//TODO method freeAllLockedCursors()?
 
 	@Override
 	public void cursorEnded(InputCursor c, MTFingerInputEvt positionEvent) {
-		IMTComponent3D comp = positionEvent.getTargetComponent();
+		IMTComponent3D comp = positionEvent.getTarget();
 		logger.debug(this.getName() + " INPUT_ENDED RECIEVED - CURSOR: " + c.getId());
-		
 		logger.debug("Rotate ended -> Active cursors: " + getCurrentComponentCursors().size() + " Available cursors: " + getFreeComponentCursors().size() +  " Locked cursors: " + getLockedCursors().size());
+
+//		List<InputCursor> availableCursors = getFreeComponentCursors();
+//		if (this.isGestureInProgress() && this.getLockedCursors().isEmpty() && availableCursors.size() >= 2 && this.canLock(getCurrentComponentCursorsArray()) ){ //we can try to resume the gesture
+//			InputCursor firstCursor = availableCursors.get(0);
+//			InputCursor secondCursor = getFarthestFreeComponentCursorTo(firstCursor);
+//			//See if we can obtain a lock on both cursors
+//			RotationContext newContext = new RotationContext(firstCursor, secondCursor, comp);
+//			if (!newContext.isGestureAborted()){ //Check if we could start gesture (ie. if fingers on component)
+//				rc = newContext;
+//				this.getLock(firstCursor, secondCursor);
+//				logger.debug(this.getName() + " we could lock cursors: " + firstCursor.getId() +", " + secondCursor.getId());
+//			}else{
+//				rc = null;
+//				logger.debug(this.getName() + " we could NOT resume gesture - cursors not on component: " + firstCursor.getId() +", " + secondCursor.getId());
+//			}
+//		}
 		
-		if (rc != null){
-			InputCursor firstCursor = rc.getFirstCursor();
+		if (getLockedCursors().contains(c)){
+			InputCursor firstCursor = rc.getFirstCursor(); //FIXME nullpointer now sometimes, why?
 			InputCursor secondCursor = rc.getSecondCursor();
 			if (firstCursor.equals(c) || secondCursor.equals(c)){ //The leaving cursor was used by the processor
 				InputCursor leftOverCursor = firstCursor.equals(c) ? secondCursor : firstCursor;
-				InputCursor futureCursor = getFarthestFreeCursorTo(leftOverCursor, getCurrentComponentCursorsArray());
+				InputCursor futureCursor = getFarthestFreeCursorTo(leftOverCursor);
 
 				if (futureCursor != null){ //already checked in getFartherstAvailableCursor() if we can lock it
 					RotationContext newContext = new RotationContext(futureCursor, leftOverCursor, comp);
@@ -183,19 +229,20 @@ public class RotateProcessor extends AbstractCursorProcessor {
 						this.getLock(leftOverCursor, futureCursor);
 						logger.debug(this.getName() + " continue with different cursors (ID: " + futureCursor.getId() + ")" + " " + "(ID: " + leftOverCursor.getId() + ")");
 					}else{ //couldnt start gesture - cursor's not on component 
-						this.endGesture(leftOverCursor, comp, firstCursor, secondCursor);
+						this.endGesture(leftOverCursor, positionEvent, firstCursor, secondCursor);
 					}
 				}else{ //we cant use another cursor  - End gesture
-					this.endGesture(leftOverCursor, comp, firstCursor, secondCursor);
+					this.endGesture(leftOverCursor, positionEvent, firstCursor, secondCursor);
 				}
 				this.unLock(c); 
 			}
 		}
 	}
 	
-	private void endGesture(InputCursor leftOverCursor, IMTComponent3D component, InputCursor firstCursor, InputCursor secondCursor){
+	private void endGesture(InputCursor leftOverCursor, MTFingerInputEvt positionEvent, InputCursor firstCursor, InputCursor secondCursor){
 		this.unLock(leftOverCursor);
-		this.fireGestureEvent(new RotateEvent(this, MTGestureEvent.GESTURE_ENDED, component, firstCursor, secondCursor, Vector3D.ZERO_VECTOR, rc.getRotationPoint(), 0));
+		this.fireGestureEvent(new RotateEvent(this, MTGestureEvent.GESTURE_ENDED, positionEvent.getCurrentTarget(), firstCursor, secondCursor, Vector3D.ZERO_VECTOR, rc.getRotationPoint(), 0));
+		this.rc = null;
 	}
 	
 
@@ -251,7 +298,7 @@ public class RotateProcessor extends AbstractCursorProcessor {
 			InputCursor secondCursor = getFarthestFreeComponentCursorTo(firstCursor);
 
 			//See if we can obtain a lock on both cursors
-			IMTComponent3D comp = firstCursor.getFirstEvent().getTargetComponent();
+			IMTComponent3D comp = firstCursor.getFirstEvent().getTarget();
 			RotationContext newContext = new RotationContext(firstCursor, secondCursor, comp);
 			if (!newContext.isGestureAborted()){ //Check if we could start gesture (ie. if fingers on component)
 				rc = newContext;
@@ -328,7 +375,8 @@ public class RotateProcessor extends AbstractCursorProcessor {
 			this.pinFingerCursor = pinFingerCursor;
 			this.rotateFingerCursor = rotateFingerCursor;
 
-			Vector3D interPoint = getIntersection(applet, object, pinFingerCursor);
+//			Vector3D interPoint = getIntersection(applet, object, pinFingerCursor);
+			Vector3D interPoint = getIntersection(applet, pinFingerCursor.getCurrentEvent().getCurrentTarget(), pinFingerCursor);
 			if (interPoint !=null)
 				pinFingerNew = interPoint;
 			else{
@@ -338,7 +386,8 @@ public class RotateProcessor extends AbstractCursorProcessor {
 			}
 
 			//Use lastEvent when resuming with another cursor that started long ago
-			Vector3D interPointRot = getIntersection(applet, object, rotateFingerCursor);
+//			Vector3D interPointRot = getIntersection(applet, object, rotateFingerCursor);
+			Vector3D interPointRot = getIntersection(applet, rotateFingerCursor.getCurrentEvent().getCurrentTarget(), rotateFingerCursor);
 
 			if (interPointRot !=null)
 				rotateFingerStart = interPointRot;
@@ -451,9 +500,15 @@ public class RotateProcessor extends AbstractCursorProcessor {
 			}
 			
 			//TODO save last position and use that one if new one is null.. everywhere!
-			Vector3D newRotateFingerPos = ToolsGeometry.getRayPlaneIntersection(Tools3D.getCameraPickRay(applet, object, rotateFingerCursor), 
-					dragPlaneNormal, 
-					rotateFingerStart.getCopy());
+//			Vector3D newRotateFingerPos = ToolsGeometry.getRayPlaneIntersection(Tools3D.getCameraPickRay(applet, object, rotateFingerCursor), 
+//					dragPlaneNormal, 
+//					rotateFingerStart.getCopy());
+//			Vector3D newRotateFingerPos = ToolsGeometry.getRayPlaneIntersection(Tools3D.getCameraPickRay(applet, rotateFingerCursor.getCurrentEvent().getCurrentTarget(), rotateFingerCursor), 
+//					dragPlaneNormal, 
+//					rotateFingerStart.getCopy());
+		
+			Vector3D newRotateFingerPos = getPlaneIntersection(applet, dragPlaneNormal, rotateFingerStart.getCopy(), rotateFingerCursor);
+			
 			//Update the field
 			if (newRotateFingerPos != null){
 				this.rotateFingerNew = newRotateFingerPos;
@@ -475,10 +530,16 @@ public class RotateProcessor extends AbstractCursorProcessor {
 				return;
 			}
 			
-			Vector3D newPinFingerPos = ToolsGeometry.getRayPlaneIntersection(
-					Tools3D.getCameraPickRay(applet, object, pinFingerCursor), 
-					dragPlaneNormal, 
-					pinFingerStart.getCopy()); 
+//			Vector3D newPinFingerPos = ToolsGeometry.getRayPlaneIntersection(
+//					Tools3D.getCameraPickRay(applet, object, pinFingerCursor), 
+//					dragPlaneNormal, 
+//					pinFingerStart.getCopy()); 
+//			Vector3D newPinFingerPos = ToolsGeometry.getRayPlaneIntersection(
+//					Tools3D.getCameraPickRay(applet, pinFingerCursor.getCurrentEvent().getCurrentTarget(), pinFingerCursor), 
+//					dragPlaneNormal, 
+//					pinFingerStart.getCopy()); 
+			Vector3D newPinFingerPos = getPlaneIntersection(applet, dragPlaneNormal, pinFingerStart.getCopy(), pinFingerCursor);
+			
 			if (newPinFingerPos != null){
 				// Update pinfinger with new position
 				this.pinFingerNew = newPinFingerPos;

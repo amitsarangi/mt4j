@@ -198,7 +198,7 @@ class ObjectFileMaterials implements ImageObserver {
     	if (st.ttype == ObjectFileParser.TT_WORD) {
 
     		if (curName != null) materials.put(curName, cur);
-    		curName = new String(st.sval);
+    		curName = st.sval;
     		cur = new ObjectFileMaterial();
     	}
     	st.skipToNextLine();
@@ -305,7 +305,7 @@ class ObjectFileMaterials implements ImageObserver {
 
     	st.lowerCaseMode(true);
 
-    	if (tFile != "") {
+    	if (!tFile.equals("")) {
     		
     		PImage texture = null;
     		
@@ -505,7 +505,7 @@ class ObjectFileMaterials implements ImageObserver {
 
     	st.lowerCaseMode(true);
 
-    	if (tFile != "") {
+    	if (!tFile.equals("")) {
     		PImage alphaMap;
     		// Check for filename with no extension
     		if (tFile.lastIndexOf('.') != -1) {

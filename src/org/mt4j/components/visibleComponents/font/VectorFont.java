@@ -158,12 +158,11 @@ public class VectorFont implements IFont {
 		//Put characters in hashmaps for quick access
 		uniCodeToChar 	= new HashMap<String, VectorFontCharacter>();
 		charNameToChar 	= new HashMap<String, VectorFontCharacter>();
-		
-		for (int i = 0; i < characters.length; i++) {
-			VectorFontCharacter currentChar = characters[i];
-			uniCodeToChar.put(currentChar.getUnicode(), currentChar);
-			charNameToChar.put(currentChar.getName(), currentChar);
-		}
+
+        for (VectorFontCharacter currentChar : characters) {
+            uniCodeToChar.put(currentChar.getUnicode(), currentChar);
+            charNameToChar.put(currentChar.getName(), currentChar);
+        }
 		
 		notAvailableChars = new ArrayList<String>();
 	}
@@ -253,11 +252,10 @@ public class VectorFont implements IFont {
 	public void setCharacters(VectorFontCharacter[] characters) {
 		uniCodeToChar.clear();
 		charNameToChar.clear();
-		for (int i = 0; i < characters.length; i++) {
-			VectorFontCharacter currentChar = characters[i];
-			uniCodeToChar.put(currentChar.getUnicode(), currentChar);
-			charNameToChar.put(currentChar.getName(), currentChar);
-		}
+        for (VectorFontCharacter currentChar : characters) {
+            uniCodeToChar.put(currentChar.getUnicode(), currentChar);
+            charNameToChar.put(currentChar.getName(), currentChar);
+        }
 		this.characters = characters;
 	}
 
@@ -412,10 +410,9 @@ public class VectorFont implements IFont {
 	 */
 	public void destroy() {
 		IFontCharacter[] characters = this.getCharacters();
-		for (int i = 0; i < characters.length; i++) {
-			IFontCharacter iFontCharacter = characters[i];
-			iFontCharacter.destroy();
-		}
+        for (IFontCharacter iFontCharacter : characters) {
+            iFontCharacter.destroy();
+        }
 		FontManager.getInstance().removeFromCache(this);
 	}
 

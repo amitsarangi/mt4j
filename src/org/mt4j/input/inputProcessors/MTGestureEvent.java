@@ -52,8 +52,9 @@ public abstract class MTGestureEvent extends MTInputEvent {
 	 * @param targetComponent the target component
 	 */
 	public MTGestureEvent(IInputProcessor source, int id, IMTComponent3D targetComponent) {
-		super(source, targetComponent);
+		super(source, targetComponent, false);
 		this.id = id;
+		this.setCurrentTarget(targetComponent); //FIXME ..
 //		this.targetComponent = targetComponent;
 	}
 	

@@ -69,7 +69,7 @@ public class MTWin7TouchInputEvt extends MTFingerInputEvt {
 	 * @param contactSizeX the contact size x
 	 * @param contactSizeY the contact size y
 	 * @param id the id
-	 * @param m the m
+	 * @param c the c
 	 */
 	public MTWin7TouchInputEvt(
 			AbstractInputSource source, 

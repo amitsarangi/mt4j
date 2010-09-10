@@ -145,6 +145,15 @@ public class Win7NativeTouchSource extends AbstractInputSource {
 		
 		this.getNativeWindowHandles();
 		success = true;
+		
+		Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
+			public void run() {
+				if (isSuccessfullySetup()){
+					logger.debug("Cleaning up Win7 touch source..");
+					quit();
+				}
+			}
+		}));
 	}
 
 	

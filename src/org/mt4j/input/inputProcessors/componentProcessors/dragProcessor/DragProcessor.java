@@ -42,13 +42,18 @@ public class DragProcessor extends AbstractCursorProcessor {
 	
 	/** The dc. */
 	private DragContext dc;
+	
+	public DragProcessor(PApplet graphicsContext){
+		this(graphicsContext, true);
+	}
 
 	/**
 	 * Instantiates a new drag processor.
 	 * 
 	 * @param graphicsContext the graphics context
 	 */
-	public DragProcessor(PApplet graphicsContext){
+	public DragProcessor(PApplet graphicsContext, boolean stopEventPropagation){
+		super(stopEventPropagation);
 		this.applet = graphicsContext;
 		this.setLockPriority(1);
 		this.setDebug(false);
@@ -61,7 +66,7 @@ public class DragProcessor extends AbstractCursorProcessor {
 	 */
 	@Override
 	public void cursorStarted(InputCursor cursor, MTFingerInputEvt fe) {
-		IMTComponent3D comp = fe.getTargetComponent();
+		IMTComponent3D comp = fe.getTarget();
 		InputCursor[] theLockedCursors = getLockedCursorsArray();
 		//if gesture isnt started and no other cursor on comp is locked by higher priority gesture -> start
 		if (theLockedCursors.length == 0 && this.canLock(getCurrentComponentCursorsArray())){ 
@@ -70,7 +75,7 @@ public class DragProcessor extends AbstractCursorProcessor {
 				//Lock this cursor with our priority
 				this.getLock(cursor);
 				logger.debug(this.getName() + " successfully locked cursor (id:" + cursor.getId() + ")");
-				this.fireGestureEvent(new DragEvent(this,MTGestureEvent.GESTURE_DETECTED, comp, cursor, dc.getLastPosition(), dc.getNewPosition()));
+				this.fireGestureEvent(new DragEvent(this,MTGestureEvent.GESTURE_DETECTED, fe.getCurrentTarget(), cursor, dc.getLastPosition(), dc.getNewPosition()));
 			}else{
 				logger.debug(this.getName() + " gesture aborted, probably finger not on component!");
 				dc = null;
@@ -83,11 +88,25 @@ public class DragProcessor extends AbstractCursorProcessor {
 	 */
 	@Override
 	public void cursorUpdated(InputCursor c, MTFingerInputEvt fe) {
-		IMTComponent3D comp = fe.getTargetComponent();
-		if (getLockedCursors().contains(c)){
+		IMTComponent3D comp = fe.getTarget();
+		if (getLockedCursors().contains(c) && dc.getCursor().equals(c)){
 			dc.updateDragPosition();
-			this.fireGestureEvent(new DragEvent(this, MTGestureEvent.GESTURE_UPDATED, comp, c, dc.getLastPosition(), dc.getNewPosition()));
+			this.fireGestureEvent(new DragEvent(this, MTGestureEvent.GESTURE_UPDATED, fe.getCurrentTarget(), dc.getCursor(), dc.getLastPosition(), dc.getNewPosition()));
 		}
+//		else{
+////			System.out.println("this.isGestureInProgress() " + this.isGestureInProgress() +  " this.getLockedCursors().isEmpty() " + this.getLockedCursors().isEmpty() + " getFreeComponentCursors().size() > 0 " + (getFreeComponentCursors().size() > 0) + " this.canLock(getCurrentComponentCursorsArray() " + this.canLock(getCurrentComponentCursorsArray()) );
+//			if (this.getLockedCursors().isEmpty() &&  getFreeComponentCursors().size() > 0 && this.canLock(getCurrentComponentCursorsArray())){ //If 
+//				DragContext newContext = new DragContext(c, c.getTarget());
+////				DragContext newContext = new DragContext(c, c.getCurrentEvent().getCurrentTarget());
+//				if (!newContext.isGestureAborted()){
+//					dc = newContext;
+//					this.getLock(c);
+//					this.fireGestureEvent(new DragEvent(this, MTGestureEvent.GESTURE_UPDATED, fe.getCurrentTarget(), dc.getCursor(), dc.getLastPosition(), dc.getNewPosition()));
+//				}else{
+//					dc = null; 
+//				}
+//			}
+//		}
 	}
 
 	
@@ -96,7 +115,21 @@ public class DragProcessor extends AbstractCursorProcessor {
 	 */
 	@Override
 	public void cursorEnded(InputCursor c, MTFingerInputEvt fe) {
-		IMTComponent3D comp = fe.getTargetComponent();
+//		if (this.isGestureInProgress() && this.getLockedCursors().isEmpty()){ //The case if the gesture was interrupted because a higher priority gesture needed the cursor 
+//			DragContext newContext = new DragContext(c, c.getTarget());
+//			if (!newContext.isGestureAborted()){
+//				dc = newContext;
+//				this.getLock(c);
+//				logger.debug(this.getName() + " can resume its gesture with cursors: " + c.getId());
+//			}else{
+//				dc = null;
+//				logger.debug(this.getName() + " we could NOT start gesture - cursors not on component: " + c.getId());
+//			}
+//		}else{
+//			logger.debug(this.getName() + " still in progress - we dont need the unlocked cursors" );
+//		}
+		
+		IMTComponent3D comp = fe.getTarget();
 		logger.debug(this.getName() + " INPUT_ENDED RECIEVED - MOTION: " + c.getId());
 		if (getLockedCursors().contains(c)){ //cursors was a actual gesture cursors
 			dc.updateDragPosition();
@@ -109,10 +142,10 @@ public class DragProcessor extends AbstractCursorProcessor {
 					dc = newContext;
 					this.getLock(otherCursor);
 				}else{
-					this.fireGestureEvent(new DragEvent(this, MTGestureEvent.GESTURE_ENDED, comp, c, dc.getLastPosition(), dc.getNewPosition()));
+					this.fireGestureEvent(new DragEvent(this, MTGestureEvent.GESTURE_ENDED, fe.getCurrentTarget(), c, dc.getLastPosition(), dc.getNewPosition()));
 				}
 			}else{
-				this.fireGestureEvent(new DragEvent(this, MTGestureEvent.GESTURE_ENDED, comp, c, dc.getLastPosition(), dc.getNewPosition()));
+				this.fireGestureEvent(new DragEvent(this, MTGestureEvent.GESTURE_ENDED, fe.getCurrentTarget(), c, dc.getLastPosition(), dc.getNewPosition()));
 			}
 		}
 	}
@@ -129,7 +162,7 @@ public class DragProcessor extends AbstractCursorProcessor {
 		}else{
 			logger.debug(this.getName() + " Recieved MOTION LOCKED by higher priority signal - cursors ID: " + c.getId());
 		}
-
+		
 		if (dc != null && dc.getCursor().equals(c)){ 
 			dc = null;
 			logger.debug(this.getName() + " cursors:" + c.getId() + " CURSOR LOCKED. Was an locked cursor in this gesture!");
@@ -150,6 +183,7 @@ public class DragProcessor extends AbstractCursorProcessor {
 
 		if (getFreeComponentCursors().size() > 0 && this.canLock(getCurrentComponentCursorsArray())){ 
 			DragContext newContext = new DragContext(c, c.getTarget());
+//			DragContext newContext = new DragContext(c, c.getCurrentEvent().getCurrentTarget());
 			if (!newContext.isGestureAborted()){
 				dc = newContext;
 				this.getLock(c);
@@ -196,10 +230,12 @@ public class DragProcessor extends AbstractCursorProcessor {
 				 * @param m the m
 				 * @param dragObject the drag object
 				 */
-				public DragContext(InputCursor m, IMTComponent3D dragObject){	
-					this.dragObject = dragObject;
+				public DragContext(InputCursor m, IMTComponent3D dragObject_){	
+					this.dragObject = dragObject_;
 					this.m = m;
 					gestureAborted = false;
+					
+					this.dragObject = m.getCurrentEvent().getCurrentTarget();
 					
 					//Calculate the normal of the plane we will be dragging at (useful if camera isnt default)
 					this.dragPlaneNormal =  dragObject.getViewingCamera().getPosition().getSubtracted(dragObject.getViewingCamera().getViewCenterPos()).normalizeLocal();
@@ -211,6 +247,7 @@ public class DragProcessor extends AbstractCursorProcessor {
 						this.startPosition = interSectP;
 					else{
 						logger.warn(getName() + " Drag StartPoint Null -> aborting drag");
+//						Vector3D interSectPssss = getIntersection(applet, dragObject, m); //FIXME REMOVE
 						gestureAborted = true; 
 						this.startPosition = new Vector3D(0,0,0); //TODO ABORT GESTURE!
 						//abortGesture(m); //TODO in anderen analyzern auch machen
@@ -229,10 +266,11 @@ public class DragProcessor extends AbstractCursorProcessor {
 						return ;
 					}
 					
-					Vector3D newPos = ToolsGeometry.getRayPlaneIntersection(
-							Tools3D.getCameraPickRay(applet, dragObject, m.getCurrentEvtPosX(), m.getCurrentEvtPosY()), 
-							dragPlaneNormal, 
-							startPosition);
+//					Vector3D newPos = ToolsGeometry.getRayPlaneIntersection(
+//							Tools3D.getCameraPickRay(applet, dragObject, m.getCurrentEvtPosX(), m.getCurrentEvtPosY()), 
+//							dragPlaneNormal, 
+//							startPosition);
+					Vector3D newPos = getPlaneIntersection(applet, dragPlaneNormal, startPosition, m);
 					if (newPos != null){
 						lastPosition = newPosition;
 						newPosition = newPos;

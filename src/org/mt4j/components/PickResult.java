@@ -162,7 +162,7 @@ public class PickResult {
 		
 		for (int i = 0; i < getPickList().size(); i++) {
 			PickEntry p = pickEntries.get(i);
-			if (p.equals(pickedObj))
+			if (p.hitObj.equals(pickedObj))
 				return p.cameraDistance;
 		}
 		return Float.MAX_VALUE;
@@ -221,10 +221,9 @@ public class PickResult {
 	public void printList() {
 		sort();
 		System.out.println("Pick Entries:");
-		for (int i = 0; i < pickEntries.size(); i++) {
-			PickEntry p = pickEntries.get(i);
-			System.out.println("Entry: " + p.hitObj + " Distance: " + p.cameraDistance + " Intersection: " + p.intersectionPoint);
-		}
+        for (PickEntry p : pickEntries) {
+            System.out.println("Entry: " + p.hitObj + " Distance: " + p.cameraDistance + " Intersection: " + p.intersectionPoint);
+        }
 	}
 	
 	

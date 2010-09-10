@@ -17,10 +17,7 @@
  ***********************************************************************/
 package org.mt4j.input;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
 
 import org.mt4j.input.inputProcessors.IGestureEventListener;
@@ -203,17 +200,19 @@ public class GestureEventSupport {
 
         IGestureEventListener[] listeners = this.gestureSenderToGestureListener.get(null);
         if (listeners != null) {
-            for (IGestureEventListener listener : listeners) {
-                list.add(listener);
-            }
+            list.addAll(Arrays.asList(listeners));
+            //for (IGestureEventListener listener : listeners) {
+             //   list.add(listener);
+            //}
         }
         
         for (Entry<Class<? extends IInputProcessor>, IGestureEventListener[]> entry : this.gestureSenderToGestureListener.entrySet()) {
         	Class<? extends IInputProcessor> gestureEvtSender = entry.getKey();
             if (gestureEvtSender != null) {
-                for (IGestureEventListener listener : entry.getValue()) {
-                    list.add(listener);
-                }
+                list.addAll(Arrays.asList(entry.getValue()));
+                //for (IGestureEventListener listener : entry.getValue()) {
+                 //   list.add(listener);
+                //}
             }
         }
         return list.toArray(newArray(list.size()));

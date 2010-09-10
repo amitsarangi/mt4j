@@ -79,10 +79,9 @@ public class ClusterManager {
 	 * @param selections the selections
 	 */
 	public void addAllClusters(Cluster[] selections){
-		for (int i = 0; i < selections.length; i++) {
-			Cluster object = selections[i];
-			childObjects.add(object);
-		}
+        for (Cluster object : selections) {
+            childObjects.add(object);
+        }
 	}
 	
 	/**
@@ -144,7 +143,7 @@ public class ClusterManager {
 	public Cluster[] getClusters(){
 		Cluster[] objects =  new Cluster[childObjects.size()];
 		for (int i = 0; i < childObjects.size(); i++) {
-			objects[i] = (Cluster)childObjects.get(i);
+			objects[i] = childObjects.get(i);
 		}
 		return objects;
 	}
@@ -171,13 +170,11 @@ public class ClusterManager {
 	 * @return the cluster
 	 */
 	public Cluster getCluster(IMTComponent3D component){
-		for (int i = 0; i < childObjects.size(); i++) {
-			Cluster selection = childObjects.get(i);
-			
-			if (component instanceof MTComponent && selection.containsDirectChild((MTComponent)component)){
-				return selection;
-			}
-		}
+        for (Cluster selection : childObjects) {
+            if (component instanceof MTComponent && selection.containsDirectChild((MTComponent) component)) {
+                return selection;
+            }
+        }
 		return null;
 	}
 

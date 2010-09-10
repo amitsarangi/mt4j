@@ -32,6 +32,7 @@ import org.mt4j.util.MT4jSettings;
 import org.mt4j.util.MTColor;
 import org.mt4j.util.animation.Animation;
 import org.mt4j.util.animation.AnimationEvent;
+import org.mt4j.util.animation.IAnimation;
 import org.mt4j.util.animation.IAnimationListener;
 import org.mt4j.util.animation.MultiPurposeInterpolator;
 import org.mt4j.util.math.Vector3D;
@@ -169,13 +170,12 @@ public class MTImage extends MTRectangle implements IdragClusterable{
 		}else{
 			//Remove svg button and destroy child display lists
 			MTComponent[] childs = this.getChildren();
-			for (int i = 0; i < childs.length; i++) {
-				MTComponent component = childs[i];
-				if (component.getName().equals("closeButton")) {
-					MTSvgButton svgButton = (MTSvgButton) component;
-					svgButton.destroy();
-				}
-			}
+            for (MTComponent component : childs) {
+                if (component.getName().equals("closeButton")) {
+                    MTSvgButton svgButton = (MTSvgButton) component;
+                    svgButton.destroy();
+                }
+            }
 		}
 	}
 	
@@ -211,24 +211,23 @@ public class MTImage extends MTRectangle implements IdragClusterable{
 				switch (arg0.getID()) {
 				case TapEvent.BUTTON_CLICKED:
 					//Get the first polygon type out of the array
-					for (int i = 0; i < comps.length; i++) { //TODO this is stupid.. redo this whole thing
-						MTComponent comp = comps[i];
-						if (comp instanceof MTPolygon) {
-							MTPolygon poly = (MTPolygon) comp;
-							if (referencePoly == null){//nur 1. occur zuweisen
-								referencePoly = poly;
-							}
-						}
-					}
+                    for (MTComponent comp : comps) { //TODO this is stupid.. redo this whole thing
+                        if (comp instanceof MTPolygon) {
+                            MTPolygon poly = (MTPolygon) comp;
+                            if (referencePoly == null) {//nur 1. occur zuweisen
+                                referencePoly = poly;
+                            }
+                        }
+                    }
 					float width = referencePoly.getWidthXY(TransformSpace.RELATIVE_TO_PARENT);
 
-					Animation closeAnim = new Animation("comp Fade", new MultiPurposeInterpolator(width, 1, 300, 0.5f, 0.8f, 1), referencePoly);
+					IAnimation closeAnim = new Animation("comp Fade", new MultiPurposeInterpolator(width, 1, 300, 0.5f, 0.8f, 1), referencePoly);
 					closeAnim.addAnimationListener(new IAnimationListener(){
 						public void processAnimationEvent(AnimationEvent ae) {
 							switch (ae.getId()) {
 							case AnimationEvent.ANIMATION_STARTED:
 							case AnimationEvent.ANIMATION_UPDATED:
-								float currentVal = ae.getAnimation().getInterpolator().getCurrentValue();
+								float currentVal = ae.getAnimation().getValue();
 								resize(referencePoly, comps[0], currentVal, currentVal);
 								break;
 							case AnimationEvent.ANIMATION_ENDED:

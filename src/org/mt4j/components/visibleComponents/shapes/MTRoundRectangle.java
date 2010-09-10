@@ -168,12 +168,11 @@ public class MTRoundRectangle extends MTPolygon {
 		
 		//Set texture coordinates
 		if (createTexCoords){
-			for (int i = 0; i < newVertices.length; i++) {
-				Vertex vertex = newVertices[i];
-				vertex.setTexCoordU((vertex.x-x)/width);
-				vertex.setTexCoordV((vertex.y-y)/height);
-				//System.out.println("TexU:" + vertex.getTexCoordU() + " TexV:" + vertex.getTexCoordV());
-			}
+            for (Vertex vertex : newVertices) {
+                vertex.setTexCoordU((vertex.x - x) / width);
+                vertex.setTexCoordV((vertex.y - y) / height);
+                //System.out.println("TexU:" + vertex.getTexCoordU() + " TexV:" + vertex.getTexCoordV());
+            }
 		}
 		return newVertices;
 	}

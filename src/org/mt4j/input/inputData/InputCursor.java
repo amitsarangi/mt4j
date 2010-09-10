@@ -61,9 +61,9 @@ public class InputCursor{
 	/** The ID. */
 	private long ID;
 	
-	private TreeMap<AbstractCursorProcessor, Integer> lockSeekingProcessorsToPriority;
+	private TreeMap<AbstractCursorProcessor, Float> lockingProcessorsToPriority;
 	
-	private TreeMap<AbstractCursorProcessor, Integer> interestedProcessorsToPriority;
+	private TreeMap<AbstractCursorProcessor, Float> registeredProcessorsToPriority;
 	
     
 	
@@ -76,7 +76,7 @@ public class InputCursor{
 		events = new ArrayList<AbstractCursorInputEvt>(100);
 //		events = new LinkedList<AbstractCursorInputEvt>();
 		
-		lockSeekingProcessorsToPriority = new TreeMap<AbstractCursorProcessor, Integer>(new Comparator<AbstractCursorProcessor>() {
+		lockingProcessorsToPriority = new TreeMap<AbstractCursorProcessor, Float>(new Comparator<AbstractCursorProcessor>() {
 			//@Override //TODO make comparater inner clas and reuse 
 			public int compare(AbstractCursorProcessor o1, AbstractCursorProcessor o2) {
 				if (o1.getLockPriority() < o2.getLockPriority()){
@@ -93,7 +93,7 @@ public class InputCursor{
 			}
 		});
 		
-		interestedProcessorsToPriority = new TreeMap<AbstractCursorProcessor, Integer>(new Comparator<AbstractCursorProcessor>() {
+		registeredProcessorsToPriority = new TreeMap<AbstractCursorProcessor, Float>(new Comparator<AbstractCursorProcessor>() {
 			//@Override
 			public int compare(AbstractCursorProcessor o1, AbstractCursorProcessor o2) {
 				if (o1.getLockPriority() < o2.getLockPriority()){
@@ -118,18 +118,18 @@ public class InputCursor{
 	 * 
 	 * @return the current lock priority
 	 */
-	public int getCurrentLockPriority(){
-		if (lockSeekingProcessorsToPriority.isEmpty()){
+	public float getCurrentLockPriority(){
+		if (lockingProcessorsToPriority.isEmpty()){
 			return 0;
 		}else{
-			return lockSeekingProcessorsToPriority.lastKey().getLockPriority();
+			return lockingProcessorsToPriority.lastKey().getLockPriority();
 		}
 	}
 	
 
 	
 	public boolean canLock(AbstractCursorProcessor ia){
-		int currentLockPriority = this.getCurrentLockPriority();
+		float currentLockPriority = this.getCurrentLockPriority();
 		if (currentLockPriority == ia.getLockPriority()){
 			return true;
 		}else if (currentLockPriority < ia.getLockPriority()){
@@ -155,30 +155,36 @@ public class InputCursor{
 			logger.debug(ia.getName() + " trying to LOCK cursor: " + this.getId());
 //		}
 		
-		int currentLockPriority = this.getCurrentLockPriority();
+			float currentLockPriority = this.getCurrentLockPriority();
 		
 		if (currentLockPriority == ia.getLockPriority()){
-			lockSeekingProcessorsToPriority.put(ia, ia.getLockPriority());
+			lockingProcessorsToPriority.put(ia, ia.getLockPriority());
 			logger.debug("Cursor: " + this.getId() + " LOCKED sucessfully, dont send lock signal because cursor was already locked by same priority (" + currentLockPriority +   ")");
 			return true;
 		}else if (currentLockPriority < ia.getLockPriority()){
-			lockSeekingProcessorsToPriority.put(ia, ia.getLockPriority());
+			lockingProcessorsToPriority.put(ia, ia.getLockPriority());
 			
+			
+			logger.debug("Cursor: " + this.getId() + " LOCKED sucessfully, send lock signal - Cursor priority was lower " + "(" + currentLockPriority +   ")" +  " than the gesture priority (" + ia.getLockPriority() + ")");
+			// Send only to ones lower than this priority
+			cursorLockedByHigherPriorityGesture(ia, ia.getLockPriority());
+			
+			//FIXME TEST - remove the lower priority gestures from locking this cursor AFTER having sent the lockLost signal to these lower
+			//priority processors! -> (in cursorLocked() , processor.getLockedCursors() will still return this cursor! - check processor behaviour!
 			//FIXME MTInputPositionEvtEST - ONLY KEEPING MTInputPositionEvtHE HIGHEST PRIORITY ANALYZERS - just keep an array with the current highest priority analyzers?
 			//Just keep the head of the map
 			//sprich bei drag : 1 entry mit drag
 			//bei rotate/scale : 2 entries aber kein drag entry mehr gebraucht
-			SortedMap<AbstractCursorProcessor, Integer> m = lockSeekingProcessorsToPriority.headMap(ia);
+			SortedMap<AbstractCursorProcessor, Float> m = lockingProcessorsToPriority.headMap(ia);
 			Set<AbstractCursorProcessor> k = m.keySet();
 			for (Iterator<AbstractCursorProcessor> iterator = k.iterator(); iterator.hasNext();) {
-				AbstractCursorProcessor processor = (AbstractCursorProcessor) iterator.next();
+				AbstractCursorProcessor processor = iterator.next();
 				logger.debug("itereating and removing old, lower priority processor: "  + processor);
 				iterator.remove();
 			}
 			
-			logger.debug("Cursor: " + this.getId() + " LOCKED sucessfully, send lock signal - Cursor priority was lower " + "(" + currentLockPriority +   ")" +  " than the gesture priority (" + ia.getLockPriority() + ")");
-			//send only to ones lower than this priority
-			cursorLockedByHigherPriorityGesture(ia, ia.getLockPriority());
+			
+			
 			return true;
 		}else{ //cursor locked by higher priority already
 //			lockSeekingAnalyzersToPriority.put(ia, ia.getLockPriority()); //TODO REMOVE?
@@ -189,7 +195,7 @@ public class InputCursor{
 	
 	public boolean isLockedBy(AbstractCursorProcessor cp){
 //		return lockSeekingProcessorsToPriority.containsKey(cp);
-		for (AbstractCursorProcessor abstractCursorProcessor : lockSeekingProcessorsToPriority.keySet()) {
+		for (AbstractCursorProcessor abstractCursorProcessor : lockingProcessorsToPriority.keySet()) {
 			if (abstractCursorProcessor.equals(cp)){
 				return true;
 			}
@@ -198,19 +204,45 @@ public class InputCursor{
 	}
 	
 	//only do this when previous highest priority strictly < the new priority!
-	private void cursorLockedByHigherPriorityGesture(AbstractCursorProcessor ia, int gesturePriority){
-		if (!interestedProcessorsToPriority.isEmpty()){
-			SortedMap<AbstractCursorProcessor, Integer> lesserPriorityGestureMap = interestedProcessorsToPriority.headMap(ia); //get analyzers with strictly lower priority than the locking one 
+	private void cursorLockedByHigherPriorityGesture(AbstractCursorProcessor ia, float gesturePriority){
+		if (!registeredProcessorsToPriority.isEmpty()){
+			
+			//FIXME use headMap -> inclusive = false? so it doesent send cursorLocked to some with same priority
+			SortedMap<AbstractCursorProcessor, Float> lesserPriorityGestureMap = registeredProcessorsToPriority.headMap(ia); //get analyzers with strictly lower priority than the locking one 
 			Set<AbstractCursorProcessor> lesserPriorityGestureKeys = lesserPriorityGestureMap.keySet();
-			for (Iterator<AbstractCursorProcessor> iterator = lesserPriorityGestureKeys.iterator(); iterator.hasNext();) {
-				AbstractCursorProcessor processor = (AbstractCursorProcessor) iterator.next();
-				//Only send lock signal to the processors whos priority is lower than the current locking cursor priority
-					if (processor instanceof AbstractCursorProcessor){
-						AbstractCursorProcessor a = (AbstractCursorProcessor)processor;
-						logger.debug("Cursor: " + this.getId() + " Sending cursor LOCKED signal to: " + a.getName());
-					}
-					processor.cursorLocked(this, ia);
-			}
+            
+			for (AbstractCursorProcessor processor : lesserPriorityGestureKeys) {
+                //Only send lock signal to the processors whos priority is lower than the current locking cursor priority
+                AbstractCursorProcessor a = processor;
+                logger.debug("Cursor: " + this.getId() + " Sending cursor LOCKED signal to: " + a.getName());
+                
+                //FIXME the lock is already lost here? -it was like this, yes -> change so we can use
+                //if (this.getLockedCursors.contains(inputCursor)) ... in the processors' cursorLocked() method to check if 
+                //the cursor was used in the processor
+                //TODO check if we get concurrent modification exc if the processors would call unlock() while we iterate here!!!
+                if (this.isLockedBy(processor)){//FIXME test - only send lockLost to processors who actually had the cursor locked
+//                	processor.cursorLocked(this, ia);
+                	processor.cursorLostLock(this, ia);
+                	
+//                	System.out.println("cursor " + this.getId() + " now locked by " + ia.getName() + " was Locked By( " + processor.getName() + " target: " + getTarget() + " currenttarget: " + this.getCurrentEvent().getCurrentTarget());
+                	
+                	if (this.getTarget() != null){
+                		//TODO send lockLostEvent extends MTInputEvent so that we can use lockLostEvt.getCurrentTarget
+                		//in the cursorLocked method to fire to the correct comp
+                		
+                		//PRoblem - im InputCursor muss tatsächlich als current event einer sein mit currentTarget = component of the processor
+
+                		//le = new MTLockLostEvent(this, this.getTarget ) ;
+                		//le.setEventPhase(MTI
+                		//this.getTarget().processInputEvent();
+                	}else{
+                		//TODO invoke processor.cursorLocked(this, ia); directly
+                	}
+                }else{
+//                	System.out.println("cursor " + this.getId() + " now locked by " + ia.getName() + " was NOT Locked By( " + processor.getName() + " target: " + getTarget() + " currenttarget: " + this.getCurrentEvent().getCurrentTarget());
+                }
+//                processor.cursorLocked(this, ia);
+            }
 		}
 	}
 	
@@ -223,7 +255,7 @@ public class InputCursor{
 	 * @param ia the ia
 	 */
 	public void registerForLocking(AbstractCursorProcessor ia) {
-		interestedProcessorsToPriority.put(ia, ia.getLockPriority());
+		registeredProcessorsToPriority.put(ia, ia.getLockPriority());
 	}
 	
 	/**
@@ -232,9 +264,9 @@ public class InputCursor{
 	 * @param ia the ia
 	 */
 	public void unregisterForLocking(AbstractCursorProcessor ia){
-		Set<AbstractCursorProcessor> keys = interestedProcessorsToPriority.keySet();
+		Set<AbstractCursorProcessor> keys = registeredProcessorsToPriority.keySet();
 		for (Iterator<AbstractCursorProcessor> iterator = keys.iterator(); iterator.hasNext();) {
-			AbstractCursorProcessor inputAnalyzer = (AbstractCursorProcessor) iterator.next();
+			AbstractCursorProcessor inputAnalyzer = iterator.next();
 			if (inputAnalyzer.equals(ia)){
 				iterator.remove();
 			}
@@ -257,14 +289,14 @@ public class InputCursor{
 	public void unlock(AbstractCursorProcessor ia){
 		logger.debug(ia.getName() + " UNLOCKING cursor: " + this.getId());
 		
-		int beforeLockPriority = this.getCurrentLockPriority();
-		int unlockingGesturePriority = ia.getLockPriority();
+		float beforeLockPriority = this.getCurrentLockPriority();
+		float unlockingGesturePriority = ia.getLockPriority();
 		
 //		if (lockSeekingAnalyzersToPriority.containsKey(ia)){ //FIXME WARUM MANCHE NICHT IN LISTE DIE SEIN SOLLTEN??
 //			//remove the analyzer from the priority map in any case
 //			lockSeekingAnalyzersToPriority.remove(ia); 
 //		}
-			Set<AbstractCursorProcessor> keys = lockSeekingProcessorsToPriority.keySet();
+			Set<AbstractCursorProcessor> keys = lockingProcessorsToPriority.keySet();
 			for (Iterator<AbstractCursorProcessor> iterator = keys.iterator(); iterator.hasNext();) {
 				AbstractCursorProcessor inputProcessor = iterator.next();
 				if (inputProcessor.equals(ia)){
@@ -280,27 +312,27 @@ public class InputCursor{
 				return;
 			}
 			
-			int afterRemoveLockPriority = this.getCurrentLockPriority();
+			float afterRemoveLockPriority = this.getCurrentLockPriority();
 			//Only send released signal if the priority really was lowered by releasing (there can be more than 1 lock with the same lock priority)
 			if (beforeLockPriority > afterRemoveLockPriority){ 
-				if (!interestedProcessorsToPriority.isEmpty()){
+				if (!registeredProcessorsToPriority.isEmpty()){
 					//Get strictly smaller priority gestures than the one relreasing, so that the ones with same priority dont get a signal
-					SortedMap<AbstractCursorProcessor, Integer> lesserPriorityGestureMap = interestedProcessorsToPriority.headMap(interestedProcessorsToPriority.lastKey());
+					SortedMap<AbstractCursorProcessor, Float> lesserPriorityGestureMap = registeredProcessorsToPriority.headMap(registeredProcessorsToPriority.lastKey());
 //					SortedMap<IInputAnalyzer, Integer> lesserPriorityGestureMap = watchingAnalyzersToPriority.headMap(ia);
 					Set<AbstractCursorProcessor> lesserPriorityGestureKeys = lesserPriorityGestureMap.keySet();
-					for (Iterator<AbstractCursorProcessor> iterator = lesserPriorityGestureKeys.iterator(); iterator.hasNext();) {
-						AbstractCursorProcessor processor = (AbstractCursorProcessor) iterator.next();
-						
-						//Only send released signal to the analyzers whos priority is higher than the current cursor priority
-						//the current highest priority of the cursor can change when released is called on a gesture that successfully
-						//locks this cursor, so check each loop iteration
-						if (   processor.getLockPriority() <  unlockingGesturePriority //Only call on gestures with a lower priority than the one releasing the lock
-						    && this.getCurrentLockPriority()   <= processor.getLockPriority() //only call unLocked on analyzers with a lower or equal lockpriority
-						){
-							processor.cursorUnlocked(this); 
-							//FIXME funktioniert das, wenn bei claim in anderer geste wieder was in die liste geadded wird etc?
-						}
-					}
+                    for (AbstractCursorProcessor processor : lesserPriorityGestureKeys) {
+                        //Only send released signal to the analyzers whos priority is higher than the current cursor priority
+                        //the current highest priority of the cursor can change when released is called on a gesture that successfully
+                        //locks this cursor, so check each loop iteration
+                        if (processor.getLockPriority() < unlockingGesturePriority //Only call on gestures with a lower priority than the one releasing the lock
+                                && this.getCurrentLockPriority() <= processor.getLockPriority() //only call unLocked on analyzers with a lower or equal lockpriority
+//                                && this.isLockedBy(processor) //FIXME TEST
+                                ) {
+//                            processor.cursorUnlocked(this);
+                        	processor.cursorFreed(this);
+                            //FIXME funktioniert das, wenn bei claim in anderer geste wieder was in die liste geadded wird etc?
+                        }
+                    }
 				}
 			}
 		
@@ -385,7 +417,7 @@ public class InputCursor{
 //			}
 //		}
 		for (int i = allEvents.size()-1; i > 0; i--) {
-			if((now - allEvents.get(i).getWhen()) < millisAgo){
+			if((now - allEvents.get(i).getTimeStamp()) < millisAgo){
 				result.add(allEvents.get(i));
 			}  
 			else{// schleife abbrechen wenn falsch damit rest nicht durchsucht werden muss
@@ -428,7 +460,7 @@ public class InputCursor{
 	 * @return the current events position x
 	 */
 	public float getCurrentEvtPosX(){
-		return this.getCurrentEvent().getPosX();
+		return this.getCurrentEvent().getScreenX();
 	}
 	
 	/**
@@ -437,7 +469,7 @@ public class InputCursor{
 	 * @return the current events position y
 	 */
 	public float getCurrentEvtPosY(){
-		return this.getCurrentEvent().getPosY();
+		return this.getCurrentEvent().getScreenY();
 	}
 	
 	
@@ -458,7 +490,15 @@ public class InputCursor{
 	 */
 	public IMTComponent3D getTarget(){
 		if (this.getCurrentEvent() != null){
-			return this.getCurrentEvent().getTargetComponent();
+			return this.getCurrentEvent().getTarget();
+		}else{
+			return null;
+		}
+	}
+	
+	public IMTComponent3D getCurrentTarget(){
+		if (this.getCurrentEvent() != null){
+			return this.getCurrentEvent().getCurrentTarget();
 		}else{
 			return null;
 		}
@@ -470,7 +510,7 @@ public class InputCursor{
 	 * @return the start position x
 	 */
 	public float getStartPosX(){
-		return this.getFirstEvent().getPosX();
+		return this.getFirstEvent().getScreenX();
 	}	
 	
 	/**
@@ -479,7 +519,7 @@ public class InputCursor{
 	 * @return the start position y
 	 */
 	public float getStartPosY(){
-		return this.getFirstEvent().getPosY();
+		return this.getFirstEvent().getScreenY();
 	}	
 	
 	
@@ -589,23 +629,21 @@ public class InputCursor{
 
 
 	public void printLockSeekingAnalyzerList() {
-		Set<AbstractCursorProcessor> claimed = lockSeekingProcessorsToPriority.keySet();
+		Set<AbstractCursorProcessor> claimed = lockingProcessorsToPriority.keySet();
 		logger.debug("Lock seeking processors list of cursor: " + this.getId());
-		for (Iterator<AbstractCursorProcessor> iterator = claimed.iterator(); iterator.hasNext();) {
-			AbstractCursorProcessor inputAnalyzer = (AbstractCursorProcessor) iterator.next();
-			logger.debug(inputAnalyzer.getClass() + " " + " Priority: " + inputAnalyzer.getLockPriority());
-		}
+        for (AbstractCursorProcessor inputAnalyzer : claimed) {
+            logger.debug(inputAnalyzer.getClass() + " " + " Priority: " + inputAnalyzer.getLockPriority());
+        }
 	}
 
 
 
 	public void printInterestedAnalyzersList() {
-		Set<AbstractCursorProcessor> watching = interestedProcessorsToPriority.keySet();
+		Set<AbstractCursorProcessor> watching = registeredProcessorsToPriority.keySet();
 		logger.debug("Interested processors list of cursor: " + this.getId());
-		for (Iterator<AbstractCursorProcessor> iterator = watching.iterator(); iterator.hasNext();) {
-			AbstractCursorProcessor inputAnalyzer = (AbstractCursorProcessor) iterator.next();
-			logger.debug(inputAnalyzer.getClass() + " " + " Priority: " + inputAnalyzer.getLockPriority());
-		}
+        for (AbstractCursorProcessor inputAnalyzer : watching) {
+            logger.debug(inputAnalyzer.getClass() + " " + " Priority: " + inputAnalyzer.getLockPriority());
+        }
 	}
 
 
@@ -668,7 +706,7 @@ public class InputCursor{
 		if (prev == null)
 			prev = posEvt;
 		//TODO normalize direction or not?
-		return new Vector3D(posEvt.getPosX() - prev.getPosX(), posEvt.getPosY() - prev.getPosY(), 0);
+		return new Vector3D(posEvt.getScreenX() - prev.getScreenX(), posEvt.getScreenY() - prev.getScreenY(), 0);
 	}
 	
 	
@@ -705,8 +743,8 @@ public class InputCursor{
 		float totalY = 0;
 		for (int i = 0; i < lastEvents.size(); i++) {
 			 AbstractCursorInputEvt ce = lastEvents.get(i);
-			 float x = ce.getPosX();
-			 float y = ce.getPosY();
+			 float x = ce.getScreenX();
+			 float y = ce.getScreenY();
 			 
 			 if (i == 0){
 				 lastX = x;

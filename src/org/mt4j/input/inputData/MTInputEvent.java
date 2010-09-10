@@ -28,8 +28,8 @@ import org.mt4j.input.MTEvent;
 public class MTInputEvent extends MTEvent {
 	
 	/** The target component. */
-	private IMTComponent3D targetComponent;
-	
+	private IMTComponent3D target;
+
 
 	/**
 	 * Instantiates a new mT input event.
@@ -37,30 +37,27 @@ public class MTInputEvent extends MTEvent {
 	 * @param source the source
 	 */
 	public MTInputEvent(Object source) {
-		super(source);
-		
+		this(source, null);
+	}
+	
+	public MTInputEvent(Object source, IMTComponent3D target) {
+		this(source, target, true);//FIXME?
 	}
 	
 	/**
 	 * Instantiates a new mT input event.
 	 * 
 	 * @param source the source
-	 * @param targetComponent the target component
+	 * @param target the target component
 	 */
-	public MTInputEvent(Object source, IMTComponent3D targetComponent) {
+	public MTInputEvent(Object source, IMTComponent3D target, boolean bubbles) {
 		super(source);
-		this.targetComponent = targetComponent;
+		this.target = target;
+		this.propatationStopped = false;
+		this.bubbles = bubbles; 
+		this.eventPhase = CAPTURING_PHASE; //FIXME?
 	}
 
-//	/**
-//	 * Gets the source.
-//	 * 
-//	 * @return the source
-//	*/
-//	@Override
-//	public AbstractInputSource getSource() {
-//	return (AbstractInputSource)super.getSource();
-//	}
 
 
 	/**
@@ -69,9 +66,23 @@ public class MTInputEvent extends MTEvent {
 	 * we can call <code>event.hasTarget()</code>.
 	 * 
 	 * @return the target component
+	 * @deprecated use getTarget() instead
+	 * @see #getTarget()
 	 */
 	public IMTComponent3D getTargetComponent() {
-		return targetComponent;
+		return target;
+	}
+	
+
+	/**
+	 * Gets the target of this input event.
+	 * <br><strong>NOTE:</strong> Not every event has a target component! To check this
+	 * we can call <code>event.hasTarget()</code>.
+	 * 
+	 * @return the target component
+	 */
+	public IMTComponent3D getTarget() {
+		return target;
 	}
 
 	/**
@@ -81,8 +92,8 @@ public class MTInputEvent extends MTEvent {
 	 * 
 	 * @param targetComponent the new target component
 	 */
-	public void setTargetComponent(IMTComponent3D targetComponent) {
-		this.targetComponent = targetComponent;
+	public void setTarget(IMTComponent3D targetComponent) {
+		this.target = targetComponent;
 	}
 	
 	/**
@@ -91,7 +102,7 @@ public class MTInputEvent extends MTEvent {
 	 * @return true, if successful
 	 */
 	public boolean hasTarget(){
-		return this.targetComponent != null;
+		return this.target != null;
 	}
 	
 	/**
@@ -99,7 +110,63 @@ public class MTInputEvent extends MTEvent {
 	 * This can be used to do event specific actions if needed before firing.
 	 * <br>NOTE: this is called internally and should not be called by users!
 	 */
-	public void preFire(){
-	}
+	public void onFired(){	}
+	
+	
+	
+	
+	private short eventPhase;
+	public static final short CAPTURING_PHASE 	= 1; // The current event phase is the capturing phase.
+	public static final short AT_TARGET 		= 2; 		//  The event is currently being evaluated at the target EventTarget.
+	public static final short BUBBLING_PHASE 	= 3;//  The current event phase is the bubbling phase.
+	
+    
+	private boolean propatationStopped;
+	private boolean bubbles;
+	/**
+     * The <code>setEventPhase</code> method is used by the DOM implementation 
+     * to change the value of a <code>eventPhase</code> attribute on the 
+     * <code>Event</code> interface.
+     * @param phase Specifies the <code>eventPahse</code> attribute on the 
+     *   <code>Event</code> interface.
+     */
+    public void setEventPhase(short phase){
+    	this.eventPhase = phase;
+    }
+    
+    public short getEventPhase(){
+    	return this.eventPhase; //TODO set in constructor?
+    }
+    
+    
+    public void stopPropagation(){
+    	this.propatationStopped = true;
+    }
+    
+    public boolean isPropagationStopped(){
+    	return propatationStopped;
+    }
+    
+    public boolean getBubbles(){
+    	return bubbles;
+    }
+    
+
+    private IMTComponent3D currentTarget;
+	/**
+     * The <code>setCurrentTarget</code> method is used by the DOM 
+     * implementation to change the value of a <code>currentTarget</code> 
+     * attribute on the <code>Event</code> interface.
+     * @param target Specifies the <code>currentTarget</code> attribute on 
+     *   the <code>Event</code> interface.
+     */
+    public void setCurrentTarget(IMTComponent3D target){
+    	this.currentTarget = target;
+    }
+    
+    public IMTComponent3D getCurrentTarget(){
+    	return this.currentTarget;
+    }
+
 	
 }

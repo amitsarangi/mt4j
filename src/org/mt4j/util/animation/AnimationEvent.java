@@ -29,7 +29,7 @@ public class AnimationEvent extends MTEvent {
 	private int id;
 	
 	/** The animation. */
-	private Animation animation;
+	private IAnimation animation;
 	
 	/** The target object. */
 	private Object targetObject;
@@ -51,7 +51,7 @@ public class AnimationEvent extends MTEvent {
 	 * @param id the id
 	 * @param animation the animation
 	 */
-	public AnimationEvent(Object source, int id, Animation animation) {
+	public AnimationEvent(Object source, int id, IAnimation animation) {
 		this(source, id, animation, null);
 	}
 	
@@ -63,7 +63,7 @@ public class AnimationEvent extends MTEvent {
 	 * @param animation the animation
 	 * @param targetObject the target object
 	 */
-	public AnimationEvent(Object source, int id, Animation animation, Object targetObject) {
+	public AnimationEvent(Object source, int id, IAnimation animation, Object targetObject) {
 		super(source);
 		
 		this.id = id;
@@ -87,7 +87,7 @@ public class AnimationEvent extends MTEvent {
 	 * 
 	 * @return the animation
 	 */
-	public Animation getAnimation() {
+	public IAnimation getAnimation() {
 		return animation;
 	}
 	
@@ -95,18 +95,30 @@ public class AnimationEvent extends MTEvent {
 	 * Gets the current step delta - the difference between the last value and the current value.
 	 * 
 	 * @return the current step delta
+	 * @deprecated use getDelta() instead
+	 * @see #getDelta()
 	 */
 	public float getCurrentStepDelta(){
-		return this.getAnimation().getInterpolator().getCurrentStepDelta();
+		return this.getAnimation().getDelta();
 	}
 	
 	/**
 	 * Gets the current absolute value of the interpolated value.
 	 * 
 	 * @return the current value
+	 * @deprecated use getValue() instead
+	 * @see #getValue()
 	 */
 	public float getCurrentValue(){
-		return this.getAnimation().getInterpolator().getCurrentValue();
+		return this.getAnimation().getValue();
+	}
+	
+	public float getValue(){
+		return this.getAnimation().getValue();
+	}
+	
+	public float getDelta(){
+		return this.getAnimation().getDelta();
 	}
 
 	/**
@@ -114,9 +126,21 @@ public class AnimationEvent extends MTEvent {
 	 * <br>Note: can be null!.
 	 * 
 	 * @return the target object of this animation - if it is set
+	 * @deprecated use getTaget() instead
+	 * @see #getTarget()
 	 */
 	public Object getTargetObject() {
 		return targetObject;
+	}
+	
+	/**
+	 * returns the target for the animation
+	 * <br>Note: can be null!.
+	 * 
+	 * @return the target object of this animation - if it is set
+	 */
+	public Object getTarget(){
+		return this.targetObject;
 	}
 	
 	

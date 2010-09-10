@@ -26,8 +26,8 @@ package org.mt4j.util.animation;
  * the AnimationUpdateEvent event occurs, that object's appropriate
  * method is invoked.
  * 
- * @see IAnimationManagerEvent
- * 
+ * @see org.mt4j.util.animation.AnimationUpdateEvent
+ * @see org.mt4j.util.animation.AnimationManager
  * @author Christopher Ruff
  */
 public interface IAnimationManagerListener {

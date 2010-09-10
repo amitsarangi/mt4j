@@ -43,8 +43,10 @@ import org.mt4j.util.MTColor;
 import org.mt4j.util.animation.Animation;
 import org.mt4j.util.animation.AnimationEvent;
 import org.mt4j.util.animation.AnimationManager;
+import org.mt4j.util.animation.IAnimation;
 import org.mt4j.util.animation.IAnimationListener;
 import org.mt4j.util.animation.MultiPurposeInterpolator;
+import org.mt4j.util.animation.ani.AniAnimation;
 import org.mt4j.util.math.ConvexQuickHull2D;
 import org.mt4j.util.math.Matrix;
 import org.mt4j.util.math.Ray;
@@ -139,7 +141,7 @@ public abstract class AbstractShape extends AbstractVisibleComponent {
 		super(pApplet,"unnamed  AbstractShape", /*null,*/ null);
 		
 		//Initialize fields 
-		this.drawDirectGL = MT4jSettings.getInstance().isOpenGlMode()? true : false;
+		this.drawDirectGL = MT4jSettings.getInstance().isOpenGlMode();
 		this.useVBOs 			= false;
 		this.useDisplayList 	= false;
 		this.textureMode = PConstants.NORMALIZED;
@@ -765,12 +767,11 @@ public abstract class AbstractShape extends AbstractVisibleComponent {
 	public Vector3D[] getConvexHullXYGlobal(){
 		ArrayList<Vector3D> vers = new ArrayList<Vector3D>();
 		Vertex[] transVerts = this.getVerticesGlobal();
-		for (int i = 0; i < transVerts.length; i++) {
-			Vertex vertex = transVerts[i];
-			vers.add(vertex);
-		}
+        for (Vertex vertex : transVerts) {
+            vers.add(vertex);
+        }
 		ArrayList<Vector3D> edgeList = ConvexQuickHull2D.getConvexHull2D(vers);
-		return (edgeList.toArray(new Vertex[edgeList.size()]));
+		return (edgeList.toArray(new Vector3D[edgeList.size()]));
 	}
 
 	
@@ -943,33 +944,30 @@ public abstract class AbstractShape extends AbstractVisibleComponent {
 	
 	
 	private void unNormalizeFromPOTtoRectMode(PImage newTexture, Vertex[] verts){
-		for (int i = 0; i < verts.length; i++) {
-    		Vertex vertex = verts[i];
-    		vertex.setTexCoordU(vertex.getTexCoordU() *  (float)newTexture.width);
-    		vertex.setTexCoordV(vertex.getTexCoordV() *  (float)newTexture.height);
+        for (Vertex vertex : verts) {
+            vertex.setTexCoordU(vertex.getTexCoordU() * (float) newTexture.width);
+            vertex.setTexCoordV(vertex.getTexCoordV() * (float) newTexture.height);
 //    		System.out.println("TexU:" + vertex.getTexCoordU() + " TexV:" + vertex.getTexCoordV()); //FIXME REMOVE
-    	}
+        }
 		this.getGeometryInfo().updateTextureBuffer(this.isUseVBOs());
 	}
 	
 	private void normalizeFromRectMode(PImage newTexture, Vertex[] verts, float oldTexWidth, float oldTexHeight){
-		for (int i = 0; i < verts.length; i++) {
-    		Vertex vertex = verts[i];
-//    		vertex.setTexCoordU(ToolsMath.map(vertex.getTexCoordU(), 0, oldTexWidth, 0, 1));
+        for (Vertex vertex : verts) {
+            //    		vertex.setTexCoordU(ToolsMath.map(vertex.getTexCoordU(), 0, oldTexWidth, 0, 1));
 //    		vertex.setTexCoordV(ToolsMath.map(vertex.getTexCoordV(), 0, oldTexWidth, 0, 1));
-    		
-    		vertex.setTexCoordU(vertex.getTexCoordU() / oldTexWidth);
-    		vertex.setTexCoordV(vertex.getTexCoordV() / oldTexHeight);
-    	}
+
+            vertex.setTexCoordU(vertex.getTexCoordU() / oldTexWidth);
+            vertex.setTexCoordV(vertex.getTexCoordV() / oldTexHeight);
+        }
 		this.getGeometryInfo().updateTextureBuffer(this.isUseVBOs());
 	}
 	
 	private void fromRectModeToRectMode(PImage newTexture, Vertex[] verts, float oldTexWidth, float oldTexHeight){
-		for (int i = 0; i < verts.length; i++) {
-    		Vertex vertex = verts[i];
-    		vertex.setTexCoordU( (vertex.getTexCoordU() / oldTexWidth)  *  (float)newTexture.width);
-			vertex.setTexCoordV( (vertex.getTexCoordV() / oldTexHeight) *  (float)newTexture.height);
-    	}
+        for (Vertex vertex : verts) {
+            vertex.setTexCoordU((vertex.getTexCoordU() / oldTexWidth) * (float) newTexture.width);
+            vertex.setTexCoordV((vertex.getTexCoordV() / oldTexHeight) * (float) newTexture.height);
+        }
 		this.getGeometryInfo().updateTextureBuffer(this.isUseVBOs());
 	}
 	
@@ -1495,6 +1493,49 @@ public abstract class AbstractShape extends AbstractVisibleComponent {
 	
 	
 	
+	
+	/**
+	 * Tween translate to.
+	 *
+	 * @param x the x
+	 * @param y the y
+	 * @param z the z
+	 * @param interpolationDuration the interpolation duration
+	 * @param interpolationFunction the interpolation function
+	 * @return the i animation
+	 */
+	public IAnimation tweenTranslateTo(float x, float y, float z, int interpolationDuration, String interpolationFunction, int delay){
+		Vector3D from 			= this.getCenterPointGlobal();
+		Vector3D targetPoint 	= new Vector3D(x, y, z);
+		Vector3D directionVect 	= targetPoint.getSubtracted(from);
+		float distance = directionVect.length();
+		AniAnimation animation = new AniAnimation(0, distance, interpolationDuration, interpolationFunction, this);
+		animation.addAnimationListener(new TranslationAnimationListener(this, directionVect, new Vector3D(x,y,z)));
+		animation.setTriggerTime(delay);
+		animation.start();
+		return animation;
+	}
+	
+	
+	/**
+	 * Tween translate.
+	 *
+	 * @param direction the direction
+	 * @param interpolationDuration the interpolation duration
+	 * @param interpolationFunction the interpolation function
+	 * @param delay the delay
+	 * @return the i animation
+	 */
+	public IAnimation tweenTranslate(Vector3D direction, int interpolationDuration, String interpolationFunction, int delay){
+		float distance = direction.length();
+		AniAnimation animation = new AniAnimation(0, distance, interpolationDuration, interpolationFunction, this);
+		animation.addAnimationListener(new TranslationAnimationListener(this, direction));
+		animation.setTriggerTime(delay);
+		animation.start();
+		return animation;
+	}
+	
+	
 	/**
 	 * Moves this shape to the specified global position using an animation specified
 	 * by the last three parameters.
@@ -1507,15 +1548,16 @@ public abstract class AbstractShape extends AbstractVisibleComponent {
 	 * @param decelerationStartTime the deceleration start time - normalized value 0..1
 	 * @return the animation
 	 */
-	public Animation tweenTranslateTo(float x, float y, float z, float interpolationDuration, float accelerationEndTime, float decelerationStartTime){
+	public IAnimation tweenTranslateTo(float x, float y, float z, float interpolationDuration, float accelerationEndTime, float decelerationStartTime){
 		Vector3D from 			= this.getCenterPointGlobal();
+//		Vector3D from 			= this.getCenterPointRelativeToParent();
 		Vector3D targetPoint 	= new Vector3D(x, y, z);
 		Vector3D directionVect 	= targetPoint.getSubtracted(from);
 		
 		//GO through all animations for this shape
-		Animation[] animations = AnimationManager.getInstance().getAnimationsForTarget(this);
+		IAnimation[] animations = AnimationManager.getInstance().getAnimationsForTarget(this);
 		for (int i = 0; i < animations.length; i++) {
-			Animation animation = animations[i];
+			IAnimation animation = animations[i];
 			
 			//Go through all listeners of these animations
 			IAnimationListener[] animationListeners = animation.getAnimationListeners();
@@ -1539,7 +1581,7 @@ public abstract class AbstractShape extends AbstractVisibleComponent {
 	 * @param decelerationStartTime the deceleration start time - normalized value 0..1
 	 * @return the animation
 	 */
-	public Animation tweenTranslate(Vector3D directionVect, float interpolationDuration, float accelerationEndTime, float decelerationStartTime){
+	public IAnimation tweenTranslate(Vector3D directionVect, float interpolationDuration, float accelerationEndTime, float decelerationStartTime){
 		return this.tweenTranslate(directionVect, interpolationDuration, accelerationEndTime, decelerationStartTime, 0);
 	}
 	
@@ -1553,12 +1595,23 @@ public abstract class AbstractShape extends AbstractVisibleComponent {
 	 * @param triggerDelay the trigger delay
 	 * @return the animation
 	 */
-	public Animation tweenTranslate(Vector3D directionVect, float interpolationDuration, float accelerationEndTime, float decelerationStartTime, int triggerDelay){
+	public IAnimation tweenTranslate(Vector3D directionVect, float interpolationDuration, float accelerationEndTime, float decelerationStartTime, int triggerDelay){
 		float distance = directionVect.length();
+		IAnimation animation = null;
+		
+//		/*
 		MultiPurposeInterpolator interpolator = new MultiPurposeInterpolator(0, distance, interpolationDuration , accelerationEndTime, decelerationStartTime , 1);
-		Animation animation = new Animation("Tween translate of " + this.getName(), interpolator, this, triggerDelay);
+		animation = new Animation("Tween translate of " + this.getName(), interpolator, this, triggerDelay);
 		animation.addAnimationListener(new TranslationAnimationListener(this, directionVect));
-		animation.setResetOnFinish(false);
+		((Animation)animation).setResetOnFinish(false);
+//		*/
+		
+		/*
+		animation = new AniAnimation(0, distance, Math.round(interpolationDuration), AniAnimation.QUAD_IN_OUT, this);
+		animation.addAnimationListener(new TranslationAnimationListener(this, directionVect));
+		((AniAnimation)animation).setTriggerTime(triggerDelay);
+		*/
+		
 		animation.start();
 		return animation;
 	}
@@ -1577,18 +1630,33 @@ public abstract class AbstractShape extends AbstractVisibleComponent {
 		
 		/** The shape. */
 		private AbstractShape shape;
+		
+		private Vector3D destinationPos;
+		
+		/**
+		 * Instantiates a new translation animation listener.
+		 * 
+		 * @param shape the shape
+		 * @param directionVector the direction vector
+		 * @param destinationPosition 
+		 */
+		public TranslationAnimationListener(AbstractShape shape, Vector3D directionVector){
+			this(shape, directionVector, null);
+		}
 
 		/**
 		 * Instantiates a new translation animation listener.
 		 * 
 		 * @param shape the shape
 		 * @param directionVector the direction vector
+		 * @param destinationPosition 
 		 */
-		public TranslationAnimationListener(AbstractShape shape, Vector3D directionVector){
+		public TranslationAnimationListener(AbstractShape shape, Vector3D directionVector, Vector3D destinationPosition){
 			this.directionVector = directionVector;
 			this.normalizedDirVect = this.directionVector.getCopy();
 			this.normalizedDirVect.normalizeLocal();
 			this.shape = shape;
+			this.destinationPos = destinationPosition;
 		}
 		
 		/* (non-Javadoc)
@@ -1598,13 +1666,18 @@ public abstract class AbstractShape extends AbstractVisibleComponent {
 			Object target = ae.getTargetObject();
 			if (target != null && target.equals(this.shape)){
 				AbstractShape shape = (AbstractShape)target;
-				float amount = ae.getAnimation().getInterpolator().getCurrentStepDelta();
+				float amount = ae.getAnimation().getDelta();
 				
 				Vector3D newTranslationVect = this.normalizedDirVect.getCopy();
 				newTranslationVect.scaleLocal(amount);
 				//Move shape
 //				shape.translateGlobal(newTranslationVect);
-				shape.translate(newTranslationVect);
+//				shape.translate(newTranslationVect);
+				shape.translate(newTranslationVect, TransformSpace.GLOBAL);
+				
+				if (ae.getId() == AnimationEvent.ANIMATION_ENDED && destinationPos != null){
+					shape.setPositionGlobal(destinationPos); //Set position at the end to fight round-off errors during translation
+				}
 			}
 		}
 	}

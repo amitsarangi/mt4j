@@ -91,7 +91,7 @@ public class Tools3D {
 	 * @return the vector3d
 	 */
 	public static Vector3D unprojectScreenCoords(PApplet applet, Icamera camera, float screenX, float screenY ){
-		Vector3D ret = null;
+		Vector3D ret;
 		applet.pushMatrix();
 		camera.update();
 		ret = Tools3D.unprojectScreenCoords(applet, screenX, screenY);
@@ -1301,10 +1301,9 @@ public class Tools3D {
 		   gl.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 		   //gl.glBegin (GL.GL_LINE_STRIP);
 		     gl.glBegin (GL.GL_TRIANGLE_FAN);
-			     for (int i = 0; i < allVertsBezierResolved.length; i++) {
-					Vertex vertex = allVertsBezierResolved[i];
-					gl.glVertex3f(vertex.x, vertex.y, vertex.z);
-				}
+        for (Vertex vertex : allVertsBezierResolved) {
+            gl.glVertex3f(vertex.x, vertex.y, vertex.z);
+        }
 			 gl.glEnd ();
 
 			 //Draw aliased off-pixels to real
@@ -1321,10 +1320,9 @@ public class Tools3D {
 		   gl.glLineWidth(1.0f);
 		   gl.glColor4f(0.0f, 0.0f, 0.0f, 1.0f);
 		    gl.glBegin (GL.GL_LINES);
-		     for (int i = 0; i < allVertsBezierResolved.length; i++) {
-					Vertex vertex = allVertsBezierResolved[i];
-					gl.glVertex3f(vertex.x, vertex.y, vertex.z);
-		     }
+        for (Vertex vertex : allVertsBezierResolved) {
+            gl.glVertex3f(vertex.x, vertex.y, vertex.z);
+        }
 		    gl.glEnd ();
 		    gl.glDisable (GL.GL_LINE_SMOOTH);
 //		*/
@@ -1391,15 +1389,14 @@ public class Tools3D {
      * @param verts the verts
      */
     public static void scaleTextureCoordsForRectModeFromNormalized(PImage texture, Vertex[] verts){
-    	for (int i = 0; i < verts.length; i++) {
-    		Vertex vertex = verts[i];
-    		if (vertex.getTexCoordU() <= 1.0f && vertex.getTexCoordU() >= 0.0f){
-    			vertex.setTexCoordU(vertex.getTexCoordU() *  texture.width);
-    		}
-    		if (vertex.getTexCoordV() <= 1.0f && vertex.getTexCoordV() >= 0.0f){
-    			vertex.setTexCoordV(vertex.getTexCoordV() *  texture.height);
-    		}
-    	}
+        for (Vertex vertex : verts) {
+            if (vertex.getTexCoordU() <= 1.0f && vertex.getTexCoordU() >= 0.0f) {
+                vertex.setTexCoordU(vertex.getTexCoordU() * texture.width);
+            }
+            if (vertex.getTexCoordV() <= 1.0f && vertex.getTexCoordV() >= 0.0f) {
+                vertex.setTexCoordV(vertex.getTexCoordV() * texture.height);
+            }
+        }
     }
     
 

@@ -17,9 +17,8 @@
  ***********************************************************************/
 package org.mt4j.util;
 
-import java.io.File;
-
 import org.mt4j.MTApplication;
+import org.mt4j.util.math.Vector3D;
 
 /**
  * A class with some configurations to read the current settings from.
@@ -32,10 +31,10 @@ public class MT4jSettings {
 	private static MT4jSettings constAndSettings = null;
 	
 	/** Screen Size X. */
-	public int screenWidth = 1024;
+	public int windowWidth = 1024;
 	
 	/** Screen Size Y. */
-	public int screenHeight = 768;
+	public int windowHeight = 768;
 	
 	//Draw Modes
 	/** The Constant OPENGL_MODE. */
@@ -82,32 +81,28 @@ public class MT4jSettings {
 	
 
 	/** The DEFAUL t_ fon t_ path. */
-	public static String DEFAULT_SETTINGS_PATH = new String(/* MTApplication.separator */ "" );
+	public static String DEFAULT_SETTINGS_PATH = "";
 
 	/** The DEFAUL t_ dat a_ folde r_ path. */
-	public static String DEFAULT_DATA_FOLDER_PATH = new String(/* MTApplication.separator + */ "data" + MTApplication.separator);
+	public static String DEFAULT_DATA_FOLDER_PATH = "data" + MTApplication.separator;
 	
 	/** The DEFAUL t_ fon t_ path. */
 	public static String DEFAULT_FONT_PATH = DEFAULT_DATA_FOLDER_PATH;
 	
 	/** The DEFAUL t_ image s_ path. */
-	public static String DEFAULT_IMAGES_PATH = new String(
-			/* 
-			 System.getProperty("user.dir") + 
-			 */
-			/* MTApplication.separator + */  "data" + MTApplication.separator + "images"  +  MTApplication.separator);
+	public static String DEFAULT_IMAGES_PATH = "data" + MTApplication.separator + "images" + MTApplication.separator;
 			 
 	
 //	public static String DEFAULT_VIDEOS_PATH = new String(System.getProperty("user.dir") + File.separator + "data" /*+ File.separator + "videos"  */ +  File.separator);
 	//Since gsvideo looks into the ./data directory by itself
 	/** The DEFAUL t_ video s_ path. */
-	public static String DEFAULT_VIDEOS_PATH = new String("");
+	public static String DEFAULT_VIDEOS_PATH = "";
 	
 	/** The DEFAUL t_ sv g_ path. */
-	public static String DEFAULT_SVG_PATH = new String(/* MTApplication.separator + */  "data" + MTApplication.separator + "svg"  +  MTApplication.separator);
+	public static String DEFAULT_SVG_PATH = "data" + MTApplication.separator + "svg" + MTApplication.separator;
 	
 	/** The DEFAUL t_3 d_ mode l_ path. */
-	public static String DEFAULT_3D_MODEL_PATH = new String(/* MTApplication.separator + */ "data" + MTApplication.separator + "models"  +  MTApplication.separator);
+	public static String DEFAULT_3D_MODEL_PATH = "data" + MTApplication.separator + "models" + MTApplication.separator;
 	
 
 	/**
@@ -240,27 +235,58 @@ public class MT4jSettings {
 	 * Gets the screen height.
 	 * 
 	 * @return the screen height
+	 * @deprecated renamed to getWindowHeight() since this doesent return the screen height, but the MT4j window's height
 	 */
 	public int getScreenHeight() {
-		return screenHeight;
+		return windowHeight;
 	}
 
 	/**
 	 * Gets the screen width.
 	 * 
 	 * @return the screen width
+	 * @deprecated renamed to getWindowWidth() since this doesent return the screen width, but the MT4j window's width
 	 */
 	public int getScreenWidth() {
-		return screenWidth;
+		return windowWidth;
+	}
+	
+	
+	/**
+	 * Gets the MT4j's window height.
+	 * 
+	 * @return the window height
+	 */
+	public int getWindowHeight() {
+		return windowHeight;
+	}
+
+	/**
+	 * Gets the MT4j's window width.
+	 * 
+	 * @return the window width
+	 */
+	public int getWindowWidth() {
+		return windowWidth;
 	}
 
 	/**
 	 * Gets the screen center.
 	 * 
 	 * @return the screen center
+	 * @deprecated - use getWindowCenter()
 	 */
 	public float[] getScreenCenter(){
-		return new float[]{getScreenWidth()/2, getScreenHeight()/2 , 0};
+		return new float[]{getWindowWidth()/2, getWindowHeight()/2 , 0};
+	}
+	
+	/**
+	 * Gets the window center.
+	 *
+	 * @return the window center
+	 */
+	public Vector3D getWindowCenter(){
+		return new Vector3D (getWindowWidth()/2, getWindowHeight()/2 , 0);
 	}
 	
 	/**

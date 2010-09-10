@@ -327,7 +327,7 @@ public class SvgFontFactory extends DefaultHandler implements IFontFactory {
 			pathPoints.addAll(pathHandler.getReverseMoveToStack());
 		}
 		*/
-		Vertex[] allPathVertices = (Vertex[])pathPoints.toArray(new Vertex[pathPoints.size()]);
+		Vertex[] allPathVertices = pathPoints.toArray(new Vertex[pathPoints.size()]);
 		
 		//Get Sub-Paths
 		ArrayList<Vertex[]> contours = pathHandler.getContours();
@@ -420,7 +420,7 @@ public class SvgFontFactory extends DefaultHandler implements IFontFactory {
 		
 		//Create a new SVG-FONT
 //		VectorFont svgFont = new VectorFont(this.getCharacters(), fontDefaultXAdvancing, fontFamily, fontMaxAscent, fontMaxDescent, font_units_per_em, fontSize,
-		VectorFont svgFont = new VectorFont((VectorFontCharacter[])characters.toArray(new VectorFontCharacter[characters.size()]), fontDefaultXAdvancing, fontFamily, fontMaxAscent, fontMaxDescent, font_units_per_em, fontSize,
+		VectorFont svgFont = new VectorFont(characters.toArray(new VectorFontCharacter[characters.size()]), fontDefaultXAdvancing, fontFamily, fontMaxAscent, fontMaxDescent, font_units_per_em, fontSize,
 				fillColor,
 				strokeColor,
 				antiAliased

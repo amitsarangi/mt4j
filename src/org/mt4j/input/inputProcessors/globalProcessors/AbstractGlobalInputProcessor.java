@@ -25,10 +25,18 @@ import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.log4j.SimpleLayout;
+import org.mt4j.components.interfaces.IMTComponent3D;
 import org.mt4j.input.IMTInputEventListener;
+import org.mt4j.input.inputData.InputCursor;
 import org.mt4j.input.inputData.MTInputEvent;
+import org.mt4j.input.inputProcessors.GestureUtils;
 import org.mt4j.input.inputProcessors.IInputProcessor;
 import org.mt4j.input.inputSources.IinputSourceListener;
+import org.mt4j.util.math.Tools3D;
+import org.mt4j.util.math.ToolsGeometry;
+import org.mt4j.util.math.Vector3D;
+
+import processing.core.PApplet;
 
 
 /**
@@ -130,19 +138,50 @@ public abstract class AbstractGlobalInputProcessor implements IinputSourceListen
 	 * @return the processor listeners
 	 */
 	public synchronized IMTInputEventListener[] getProcessorListeners(){
-		return (IMTInputEventListener[])inputListeners.toArray(new IMTInputEventListener[this.inputListeners.size()]);
+		return inputListeners.toArray(new IMTInputEventListener[this.inputListeners.size()]);
 	}
 	
 	/**
 	 * Fire gesture event.
-	 * 
-	 * @param ge the ge
+	 *
+	 * @param ie the ie
 	 */
 	protected void fireInputEvent(MTInputEvent ie) {
 		for (IMTInputEventListener listener : inputListeners){
 			listener.processInputEvent(ie);
 		}
 	}
+	
+	////
+	/**
+	 * Gets the intersection point of a cursor and a specified component.
+	 * Can return null if the cursor doesent intersect the component.
+	 *
+	 * @param app the app
+	 * @param c the c
+	 * @return the intersection
+	 */
+	public Vector3D getIntersection(PApplet app, InputCursor c){
+		return GestureUtils.getIntersection(app, c.getTarget(), c);
+	}
+	
+	/**
+	 * Gets the intersection point of a cursor and a specified component.
+	 * Can return null if the cursor doesent intersect the component.
+	 *
+	 * @param app the app
+	 * @param component the component
+	 * @param c the c
+	 * @return the intersection
+	 */
+	public Vector3D getIntersection(PApplet app, IMTComponent3D component, InputCursor c){
+		return GestureUtils.getIntersection(app, component, c);
+	}
+	
+	public Vector3D getPlaneIntersection(PApplet app, Vector3D planeNormal, Vector3D pointInPlane, InputCursor c){
+		return GestureUtils.getPlaneIntersection(app, planeNormal, pointInPlane, c);
+	}
+	///////////
 	
 
 	

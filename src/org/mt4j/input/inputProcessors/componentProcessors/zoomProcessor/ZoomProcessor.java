@@ -81,7 +81,7 @@ public class ZoomProcessor extends AbstractCursorProcessor {
 	
 	@Override
 	public void cursorStarted(InputCursor m, MTFingerInputEvt positionEvent) {
-		IMTComponent3D comp = positionEvent.getTargetComponent();
+		IMTComponent3D comp = positionEvent.getTarget();
 		if (lockedMotions.size() >= 2){ //scale with 2 fingers already in progress
 			unUsedMotions.add(m);
 			logger.debug(this.getName() + " has already enough motions for this gesture - adding to unused ID:" + m.getId());
@@ -92,9 +92,7 @@ public class ZoomProcessor extends AbstractCursorProcessor {
 				
 				//See if we can obtain a lock on both motions
 				if (this.canLock(otherMotion, m)){
-					float newDistance = Vector3D.distance(
-							new Vector3D(otherMotion.getCurrentEvent().getPosX(), otherMotion.getCurrentEvent().getPosY(),0),
-							new Vector3D(m.getCurrentEvent().getPosX(), m.getCurrentEvent().getPosY(),0));
+					float newDistance = Vector3D.distance(otherMotion.getPosition(), m.getPosition());
 					if (newDistance < zoomDetectRadius) {
 						this.oldDistance = newDistance;
 						this.getLock(otherMotion, m);
@@ -119,13 +117,11 @@ public class ZoomProcessor extends AbstractCursorProcessor {
 
 	@Override
 	public void cursorUpdated(InputCursor m, MTFingerInputEvt positionEvent) {
-		IMTComponent3D comp = positionEvent.getTargetComponent();
+		IMTComponent3D comp = positionEvent.getTarget();
 		if (lockedMotions.size() == 2 && lockedMotions.contains(m)){
 			InputCursor firstMotion = lockedMotions.get(0);
 			InputCursor secondMotion = lockedMotions.get(1);
-			float fingerDistance = Vector3D.distance(
-					new Vector3D(firstMotion.getCurrentEvent().getPosX(), firstMotion.getCurrentEvent().getPosY(), 0),
-					new Vector3D(secondMotion.getCurrentEvent().getPosX(), secondMotion.getCurrentEvent().getPosY(), 0));
+			float fingerDistance = Vector3D.distance(firstMotion.getPosition(), secondMotion.getPosition());
 			float camZoomAmount = fingerDistance - oldDistance;
 			oldDistance = fingerDistance;
 			if (m.equals(firstMotion)){
@@ -138,7 +134,7 @@ public class ZoomProcessor extends AbstractCursorProcessor {
 
 	@Override
 	public void cursorEnded(InputCursor m,	MTFingerInputEvt positionEvent) {
-		IMTComponent3D comp = positionEvent.getTargetComponent();
+		IMTComponent3D comp = positionEvent.getTarget();
 		logger.debug(this.getName() + " INPUT_ENDED RECIEVED - MOTION: " + m.getId());
 		
 		if (lockedMotions.size() == 2 && lockedMotions.contains(m)){
@@ -148,9 +144,7 @@ public class ZoomProcessor extends AbstractCursorProcessor {
 			if (unUsedMotions.size() > 0){ //Check if there are other motions we could use for scaling if one was removed
 				InputCursor futureMotion = unUsedMotions.get(0);
 				if (this.canLock(futureMotion)){ //check if we have priority to lock another motion and use it
-					float newDistance = Vector3D.distance(
-							new Vector3D(leftOverMotion.getCurrentEvent().getPosX(), leftOverMotion.getCurrentEvent().getPosY(),0),
-							new Vector3D(futureMotion.getCurrentEvent().getPosX(), futureMotion.getCurrentEvent().getPosY(),0));
+					float newDistance = Vector3D.distance(leftOverMotion.getPosition(),	futureMotion.getPosition());
 					if (newDistance < zoomDetectRadius) {//Check if other motion is in distance 
 						this.oldDistance = newDistance;
 						this.getLock(futureMotion);
@@ -233,9 +227,7 @@ public class ZoomProcessor extends AbstractCursorProcessor {
 
 				//See if we can obtain a lock on both motions
 				if (this.canLock(firstMotion, secondMotion)){
-					float newDistance = Vector3D.distance(
-							new Vector3D(firstMotion.getCurrentEvent().getPosX(), firstMotion.getCurrentEvent().getPosY(),0),
-							new Vector3D(secondMotion.getCurrentEvent().getPosX(), secondMotion.getCurrentEvent().getPosY(),0));
+					float newDistance = Vector3D.distance(firstMotion.getPosition(), secondMotion.getPosition());
 					if (newDistance < zoomDetectRadius) {//Check if other motion is in distance 
 						this.oldDistance = newDistance;
 						this.getLock(firstMotion, secondMotion);

@@ -280,7 +280,7 @@ public class MTTriangleMesh extends AbstractShape{
 				tris.add(new Triangle(v0, v1, v2, vertIndex0, vertIndex1, vertIndex2));
 			}
 		}
-		this.triangles = (Triangle[])tris.toArray(new Triangle[tris.size()]);
+		this.triangles = tris.toArray(new Triangle[tris.size()]);
 		
 //		System.out.println("MTTriangleMesh object: \"" + this + "\" Debug-> Triangles created: " + this.triangles.length);
 	}
@@ -323,14 +323,13 @@ public class MTTriangleMesh extends AbstractShape{
 					normals[indices[i*3+2]].addLocal(triangles[i].getNormalLocal());
 				}
 			}
-			for (int i = 0; i < normals.length; i++) {
-				Vector3D n = normals[i];
-				if (n == null){
-					n = new Vector3D(0,0,1);
-				}else{
-					n.normalizeLocal();
-				}
-			}
+            for (Vector3D n : normals) {
+                if (n == null) {
+                    n = new Vector3D(0, 0, 1);
+                } else {
+                    n.normalizeLocal();
+                }
+            }
 		}else
 		{
 			//Create face normals for unindexed geometry
@@ -408,26 +407,25 @@ public class MTTriangleMesh extends AbstractShape{
 		//we still can say we�re on the inside
 		boolean checkThoroughly = true;
 		ArrayList<Vector3D> intersections = new ArrayList<Vector3D>();
-		
-		for (int i = 0; i < triangles.length; i++) {
-			Triangle tri = triangles[i];
-			Vector3D intersectionPoint = tri.getRayTriangleIntersection(ray);
-			boolean sameAlreadyEncountered = false;
 
-			if (intersectionPoint != null){
-				if (checkThoroughly){
-					for(Vector3D v: intersections){
-						if (v.equalsVectorWithTolerance(intersectionPoint, ToolsMath.ZERO_TOLERANCE)){
-							sameAlreadyEncountered = true;
-						}
-					}
-				}
-				if (!sameAlreadyEncountered){
-					intersections.add(intersectionPoint);
-					intersectionsFound++;	
-				}
-			}
-		}
+        for (Triangle tri : triangles) {
+            Vector3D intersectionPoint = tri.getRayTriangleIntersection(ray);
+            boolean sameAlreadyEncountered = false;
+
+            if (intersectionPoint != null) {
+                if (checkThoroughly) {
+                    for (Vector3D v : intersections) {
+                        if (v.equalsVectorWithTolerance(intersectionPoint, ToolsMath.ZERO_TOLERANCE)) {
+                            sameAlreadyEncountered = true;
+                        }
+                    }
+                }
+                if (!sameAlreadyEncountered) {
+                    intersections.add(intersectionPoint);
+                    intersectionsFound++;
+                }
+            }
+        }
 		intersections = null; //Clean
 		return intersectionsFound;
 	}
@@ -441,20 +439,19 @@ public class MTTriangleMesh extends AbstractShape{
 	public Vector3D getGeometryIntersectionLocal(Ray ray){
 		float distance = Float.MAX_VALUE;
 		Vector3D returnVect = null;
-		for (int i = 0; i < triangles.length; i++) {
-			Triangle tri = triangles[i];
-			Vector3D intersectionPoint = tri.getRayTriangleIntersection(ray);
-			if (intersectionPoint != null){
-				float objDistance = intersectionPoint.getSubtracted(ray.getRayStartPoint()).length();
-				
-				//It is accurate to go through all triangles and use the closest intersection
-				//but slower as just returning the first..
-				if (objDistance <= distance ){
-					distance 	= objDistance;
-					returnVect 	= intersectionPoint;
-				}
-			}
-		}
+        for (Triangle tri : triangles) {
+            Vector3D intersectionPoint = tri.getRayTriangleIntersection(ray);
+            if (intersectionPoint != null) {
+                float objDistance = intersectionPoint.getSubtracted(ray.getRayStartPoint()).length();
+
+                //It is accurate to go through all triangles and use the closest intersection
+                //but slower as just returning the first..
+                if (objDistance <= distance) {
+                    distance = objDistance;
+                    returnVect = intersectionPoint;
+                }
+            }
+        }
 		/*
 		if (returnVect != null){
 			System.out.println("Picked mesh: " + this.getName());
@@ -611,10 +608,8 @@ public class MTTriangleMesh extends AbstractShape{
 				}
 			}
 		}else{
-			if (this.isNoFill() && this.isNoStroke()){
-				return;
-			}else{
-				this.drawPureGl(gl);	
+			if (!(this.isNoFill() && this.isNoStroke())){
+				this.drawPureGl(gl);
 			}
 		}
 	}
@@ -638,15 +633,14 @@ public class MTTriangleMesh extends AbstractShape{
 		}
 		if (this.getGeometryInfo().isIndexed()){
 			int[] indices =  this.getGeometryInfo().getIndices();
-			for (int i = 0; i < indices.length; i++) {
-				int index = indices[i];
-				drawP5Vertex(p, vertices[index], useTexture);
-			}
+            for (int index : indices) {
+                drawP5Vertex(p, vertices[index], useTexture);
+            }
 		}
 		else{
-			for (int i = 0; i < vertices.length; i++) {
-				drawP5Vertex(p, vertices[i], useTexture);
-			}
+            for (Vertex vertice : vertices) {
+                drawP5Vertex(p, vertice, useTexture);
+            }
 		}
 		p.endShape();
 	}
@@ -684,17 +678,16 @@ public class MTTriangleMesh extends AbstractShape{
 //		Vector3D[] normals = this.getGeometryInfo().getNormals();
 		r.stroke(255, 0, 0);
 		r.strokeWeight(0.5f);
-		
-		for (int i = 0; i < triangles.length; i++) {
-			Triangle t = triangles[i];
-			r.pushMatrix();
-			Vector3D centerPoint = t.getCenterPointLocal();
-			r.translate(centerPoint.x, centerPoint.y, centerPoint.z);
-			r.scale(-2,-2,-2);
-			
-			r.line(0, 0, 0,  t.getNormalLocal().x, t.getNormalLocal().y, t.getNormalLocal().z);
-			r.popMatrix();
-		}
+
+        for (Triangle t : triangles) {
+            r.pushMatrix();
+            Vector3D centerPoint = t.getCenterPointLocal();
+            r.translate(centerPoint.x, centerPoint.y, centerPoint.z);
+            r.scale(-2, -2, -2);
+
+            r.line(0, 0, 0, t.getNormalLocal().x, t.getNormalLocal().y, t.getNormalLocal().z);
+            r.popMatrix();
+        }
 //		for (int i = 0; i < normals.length; i++) {
 //			Vector3D vector3D = normals[i];
 //		}

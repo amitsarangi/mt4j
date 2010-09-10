@@ -18,8 +18,13 @@
 
 package org.mt4j;
 
+import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.DisplayMode;
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
 import java.awt.Toolkit;
+import java.awt.event.WindowAdapter;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
@@ -50,6 +55,7 @@ import org.mt4j.sceneManagement.transition.ITransition;
 import org.mt4j.util.MT4jSettings;
 import org.mt4j.util.SettingsMenu;
 import org.mt4j.util.animation.AnimationManager;
+import org.mt4j.util.animation.ani.AniAnimation;
 import org.mt4j.util.math.Tools3D;
 import org.mt4j.util.opengl.GLFBO;
 
@@ -343,28 +349,34 @@ public abstract class MTApplication extends PApplet {
 				 }
 			}
 
-			 MT4jSettings.fullscreen = Boolean.parseBoolean(properties.getProperty("Fullscreen", new Boolean(MT4jSettings.getInstance().isFullscreen()).toString()).trim());
+			 MT4jSettings.fullscreen = Boolean.parseBoolean(properties.getProperty("Fullscreen", Boolean.valueOf(MT4jSettings.getInstance().isFullscreen()).toString()).trim());
 			 //Use java's fullscreen exclusive mode (real fullscreen) or just use an undecorated window at fullscreen size 
-			 MT4jSettings.getInstance().fullscreenExclusive = Boolean.parseBoolean(properties.getProperty("FullscreenExclusive", new Boolean(MT4jSettings.getInstance().isFullscreenExclusive()).toString()).trim());
+			 MT4jSettings.getInstance().fullscreenExclusive = Boolean.parseBoolean(properties.getProperty("FullscreenExclusive", Boolean.valueOf(MT4jSettings.getInstance().isFullscreenExclusive()).toString()).trim());
 			 //Which display to use for fullscreen
 			 MT4jSettings.getInstance().display = Integer.parseInt(properties.getProperty("Display", String.valueOf(MT4jSettings.getInstance().getDisplay())).trim());
 
+			 MT4jSettings.getInstance().windowWidth = Integer.parseInt(properties.getProperty("DisplayWidth", String.valueOf(MT4jSettings.getInstance().getWindowWidth())).trim());
+			 MT4jSettings.getInstance().windowHeight = Integer.parseInt(properties.getProperty("DisplayHeight", String.valueOf(MT4jSettings.getInstance().getWindowHeight())).trim());
+			 
 			 //FIXME at fullscreen really use the screen dimension? -> we need to set the native resoultion ourselves!
 			 //so we can have a lower fullscreen resolution than the screen dimensions
-			 if (!MT4jSettings.getInstance().isFullscreen()){
-				 MT4jSettings.getInstance().screenWidth = Integer.parseInt(properties.getProperty("DisplayWidth", String.valueOf(MT4jSettings.getInstance().getScreenWidth())).trim());
-				 MT4jSettings.getInstance().screenHeight = Integer.parseInt(properties.getProperty("DisplayHeight", String.valueOf(MT4jSettings.getInstance().getScreenHeight())).trim());
-			 }else{
+			 if (MT4jSettings.getInstance().isFullscreen() && !MT4jSettings.getInstance().isFullscreenExclusive()){
 				 Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-			    	MT4jSettings.getInstance().screenWidth = screenSize.width;
-			    	MT4jSettings.getInstance().screenHeight = screenSize.height;
+				 MT4jSettings.getInstance().windowWidth = screenSize.width;
+				 MT4jSettings.getInstance().windowHeight = screenSize.height;
 			 }
+			 /*
+			 //Comment this to not change the window width to the screen width in fullscreen mode
+			 else{
+				 
+			 }
+			 */
 			 
 			 MT4jSettings.getInstance().maxFrameRate = Integer.parseInt(properties.getProperty("MaximumFrameRate", String.valueOf(MT4jSettings.getInstance().getMaxFrameRate())).trim());
 			 MT4jSettings.getInstance().renderer = Integer.parseInt(properties.getProperty("Renderer", String.valueOf(MT4jSettings.getInstance().getRendererMode())).trim());
 			 MT4jSettings.getInstance().numSamples = Integer.parseInt(properties.getProperty("OpenGLAntialiasing", String.valueOf(MT4jSettings.getInstance().getNumSamples())).trim());
 
-			 MT4jSettings.getInstance().vSync = Boolean.parseBoolean(properties.getProperty("Vertical_sync", new Boolean(MT4jSettings.getInstance().isVerticalSynchronization()).toString()).trim());
+			 MT4jSettings.getInstance().vSync = Boolean.parseBoolean(properties.getProperty("Vertical_sync", Boolean.valueOf(MT4jSettings.getInstance().isVerticalSynchronization()).toString()).trim());
 
 			 //Set frametitle
 			 String frameTitle = properties.getProperty("Frametitle", MT4jSettings.getInstance().getFrameTitle().trim());
@@ -376,8 +388,113 @@ public abstract class MTApplication extends PApplet {
 		 settingsLoadedFromFile = true;
 	}
 
-	
-	
+
+	protected void switchResolution() {
+		logger.debug("Switching resolution..");
+		try {
+			frame.enableInputMethods(false);
+			frame.setIgnoreRepaint(true);
+			final GraphicsDevice myGraphicsDevice = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
+			
+			// Get the current display mode
+	        final DisplayMode previousDisplayMode= myGraphicsDevice.getDisplayMode();
+			
+//			final int width = 1280;
+//			final int height = 768;
+			final int width = MT4jSettings.getInstance().getWindowWidth();
+			final int height = MT4jSettings.getInstance().getWindowHeight();
+			int bitDepth = 32;
+			int refreshRate = myGraphicsDevice.getDisplayMode().getRefreshRate();
+			
+			myGraphicsDevice.setFullScreenWindow(this.frame); 
+			
+            // Check if display mode changes are supported by the OS
+            if (myGraphicsDevice.isDisplayChangeSupported()) {
+                // Get all available display modes
+                DisplayMode[] displayModes = myGraphicsDevice.getDisplayModes();
+                DisplayMode multiBitsDepthSupportedDisplayMode = null;
+                DisplayMode refreshRateUnknownDisplayMode = null;
+                DisplayMode multiBitsDepthSupportedAndRefreshRateUnknownDisplayMode = null;
+                DisplayMode matchingDisplayMode = null;
+                DisplayMode currentDisplayMode;
+                // Look for the display mode that matches with our parameters
+                // Look for some display modes that are close to these parameters
+                // and that could be used as substitutes
+                // On some machines, the refresh rate is unknown and/or multi bit
+                // depths are supported. If you try to force a particular refresh 
+                // rate or a bit depth, you might find no available display mode
+                // that matches exactly with your parameters
+                for (int i = 0; i < displayModes.length && matchingDisplayMode == null; i++) {
+                    currentDisplayMode = displayModes[i];
+                    if (currentDisplayMode.getWidth()  == width &&
+                        currentDisplayMode.getHeight() == height) {
+                        if (currentDisplayMode.getBitDepth() == bitDepth) {
+                            if (currentDisplayMode.getRefreshRate() == refreshRate) {
+                                matchingDisplayMode = currentDisplayMode;
+                            } else if (currentDisplayMode.getRefreshRate() == DisplayMode.REFRESH_RATE_UNKNOWN) {
+                                refreshRateUnknownDisplayMode = currentDisplayMode;
+                            }
+                        } else if (currentDisplayMode.getBitDepth() == DisplayMode.BIT_DEPTH_MULTI) {
+                            if (currentDisplayMode.getRefreshRate() == refreshRate) {
+                                multiBitsDepthSupportedDisplayMode = currentDisplayMode;
+                            } else if (currentDisplayMode.getRefreshRate() == DisplayMode.REFRESH_RATE_UNKNOWN) {
+                                multiBitsDepthSupportedAndRefreshRateUnknownDisplayMode = currentDisplayMode;
+                            }
+                        }
+                    }
+                }
+                DisplayMode nextDisplayMode = null;
+                if (matchingDisplayMode != null) {
+                    nextDisplayMode = matchingDisplayMode;                    
+                } else if (multiBitsDepthSupportedDisplayMode != null) {
+                    nextDisplayMode = multiBitsDepthSupportedDisplayMode;
+                } else if (refreshRateUnknownDisplayMode != null) {
+                    nextDisplayMode = refreshRateUnknownDisplayMode;
+                } else if (multiBitsDepthSupportedAndRefreshRateUnknownDisplayMode != null) {
+                    nextDisplayMode = multiBitsDepthSupportedAndRefreshRateUnknownDisplayMode;
+                } else {
+//                    isFullScreenSupported = false;
+                	logger.error("No matching fullscreen display mode found!");
+                }
+
+                if (nextDisplayMode != null){
+                	/*
+                		DisplayMode myDisplayMode = new DisplayMode(
+                				width,
+                				height,
+                				myGraphicsDevice.getDisplayMode().getBitDepth(),
+                				DisplayMode.REFRESH_RATE_UNKNOWN);
+                				myGraphicsDevice.setDisplayMode(myDisplayMode);
+                	 */
+
+                	myGraphicsDevice.setDisplayMode(nextDisplayMode);
+
+                	Component[] myComponents = frame.getComponents();
+                	for (int i = 0; i < myComponents.length; i++) {
+                		if (myComponents[i] instanceof PApplet) {
+                			myComponents[i].setLocation(0, 0);
+                		}
+                	}
+                	
+                	frame.addWindowListener(new WindowAdapter() {
+                		 @Override
+                		public void windowClosing(java.awt.event.WindowEvent e) {
+                			// If required, restore the previous display mode
+                                myGraphicsDevice.setDisplayMode(previousDisplayMode);
+                            // If required, get back to the windowed mode
+                            if (myGraphicsDevice.getFullScreenWindow() == frame) {
+                            	myGraphicsDevice.setFullScreenWindow(null);
+                            }
+                		}
+                    });
+                }
+            }
+		} 
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
 	/**
 	 * ***********************************************************
 	 * Processings setup. this is called once when the applet is started
@@ -393,52 +510,25 @@ public abstract class MTApplication extends PApplet {
 
 		//Check if OS 32/64 Bit
 		String bit = System.getProperty("sun.arch.data.model");
-		logger.info("Platform: \"" + System.getProperty("os.name") + "\" -> JVM Bit: \"" + bit + "\"");
+		logger.info("Platform: \"" + System.getProperty("os.name") + "\" -> Version: \"" + System.getProperty("os.version") +  "\" -> JVM Bit: \"" + bit + "\""); 
 		MT4jSettings.getInstance().architecture = bit.contains("64")? MT4jSettings.ARCHITECTURE_64_BIT : MT4jSettings.ARCHITECTURE_32_BIT;
 
 		if (!settingsLoadedFromFile){
 			getSettingsFromFile();
 		}
 		
-//		//Load some properties from Settings.txt file
-//		Properties properties = new Properties();
-//	    try {
-//	    	FileInputStream fi = new FileInputStream(MT4jSettings.getInstance().getDefaultSettingsPath() + "Settings.txt");
-//	    	if (fi != null){
-//	    		properties.load(fi);	
-//	    	}else{
-//	    		InputStream in = Thread.currentThread().getContextClassLoader().getResourceAsStream("Settings.txt");
-//	    		if (in != null){
-//	    			properties.load(in);	
-//	    		}else{
-//	    			properties.load(getClass().getResourceAsStream("Settings.txt"));	
-//	    		}
-//	    	}
-//	        
-//	        //FIXME at fullscreen really use the screen dimension? -> we need to set the native resoultion ourselves!
-//	        //so we can have a lower fullscreen resolution than the screen dimensions
-//	        if (!MT4jSettings.getInstance().isFullscreen()){
-//		        MT4jSettings.getInstance().setScreenWidth(Integer.parseInt(properties.getProperty("DisplayWidth", "1024")));
-//			    MT4jSettings.getInstance().setScreenHeight(Integer.parseInt(properties.getProperty("DisplayHeight", "768")));
-//	        }
-//		    MT4jSettings.getInstance().setMaxFrameRate(Integer.parseInt(properties.getProperty("MaximumFrameRate", "60")));
-//		    MT4jSettings.getInstance().setRendererMode(Integer.parseInt(properties.getProperty("Renderer", new Integer(MT4jSettings.P3D_MODE).toString())));
-//		    MT4jSettings.getInstance().setNumSamples((Integer.parseInt(properties.getProperty("OpenGLAntialiasing", new Integer(0).toString()))));
-//		    
-//		    vSync = Boolean.parseBoolean(properties.getProperty("Vertical_sync", "false"));
-//		    //Set frametitle
-//		    String frameTitle = properties.getProperty("Frametitle", "MT-Application");
-//		    MT4jSettings.getInstance().setFrameTitle(frameTitle);
-//	    } catch (Exception e) {
-//	    	logger.error("Error while loading Settings.txt file. Using defaults. (" + e.getMessage() + ")");
-//	    }
-	    
 		// Applet size - size() must be the first command in setup() method
 		if (MT4jSettings.getInstance().getRendererMode() == MT4jSettings.OPENGL_MODE)
-			this.size(MT4jSettings.getInstance().getScreenWidth(), MT4jSettings.getInstance().getScreenHeight(), MTApplication.CUSTOM_OPENGL_GRAPHICS);
+			this.size(MT4jSettings.getInstance().getWindowWidth(), MT4jSettings.getInstance().getWindowHeight(), MTApplication.CUSTOM_OPENGL_GRAPHICS);
 		else if (MT4jSettings.getInstance().getRendererMode() == MT4jSettings.P3D_MODE)
-			this.size(MT4jSettings.getInstance().getScreenWidth(), MT4jSettings.getInstance().getScreenHeight(), PApplet.P3D);
-	    
+			this.size(MT4jSettings.getInstance().getWindowWidth(), MT4jSettings.getInstance().getWindowHeight(), PApplet.P3D);
+		
+		//Switch to different resolution in fullscreen exclusive mode if neccessary
+		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+		if (MT4jSettings.getInstance().isFullscreen() && MT4jSettings.getInstance().isFullscreenExclusive() && MT4jSettings.getInstance().getWindowWidth() != screenSize.width && MT4jSettings.getInstance().getWindowHeight() != screenSize.height){
+			switchResolution();
+		}
+		
 	    /*
 	    //Processing Bug? seems to always use 2 samples 
 	    if (MT4jSettings.getInstance().getNumSamples() <= 0){
@@ -473,7 +563,7 @@ public abstract class MTApplication extends PApplet {
 			e.printStackTrace();
 		}
 		
-		logger.info("MT4j window dimensions: \"" + MT4jSettings.getInstance().getScreenWidth() + " X " +  MT4jSettings.getInstance().getScreenHeight() + "\"");
+		logger.info("MT4j window dimensions: \"" + MT4jSettings.getInstance().getWindowWidth() + " X " +  MT4jSettings.getInstance().getWindowHeight() + "\"");
 		
 //		//Set background color
 //	    pContext.background(MT4jSettings.getInstance().getBackgroundClearColor());
@@ -494,9 +584,8 @@ public abstract class MTApplication extends PApplet {
 		//Create a new inputsourcePool
 		this.setInputManager(new InputManager(this));
 		
-		//Call startup at the end of setup(). Should be overridden in extending classes
-		this.startUp();
-
+		AniAnimation.init(this); //Initialize Ani animation library
+		
 		/*
 		* Resizable Window test
 		* Problems:
@@ -511,6 +600,9 @@ public abstract class MTApplication extends PApplet {
 			}
 		} );
 		*/ 
+		
+		//Call startup at the end of setup(). Should be overridden in extending classes
+		this.startUp();
 	}
 	
 	/**
@@ -554,6 +646,14 @@ public abstract class MTApplication extends PApplet {
 	    	gl.glEnable(GL.GL_LINE_SMOOTH);
 //	    	gl.glDisable(GL.GL_LINE_SMOOTH);
 	    }
+	}
+	
+	public void setOpenGLErrorReportingEnabled(boolean reportErros){
+		if (reportErros){
+			hint(MTApplication.ENABLE_OPENGL_ERROR_REPORT);
+		}else{
+			hint(MTApplication.DISABLE_OPENGL_ERROR_REPORT);
+		}
 	}
 	
 	/**
@@ -884,24 +984,23 @@ public abstract class MTApplication extends PApplet {
 	private void sendEndedEvents(Iscene lastScene){
 		logger.debug("Sending INPUT_ENDED events to the last scene, Active motions: " + ActiveCursorPool.getInstance().getActiveCursorCount());
 		InputCursor[] activeCursors = ActiveCursorPool.getInstance().getActiveCursors();
-		for (int i = 0; i < activeCursors.length; i++) {
-			InputCursor inputCursor = activeCursors[i];
-			if (inputCursor.getCurrentEvent() != null){
-				AbstractCursorInputEvt lastEvt = inputCursor.getCurrentEvent();
-				if (lastEvt.getId() != AbstractCursorInputEvt.INPUT_ENDED){
-					try {
-						AbstractCursorInputEvt endedEvt = (AbstractCursorInputEvt) lastEvt.clone();
-						endedEvt.setId(AbstractCursorInputEvt.INPUT_ENDED);
-						endedEvt.preFire();
-						
-						this.sendEvtToSceneProcessors(lastScene, endedEvt);
-						logger.debug("Sending INPUT_ENDED evt to scene: " + lastScene.getName() + " Cursor: " + endedEvt.getCursor());
-					} catch (CloneNotSupportedException e) {
-						e.printStackTrace();
-					}
-				}
-			}
-		}
+        for (InputCursor inputCursor : activeCursors) {
+            if (inputCursor.getCurrentEvent() != null) {
+                AbstractCursorInputEvt lastEvt = inputCursor.getCurrentEvent();
+                if (lastEvt.getId() != AbstractCursorInputEvt.INPUT_ENDED) {
+                    try {
+                        AbstractCursorInputEvt endedEvt = (AbstractCursorInputEvt) lastEvt.clone();
+                        endedEvt.setId(AbstractCursorInputEvt.INPUT_ENDED);
+                        endedEvt.onFired();
+
+                        this.sendEvtToSceneProcessors(lastScene, endedEvt);
+                        logger.debug("Sending INPUT_ENDED evt to scene: " + lastScene.getName() + " Cursor: " + endedEvt.getCursor());
+                    } catch (CloneNotSupportedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
 	}
 	
 	
@@ -918,32 +1017,31 @@ public abstract class MTApplication extends PApplet {
 	private void sendStartedEvents(Iscene newScene){
 		logger.debug("Sending INPUT_DETECTED events to the new scene, Active motions: " + ActiveCursorPool.getInstance().getActiveCursorCount());
 		InputCursor[] activeCursors = ActiveCursorPool.getInstance().getActiveCursors();
-		for (int i = 0; i < activeCursors.length; i++) {
-			InputCursor inputCursor = activeCursors[i];
-			if (inputCursor.getCurrentEvent() != null){
-				//PROBLEM: if in lastscene last event in cursor was input_started enqueued
-				//but not added to cursor yet,
-				//shall we send it again in new scene? -> will input_started be sent twice?
-				//- what if input started was enqueued during transition and not sent to any scene 
-				AbstractCursorInputEvt lastEvt = inputCursor.getCurrentEvent();
-				/*
-				if (//lastEvt.getId() != AbstractCursorInputEvt.INPUT_DETECTED
-						true
-					){
-				*/
-					try {
-						AbstractCursorInputEvt startedEvt = (AbstractCursorInputEvt) lastEvt.clone();
-						startedEvt.setId(AbstractCursorInputEvt.INPUT_DETECTED);
-						startedEvt.preFire();
-						
-						this.sendEvtToSceneProcessors(newScene, startedEvt);
-						logger.debug("Sending INPUT_DETECTED evt to scene: " + newScene.getName() + " Cursor: " + startedEvt.getCursor());
-					} catch (CloneNotSupportedException e) {
-						e.printStackTrace();
-					}
+        for (InputCursor inputCursor : activeCursors) {
+            if (inputCursor.getCurrentEvent() != null) {
+                //PROBLEM: if in lastscene last event in cursor was input_started enqueued
+                //but not added to cursor yet,
+                //shall we send it again in new scene? -> will input_started be sent twice?
+                //- what if input started was enqueued during transition and not sent to any scene
+                AbstractCursorInputEvt lastEvt = inputCursor.getCurrentEvent();
+                /*
+                    if (//lastEvt.getId() != AbstractCursorInputEvt.INPUT_DETECTED
+                            true
+                        ){
+                    */
+                try {
+                    AbstractCursorInputEvt startedEvt = (AbstractCursorInputEvt) lastEvt.clone();
+                    startedEvt.setId(AbstractCursorInputEvt.INPUT_DETECTED);
+                    startedEvt.onFired();
+
+                    this.sendEvtToSceneProcessors(newScene, startedEvt);
+                    logger.debug("Sending INPUT_DETECTED evt to scene: " + newScene.getName() + " Cursor: " + startedEvt.getCursor());
+                } catch (CloneNotSupportedException e) {
+                    e.printStackTrace();
+                }
 //				}
-			}
-		}
+            }
+        }
 	}
 	
 	
@@ -955,12 +1053,11 @@ public abstract class MTApplication extends PApplet {
 	 */
 	private void sendEvtToSceneProcessors(Iscene scene, AbstractCursorInputEvt evtToFire){
 		AbstractGlobalInputProcessor[] sceneInputProcessors = this.getInputManager().getGlobalInputProcessors(scene);
-		for (int i = 0; i < sceneInputProcessors.length; i++) {
-			AbstractGlobalInputProcessor a = sceneInputProcessors[i];
-			//Hack, because processInputEvt() is disabled at this moment! -> not anymore..
+        for (AbstractGlobalInputProcessor a : sceneInputProcessors) {
+            //Hack, because processInputEvt() is disabled at this moment! -> not anymore..
 //			a.processInputEvtImpl(evtToFire);
-			a.processInputEvent(evtToFire);
-		}
+            a.processInputEvent(evtToFire);
+        }
 	}
 	
 	/**
@@ -1008,11 +1105,10 @@ public abstract class MTApplication extends PApplet {
 //		if (this.getSceneCount() == 0 && scenes[0] != null){
 //			this.currentScene = scenes[0];
 //		}
-		for (int i = 0; i < scenes.length; i++) {
-			Iscene scene = scenes[i];
-//			sceneList.add(scene);
-			this.addScene(scene);
-		}
+        for (Iscene scene : scenes) {
+            //			sceneList.add(scene);
+            this.addScene(scene);
+        }
 	}
 	
 	/**
@@ -1059,7 +1155,7 @@ public abstract class MTApplication extends PApplet {
 	 * @return the scenes
 	 */
 	public Iscene[] getScenes(){
-		return ((Iscene[])sceneList.toArray(new Iscene[sceneList.size()]) );
+		return sceneList.toArray(new Iscene[sceneList.size()]);
 	}
 	
 	/**
@@ -1149,7 +1245,7 @@ public abstract class MTApplication extends PApplet {
 	 * @return the scene change listeners
 	 */
 	public synchronized ISceneChangeListener[] getSceneChangeListener(){
-		return (ISceneChangeListener[])sceneChangedListeners.toArray(new ISceneChangeListener[this.sceneChangedListeners.size()]);
+		return sceneChangedListeners.toArray(new ISceneChangeListener[this.sceneChangedListeners.size()]);
 	}
 /////////////////////////////////	
 

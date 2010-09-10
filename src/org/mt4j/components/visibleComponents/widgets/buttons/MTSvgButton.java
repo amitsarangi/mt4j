@@ -157,7 +157,7 @@ public class MTSvgButton extends MTSvg implements IclickableButton{
 	 * @return the action listeners
 	 */
 	public synchronized ActionListener[] getActionListeners(){
-		return (ActionListener[])registeredActionListeners.toArray(new ActionListener[this.registeredActionListeners.size()]);
+		return registeredActionListeners.toArray(new ActionListener[this.registeredActionListeners.size()]);
 	}
 	
 //	protected void fireActionPerformed() {
@@ -177,14 +177,11 @@ public class MTSvgButton extends MTSvg implements IclickableButton{
 	 * 
 	 * @param ce the ce
 	 */
-	public void fireActionPerformed(TapEvent ce) {
+	public synchronized void fireActionPerformed(TapEvent ce) {
 		ActionListener[] listeners = this.getActionListeners();
-		synchronized(listeners) {
-			for (int i = 0; i < listeners.length; i++) {
-				ActionListener listener = (ActionListener)listeners[i];
-				listener.actionPerformed(new ActionEvent(this, ce.getTapID(),  "action performed on tangible button"));
-			}
-		}
+        for (ActionListener listener : listeners) {
+            listener.actionPerformed(new ActionEvent(this, ce.getTapID(), "action performed on tangible button"));
+        }
 	}
 
 
@@ -209,13 +206,12 @@ public class MTSvgButton extends MTSvg implements IclickableButton{
 	 */
 	public void disableAndDeleteChildrenDisplayLists() {
 		MTComponent[] childs = this.getChildren();
-		for (int i = 0; i < childs.length; i++) {
-			MTComponent child = childs[i];
-			if (child instanceof MTPolygon) {
-				MTPolygon poly = (MTPolygon) child;
-				poly.disableAndDeleteDisplayLists();
-			}
-		}
+        for (MTComponent child : childs) {
+            if (child instanceof MTPolygon) {
+                MTPolygon poly = (MTPolygon) child;
+                poly.disableAndDeleteDisplayLists();
+            }
+        }
 	}
 
 }

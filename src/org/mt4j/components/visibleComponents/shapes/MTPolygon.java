@@ -147,16 +147,15 @@ public class MTPolygon extends AbstractShape implements CSSStylableComponent{
 	 */
 	private boolean hasVertexColors(GeometryInfo geometryInfo){
 		Vertex[] verts = geometryInfo.getVertices();
-		for (int i = 0; i < verts.length; i++) {
-			Vertex vertex = verts[i];
-			if (vertex.getR() != Vertex.DEFAULT_RED_COLOR_COMPONENT ||
-				vertex.getG() != Vertex.DEFAULT_GREEN_COLOR_COMPONENT ||
-				vertex.getB() != Vertex.DEFAULT_BLUE_COLOR_COMPONENT ||
-				vertex.getA() != Vertex.DEFAULT_ALPHA_COLOR_COMPONENT
-			){
-				return true;
-			}
-		}
+        for (Vertex vertex : verts) {
+            if (vertex.getR() != Vertex.DEFAULT_RED_COLOR_COMPONENT ||
+                    vertex.getG() != Vertex.DEFAULT_GREEN_COLOR_COMPONENT ||
+                    vertex.getB() != Vertex.DEFAULT_BLUE_COLOR_COMPONENT ||
+                    vertex.getA() != Vertex.DEFAULT_ALPHA_COLOR_COMPONENT
+                    ) {
+                return true;
+            }
+        }
 		return false;
 	}
 	
@@ -283,29 +282,26 @@ public class MTPolygon extends AbstractShape implements CSSStylableComponent{
 			g.textureMode(this.getTextureMode());
 		}
 		Vertex[] vertices = this.getVerticesLocal();
-		
-		for (int i = 0; i < vertices.length; i++) {
-			Vertex v = vertices[i];
-			
-			//FIXME TEST
-			if (this.hasVertexColor){
-				g.fill(v.getR(), v.getG(), v.getB(), v.getA()); //takes vertex colors into account	
-			}
-			
-			if (this.isTextureEnabled())
-				g.vertex(v.x, v.y, v.z, v.getTexCoordU(), v.getTexCoordV());
-			else{
-				if (v.getType() == Vector3D.BEZIERVERTEX){
-					BezierVertex b = (BezierVertex)v;
-					g.bezierVertex(
-							b.getFirstCtrlPoint().x,  b.getFirstCtrlPoint().y,  b.getFirstCtrlPoint().z, 
-							b.getSecondCtrlPoint().x, b.getSecondCtrlPoint().y, b.getSecondCtrlPoint().z, 
-							b.x, b.y, b.z  );
-				}
-				else
-					g.vertex(v.x, v.y, v.z);
-			}
-		}//for end
+
+        for (Vertex v : vertices) {
+            //FIXME TEST
+            if (this.hasVertexColor) {
+                g.fill(v.getR(), v.getG(), v.getB(), v.getA()); //takes vertex colors into account
+            }
+
+            if (this.isTextureEnabled())
+                g.vertex(v.x, v.y, v.z, v.getTexCoordU(), v.getTexCoordV());
+            else {
+                if (v.getType() == Vector3D.BEZIERVERTEX) {
+                    BezierVertex b = (BezierVertex) v;
+                    g.bezierVertex(
+                            b.getFirstCtrlPoint().x, b.getFirstCtrlPoint().y, b.getFirstCtrlPoint().z,
+                            b.getSecondCtrlPoint().x, b.getSecondCtrlPoint().y, b.getSecondCtrlPoint().z,
+                            b.x, b.y, b.z);
+                } else
+                    g.vertex(v.x, v.y, v.z);
+            }
+        }
 		g.endShape();
 	}
 	
@@ -579,7 +575,6 @@ public class MTPolygon extends AbstractShape implements CSSStylableComponent{
 	
 	/**
 	 * Calculates the center of mass of the polygon.
-	 * The coordinates are transformed to world space first. THIS IS NOT CHEAP!
 	 * NOTE: works only if the last vertex is equal to the first (polygon is closed correctly)
 	 * NOTE: polygon needs to be coplanar and in the X,Y plane!
 	 * 

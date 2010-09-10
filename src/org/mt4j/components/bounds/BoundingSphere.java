@@ -159,9 +159,10 @@ import processing.core.PGraphics;
 	    
 	    /**
     	 * The Constructor.
-    	 * 
+    	 *
     	 * @param peerComponent the peer component
-    	 * @param vectors the vectors
+    	 * @param center the center
+    	 * @param radius the radius
     	 */
 	    public BoundingSphere(MTComponent peerComponent, Vector3D center, float radius){
 	    	this.peerComponent = peerComponent;
@@ -617,13 +618,13 @@ import processing.core.PGraphics;
 	        center.scaleLocal(quantity);
 
 	        float maxRadiusSqr = 0;
-	        for (int i = 0; i < points.length; i++) {
-	            Vector3D diff = points[i].getSubtracted(center);
-	            float radiusSqr = diff.lengthSquared();
-	            if (radiusSqr > maxRadiusSqr) {
-	                maxRadiusSqr = radiusSqr;
-	            }
-	        }
+            for (Vector3D point : points) {
+                Vector3D diff = point.getSubtracted(center);
+                float radiusSqr = diff.lengthSquared();
+                if (radiusSqr > maxRadiusSqr) {
+                    maxRadiusSqr = radiusSqr;
+                }
+            }
 
 	        radius = (float) Math.sqrt(maxRadiusSqr) + radiusEpsilon - 1f;
 

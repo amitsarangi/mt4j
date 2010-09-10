@@ -19,6 +19,7 @@ package org.mt4j.components.clusters;
 
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import org.mt4j.components.MTComponent;
 import org.mt4j.components.TransformSpace;
@@ -72,11 +73,10 @@ public class Cluster extends MTComponent { //extends MTComponent/implements IMTC
 		if (selectionPolygon != null){
 			this.addChild(selectionPolygon);
 		}
-		
-		for (int i = 0; i < components.length; i++) {
-			MTComponent component3D = components[i];
-			this.addChild(component3D);
-		}
+
+        for (MTComponent component3D : components) {
+            this.addChild(component3D);
+        }
 		
 		this.setName("unnamed Cluster");
 	}
@@ -106,40 +106,39 @@ public class Cluster extends MTComponent { //extends MTComponent/implements IMTC
 		this.removeChild(clusterPoly);
 		
 		MTComponent[] children = this.getChildren();
-		for (int i = 0; i < children.length; i++) {
-			MTComponent component = children[i];
-			
-			//Get vertices for convex hull of all selected components
-			if (component instanceof AbstractShape){
-				shapes++;
-				AbstractShape shape = (AbstractShape)component;
+        for (MTComponent component : children) {
+            //Get vertices for convex hull of all selected components
+            if (component instanceof AbstractShape) {
+                shapes++;
+                AbstractShape shape = (AbstractShape) component;
 //				Vertex[] verts = shape.getVerticesPickingWorld();
-				Vector3D[] verts = null;
-				
+                Vector3D[] verts = null;
+
 //				if (shape.isBoundingShapeSet()){
 //					 verts = shape.getBoundingShape().getVectorsGlobal();
 //				}else{
 //					 verts = shape.getVerticesGlobal();
 //				}
-				
-				if (shape.hasBounds()){
-					if (shape.getBounds() instanceof BoundsZPlaneRectangle || shape.getBounds() instanceof BoundsArbitraryPlanarPolygon){
-						verts = shape.getBounds().getVectorsGlobal();
-					}else{
-						BoundsZPlaneRectangle b = new BoundsZPlaneRectangle(shape);
-						verts = b.getVectorsGlobal();
-					}
-				}else{
-					BoundsZPlaneRectangle b = new BoundsZPlaneRectangle(shape);
-					verts = b.getVectorsGlobal();
+
+                if (shape.hasBounds()) {
+                    if (shape.getBounds() instanceof BoundsZPlaneRectangle || shape.getBounds() instanceof BoundsArbitraryPlanarPolygon) {
+                        verts = shape.getBounds().getVectorsGlobal();
+                    } else {
+                        BoundsZPlaneRectangle b = new BoundsZPlaneRectangle(shape);
+                        verts = b.getVectorsGlobal();
+                    }
+                } else {
+                    BoundsZPlaneRectangle b = new BoundsZPlaneRectangle(shape);
+                    verts = b.getVectorsGlobal();
 //					 verts = shape.getVerticesGlobal();
-				}
-				
-				for (Vector3D v : verts){
-					allClusteredVerts.add(v);
-				}
-			}
-		}
+                }
+
+                allClusteredVerts.addAll(Arrays.asList(verts));
+                //for (Vector3D v : verts){
+                //	allClusteredVerts.add(v);
+                //}
+            }
+        }
 		
 		if (shapes != 0 && shapes == children.length){ //If all children are of type abstractShape
 			
@@ -209,12 +208,10 @@ public class Cluster extends MTComponent { //extends MTComponent/implements IMTC
 
 	@Override
 	public void addChildren(MTComponent[] tangibleComps) {
-		for (int i = 0; i < tangibleComps.length; i++) {
-			MTComponent object = tangibleComps[i];
-			
-			//Add direct objects
-			this.getChildList().add(object);
-		}
+        for (MTComponent object : tangibleComps) {
+            //Add direct objects
+            this.getChildList().add(object);
+        }
 	}
 
 	@Override

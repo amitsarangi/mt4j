@@ -58,14 +58,13 @@ public static ArrayList<Vector3D> getConvexHull2D(ArrayList<Vector3D> Vector3Ds)
     
     ArrayList<Vector3D> leftSet = new ArrayList<Vector3D>();
     ArrayList<Vector3D> rightSet = new ArrayList<Vector3D>();
-    
-    for (int i = 0; i < Vector3Ds.size(); i++) {
-      Vector3D p = Vector3Ds.get(i);
-      if (Vector3DLocation(A,B,p) == -1)
-        leftSet.add(p);
-      else
-        rightSet.add(p);
-    }
+
+      for (Vector3D p : Vector3Ds) {
+          if (Vector3DLocation(A, B, p) == -1)
+              leftSet.add(p);
+          else
+              rightSet.add(p);
+      }
     hullSet(A,B,rightSet,convexHull);
     hullSet(B,A,leftSet,convexHull);
     
@@ -125,21 +124,19 @@ public static ArrayList<Vector3D> getConvexHull2D(ArrayList<Vector3D> Vector3Ds)
     
     // Determine who's to the left of AP
     ArrayList<Vector3D> leftSetAP = new ArrayList<Vector3D>();
-    for (int i = 0; i < set.size(); i++) {
-      Vector3D M = set.get(i);
-      if (Vector3DLocation(A,P,M)==1) {
-        leftSetAP.add(M);
+      for (Vector3D M : set) {
+          if (Vector3DLocation(A, P, M) == 1) {
+              leftSetAP.add(M);
+          }
       }
-    }
     
     // Determine who's to the left of PB
     ArrayList<Vector3D> leftSetPB = new ArrayList<Vector3D>();
-    for (int i = 0; i < set.size(); i++) {
-      Vector3D M = set.get(i);
-      if (Vector3DLocation(P,B,M)==1) {
-        leftSetPB.add(M);
+      for (Vector3D M : set) {
+          if (Vector3DLocation(P, B, M) == 1) {
+              leftSetPB.add(M);
+          }
       }
-    }
     hullSet(A,P,leftSetAP,hull);
     hullSet(P,B,leftSetPB,hull);
     

@@ -106,6 +106,10 @@ public static final MTColor RED = new MTColor(255,0,0,255);
 	
 	public static final MTColor AQUA = new MTColor(0,255,255,255);
 	
+	public static MTColor randomColor(){
+		return new MTColor((float)(Math.random() * 255), (float)(Math.random() * 255), (float)(Math.random() * 255), 255);
+	}
+	
 	/**
 	 * Instantiates a new mT color.
 	 * 

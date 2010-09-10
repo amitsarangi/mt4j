@@ -467,8 +467,7 @@ public class ToolsBuffers {
      * @return the requested new FloatBuffer
      */
     public static FloatBuffer createVector3Buffer(int vertices) {
-        FloatBuffer vBuff = createFloatBuffer(3 * vertices);
-        return vBuff;
+        return createFloatBuffer(3 * vertices);
     }
 
 

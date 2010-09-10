@@ -365,11 +365,10 @@ public class MTRectangle extends MTPolygon {
 	@Override
 	public Vector3D getCenterOfMass2DLocal() {
 		Vertex[] v = this.getVerticesLocal();
-		Vector3D center = new Vector3D(
-				v[0].getX() + ((v[1].getX() - v[0].getX())/2), 
-				v[1].getY() + ((v[2].getY() - v[1].getY())/2), 
+		return new Vector3D(
+				v[0].getX() + ((v[1].getX() - v[0].getX())/2),
+				v[1].getY() + ((v[2].getY() - v[1].getY())/2),
 				v[0].getZ());
-		return center;
 	}
 	
 	
