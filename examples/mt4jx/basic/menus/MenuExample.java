@@ -20,10 +20,10 @@ import org.mt4j.input.inputProcessors.componentProcessors.tapProcessor.TapEvent;
 import org.mt4j.sceneManagement.AbstractScene;
 import org.mt4j.util.MTColor;
 import org.mt4j.util.math.Vector3D;
-import org.mt4jx.components.menus.MTHUD;
-import org.mt4jx.components.menus.MTHexagonMenu;
-import org.mt4jx.components.menus.MTSquareMenu;
-import org.mt4jx.components.menus.MenuItem;
+import org.mt4jx.components.visibleComponents.widgets.menus.MTHUD;
+import org.mt4jx.components.visibleComponents.widgets.menus.MTHexagonMenu;
+import org.mt4jx.components.visibleComponents.widgets.menus.MTSquareMenu;
+import org.mt4jx.components.visibleComponents.widgets.menus.MenuItem;
 
 
 
