@@ -18,7 +18,6 @@
 package org.mt4j.components.visibleComponents.widgets;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import javax.media.opengl.GL;
@@ -138,9 +137,9 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
     /**
      * Instantiates a new text area. This constructor creates
      * a text area with variable dimensions that expands itself when text is added.
-     * A default font is used.
      *
      * @param pApplet the applet
+     * @param font the font
      */
 	public MTTextArea(MTApplication pApplet, CSSFont font) {
 		this(pApplet, FontManager.getInstance().getDefaultFont(pApplet));
@@ -308,15 +307,6 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
 		}
 	}
 
-	/**
-	 * Sets the padding (Top: 5 + value, Left: 8 + value)
-	 * @param padding
-	 */
-	
-	public void setPadding(float padding) {
-		innerPaddingTop = 5 + (int)padding;
-		innerPaddingLeft = 8 + (int)padding;
-	}
 	
 	@Override
 	public void updateComponent(long timeDelta) {
@@ -1115,6 +1105,18 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
             }
         }
 		return height;
+	}
+	
+	
+	/**
+	 * Sets the padding (Top: 5 + value, Left: 8 + value)
+	 * @param padding
+	 */
+	
+	public void setPadding(float padding) {
+		innerPaddingTop = 5 + (int)padding;
+		innerPaddingLeft = 8 + (int)padding;
+		this.updateLayout();
 	}
 	
 	
