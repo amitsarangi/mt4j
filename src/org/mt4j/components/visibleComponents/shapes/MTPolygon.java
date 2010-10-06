@@ -22,9 +22,14 @@ import java.nio.IntBuffer;
 
 import javax.media.opengl.GL;
 
+
+import org.mt4j.MTApplication;
+import org.mt4j.components.TransformSpace;
 import org.mt4j.components.bounds.BoundingSphere;
 import org.mt4j.components.bounds.IBoundingShape;
 import org.mt4j.components.bounds.OrientedBoundingBox;
+import org.mt4j.components.css.util.CSSHelper;
+import org.mt4j.components.css.util.CSSStylableComponent;
 import org.mt4j.components.visibleComponents.GeometryInfo;
 import org.mt4j.util.MT4jSettings;
 import org.mt4j.util.MTColor;
@@ -48,7 +53,7 @@ import processing.core.PGraphics;
  * 
  * @author Christopher Ruff
  */
-public class MTPolygon extends AbstractShape {
+public class MTPolygon extends AbstractShape implements CSSStylableComponent{
 	
 	//FIXME TRIAL REMOVE LATER
 //	boolean useLocalObjectSpace;
@@ -95,6 +100,13 @@ public class MTPolygon extends AbstractShape {
 		
 		this.setBoundsBehaviour(AbstractShape.BOUNDS_DONT_USE);
 //		this.setBoundsPickingBehaviour(AbstractShape.BOUNDS_ONLY_CHECK);
+		if (pApplet instanceof MTApplication) {
+			this.mtApp = (MTApplication)pApplet;
+			this.cssHelper = new CSSHelper(this, mtApp);
+			if (this.mtApp.getCssStyleManager().isGloballyEnabled()) {
+				this.enableCSS();
+			}
+		}
 	}
 	
 	/* (non-Javadoc)
@@ -733,6 +745,51 @@ public class MTPolygon extends AbstractShape {
 	 */
 	@Override
 	protected void destroyComponent() {
+		
+	}
+
+	
+	private MTApplication mtApp;
+	private boolean cssStyled = false;
+	private boolean cssForceDisabled = false;
+	private CSSHelper cssHelper;
+	
+	
+	
+	public CSSHelper getCssHelper() {
+		return cssHelper;
+	}
+
+	public boolean isCSSStyled() {
+		return cssStyled;
+	}
+
+	public void enableCSS() {
+		if (mtApp != null && cssHelper != null) {
+			cssStyled = true;
+		}
+		applyStyleSheet();
+	}
+
+	
+	
+	public boolean isCssForceDisabled() {
+		return cssForceDisabled;
+	}
+
+	public void setCssForceDisable(boolean cssForceDisabled) {
+		this.cssForceDisabled = cssForceDisabled;
+	}
+
+	public void disableCSS() {
+		cssStyled = false;
+		
+	}
+
+	public void applyStyleSheet() {
+		if (cssStyled && mtApp != null && cssHelper != null) {
+			cssHelper.applyStyleSheet();
+		}
 		
 	}
 	

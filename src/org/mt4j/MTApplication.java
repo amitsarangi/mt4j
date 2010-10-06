@@ -41,6 +41,7 @@ import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.log4j.SimpleLayout;
+import org.mt4j.components.css.util.CSSStyleManager;
 import org.mt4j.input.InputManager;
 import org.mt4j.input.inputData.AbstractCursorInputEvt;
 import org.mt4j.input.inputData.ActiveCursorPool;
@@ -140,6 +141,8 @@ public abstract class MTApplication extends PApplet {
 	private static boolean settingsLoadedFromFile = false; //cant initialize in constructor, need it before that!
 	
 	private ImageIcon mt4jIcon;
+
+	private CSSStyleManager cssStyleManager;
 	
 //	private static boolean fullscreen;
 	/*
@@ -250,6 +253,7 @@ public abstract class MTApplication extends PApplet {
 		sceneStack = new ArrayDeque<Iscene>();
 		
 		sceneChangeLocked = false;
+		cssStyleManager = new CSSStyleManager(this);
 	}
 	
 	/**
@@ -1256,6 +1260,11 @@ public abstract class MTApplication extends PApplet {
 		public String getClassName() {
 			return getClassContext()[2].getName(); //FIXME is this reliable to always work?
 		}
+	}
+
+
+	public CSSStyleManager getCssStyleManager() {
+		return this.cssStyleManager;
 	}
 
 

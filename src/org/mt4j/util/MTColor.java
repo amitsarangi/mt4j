@@ -102,7 +102,7 @@ public static final MTColor RED = new MTColor(255,0,0,255);
 	
 	public static final MTColor NAVY = new MTColor(0,0,128,255);
 	
-	public static final MTColor TEAL = new MTColor(0,0,128,255);
+	public static final MTColor TEAL = new MTColor(0,128,128,255);
 	
 	public static final MTColor AQUA = new MTColor(0,255,255,255);
 	

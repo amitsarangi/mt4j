@@ -21,9 +21,12 @@ import java.nio.FloatBuffer;
 
 import javax.media.opengl.GL;
 
+import org.mt4j.MTApplication;
 import org.mt4j.components.TransformSpace;
 import org.mt4j.components.bounds.BoundsArbitraryPlanarPolygon;
 import org.mt4j.components.bounds.IBoundingShape;
+import org.mt4j.components.css.util.CSSHelper;
+import org.mt4j.components.css.util.CSSStylableComponent;
 import org.mt4j.components.visibleComponents.GeometryInfo;
 import org.mt4j.components.visibleComponents.StyleInfo;
 import org.mt4j.util.MT4jSettings;
@@ -43,7 +46,7 @@ import processing.opengl.PGraphicsOpenGL;
  * 
  * @author Christopher Ruff
  */
-public class MTLine extends AbstractShape {
+public class MTLine extends AbstractShape implements CSSStylableComponent{
 	
 	/** The p context. */
 	private PApplet pContext;
@@ -106,6 +109,13 @@ public class MTLine extends AbstractShape {
 		this.setBoundsBehaviour(BOUNDS_ONLY_CHECK);
 		
 		this.setName("unnamed MTLine");
+		if (pApplet instanceof MTApplication) {
+			this.mtApp = (MTApplication)pApplet;
+			this.cssHelper = new CSSHelper(this, mtApp);
+			if (this.mtApp.getCssStyleManager().isGloballyEnabled()) {
+				this.enableCSS();
+			}
+		}
 	}
 
 	//TODO getNormal() will crash ..
@@ -473,4 +483,195 @@ public class MTLine extends AbstractShape {
 //	}
 
 
+//	
+//	
+//
+//
+//
+//	@Override
+//	public float getWidthXY(TransformSpace transformSpace) {
+//		switch (transformSpace) {
+//		case LOCAL:
+//			return this.getWidthXYLocal();
+//		case RELATIVE_TO_PARENT:
+//			return this.getWidthXYRealtiveToParent();
+//		case GLOBAL:
+//			return this.getWidthXYGlobal();
+//		default:
+//			return -1;
+//		}
+//	}
+//
+//	/**
+//	 * Gets the width xy obj space.
+//	 * 
+//	 * @return the width xy obj space
+//	 */
+//	private float getWidthXYLocal() {
+//		return this.getWidthXYVectLocal().length();
+//	}
+//	
+//	
+//	/**
+//	 * Calculates the width of this shape, by using its
+//	 * bounding rectangle.
+//	 * Uses the objects local transform. So the width will be
+//	 * relative to the parent only - not the whole world
+//	 * <br><strong>NOTE: </strong> This method will only work, if the polygon is parallel
+//	 * to the x/y plane in space AND has a boundingShape rectangle thats meets the same crieria
+//	 * because the calculations are done with the bounding rectangle. (bounds instance of <code>BoundsZPlaneRectangle</code>)
+//	 * 
+//	 * @return the height
+//	 */
+//	private float getWidthXYRealtiveToParent() {
+//		Vector3D p = this.getWidthXYVectLocal();
+//		Matrix m = new Matrix(this.getLocalMatrix());
+//		m.removeTranslationFromMatrix();
+//		p.transform(m);
+//		return p.length();
+//	}
+//	
+//	/**
+//	 * The length of the line in world coordinates.
+//	 * 
+//	 * @return the width xy global
+//	 */
+//	protected float getWidthXYGlobal() {
+//		Vector3D p = this.getWidthXYVectLocal();
+//		Matrix m = new Matrix(this.getGlobalMatrix());
+//		m.removeTranslationFromMatrix();
+//		p.transform(m);
+//		return p.length();
+//	}
+//
+//	/**
+//	 * Gets the width xy vect obj space.
+//	 * 
+//	 * @return the width xy vect obj space
+//	 */
+//	@Override
+//	public Vector3D getWidthXYVectLocal() {
+//		Vector3D[] vertsLocal = this.getGeometryInfo().getVertices();
+//		Vector3D width = vertsLocal[1].getSubtracted(vertsLocal[0]);
+////		System.out.println("Width of " + this.getName()+ " :" + width);
+//		return width;
+//	}
+//	
+//	
+//
+//
+//
+//	@Override
+//	public float getWidthXY(TransformSpace transformSpace) {
+//		switch (transformSpace) {
+//		case LOCAL:
+//			return this.getWidthXYLocal();
+//		case RELATIVE_TO_PARENT:
+//			return this.getWidthXYRealtiveToParent();
+//		case GLOBAL:
+//			return this.getWidthXYGlobal();
+//		default:
+//			return -1;
+//		}
+//	}
+//
+//	/**
+//	 * Gets the width xy obj space.
+//	 * 
+//	 * @return the width xy obj space
+//	 */
+//	private float getWidthXYLocal() {
+//		return this.getWidthXYVectLocal().length();
+//	}
+//	
+//	
+//	/**
+//	 * Calculates the width of this shape, by using its
+//	 * bounding rectangle.
+//	 * Uses the objects local transform. So the width will be
+//	 * relative to the parent only - not the whole world
+//	 * <br><strong>NOTE: </strong> This method will only work, if the polygon is parallel
+//	 * to the x/y plane in space AND has a boundingShape rectangle thats meets the same crieria
+//	 * because the calculations are done with the bounding rectangle. (bounds instance of <code>BoundsZPlaneRectangle</code>)
+//	 * 
+//	 * @return the height
+//	 */
+//	private float getWidthXYRealtiveToParent() {
+//		Vector3D p = this.getWidthXYVectLocal();
+//		Matrix m = new Matrix(this.getLocalMatrix());
+//		m.removeTranslationFromMatrix();
+//		p.transform(m);
+//		return p.length();
+//	}
+//	
+//	/**
+//	 * The length of the line in world coordinates.
+//	 * 
+//	 * @return the width xy global
+//	 */
+//	protected float getWidthXYGlobal() {
+//		Vector3D p = this.getWidthXYVectLocal();
+//		Matrix m = new Matrix(this.getGlobalMatrix());
+//		m.removeTranslationFromMatrix();
+//		p.transform(m);
+//		return p.length();
+//	}
+//
+//	/**
+//	 * Gets the width xy vect obj space.
+//	 * 
+//	 * @return the width xy vect obj space
+//	 */
+//	@Override
+//	public Vector3D getWidthXYVectLocal() {
+//		Vector3D[] vertsLocal = this.getGeometryInfo().getVertices();
+//		Vector3D width = vertsLocal[1].getSubtracted(vertsLocal[0]);
+////		System.out.println("Width of " + this.getName()+ " :" + width);
+//		return width;
+//	}
+
+
+	private MTApplication mtApp;
+	private boolean cssStyled = false;
+	private CSSHelper cssHelper;
+	
+	public boolean isCSSStyled() {
+		return cssStyled;
+	}
+
+	public void enableCSS() {
+		if (mtApp != null && cssHelper != null) {
+			cssStyled = true;
+		}
+		applyStyleSheet();
+		applyStyleSheet();
+	}
+
+	public void disableCSS() {
+		cssStyled = false;
+		
+	}
+
+	public void applyStyleSheet() {
+		if (cssStyled && mtApp != null && cssHelper != null) {
+			cssHelper.applyStyleSheet();
+		}
+		
+	}
+	
+	private boolean cssForceDisabled = false;
+	
+	public boolean isCssForceDisabled() {
+		return cssForceDisabled;
+	}
+
+	public void setCssForceDisable(boolean cssForceDisabled) {
+		this.cssForceDisabled = cssForceDisabled;
+		
+	}
+
+	public CSSHelper getCssHelper() {
+		return this.cssHelper;
+	}
+	
 }

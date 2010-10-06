@@ -31,6 +31,7 @@ import org.apache.log4j.SimpleLayout;
 import org.mt4j.components.PickResult.PickEntry;
 import org.mt4j.components.bounds.IBoundingShape;
 import org.mt4j.components.clipping.Clip;
+import org.mt4j.components.css.util.CSSStylableComponent;
 import org.mt4j.components.interfaces.IMTComponent3D;
 import org.mt4j.components.interfaces.IMTController;
 import org.mt4j.input.ComponentInputProcessorSupport;
@@ -77,6 +78,22 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 		ConsoleAppender ca = new ConsoleAppender(l);
 		logger.addAppender(ca);
 	}
+	
+	//CSS Enhancements
+	private String CSSID = "";
+	
+	public String getCSSID() {
+		return CSSID;
+	}
+
+	public void setCSSID(String cSSID) {
+		CSSID = cSSID;
+		if (this instanceof CSSStylableComponent) {
+			CSSStylableComponent csc = (CSSStylableComponent)this;
+			csc.applyStyleSheet();
+		}
+	}
+	//CSS Enhancements
 	
 	/** The ID. */
 	private int ID;

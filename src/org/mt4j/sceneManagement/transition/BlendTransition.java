@@ -22,11 +22,9 @@ import org.mt4j.components.visibleComponents.shapes.MTRectangle;
 import org.mt4j.components.visibleComponents.widgets.MTSceneTexture;
 import org.mt4j.sceneManagement.Iscene;
 import org.mt4j.util.MTColor;
-import org.mt4j.util.animation.Animation;
 import org.mt4j.util.animation.AnimationEvent;
 import org.mt4j.util.animation.IAnimation;
 import org.mt4j.util.animation.IAnimationListener;
-import org.mt4j.util.animation.MultiPurposeInterpolator;
 import org.mt4j.util.animation.ani.AniAnimation;
 
 import processing.core.PGraphics;
@@ -88,7 +86,7 @@ public class BlendTransition extends AbstractTransition {
 		anim = new AniAnimation(255,0, this.duration, AniAnimation.CIRC_OUT, this);
 		anim.addAnimationListener(new IAnimationListener(){
 			public void processAnimationEvent(AnimationEvent ae) {
-				float val = ae.getCurrentValue();
+				float val = ae.getValue();
 				switch (ae.getId()) {
 				case AnimationEvent.ANIMATION_STARTED:
 					lastSceneRectangle.setVisible(true);
