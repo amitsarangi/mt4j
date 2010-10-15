@@ -20,6 +20,7 @@ package org.mt4j.components;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.HashMap;
+import java.util.List;
 
 import javax.swing.Timer;
 
@@ -369,9 +370,15 @@ public class MTCanvas extends MTComponent implements IHitTestInfoProvider{
 				
 				currentcomp.postDraw(graphics);
 
-				//Draw Children
-				for (MTComponent child : currentcomp.getChildList())
-					drawUpdateRecursive(child, updateTime, graphics);
+				//Draw Children  //FIXME for each loop sometimes throws concurrentmodification error because of fail-fast iterator
+//				for (MTComponent child : currentcomp.getChildList())
+//					drawUpdateRecursive(child, updateTime, graphics);
+				
+				List<MTComponent> childs = currentcomp.getChildList();
+				int childCount = childs.size();
+				for (int i = 0; i < childCount; i++) {
+					drawUpdateRecursive(childs.get(i), updateTime, graphics);
+				}
 
 				currentcomp.postDrawChildren(graphics);
 				
@@ -402,8 +409,14 @@ public class MTCanvas extends MTComponent implements IHitTestInfoProvider{
 				
 				currentcomp.postDraw(graphics);
 					
-				for (MTComponent child : currentcomp.getChildList())
-					drawUpdateRecursive(child, updateTime, graphics);
+//				for (MTComponent child : currentcomp.getChildList()) //FIXME for each loop sometimes throws concurrentmodification error because of fail-fast iterator
+//					drawUpdateRecursive(child, updateTime, graphics);
+				
+				List<MTComponent> childs = currentcomp.getChildList();
+				int childCount = childs.size();
+				for (int i = 0; i < childCount; i++) {
+					drawUpdateRecursive(childs.get(i), updateTime, graphics);
+				}
 				
 				currentcomp.postDrawChildren(graphics);
 			}
