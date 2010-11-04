@@ -29,7 +29,7 @@ import processing.core.PMatrix3D;
  * The Class MTCamera.
  * @author Christopher Ruff
  */
-public class MTCamera implements Icamera{
+public class MTCamera implements Icamera, IFrustum{
 	
 	/** The pa. */
 	private PApplet pa;

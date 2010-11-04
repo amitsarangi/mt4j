@@ -2,10 +2,8 @@ package basic.mtGestures;
 
 import org.mt4j.MTApplication;
 import org.mt4j.components.MTComponent;
-import org.mt4j.components.TransformSpace;
 import org.mt4j.components.visibleComponents.font.FontManager;
 import org.mt4j.components.visibleComponents.font.IFont;
-import org.mt4j.components.visibleComponents.shapes.MTRectangle;
 import org.mt4j.components.visibleComponents.shapes.MTRectangle.PositionAnchor;
 import org.mt4j.components.visibleComponents.widgets.MTTextArea;
 import org.mt4j.input.gestureAction.DefaultArcballAction;
@@ -29,10 +27,6 @@ import org.mt4j.input.inputProcessors.componentProcessors.tapAndHoldProcessor.Ta
 import org.mt4j.input.inputProcessors.componentProcessors.tapAndHoldProcessor.TapAndHoldProcessor;
 import org.mt4j.input.inputProcessors.componentProcessors.tapProcessor.TapEvent;
 import org.mt4j.input.inputProcessors.componentProcessors.tapProcessor.TapProcessor;
-import org.mt4j.input.inputProcessors.componentProcessors.unistrokeProcessor.UnistrokeEvent;
-import org.mt4j.input.inputProcessors.componentProcessors.unistrokeProcessor.UnistrokeProcessor;
-import org.mt4j.input.inputProcessors.componentProcessors.unistrokeProcessor.UnistrokeUtils.Direction;
-import org.mt4j.input.inputProcessors.componentProcessors.unistrokeProcessor.UnistrokeUtils.UnistrokeGesture;
 import org.mt4j.input.inputProcessors.componentProcessors.zoomProcessor.ZoomProcessor;
 import org.mt4j.input.inputProcessors.globalProcessors.CursorTracer;
 import org.mt4j.sceneManagement.AbstractScene;
@@ -65,8 +59,7 @@ public class MTGesturesExampleScene extends AbstractScene {
 		backgroundZoom.setText("Zoom anywhere on the background!");
 		backgroundZoom.setPickable(false);
 		this.getCanvas().addChild(backgroundZoom);
-//		backgroundZoom.setPositionGlobal(new Vector3D(app.width/2f, app.height/2f,0));
-		backgroundZoom.setPositionGlobal(new Vector3D(app.width/2f, app.height - backgroundZoom.getHeightXY(TransformSpace.GLOBAL),0));
+		backgroundZoom.setPositionGlobal(new Vector3D(app.width/2f, app.height/2f,0));
 		getCanvas().registerInputProcessor(new ZoomProcessor(app));
 		getCanvas().addGestureListener(ZoomProcessor.class, new DefaultZoomAction());
 		
@@ -78,8 +71,7 @@ public class MTGesturesExampleScene extends AbstractScene {
 		backgroundPan.setText("Pan anywhere on the background!");
 		backgroundPan.setPickable(false);
 		this.getCanvas().addChild(backgroundPan);
-//		backgroundPan.setPositionGlobal(new Vector3D(app.width/2f, app.height/2f + 1*verticalPad,0));
-		backgroundPan.setPositionGlobal(new Vector3D(app.width/2f, app.height - backgroundZoom.getHeightXY(TransformSpace.GLOBAL) - backgroundPan.getHeightXY(TransformSpace.GLOBAL),0));
+		backgroundPan.setPositionGlobal(new Vector3D(app.width/2f, app.height/2f + 1*verticalPad,0));
 		getCanvas().registerInputProcessor(new PanProcessorTwoFingers(app));
 		getCanvas().addGestureListener(PanProcessorTwoFingers.class, new DefaultPanAction());
 		
@@ -140,7 +132,7 @@ public class MTGesturesExampleScene extends AbstractScene {
 		dragAndScale.addGestureListener(DragProcessor.class, new DefaultDragAction());
 		this.getCanvas().addChild(dragAndScale);
 		dragAndScale.setAnchor(PositionAnchor.UPPER_LEFT);
-		dragAndScale.setPositionGlobal(new Vector3D(0, 4*verticalPad,0));
+		dragAndScale.setPositionGlobal(new Vector3D(0, 8*verticalPad,0));
 		
 		MTTextArea rotateAndScale = new MTTextArea(mtApplication, font);
 		rotateAndScale.setFillColor(textAreaColor);
@@ -153,7 +145,7 @@ public class MTGesturesExampleScene extends AbstractScene {
 		rotateAndScale.addGestureListener(RotateProcessor.class, new DefaultRotateAction());
 		this.getCanvas().addChild(rotateAndScale);
 		rotateAndScale.setAnchor(PositionAnchor.UPPER_LEFT);
-		rotateAndScale.setPositionGlobal(new Vector3D(0,5*verticalPad,0));
+		rotateAndScale.setPositionGlobal(new Vector3D(0,9*verticalPad,0));
 		
 		MTTextArea dragRotScale = new MTTextArea(mtApplication, font);
 		dragRotScale.setFillColor(textAreaColor);
@@ -168,7 +160,7 @@ public class MTGesturesExampleScene extends AbstractScene {
 		dragRotScale.addGestureListener(DragProcessor.class, new DefaultDragAction());
 		this.getCanvas().addChild(dragRotScale);
 		dragRotScale.setAnchor(PositionAnchor.UPPER_LEFT);
-		dragRotScale.setPositionGlobal(new Vector3D(0,6*verticalPad,0));
+		dragRotScale.setPositionGlobal(new Vector3D(0,10*verticalPad,0));
 		
 		//Tap gesture
 		final MTTextArea tapOnly = new MTTextArea(mtApplication, font);
@@ -280,7 +272,7 @@ public class MTGesturesExampleScene extends AbstractScene {
 		this.clearAllGestures(lassoUs1);
 		this.getCanvas().addChild(lassoUs1);
 		lassoUs1.setAnchor(PositionAnchor.UPPER_LEFT);
-		lassoUs1.setPositionGlobal(new Vector3D(1f*horizontalPad,4*verticalPad,0));
+		lassoUs1.setPositionGlobal(new Vector3D(1f*horizontalPad,8*verticalPad,0));
 		
 		MTTextArea lassoUs2 = new MTTextArea(mtApplication, font);
 		lassoUs2.setFillColor(textAreaColor);
@@ -289,7 +281,7 @@ public class MTGesturesExampleScene extends AbstractScene {
 		this.clearAllGestures(lassoUs2);
 		this.getCanvas().addChild(lassoUs2);
 		lassoUs2.setAnchor(PositionAnchor.UPPER_LEFT);
-		lassoUs2.setPositionGlobal(new Vector3D(1f*horizontalPad,5*verticalPad,0));
+		lassoUs2.setPositionGlobal(new Vector3D(1f*horizontalPad,9*verticalPad,0));
 		
 		MTTextArea lassoUs3 = new MTTextArea(mtApplication, font);
 		lassoUs3.setFillColor(textAreaColor);
@@ -298,7 +290,7 @@ public class MTGesturesExampleScene extends AbstractScene {
 		this.clearAllGestures(lassoUs3);
 		this.getCanvas().addChild(lassoUs3);
 		lassoUs3.setAnchor(PositionAnchor.UPPER_LEFT);
-		lassoUs3.setPositionGlobal(new Vector3D(1f*horizontalPad,6*verticalPad,0));
+		lassoUs3.setPositionGlobal(new Vector3D(1f*horizontalPad,10*verticalPad,0));
 		
 		//Create the lasso processor and add the components which can be lassoed
 		LassoProcessor lassoProcessor = new LassoProcessor(app, getCanvas(), getSceneCam());
@@ -308,74 +300,6 @@ public class MTGesturesExampleScene extends AbstractScene {
 		getCanvas().registerInputProcessor(lassoProcessor);
 		getCanvas().addGestureListener(LassoProcessor.class, new DefaultLassoAction(app, getCanvas().getClusterManager(), getCanvas()));
 		
-		
-		//Add uni-stroke gesture example
-		MTTextArea strokeText = new MTTextArea(mtApplication, font);
-		strokeText.setFillColor(textAreaColor);
-		strokeText.setStrokeColor(textAreaColor);
-		strokeText.setPickable(false);
-		strokeText.setText("Draw a stroke gesture here");
-		strokeText.setAnchor(PositionAnchor.UPPER_LEFT);
-		
-		MTRectangle strokeGestureRect = new MTRectangle(strokeText.getWidthXY(TransformSpace.LOCAL) + 50,200,getMTApplication());
-		strokeGestureRect.setFillColor(textAreaColor);
-		strokeGestureRect.setStrokeColor(textAreaColor);
-		strokeGestureRect.addChild(strokeText);
-		strokeGestureRect.setAnchor(PositionAnchor.UPPER_LEFT);
-		strokeText.setPositionRelativeToParent(strokeGestureRect.getPosition(TransformSpace.LOCAL));
-		
-		final MTTextArea recognizedGestureText = new MTTextArea(mtApplication, font);
-		recognizedGestureText.setFillColor(textAreaColor);
-		recognizedGestureText.setStrokeColor(textAreaColor);
-		recognizedGestureText.setText("Recognized: NO_GESTURE");
-		recognizedGestureText.setAnchor(PositionAnchor.LOWER_LEFT);
-		strokeGestureRect.setAnchor(PositionAnchor.LOWER_LEFT);
-		strokeGestureRect.addChild(recognizedGestureText);
-		recognizedGestureText.setPositionRelativeToParent(strokeGestureRect.getPosition(TransformSpace.LOCAL));
-		
-		getCanvas().addChild(strokeGestureRect);
-		strokeGestureRect.setAnchor(PositionAnchor.CENTER);
-		strokeGestureRect.setPositionGlobal(new Vector3D(strokeGestureRect.getWidthXY(TransformSpace.GLOBAL)/2f ,9*verticalPad,0));
-		this.clearAllGestures(strokeGestureRect);
-		
-		UnistrokeProcessor up = new UnistrokeProcessor(getMTApplication());
-		up.addTemplate(UnistrokeGesture.CIRCLE, Direction.CLOCKWISE);
-		up.addTemplate(UnistrokeGesture.CIRCLE, Direction.COUNTERCLOCKWISE);
-		up.addTemplate(UnistrokeGesture.RECTANGLE, Direction.CLOCKWISE);
-		up.addTemplate(UnistrokeGesture.RECTANGLE, Direction.COUNTERCLOCKWISE);
-		up.addTemplate(UnistrokeGesture.CHECK, Direction.CLOCKWISE);
-		up.addTemplate(UnistrokeGesture.TRIANGLE, Direction.COUNTERCLOCKWISE);
-		up.addTemplate(UnistrokeGesture.TRIANGLE, Direction.CLOCKWISE);
-		up.addTemplate(UnistrokeGesture.PIGTAIL, Direction.CLOCKWISE);
-		up.addTemplate(UnistrokeGesture.PIGTAIL, Direction.COUNTERCLOCKWISE);
-		up.addTemplate(UnistrokeGesture.ARROW, Direction.CLOCKWISE);
-		up.addTemplate(UnistrokeGesture.ARROW, Direction.COUNTERCLOCKWISE);
-		up.addTemplate(UnistrokeGesture.STAR, Direction.CLOCKWISE);
-		up.addTemplate(UnistrokeGesture.STAR, Direction.COUNTERCLOCKWISE);
-		up.addTemplate(UnistrokeGesture.V, Direction.CLOCKWISE);
-		up.addTemplate(UnistrokeGesture.QUESTION, Direction.CLOCKWISE);
-		
-		strokeGestureRect.registerInputProcessor(up);
-		strokeGestureRect.addGestureListener(UnistrokeProcessor.class, new IGestureEventListener() {
-			public boolean processGestureEvent(MTGestureEvent ge) {
-				UnistrokeEvent ue = (UnistrokeEvent)ge;
-				switch (ue.getId()) {
-				case UnistrokeEvent.GESTURE_DETECTED:
-					getCanvas().addChild(ue.getVisualization());
-					break;
-				case UnistrokeEvent.GESTURE_UPDATED:
-					break;
-				case UnistrokeEvent.GESTURE_ENDED:
-					UnistrokeGesture g = ue.getGesture();
-					System.out.println("Recognized gesture: " + g);
-					recognizedGestureText.setText("Recognized: " + g);
-					break;
-				default:
-					break;
-				}
-				return false;
-			}
-		});
 	}
 	
 

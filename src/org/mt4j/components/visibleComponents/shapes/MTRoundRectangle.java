@@ -22,7 +22,6 @@ import java.util.List;
 
 import org.mt4j.components.bounds.BoundsZPlaneRectangle;
 import org.mt4j.components.bounds.IBoundingShape;
-import org.mt4j.util.MTColor;
 import org.mt4j.util.math.ToolsGeometry;
 import org.mt4j.util.math.Vertex;
 
@@ -130,8 +129,6 @@ public class MTRoundRectangle extends MTPolygon {
 	 * @return the round rect verts
 	 */
 	private Vertex[] getRoundRectVerts(float x, float y, float z, float width, float height, float arcWidth, float arcHeight, int segments, boolean createTexCoords){
-		MTColor currentFillColor = getFillColor();
-		
 		//Draw first lines
 		Vertex upperLineP1 	= new Vertex(x + arcWidth, y, 0);
 		Vertex upperLineP2 	= new Vertex(x + width - arcWidth , y, 0);
@@ -170,13 +167,12 @@ public class MTRoundRectangle extends MTPolygon {
 		Vertex[] newVertices = verts.toArray(new Vertex[verts.size()]);
 		
 		//Set texture coordinates
-		for (Vertex vertex : newVertices) {
-			if (createTexCoords){
-				vertex.setTexCoordU((vertex.x - x) / width);
-				vertex.setTexCoordV((vertex.y - y) / height);
-				//System.out.println("TexU:" + vertex.getTexCoordU() + " TexV:" + vertex.getTexCoordV());
-			}
-			vertex.setRGBA(currentFillColor.getR(), currentFillColor.getG(), currentFillColor.getB(), currentFillColor.getAlpha());
+		if (createTexCoords){
+            for (Vertex vertex : newVertices) {
+                vertex.setTexCoordU((vertex.x - x) / width);
+                vertex.setTexCoordV((vertex.y - y) / height);
+                //System.out.println("TexU:" + vertex.getTexCoordU() + " TexV:" + vertex.getTexCoordV());
+            }
 		}
 		return newVertices;
 	}

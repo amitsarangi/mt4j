@@ -7,7 +7,7 @@ import org.mt4j.input.inputProcessors.IInputProcessor;
 import org.mt4j.input.inputProcessors.MTGestureEvent;
 import org.mt4j.input.inputProcessors.componentProcessors.AbstractCursorProcessor;
 import org.mt4j.input.inputProcessors.componentProcessors.unistrokeProcessor.UnistrokeUtils.Direction;
-import org.mt4j.input.inputProcessors.componentProcessors.unistrokeProcessor.UnistrokeUtils.UnistrokeGesture;
+import org.mt4j.input.inputProcessors.componentProcessors.unistrokeProcessor.UnistrokeUtils.DollarGesture;
 import org.mt4j.input.inputProcessors.componentProcessors.unistrokeProcessor.UnistrokeUtils.Recognizer;
 import org.mt4j.util.math.Vector3D;
 
@@ -38,7 +38,7 @@ public class UnistrokeProcessor extends AbstractCursorProcessor {
 		recognizer = du.getRecognizer();
 	}
 	
-	public void addTemplate(UnistrokeGesture gesture, Direction direction){
+	public void addTemplate(DollarGesture gesture, Direction direction){
 		recognizer.addTemplate(gesture, direction);
 	}
 	
@@ -55,7 +55,7 @@ public class UnistrokeProcessor extends AbstractCursorProcessor {
 				context.update(inputCursor);
 				context.update(inputCursor);
 				
-				this.fireGestureEvent(new UnistrokeEvent(this, MTGestureEvent.GESTURE_DETECTED, inputCursor.getCurrentTarget(), context.getVisualizer(), UnistrokeGesture.NOGESTURE));
+				this.fireGestureEvent(new UnistrokeEvent(this, MTGestureEvent.GESTURE_DETECTED, inputCursor.getCurrentTarget(), context.getVisualizer(), DollarGesture.NOGESTURE));
 			}
 		}
 
@@ -68,7 +68,7 @@ public class UnistrokeProcessor extends AbstractCursorProcessor {
 		if (getLockedCursors().contains(inputCursor) && context != null) {
 			if (!context.gestureAborted) {
 				context.update(inputCursor);
-				this.fireGestureEvent(new UnistrokeEvent(this, MTGestureEvent.GESTURE_UPDATED, inputCursor.getCurrentTarget(), context.getVisualizer(), UnistrokeGesture.NOGESTURE));
+				this.fireGestureEvent(new UnistrokeEvent(this, MTGestureEvent.GESTURE_UPDATED, inputCursor.getCurrentTarget(), context.getVisualizer(), DollarGesture.NOGESTURE));
 			}
 		}
 
@@ -94,7 +94,7 @@ public class UnistrokeProcessor extends AbstractCursorProcessor {
 	@Override
 	public void cursorLocked(InputCursor cursor, IInputProcessor lockingprocessor) {
 		if (getLockedCursors().contains(cursor) && context != null) {
-			this.fireGestureEvent(new UnistrokeEvent(this, MTGestureEvent.GESTURE_ENDED, cursor.getCurrentTarget(), context.getVisualizer(), UnistrokeGesture.NOGESTURE));
+			this.fireGestureEvent(new UnistrokeEvent(this, MTGestureEvent.GESTURE_ENDED, cursor.getCurrentTarget(), context.getVisualizer(), DollarGesture.NOGESTURE));
 		}
 
 	}

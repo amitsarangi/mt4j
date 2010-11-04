@@ -5,7 +5,7 @@ import java.util.List;
 
 
 import org.mt4j.input.inputProcessors.componentProcessors.unistrokeProcessor.UnistrokeUtils.Direction;
-import org.mt4j.input.inputProcessors.componentProcessors.unistrokeProcessor.UnistrokeUtils.UnistrokeGesture;
+import org.mt4j.input.inputProcessors.componentProcessors.unistrokeProcessor.UnistrokeUtils.DollarGesture;
 import org.mt4j.util.math.Vector3D;
 
 
@@ -41,7 +41,7 @@ public class UnistrokeTemplates {
 	class Template{
 	  
   	/** The gesture. */
-  	UnistrokeGesture gesture;
+  	DollarGesture gesture;
 	  
   	/** The direction. */
   	Direction direction;
@@ -56,7 +56,7 @@ public class UnistrokeTemplates {
   	 * @param points the points
   	 * @param direction the direction
   	 */
-  	Template(UnistrokeGesture gesture, List<Vector3D> points, Direction direction){
+  	Template(DollarGesture gesture, List<Vector3D> points, Direction direction){
 	   this.gesture = gesture;
 	   this.direction = direction;
 	    Points = du.Resample( points, du.getNumPoints(), direction);
@@ -73,7 +73,7 @@ public class UnistrokeTemplates {
 	 * @param gesture the gesture
 	 * @param direction the direction
 	 */
-	public void addTemplate(UnistrokeGesture gesture, Direction direction) {
+	public void addTemplate(DollarGesture gesture, Direction direction) {
 		List<Vector3D> points = null;
 		switch (gesture) {
 		case TRIANGLE:

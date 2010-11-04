@@ -2,14 +2,15 @@ package org.mt4j.test.misc;
 
 import org.mt4j.MTApplication;
 import org.mt4j.components.visibleComponents.shapes.AbstractShape;
+import org.mt4j.components.visibleComponents.widgets.video.MTVideoTexture;
 import org.mt4j.sceneManagement.AbstractScene;
 import org.mt4j.util.MT4jSettings;
 import org.mt4j.util.math.ToolsMath;
 import org.mt4j.util.math.Vector3D;
 import org.mt4j.util.math.Vertex;
-import org.mt4jx.components.visibleComponents.widgets.video.MTVideoTexture;
 
 import processing.core.PApplet;
+
 import advanced.puzzle.PuzzleFactory;
 
 public class VideoPuzzleTest_ extends MTApplication {

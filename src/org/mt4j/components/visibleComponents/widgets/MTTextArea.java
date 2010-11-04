@@ -18,6 +18,7 @@
 package org.mt4j.components.visibleComponents.widgets;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.media.opengl.GL;
@@ -26,8 +27,6 @@ import javax.media.opengl.glu.GLU;
 import org.mt4j.MTApplication;
 import org.mt4j.components.TransformSpace;
 import org.mt4j.components.clipping.Clip;
-import org.mt4j.components.css.style.CSSFont;
-import org.mt4j.components.css.style.CSSStyle;
 import org.mt4j.components.visibleComponents.font.BitmapFont;
 import org.mt4j.components.visibleComponents.font.BitmapFontCharacter;
 import org.mt4j.components.visibleComponents.font.FontManager;
@@ -134,21 +133,6 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
 	}
 	
 	
-    private boolean ignoreCSSFont = false;
-    
-    /**
-     * Instantiates a new text area. This constructor creates
-     * a text area with variable dimensions that expands itself when text is added.
-     *
-     * @param pApplet the applet
-     * @param font the font
-     */
-	public MTTextArea(MTApplication pApplet, CSSFont font) {
-		this(pApplet, FontManager.getInstance().getDefaultFont(pApplet));
-		this.getCssHelper().getPrivateStyleSheets().add(new CSSStyle(font,pApplet));
-	}
-	
-    
 	/**
 	 * Instantiates a new text area. This constructor creates
 	 * a text area with variable dimensions that expands itself when text is added.
@@ -170,9 +154,6 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
 		//Expand vertically at enter 
 		this.setHeightLocal(this.getTotalLinesHeight());
 		this.setWidthLocal(getMaxLineWidth());
-		
-		//Disable font being overwritten by CSS
-		this.ignoreCSSFont = true;
 	}
 	
 	
@@ -215,22 +196,10 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
 		
 		//Position textarea at x,y
 		this.setUpperLeftPos(new Vector3D(x,y,0));
-		this.setUpperLeftPos(new Vector3D(x,y,0));
-		
-		//Disable font being overwritten by CSS
-		this.ignoreCSSFont = true;
 	}
 	
 	
 	
-	public boolean isIgnoreCSSFont() {
-		return ignoreCSSFont;
-	}
-
-	public void setIgnoreCSSFont(boolean ignoreCSSFont) {
-		this.ignoreCSSFont = ignoreCSSFont;
-	}
-
 	private void setUpperLeftPos(Vector3D pos){
 		//Position textarea at 0,0
 		PositionAnchor prevAnchor = this.getAnchor();
@@ -239,9 +208,6 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
 		this.setAnchor(prevAnchor);
 	}
 	
-	public MTTextArea(MTApplication app) {
-		this(app, app.getCssStyleManager().getDefaultFont(app));
-	}
 	
 	private void init(PApplet pApplet, IFont font, int mode){
 		this.pa = pApplet;
@@ -302,12 +268,10 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
 	 * @param font the new font
 	 */
 	public void setFont(IFont font){
-		if (this.characterList != null) {
 		this.font = font;
 		this.fontHeight = font.getFontAbsoluteHeight();
 		this.isBitmapFont = (font instanceof BitmapFont);
 		this.updateLayout();
-		}
 	}
 
 	
@@ -1110,18 +1074,6 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
 	}
 	
 	
-	/**
-	 * Sets the padding (Top: 5 + value, Left: 8 + value)
-	 * @param padding
-	 */
-	
-	public void setPadding(float padding) {
-		innerPaddingTop = 5 + (int)padding;
-		innerPaddingLeft = 8 + (int)padding;
-		this.updateLayout();
-	}
-	
-	
 	public void setInnerPadding(int innerPadding){
 		this.setInnerPaddingTop(innerPadding);
 		this.setInnerPaddingLeft(innerPadding);
@@ -1297,5 +1249,5 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
 		
 	}
 
-	
+
 }

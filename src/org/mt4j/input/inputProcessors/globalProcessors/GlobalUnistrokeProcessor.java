@@ -13,7 +13,7 @@ import org.mt4j.input.inputProcessors.componentProcessors.unistrokeProcessor.Uni
 import org.mt4j.input.inputProcessors.componentProcessors.unistrokeProcessor.UnistrokeEvent;
 import org.mt4j.input.inputProcessors.componentProcessors.unistrokeProcessor.UnistrokeUtils;
 import org.mt4j.input.inputProcessors.componentProcessors.unistrokeProcessor.UnistrokeUtils.Direction;
-import org.mt4j.input.inputProcessors.componentProcessors.unistrokeProcessor.UnistrokeUtils.UnistrokeGesture;
+import org.mt4j.input.inputProcessors.componentProcessors.unistrokeProcessor.UnistrokeUtils.DollarGesture;
 import org.mt4j.input.inputProcessors.componentProcessors.unistrokeProcessor.UnistrokeUtils.Recognizer;
 import org.mt4j.util.math.Vector3D;
 
@@ -43,7 +43,7 @@ public class GlobalUnistrokeProcessor extends AbstractGlobalInputProcessor {
 		cursorToContext = new HashMap<InputCursor, UnistrokeContext>();
 	}
 	
-	public void addTemplate(UnistrokeGesture gesture, Direction direction){
+	public void addTemplate(DollarGesture gesture, Direction direction){
 		recognizer.addTemplate(gesture, direction);
 	}
 
@@ -66,7 +66,7 @@ public class GlobalUnistrokeProcessor extends AbstractGlobalInputProcessor {
 					context.update(inputCursor);
 					context.update(inputCursor);
 					
-					this.fireInputEvent(new UnistrokeEvent(this, MTGestureEvent.GESTURE_DETECTED, canvas, context.getVisualizer(), UnistrokeGesture.NOGESTURE));
+					this.fireInputEvent(new UnistrokeEvent(this, MTGestureEvent.GESTURE_DETECTED, canvas, context.getVisualizer(), DollarGesture.NOGESTURE));
 				}
 				
 			}break;
@@ -74,7 +74,7 @@ public class GlobalUnistrokeProcessor extends AbstractGlobalInputProcessor {
 				UnistrokeContext context = cursorToContext.get(inputCursor);
 				if (context != null){
 					context.update(inputCursor);
-					this.fireInputEvent(new UnistrokeEvent(this, MTGestureEvent.GESTURE_UPDATED, canvas, context.getVisualizer(), UnistrokeGesture.NOGESTURE));
+					this.fireInputEvent(new UnistrokeEvent(this, MTGestureEvent.GESTURE_UPDATED, canvas, context.getVisualizer(), DollarGesture.NOGESTURE));
 				}
 				
 			}break;

@@ -41,7 +41,7 @@ import processing.core.PApplet;
 import processing.core.PImage;
 
 /**
- * The Class MTImage. A widget which can be used to display an image texture surrounded
+ * The Class MTImage. A widget which can be used to display a image texture surrounded
  * by a frame.
  * The image itself is actually a child of this class, which acts as the frame.
  * 

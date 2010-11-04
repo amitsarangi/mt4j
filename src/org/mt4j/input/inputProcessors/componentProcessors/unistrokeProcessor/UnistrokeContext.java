@@ -25,7 +25,7 @@ import org.mt4j.components.interfaces.IMTComponent3D;
 import org.mt4j.components.visibleComponents.shapes.MTPolygon;
 import org.mt4j.input.inputData.InputCursor;
 import org.mt4j.input.inputProcessors.componentProcessors.unistrokeProcessor.UnistrokeUtils.Direction;
-import org.mt4j.input.inputProcessors.componentProcessors.unistrokeProcessor.UnistrokeUtils.UnistrokeGesture;
+import org.mt4j.input.inputProcessors.componentProcessors.unistrokeProcessor.UnistrokeUtils.DollarGesture;
 import org.mt4j.input.inputProcessors.componentProcessors.unistrokeProcessor.UnistrokeUtils.Recognizer;
 import org.mt4j.util.MTColor;
 import org.mt4j.util.math.Tools3D;
@@ -189,11 +189,11 @@ public class UnistrokeContext {
 	 *
 	 * @return the dollar gesture
 	 */
-	public UnistrokeGesture recognizeGesture(){
+	public DollarGesture recognizeGesture(){
 		if (points_resampled != null){
 			return recognizer.Recognize(points_resampled);
 		}else{
-			return UnistrokeGesture.NOGESTURE;
+			return DollarGesture.NOGESTURE;
 		}
 	}
 
