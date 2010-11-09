@@ -61,7 +61,7 @@ public class XmlHandler {
 		nameSpaceAware = false;
 		validatig = false;
 	}
-
+	
 	/**
 	 * Gets the single instance of XmlHandler.
 	 * 

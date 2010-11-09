@@ -158,7 +158,7 @@ public class TapProcessor extends AbstractCursorProcessor {
 
 			//logger.debug("Distance between buttondownScreenPos: " + buttonDownScreenPos + " and upScrPos: " + buttonUpScreenPos +  " is: " + Vector3D.distance(buttonDownScreenPos, buttonUpScreenPos));
 			if (Vector3D.distance2D(buttonDownScreenPos, screenPos) > this.maxFingerUpDist){
-				logger.debug("DISTANCE TOO FAR OR NO INTERSECTION");
+				logger.debug("DISTANCE TOO FAR OR NO INTERSECTION");			
 				lockedCursors.remove(c);
 //				this.fireGestureEvent(new TapAndHoldEvent(this, MTGestureEvent.GESTURE_ENDED, positionEvent.getCurrentTarget(), c, false, screenPos, this.holdTime, elapsedTime, normalized));
 				this.endGesture(c, positionEvent);

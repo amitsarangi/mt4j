@@ -19,16 +19,19 @@ package org.mt4j.components;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import javax.media.opengl.GL;
 
+import org.apache.batik.anim.SetAnimation;
 import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.log4j.SimpleLayout;
 import org.mt4j.components.PickResult.PickEntry;
+import org.mt4j.components.bounds.BoundingSphere;
 import org.mt4j.components.bounds.IBoundingShape;
 import org.mt4j.components.clipping.Clip;
 import org.mt4j.components.css.util.CSSStylableComponent;
@@ -367,6 +370,26 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 		return this.bounds;
 	}
 	
+	public IBoundingShape getBoundsTransformed(TransformSpace transformSpace){
+		switch(transformSpace)
+		{
+			case LOCAL:
+	    		return this.getBounds();        		
+	    	case RELATIVE_TO_PARENT:
+	    		if(this.getParent()!=null)
+	    		{
+	    			return this.bounds.transform(this.getLocalMatrix());
+	    		}else
+	    		{
+	    			return this.getBounds();
+	    		}
+	    	case GLOBAL:
+	    		return this.bounds.transform(this.getGlobalMatrix());
+		}
+		return this.bounds;
+	}
+	
+
 	/**
 	 * Checks if is bounding shape set.
 	 * @return true, if is bounding shape set
@@ -384,7 +407,7 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 	private void setBoundsGlobalDirty(boolean boundsWorldVerticesDirty) {
 		this.boundsGlobalVerticesDirty = boundsWorldVerticesDirty;
 		if (this.hasBounds()){
-			this.getBounds().setGlobalBoundsChanged();
+			this.getBounds().setGlobalBoundsChanged();			
 		}
 	}
 	// BOUNDS STUFF ////////////////////////////////
@@ -704,6 +727,8 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 	 */
 	private void propagateMatrixChange(boolean matrixDirty){
 //		System.out.println("Setting basematrix dirty on obj: " + this.getName());
+		this.fireStateChange(StateChange.GLOBAL_TRANSFORM_CHANGED);
+		
         for (MTComponent object : childComponents) {
             //TEST - only propagate unitil we get to a already dirty component
             //this should work because the dirty component should also have dirty children already
@@ -1245,6 +1270,7 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 	 */
 	public void transform(Matrix transformMatrix) {
 		this.setLocalMatrixInternal(transformMatrix.mult(this.getLocalMatrix(), this.getLocalMatrix()));
+			
 		try {
 			//THIS OPERATION IS NOT CHEAP!
 			//TODO maybe also only calculate this on demand? (at getLocalInverse() or getGlobalInverse())
@@ -1300,6 +1326,7 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 	 * @param dirVect the dir vect
 	 */
 	public void translate(Vector3D dirVect) {
+		
 //		Matrix[] ms = Matrix.getTranslationMatrixAndInverse(dirVect.getX(), dirVect.getY(), dirVect.getZ());
 		Matrix[] ms = _translationComputation; //use existing object to avoid object creation
 		Matrix.toTranslationMatrixAndInverse(ms[0], ms[1], dirVect.x, dirVect.y, dirVect.z);
@@ -1307,6 +1334,7 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 //		this.setLocalBasisMatrixInternal(ms[0].mult(this.getLocalBasisMatrix(), this.getLocalBasisMatrix()));
 		//Using special multiplication with fewer operations - seems to work ;)
 		this.setLocalMatrixInternal(ms[0].translateMult(this.getLocalMatrix(), this.getLocalMatrix()));
+				
 		try {
 //			this.setLocalInverseMatrixInternal(this.getLocalInverseMatrix().multLocal(ms[1]));
 			this.setLocalInverseMatrixInternal(this.getLocalInverseMatrix().translateMultLocal(ms[1])); 
@@ -1324,7 +1352,7 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 	 * @param degree the degree
 	 * @param transformSpace the transform space
 	 */
-	public void rotateX(Vector3D rotationPoint, float degree, TransformSpace transformSpace) {
+	public void rotateX(Vector3D rotationPoint, float degree, TransformSpace transformSpace) {		
 		switch (transformSpace) {
 		case LOCAL: 
 			rotationPoint = MTComponent.getLocalVecToParentRelativeSpace(this, rotationPoint);
@@ -1357,6 +1385,7 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 	 * @param degree the degree
 	 */
 	public void rotateX(Vector3D rotationPoint, float degree) {
+				
 //		Matrix[] ms = Matrix.getXRotationMatrixAndInverse(rotationPoint, degree);
 		Matrix[] ms = _xRotationComputation;
 		Matrix.toXRotationMatrixAndInverse(ms[0], ms[1], rotationPoint, degree);
@@ -1394,7 +1423,7 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 	 * @param degree the degree
 	 * @param transformSpace the transform space
 	 */
-	public void rotateY(Vector3D rotationPoint, float degree, TransformSpace transformSpace) {
+	public void rotateY(Vector3D rotationPoint, float degree, TransformSpace transformSpace) {		
 		switch (transformSpace) {
 		case LOCAL:
 			rotationPoint = MTComponent.getLocalVecToParentRelativeSpace(this, rotationPoint);
@@ -1427,7 +1456,7 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 	 * @param degree the degree
 	 */
 	public void rotateY(Vector3D rotationPoint, float degree) {
-//		Matrix[] ms = Matrix.getYRotationMatrixAndInverse(rotationPoint, degree);
+		//		Matrix[] ms = Matrix.getYRotationMatrixAndInverse(rotationPoint, degree);
 		Matrix[] ms = _yRotationComputation;
 		Matrix.toYRotationMatrixAndInverse(ms[0], ms[1], rotationPoint, degree);
 		
@@ -1498,6 +1527,7 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 	 * @param degree the degree
 	 */
 	public void rotateZ(Vector3D rotationPoint, float degree) {
+		
 //		Matrix[] ms = Matrix.getZRotationMatrixAndInverse(rotationPoint, degree);
 		Matrix[] ms = _zRotationComputation;
 		Matrix.toZRotationMatrixAndInverse(ms[0], ms[1], rotationPoint, degree);
@@ -1577,6 +1607,7 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 	 * @param scalingPoint the scaling point
 	 */
 	public void scale(float X, float Y, float Z, Vector3D scalingPoint) {
+		
 		/*//TODO !!//TODO mit scaling point umgehen, im moment ignoriert! also immer um 0,0,0/z in der diagonalen
 		if (!isScaleUniformXY(X,Y,Z)){
 			//TODO mit scaling point umgehen, im moment ignoriert! also immer um 0,0,0/z in der diagonalen
@@ -1594,6 +1625,7 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 		}else
 		*/
 		{
+			
 //			/*//For uniform scalings or non uniform scalings before any other transform has happened
 //			Matrix[] ms = Matrix.getScalingMatrixAndInverse(scalingPoint, X, Y, Z);
 			Matrix[] ms = _scalingComputation;
@@ -3180,6 +3212,8 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 		}
 		return userData.get(key);
 	}
+	
+	
 	
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()

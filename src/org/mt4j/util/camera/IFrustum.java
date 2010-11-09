@@ -52,5 +52,42 @@ public interface IFrustum {
 	 * @return the int
 	 */
 	public int isPointInFrustum(Vector3D p) ;
+	
+	/**
+	 * Returns the height of the near plane
+	 * @return the float
+	 */
+	public float getHeightOfNearPlane();
+	
+	/**
+	 * Returns the width of the near plane
+	 * @return the float
+	 */
+	public float getWidthOfNearPlane();
+	
+	/**
+	 * Returns the top left point of the near plane
+	 * @return the Vector3D
+	 */
+	public Vector3D getNearTopLeft();
+	
+	/**
+	 * Returns the width of the plane at a specific z value
+	 * @return the float
+	 */
+	public float getWidthOfPlane(float z);
+	
+	/**
+	 * Returns the height of the plane at a specific z value
+	 * @return the float
+	 */
+	public float getHeightOfPlane(float z);
+	
+	/**
+	 * Returns the z value of the near plane
+	 * @return the float
+	 */
+	public float getZValueOfNearPlane();
+	
 
 }

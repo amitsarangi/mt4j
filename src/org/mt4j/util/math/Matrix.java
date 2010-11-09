@@ -354,6 +354,66 @@ public class Matrix  implements Serializable, Cloneable {
         return store;
     }
     
+    /**
+     * <code>getRow</code> returns one of three Rows specified by the
+     * parameter. This row is returned as a float array of length 4.
+     * 
+     * @param i the row to retrieve. Must be between 0 and 3.
+     * 
+     * @return the row specified by the index.
+     * 
+     * @throws Exception the exception
+     */
+    public float[] getRow(int i) throws Exception {
+    	return getRow(i,null);
+    }
+    
+    /**
+     * <code>getRow</code> returns one of three rows specified by the
+     * parameter. This row is returned as a float[4].
+     * 
+     * @param i the row to retrieve. Must be between 0 and 3.
+     * @param store the float array to store the result in. if null, a new one
+     * is created.
+     * 
+     * @return the column specified by the index.
+     * 
+     * @throws Exception the exception
+     */
+    public float[] getRow(int i, float[] store) throws Exception {
+        if (store == null) store = new float[4];
+        switch (i) {
+        case 0:
+            store[0] = m00;
+            store[1] = m01;
+            store[2] = m02;
+            store[3] = m03;
+            break;
+        case 1:
+            store[0] = m10;
+            store[1] = m11;
+            store[2] = m12;
+            store[3] = m13;
+            break;
+        case 2:
+            store[0] = m20;
+            store[1] = m21;
+            store[2] = m22;
+            store[3] = m23;
+            break;
+        case 3:
+            store[0] = m30;
+            store[1] = m31;
+            store[2] = m32;
+            store[3] = m33;
+            break;
+        default:
+            logger.warning("Invalid row index.");
+            throw new Exception("Invalid row index. " + i);
+        }
+        return store;
+    }
+    
     
 //    /**
 //    * <code>getColumn</code> returns one of three columns specified by the
@@ -437,6 +497,52 @@ public class Matrix  implements Serializable, Cloneable {
             logger.warning("Invalid column index.");
             throw new Exception("Invalid column index. " + i);
         }    }
+    
+    /**
+     * <code>setRow</code> sets a particular column of this matrix to that
+     * represented by the provided vector.
+     * 
+     * @param i the row to set.
+     * @param row the data to set.
+     * 
+     * @throws Exception the exception
+     */
+        public void setRow(int i, float[] row) throws Exception {
+
+            if (row == null) {
+                logger.warning("row is null. Ignoring.");
+                return;
+            }
+            switch (i) {
+            case 0:
+                m00 = row[0];
+                m01 = row[1];
+                m02 = row[2];
+                m03 = row[3];
+                break;
+            case 1:
+                m10 = row[0];
+                m11 = row[1];
+                m12 = row[2];
+                m13 = row[3];
+                break;
+            case 2:
+                m20 = row[0];
+                m21 = row[1];
+                m22 = row[2];
+                m23 = row[3];
+                break;
+            case 3:
+                m30 = row[0];
+                m31 = row[1];
+                m32 = row[2];
+                m33 = row[3];
+                break;
+            default:
+                logger.warning("Invalid row index.");
+                throw new Exception("Invalid row index. " + i);
+            }    }
+        
 
     /**
      * <code>set</code> places a given value into the matrix at the given

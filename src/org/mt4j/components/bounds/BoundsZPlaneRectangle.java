@@ -468,5 +468,40 @@ public class BoundsZPlaneRectangle implements IBoundingShape {
                 || test == IFrustum.INTERSECT;
     }
 
+
+	@Override
+	public IBoundingShape merge(IBoundingShape shape) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	@Override
+	public MTComponent getPeerComponent() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	@Override
+	public IBoundingShape transform(Matrix transformMatrix) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	@Override
+	public IBoundingShape getBoundsTransformed(TransformSpace transformSpace) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	@Override
+	public void setPeerComponent(MTComponent peerComponent) {
+		// TODO Auto-generated method stub
+		
+	}
+
 	
 }

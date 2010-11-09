@@ -1,0 +1,15 @@
+# Blender3D v249 OBJ File: grundfläche2.blend
+# www.blender3d.org
+mtllib grundfläche2.blend.mtl
+v 8.318216 -0.000000 -5.810855
+v 8.318216 0.000000 5.810856
+v -8.318217 0.000000 5.810855
+v -8.318213 -0.000000 -5.810858
+vt 0.000000 0.000000
+vt 1.000000 0.000000
+vt 1.000000 1.000000
+vt 0.000000 1.000000
+usemtl Material.001
+s off
+f 1/1 4/2 3/3
+f 1/1 3/3 2/4

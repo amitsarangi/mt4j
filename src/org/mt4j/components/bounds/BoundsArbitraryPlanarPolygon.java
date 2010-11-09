@@ -19,6 +19,7 @@ package org.mt4j.components.bounds;
 
 import org.mt4j.components.MTComponent;
 import org.mt4j.components.TransformSpace;
+import org.mt4j.components.visibleComponents.shapes.AbstractShape;
 import org.mt4j.util.camera.IFrustum;
 import org.mt4j.util.math.Matrix;
 import org.mt4j.util.math.Ray;
@@ -43,8 +44,7 @@ public class BoundsArbitraryPlanarPolygon implements IBoundingShape {
 	
 	/** The xy bounds rect. */
 	private BoundsZPlaneRectangle xyBoundsRect;
-	
-	
+		
 	private Vector3D[] worldVecs;
 	private boolean worldVecsDirty;
 	private Vector3D centerPointWorld;
@@ -330,6 +330,181 @@ public class BoundsArbitraryPlanarPolygon implements IBoundingShape {
             }
         }
 		return false;
+	}
+
+
+	@Override
+	public IBoundingShape merge(IBoundingShape shape) {
+		if(shape instanceof BoundsArbitraryPlanarPolygon || shape instanceof BoundsZPlaneRectangle)
+		{			
+			if(this.isInSamePlaneAs(shape))
+			{
+				Vector3D[] vecs = calculateNewBoundingPointsLocal(shape);
+				BoundsArbitraryPlanarPolygon poly = new BoundsArbitraryPlanarPolygon(shape.getPeerComponent(), vecs);
+				return poly;
+			}else
+			{
+				OrientedBoundingBox box = new OrientedBoundingBox((AbstractShape)shape.getPeerComponent());
+				return box.merge(this);
+			}		
+		}else if(shape instanceof BoundingSphere)
+		{
+			BoundingSphere sphere = new BoundingSphere((AbstractShape)shape.getPeerComponent());
+			return sphere.merge(this);			
+		}else if(shape instanceof OrientedBoundingBox)
+		{
+			OrientedBoundingBox box = new OrientedBoundingBox((AbstractShape)shape.getPeerComponent());
+			return box.merge(this);
+		}
+		return null;
+	}
+
+	private boolean isInSamePlaneAs(IBoundingShape shape)
+	{
+		if(shape instanceof BoundsArbitraryPlanarPolygon)		
+		{
+			if(this.getVectorsLocal().length<2||shape.getVectorsLocal().length<2)
+			{
+				return false;
+			}
+			Vector3D vec1 = this.getVectorsLocal()[0];
+			Vector3D vec2 = this.getVectorsLocal()[1];
+			
+			Vector3D dirVecFirst = vec1.getSubtracted(vec2);
+			
+			BoundsArbitraryPlanarPolygon poly = (BoundsArbitraryPlanarPolygon)shape;
+			
+			Vector3D vec3 = shape.getVectorsLocal()[0];
+			Vector3D vec4 = shape.getVectorsLocal()[1];
+			
+			Vector3D dirVecSecond = vec3.getSubtracted(vec4);
+			
+			Vector3D cross = dirVecFirst.crossLocal(dirVecSecond).normalizeLocal();
+			
+			if(poly.getNormalLocal().equalsVector(cross))
+			{
+				return true;
+			}else
+			{
+				return false;
+			}
+			
+		}else if(shape instanceof BoundsZPlaneRectangle)
+		{
+			BoundsZPlaneRectangle rect = (BoundsZPlaneRectangle)shape;
+			boolean isInPlane = true;
+			
+			//test if z value of arbitrary plane is always the same and equals the z value of 
+			//the BoundZPlaneRectangle
+			for(int i=0;i<this.getVectorsLocal().length;i++)
+			{
+				for(int j=1;j<this.getVectorsLocal().length;j++)
+				{
+					if(this.getVectorsLocal()[i].z!=this.getVectorsLocal()[j].z);
+					{
+						return false;						
+					}
+				}			
+			}			
+			if(rect.getVectorsLocal()[0].z==this.getVectorsLocal()[0].z)
+			{
+				return true;
+			}else
+			{
+				return false;
+			}
+		}else 
+		{
+			return false;
+		}
+	}
+	
+	private Vector3D[] calculateNewBoundingPointsLocal(IBoundingShape shape)
+	{
+		Vector3D[] boundingPoints = new Vector3D[0];
+		if(shape instanceof BoundsArbitraryPlanarPolygon)
+		{
+			BoundsArbitraryPlanarPolygon poly = (BoundsArbitraryPlanarPolygon)shape;
+			Vector3D[] pointsPoly = poly.getVectorsLocal();
+			Vector3D[] pointsThis = this.getVectorsLocal();
+			
+			Vector3D high = getHighestPoint(pointsPoly,pointsThis);
+			Vector3D low = getLowestPoint(pointsPoly,pointsThis);
+			Vector3D highLow = high.getSubtracted(low);
+			
+			/*findPointMostLeftToHighLow(highLow,pointsPoly,pointsThis);
+			connectHighLowToMostLeft();
+			recurseTillFinish
+			findPointMostRightToHighLow(highLow,pointsPoly,pointsThis);
+			connectHighLowToMostRight();
+			recursetilfinish();*/
+			
+			
+		}else if(shape instanceof BoundsZPlaneRectangle)
+		{
+			
+		}
+		
+		
+		
+		return boundingPoints;
+	}
+	
+	private Vector3D getHighestPoint(Vector3D[]... points)
+	{
+		Vector3D max = points[0][0];
+		for (int i = 0; i < points.length; i++) {
+		     for(int j = 0; j < points[i].length;j++)
+		     {		    	 
+		    		 if(max.y<points[i][j].y)//take less than cause y increases from top to bottom
+		    		 {
+		    			 max = points[i][j];
+		    		 }		    	
+		     }
+		}
+		return max;
+	}
+	
+	private Vector3D getLowestPoint(Vector3D[]... points)
+	{
+		Vector3D min = points[0][0];
+		for (int i = 0; i < points.length; i++) {
+		     for(int j = 0; j < points[i].length;j++)
+		     {		    	 
+		    	 	if(min.y>points[i][j].y)//take less than cause y increases from top to bottom
+		    		{
+		    			 min = points[i][j];
+		    		 }		    	
+		     }
+		}
+		return min;
+	}
+	
+	
+
+	@Override
+	public MTComponent getPeerComponent() {
+		return this.getPeerComponent();
+	}
+
+
+	@Override
+	public IBoundingShape transform(Matrix transformMatrix) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	@Override
+	public IBoundingShape getBoundsTransformed(TransformSpace transformSpace) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	@Override
+	public void setPeerComponent(MTComponent peerComponent) {
+		this.peerComponent = peerComponent;
 	}
 
 	

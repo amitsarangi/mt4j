@@ -19,6 +19,7 @@ package org.mt4j.input.gestureAction;
 
 import org.mt4j.components.MTComponent;
 import org.mt4j.components.interfaces.IMTComponent3D;
+import org.mt4j.input.inputProcessors.ICollisionAction;
 import org.mt4j.input.inputProcessors.IGestureEventListener;
 import org.mt4j.input.inputProcessors.MTGestureEvent;
 import org.mt4j.input.inputProcessors.componentProcessors.dragProcessor.DragProcessor;
@@ -30,7 +31,7 @@ import org.mt4j.input.inputProcessors.componentProcessors.rotateProcessor.Rotate
  * 
  * @author Christopher Ruff
  */
-public class DefaultRotateAction implements IGestureEventListener {
+public class DefaultRotateAction implements IGestureEventListener,ICollisionAction {
 	
 	/** The target. */
 	private IMTComponent3D target;
@@ -44,6 +45,10 @@ public class DefaultRotateAction implements IGestureEventListener {
 	public DefaultRotateAction(){
 		this.useCustomTarget = false;
 	}
+	
+	private MTGestureEvent lastEvent;
+	
+	private boolean gestureAborted = false;
 	
 	/**
 	 * Instantiates a new default rotate action.
@@ -61,7 +66,7 @@ public class DefaultRotateAction implements IGestureEventListener {
 	public boolean processGestureEvent(MTGestureEvent g) {
 		if (g instanceof RotateEvent){
 			RotateEvent rotateEvent = (RotateEvent)g;
-			
+			lastEvent = rotateEvent;
 			if (!useCustomTarget)
 				target = rotateEvent.getTargetComponent(); 
 			
@@ -79,10 +84,13 @@ public class DefaultRotateAction implements IGestureEventListener {
 				}
 				break;
 			case MTGestureEvent.GESTURE_UPDATED:
-				target.rotateZGlobal(rotateEvent.getRotationPoint(), rotateEvent.getRotationDegrees());
-				if (target.isGestureAllowed(DragProcessor.class))
-					target.translateGlobal(rotateEvent.getTranslationVector());
-				break;
+				if(!gestureAborted())
+				{
+					target.rotateZGlobal(rotateEvent.getRotationPoint(), rotateEvent.getRotationDegrees());
+					if (target.isGestureAllowed(DragProcessor.class))
+						target.translateGlobal(rotateEvent.getTranslationVector());
+				}
+				break;				
 			case MTGestureEvent.GESTURE_ENDED:
 				break;
 			default:
@@ -90,6 +98,21 @@ public class DefaultRotateAction implements IGestureEventListener {
 			}
 		}
 		return false;
+	}
+
+	@Override
+	public boolean gestureAborted() {
+		return this.gestureAborted;
+	}
+
+	@Override
+	public MTGestureEvent getLastEvent() {
+		return this.lastEvent;
+	}
+
+	@Override
+	public void setGestureAborted(boolean aborted) {
+		this.gestureAborted = aborted;
 	}
 
 }

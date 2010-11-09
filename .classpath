@@ -2,7 +2,6 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="examples"/>
-	<classpathentry kind="src" path="tests"/>
 	<classpathentry kind="src" path="extensions"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="mt4jLibs/core.jar"/>
@@ -59,5 +58,8 @@
 	<classpathentry kind="lib" path="extensions/lib/gsvideo/jna-3.1.0.jar"/>
 	<classpathentry kind="lib" path="extensions/lib/gsvideo/gsvideo06pre.jar"/>
 	<classpathentry kind="lib" path="mt4jLibs/junit-4.8.2.jar"/>
+	<classpathentry kind="lib" path="mt4jLibs/jbullet/jbullet.jar"/>
+	<classpathentry kind="lib" path="mt4jLibs/jbullet/vecmath.jar"/>
+	<classpathentry kind="lib" path="mt4jLibs/jbullet/stack-alloc.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
