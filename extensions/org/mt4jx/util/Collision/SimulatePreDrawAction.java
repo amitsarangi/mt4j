@@ -271,10 +271,10 @@ public class SimulatePreDrawAction implements IPreDrawAction {
 											
 												Vector3D interSectionPos = ComponentHelper.getIntersectionGlobal(canvas.getChildren()[a],ray);
 												if(interSectionPos!=null)
-												{
-													
+												{													
 													objectCollision(objs.get(0));//get only first collision object, collision of other objects will be done in objectCollision method
-													objectCollision(collisionManager.getAllObjectsForCollisionGroup((canvas.getChildren()[a])).get(0));//the object with which it is colliding
+													System.out.println("Last Collision Object: " + canvas.getChildren()[a].getName() + " class " + canvas.getChildren()[a].getClass().getName());
+													objectCollision(collisionManager.getAllObjectsForCollisionGroup((canvas.getChildren()[a])).get(0));//the object with which it is colliding													
 												}
 											}
 										}
