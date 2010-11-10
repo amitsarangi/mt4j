@@ -99,6 +99,7 @@ public class MergeHelper implements StateChangeListener {
 		}else
 		{
 			IBoundingShape shape =  mergeBoundsWithChildren(comp,true);
+			System.out.println("update parent");
 			updateParentAfterMerge(comp);
 			return shape;
 		}		
