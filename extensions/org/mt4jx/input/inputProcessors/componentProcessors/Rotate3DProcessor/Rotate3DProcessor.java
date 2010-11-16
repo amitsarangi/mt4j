@@ -31,6 +31,7 @@ import org.mt4j.util.math.ToolsGeometry;
 
 import org.mt4j.util.math.Vector3D;
 import org.mt4jx.input.inputProcessors.componentProcessors.Group3DProcessorNew.Cluster;
+import org.mt4jx.util.ComponentHelper;
 import org.mt4jx.util.MergeHelper;
 
 import processing.core.PApplet;
@@ -457,12 +458,14 @@ public class Rotate3DProcessor extends AbstractCursorProcessor {
 			if(!(comp instanceof Cluster))
 			{
 				
-				rotationPoint = MergeHelper.getInstance().getMergedBoundsForComponent(comp).getCenterPointGlobal();
+				//rotationPoint = MergeHelper.getInstance().getMergedBoundsForComponent(comp).getCenterPointGlobal();
+				rotationPoint = ComponentHelper.getCenterPointGlobal(comp);
 				
 			}else
 			{
 				Cluster cl = (Cluster)comp;
-				rotationPoint = MergeHelper.getInstance().getMergedBoundsForComponent(cl.getCurrentlySelectedChildren()).getCenterPointGlobal();
+				//rotationPoint = MergeHelper.getInstance().getMergedBoundsForComponent(cl.getCurrentlySelectedChildren()).getCenterPointGlobal();
+				rotationPoint = ComponentHelper.getCenterPointGlobal(cl.getCurrentlySelectedChildren());
 			}
 			
 			Vector3D vec = rotationPoint.getCopy();

@@ -386,7 +386,7 @@ MTComponent spoon2;
 		//Create a group and set the light for the whole mesh group ->better for performance than setting light to more comps
 		//MTComponent group1 = new MTComponent(mtApplication);
 		final MTComponent meshGroup = new MTComponent(mtApplication, "Mesh group");
-		meshGroup.addStateChangeListener(StateChange.GLOBAL_TRANSFORM_CHANGED, MergeHelper.getInstance());//necessary for getting matrix changes for updating merged bounds
+		//meshGroup.addStateChangeListener(StateChange.GLOBAL_TRANSFORM_CHANGED, MergeHelper.getInstance());//necessary for getting matrix changes for updating merged bounds
 		
 //		meshGroup.setMergedOfChildrenBounds(true);
 		meshGroup.setLight(light);
@@ -450,7 +450,7 @@ MTComponent spoon2;
 	private MTComponent getGroundMesh(MTApplication mtApplication,String filename,MTLight light,GLMaterial material,Icamera cam)
 	{
 		MTComponent grundflaecheGroup = new MTComponent(mtApplication);
-		grundflaecheGroup.addStateChangeListener(StateChange.GLOBAL_TRANSFORM_CHANGED, MergeHelper.getInstance());//necessary for getting matrix changes for updating merged bounds
+		//grundflaecheGroup.addStateChangeListener(StateChange.GLOBAL_TRANSFORM_CHANGED, MergeHelper.getInstance());//necessary for getting matrix changes for updating merged bounds
 		
 		MTTriangleMesh[] grundflaeche = ModelImporterFactory.loadModel(mtApp,filename, 0, true, false );
 		grundflaecheGroup.setLight(light);

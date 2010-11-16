@@ -8,6 +8,7 @@ import org.mt4j.MTApplication;
 import org.mt4j.components.MTComponent;
 import org.mt4j.components.MTLight;
 import org.mt4j.components.TransformSpace;
+import org.mt4j.components.visibleComponents.shapes.MTRectangle;
 import org.mt4j.components.visibleComponents.shapes.mesh.MTTriangleMesh;
 import org.mt4j.input.gestureAction.DefaultRotateAction;
 import org.mt4j.input.gestureAction.DefaultZoomAction;
@@ -38,6 +39,7 @@ public class Models3DScene extends AbstractScene {
 
 	public Models3DScene(MTApplication mtApplication, String name) {
 		super(mtApplication, name);
+				
 		mtApp = mtApplication;
 		
 		this.setClearColor(new MTColor(40,40,40,255));
@@ -50,6 +52,7 @@ public class Models3DScene extends AbstractScene {
 		
 		if (!(MT4jSettings.getInstance().isOpenGlMode())){
 			System.err.println(this.getClass().getName() + " example can only be run in OpenGL mode.");
+			
 			return;
 		}
 		
