@@ -161,7 +161,7 @@ public class DepthProcessor extends AbstractCursorProcessor {
 	public void cursorStarted(InputCursor inputCursor,
 			MTFingerInputEvt positionEvent) {
 		IMTComponent3D comp = positionEvent.getTargetComponent();
-		System.out.println("started");
+		
 		if (lockedCursors.size() == 0) { 
 			dpc = new DepthContext(inputCursor, comp);
 		

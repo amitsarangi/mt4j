@@ -82,7 +82,7 @@ public class FingerTapSelectionManager extends AbstractGlobalInputProcessor impl
 		}		
 	}
 	
-	/**g 
+	/** 
 	 * Adds the clusterable.
 	 * 
 	 * @param selectable the selectable

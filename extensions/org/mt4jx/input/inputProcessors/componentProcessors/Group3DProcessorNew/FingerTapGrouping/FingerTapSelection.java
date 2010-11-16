@@ -26,9 +26,6 @@ public class FingerTapSelection implements ISelection {
 	
 	private ArrayList<MTComponent> selectedComps = new ArrayList<MTComponent>();
 	
-	
-	
-	
 	private MTCanvas canvas;
 	
 	private Cluster currentlySelectedCluster;

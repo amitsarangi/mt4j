@@ -20,6 +20,7 @@ import org.mt4j.util.math.ToolsGeometry;
 import org.mt4j.util.math.Vector3D;
 import org.mt4j.util.math.Vertex;
 import org.mt4jx.input.inputProcessors.componentProcessors.Group3DProcessorNew.ISelection;
+import org.mt4jx.util.ComponentHelper;
 import org.mt4jx.util.MergeHelper;
 
 import processing.core.PApplet;
@@ -178,7 +179,8 @@ public class LassoSelection implements ISelection {
 			MTComponent currentCard = selectionManager.getDragSelectables().get(i);
 			//project center point on z plane
 			
-			Vector3D projectedCenterPoint = MergeHelper.getInstance().getMergedBoundsForComponent(currentCard).getCenterPointGlobal().getCopy();
+			//Vector3D projectedCenterPoint = MergeHelper.getInstance().getMergedBoundsForComponent(currentCard).getCenterPointGlobal().getCopy();
+			Vector3D projectedCenterPoint = ComponentHelper.getCenterPointGlobal(currentCard).getCopy();
 			projectedCenterPoint = Tools3D.projectPointToPlane(projectedCenterPoint, camera.getFrustum(), this.getPolygon().getCenterPointGlobal().z,(MTApplication)pApplet);
 						
 			if (this.getPolygon().containsPointGlobal(projectedCenterPoint)){				

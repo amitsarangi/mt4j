@@ -17,6 +17,7 @@ import org.mt4j.util.math.Vector3D;
 import org.mt4jx.input.inputProcessors.componentProcessors.Group3DProcessorNew.Cluster;
 import org.mt4jx.input.inputProcessors.componentProcessors.Group3DProcessorNew.IVisualizeMethodProvider;
 import org.mt4jx.input.inputProcessors.componentProcessors.Group3DProcessorNew.MTClusterEvent;
+import org.mt4jx.util.ComponentHelper;
 import org.mt4jx.util.MergeHelper;
 
 import processing.core.PApplet;
@@ -97,7 +98,8 @@ public class LineVisualizationWithOutlinesAction implements IMTEventListener,IVi
 		for(MTComponent comp : selectedComps)
 		{
 			MTComponent mtcomp = (MTComponent)comp;
-			centerPoints.add(MergeHelper.getInstance().getMergedBoundsForComponent(comp).getCenterPointGlobal());			
+			//centerPoints.add(MergeHelper.getInstance().getMergedBoundsForComponent(comp).getCenterPointGlobal());
+			centerPoints.add(ComponentHelper.getCenterPointGlobal(comp));
 		}
 		
 		ArrayList<Vector3D> sortedCenterPoints = getSortedListForShortedDistance(centerPoints);

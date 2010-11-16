@@ -3,6 +3,7 @@ package org.mt4jx.util;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import org.mt4j.components.MTCanvas;
 import org.mt4j.components.MTComponent;
 import org.mt4j.components.StateChange;
 import org.mt4j.components.StateChangeEvent;
@@ -13,9 +14,30 @@ import org.mt4jx.input.inputProcessors.componentProcessors.Group3DProcessorNew.C
 
 public class MergeHelper implements StateChangeListener {
 
-	HashMap<MTComponent,IBoundingShape> boundingShapes = new HashMap<MTComponent,IBoundingShape>();
+	HashMap<Integer,IBoundingShape> boundingShapes = new HashMap<Integer,IBoundingShape>();
+
+	private int mergedCounter = 0;
+
+	private int normalCounter = 0;
+
+	private int dirtyCounter = 0;
+
+	private int normalInsideCounter;
+
+	private int addedCounter;
+
+	private int isNorMergedCounter;
+
+	private int isMergedCounter;
+
+	private int case1;
+
+	private int case2;
+
+	private int getboundsinside;
 	
 	private static MergeHelper helperSingleton;
+	private static long counter = 0;
 	
 	private MergeHelper()
 	{
@@ -43,10 +65,14 @@ public class MergeHelper implements StateChangeListener {
 	 */	
 	private IBoundingShape mergeBoundsWithChildren(MTComponent comp,boolean dirty)
 	{	
+		
+	//	System.out.println("Dirtycounter " + dirtyCounter + " normalCounter " + normalCounter + " mergedCounter " + mergedCounter);
 		if (isMergedOfChildrenBounds(comp)==true&&!dirty) return getMergedBoundsForComponent(comp);
+		//System.out.println("normalinside " + normalInsideCounter++);
 		
 		if(comp.getChildren().length==0)
-		{			
+		{		
+			addMTComponentWithMergedBounding(comp,comp.getBounds());
 			return comp.getBounds();
 		}
 		
@@ -54,6 +80,7 @@ public class MergeHelper implements StateChangeListener {
 		
 		if(comp.hasBounds())
 		{
+			addMTComponentWithMergedBounding(comp,comp.getBounds());
 			shapesToMerge.add(comp.getBounds());
 		}
 		
@@ -61,6 +88,7 @@ public class MergeHelper implements StateChangeListener {
 		{				
 			MTComponent children = comp.getChildren()[i];
 			IBoundingShape shape1 = mergeBoundsWithChildren(children,false);
+			
 			IBoundingShape shape = shape1.getBoundsTransformed(TransformSpace.RELATIVE_TO_PARENT);
 			shapesToMerge.add(shape);
 		}
@@ -70,9 +98,9 @@ public class MergeHelper implements StateChangeListener {
 			IBoundingShape mergedShape = shapesToMerge.get(i).merge(shapesToMerge.get(i-1));
 			shapesToMerge.set(i-1,mergedShape);			
 		}
-			
+				
 		if(shapesToMerge.size()>0)
-		{	
+		{
 			addMTComponentWithMergedBounding(comp,shapesToMerge.get(0));			
 			return shapesToMerge.get(0);
 		}else
@@ -82,24 +110,24 @@ public class MergeHelper implements StateChangeListener {
 	}
 	
 	private void addMTComponentWithMergedBounding(MTComponent comp,IBoundingShape shape)
-	{
-		boundingShapes.put(comp,shape);		
+	{			 
+		//System.out.println("Added counter " +  comp.getID() + " " + addedCounter++ + " " + boundingShapes.size());
+		boundingShapes.put(comp.getID(),shape);		
 	}
 	
 	private void removeMTComponentWithMergedBounding(MTComponent comp)
 	{
-		boundingShapes.remove(comp);
+		boundingShapes.remove(comp.getID());
 	}
 	
 	public IBoundingShape getMergedBoundsForComponent(MTComponent comp)
 	{
-		if(boundingShapes.containsKey(comp))
-		{
-			return boundingShapes.get(comp);
+		if(boundingShapes.containsKey(comp.getID()))
+		{		
+			return boundingShapes.get(comp.getID());
 		}else
 		{
-			IBoundingShape shape =  mergeBoundsWithChildren(comp,true);
-			System.out.println("update parent");
+			IBoundingShape shape =  mergeBoundsWithChildren(comp,true);			
 			updateParentAfterMerge(comp);
 			return shape;
 		}		
@@ -111,7 +139,7 @@ public class MergeHelper implements StateChangeListener {
 	 */
 	private void updateParentAfterMerge(MTComponent comp)
 	{		
-		if(comp.getParent()!=null&&boundingShapes.containsKey(comp.getParent())==true)
+		if(comp.getParent()!=null&&boundingShapes.containsKey(comp.getParent().getID())==true)
 		{
 			mergeBoundsWithChildren(comp.getParent(),true);		
 		}
@@ -119,19 +147,20 @@ public class MergeHelper implements StateChangeListener {
 	
 	public boolean isMergedOfChildrenBounds(MTComponent comp)
 	{
-		return boundingShapes.containsKey(comp);
+		//System.out.println(comp.getID());
+		
+		return boundingShapes.containsKey(comp.getID());
 	}
 
 	@Override
 	public void stateChanged(StateChangeEvent evt) {
-		
+				
 		if(evt.getSource() instanceof MTComponent&&evt.getState()==StateChange.GLOBAL_TRANSFORM_CHANGED)
-		{
-			
+		{			
 			MTComponent comp = (MTComponent)evt.getSource();
 			mergeBoundsWithChildren(comp,true);	
-			updateParentAfterMerge(comp);
+			updateParentAfterMerge(comp);	
 		}
 	}
-
+	
 }

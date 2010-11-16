@@ -192,8 +192,6 @@ public class Rotate3DProcessor extends AbstractCursorProcessor {
                 if(plCanvas.size()>0)
                 {
                 	PickEntry currentPickEntry = plCanvas.get(plCanvas.size()-1);
-                	System.out.println("pick list size" + plCanvas.size()+
-                			 " " + currentPickEntry.hitObj.getClass() +" " +currentPickEntry.hitObj.getName());
                 	
                 	MTComponent currentComponent = currentPickEntry.hitObj;
                 	cluster.setCurrentlySelectedChildren(currentComponent);
@@ -609,14 +607,10 @@ public class Rotate3DProcessor extends AbstractCursorProcessor {
 					rotateFingerStart.getCopy());*/
 			//Update the field
 			//if (newRotateFingerPos != null){
-				System.out.println("rotate Last" + rotateCursorVectorLast);
-				System.out.println("rotate Last" + rotateCursor.getCurrentEvtPosX() + " " + rotateCursor.getCurrentEvtPosY() );
 			
 			    float x = rotateCursorVectorLast.x - rotateCursor.getCurrentEvtPosX();
 			    float y = rotateCursorVectorLast.y - rotateCursor.getCurrentEvtPosY();
 			
-			    System.out.println("x y " + x +" "+ y);
-			    
 			    rotateCursorVectorLast.x = rotateCursor.getCurrentEvtPosX();
 				rotateCursorVectorLast.y = rotateCursor.getCurrentEvtPosY();
 		    
@@ -644,7 +638,6 @@ public class Rotate3DProcessor extends AbstractCursorProcessor {
 					dotRight = -dotRight;
 				}
 				
-				System.out.println("RotationAxis " + rotationAxis); 
 				
 				   /*if(directionFinder.dot(rotateLengthVec)>0.0f&&rotateLengthVec.x>yAxis.x)
 					{

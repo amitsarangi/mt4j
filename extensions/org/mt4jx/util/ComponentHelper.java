@@ -282,4 +282,37 @@ public class ComponentHelper {
 		return returnPoint;
 	}
 	
+
+	public static Vector3D getCenterPointGlobal(MTComponent comp) {
+		
+		MTComponent[] children = comp.getChildren();
+		if(children.length==0)
+		{
+			if(comp.hasBounds())
+			{
+				return comp.getBounds().getCenterPointGlobal();
+			}else
+			{
+				return null;
+			}
+		}else
+		{
+			//float massSum = 0.0f;
+			Vector3D vecSum = new Vector3D();
+			for(MTComponent compChild : children)
+			{	
+				if(getCenterPointGlobal(compChild)!=null)
+				{
+					Vector3D vec = getCenterPointGlobal(compChild);					
+					vecSum.addLocal(vec);
+					
+					//massSum += compChild.getMass();
+					
+				}
+			}			
+			
+			return vecSum.getScaled(1.f/children.length);
+		}	
+	}
+	
 }

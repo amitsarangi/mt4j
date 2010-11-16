@@ -16,6 +16,7 @@ import org.mt4j.util.math.Vector3D;
 import org.mt4jx.input.inputProcessors.componentProcessors.Group3DProcessorNew.Cluster;
 import org.mt4jx.input.inputProcessors.componentProcessors.Group3DProcessorNew.IVisualizeMethodProvider;
 import org.mt4jx.input.inputProcessors.componentProcessors.Group3DProcessorNew.MTClusterEvent;
+import org.mt4jx.util.ComponentHelper;
 import org.mt4jx.util.MergeHelper;
 
 import processing.core.PApplet;
@@ -83,7 +84,8 @@ public class BlinkingLineVisualizationAction implements IMTEventListener,IVisual
 			if(comp instanceof MTComponent)
 			{
 				MTComponent mtcomp = (MTComponent)comp;
-				centerPoints.add(MergeHelper.getInstance().getMergedBoundsForComponent(mtcomp).getCenterPointGlobal());
+				//centerPoints.add(MergeHelper.getInstance().getMergedBoundsForComponent(mtcomp).getCenterPointGlobal());
+				centerPoints.add(ComponentHelper.getCenterPointGlobal(mtcomp));
 			}
 		}
 		

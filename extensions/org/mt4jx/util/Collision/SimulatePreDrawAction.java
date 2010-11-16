@@ -60,6 +60,8 @@ public class SimulatePreDrawAction implements IPreDrawAction {
 	private HashMap<MTComponent,Vector3f> oldComponentScaling = new HashMap<MTComponent,Vector3f>();
 	private ArrayList<MTComponent> contactMap = new ArrayList<MTComponent>();
 	private MTCanvas canvas;
+	//TODO this class should be optimized. performance and structure
+	
 	public SimulatePreDrawAction(CollisionWorld v_collisionWorld,CollisionManager v_collisionManager,MTCanvas v_canvas)
 	{
 		this.setCollisionWorld(v_collisionWorld);
@@ -79,6 +81,7 @@ public class SimulatePreDrawAction implements IPreDrawAction {
 			
 		final Transform m = new Transform();
 			m.setIdentity();
+					
     		if(getCollisionWorld()!=null)
     		{
     			//System.out.println("collision items " + getCollisionWorld().getNumCollisionObjects());
@@ -168,6 +171,8 @@ public class SimulatePreDrawAction implements IPreDrawAction {
     			//object is completely after the other object. So the collision 
     			//is missed. Thus we do a ray intersection test 
     			//between the two transformation points
+    			//TODO this works only for a bottom plane in z direction
+    			//it should be extended to all other directions
     			for(int i=0;i<canvas.getChildren().length;i++)
 				{
 					if(canvas.getChildren()[i] instanceof MTDepthHelper)
@@ -202,15 +207,17 @@ public class SimulatePreDrawAction implements IPreDrawAction {
 									{
 										if(canvas.getChildren()[a]!=children&&!(canvas.getChildren()[a] instanceof Cluster))
 										{
-											if(MergeHelper.getInstance().isMergedOfChildrenBounds(canvas.getChildren()[a]))
-											{
+											//if(MergeHelper.getInstance().isMergedOfChildrenBounds(canvas.getChildren()[a]))
+											//{
 											
 																							
-												if(MergeHelper.getInstance().getMergedBoundsForComponent(canvas.getChildren()[a]).getCenterPointGlobal().z<ray.getRayStartPoint().z&&MergeHelper.getInstance().getMergedBoundsForComponent(canvas.getChildren()[a]).getCenterPointGlobal().z>ray.getPointInRayDirection().z)
+												//if(MergeHelper.getInstance().getMergedBoundsForComponent(canvas.getChildren()[a]).getCenterPointGlobal().z<ray.getRayStartPoint().z&&MergeHelper.getInstance().getMergedBoundsForComponent(canvas.getChildren()[a]).getCenterPointGlobal().z>ray.getPointInRayDirection().z)
+											if(ComponentHelper.getCenterPointGlobal(canvas.getChildren()[a]).z<ray.getRayStartPoint().z&&ComponentHelper.getCenterPointGlobal(canvas.getChildren()[a]).z>ray.getPointInRayDirection().z)
 												{
 													//Vector3D interSectionPos = canvas.getChildren()[a].getIntersectionGlobalCol(ray);
 													
-													Vector3D interSectionPos = canvas.getChildren()[a].getIntersectionGlobal(ray);
+													//Vector3D interSectionPos = canvas.getChildren()[a].getIntersectionGlobal(ray);
+													Vector3D interSectionPos = ComponentHelper.getIntersectionGlobal(canvas.getChildren()[a],ray);
 													
 													if(interSectionPos!=null)
 													{
@@ -222,7 +229,7 @@ public class SimulatePreDrawAction implements IPreDrawAction {
 												}
 											}
 										}
-									}
+									//}
 									
 									//in case of any of the children of the clusters has a collision
 									//prepare collision for all children
@@ -243,8 +250,7 @@ public class SimulatePreDrawAction implements IPreDrawAction {
 													
 							Vector3f vecOld = trans.origin;
 							Vector3D vecOldMt4j = new Vector3D(vecOld.x,vecOld.y,vecOld.z);
-							
-							
+														
 							ArrayList<CollisionObject> objs = collisionManager.getAllObjectsForCollisionGroup(targetComp);
 							if(objs.size()>0)
 							{
@@ -259,12 +265,14 @@ public class SimulatePreDrawAction implements IPreDrawAction {
 								{
 									if(canvas.getChildren()[a]!=targetComp)
 									{										
-										if(MergeHelper.getInstance().isMergedOfChildrenBounds(canvas.getChildren()[a]))
+										//if(MergeHelper.getInstance().isMergedOfChildrenBounds(canvas.getChildren()[a]))
 										{
-											if(MergeHelper.getInstance().getMergedBoundsForComponent(canvas.getChildren()[a])
-													.getCenterPointGlobal().z<ray.getRayStartPoint().z
-													&&MergeHelper.getInstance().getMergedBoundsForComponent(canvas.getChildren()[a])
-													.getCenterPointGlobal().z>ray.getPointInRayDirection().z)
+											//if(MergeHelper.getInstance().getMergedBoundsForComponent(canvas.getChildren()[a])
+											//		.getCenterPointGlobal().z<ray.getRayStartPoint().z
+											//		&&MergeHelper.getInstance().getMergedBoundsForComponent(canvas.getChildren()[a])
+											//		.getCenterPointGlobal().z>ray.getPointInRayDirection().z)
+											if(ComponentHelper.getCenterPointGlobal(canvas.getChildren()[a]).z<ray.getRayStartPoint().z
+													&ComponentHelper.getCenterPointGlobal(canvas.getChildren()[a]).z>ray.getPointInRayDirection().z)
 											{
 												//Vector3D interSectionPos = canvas.getChildren()[a].getIntersectionGlobalCol(ray);
 												
@@ -272,8 +280,7 @@ public class SimulatePreDrawAction implements IPreDrawAction {
 												Vector3D interSectionPos = ComponentHelper.getIntersectionGlobal(canvas.getChildren()[a],ray);
 												if(interSectionPos!=null)
 												{													
-													objectCollision(objs.get(0));//get only first collision object, collision of other objects will be done in objectCollision method
-													System.out.println("Last Collision Object: " + canvas.getChildren()[a].getName() + " class " + canvas.getChildren()[a].getClass().getName());
+													objectCollision(objs.get(0));//get only first collision object, collision of other objects will be done in objectCollision method													
 													objectCollision(collisionManager.getAllObjectsForCollisionGroup((canvas.getChildren()[a])).get(0));//the object with which it is colliding													
 												}
 											}
@@ -313,8 +320,10 @@ public class SimulatePreDrawAction implements IPreDrawAction {
     					objectCollision(contactManifold.getBody1());//set back collision object 2
     				}
     			}
-    			    			 			
+    			
+    				
     			}
+    			
     		
     		
     		}
@@ -383,6 +392,13 @@ public class SimulatePreDrawAction implements IPreDrawAction {
 		}
 	}
 	
+	/**
+	 * perform collision behaviour for a specific object
+	 * 1. put object into a map
+	 * 2. stop gesture actions
+	 * 3. set back to old transform and scale
+	 * @param body
+	 */
 	private void objectCollision(Object body)
 	{
 		
