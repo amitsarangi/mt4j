@@ -12,7 +12,7 @@ public class Start3DExtensionExample extends MTApplication{
 	private static final long serialVersionUID = 1L;
 	private Iscene scene;
 
-	public static void main(String args[]){
+	public static void main(String args[]){		
 		initialize();
 	}
 	

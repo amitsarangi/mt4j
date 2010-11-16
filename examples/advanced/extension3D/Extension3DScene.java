@@ -59,6 +59,7 @@ import org.mt4jx.input.inputProcessors.componentProcessors.Group3DProcessorNew.G
 import org.mt4jx.input.inputProcessors.componentProcessors.Group3DProcessorNew.GroupVisualizations.LineVisualizationWithOutlinesAction;
 import org.mt4jx.input.inputProcessors.componentProcessors.Rotate3DProcessor.Rotate3DProcessor;
 import org.mt4jx.input.inputProcessors.componentProcessors.depthProcessor.DepthProcessor;
+import org.mt4jx.util.ComponentHelper;
 import org.mt4jx.util.MergeHelper;
 import org.mt4jx.util.Collision.CollisionManager;
 
@@ -143,8 +144,11 @@ MTComponent spoon2;
 		machine4 = getMeshGroup(mtApplication, new Vector3D(-400.0f,-700.0f,1200.0f), System.getProperty("user.dir")  + File.separator + "examples" +  File.separator +"advanced"+ File.separator + "extension3D"  + File.separator + "data" +  File.separator +
 				"elevtruck" + File.separator + "elev_truck.obj",light,material,"elevTruck");
 		
-		machine4.rotateX(MergeHelper.getInstance().getMergedBoundsForComponent(machine4).getCenterPointGlobal(), -90.0f);
-		machine4.scale(0.5f,0.5f,0.5f,MergeHelper.getInstance().getMergedBoundsForComponent(machine4).getCenterPointGlobal());
+		//machine4.rotateX(MergeHelper.getInstance().getMergedBoundsForComponent(machine4).getCenterPointGlobal(), -90.0f);
+				
+		machine4.rotateX(ComponentHelper.getCenterPointGlobal(machine4), -90.0f);
+		//machine4.scale(0.5f,0.5f,0.5f,MergeHelper.getInstance().getMergedBoundsForComponent(machine4).getCenterPointGlobal());
+		machine4.scale(0.5f,0.5f,0.5f,ComponentHelper.getCenterPointGlobal(machine4));
 		
 		MTComponent robotArm;
 		
@@ -152,8 +156,8 @@ MTComponent spoon2;
 				"robotArm" + File.separator + "robotArm.obj",light,material,"robotArm");
 		
 		//robotArm.rotateX(robotArm.getCenterPointGlobal(), -90.0f);
-		robotArm.scale(0.4f,0.4f,0.4f,MergeHelper.getInstance().getMergedBoundsForComponent(robotArm).getCenterPointGlobal());		
-		
+		//robotArm.scale(0.4f,0.4f,0.4f,MergeHelper.getInstance().getMergedBoundsForComponent(robotArm).getCenterPointGlobal());		
+		robotArm.scale(0.4f,0.4f,0.4f,ComponentHelper.getCenterPointGlobal(robotArm));
 		//this.getCanvas().addChild(machine4);*/
 		
 		MTComponent dreh;
@@ -502,7 +506,8 @@ MTComponent spoon2;
 			public boolean processGestureEvent(MTGestureEvent ge) {
 					ScaleEvent se = (ScaleEvent)ge;				
 					
-					meshGroup.scaleGlobal(se.getScaleFactorX(), se.getScaleFactorY(), se.getScaleFactorX(), MergeHelper.getInstance().getMergedBoundsForComponent(meshGroup).getCenterPointGlobal());				
+					//meshGroup.scaleGlobal(se.getScaleFactorX(), se.getScaleFactorY(), se.getScaleFactorX(), MergeHelper.getInstance().getMergedBoundsForComponent(meshGroup).getCenterPointGlobal());				
+					meshGroup.scaleGlobal(se.getScaleFactorX(), se.getScaleFactorY(), se.getScaleFactorX(), ComponentHelper.getCenterPointGlobal(meshGroup));
 				return false;
 			}
 		});
