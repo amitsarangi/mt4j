@@ -19,6 +19,7 @@ import org.mt4j.input.inputData.AbstractCursorInputEvt;
 import org.mt4j.input.inputData.InputCursor;
 import org.mt4j.input.inputProcessors.IGestureEventListener;
 import org.mt4j.input.inputProcessors.MTGestureEvent;
+import org.mt4j.input.inputProcessors.componentProcessors.dragProcessor.DragEvent;
 import org.mt4j.input.inputProcessors.componentProcessors.dragProcessor.DragProcessor;
 
 import org.mt4j.input.inputProcessors.componentProcessors.rotateProcessor.RotateProcessor;
@@ -68,9 +69,9 @@ public class CreateDragHelperAction implements IGestureEventListener{
 		
 	public boolean processGestureEvent(MTGestureEvent ge) {
 		
-		if(ge instanceof TapEvent)
+		if(ge instanceof DragEvent)
 		{
-			TapEvent evt = (TapEvent)ge;
+			DragEvent evt = (DragEvent)ge;
 			switch (evt.getId()) {
 			case MTGestureEvent.GESTURE_DETECTED:
 				depthHelper = new MTDepthHelper(pApplet,targetComponent,cam,canvas);				

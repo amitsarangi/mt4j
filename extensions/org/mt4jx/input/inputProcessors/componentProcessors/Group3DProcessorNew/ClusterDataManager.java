@@ -79,8 +79,8 @@ public class ClusterDataManager implements ISelectionListener {
 		cl.registerInputProcessor(new ScaleProcessor(pApplet));
 		cl.addGestureListener(ScaleProcessor.class,  new DefaultScaleAction());
 		
-		cl.registerInputProcessor(new TapProcessor(pApplet,999999.0f));
-		cl.addGestureListener(TapProcessor.class,new CreateDragHelperAction((MTApplication)pApplet,this.canvas,this.canvas.getAttachedCamera(),cl));
+		//cl.registerInputProcessor(new TapProcessor(pApplet,999999.0f));
+		cl.addGestureListener(DragProcessor.class,new CreateDragHelperAction((MTApplication)pApplet,this.canvas,this.canvas.getAttachedCamera(),cl));
 				
 		cl.attachCamera(canvas.getAttachedCamera());
 		cl.setComposite(true);

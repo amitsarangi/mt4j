@@ -458,13 +458,12 @@ public class Rotate3DProcessor extends AbstractCursorProcessor {
 			if(!(comp instanceof Cluster))
 			{
 				
-				//rotationPoint = MergeHelper.getInstance().getMergedBoundsForComponent(comp).getCenterPointGlobal();
+				
 				rotationPoint = ComponentHelper.getCenterPointGlobal(comp);
 				
 			}else
 			{
-				Cluster cl = (Cluster)comp;
-				//rotationPoint = MergeHelper.getInstance().getMergedBoundsForComponent(cl.getCurrentlySelectedChildren()).getCenterPointGlobal();
+				Cluster cl = (Cluster)comp;				
 				rotationPoint = ComponentHelper.getCenterPointGlobal(cl.getCurrentlySelectedChildren());
 			}
 			

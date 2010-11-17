@@ -422,7 +422,7 @@ public class CollisionManager {
 		}
 		SimulatePreDrawAction calcDynamics = new SimulatePreDrawAction(collisionWorld,this,scene.getCanvas());
 		calcDynamics.setCurrentTimeStep(1.f/1000000000000.0f);
-		//scene.registerPreDrawAction(calcDynamics);
+		scene.registerPreDrawAction(calcDynamics);
 		
 		
 		

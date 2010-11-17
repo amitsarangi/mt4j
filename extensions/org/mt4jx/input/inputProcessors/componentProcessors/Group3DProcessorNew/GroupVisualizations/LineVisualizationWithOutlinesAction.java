@@ -9,6 +9,7 @@ import org.mt4j.components.visibleComponents.shapes.MTLine;
 import org.mt4j.components.visibleComponents.shapes.mesh.MTTriangleMesh;
 import org.mt4j.input.IMTEventListener;
 import org.mt4j.input.MTEvent;
+import org.mt4j.input.inputProcessors.componentProcessors.dragProcessor.DragProcessor;
 import org.mt4j.input.inputProcessors.componentProcessors.lassoProcessor.IdragClusterable;
 import org.mt4j.input.inputProcessors.componentProcessors.tapProcessor.TapProcessor;
 import org.mt4j.util.MTColor;
@@ -42,13 +43,13 @@ public class LineVisualizationWithOutlinesAction implements IMTEventListener,IVi
 			{
 			case MTClusterEvent.CLUSTER_CREATED:
 				clEvent.getCluster().setVisualizeProvider(this);
-				clEvent.getCluster().addGestureListener(TapProcessor.class,new BlinkingEmissionActivateVisualizationAction(clEvent.getCluster(),this));
+				clEvent.getCluster().addGestureListener(DragProcessor.class,new BlinkingEmissionActivateVisualizationAction(clEvent.getCluster(),this));
 				break;			
 			case MTClusterEvent.CLUSTER_SELECTED:
 				if(clEvent.getCluster().getVisualizeProvider()!=this)
 				{	
 					startTime = System.currentTimeMillis();
-					clEvent.getCluster().addGestureListener(TapProcessor.class,new ActivateVisualizationAction(clEvent.getCluster(),this));
+					clEvent.getCluster().addGestureListener(DragProcessor.class,new ActivateVisualizationAction(clEvent.getCluster(),this));
 					clEvent.getCluster().setVisualizeProvider(this);
 				}
 				break;
@@ -98,7 +99,7 @@ public class LineVisualizationWithOutlinesAction implements IMTEventListener,IVi
 		for(MTComponent comp : selectedComps)
 		{
 			MTComponent mtcomp = (MTComponent)comp;
-			//centerPoints.add(MergeHelper.getInstance().getMergedBoundsForComponent(comp).getCenterPointGlobal());
+			
 			centerPoints.add(ComponentHelper.getCenterPointGlobal(comp));
 		}
 		

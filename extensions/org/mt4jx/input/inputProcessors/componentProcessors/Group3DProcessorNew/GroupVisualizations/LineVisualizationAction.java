@@ -8,6 +8,7 @@ import org.mt4j.components.MTComponent;
 import org.mt4j.components.visibleComponents.shapes.MTLine;
 import org.mt4j.input.IMTEventListener;
 import org.mt4j.input.MTEvent;
+import org.mt4j.input.inputProcessors.componentProcessors.dragProcessor.DragProcessor;
 import org.mt4j.input.inputProcessors.componentProcessors.lassoProcessor.IdragClusterable;
 import org.mt4j.input.inputProcessors.componentProcessors.tapProcessor.TapProcessor;
 import org.mt4j.util.math.Tools3D;
@@ -37,12 +38,12 @@ public class LineVisualizationAction implements IMTEventListener,IVisualizeMetho
 			{
 			case MTClusterEvent.CLUSTER_CREATED:
 				clEvent.getCluster().setVisualizeProvider(this);
-				clEvent.getCluster().addGestureListener(TapProcessor.class,new ActivateVisualizationAction(clEvent.getCluster(),this));
+				clEvent.getCluster().addGestureListener(DragProcessor.class,new ActivateVisualizationAction(clEvent.getCluster(),this));
 				break;			
 			case MTClusterEvent.CLUSTER_SELECTED:
 				if(clEvent.getCluster().getVisualizeProvider()!=this)
 				{	
-					clEvent.getCluster().addGestureListener(TapProcessor.class,new ActivateVisualizationAction(clEvent.getCluster(),this));
+					clEvent.getCluster().addGestureListener(DragProcessor.class,new ActivateVisualizationAction(clEvent.getCluster(),this));
 					clEvent.getCluster().setVisualizeProvider(this);
 				}
 				break;
@@ -53,6 +54,7 @@ public class LineVisualizationAction implements IMTEventListener,IVisualizeMetho
 	
 	public void visualize(Cluster cluster)
 	{
+		
 		GL gl = Tools3D.getGL(pApplet);
 		Tools3D.beginGL(pApplet);
 		gl.glBegin(gl.GL_LINES);
@@ -80,8 +82,7 @@ public class LineVisualizationAction implements IMTEventListener,IVisualizeMetho
 		for(MTComponent comp : selectedComps)
 		{			
 				MTComponent mtcomp = (MTComponent)comp;		
-				//MergeHelper.getInstance().getMergedBoundsForComponent(mtcomp).getCenterPointGlobal();
-				//centerPoints.add(MergeHelper.getInstance().getMergedBoundsForComponent(mtcomp).getCenterPointGlobal());			
+							
 				ComponentHelper.getCenterPointGlobal(mtcomp);
 				centerPoints.add(ComponentHelper.getCenterPointGlobal(mtcomp));;
 		}

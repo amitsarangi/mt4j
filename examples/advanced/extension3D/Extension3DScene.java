@@ -71,7 +71,7 @@ public class Extension3DScene extends AbstractScene {
 	private MTApplication mtApp;
 	
 	private CollisionManager collisionManager;
-	//TODO switch button/wireframe
+	
 	private ClusterHub clusterHub;
 	
 	private ArrayList<Rotate3DAction> drawAction = new ArrayList<Rotate3DAction>(); //REMOVE
@@ -89,9 +89,6 @@ public class Extension3DScene extends AbstractScene {
 		
 		this.registerGlobalInputProcessor(new CursorTracer(mtApp, this));
 		
-		//Make canvas zoomable
-	//	this.getCanvas().registerInputProcessor(new ZoomProcessor(mtApp));
-		//this.getCanvas().addGestureListener(ZoomProcessor.class, new DefaultZoomAction());
 		
 		//Init light settings
 		MTLight.enableLightningAndAmbient(mtApplication, 150, 150, 150, 255);
@@ -106,17 +103,7 @@ public class Extension3DScene extends AbstractScene {
 		material.setSpecular(new float[]{ 1.0f, 1.0f, 1.0f, 1f });  // almost white: very reflective
 		material.setShininess(110);// 0=no shine,  127=max shine
 		
-/*MTComponent spoon1;
-		
-		spoon1 = getMeshGroup(mtApplication, new Vector3D(0.0f,0.0f,-200.0f),System.getProperty("user.dir")  + File.separator + "examples" +  File.separator +"advanced"+ File.separator+ File.separator + "models3D"  + File.separator + "data" +  File.separator +
-				"spoon" + File.separator + "spoon.3ds",light,material,"spoon1");
-		
-MTComponent spoon2;
-		
-		spoon2 = getMeshGroup(mtApplication, new Vector3D(-200.0f,0.0f,-200.0f),System.getProperty("user.dir")  + File.separator + "examples" +  File.separator +"advanced"+ File.separator+ File.separator + "models3D"  + File.separator + "data" +  File.separator +
-				"spoon" + File.separator + "spoon.3ds",light,material,"spoon2");*/
-		
-		//Group used to move to the screen center and to put the mesh group in
+
 	MTComponent group1;
 		
 		group1 = getMeshGroup(mtApplication, new Vector3D(0.0f,0.0f,-200.0f),System.getProperty("user.dir")  + File.separator + "examples" +  File.separator +"advanced"+ File.separator+  "extension3D"  + File.separator + "data" +  File.separator +
@@ -137,29 +124,25 @@ MTComponent spoon2;
 		machine3 = getMeshGroup(mtApplication, new Vector3D(-300.0f,-350.0f,0.0f), System.getProperty("user.dir")  + File.separator + "examples" +  File.separator +"advanced"+ File.separator+ "extension3D"  + File.separator + "data" +  File.separator +
 				"CWK500" + File.separator + "CWK500_mit_kuehlmittelbehaelter.obj",light,material,"machine4");
 		
-		//this.getCanvas().addChild(machine3);
 		
 		MTComponent machine4;
 		
 		machine4 = getMeshGroup(mtApplication, new Vector3D(-400.0f,-700.0f,1200.0f), System.getProperty("user.dir")  + File.separator + "examples" +  File.separator +"advanced"+ File.separator + "extension3D"  + File.separator + "data" +  File.separator +
 				"elevtruck" + File.separator + "elev_truck.obj",light,material,"elevTruck");
 		
-		//machine4.rotateX(MergeHelper.getInstance().getMergedBoundsForComponent(machine4).getCenterPointGlobal(), -90.0f);
+		
 				
 		machine4.rotateX(ComponentHelper.getCenterPointGlobal(machine4), -90.0f);
-		//machine4.scale(0.5f,0.5f,0.5f,MergeHelper.getInstance().getMergedBoundsForComponent(machine4).getCenterPointGlobal());
+		
 		machine4.scale(0.5f,0.5f,0.5f,ComponentHelper.getCenterPointGlobal(machine4));
 		
 		MTComponent robotArm;
 		
 		robotArm = getMeshGroup(mtApplication, new Vector3D(-450.0f,-150.0f,-200.0f), System.getProperty("user.dir")  + File.separator + "examples" +  File.separator +"advanced"+ File.separator + "extension3D"  + File.separator + "data" +  File.separator +
 				"robotArm" + File.separator + "robotArm.obj",light,material,"robotArm");
-		
-		//robotArm.rotateX(robotArm.getCenterPointGlobal(), -90.0f);
-		//robotArm.scale(0.4f,0.4f,0.4f,MergeHelper.getInstance().getMergedBoundsForComponent(robotArm).getCenterPointGlobal());		
+			
 		robotArm.scale(0.4f,0.4f,0.4f,ComponentHelper.getCenterPointGlobal(robotArm));
-		//this.getCanvas().addChild(machine4);*/
-		
+				
 		MTComponent dreh;
 		
 		dreh = getMeshGroup(mtApplication, new Vector3D(-100.0f,-150.0f,-200.0f), System.getProperty("user.dir")  + File.separator + "examples" +  File.separator +"advanced"+ File.separator+ File.separator + "extension3D"  + File.separator + "data" +  File.separator +
@@ -168,12 +151,6 @@ MTComponent spoon2;
 		
 		MTComponent grundflaecheGroup = getGroundMesh(mtApplication, System.getProperty("user.dir")  + File.separator + "examples" +  File.separator +"advanced"+ File.separator+ File.separator + "extension3D"  + File.separator + "data" +  File.separator +
 				"grundflaeche" + File.separator + "grundflaeche2.obj",light,material,cam);
-						
-		//create Array with the differetn planes which are used for selection on floor
-		
-		
-		//LineGroup3DAction lGroupAct = new LineGroup3DAction(mtApp, this.getCanvas().getClusterManager(),this.getCanvas());
-		
 		
 		//LassoGroupSelectionManager selectionManager = new LassoGroupSelectionManager(mtApp,this.getSceneCam(),planes);
 		
@@ -202,30 +179,7 @@ MTComponent spoon2;
 		FingerTapSelectionManager selectionManager = new FingerTapSelectionManager(clusterManager,this.getCanvas());
 		selectionManager.addSelectionListener(clusterHub);
 		this.registerGlobalInputProcessor(selectionManager);
-		
-		//this.getCanvas().registerInputProcessor(selectionManager);
-		//this.getCanvas().addGestureListener(LassoGroupSelectionManager.class, null);
-		
-		//this.registerGlobalInputProcessor(groupProcessor);
-		
-		
-		//this.getCanvas().registerInputProcessor(groupProcessor);
-		
-		//this.getCanvas().registerInputProcessor(groupProcessor);
-		//this.getCanvas().addGestureListener(Group3DProcessor.class,lGroupAct);
-		//this.getCanvas().setGestureAllowance(Group3DProcessor.class, true);
-		
-		/*registerGroupProcessor(group1,groupProcessor,lGroupAct);		
-		registerGroupProcessor(machine,groupProcessor,lGroupAct);
-		registerGroupProcessor(machine2,groupProcessor,lGroupAct);
-		registerGroupProcessor(machine3,groupProcessor,lGroupAct);
-		registerGroupProcessor(machine4,groupProcessor,lGroupAct);*/
-		
-		//grundflaecheGroup.registerInputProcessor(groupProcessor);
-		//grundflaecheGroup.addGestureListener(Group3DProcessor.class, new Group3DAction(mtApp, this.getCanvas().getClusterManager(),this.getCanvas()));
-		//grundflaecheGroup.addGestureListener(Group3DProcessor.class, new LineGroup3DAction(mtApp, this.getCanvas().getClusterManager(),this.getCanvas()));
-		//grundflaecheGroup.setGestureAllowance(Group3DProcessor.class,true);
-				
+						
 		selectionManager.addClusterable(group1);
 		selectionManager.addClusterable(machine);
 		selectionManager.addClusterable(machine2);
@@ -233,55 +187,12 @@ MTComponent spoon2;
 		selectionManager.addClusterable(machine4);
 		selectionManager.addClusterable(robotArm);
 		selectionManager.addClusterable(dreh);
-	//	selectionManager.addClusterable(spoon1);
-		//selectionManager.addClusterable(spoon2);
-		
-		collisionManager.addObjectsToCollisionDomain();
-		/*MTTriangleMesh[] meshCube = ModelImporterFactory.loadModel(mtApplication, System.getProperty("user.dir")  + File.separator + "examples" +  File.separator +"advanced"+ File.separator+ File.separator + "extension3D"  + File.separator + "data" +  File.separator +
-				"room" + File.separator + "cube.obj", 180, true, false );
-		
-		MTComponent cubeGroup = new MTComponent(mtApplication);
-		cubeGroup.setLight(light);
-		
-		for (int i = 0; i < meshCube.length; i++) {
-			MTTriangleMesh mesh = meshCube[i];
-		
-			cubeGroup.addChild(mesh);
-			mesh.unregisterAllInputProcessors(); //Clear previously registered input processors
-			mesh.setPickable(true);
-			mesh.setDrawWireframe(true);
-			//If the mesh has more than 20 vertices, use a display list for faster rendering
-			if (mesh.getVertexCount() > 20)
-				mesh.generateAndUseDisplayLists();
-			//Set the material to the mesh  (determines the reaction to the lightning)
-			//if (mesh.getMaterial() == null)
-			mesh.setMaterial(material);
-			mesh.setDrawNormals(false);
-		}
-		
-		cubeGroup.setGestureAllowance(DragProcessor.class, false);
-		cubeGroup.setGestureAllowance(ScaleProcessor.class,false);
-		cubeGroup.setGestureAllowance(RotateProcessor.class,false);
-		
-		Vector3D cubeDestination = new Vector3D(mtApplication.getWidth()/2f,mtApplication.getHeight()/2f,0.0f);
-		cubeGroup.translateGlobal(cubeDestination);
-		cubeGroup.scaleGlobal(250.0f, 250.0f, 250.0f,cubeDestination);
-		cubeGroup.rotateX(cubeDestination,90.0f);
-		cubeGroup.setPickable(false);
-		
-		this.getCanvas().addChild(cubeGroup);*/
-		
 	
+		collisionManager.addObjectsToCollisionDomain();
 		
 	}
 
-	/*private void registerGroupProcessor(MTComponent comp,Group3DProcessor groupProcessor,LineGroup3DAction lGroupAct)
-	{
-		//comp.registerInputProcessor(groupProcessor);				
-		//comp.addGestureListener(Group3DProcessor.class,lGroupAct);
-		//comp.setGestureAllowance(Group3DProcessor.class,true);
-	}*/
-	
+
 	public MTTriangleMesh getBiggestMesh(MTTriangleMesh[] meshes){
 		MTTriangleMesh currentBiggestMesh = null;
 		//Get the biggest mesh and extract its width
@@ -386,14 +297,12 @@ MTComponent spoon2;
 		//Create a group and set the light for the whole mesh group ->better for performance than setting light to more comps
 		//MTComponent group1 = new MTComponent(mtApplication);
 		final MTComponent meshGroup = new MTComponent(mtApplication, "Mesh group");
-		//meshGroup.addStateChangeListener(StateChange.GLOBAL_TRANSFORM_CHANGED, MergeHelper.getInstance());//necessary for getting matrix changes for updating merged bounds
 		
-//		meshGroup.setMergedOfChildrenBounds(true);
 		meshGroup.setLight(light);
 		this.getCanvas().addChild(meshGroup);
 		//Desired position for the meshes to appear at
 		Vector3D destinationPosition = new Vector3D(mtApplication.width/2+200.0f, mtApplication.height/2, 50);
-		//System.out.println("destPos: " + destinationPosition);
+	
 		//Desired scale for the meshes
 		float destinationScale = mtApplication.width*0.94f;
 
@@ -405,7 +314,7 @@ MTComponent spoon2;
 		
 		Vector3D translationToScreenCenter = new Vector3D(destinationPosition);
 		translationToScreenCenter.subtractLocal(biggestMesh.getCenterPointGlobal());
-		//System.out.println(translationToScreenCenter);
+		
 		Vector3D scalingPoint = new Vector3D(biggestMesh.getCenterPointGlobal());
 		float biggestWidth = biggestMesh.getWidthXY(TransformSpace.GLOBAL);	
 		float scale = destinationScale/biggestWidth;
@@ -429,10 +338,9 @@ MTComponent spoon2;
 			//Set the material to the mesh  (determines the reaction to the lightning)
 			if (mesh.getMaterial() == null)
 				mesh.setMaterial(material);
-			//mesh.setCenterPointGlobal(mesh.)
-			//mesh.setMass(5.0f);
+		
 			mesh.setDrawNormals(false);
-			//mesh.transform(mesh.getGlobalInverseMatrix());			
+				
 		}
 		
 		meshGroup.rotateX(translationToScreenCenter.getAdded(translation),90.0f);
@@ -443,15 +351,14 @@ MTComponent spoon2;
 		}
 		
 		settingsForNormalMeshGroup(mtApplication,meshGroup);
-		//group1.setComposite(true);
+		
 		return meshGroup;
 	}
 	
 	private MTComponent getGroundMesh(MTApplication mtApplication,String filename,MTLight light,GLMaterial material,Icamera cam)
 	{
 		MTComponent grundflaecheGroup = new MTComponent(mtApplication);
-		//grundflaecheGroup.addStateChangeListener(StateChange.GLOBAL_TRANSFORM_CHANGED, MergeHelper.getInstance());//necessary for getting matrix changes for updating merged bounds
-		
+	
 		MTTriangleMesh[] grundflaeche = ModelImporterFactory.loadModel(mtApp,filename, 0, true, false );
 		grundflaecheGroup.setLight(light);
 		this.getCanvas().addChild(grundflaecheGroup);
@@ -467,7 +374,7 @@ MTComponent spoon2;
 			//Set the material to the mesh  (determines the reaction to the lightning)
 			if (grundflaeche[i].getMaterial() == null)
 				grundflaeche[i].setMaterial(material);
-			//grundflaeche[i].setMass(5.0f);
+		
 			grundflaeche[i].setDrawNormals(false);
 		}	
 		
@@ -487,8 +394,7 @@ MTComponent spoon2;
 				
 		grundflaecheGroup.scaleGlobal(cam.getFrustum().getWidthOfPlane(-300.0f)/biggestWidthGrundflaeche,
 								      cam.getFrustum().getHeightOfPlane(-300.0f)/biggestHeightGrundflaeche,1.0f,grundflaecheTranslation);
-		
-		//grundflaecheGroup.setMass(5.0f);
+
 		grundflaecheGroup.setComposite(true);
 		grundflaecheGroup.setPickable(false);
 		grundflaecheGroup.setName("grundflaeche");
@@ -505,8 +411,7 @@ MTComponent spoon2;
 			//@Override
 			public boolean processGestureEvent(MTGestureEvent ge) {
 					ScaleEvent se = (ScaleEvent)ge;				
-					
-					//meshGroup.scaleGlobal(se.getScaleFactorX(), se.getScaleFactorY(), se.getScaleFactorX(), MergeHelper.getInstance().getMergedBoundsForComponent(meshGroup).getCenterPointGlobal());				
+													
 					meshGroup.scaleGlobal(se.getScaleFactorX(), se.getScaleFactorY(), se.getScaleFactorX(), ComponentHelper.getCenterPointGlobal(meshGroup));
 				return false;
 			}
@@ -516,12 +421,9 @@ MTComponent spoon2;
 		meshGroup.addGestureListener(RotateProcessor.class, new DefaultRotateAction());
 		
 		meshGroup.setGestureAllowance(RotateProcessor.class,true);
-		
-		meshGroup.registerInputProcessor(new TapProcessor(mtApplication,999999.0f));//high number for correct DragHelper behaviour when dragging a tapped object
-		meshGroup.addGestureListener(TapProcessor.class, new CreateDragHelperAction(mtApplication,this.getCanvas(),this.getSceneCam(),meshGroup));
-		
-		//meshGroup.setGestureAllowance(ScaleProcessor.class, false);
-		
+			
+		meshGroup.addGestureListener(DragProcessor.class, new CreateDragHelperAction(mtApplication,this.getCanvas(),this.getSceneCam(),meshGroup));
+				
 		meshGroup.registerInputProcessor(new Rotate3DProcessor(mtApplication,meshGroup));
 		 Rotate3DAction act = new Rotate3DAction(meshGroup,mtApplication);
 		 drawAction.add(act);

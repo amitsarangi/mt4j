@@ -278,7 +278,7 @@ public class Cluster extends MTComponent {
 	
 	@Override
 	public void drawComponent(PGraphics g)
-	{	
+	{			
 		if(getVisualizeProvider()!=null)
 		{
 			getVisualizeProvider().visualize(this);

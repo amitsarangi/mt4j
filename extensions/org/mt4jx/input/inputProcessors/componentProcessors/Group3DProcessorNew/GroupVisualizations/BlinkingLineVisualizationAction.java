@@ -9,6 +9,7 @@ import org.mt4j.components.visibleComponents.shapes.MTLine;
 import org.mt4j.input.IMTEventListener;
 import org.mt4j.input.MTEvent;
 import org.mt4j.input.inputProcessors.IGestureEventListener;
+import org.mt4j.input.inputProcessors.componentProcessors.dragProcessor.DragProcessor;
 import org.mt4j.input.inputProcessors.componentProcessors.lassoProcessor.IdragClusterable;
 import org.mt4j.input.inputProcessors.componentProcessors.tapProcessor.TapProcessor;
 import org.mt4j.util.math.Tools3D;
@@ -41,14 +42,14 @@ public class BlinkingLineVisualizationAction implements IMTEventListener,IVisual
 			{
 			case MTClusterEvent.CLUSTER_CREATED:
 				clEvent.getCluster().setVisualizeProvider(this);
-				clEvent.getCluster().addGestureListener(TapProcessor.class,new ActivateVisualizationAction(clEvent.getCluster(),this));
+				clEvent.getCluster().addGestureListener(DragProcessor.class,new ActivateVisualizationAction(clEvent.getCluster(),this));
 				break;				
 			case MTClusterEvent.CLUSTER_SELECTED:
 				if(clEvent.getCluster().getVisualizeProvider()!=this)
 				{
 					startTime = System.currentTimeMillis();
 					
-					clEvent.getCluster().addGestureListener(TapProcessor.class,new ActivateVisualizationAction(clEvent.getCluster(),this));
+					clEvent.getCluster().addGestureListener(DragProcessor.class,new ActivateVisualizationAction(clEvent.getCluster(),this));
 					clEvent.getCluster().setVisualizeProvider(this);
 				}
 				break;
@@ -84,7 +85,7 @@ public class BlinkingLineVisualizationAction implements IMTEventListener,IVisual
 			if(comp instanceof MTComponent)
 			{
 				MTComponent mtcomp = (MTComponent)comp;
-				//centerPoints.add(MergeHelper.getInstance().getMergedBoundsForComponent(mtcomp).getCenterPointGlobal());
+				
 				centerPoints.add(ComponentHelper.getCenterPointGlobal(mtcomp));
 			}
 		}

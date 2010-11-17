@@ -84,11 +84,8 @@ public class SimulatePreDrawAction implements IPreDrawAction {
 					
     		if(getCollisionWorld()!=null)
     		{
-    			//System.out.println("collision items " + getCollisionWorld().getNumCollisionObjects());
-    			
     			for(int i=0;i<getCollisionWorld().getNumCollisionObjects();i++)
     			{
-    				//System.out.println("Object " + i);
     				CollisionObject obj = getCollisionWorld().getCollisionObjectArray().get(i);
     				CollisionShape shape = obj.getCollisionShape();
     							
@@ -207,16 +204,11 @@ public class SimulatePreDrawAction implements IPreDrawAction {
 									{
 										if(canvas.getChildren()[a]!=children&&!(canvas.getChildren()[a] instanceof Cluster))
 										{
-											//if(MergeHelper.getInstance().isMergedOfChildrenBounds(canvas.getChildren()[a]))
-											//{
 											
-																							
-												//if(MergeHelper.getInstance().getMergedBoundsForComponent(canvas.getChildren()[a]).getCenterPointGlobal().z<ray.getRayStartPoint().z&&MergeHelper.getInstance().getMergedBoundsForComponent(canvas.getChildren()[a]).getCenterPointGlobal().z>ray.getPointInRayDirection().z)
+																		
+											
 											if(ComponentHelper.getCenterPointGlobal(canvas.getChildren()[a]).z<ray.getRayStartPoint().z&&ComponentHelper.getCenterPointGlobal(canvas.getChildren()[a]).z>ray.getPointInRayDirection().z)
 												{
-													//Vector3D interSectionPos = canvas.getChildren()[a].getIntersectionGlobalCol(ray);
-													
-													//Vector3D interSectionPos = canvas.getChildren()[a].getIntersectionGlobal(ray);
 													Vector3D interSectionPos = ComponentHelper.getIntersectionGlobal(canvas.getChildren()[a],ray);
 													
 													if(interSectionPos!=null)
@@ -264,27 +256,22 @@ public class SimulatePreDrawAction implements IPreDrawAction {
 								for(int a=0;a<canvas.getChildren().length;a++)
 								{
 									if(canvas.getChildren()[a]!=targetComp)
-									{										
-										//if(MergeHelper.getInstance().isMergedOfChildrenBounds(canvas.getChildren()[a]))
-										{
-											//if(MergeHelper.getInstance().getMergedBoundsForComponent(canvas.getChildren()[a])
-											//		.getCenterPointGlobal().z<ray.getRayStartPoint().z
-											//		&&MergeHelper.getInstance().getMergedBoundsForComponent(canvas.getChildren()[a])
-											//		.getCenterPointGlobal().z>ray.getPointInRayDirection().z)
-											if(ComponentHelper.getCenterPointGlobal(canvas.getChildren()[a]).z<ray.getRayStartPoint().z
-													&ComponentHelper.getCenterPointGlobal(canvas.getChildren()[a]).z>ray.getPointInRayDirection().z)
-											{
-												//Vector3D interSectionPos = canvas.getChildren()[a].getIntersectionGlobalCol(ray);
-												
+									{	
+										
+									
 											
-												Vector3D interSectionPos = ComponentHelper.getIntersectionGlobal(canvas.getChildren()[a],ray);
-												if(interSectionPos!=null)
-												{													
-													objectCollision(objs.get(0));//get only first collision object, collision of other objects will be done in objectCollision method													
-													objectCollision(collisionManager.getAllObjectsForCollisionGroup((canvas.getChildren()[a])).get(0));//the object with which it is colliding													
-												}
+										if(ComponentHelper.getCenterPointGlobal(canvas.getChildren()[a]).z<ray.getRayStartPoint().z
+												&ComponentHelper.getCenterPointGlobal(canvas.getChildren()[a]).z>ray.getPointInRayDirection().z)
+										{
+										
+											Vector3D interSectionPos = ComponentHelper.getIntersectionGlobal(canvas.getChildren()[a],ray);
+											if(interSectionPos!=null)
+											{													
+												objectCollision(objs.get(0));//get only first collision object, collision of other objects will be done in objectCollision method													
+												objectCollision(collisionManager.getAllObjectsForCollisionGroup((canvas.getChildren()[a])).get(0));//the object with which it is colliding													
 											}
 										}
+										
 									}
 								}
 								

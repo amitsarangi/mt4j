@@ -161,7 +161,7 @@ public enum FingerTapState implements FingerTapTransitions,FingerTapStateMethods
 		public synchronized void tapPress(FingerTapSelection sel,InputCursor cursor,MTComponent comp){
 							
 		
-			
+			System.out.println("Cluster selected");
 		}
 
 		@Override

@@ -2,6 +2,7 @@ package org.mt4jx.input.inputProcessors.componentProcessors.Group3DProcessorNew.
 
 import org.mt4j.input.inputProcessors.IGestureEventListener;
 import org.mt4j.input.inputProcessors.MTGestureEvent;
+import org.mt4j.input.inputProcessors.componentProcessors.dragProcessor.DragEvent;
 import org.mt4j.input.inputProcessors.componentProcessors.tapProcessor.TapEvent;
 import org.mt4jx.input.inputProcessors.componentProcessors.Group3DProcessorNew.Cluster;
 import org.mt4jx.input.inputProcessors.componentProcessors.Group3DProcessorNew.IVisualizeMethodProvider;
@@ -13,25 +14,26 @@ public class ActivateVisualizationAction implements IGestureEventListener {
 	private IVisualizeMethodProvider methodProvider;
 	
 	public ActivateVisualizationAction(Cluster cluster,IVisualizeMethodProvider methodProvider)
-	{
+	{		
 		this.cluster = cluster;
 		this.methodProvider = methodProvider;
 		this.cluster.setVisualizeProvider(null);
 	}
 	@Override
 	public boolean processGestureEvent(MTGestureEvent ge) {
-		if(ge instanceof TapEvent)
+		if(ge instanceof DragEvent)
 		{
-			TapEvent tapEv = (TapEvent)ge;
+			DragEvent tapEv = (DragEvent)ge;
 			switch(tapEv.getId())
 			{
-			case TapEvent.GESTURE_DETECTED:
+			case DragEvent.GESTURE_DETECTED:
 				cluster.setVisualizeProvider(methodProvider);
 				break;
-			case TapEvent.GESTURE_ENDED:
-				
+			case DragEvent.GESTURE_ENDED:	
+				System.out.println("ended");
 				cluster.setVisualizeProvider(null);
 				break;
+			default: break;
 			}
 		}
 		return false;
