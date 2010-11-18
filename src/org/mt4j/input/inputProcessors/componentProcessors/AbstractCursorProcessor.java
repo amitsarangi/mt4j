@@ -474,6 +474,8 @@ public abstract class AbstractCursorProcessor extends AbstractComponentProcessor
 	private HashMap<InputCursor, AbstractCursorProcessor> cursorToLockLostInputProcessor = new HashMap<InputCursor, AbstractCursorProcessor>();
 	
 	public void cursorFreed(InputCursor cursor){
+		//we dont call cursorUnlocked() here directly but rather in the event loop at processInputEvtImpl() the next time, so that the
+		//targetComponent and the cursors current event etc are correct (required since events can change their current target at bubbling)
 		if (!cursorUnlocked.contains(cursor)){
 			cursorUnlocked.addLast(cursor);
 		}
@@ -493,8 +495,12 @@ public abstract class AbstractCursorProcessor extends AbstractComponentProcessor
 //		if (!cursorLocked.contains(cursor)){
 //			cursorLocked.addLast(cursor);
 //		}
-		cursorToLockLostInputProcessor.put(cursor, lockinProcessor);
 		
+		//we dont call cursorLocked() here directly but rather in the event loop at processInputEvtImpl() the next time, so that the
+		//targetComponent and the cursors current event etc are correct (required since events can change their current target at bubbling)
+		
+		//To know to which processor we lost the cursor
+		cursorToLockLostInputProcessor.put(cursor, lockinProcessor);
 		if (cursorUnlocked.contains(cursor)){ //FIXME REMOVE?
 			cursorUnlocked.remove(cursor);
 		}
