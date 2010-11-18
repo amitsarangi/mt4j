@@ -13,7 +13,13 @@ import org.mt4j.util.math.Vector3D;
 
 import processing.core.PApplet;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class UnistrokeProcessor. A component input processor to recognize pre-recorded gestures.
+ */
 public class UnistrokeProcessor extends AbstractCursorProcessor {
+	
+	/** The pa. */
 	private PApplet pa;
 	/** The plane normal. */
 	private Vector3D planeNormal;
@@ -21,11 +27,21 @@ public class UnistrokeProcessor extends AbstractCursorProcessor {
 	private Vector3D pointInPlane;
 	
 	
+	/** The context. */
 	private UnistrokeContext context;
+	
+	/** The recognizer. */
 	private Recognizer recognizer;
+	
+	/** The du. */
 	private UnistrokeUtils du;
 
 
+	/**
+	 * Instantiates a new unistroke processor.
+	 *
+	 * @param pa the pa
+	 */
 	public UnistrokeProcessor(PApplet pa) { 
 		super();
 		this.pa = pa;
@@ -38,10 +54,19 @@ public class UnistrokeProcessor extends AbstractCursorProcessor {
 		recognizer = du.getRecognizer();
 	}
 	
+	/**
+	 * Adds the template.
+	 *
+	 * @param gesture the gesture
+	 * @param direction the direction
+	 */
 	public void addTemplate(UnistrokeGesture gesture, Direction direction){
 		recognizer.addTemplate(gesture, direction);
 	}
 	
+	/* (non-Javadoc)
+	 * @see org.mt4j.input.inputProcessors.componentProcessors.AbstractCursorProcessor#cursorStarted(org.mt4j.input.inputData.InputCursor, org.mt4j.input.inputData.MTFingerInputEvt)
+	 */
 	@Override
 	public void cursorStarted(InputCursor inputCursor, MTFingerInputEvt currentEvent) {
 		if (this.canLock(inputCursor)) {
@@ -63,6 +88,9 @@ public class UnistrokeProcessor extends AbstractCursorProcessor {
 
 	
 	
+	/* (non-Javadoc)
+	 * @see org.mt4j.input.inputProcessors.componentProcessors.AbstractCursorProcessor#cursorUpdated(org.mt4j.input.inputData.InputCursor, org.mt4j.input.inputData.MTFingerInputEvt)
+	 */
 	@Override
 	public void cursorUpdated(InputCursor inputCursor, MTFingerInputEvt currentEvent) {
 		if (getLockedCursors().contains(inputCursor) && context != null) {
@@ -91,6 +119,9 @@ public class UnistrokeProcessor extends AbstractCursorProcessor {
 
 	
 	
+	/* (non-Javadoc)
+	 * @see org.mt4j.input.inputProcessors.componentProcessors.AbstractCursorProcessor#cursorLocked(org.mt4j.input.inputData.InputCursor, org.mt4j.input.inputProcessors.IInputProcessor)
+	 */
 	@Override
 	public void cursorLocked(InputCursor cursor, IInputProcessor lockingprocessor) {
 		if (getLockedCursors().contains(cursor) && context != null) {
@@ -99,12 +130,18 @@ public class UnistrokeProcessor extends AbstractCursorProcessor {
 
 	}
 
+	/* (non-Javadoc)
+	 * @see org.mt4j.input.inputProcessors.componentProcessors.AbstractCursorProcessor#cursorUnlocked(org.mt4j.input.inputData.InputCursor)
+	 */
 	@Override
 	public void cursorUnlocked(InputCursor cursor) {
 
 	}
 
 	
+	/* (non-Javadoc)
+	 * @see org.mt4j.input.inputProcessors.componentProcessors.AbstractComponentProcessor#getName()
+	 */
 	@Override
 	public String getName() {
 		return "MTDollarGesture Processor";

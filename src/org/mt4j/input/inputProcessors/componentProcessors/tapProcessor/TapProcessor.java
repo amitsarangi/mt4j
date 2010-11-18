@@ -106,6 +106,15 @@ public class TapProcessor extends AbstractCursorProcessor {
 		this(pa, maxFingerUpDistance, enableDoubleTap, doubleTapTime, true);
 	}
 
+	/**
+	 * Instantiates a new tap processor.
+	 *
+	 * @param pa the pa
+	 * @param maxFingerUpDistance the max finger up distance
+	 * @param enableDoubleTap the enable double tap
+	 * @param doubleTapTime the double tap time
+	 * @param stopEventPropagation the stop event propagation
+	 */
 	public TapProcessor(PApplet pa, float maxFingerUpDistance, boolean enableDoubleTap, int doubleTapTime, boolean stopEventPropagation){
 		super(stopEventPropagation);
 		this.applet = pa;
@@ -152,15 +161,11 @@ public class TapProcessor extends AbstractCursorProcessor {
 	@Override
 	public void cursorUpdated(InputCursor c, MTFingerInputEvt positionEvent) {
 		if (lockedCursors.contains(c)){ //cursor is a actual used cursor
-			IMTComponent3D comp = c.getTarget();
-			IMTComponent3D currentTarget = c.getCurrentEvent().getCurrentTarget();
 			Vector3D screenPos = c.getPosition();
-
 			//logger.debug("Distance between buttondownScreenPos: " + buttonDownScreenPos + " and upScrPos: " + buttonUpScreenPos +  " is: " + Vector3D.distance(buttonDownScreenPos, buttonUpScreenPos));
 			if (Vector3D.distance2D(buttonDownScreenPos, screenPos) > this.maxFingerUpDist){
-				logger.debug("DISTANCE TOO FAR OR NO INTERSECTION");
+				logger.debug("DISTANCE TOO FAR");
 				lockedCursors.remove(c);
-//				this.fireGestureEvent(new TapAndHoldEvent(this, MTGestureEvent.GESTURE_ENDED, positionEvent.getCurrentTarget(), c, false, screenPos, this.holdTime, elapsedTime, normalized));
 				this.endGesture(c, positionEvent);
 				this.unLock(c); 
 			}
@@ -200,13 +205,11 @@ public class TapProcessor extends AbstractCursorProcessor {
 	}
 
 	
-
-	
 	/**
 	 * End gesture.
-	 * 
+	 *
 	 * @param m the m
-	 * @param positionEvent.getCurrentTarget() the comp
+	 * @param positionEvent the position event
 	 */
 	private void endGesture(InputCursor m, MTFingerInputEvt positionEvent){
 		//Default where for the event if no intersections are found

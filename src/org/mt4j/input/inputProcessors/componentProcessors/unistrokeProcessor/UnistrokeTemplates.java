@@ -1,3 +1,20 @@
+/***********************************************************************
+ * mt4j Copyright (c) 2008 - 2010 C.Ruff, Fraunhofer-Gesellschaft All rights reserved.
+ *  
+ *   This program is free software: you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation, either version 3 of the License, or
+ *   (at your option) any later version.
+ *
+ *   This program is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU General Public License for more details.
+ *
+ *   You should have received a copy of the GNU General Public License
+ *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ ***********************************************************************/
 package org.mt4j.input.inputProcessors.componentProcessors.unistrokeProcessor;
 
 import java.util.Arrays;
@@ -18,11 +35,11 @@ public class UnistrokeTemplates {
 	/** The List of registered templates. */
 	List <Template> templates;
 
-	/** The Utilities */
+	/** The Utilities. */
 	UnistrokeUtils du;
 	
 	/**
-	 * Instantiates a ne wMTDollarTemplates.
+	 * Instantiates new MTDollarTemplates.
 	 * 
 	 * @param templates the List of registered templates
 	 * @param du the Utils
@@ -68,8 +85,8 @@ public class UnistrokeTemplates {
 	}
 
 	/**
-	 * Adds the template by gesture/direction
-	 * 
+	 * Adds the template by gesture/direction.
+	 *
 	 * @param gesture the gesture
 	 * @param direction the direction
 	 */

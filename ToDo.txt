@@ -40,7 +40,6 @@ ToDo list:
 
 - mt4j as p5 library - difficult because mtapplication is derived from papplet
 - manymouse problem loadlibrary!? -> Compile on Mac!
-- remove MTVideoClip from core and put it into example with gsvideo and gstreamer?
 - add sound library (OpenAL?)
 - by default disable depth buffer and only for special 3d stuff enable it?
 - check if for line_smooth disabling/enabling multisampling is too expensive - if so disable/dont use line_smooth when multisampling at all 
@@ -88,7 +87,7 @@ ToDo list:
 -> Online:
 - mention component state changes/listeners in component tutorial
 - features -media supports, jpg,png,avi etc
-- at mutlitouch gestures page add link to java doc processor?
+- at multitouch gestures page add link to java doc processor?
 - Component structure
 - Gestures: 
 	- tapAndHold
@@ -128,8 +127,6 @@ ToDo list:
 
 
 -> Gestures/Input
-- support Linux HID touch
-- win7touchsource detects touch when wacom tablet installed?
 - differentiate between manipulation s and gestures? (1 difference is: eg. flick is a gesture, drag a manipulation, we have to wait if it is a flick -> if not switch to drag but start drag from the 1st event, not resume at current)
 - add ability in component processors to get informed of other cursors, not from the component?
 - GestureUtil class? -> getDistance(cursor1, cursor2) getAngle(cursor1, movedCursor); etc
@@ -146,7 +143,8 @@ ToDo list:
 - add keyboard input source sending keyboard events to the focused/selected component -> FocusManager?
 - (if object that is dragged, scaled etc is destroyed while during gesture -> nullpointer error -> check if viewing cam is null!)
 - (background rotate gesture? -> not good, would rotate about center of cam.. -> better use MTComp at z=0 with rotateProcessor!)
-
+- support Linux HID touch
+- (win7touchsource detects touch when wacom tablet installed?)
 
 -> SVG:
 - make loading threaded by doing it in an abstractprogessthread
@@ -165,9 +163,7 @@ ToDo list:
 
 -> Animations:
 - AnimationUtil static -> fadeOut(component) fadeIn() etc
-- simplify usage of animations, make subclasses for easinganimation (-> use reflection to set properties automatically? -lookat pulcore)
 - implement keyframe animations - TimeLine?
-- use p5 tweening library?
 - animation with pluggable/extendable interpolation function
 
 
