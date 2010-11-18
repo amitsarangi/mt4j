@@ -55,9 +55,6 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="lib" path="mt4jLibs/ani.jar"/>
-	<classpathentry kind="lib" path="extensions/lib/gsvideo/gstreamer-java-bin-1.2.jar"/>
-	<classpathentry kind="lib" path="extensions/lib/gsvideo/jna-3.1.0.jar"/>
-	<classpathentry kind="lib" path="extensions/lib/gsvideo/gsvideo06pre.jar"/>
 	<classpathentry kind="lib" path="mt4jLibs/junit-4.8.2.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
