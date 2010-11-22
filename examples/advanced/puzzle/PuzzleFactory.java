@@ -8,15 +8,23 @@ import org.mt4j.MTApplication;
 import org.mt4j.components.MTComponent;
 import org.mt4j.components.TransformSpace;
 import org.mt4j.components.bounds.BoundsZPlaneRectangle;
+import org.mt4j.components.interfaces.IMTComponent3D;
 import org.mt4j.components.visibleComponents.shapes.AbstractShape;
 import org.mt4j.components.visibleComponents.shapes.MTComplexPolygon;
 import org.mt4j.components.visibleComponents.shapes.MTPolygon;
 import org.mt4j.input.gestureAction.InertiaDragAction;
+import org.mt4j.input.inputData.InputCursor;
+import org.mt4j.input.inputProcessors.IGestureEventListener;
+import org.mt4j.input.inputProcessors.MTGestureEvent;
 import org.mt4j.input.inputProcessors.componentProcessors.dragProcessor.DragProcessor;
 import org.mt4j.input.inputProcessors.componentProcessors.lassoProcessor.IdragClusterable;
+import org.mt4j.input.inputProcessors.componentProcessors.rotateProcessor.RotateEvent;
+import org.mt4j.input.inputProcessors.componentProcessors.rotateProcessor.RotateProcessor;
 import org.mt4j.input.inputProcessors.componentProcessors.scaleProcessor.ScaleProcessor;
 import org.mt4j.util.MT4jSettings;
 import org.mt4j.util.MTColor;
+import org.mt4j.util.math.Tools3D;
+import org.mt4j.util.math.ToolsGeometry;
 import org.mt4j.util.math.ToolsMath;
 import org.mt4j.util.math.Vector3D;
 import org.mt4j.util.math.Vertex;
@@ -319,13 +327,90 @@ public class PuzzleFactory {
 	}
 	
 	
-	public MTComplexPolyClusterable getPolygon(PApplet app, TileSide top, TileSide right, TileSide bottom, TileSide left, float tileWidth, float tileHeight){
+	public MTComplexPolyClusterable getPolygon(final PApplet app, TileSide top, TileSide right, TileSide bottom, TileSide left, float tileWidth, float tileHeight){
 		this.init(tileWidth, tileHeight);
 		Vertex[] v = getTile(top, right, bottom, left);
 		MTComplexPolyClusterable poly = new MTComplexPolyClusterable(app, v);
 		poly.removeAllGestureEventListeners(ScaleProcessor.class);
 		poly.addGestureListener(DragProcessor.class, new InertiaDragAction());
+		
+		//FIXME TEST
+		poly.removeAllGestureEventListeners(RotateProcessor.class);
+		poly.addGestureListener(RotateProcessor.class, new RotationListener(poly));
 		return poly;
+	}
+	
+	
+	//FIXME TEST
+	private class RotationListener implements IGestureEventListener{
+		Vector3D startP1;
+		Vector3D startP2;
+		private Vector3D lastMiddle;
+		
+		public RotationListener(IMTComponent3D comp){
+			
+		}
+		
+		@Override
+		public boolean processGestureEvent(MTGestureEvent ge) {
+			IMTComponent3D comp = ge.getTarget();
+			RotateEvent re = (RotateEvent)ge;
+			float deg = re.getRotationDegrees();
+			Vector3D p = re.getRotationPoint();
+			InputCursor c1 = re.getFirstCursor();
+			InputCursor c2 = re.getSecondCursor();
+			
+			/*
+			Vector3D i1 = comp.getIntersectionGlobal(Tools3D.getCameraPickRay(app, comp, c1));
+			Vector3D i2 = comp.getIntersectionGlobal(Tools3D.getCameraPickRay(app, comp, c2));
+			Vector3D middle = i1.getAdded(i2.getSubtracted(i1).scaleLocal(0.5f));
+			
+			Vector3D o1 = comp.getIntersectionGlobal(Tools3D.getCameraPickRay(app, comp, c1.getPreviousEvent().getScreenX(), c1.getPreviousEvent().getScreenY()));
+			Vector3D o2 = comp.getIntersectionGlobal(Tools3D.getCameraPickRay(app, comp, c2.getPreviousEvent().getScreenX(), c2.getPreviousEvent().getScreenY()));
+			Vector3D middleOld = o1.getAdded(o2.getSubtracted(o1).scaleLocal(0.5f));
+			
+			Vector3D middleDiff = middle.getSubtracted(middleOld);
+			
+			comp.rotateZGlobal(middle, deg);
+			comp.translateGlobal(middleDiff);
+			*/
+			
+			switch (re.getId()) {
+			case RotateEvent.GESTURE_DETECTED:{
+				startP1 = comp.getIntersectionGlobal(Tools3D.getCameraPickRay(app, comp, c1));
+				startP2 = comp.getIntersectionGlobal(Tools3D.getCameraPickRay(app, comp, c2));
+				Vector3D i1 = ToolsGeometry.getRayPlaneIntersection(Tools3D.getCameraPickRay(app, comp, c1), new Vector3D(0,0,1), startP1);
+				Vector3D i2 = ToolsGeometry.getRayPlaneIntersection(Tools3D.getCameraPickRay(app, comp, c2), new Vector3D(0,0,1), startP1);
+				lastMiddle = i1.getAdded(i2.getSubtracted(i1).scaleLocal(0.5f));
+			}break;
+			case RotateEvent.GESTURE_UPDATED:
+				
+				Vector3D i1 = ToolsGeometry.getRayPlaneIntersection(Tools3D.getCameraPickRay(app, comp, c1), new Vector3D(0,0,1), startP1);
+				Vector3D i2 = ToolsGeometry.getRayPlaneIntersection(Tools3D.getCameraPickRay(app, comp, c2), new Vector3D(0,0,1), startP1);
+				Vector3D middle = i1.getAdded(i2.getSubtracted(i1).scaleLocal(0.5f));
+				
+				/*
+				Vector3D o1 = ToolsGeometry.getRayPlaneIntersection(Tools3D.getCameraPickRay(app, comp, c1.getPreviousEvent().getScreenX(), c1.getPreviousEvent().getScreenY()), new Vector3D(0,0,1), startP1);
+				Vector3D o2 = ToolsGeometry.getRayPlaneIntersection(Tools3D.getCameraPickRay(app, comp, c2.getPreviousEvent().getScreenX(), c2.getPreviousEvent().getScreenY()), new Vector3D(0,0,1), startP1);
+				Vector3D middleOld = o1.getAdded(o2.getSubtracted(o1).scaleLocal(0.5f));
+				
+				Vector3D middleDiff = middle.getSubtracted(middleOld);
+				*/
+				
+				Vector3D middleDiff = middle.getSubtracted(lastMiddle);
+				comp.rotateZGlobal(middle, deg);
+				comp.translateGlobal(middleDiff);
+				
+				lastMiddle = middle;
+				break;
+			case RotateEvent.GESTURE_ENDED:
+				break;
+			default:
+				break;
+			}
+			return false;
+		}
+		
 	}
 	
 	private class MTComplexPolyClusterable extends MTComplexPolygon implements IdragClusterable{
