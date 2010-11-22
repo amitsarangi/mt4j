@@ -311,7 +311,7 @@ public class MapsScene extends AbstractScene implements MouseWheelListener, Mous
 			}
 		});
 
-		
+		updateTagContainerScale(); //needed to initialize..if not i observed strange behavior with the photo tags 
 	}
 	
 	
@@ -390,8 +390,7 @@ public class MapsScene extends AbstractScene implements MouseWheelListener, Mous
 				ScaleEvent se = (ScaleEvent)g;
 				float scaleX = se.getScaleFactorX();
 				//System.out.println("X:" + x + " Y:" +y);
-				//Scale the map and the tags
-				scaleMap(scaleX);
+				
 				
 				//Add a little panning to scale, so if we can pan while we scale
 				InputCursor c1 = se.getFirstCursor();
@@ -409,13 +408,17 @@ public class MapsScene extends AbstractScene implements MouseWheelListener, Mous
 					lastMiddle = middle;
 				}
 
+				//Scale the map and the tags
+				scaleMap(scaleX);
+				
 				if (animateToBestZoomLevel){
 					//Stop previous animations
 					IAnimation[] currentAnims = AnimationManager.getInstance().getAnimationsForTarget(map);
 					for (IAnimation iAnimation : currentAnims) {
 						iAnimation.stop();
 					}
-
+					
+					//FIXME messes up tagContainer scale
 					//Animate to the best zoom level for better clarity
 					if (se.getId() == MTGestureEvent.GESTURE_ENDED){
 						double current = map.sc;
@@ -429,7 +432,12 @@ public class MapsScene extends AbstractScene implements MouseWheelListener, Mous
 						AniAnimation anim = new AniAnimation(currentF, bestZoom, 1000, map);
 						anim.addAnimationListener(new IAnimationListener() {
 							public void processAnimationEvent(AnimationEvent ae) {
-								map.sc += ae.getDelta();
+//								map.sc += ae.getDelta();
+								double nowScale = map.sc;
+								double destScale = nowScale + ae.getDelta();
+								double diff = destScale/nowScale;
+								scaleMap((float) diff);
+								
 								if (ae.getId() == AnimationEvent.ANIMATION_ENDED){
 									map.setZoom(best);
 									map.setZoom(map.bestZoomForScale((float) map.sc));
