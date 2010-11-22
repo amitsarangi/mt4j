@@ -345,6 +345,8 @@ public class PuzzleFactory {
 	private class RotationListener implements IGestureEventListener{
 		Vector3D startP1;
 		Vector3D startP2;
+		InputCursor oldC1;
+		InputCursor oldC2;
 		Vector3D planeNormal;
 		private Vector3D lastMiddle;
 		
@@ -378,6 +380,8 @@ public class PuzzleFactory {
 			
 			switch (re.getId()) {
 			case RotateEvent.GESTURE_DETECTED:{
+				oldC1 = c1;
+				oldC2 = c2;
 				startP1 = comp.getIntersectionGlobal(Tools3D.getCameraPickRay(app, comp, c1));
 				startP2 = comp.getIntersectionGlobal(Tools3D.getCameraPickRay(app, comp, c2));
 				Vector3D i1 = ToolsGeometry.getRayPlaneIntersection(Tools3D.getCameraPickRay(app, comp, c1), planeNormal, startP1);
@@ -385,6 +389,14 @@ public class PuzzleFactory {
 				lastMiddle = i1.getAdded(i2.getSubtracted(i1).scaleLocal(0.5f));
 			}break;
 			case RotateEvent.GESTURE_UPDATED:
+				if (!oldC1.equals(c1) || !oldC2.equals(c2)){ //Because c1 and/or c2 can change if a finger with greater distance enters -> prevent jump
+					Vector3D i1 = ToolsGeometry.getRayPlaneIntersection(Tools3D.getCameraPickRay(app, comp, c1), planeNormal, startP1);
+					Vector3D i2 = ToolsGeometry.getRayPlaneIntersection(Tools3D.getCameraPickRay(app, comp, c2), planeNormal, startP1);
+					lastMiddle = i1.getAdded(i2.getSubtracted(i1).scaleLocal(0.5f));
+					oldC1 = c1;
+					oldC2 = c2;
+				}
+				
 				Vector3D i1 = ToolsGeometry.getRayPlaneIntersection(Tools3D.getCameraPickRay(app, comp, c1), planeNormal, startP1);
 				Vector3D i2 = ToolsGeometry.getRayPlaneIntersection(Tools3D.getCameraPickRay(app, comp, c2), planeNormal, startP1);
 				Vector3D middle = i1.getAdded(i2.getSubtracted(i1).scaleLocal(0.5f));
