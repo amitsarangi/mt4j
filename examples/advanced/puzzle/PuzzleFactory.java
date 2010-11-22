@@ -345,10 +345,11 @@ public class PuzzleFactory {
 	private class RotationListener implements IGestureEventListener{
 		Vector3D startP1;
 		Vector3D startP2;
+		Vector3D planeNormal;
 		private Vector3D lastMiddle;
 		
 		public RotationListener(IMTComponent3D comp){
-			
+			planeNormal = new Vector3D(0,0,1);
 		}
 		
 		@Override
@@ -379,28 +380,18 @@ public class PuzzleFactory {
 			case RotateEvent.GESTURE_DETECTED:{
 				startP1 = comp.getIntersectionGlobal(Tools3D.getCameraPickRay(app, comp, c1));
 				startP2 = comp.getIntersectionGlobal(Tools3D.getCameraPickRay(app, comp, c2));
-				Vector3D i1 = ToolsGeometry.getRayPlaneIntersection(Tools3D.getCameraPickRay(app, comp, c1), new Vector3D(0,0,1), startP1);
-				Vector3D i2 = ToolsGeometry.getRayPlaneIntersection(Tools3D.getCameraPickRay(app, comp, c2), new Vector3D(0,0,1), startP1);
+				Vector3D i1 = ToolsGeometry.getRayPlaneIntersection(Tools3D.getCameraPickRay(app, comp, c1), planeNormal, startP1);
+				Vector3D i2 = ToolsGeometry.getRayPlaneIntersection(Tools3D.getCameraPickRay(app, comp, c2), planeNormal, startP1);
 				lastMiddle = i1.getAdded(i2.getSubtracted(i1).scaleLocal(0.5f));
 			}break;
 			case RotateEvent.GESTURE_UPDATED:
-				
-				Vector3D i1 = ToolsGeometry.getRayPlaneIntersection(Tools3D.getCameraPickRay(app, comp, c1), new Vector3D(0,0,1), startP1);
-				Vector3D i2 = ToolsGeometry.getRayPlaneIntersection(Tools3D.getCameraPickRay(app, comp, c2), new Vector3D(0,0,1), startP1);
+				Vector3D i1 = ToolsGeometry.getRayPlaneIntersection(Tools3D.getCameraPickRay(app, comp, c1), planeNormal, startP1);
+				Vector3D i2 = ToolsGeometry.getRayPlaneIntersection(Tools3D.getCameraPickRay(app, comp, c2), planeNormal, startP1);
 				Vector3D middle = i1.getAdded(i2.getSubtracted(i1).scaleLocal(0.5f));
-				
-				/*
-				Vector3D o1 = ToolsGeometry.getRayPlaneIntersection(Tools3D.getCameraPickRay(app, comp, c1.getPreviousEvent().getScreenX(), c1.getPreviousEvent().getScreenY()), new Vector3D(0,0,1), startP1);
-				Vector3D o2 = ToolsGeometry.getRayPlaneIntersection(Tools3D.getCameraPickRay(app, comp, c2.getPreviousEvent().getScreenX(), c2.getPreviousEvent().getScreenY()), new Vector3D(0,0,1), startP1);
-				Vector3D middleOld = o1.getAdded(o2.getSubtracted(o1).scaleLocal(0.5f));
-				
-				Vector3D middleDiff = middle.getSubtracted(middleOld);
-				*/
 				
 				Vector3D middleDiff = middle.getSubtracted(lastMiddle);
 				comp.rotateZGlobal(middle, deg);
 				comp.translateGlobal(middleDiff);
-				
 				lastMiddle = middle;
 				break;
 			case RotateEvent.GESTURE_ENDED:
@@ -410,7 +401,6 @@ public class PuzzleFactory {
 			}
 			return false;
 		}
-		
 	}
 	
 	private class MTComplexPolyClusterable extends MTComplexPolygon implements IdragClusterable{

@@ -54,6 +54,7 @@ import org.mt4j.components.visibleComponents.widgets.progressBar.AbstractProgres
 import org.mt4j.components.visibleComponents.widgets.progressBar.MTProgressBar;
 import org.mt4j.input.IMTEventListener;
 import org.mt4j.input.MTEvent;
+import org.mt4j.input.inputData.InputCursor;
 import org.mt4j.input.inputProcessors.IGestureEventListener;
 import org.mt4j.input.inputProcessors.MTGestureEvent;
 import org.mt4j.input.inputProcessors.componentProcessors.dragProcessor.DragEvent;
@@ -75,6 +76,8 @@ import org.mt4j.util.animation.IAnimationListener;
 import org.mt4j.util.animation.ani.AniAnimation;
 import org.mt4j.util.camera.MTCamera;
 import org.mt4j.util.math.Matrix;
+import org.mt4j.util.math.Tools3D;
+import org.mt4j.util.math.ToolsGeometry;
 import org.mt4j.util.math.Vector3D;
 
 import processing.core.PImage;
@@ -378,6 +381,8 @@ public class MapsScene extends AbstractScene implements MouseWheelListener, Mous
 	 * @author C.Ruff
 	 */
 	private class MapScale implements IGestureEventListener{
+		private Vector3D lastMiddle;
+
 //		private Vector3D scaleP =  new Vector3D(p.width/2, p.height/2, 0);
 //		scaleP.setXYZ(p.width/2, p.height/2, 0);
 		public boolean processGestureEvent(MTGestureEvent g) {
@@ -387,6 +392,22 @@ public class MapsScene extends AbstractScene implements MouseWheelListener, Mous
 				//System.out.println("X:" + x + " Y:" +y);
 				//Scale the map and the tags
 				scaleMap(scaleX);
+				
+				//Add a little panning to scale, so if we can pan while we scale
+				InputCursor c1 = se.getFirstCursor();
+				InputCursor c2 = se.getSecondCursor();
+				if (se.getId() == MTGestureEvent.GESTURE_DETECTED){
+					Vector3D i1 = c1.getPosition();
+					Vector3D i2 = c2.getPosition();
+					lastMiddle = i1.getAdded(i2.getSubtracted(i1).scaleLocal(0.5f));
+				}else if (se.getId() == MTGestureEvent.GESTURE_UPDATED){ 
+					Vector3D i1 =  c1.getPosition();
+					Vector3D i2 =  c2.getPosition();
+					Vector3D middle = i1.getAdded(i2.getSubtracted(i1).scaleLocal(0.5f));
+					Vector3D middleDiff = middle.getSubtracted(lastMiddle);
+					map.move(middleDiff.x, middleDiff.y);
+					lastMiddle = middle;
+				}
 
 				if (animateToBestZoomLevel){
 					//Stop previous animations
