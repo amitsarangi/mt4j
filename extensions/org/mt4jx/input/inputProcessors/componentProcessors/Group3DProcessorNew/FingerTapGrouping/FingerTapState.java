@@ -171,6 +171,11 @@ public enum FingerTapState implements FingerTapTransitions,FingerTapStateMethods
 			//if you have selected one cluster and tap on a second cluster
 			//then all children of the second cluster will be
 			//added to the first selected cluster
+			MTComponent[] children = sel.getCurrentlySelectedCluster().getChildren();
+			 for (int i = 0; i < children.length; i++) {
+				MTComponent mtComponent = children[i];
+				System.out.println(mtComponent.getName());
+			}
 			if(cluster!=null&&cluster!=sel.getCurrentlySelectedCluster())
 			{				
 				ArrayList<MTComponent> componentsToRemove = new ArrayList<MTComponent>();
@@ -184,8 +189,7 @@ public enum FingerTapState implements FingerTapTransitions,FingerTapStateMethods
 			{		
 				if(!sel.isFirstCursor(cursor)&&comp!=sel.getFirstCursorComp())//if it is the first cursor which has been released do not remove component, only deselect later 
 				{															  //compare if is the component of the first cursor, cause this can not be removed, due to starting of other
-																			  //actions like Rotate3D and Scaling etc.
-					
+																		  //actions like Rotate3D and Scaling etc.
 					sel.getClusterDataManager().removeComponentFromCluster(comp, cluster);
 					sel.addComponentToCanvas(comp);
 										
@@ -193,7 +197,13 @@ public enum FingerTapState implements FingerTapTransitions,FingerTapStateMethods
 					if(cluster.getChildren().length>1)
 					{
 						System.out.println("Cluster selected Tap Release changing cluster state CLUSTERSELECTED");
-						sel.setState(CLUSTERSELECTED);
+						MTComponent[] children1 = sel.getCurrentlySelectedCluster().getChildren();
+						 for (int i = 0; i < children1.length; i++) {
+							MTComponent mtComponent = children1[i];
+							System.out.println(mtComponent.getName());
+						}						
+						
+						sel.setState(CLUSTERSELECTED);						
 					}else
 					{	
 						System.out.println("Cluster selected Tap Release changing cluster state ONEELEMENTSELECTED");
