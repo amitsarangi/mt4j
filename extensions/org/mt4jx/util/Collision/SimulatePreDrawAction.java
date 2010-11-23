@@ -12,6 +12,7 @@ import org.mt4j.MTApplication;
 import org.mt4j.components.MTCanvas;
 import org.mt4j.components.MTComponent;
 import org.mt4j.components.visibleComponents.shapes.mesh.MTTriangleMesh;
+import org.mt4j.components.visibleComponents.widgets.MTOverlayContainer;
 import org.mt4j.input.gestureAction.DefaultDragAction;
 import org.mt4j.input.gestureAction.DefaultRotateAction;
 import org.mt4j.input.gestureAction.DefaultScaleAction;
@@ -202,7 +203,7 @@ public class SimulatePreDrawAction implements IPreDrawAction {
 									
 									for(int a=0;a<canvas.getChildren().length;a++)
 									{
-										if(canvas.getChildren()[a]!=children&&!(canvas.getChildren()[a] instanceof Cluster))
+										if(canvas.getChildren()[a]!=children&&!(canvas.getChildren()[a] instanceof Cluster)&&!(canvas.getChildren()[a] instanceof MTOverlayContainer))
 										{																
 											System.out.println("canvas.getChildren()[a] " + canvas.getChildren()[a]);
 											System.out.println("ray.getRayStartPoint() " + ray.getRayStartPoint());
@@ -256,7 +257,7 @@ public class SimulatePreDrawAction implements IPreDrawAction {
 								
 								for(int a=0;a<canvas.getChildren().length;a++)
 								{
-									if(canvas.getChildren()[a]!=targetComp)
+									if(canvas.getChildren()[a]!=targetComp&&!(canvas.getChildren()[a] instanceof MTOverlayContainer))
 									{	
 										
 									
