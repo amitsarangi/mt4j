@@ -166,13 +166,13 @@ public enum FingerTapState implements FingerTapTransitions,FingerTapStateMethods
 
 		@Override
 		public synchronized void tapRelease(FingerTapSelection sel,InputCursor cursor,MTComponent comp) {
-			
+			System.out.println("Cluster selected Tap Release");
 			Cluster cluster = sel.getClusterDataManager().getClusterForComponent(comp);
 			//if you have selected one cluster and tap on a second cluster
 			//then all children of the second cluster will be
 			//added to the first selected cluster
 			if(cluster!=null&&cluster!=sel.getCurrentlySelectedCluster())
-			{
+			{				
 				ArrayList<MTComponent> componentsToRemove = new ArrayList<MTComponent>();
 				for(MTComponent mtComp : cluster.getChildren())
 				{
@@ -188,13 +188,15 @@ public enum FingerTapState implements FingerTapTransitions,FingerTapStateMethods
 					
 					sel.getClusterDataManager().removeComponentFromCluster(comp, cluster);
 					sel.addComponentToCanvas(comp);
-					
-					//if cluster is still available
+										
+					//if cluster is still available					
 					if(cluster.getChildren().length>1)
 					{
+						System.out.println("Cluster selected Tap Release changing cluster state CLUSTERSELECTED");
 						sel.setState(CLUSTERSELECTED);
 					}else
-					{					
+					{	
+						System.out.println("Cluster selected Tap Release changing cluster state ONEELEMENTSELECTED");
 						this.stateExit(sel);
 						sel.addComponentToSelection(cluster.getChildren()[0]);
 						
