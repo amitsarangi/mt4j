@@ -160,7 +160,14 @@ public enum FingerTapState implements FingerTapTransitions,FingerTapStateMethods
 		@Override
 		public synchronized void tapPress(FingerTapSelection sel,InputCursor cursor,MTComponent comp){
 							
-		
+			if(sel.getCurrentlyPressedCursors().size()==1)
+			{
+				if(sel.getFirstCursor()!=cursor)
+				{
+					sel.setFirstCursor(cursor);
+					sel.setFirstCursorComp(comp);
+				}
+			}
 			System.out.println("Cluster selected");
 		}
 
@@ -177,8 +184,8 @@ public enum FingerTapState implements FingerTapTransitions,FingerTapStateMethods
 				System.out.println(mtComponent.getName());
 			}
 			if(cluster!=null&&cluster!=sel.getCurrentlySelectedCluster())
-			{				
-				ArrayList<MTComponent> componentsToRemove = new ArrayList<MTComponent>();
+			{		
+				
 				for(MTComponent mtComp : cluster.getChildren())
 				{
 					sel.getCurrentlySelectedCluster().addChild(mtComp);					
