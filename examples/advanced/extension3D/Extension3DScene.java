@@ -340,7 +340,7 @@ public class Extension3DScene extends AbstractScene {
 				mesh.setMaterial(material);
 		
 			mesh.setDrawNormals(false);
-				
+			
 		}
 		
 		meshGroup.rotateX(translationToScreenCenter.getAdded(translation),90.0f);
@@ -349,7 +349,7 @@ public class Extension3DScene extends AbstractScene {
 		{
 			collisionManager.addMeshToCollisionGroup(meshGroup, meshes[i], translationToScreenCenter.getAdded(translation));			
 		}
-		
+	
 		settingsForNormalMeshGroup(mtApplication,meshGroup);
 		
 		return meshGroup;

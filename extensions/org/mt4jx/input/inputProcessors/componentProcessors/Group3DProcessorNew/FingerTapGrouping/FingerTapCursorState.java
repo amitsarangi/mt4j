@@ -1,7 +1,9 @@
 package org.mt4jx.input.inputProcessors.componentProcessors.Group3DProcessorNew.FingerTapGrouping;
 
+import org.apache.log4j.Logger;
 import org.mt4j.components.MTComponent;
 import org.mt4j.input.inputData.InputCursor;
+import org.mt4j.input.inputProcessors.componentProcessors.AbstractComponentProcessor;
 
 public enum FingerTapCursorState implements FingerTapCursorMethods {
 
@@ -10,6 +12,7 @@ public enum FingerTapCursorState implements FingerTapCursorMethods {
 
 		@Override
 		public void tapPress(FingerTapSelectionManager selManager,MTComponent comp,InputCursor c) {
+			
 			selManager.setLockedCursorForComponent(comp, c);
 			selManager.setCursorStateForComponent(comp, OBJECTWITHLOCKEDCURSOR);
 		}

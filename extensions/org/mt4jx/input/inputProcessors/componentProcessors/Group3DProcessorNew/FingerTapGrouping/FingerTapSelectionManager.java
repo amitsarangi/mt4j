@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.mt4j.components.MTCanvas;
 import org.mt4j.components.MTComponent;
 import org.mt4j.components.PickResult;
@@ -31,6 +32,8 @@ import org.mt4jx.util.ComponentHelper;
 
 public class FingerTapSelectionManager extends AbstractGlobalInputProcessor implements ISelectionManager {
 
+	protected static final Logger logger = Logger.getLogger(FingerTapSelectionManager.class.getName());
+	
 	private FingerTapSelection selection;
 	
 	/** The drag selectables. */
@@ -143,20 +146,21 @@ public class FingerTapSelectionManager extends AbstractGlobalInputProcessor impl
 			if(getDragSelectables().contains(comp))
 			{
 				
-				
-				
 				switch (cursorEvt.getId()) {
 				case AbstractCursorInputEvt.INPUT_DETECTED:
 					//update cursor state
+					logger.debug("INPUT_DETECTED FOR COMPONENT " + comp.getName()  + " cursor-id: " + c.getId());
 					if(!objectCursorState.containsKey(comp))
 					{
+						logger.debug("While INPUT_DETECTED Component " + comp.getName() + " added to objectCursorState Map with OBJECTWITHNOTAP  cursor-id: " + c.getId());
 						objectCursorState.put(mtComp, FingerTapCursorState.OBJECTWITHNOTAP);
 					}
 					objectCursorState.get(mtComp).tapPress(this,mtComp,c);
 					
 					//update selection state of complete selection
 					if(!selection.getCurrentlyPressedCursors().contains(c))
-					{								
+					{				
+						logger.debug("While INPUT_DETECTED Component " + comp.getName() + " added to currentlyPressedCursor cursor-id: " + c.getId());
 						selection.getCurrentlyPressedCursors().add(c);
 					}
 					selection.getState().tapPress(selection,c,mtComp);
@@ -165,15 +169,18 @@ public class FingerTapSelectionManager extends AbstractGlobalInputProcessor impl
 				case AbstractCursorInputEvt.INPUT_UPDATED:										
 					break;
 				case AbstractCursorInputEvt.INPUT_ENDED:
+					logger.debug("INPUT_ENDED FOR COMPONENT " + comp.getName() + " cursor-id: " + c.getId());
 					//update cursor state of object
 					if(!objectCursorState.containsKey(comp))
 					{
+						logger.debug("While INPUT_ENDED Component " + comp.getName() + " added to objectCursorState Map with OBJECTWITHNOTAP  cursor-id: " + c.getId());
 						objectCursorState.put(mtComp, FingerTapCursorState.OBJECTWITHNOTAP);
 					}
 					objectCursorState.get(mtComp).tapRelease(this,mtComp,c);
 					//update selection state of complete selection
 					if(selection.getCurrentlyPressedCursors().contains(c))
 					{
+						logger.debug("While INPUT_ENDED Component " + comp.getName() + " removed from currentlyPressedCursor cursor-id: " + c.getId());
 						selection.getCurrentlyPressedCursors().remove(c);
 						selection.getState().tapRelease(selection,c,mtComp);
 					}									
