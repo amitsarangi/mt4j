@@ -118,7 +118,7 @@ public class SimulatePreDrawAction implements IPreDrawAction {
 	    				//tf.origin.set(vec);
 	    				
 	    				Vector3f scale = new Vector3f(); //get scale value of global matrix
-//	    				
+	    					    					    					    				
 	    				Vector3D xVec = new Vector3D(mat.m00,mat.m01,mat.m02);
 	    				Vector3D yVec = new Vector3D(mat.m10,mat.m11,mat.m12);
 	    				Vector3D zVec = new Vector3D(mat.m20,mat.m21,mat.m22);
@@ -203,9 +203,10 @@ public class SimulatePreDrawAction implements IPreDrawAction {
 									for(int a=0;a<canvas.getChildren().length;a++)
 									{
 										if(canvas.getChildren()[a]!=children&&!(canvas.getChildren()[a] instanceof Cluster))
-										{
-											
-																		
+										{																
+											System.out.println("canvas.getChildren()[a] " + canvas.getChildren()[a]);
+											System.out.println("ray.getRayStartPoint() " + ray.getRayStartPoint());
+											System.out.println("ray.getPointInRayDirection().z " + ray.getPointInRayDirection().z);
 											
 											if(ComponentHelper.getCenterPointGlobal(canvas.getChildren()[a]).z<ray.getRayStartPoint().z&&ComponentHelper.getCenterPointGlobal(canvas.getChildren()[a]).z>ray.getPointInRayDirection().z)
 												{
