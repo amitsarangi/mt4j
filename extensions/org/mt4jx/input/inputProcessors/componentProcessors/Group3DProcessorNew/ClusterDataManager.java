@@ -84,7 +84,9 @@ public class ClusterDataManager implements ISelectionListener {
 				
 		cl.attachCamera(canvas.getAttachedCamera());
 		cl.setComposite(true);
-			
+		
+		cl.setName("cluster");
+		
 		canvas.addChild(cl);
 				
 		if(fireEvent)
