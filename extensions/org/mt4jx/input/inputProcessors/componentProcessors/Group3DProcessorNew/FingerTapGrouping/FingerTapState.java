@@ -27,6 +27,7 @@ public enum FingerTapState implements FingerTapTransitions,FingerTapStateMethods
 				sel.setState(ONEELEMENTSELECTED);
 			}else
 			{	
+				System.out.println("NOELEMENTSELECTED to CLUSTERSELECTED CursorId " + cursor.getId() + " compname " + comp.getName());
 				sel.setFirstCursor(cursor);
 				sel.setFirstCursorComp(comp);
 				sel.setCurrentlySelectedCluster(sel.getClusterDataManager().getClusterForComponent(comp));
@@ -164,7 +165,7 @@ public enum FingerTapState implements FingerTapTransitions,FingerTapStateMethods
 			{
 				if(sel.getFirstCursor()!=cursor)
 				{
-					System.out.println("Cluster selected changing to first Cursor");					
+					System.out.println("Cluster selected changing to first Cursor " + cursor.getId() + " compname " + comp.getName());					
 					sel.setFirstCursor(cursor);
 					sel.setFirstCursorComp(comp);
 				}
@@ -208,7 +209,7 @@ public enum FingerTapState implements FingerTapTransitions,FingerTapStateMethods
 					//if cluster is still available					
 					if(cluster.getChildren().length>1)
 					{
-						System.out.println("Cluster selected Tap Release changing cluster state CLUSTERSELECTED");
+						System.out.println("Cluster selected Tap Release changing cluster state CLUSTERSELECTED " + cursor.getId() + " compname " + comp.getName() );
 						MTComponent[] children1 = sel.getCurrentlySelectedCluster().getChildren();
 						 for (int i = 0; i < children1.length; i++) {
 							MTComponent mtComponent = children1[i];
