@@ -38,11 +38,12 @@ public enum FingerTapState implements FingerTapTransitions,FingerTapStateMethods
 		@Override
 		public synchronized void tapRelease(FingerTapSelection sel,InputCursor cursor,MTComponent comp) {
 			//do nothing not possible
-		
+			System.out.println("NO ELEMENT SELECTED tapRelease");
 		}
 
 		@Override
 		public void stateEntry(FingerTapSelection sel) {
+			System.out.println("stateEntry");
 			sel.setFirstCursor(null);	
 			sel.setFirstCursorComp(null);
 			sel.setSelectedComponents(new ArrayList<MTComponent>());
@@ -63,7 +64,7 @@ public enum FingerTapState implements FingerTapTransitions,FingerTapStateMethods
 		@Override
 		public synchronized void tapPress(FingerTapSelection sel,InputCursor cursor,MTComponent comp) {
 			this.stateExit(sel);
-			
+			System.out.println("ONELEMENTSELECTED tapPress");
 			if(!sel.compIsInSelection(comp))//do not change status or add component if it is already in comp,
 											//this happens if you want to do an rotate or scale action on an object
 			{
@@ -81,7 +82,7 @@ public enum FingerTapState implements FingerTapTransitions,FingerTapStateMethods
 
 		@Override
 		public synchronized void tapRelease(FingerTapSelection sel,InputCursor cursor,MTComponent comp) {
-			
+			System.out.println("ONELEMENTSELECTED tapRelease");
 			if(!sameComponent)
 			{
 				this.stateExit(sel);			
@@ -112,7 +113,7 @@ public enum FingerTapState implements FingerTapTransitions,FingerTapStateMethods
 
 		
 		public synchronized void tapPress(FingerTapSelection sel,InputCursor cursor,MTComponent comp) {
-			
+			System.out.println("MANYELEMENTSSELECTED tapPress");
 			sel.addComponentToSelection(comp);
 			sel.setState(MANYELEMENTSSELECTED);
 		}
@@ -120,6 +121,7 @@ public enum FingerTapState implements FingerTapTransitions,FingerTapStateMethods
 		@Override
 		public synchronized void tapRelease(FingerTapSelection sel,InputCursor cursor,MTComponent comp){
 		
+			System.out.println("MANYELEMENTSSELECTED taprealase");
 			
 			if(sel.isFirstCursor(cursor) && sel.getCurrentlyPressedCursors().size()==0)
 			{
