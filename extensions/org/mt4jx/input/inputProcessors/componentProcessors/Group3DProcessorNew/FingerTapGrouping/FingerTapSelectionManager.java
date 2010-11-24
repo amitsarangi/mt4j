@@ -147,7 +147,7 @@ public class FingerTapSelectionManager extends AbstractGlobalInputProcessor impl
                 //comp = currentPickEntry.hitObj;                
 			}
 			MTComponent mtComp = (MTComponent)comp;
-			
+			System.out.println("Current Component " + mtComp.getName());
 			if(getDragSelectables().contains(comp))
 			{
 				
