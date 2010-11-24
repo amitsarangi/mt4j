@@ -237,6 +237,7 @@ public enum FingerTapState implements FingerTapTransitions,FingerTapStateMethods
 				
 			}
 			
+			System.out.println("CurrentlyPressedCursors " +sel.getCurrentlyPressedCursors().size() );
 			if(sel.getCurrentlyPressedCursors().size()==0)
 			{					
 					sel.setState(NOELEMENTSELECTED);
@@ -253,6 +254,7 @@ public enum FingerTapState implements FingerTapTransitions,FingerTapStateMethods
 
 		@Override
 		public void stateEntry(FingerTapSelection sel) {
+			System.out.println("CLUSTERSELECTED STATEENTRY");
 			sel.getSelectionManager().fireClusterSelectionEvent(new MTClusterEvent(this,MTClusterEvent.CLUSTER_SELECTED,sel.getCurrentlySelectedCluster()));
 		}
 
