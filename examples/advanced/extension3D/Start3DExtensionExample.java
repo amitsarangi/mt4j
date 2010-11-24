@@ -16,6 +16,39 @@ public class Start3DExtensionExample extends MTApplication{
 		initialize();
 	}
 	
+	/* (non-Javadoc)
+	 * @see org.mt4j.MTApplication#startUp()
+	 */
+	/* (non-Javadoc)
+	 * @see org.mt4j.MTApplication#startUp()
+	 */
+	/* (non-Javadoc)
+	 * @see org.mt4j.MTApplication#startUp()
+	 */
+	/* (non-Javadoc)
+	 * @see org.mt4j.MTApplication#startUp()
+	 */
+	/* (non-Javadoc)
+	 * @see org.mt4j.MTApplication#startUp()
+	 */
+	/* (non-Javadoc)
+	 * @see org.mt4j.MTApplication#startUp()
+	 */
+	/* (non-Javadoc)
+	 * @see org.mt4j.MTApplication#startUp()
+	 */
+	/* (non-Javadoc)
+	 * @see org.mt4j.MTApplication#startUp()
+	 */
+	/* (non-Javadoc)
+	 * @see org.mt4j.MTApplication#startUp()
+	 */
+	/* (non-Javadoc)
+	 * @see org.mt4j.MTApplication#startUp()
+	 */
+	/* (non-Javadoc)
+	 * @see org.mt4j.MTApplication#startUp()
+	 */
 	@Override
 	public void startUp(){
 		scene = new Extension3DScene(this, "3D Model scene");

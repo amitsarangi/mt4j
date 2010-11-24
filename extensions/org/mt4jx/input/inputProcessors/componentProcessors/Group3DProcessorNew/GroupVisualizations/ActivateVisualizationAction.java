@@ -29,8 +29,7 @@ public class ActivateVisualizationAction implements IGestureEventListener {
 			case DragEvent.GESTURE_DETECTED:
 				cluster.setVisualizeProvider(methodProvider);
 				break;
-			case DragEvent.GESTURE_ENDED:	
-				System.out.println("ended");
+			case DragEvent.GESTURE_ENDED:				
 				cluster.setVisualizeProvider(null);
 				break;
 			default: break;

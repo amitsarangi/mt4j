@@ -28,6 +28,7 @@ import processing.core.PApplet;
 
 public class LassoVisualizationAction implements IMTEventListener {
 
+	//THIS CLASS IS NOT MAINTAINED ANYMORE
 	private PApplet pApplet;
 	
 	public LassoVisualizationAction(PApplet pApplet)
@@ -80,7 +81,7 @@ public class LassoVisualizationAction implements IMTEventListener {
 					MTPolygon polygon = createNewPolygon(clEvent.getCluster());
 					MTComponent visualComponentGroup = new MTComponent(pApplet, clEvent.getCluster().getAttachedCamera());
 					visualComponentGroup.addChild(polygon);					
-					clEvent.getCluster().setVisualComponentGroup(visualComponentGroup);
+					clEvent.getCluster().setVisualComponentGroup(visualComponentGroup);					
 					break;
 				case MTClusterEvent.CLUSTER_DELETED:
 					for(MTComponent comp : clEvent.getCluster().getChildren())
@@ -207,7 +208,7 @@ public class LassoVisualizationAction implements IMTEventListener {
 				for (Vector3D v : verts){
 					if(cluster.getAttachedCamera().getFrustum().getZValueOfNearPlane()!=v.z)
 					{
-						v = Tools3D.projectPointToPlane(v, cluster.getAttachedCamera().getFrustum(), cluster.getAttachedCamera().getFrustum().getZValueOfNearPlane(),((MTApplication)pApplet));
+						v = Tools3D.projectPointToPlaneInPerspectiveMode(v, cluster.getAttachedCamera().getFrustum(), cluster.getAttachedCamera().getFrustum().getZValueOfNearPlane(),((MTApplication)pApplet));
 					}					
 					allClusteredVerts.add(v);
 				}

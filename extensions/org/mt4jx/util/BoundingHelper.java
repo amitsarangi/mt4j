@@ -66,7 +66,7 @@ public class BoundingHelper {
 			
 			for(Vector3D vec : globalVectors)
 			{
-				Vector3D projVec = Tools3D.projectPointToPlane(vec, cam.getFrustum(), atDepth,(MTApplication)pApplet);
+				Vector3D projVec = Tools3D.projectPointToPlaneInPerspectiveMode(vec, cam.getFrustum(), atDepth,(MTApplication)pApplet);
 				allVectors.add(projVec);
 			}			
 		}

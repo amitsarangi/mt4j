@@ -13,6 +13,7 @@ import org.mt4j.components.StateChange;
 import org.mt4j.components.TransformSpace;
 import org.mt4j.components.visibleComponents.shapes.AbstractShape;
 import org.mt4j.components.visibleComponents.shapes.mesh.MTCube;
+import org.mt4j.components.visibleComponents.shapes.mesh.MTSphere;
 import org.mt4j.components.visibleComponents.shapes.mesh.MTTriangleMesh;
 import org.mt4j.input.IMTEventListener;
 import org.mt4j.input.gestureAction.DefaultDragAction;
@@ -54,9 +55,12 @@ import org.mt4jx.input.inputProcessors.componentProcessors.Group3DProcessorNew.C
 import org.mt4jx.input.inputProcessors.componentProcessors.Group3DProcessorNew.ClusterHub;
 import org.mt4jx.input.inputProcessors.componentProcessors.Group3DProcessorNew.IVisualizeMethodProvider;
 import org.mt4jx.input.inputProcessors.componentProcessors.Group3DProcessorNew.FingerTapGrouping.FingerTapSelectionManager;
+import org.mt4jx.input.inputProcessors.componentProcessors.Group3DProcessorNew.GroupVisualizations.BlinkingEmissionActivateVisualizationAction;
 import org.mt4jx.input.inputProcessors.componentProcessors.Group3DProcessorNew.GroupVisualizations.BlinkingLineVisualizationAction;
+import org.mt4jx.input.inputProcessors.componentProcessors.Group3DProcessorNew.GroupVisualizations.LassoVisualizationAction;
 import org.mt4jx.input.inputProcessors.componentProcessors.Group3DProcessorNew.GroupVisualizations.LineVisualizationAction;
 import org.mt4jx.input.inputProcessors.componentProcessors.Group3DProcessorNew.GroupVisualizations.LineVisualizationWithOutlinesAction;
+import org.mt4jx.input.inputProcessors.componentProcessors.Group3DProcessorNew.LassoGrouping.LassoGroupSelectionManager;
 import org.mt4jx.input.inputProcessors.componentProcessors.Rotate3DProcessor.Rotate3DProcessor;
 import org.mt4jx.input.inputProcessors.componentProcessors.depthProcessor.DepthProcessor;
 import org.mt4jx.util.ComponentHelper;
@@ -104,7 +108,7 @@ public class Extension3DScene extends AbstractScene {
 		material.setShininess(110);// 0=no shine,  127=max shine
 		
 
-	MTComponent group1;
+		/*MTComponent group1;
 		
 		group1 = getMeshGroup(mtApplication, new Vector3D(0.0f,0.0f,-200.0f),System.getProperty("user.dir")  + File.separator + "examples" +  File.separator +"advanced"+ File.separator+  "extension3D"  + File.separator + "data" +  File.separator +
 				"CWK500" + File.separator + "CWK500_mit_kuehlmittelbehaelter.obj",light,material,"machine1");
@@ -146,48 +150,85 @@ public class Extension3DScene extends AbstractScene {
 		MTComponent dreh;
 		
 		dreh = getMeshGroup(mtApplication, new Vector3D(-100.0f,-150.0f,-200.0f), System.getProperty("user.dir")  + File.separator + "examples" +  File.separator +"advanced"+ File.separator+ File.separator + "extension3D"  + File.separator + "data" +  File.separator +
-				"drehmaschine" + File.separator + "maschine1.obj",light,material,"drehmaschine");
+				"drehmaschine" + File.separator + "maschine1.obj",light,material,"drehmaschine");*/
 		
 		
 		MTComponent grundflaecheGroup = getGroundMesh(mtApplication, System.getProperty("user.dir")  + File.separator + "examples" +  File.separator +"advanced"+ File.separator+ File.separator + "extension3D"  + File.separator + "data" +  File.separator +
 				"grundflaeche" + File.separator + "grundflaeche2.obj",light,material,cam);
 		
-		//LassoGroupSelectionManager selectionManager = new LassoGroupSelectionManager(mtApp,this.getSceneCam(),planes);
+		/**/
+		//NORMAL 3D OBJECTS VERSION
+		MTCube cube1 = new MTCube(mtApplication, 100.0f);
+		cube1.setMaterial(material);
+		cube1.setLight(light);
+		MTSphere sphere1 = new MTSphere(mtApplication,"sphere1",32,32,100.0f);
+		sphere1.setMaterial(material);
+		sphere1.setLight(light);
+		MTSphere sphere2 = new MTSphere(mtApplication,"sphere2",32,32,100.0f);
+		sphere2.setMaterial(material);
+		sphere2.setLight(light);
+		MTComponent group10 = new MTComponent(mtApplication);
+		group10.addChild(cube1);
+		MTComponent group20 = new MTComponent(mtApplication);
+		group20.addChild(sphere1);
+		MTComponent group30 = new MTComponent(mtApplication);
+		group30.addChild(sphere2);
 		
-		//TapGroupSelectionManager selectionManagerTap = new TapGroupSelectionManager();
+		Vector3D destinationPosition = new Vector3D(mtApplication.width/2+200.0f, mtApplication.height/2, 50);
+		
+		//Desired scale for the meshes
+		float destinationScale = mtApplication.width*0.94f;
+		
+		Vector3D translationToScreenCenter = new Vector3D(destinationPosition);
+		group10.translate(translationToScreenCenter);		
+		group20.translate(translationToScreenCenter.getAdded(new Vector3D(0.0f,200.0f,0.0f)));
+		group30.translate(translationToScreenCenter.getAdded(new Vector3D(200.0f,0.0f,0.0f)));
+		settingsForNormalMeshGroup(mtApplication,group10);
+		settingsForNormalMeshGroup(mtApplication,group20);
+		settingsForNormalMeshGroup(mtApplication,group30);
+		this.getCanvas().addChild(group10);
+		this.getCanvas().addChild(group20);
+		this.getCanvas().addChild(group30);
+		collisionManager.addMeshToCollisionGroup(group10, cube1, translationToScreenCenter);
+		collisionManager.addMeshToCollisionGroup(group20, sphere1, translationToScreenCenter.getAdded(new Vector3D(0.0f,200.0f,0.0f)));
+		collisionManager.addMeshToCollisionGroup(group30, sphere2, translationToScreenCenter.getAdded(new Vector3D(200.0f,000.0f,0.0f)));
+		/**/
 		
 		
-		//Group3DProcessor groupProcessor = new Group3DProcessor(mtApp,this.getSceneCam(),this.getCanvas(),selectionManagerTap);
-		//selectionManagerTap.setProcessor(groupProcessor);
 		ClusterDataManager clusterManager = new ClusterDataManager(mtApplication,this.getCanvas(),collisionManager);
 		clusterHub = new ClusterHub();
 		clusterManager.addClusterEventListener(clusterHub);
-		//LassoVisualizationAction visAction = new LassoVisualizationAction(mtApplication);		
-		//clusterHub.addEventListener(visAction);
+				
 		LineVisualizationAction visAction = new LineVisualizationAction(mtApplication);
 		clusterHub.addEventListener(visAction);
 		
 		//BlinkingLineVisualizationAction visAction2 = new BlinkingLineVisualizationAction(mtApplication);
 		//clusterHub.addEventListener(visAction2);
 		
-		//LineVisualizationWithOutlinesAction visAction3 = new LineVisualizationWithOutlinesAction(mtApplication);
-		//clusterHub.addEventListener(visAction3);
-		
-		//LassoGroupSelectionManager selectionManager = new LassoGroupSelectionManager(this.getCanvas(),clusterManager);
-		//selectionManager.addSelectionListener(clusterHub);
-		
-		FingerTapSelectionManager selectionManager = new FingerTapSelectionManager(clusterManager,this.getCanvas());
+		//LASSO GROUPING
+		LassoGroupSelectionManager selectionManager = new LassoGroupSelectionManager(this.getCanvas(),clusterManager);
 		selectionManager.addSelectionListener(clusterHub);
-		this.registerGlobalInputProcessor(selectionManager);
+		this.getCanvas().registerInputProcessor(selectionManager);
+		//LASSO GROUPING END
+		
+		//FINGERTAP GROUPING
+		//FingerTapSelectionManager selectionManager = new FingerTapSelectionManager(clusterManager,this.getCanvas());
+		//selectionManager.addSelectionListener(clusterHub);
+		//this.registerGlobalInputProcessor(selectionManager);
+		//FINGERTAP GROUPING END
 						
-		selectionManager.addClusterable(group1);
+		/*selectionManager.addClusterable(group1);
 		selectionManager.addClusterable(machine);
 		selectionManager.addClusterable(machine2);
 		selectionManager.addClusterable(machine3);
 		selectionManager.addClusterable(machine4);
 		selectionManager.addClusterable(robotArm);
-		selectionManager.addClusterable(dreh);
+		selectionManager.addClusterable(dreh);*/
 	
+		selectionManager.addClusterable(group10);
+		selectionManager.addClusterable(group20);
+		selectionManager.addClusterable(group30);
+		
 		collisionManager.addObjectsToCollisionDomain();
 		
 	}

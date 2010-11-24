@@ -205,9 +205,6 @@ public class SimulatePreDrawAction implements IPreDrawAction {
 									{
 										if(canvas.getChildren()[a]!=children&&!(canvas.getChildren()[a] instanceof Cluster)&&!(canvas.getChildren()[a] instanceof MTOverlayContainer))
 										{																
-											System.out.println("canvas.getChildren()[a] " + canvas.getChildren()[a]);
-											System.out.println("ray.getRayStartPoint() " + ray.getRayStartPoint());
-											System.out.println("ray.getPointInRayDirection().z " + ray.getPointInRayDirection().z);
 											
 											if(ComponentHelper.getCenterPointGlobal(canvas.getChildren()[a]).z<ray.getRayStartPoint().z&&ComponentHelper.getCenterPointGlobal(canvas.getChildren()[a]).z>ray.getPointInRayDirection().z)
 												{
@@ -259,9 +256,7 @@ public class SimulatePreDrawAction implements IPreDrawAction {
 								{
 									if(canvas.getChildren()[a]!=targetComp&&!(canvas.getChildren()[a] instanceof MTOverlayContainer))
 									{	
-										
-									
-											
+																			
 										if(ComponentHelper.getCenterPointGlobal(canvas.getChildren()[a]).z<ray.getRayStartPoint().z
 												&ComponentHelper.getCenterPointGlobal(canvas.getChildren()[a]).z>ray.getPointInRayDirection().z)
 										{

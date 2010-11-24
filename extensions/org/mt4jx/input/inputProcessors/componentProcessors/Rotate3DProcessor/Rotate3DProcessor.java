@@ -535,7 +535,7 @@ public class Rotate3DProcessor extends AbstractCursorProcessor {
 		{
 			IFrustum frustum = object.getViewingCamera().getFrustum();
 			//projiziere Punkt auf die Near Plane
-			point = Tools3D.projectPointToPlane(point, frustum, frustum.getZValueOfNearPlane(),(MTApplication)object.getRenderer());
+			point = Tools3D.projectPointToPlaneInPerspectiveMode(point, frustum, frustum.getZValueOfNearPlane(),(MTApplication)object.getRenderer());
 			return point;
 		}
 		

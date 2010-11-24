@@ -180,7 +180,7 @@ public class LassoSelection implements ISelection {
 			//project center point on z plane
 			
 			Vector3D projectedCenterPoint = ComponentHelper.getCenterPointGlobal(currentCard).getCopy();
-			projectedCenterPoint = Tools3D.projectPointToPlane(projectedCenterPoint, camera.getFrustum(), this.getPolygon().getCenterPointGlobal().z,(MTApplication)pApplet);
+			projectedCenterPoint = Tools3D.projectPointToPlaneInPerspectiveMode(projectedCenterPoint, camera.getFrustum(), this.getPolygon().getCenterPointGlobal().z,(MTApplication)pApplet);
 						
 			if (this.getPolygon().containsPointGlobal(projectedCenterPoint)){				
 				selectedComps.add(currentCard);				
