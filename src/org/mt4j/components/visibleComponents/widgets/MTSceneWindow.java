@@ -185,7 +185,7 @@ extends MTRoundRectangle {
 				case AnimationEvent.ANIMATION_UPDATED:
 					float currentVal = ae.getAnimation().getValue();
 					setWidthXYRelativeToParent(currentVal);
-					rotateZ(getCenterPointRelativeToParent(), -ae.getCurrentStepDelta()*0.4f);
+					rotateZ(getCenterPointRelativeToParent(), -ae.getDelta()*0.3f);
 					break;
 				case AnimationEvent.ANIMATION_ENDED:
 					setVisible(false);

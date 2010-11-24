@@ -43,8 +43,8 @@ import org.mt4j.components.visibleComponents.font.FontManager;
 import org.mt4j.components.visibleComponents.font.IFont;
 import org.mt4j.components.visibleComponents.shapes.AbstractShape;
 import org.mt4j.components.visibleComponents.shapes.MTEllipse;
-import org.mt4j.components.visibleComponents.shapes.MTRoundRectangle;
 import org.mt4j.components.visibleComponents.shapes.MTRectangle.PositionAnchor;
+import org.mt4j.components.visibleComponents.shapes.MTRoundRectangle;
 import org.mt4j.components.visibleComponents.widgets.MTImage;
 import org.mt4j.components.visibleComponents.widgets.MTList;
 import org.mt4j.components.visibleComponents.widgets.MTListCell;
@@ -76,8 +76,6 @@ import org.mt4j.util.animation.IAnimationListener;
 import org.mt4j.util.animation.ani.AniAnimation;
 import org.mt4j.util.camera.MTCamera;
 import org.mt4j.util.math.Matrix;
-import org.mt4j.util.math.Tools3D;
-import org.mt4j.util.math.ToolsGeometry;
 import org.mt4j.util.math.Vector3D;
 
 import processing.core.PImage;
@@ -267,8 +265,8 @@ public class MapsScene extends AbstractScene implements MouseWheelListener, Mous
 		final IAnimation slideOut = new AniAnimation(0, 170, 700, AniAnimation.BACK_OUT, mapMenu);
 		slideOut.addAnimationListener(new IAnimationListener() {
 			public void processAnimationEvent(AnimationEvent ae) {
-				float delta = ae.getCurrentStepDelta();
-				((IMTComponent3D)ae.getTargetObject()).translateGlobal(new Vector3D(delta,0,0));
+				float delta = ae.getDelta();
+				((IMTComponent3D)ae.getTarget()).translateGlobal(new Vector3D(delta,0,0));
 				switch (ae.getId()) {
 				case AnimationEvent.ANIMATION_ENDED:
 					doSlideIn = true;
@@ -282,8 +280,8 @@ public class MapsScene extends AbstractScene implements MouseWheelListener, Mous
 		final IAnimation slideIn = new AniAnimation(0, 170, 700, AniAnimation.BACK_OUT, mapMenu);
 		slideIn.addAnimationListener(new IAnimationListener() {
 			public void processAnimationEvent(AnimationEvent ae) {
-				float delta = -ae.getCurrentStepDelta();
-				((IMTComponent3D)ae.getTargetObject()).translateGlobal(new Vector3D(delta,0,0));
+				float delta = -ae.getDelta();
+				((IMTComponent3D)ae.getTarget()).translateGlobal(new Vector3D(delta,0,0));
 				switch (ae.getId()) {
 				case AnimationEvent.ANIMATION_ENDED:
 					doSlideIn = false;
@@ -724,7 +722,7 @@ public class MapsScene extends AbstractScene implements MouseWheelListener, Mous
                                                     TapEvent ce = (TapEvent) g;
                                                     switch (ce.getTapID()) {
                                                         case TapEvent.BUTTON_DOWN:
-                                                            IMTComponent3D e = ce.getTargetComponent();
+                                                            IMTComponent3D e = ce.getTarget();
                                                             Photo foto = tagToPhoto.get(e);
                                                             if (foto != null) {
                                                                 SinglePhotoLoader fotoLoader = new SinglePhotoLoader(foto, 50);

@@ -31,6 +31,8 @@ import org.mt4j.input.inputProcessors.IGestureEventListener;
 import org.mt4j.input.inputProcessors.MTGestureEvent;
 import org.mt4j.input.inputProcessors.componentProcessors.dragProcessor.DragEvent;
 import org.mt4j.input.inputProcessors.componentProcessors.dragProcessor.DragProcessor;
+import org.mt4j.input.inputProcessors.componentProcessors.rotateProcessor.RotateProcessor;
+import org.mt4j.input.inputProcessors.componentProcessors.scaleProcessor.ScaleProcessor;
 import org.mt4j.sceneManagement.Iscene;
 import org.mt4j.util.MT4jSettings;
 import org.mt4j.util.MTColor;
@@ -201,6 +203,9 @@ public class MTSceneMenu extends MTRectangle{
 		closeButton.setFillColor(new MTColor(255, 255, 255, buttonOpacity));
 		closeButton.setNoStroke(true);
 		closeButton.setVisible(false);
+		closeButton.removeAllGestureEventListeners(DragProcessor.class);
+		closeButton.removeAllGestureEventListeners(RotateProcessor.class);
+		closeButton.removeAllGestureEventListeners(ScaleProcessor.class);
 		this.addChild(closeButton);
 		
 		//Check if this menu belongs to a window Scene (MTSceneWindow)
@@ -224,6 +229,9 @@ public class MTSceneMenu extends MTRectangle{
 			restoreButton.setFillColor(new MTColor(255, 255, 255, buttonOpacity));
 			restoreButton.setNoStroke(true);
 			restoreButton.setVisible(false);
+			restoreButton.removeAllGestureEventListeners(DragProcessor.class);
+			restoreButton.removeAllGestureEventListeners(RotateProcessor.class);
+			restoreButton.removeAllGestureEventListeners(ScaleProcessor.class);			
 			this.addChild(restoreButton);
 			
 			menuShape.addGestureListener(DragProcessor.class, new IGestureEventListener() {

@@ -1,7 +1,6 @@
 package advanced.puzzle;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import org.mt4j.MTApplication;
@@ -344,7 +343,6 @@ public class PuzzleFactory {
 	//FIXME TEST
 	private class RotationListener implements IGestureEventListener{
 		Vector3D startP1;
-		Vector3D startP2;
 		InputCursor oldC1;
 		InputCursor oldC2;
 		Vector3D planeNormal;
@@ -359,31 +357,14 @@ public class PuzzleFactory {
 			IMTComponent3D comp = ge.getTarget();
 			RotateEvent re = (RotateEvent)ge;
 			float deg = re.getRotationDegrees();
-			Vector3D p = re.getRotationPoint();
 			InputCursor c1 = re.getFirstCursor();
 			InputCursor c2 = re.getSecondCursor();
-			
-			/*
-			Vector3D i1 = comp.getIntersectionGlobal(Tools3D.getCameraPickRay(app, comp, c1));
-			Vector3D i2 = comp.getIntersectionGlobal(Tools3D.getCameraPickRay(app, comp, c2));
-			Vector3D middle = i1.getAdded(i2.getSubtracted(i1).scaleLocal(0.5f));
-			
-			Vector3D o1 = comp.getIntersectionGlobal(Tools3D.getCameraPickRay(app, comp, c1.getPreviousEvent().getScreenX(), c1.getPreviousEvent().getScreenY()));
-			Vector3D o2 = comp.getIntersectionGlobal(Tools3D.getCameraPickRay(app, comp, c2.getPreviousEvent().getScreenX(), c2.getPreviousEvent().getScreenY()));
-			Vector3D middleOld = o1.getAdded(o2.getSubtracted(o1).scaleLocal(0.5f));
-			
-			Vector3D middleDiff = middle.getSubtracted(middleOld);
-			
-			comp.rotateZGlobal(middle, deg);
-			comp.translateGlobal(middleDiff);
-			*/
 			
 			switch (re.getId()) {
 			case RotateEvent.GESTURE_DETECTED:{
 				oldC1 = c1;
 				oldC2 = c2;
 				startP1 = comp.getIntersectionGlobal(Tools3D.getCameraPickRay(app, comp, c1));
-				startP2 = comp.getIntersectionGlobal(Tools3D.getCameraPickRay(app, comp, c2));
 				Vector3D i1 = ToolsGeometry.getRayPlaneIntersection(Tools3D.getCameraPickRay(app, comp, c1), planeNormal, startP1);
 				Vector3D i2 = ToolsGeometry.getRayPlaneIntersection(Tools3D.getCameraPickRay(app, comp, c2), planeNormal, startP1);
 				lastMiddle = i1.getAdded(i2.getSubtracted(i1).scaleLocal(0.5f));
