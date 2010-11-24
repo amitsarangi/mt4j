@@ -54,12 +54,17 @@ public class FingerTapSelectionManager extends AbstractGlobalInputProcessor impl
 	/**for every component a cursor state is held **/
 	private HashMap<MTComponent,FingerTapCursorState> objectCursorState = new HashMap<MTComponent,FingerTapCursorState>();
 	
+	private int tempPressRelease = 0;
+	
+	private int tempCursor = 0;
+	
 	public FingerTapSelectionManager(ClusterDataManager clusterDataManager,MTCanvas canvas)
 	{
 		this.selectionListeners = new ArrayList<ISelectionListener>();
 		this.selection = new FingerTapSelection(clusterDataManager,canvas,this);
 		this.canvas = canvas;
 	}
+	
 	
 	@Override
 	public void addSelectionListener(ISelectionListener listener) {
@@ -148,6 +153,7 @@ public class FingerTapSelectionManager extends AbstractGlobalInputProcessor impl
 				
 				switch (cursorEvt.getId()) {
 				case AbstractCursorInputEvt.INPUT_DETECTED:
+					tempPressRelease++;
 					//update cursor state
 					logger.debug("INPUT_DETECTED FOR COMPONENT " + comp.getName()  + " cursor-id: " + c.getId());
 					if(!objectCursorState.containsKey(comp))
@@ -162,14 +168,16 @@ public class FingerTapSelectionManager extends AbstractGlobalInputProcessor impl
 					{				
 						logger.debug("While INPUT_DETECTED Component " + comp.getName() + " added to currentlyPressedCursor cursor-id: " + c.getId());
 						selection.getCurrentlyPressedCursors().add(c);
+						tempCursor++;
 					}
 					selection.getState().tapPress(selection,c,mtComp);
-												
+					System.out.println("TempPressRelease " + tempPressRelease + " tempCursor " + tempCursor);							
 					break;
 				case AbstractCursorInputEvt.INPUT_UPDATED:										
 					break;
 				case AbstractCursorInputEvt.INPUT_ENDED:
 					logger.debug("INPUT_ENDED FOR COMPONENT " + comp.getName() + " cursor-id: " + c.getId());
+					tempPressRelease--;
 					//update cursor state of object
 					if(!objectCursorState.containsKey(comp))
 					{
@@ -183,7 +191,9 @@ public class FingerTapSelectionManager extends AbstractGlobalInputProcessor impl
 						logger.debug("While INPUT_ENDED Component " + comp.getName() + " removed from currentlyPressedCursor cursor-id: " + c.getId());
 						selection.getCurrentlyPressedCursors().remove(c);
 						selection.getState().tapRelease(selection,c,mtComp);
-					}									
+						tempCursor--;
+					}
+					System.out.println("TempPressRelease " + tempPressRelease + " tempCursor " + tempCursor);
 					break;
 				default:
 					break;
