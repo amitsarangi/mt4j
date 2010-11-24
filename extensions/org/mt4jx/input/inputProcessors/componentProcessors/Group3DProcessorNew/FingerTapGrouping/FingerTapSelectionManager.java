@@ -134,6 +134,7 @@ public class FingerTapSelectionManager extends AbstractGlobalInputProcessor impl
 			//which has been picked, by returing the most upper object on the canvas
 			if(comp instanceof Cluster)
 			{
+				System.out.println("is cluster");
 				Cluster cl = (Cluster)comp;
 				Vector3D currentPos = new Vector3D(cursorEvt.getPosX(),cursorEvt.getPosY(),0.0f);				
 				//PickResult prCanvas = canvas.pick2(currentPos.getX(), currentPos.getY(), true);//ADDTOMT4J
