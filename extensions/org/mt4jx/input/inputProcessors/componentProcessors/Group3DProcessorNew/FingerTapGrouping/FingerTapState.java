@@ -18,7 +18,7 @@ public enum FingerTapState implements FingerTapTransitions,FingerTapStateMethods
 		@Override
 		public synchronized void tapPress(FingerTapSelection sel,InputCursor cursor,MTComponent comp) {
 			this.stateExit(sel);
-			
+			System.out.println("NO ELEMENT SELECTED");
 			if(sel.getClusterDataManager().getClusterForComponent(comp)==null)
 			{
 				sel.setFirstCursor(cursor);
@@ -64,8 +64,6 @@ public enum FingerTapState implements FingerTapTransitions,FingerTapStateMethods
 		public synchronized void tapPress(FingerTapSelection sel,InputCursor cursor,MTComponent comp) {
 			this.stateExit(sel);
 			
-		
-			
 			if(!sel.compIsInSelection(comp))//do not change status or add component if it is already in comp,
 											//this happens if you want to do an rotate or scale action on an object
 			{
@@ -103,6 +101,8 @@ public enum FingerTapState implements FingerTapTransitions,FingerTapStateMethods
 		@Override
 		public void stateExit(FingerTapSelection sel) {
 			this.sameComponent = false;//reset info about same component
+			System.out.println("ONEELEMENTSELECTED");			
+			
 		}
 		
 	},
@@ -112,7 +112,7 @@ public enum FingerTapState implements FingerTapTransitions,FingerTapStateMethods
 
 		
 		public synchronized void tapPress(FingerTapSelection sel,InputCursor cursor,MTComponent comp) {
-		
+			
 			sel.addComponentToSelection(comp);
 			sel.setState(MANYELEMENTSSELECTED);
 		}
@@ -120,7 +120,7 @@ public enum FingerTapState implements FingerTapTransitions,FingerTapStateMethods
 		@Override
 		public synchronized void tapRelease(FingerTapSelection sel,InputCursor cursor,MTComponent comp){
 		
-		
+			
 			if(sel.isFirstCursor(cursor) && sel.getCurrentlyPressedCursors().size()==0)
 			{
 			
@@ -148,6 +148,8 @@ public enum FingerTapState implements FingerTapTransitions,FingerTapStateMethods
 		@Override
 		public void stateExit(FingerTapSelection sel) {
 			// TODO Auto-generated method stub
+			System.out.println("MANYELEMENTSSELECTED");
+			
 			
 		}
 		
