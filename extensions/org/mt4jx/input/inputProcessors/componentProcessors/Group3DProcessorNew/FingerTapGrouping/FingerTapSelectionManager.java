@@ -203,7 +203,9 @@ public class FingerTapSelectionManager extends AbstractGlobalInputProcessor impl
 				//when fingerinput ended with fingers not intersecting 
 				//with the cluster itself
 				logger.debug("INSTANCE OF CLUSTER");
+				
 				selection.getCurrentlyPressedCursors().clear();
+				selection.setState(FingerTapState.NOELEMENTSELECTED);
 			}
 		}
 		
