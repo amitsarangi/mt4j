@@ -181,15 +181,15 @@ public class Extension3DScene extends AbstractScene {
 		//clusterHub.addEventListener(visAction2);
 		
 		//LASSO GROUPING
-		LassoGroupSelectionManager selectionManager = new LassoGroupSelectionManager(this.getCanvas(),clusterManager);
-		selectionManager.addSelectionListener(clusterHub);
-		this.getCanvas().registerInputProcessor(selectionManager);
+		//LassoGroupSelectionManager selectionManager = new LassoGroupSelectionManager(this.getCanvas(),clusterManager);
+		//selectionManager.addSelectionListener(clusterHub);
+		//this.getCanvas().registerInputProcessor(selectionManager);
 		//LASSO GROUPING END
 		
 		//FINGERTAP GROUPING
-		//FingerTapSelectionManager selectionManager = new FingerTapSelectionManager(clusterManager,this.getCanvas());
-		//selectionManager.addSelectionListener(clusterHub);
-		//this.registerGlobalInputProcessor(selectionManager);
+		FingerTapSelectionManager selectionManager = new FingerTapSelectionManager(clusterManager,this.getCanvas());
+		selectionManager.addSelectionListener(clusterHub);
+		this.registerGlobalInputProcessor(selectionManager);
 		//FINGERTAP GROUPING END
 						
 		selectionManager.addClusterable(group1);
