@@ -188,7 +188,7 @@ public class FingerTapSelectionManager extends AbstractGlobalInputProcessor impl
 						logger.debug("While INPUT_ENDED Component " + comp.getName() + " removed from currentlyPressedCursor cursor-id: " + c.getId());
 						selection.getCurrentlyPressedCursors().remove(c);
 						selection.getState().tapRelease(selection,c,mtComp);
-					
+						System.out.println("one cursor removed");
 					}
 					
 					break;
