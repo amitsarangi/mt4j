@@ -11,6 +11,7 @@ import javax.vecmath.Vector3f;
 import org.mt4j.MTApplication;
 import org.mt4j.components.MTCanvas;
 import org.mt4j.components.MTComponent;
+import org.mt4j.components.visibleComponents.shapes.mesh.MTCube;
 import org.mt4j.components.visibleComponents.shapes.mesh.MTTriangleMesh;
 import org.mt4j.components.visibleComponents.widgets.MTOverlayContainer;
 import org.mt4j.input.gestureAction.DefaultDragAction;
@@ -139,7 +140,7 @@ public class SimulatePreDrawAction implements IPreDrawAction {
 	    					
 	    						for(int j=0;j<3;j++)
 	    						{
-	    							colvals[j] = colvals[j] / scaleVals[j];
+	    							colvals[j] = colvals[j] / scaleVals[a];
 	    						}
 	    						tf.basis.setRow(a,colvals);
 	    					} catch (Exception e) {
@@ -203,7 +204,7 @@ public class SimulatePreDrawAction implements IPreDrawAction {
 									
 									for(int a=0;a<canvas.getChildren().length;a++)
 									{
-										if(canvas.getChildren()[a]!=children&&!(canvas.getChildren()[a] instanceof Cluster)&&!(canvas.getChildren()[a] instanceof MTOverlayContainer))
+										if(canvas.getChildren()[a]!=children&&!(canvas.getChildren()[a] instanceof Cluster)&&!(canvas.getChildren()[a] instanceof MTOverlayContainer)&&(ComponentHelper.getCenterPointGlobal(canvas.getChildren()[a])!=null))
 										{																
 											
 											if(ComponentHelper.getCenterPointGlobal(canvas.getChildren()[a]).z<ray.getRayStartPoint().z&&ComponentHelper.getCenterPointGlobal(canvas.getChildren()[a]).z>ray.getPointInRayDirection().z)
@@ -249,21 +250,21 @@ public class SimulatePreDrawAction implements IPreDrawAction {
 								objs.get(0).getWorldTransform(out);
 								Vector3f vecNew = out.origin;
 								Vector3D vecNewMt4j = new Vector3D(vecNew.x,vecNew.y,vecNew.z);
-								
+						
 								Ray ray = new Ray(vecOldMt4j,vecNewMt4j);
 								
 								for(int a=0;a<canvas.getChildren().length;a++)
 								{
-									if(canvas.getChildren()[a]!=targetComp&&!(canvas.getChildren()[a] instanceof MTOverlayContainer))
-									{	
-																			
+									
+									if(canvas.getChildren()[a]!=targetComp&&!(canvas.getChildren()[a] instanceof MTOverlayContainer)&&(ComponentHelper.getCenterPointGlobal(canvas.getChildren()[a])!=null))
+									{											
 										if(ComponentHelper.getCenterPointGlobal(canvas.getChildren()[a]).z<ray.getRayStartPoint().z
-												&ComponentHelper.getCenterPointGlobal(canvas.getChildren()[a]).z>ray.getPointInRayDirection().z)
+												&&ComponentHelper.getCenterPointGlobal(canvas.getChildren()[a]).z>ray.getPointInRayDirection().z)
 										{
 										
 											Vector3D interSectionPos = ComponentHelper.getIntersectionGlobal(canvas.getChildren()[a],ray);
 											if(interSectionPos!=null)
-											{													
+											{
 												objectCollision(objs.get(0));//get only first collision object, collision of other objects will be done in objectCollision method													
 												objectCollision(collisionManager.getAllObjectsForCollisionGroup((canvas.getChildren()[a])).get(0));//the object with which it is colliding													
 											}
@@ -278,6 +279,8 @@ public class SimulatePreDrawAction implements IPreDrawAction {
 					}
 				}
     			
+    			//test if engine detected collisions and
+    			//execute collision behaviour for colliding objects
     			int numManifolds = collisionWorld.getDispatcher().getNumManifolds();
     			boolean contact = false;		
     			 
@@ -287,7 +290,7 @@ public class SimulatePreDrawAction implements IPreDrawAction {
     			   	  
     				Cluster cl = isChildrenOfACluster(collisionManager.getAssociatedComponent((CollisionObject)contactManifold.getBody0()));
     				Cluster cl2 = isChildrenOfACluster(collisionManager.getAssociatedComponent((CollisionObject)contactManifold.getBody1()));
-    				
+    								
     				if(cl!=null)
     				{    					
     					performCollisionForClusterChildren(cl);
@@ -401,46 +404,7 @@ public class SimulatePreDrawAction implements IPreDrawAction {
 					return;//everything has already been done for this object
 				}
 				
-				//get MTCanvas to look for a Drag Helper Object 
-				//if one is on the canvas and the target comp is our collision body pause the depth gesture
-				for(int i=0;i<canvas.getChildren().length;i++)
-				{
-					if(canvas.getChildren()[i] instanceof MTDepthHelper)
-					{
-						MTDepthHelper helper = (MTDepthHelper) canvas.getChildren()[i];
-						MTComponent targetComp = (MTComponent) helper.getTargetComponent();
-						
-						/*if(targetComp instanceof Cluster)
-						{
-							MTComponent[] clChildren = targetComp.getChildren();
-							for(MTComponent children : clChildren)
-							{
-								if(children==getFirstNonMTTriangleMeshParent(comp))//compare cluster children to the group object in which the collision triangle meshes are
-								{
-									helper.getDepthProcessor().setGesturePaused(true);
-								}
-							}
-						}
-						else
-						{
-							if(targetComp==getFirstNonMTTriangleMeshParent(comp))
-							{							
-								helper.getDepthProcessor().setGesturePaused(true);
-							}
-						}*/
-					}
-				}			
 				
-				
-				//pause all collision processors
-				/*for(int count=0;count<getFirstNonMTTriangleMeshParent(comp).getInputProcessors().length;count++)
-				{
-					if(comp.getParent().getInputProcessors()[count] instanceof ICollisionProcessor)
-					{
-						ICollisionProcessor  colProc = (ICollisionProcessor)getFirstNonMTTriangleMeshParent(comp).getInputProcessors()[count];
-						colProc.pauseGesture();
-					}
-				}*/
 				
 			
 			for(int b=0;b<getFirstNonMTTriangleMeshParent(comp).getGestureListeners().length;b++)
@@ -487,7 +451,20 @@ public class SimulatePreDrawAction implements IPreDrawAction {
 					
 				Vector3D vecMT4J = new Vector3D(vec.x,vec.y,vec.z);
 				
-				oldMatrix.scale(vecMT4J);
+				float scaleVals[] = new float[3];
+				vecMT4J.toArray(scaleVals);
+				
+				//oldMatrix.scale(vecMT4J);
+				for(int i=0;i<3;i++)
+				{
+					float[] row = oldMatrix.getRow(i);
+					for(int a=0;a<3;a++)
+					{
+						row[a] = row[a]*scaleVals[i];
+						oldMatrix.setRow(i, row);
+					}
+				}
+				
 				oldMatrix.m33 = 1f;
 				
 				resetComponentMatrix(oldMatrix,getFirstNonMTTriangleMeshParent(comp));

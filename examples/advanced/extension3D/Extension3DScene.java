@@ -108,7 +108,7 @@ public class Extension3DScene extends AbstractScene {
 		material.setShininess(110);// 0=no shine,  127=max shine
 		
 
-		/*MTComponent group1;
+		MTComponent group1;
 		
 		group1 = getMeshGroup(mtApplication, new Vector3D(0.0f,0.0f,-200.0f),System.getProperty("user.dir")  + File.separator + "examples" +  File.separator +"advanced"+ File.separator+  "extension3D"  + File.separator + "data" +  File.separator +
 				"CWK500" + File.separator + "CWK500_mit_kuehlmittelbehaelter.obj",light,material,"machine1");
@@ -150,49 +150,24 @@ public class Extension3DScene extends AbstractScene {
 		MTComponent dreh;
 		
 		dreh = getMeshGroup(mtApplication, new Vector3D(-100.0f,-150.0f,-200.0f), System.getProperty("user.dir")  + File.separator + "examples" +  File.separator +"advanced"+ File.separator+ File.separator + "extension3D"  + File.separator + "data" +  File.separator +
-				"drehmaschine" + File.separator + "maschine1.obj",light,material,"drehmaschine");*/
+				"drehmaschine" + File.separator + "maschine1.obj",light,material,"drehmaschine");
+				
+				
 		
 		
 		MTComponent grundflaecheGroup = getGroundMesh(mtApplication, System.getProperty("user.dir")  + File.separator + "examples" +  File.separator +"advanced"+ File.separator+ File.separator + "extension3D"  + File.separator + "data" +  File.separator +
-				"grundflaeche" + File.separator + "grundflaeche2.obj",light,material,cam);
+				"grundflaeche" + File.separator + "grundflaeche3.obj",light,material,cam);
 		
 		/**/
 		//NORMAL 3D OBJECTS VERSION
-		MTCube cube1 = new MTCube(mtApplication, 100.0f);
-		cube1.setMaterial(material);
-		cube1.setLight(light);
+		/*MTCube cube1 = new MTCube(mtApplication, 50.0f);
+		MTComponent group10 = getMeshGroupForSimpleObject(mtApplication,cube1,new Vector3D(0.0f,0.0f,0.0f),light,material,"cube");
+		
 		MTSphere sphere1 = new MTSphere(mtApplication,"sphere1",32,32,100.0f);
-		sphere1.setMaterial(material);
-		sphere1.setLight(light);
+		MTComponent group20 = getMeshGroupForSimpleObject(mtApplication,sphere1,new Vector3D(0.0f,200.0f,0.0f),light,material,"sphere1");
 		MTSphere sphere2 = new MTSphere(mtApplication,"sphere2",32,32,100.0f);
-		sphere2.setMaterial(material);
-		sphere2.setLight(light);
-		MTComponent group10 = new MTComponent(mtApplication);
-		group10.addChild(cube1);
-		MTComponent group20 = new MTComponent(mtApplication);
-		group20.addChild(sphere1);
-		MTComponent group30 = new MTComponent(mtApplication);
-		group30.addChild(sphere2);
-		
-		Vector3D destinationPosition = new Vector3D(mtApplication.width/2+200.0f, mtApplication.height/2, 50);
-		
-		//Desired scale for the meshes
-		float destinationScale = mtApplication.width*0.94f;
-		
-		Vector3D translationToScreenCenter = new Vector3D(destinationPosition);
-		group10.translate(translationToScreenCenter);		
-		group20.translate(translationToScreenCenter.getAdded(new Vector3D(0.0f,200.0f,0.0f)));
-		group30.translate(translationToScreenCenter.getAdded(new Vector3D(200.0f,0.0f,0.0f)));
-		settingsForNormalMeshGroup(mtApplication,group10);
-		settingsForNormalMeshGroup(mtApplication,group20);
-		settingsForNormalMeshGroup(mtApplication,group30);
-		this.getCanvas().addChild(group10);
-		this.getCanvas().addChild(group20);
-		this.getCanvas().addChild(group30);
-		collisionManager.addMeshToCollisionGroup(group10, cube1, translationToScreenCenter);
-		collisionManager.addMeshToCollisionGroup(group20, sphere1, translationToScreenCenter.getAdded(new Vector3D(0.0f,200.0f,0.0f)));
-		collisionManager.addMeshToCollisionGroup(group30, sphere2, translationToScreenCenter.getAdded(new Vector3D(200.0f,000.0f,0.0f)));
-		/**/
+		MTComponent group30 = getMeshGroupForSimpleObject(mtApplication,sphere2,new Vector3D(200.0f,000.0f,0.0f),light,material,"sphere2");
+		*///END NORMAL 3D OBJECTS VERSION DO NOT FORGET selectionManager addclusterable below 
 		
 		
 		ClusterDataManager clusterManager = new ClusterDataManager(mtApplication,this.getCanvas(),collisionManager);
@@ -217,17 +192,19 @@ public class Extension3DScene extends AbstractScene {
 		//this.registerGlobalInputProcessor(selectionManager);
 		//FINGERTAP GROUPING END
 						
-		/*selectionManager.addClusterable(group1);
+		selectionManager.addClusterable(group1);
 		selectionManager.addClusterable(machine);
 		selectionManager.addClusterable(machine2);
 		selectionManager.addClusterable(machine3);
 		selectionManager.addClusterable(machine4);
 		selectionManager.addClusterable(robotArm);
-		selectionManager.addClusterable(dreh);*/
+		selectionManager.addClusterable(dreh);
 	
-		selectionManager.addClusterable(group10);
-		selectionManager.addClusterable(group20);
-		selectionManager.addClusterable(group30);
+		//NORMAL 3D OBJECTS VERSION
+		//selectionManager.addClusterable(group10);
+		//selectionManager.addClusterable(group20);
+		//selectionManager.addClusterable(group30);
+		//NORMAL 3D OBJECTS VERSION END
 		
 		collisionManager.addObjectsToCollisionDomain();
 		
@@ -291,6 +268,9 @@ public class Extension3DScene extends AbstractScene {
 			removeAllVisualization(clusterHub);
 			clusterHub.addEventListener(visAction3);
 			break;
+		case KeyEvent.VK_4:
+			this.getCanvas().rotateY(new Vector3D(400.0f,300.0f,0.0f),-90.0f);
+			break;
 			default:
 				break;
 		}
@@ -330,6 +310,72 @@ public class Extension3DScene extends AbstractScene {
         Tools3D.endGL(mtApp);
         g.popMatrix();
     }
+	
+	private MTComponent getMeshGroupForSimpleObject(MTApplication mtApplication,MTTriangleMesh inputMesh,Vector3D translation,MTLight light,GLMaterial material,String name)
+	{		
+		
+		
+		//Create a group and set the light for the whole mesh group ->better for performance than setting light to more comps
+		//MTComponent group1 = new MTComponent(mtApplication);
+		final MTComponent meshGroup = new MTComponent(mtApplication, "Mesh group");
+		
+		meshGroup.setLight(light);
+		this.getCanvas().addChild(meshGroup);
+		//Desired position for the meshes to appear at
+		Vector3D destinationPosition = new Vector3D(mtApplication.width/2+200.0f, mtApplication.height/2, 50);
+	
+		//Desired scale for the meshes
+		float destinationScale = mtApplication.width*0.94f;
+
+		//Load the meshes with the ModelImporterFactory (A file can contain more than 1 mesh)
+		MTTriangleMesh[] meshes = new MTTriangleMesh[1];
+		meshes[0]  = inputMesh;
+		
+		//Get the biggest mesh in the group to use as a reference for setting the position/scale
+		final MTTriangleMesh biggestMesh = this.getBiggestMesh(meshes);
+		
+		Vector3D translationToScreenCenter = new Vector3D(destinationPosition);
+		translationToScreenCenter.subtractLocal(biggestMesh.getCenterPointGlobal());
+		
+		Vector3D scalingPoint = new Vector3D(biggestMesh.getCenterPointGlobal());
+		float biggestWidth = biggestMesh.getWidthXY(TransformSpace.GLOBAL);	
+		float scale = destinationScale/biggestWidth;
+		
+		//Move the group the the desired position
+		meshGroup.translateGlobal(translationToScreenCenter.getAdded(translation));
+		meshGroup.scale(scale/10, scale/10, scale/10,translationToScreenCenter.getAdded(translation));
+	
+		meshGroup.setName(name);
+					
+		//meshGroup.addChild(meshGroup);
+		for (int i = 0; i < meshes.length; i++) {
+			MTTriangleMesh mesh = meshes[i];
+			mesh.setName(name + " " + i);
+			meshGroup.addChild(mesh);
+			mesh.unregisterAllInputProcessors(); //Clear previously registered input processors
+			mesh.setPickable(true);
+			//If the mesh has more than 20 vertices, use a display list for faster rendering
+			if (mesh.getVertexCount() > 20)
+				mesh.generateAndUseDisplayLists();
+			//Set the material to the mesh  (determines the reaction to the lightning)
+			if (mesh.getMaterial() == null)
+				mesh.setMaterial(material);
+		
+			mesh.setDrawNormals(false);
+			
+		}
+		
+		meshGroup.rotateX(translationToScreenCenter.getAdded(translation),90.0f);
+		//add to Collision World
+		for(int i=0;i<meshes.length;i++)
+		{
+			collisionManager.addMeshToCollisionGroup(meshGroup, meshes[i], translationToScreenCenter.getAdded(translation));			
+		}
+	
+		settingsForNormalMeshGroup(mtApplication,meshGroup);
+		
+		return meshGroup;
+	}
 	
 	private MTComponent getMeshGroup(MTApplication mtApplication,Vector3D translation,String filename,MTLight light,GLMaterial material,String name)
 	{		
@@ -403,6 +449,24 @@ public class Extension3DScene extends AbstractScene {
 		MTTriangleMesh[] grundflaeche = ModelImporterFactory.loadModel(mtApp,filename, 0, true, false );
 		grundflaecheGroup.setLight(light);
 		this.getCanvas().addChild(grundflaecheGroup);
+		
+		
+		grundflaecheTranslation = new Vector3D(mtApp.getWidth()/2.f,mtApp.getHeight()/2.f,-300.0f);
+				
+		final MTTriangleMesh biggestMeshGrundflaeche = this.getBiggestMesh(grundflaeche);
+		grundflaecheGroup.translateGlobal(grundflaecheTranslation);
+		grundflaecheGroup.rotateXGlobal(grundflaecheTranslation,90.0f);
+		
+		float biggestWidthGrundflaeche = biggestMeshGrundflaeche.getWidthXY(TransformSpace.GLOBAL);
+		float biggestHeightGrundflaeche = biggestMeshGrundflaeche.getHeightXY(TransformSpace.GLOBAL);
+				
+		grundflaecheGroup.scale(cam.getFrustum().getWidthOfPlane(-300.0f)/biggestWidthGrundflaeche,
+								      cam.getFrustum().getHeightOfPlane(-300.0f)/biggestHeightGrundflaeche,1.0f,grundflaecheTranslation);
+
+		grundflaecheGroup.setComposite(true);
+		//grundflaecheGroup.setPickable(false);
+		grundflaecheGroup.setName("grundflaeche");
+
 		for(int i=0;i<grundflaeche.length;i++)
 		{			
 			grundflaecheGroup.addChild(grundflaeche[i]);
@@ -418,27 +482,11 @@ public class Extension3DScene extends AbstractScene {
 		
 			grundflaeche[i].setDrawNormals(false);
 		}	
-		
-		grundflaecheTranslation = new Vector3D(mtApp.getWidth()/2.f,mtApp.getHeight()/2.f,-300.0f);
-		
 		for(int i=0;i<grundflaeche.length;i++)
 		{
 			collisionManager.addMeshToCollisionGroup(grundflaecheGroup,grundflaeche[i], grundflaecheTranslation);
 		}
 		
-		final MTTriangleMesh biggestMeshGrundflaeche = this.getBiggestMesh(grundflaeche);
-		grundflaecheGroup.translateGlobal(grundflaecheTranslation);
-		grundflaecheGroup.rotateXGlobal(grundflaecheTranslation,90.0f);
-		
-		float biggestWidthGrundflaeche = biggestMeshGrundflaeche.getWidthXY(TransformSpace.GLOBAL);
-		float biggestHeightGrundflaeche = biggestMeshGrundflaeche.getHeightXY(TransformSpace.GLOBAL);
-				
-		grundflaecheGroup.scaleGlobal(cam.getFrustum().getWidthOfPlane(-300.0f)/biggestWidthGrundflaeche,
-								      cam.getFrustum().getHeightOfPlane(-300.0f)/biggestHeightGrundflaeche,1.0f,grundflaecheTranslation);
-
-		grundflaecheGroup.setComposite(true);
-		grundflaecheGroup.setPickable(false);
-		grundflaecheGroup.setName("grundflaeche");
 		return grundflaecheGroup;
 	}
 

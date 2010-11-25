@@ -385,7 +385,7 @@ public class CollisionManager {
 					
 						for(int j=0;j<3;j++)
 						{
-							colvals[j] = colvals[j] / scaleVals[j];
+							colvals[j] = colvals[j] / scaleVals[i];
 						}
 						startTransform.basis.setRow(i,colvals);
 					} catch (Exception e) {

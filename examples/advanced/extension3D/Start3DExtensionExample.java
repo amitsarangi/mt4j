@@ -46,7 +46,7 @@ public class Start3DExtensionExample extends MTApplication{
 	/* (non-Javadoc)
 	 * @see org.mt4j.MTApplication#startUp()
 	 */
-	/* (non-Javadoc)
+	/* (non-Javadoc)j
 	 * @see org.mt4j.MTApplication#startUp()
 	 */
 	@Override

@@ -117,7 +117,7 @@ public class LassoGroupSelectionManager extends AbstractCursorProcessor implemen
 						for(MTComponent formerComp : formerCluster.getChildren())
 						{
 							newSelectedComps.add(formerComp);							
-						}
+						}						
 						//this.fireSelectionEvent(new MTLassoSelectionEvent(this,MTLassoSelectionEvent.SELECTION_UPDATED,newSelectedComps,null,formerCluster));
 					}
 					components.add(comp);
@@ -132,7 +132,8 @@ public class LassoGroupSelectionManager extends AbstractCursorProcessor implemen
 			Cluster formerCluster = null;
 			if((formerCluster=clusterManager.getClusterForComponent((MTComponent)sel.getSelectedComponents().get(0)))!=null)
 			{
-				clusterManager.removeComponentFromCluster((MTComponent)sel.getSelectedComponents().get(0), formerCluster);				
+				clusterManager.removeComponentFromCluster((MTComponent)sel.getSelectedComponents().get(0), formerCluster);
+				this.canvas.addChild(sel.getSelectedComponents().get(0));
 			}
 			this.canvas.removeChild(sel.getPolygon());
 		}else
