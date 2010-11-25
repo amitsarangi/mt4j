@@ -145,10 +145,11 @@ public class FingerTapSelectionManager extends AbstractGlobalInputProcessor impl
                 //comp = currentPickEntry.hitObj;                
 			}
 			MTComponent mtComp = (MTComponent)comp;
+			logger.debug("COMP IS FROM CLASS " + mtComp.getClass().getName());
 			
 			if(getDragSelectables().contains(comp))
 			{
-				
+				logger.debug("DRAG SELECTABLES CONTAINS COMP");
 				switch (cursorEvt.getId()) {
 				case AbstractCursorInputEvt.INPUT_DETECTED:
 					//update cursor state
@@ -188,7 +189,7 @@ public class FingerTapSelectionManager extends AbstractGlobalInputProcessor impl
 						logger.debug("While INPUT_ENDED Component " + comp.getName() + " removed from currentlyPressedCursor cursor-id: " + c.getId());
 						selection.getCurrentlyPressedCursors().remove(c);
 						selection.getState().tapRelease(selection,c,mtComp);
-						System.out.println("one cursor removed");
+						
 					}
 					
 					break;
@@ -201,6 +202,7 @@ public class FingerTapSelectionManager extends AbstractGlobalInputProcessor impl
 				//special behaviour in case of 3D Rotation
 				//when fingerinput ended with fingers not intersecting 
 				//with the cluster itself
+				logger.debug("INSTANCE OF CLUSTER");
 				selection.getCurrentlyPressedCursors().clear();
 			}
 		}
