@@ -32,6 +32,7 @@ import org.mt4j.MTApplication;
 import org.mt4j.components.interfaces.IMTComponent3D;
 import org.mt4j.components.visibleComponents.GeometryInfo;
 import org.mt4j.components.visibleComponents.StyleInfo;
+import org.mt4j.components.visibleComponents.shapes.MTRectangle;
 import org.mt4j.input.inputData.InputCursor;
 import org.mt4j.util.MT4jSettings;
 import org.mt4j.util.camera.IFrustum;
@@ -1410,7 +1411,7 @@ public class Tools3D {
 	 * @param z
 	 * @return
 	 */
-	public static Vector3D projectPointToPlane(Vector3D point,IFrustum frustum,float z,MTApplication mtApp)
+	public static Vector3D projectPointToPlaneInPerspectiveMode(Vector3D point,IFrustum frustum,float z,MTApplication mtApp)
 	{
 		float heightOfPlaneAtZ = frustum.getHeightOfPlane(z);
 		float widthOfPlaneAtZ = frustum.getWidthOfPlane(z);
