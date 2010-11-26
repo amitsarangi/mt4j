@@ -154,13 +154,15 @@ public class MergeHelper implements StateChangeListener {
 
 	@Override
 	public void stateChanged(StateChangeEvent evt) {
-				
-		if(evt.getSource() instanceof MTComponent&&evt.getState()==StateChange.GLOBAL_TRANSFORM_CHANGED)
+			
+		//IF needed add a new state to StateChange.GLOBAL_TRANSFORM_CHANGED to StateChange
+		//and in MTComponent propagteMatrixChange fire this StateChange
+		/*if(evt.getSource() instanceof MTComponent&&evt.getState()==StateChange.GLOBAL_TRANSFORM_CHANGED)
 		{			
 			MTComponent comp = (MTComponent)evt.getSource();
 			mergeBoundsWithChildren(comp,true);	
 			updateParentAfterMerge(comp);	
-		}
+		}*/
 	}
 	
 }
