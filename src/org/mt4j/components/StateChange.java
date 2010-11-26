@@ -34,10 +34,7 @@ public enum StateChange {
 	
 	/**  CHILD added. */
 	CHILD_ADDED,
-	
-	/** globalTransformChanged */
-	GLOBAL_TRANSFORM_CHANGED
-	
+
 	/*
 	//TODO add TRANSFORMED? global matrix changed? local matrix changed? scaled? rotated? translated * 
  * - boundsChanged (local transforms + setVertices/geometry)

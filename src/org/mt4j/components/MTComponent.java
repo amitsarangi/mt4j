@@ -709,8 +709,7 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 	 */
 	private void propagateMatrixChange(boolean matrixDirty){
 //		System.out.println("Setting basematrix dirty on obj: " + this.getName());
-		this.fireStateChange(StateChange.GLOBAL_TRANSFORM_CHANGED);
-		
+	
         for (MTComponent object : childComponents) {
             //TEST - only propagate unitil we get to a already dirty component
             //this should work because the dirty component should also have dirty children already
