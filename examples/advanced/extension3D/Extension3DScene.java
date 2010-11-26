@@ -244,7 +244,7 @@ public class Extension3DScene extends AbstractScene {
 			this.getSceneCam().moveCamAndViewCenter(0, 0, -10);
 			break;
 		case KeyEvent.VK_MINUS:
-			this.getSceneCam().moveCamAndViewCenter(0, 0, +10);
+			this.getSceneCam().moveCamAndViewCenter(0, 0, +10);			
 			break;
 		case KeyEvent.VK_1:
 			LineVisualizationAction visAction = new LineVisualizationAction(mtApp);
