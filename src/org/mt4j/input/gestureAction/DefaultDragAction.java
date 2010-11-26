@@ -51,6 +51,7 @@ public class DefaultDragAction implements IGestureEventListener,ICollisionAction
 	 */
 	public boolean processGestureEvent(MTGestureEvent g) {
 		if (g instanceof DragEvent){
+			
 			DragEvent dragEvent = (DragEvent)g;
 			lastEvent = dragEvent;
 			
@@ -75,7 +76,7 @@ public class DefaultDragAction implements IGestureEventListener,ICollisionAction
 					*/
 				}
 				if(!gestureAborted)
-				{
+				{ 					
 					dragTarget.translateGlobal(dragEvent.getTranslationVect());
 				}
 				break;
