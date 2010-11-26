@@ -144,9 +144,9 @@ public class Extension3DScene extends AbstractScene {
 			
 		robotArm2.scale(0.4f,0.4f,0.4f,ComponentHelper.getCenterPointGlobal(robotArm2));
 				
-		MTComponent dreh;
+		//MTComponent dreh;
 		
-		dreh = getMeshGroup(mtApplication, new Vector3D(-200.0f,0.0f,-200.0f), System.getProperty("user.dir")  + File.separator + "examples" +  File.separator +"advanced"+ File.separator+ File.separator + "extension3D"  + File.separator + "data" +  File.separator +				"drehmaschine" + File.separator + "maschine1.obj",light,material,"drehmaschine");
+		//dreh = getMeshGroup(mtApplication, new Vector3D(-200.0f,0.0f,-200.0f), System.getProperty("user.dir")  + File.separator + "examples" +  File.separator +"advanced"+ File.separator+ File.separator + "extension3D"  + File.separator + "data" +  File.separator +				"drehmaschine" + File.separator + "maschine1.obj",light,material,"drehmaschine");
 				
 		
 		MTComponent grundflaecheGroup = getGroundMesh(mtApplication, System.getProperty("user.dir")  + File.separator + "examples" +  File.separator +"advanced"+ File.separator+ File.separator + "extension3D"  + File.separator + "data" +  File.separator +
@@ -191,7 +191,7 @@ public class Extension3DScene extends AbstractScene {
 		selectionManager.addClusterable(machine5);
 		selectionManager.addClusterable(robotArm);
 		selectionManager.addClusterable(robotArm2);
-		selectionManager.addClusterable(dreh);
+		//selectionManager.addClusterable(dreh);
 	
 		//NORMAL 3D OBJECTS VERSION
 		//selectionManager.addClusterable(group10);
