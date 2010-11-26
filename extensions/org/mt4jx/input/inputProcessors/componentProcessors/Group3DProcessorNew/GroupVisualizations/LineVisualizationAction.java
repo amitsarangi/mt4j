@@ -29,7 +29,6 @@ public class LineVisualizationAction implements IMTEventListener,IVisualizeMetho
 	{
 		this.pApplet = pApplet;
 	}
-	@Override
 	public void processMTEvent(MTEvent mtEvent) {
 		if(mtEvent instanceof MTClusterEvent)
 		{

@@ -160,7 +160,6 @@ public class MergeHelper implements StateChangeListener {
 		return boundingShapes.containsKey(comp.getID());
 	}
 
-	@Override
 	public void stateChanged(StateChangeEvent evt) {
 			
 		//IF needed add a new state to StateChange.GLOBAL_TRANSFORM_CHANGED to StateChange

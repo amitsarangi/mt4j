@@ -19,7 +19,6 @@ public class ActivateVisualizationAction implements IGestureEventListener {
 		this.methodProvider = methodProvider;
 		this.cluster.setVisualizeProvider(null);
 	}
-	@Override
 	public boolean processGestureEvent(MTGestureEvent ge) {
 		if(ge instanceof DragEvent)
 		{

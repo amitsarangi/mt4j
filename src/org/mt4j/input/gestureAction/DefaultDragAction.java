@@ -114,7 +114,6 @@ public class DefaultDragAction implements IGestureEventListener,ICollisionAction
 	/* (non-Javadoc)
 	 * @see org.mt4j.input.inputProcessors.ICollisionAction#gestureAborted()
 	 */
-	@Override
 	public boolean gestureAborted() {
 		return this.gestureAborted;
 	}
@@ -122,7 +121,6 @@ public class DefaultDragAction implements IGestureEventListener,ICollisionAction
 	/* (non-Javadoc)
 	 * @see org.mt4j.input.inputProcessors.ICollisionAction#getLastEvent()
 	 */
-	@Override
 	public MTGestureEvent getLastEvent() {
 		return this.lastEvent;
 	}
@@ -130,7 +128,6 @@ public class DefaultDragAction implements IGestureEventListener,ICollisionAction
 	/* (non-Javadoc)
 	 * @see org.mt4j.input.inputProcessors.ICollisionAction#setGestureAborted(boolean)
 	 */
-	@Override
 	public void setGestureAborted(boolean aborted) {
 		this.gestureAborted = aborted;
 	}

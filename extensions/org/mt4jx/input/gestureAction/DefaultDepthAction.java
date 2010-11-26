@@ -100,17 +100,14 @@ public class DefaultDepthAction implements IGestureEventListener,ICollisionActio
 		return true;
 	}
 
-	@Override
 	public boolean gestureAborted() {
 		return this.gestureAborted;		
 	}
 
-	@Override
 	public void setGestureAborted(boolean aborted) {
 		this.gestureAborted = aborted;
 	}
 
-	@Override
 	public MTGestureEvent getLastEvent() {
 		return this.lastEvent;
 	}

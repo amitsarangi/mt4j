@@ -140,12 +140,10 @@ public class Rotate3DAction implements IGestureEventListener,ICollisionAction {
 		//}
 	}
 	
-	@Override
 	public boolean gestureAborted() {
 		return this.gestureAborted;		
 	}
 
-	@Override
 	public void setGestureAborted(boolean aborted) {
 		this.gestureAborted = aborted;
 	}
@@ -158,7 +156,6 @@ public class Rotate3DAction implements IGestureEventListener,ICollisionAction {
 		return drawAble;
 	}
 
-	@Override
 	public MTGestureEvent getLastEvent() {
 		return this.lastRotateEvent;
 	}

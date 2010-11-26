@@ -107,7 +107,6 @@ public class ClusterDataManager implements ISelectionListener {
 		}
 	}
 	
-	@Override
 	public void processMTEvent(MTEvent mtEvent) {
 		if(mtEvent instanceof MTSelectionEvent)
 		{

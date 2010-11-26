@@ -237,7 +237,6 @@ public class LassoGroupSelectionManager extends AbstractCursorProcessor implemen
 		return null;
 	}
 
-	@Override
 	public void fireEvent(MTEvent event) {
 		for(int i=0;i<selectionListeners.size();i++)
 		{

@@ -1284,7 +1284,7 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
 	 * 
 	 * @author Christopher Ruff
 	 */
-	private class ArtificalLineBreak implements IFontCharacter{
+	protected class ArtificalLineBreak implements IFontCharacter{
 		public void drawComponent(PGraphics g) {}
 		public void drawComponent(GL gl) {	}
 		public void destroy() {	}

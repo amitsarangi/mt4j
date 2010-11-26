@@ -352,7 +352,6 @@ public class PuzzleFactory {
 			planeNormal = new Vector3D(0,0,1);
 		}
 		
-		@Override
 		public boolean processGestureEvent(MTGestureEvent ge) {
 			IMTComponent3D comp = ge.getTarget();
 			RotateEvent re = (RotateEvent)ge;

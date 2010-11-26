@@ -412,9 +412,9 @@ public class MTList extends MTClipRectangle {
 				if (canDrag){
 					theListCellContainer.setDragging(false);
 					
-					Vector3D vel = de.getDragCursor().getVelocityVector(140);
+					Vector3D vel = de.getDragCursor().getVelocityVector(150);
 					vel.scaleLocal(0.8f);
-					vel = vel.getLimited(15);
+					vel = vel.getLimited(25);
 					IMTController oldController = theListCellContainer.getController();
 					theListCellContainer.setController(new InertiaListController(theListCellContainer, vel, oldController));
 				}

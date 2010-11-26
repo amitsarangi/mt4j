@@ -2,11 +2,8 @@ package org.mt4jx.input.inputProcessors.componentProcessors.Group3DProcessorNew.
 
 import java.util.ArrayList;
 
-import org.apache.log4j.Logger;
-import org.mt4j.input.inputData.InputCursor;
-import org.mt4j.input.inputProcessors.componentProcessors.AbstractComponentProcessor;
-import org.mt4j.input.inputProcessors.componentProcessors.lassoProcessor.IdragClusterable;
 import org.mt4j.components.MTComponent;
+import org.mt4j.input.inputData.InputCursor;
 import org.mt4jx.input.inputProcessors.componentProcessors.Group3DProcessorNew.Cluster;
 import org.mt4jx.input.inputProcessors.componentProcessors.Group3DProcessorNew.MTClusterEvent;
 
@@ -15,7 +12,6 @@ public enum FingerTapState implements FingerTapTransitions,FingerTapStateMethods
 	NOELEMENTSELECTED
 	{
 
-		@Override
 		public synchronized void tapPress(FingerTapSelection sel,InputCursor cursor,MTComponent comp) {
 			this.stateExit(sel);
 			//System.out.println("NO ELEMENT SELECTED");
@@ -35,13 +31,11 @@ public enum FingerTapState implements FingerTapTransitions,FingerTapStateMethods
 			}
 		} 
 
-		@Override
 		public synchronized void tapRelease(FingerTapSelection sel,InputCursor cursor,MTComponent comp) {
 			//do nothing not possible
 			//System.out.println("NO ELEMENT SELECTED tapRelease");
 		}
 
-		@Override
 		public void stateEntry(FingerTapSelection sel) {
 			//System.out.println("stateEntry");
 			sel.setFirstCursor(null);	
@@ -49,7 +43,6 @@ public enum FingerTapState implements FingerTapTransitions,FingerTapStateMethods
 			sel.setSelectedComponents(new ArrayList<MTComponent>());
 		}
 
-		@Override
 		public void stateExit(FingerTapSelection sel) {
 			// TODO Auto-generated method stub
 			
@@ -61,7 +54,6 @@ public enum FingerTapState implements FingerTapTransitions,FingerTapStateMethods
 	{
 
 		private boolean sameComponent = false;
-		@Override
 		public synchronized void tapPress(FingerTapSelection sel,InputCursor cursor,MTComponent comp) {
 			this.stateExit(sel);
 			//System.out.println("ONELEMENTSELECTED tapPress");
@@ -80,7 +72,6 @@ public enum FingerTapState implements FingerTapTransitions,FingerTapStateMethods
 			}
 		}
 
-		@Override
 		public synchronized void tapRelease(FingerTapSelection sel,InputCursor cursor,MTComponent comp) {
 			//System.out.println("ONELEMENTSELECTED tapRelease");
 			if(!sameComponent)
@@ -93,13 +84,11 @@ public enum FingerTapState implements FingerTapTransitions,FingerTapStateMethods
 			}
 		}
 
-		@Override
 		public void stateEntry(FingerTapSelection sel) {
 			
 			
 		}
 
-		@Override
 		public void stateExit(FingerTapSelection sel) {
 			this.sameComponent = false;//reset info about same component
 			//System.out.println("ONEELEMENTSELECTED");			
@@ -118,7 +107,6 @@ public enum FingerTapState implements FingerTapTransitions,FingerTapStateMethods
 			sel.setState(MANYELEMENTSSELECTED);
 		}
 
-		@Override
 		public synchronized void tapRelease(FingerTapSelection sel,InputCursor cursor,MTComponent comp){
 		
 			//System.out.println("MANYELEMENTSSELECTED taprealase");
@@ -141,13 +129,11 @@ public enum FingerTapState implements FingerTapTransitions,FingerTapStateMethods
 			
 		}
 
-		@Override
 		public void stateEntry(FingerTapSelection sel) {
 			// TODO Auto-generated method stub
 			
 		}
 
-		@Override
 		public void stateExit(FingerTapSelection sel) {
 			// TODO Auto-generated method stub
 			//System.out.println("MANYELEMENTSSELECTED");
@@ -162,7 +148,6 @@ public enum FingerTapState implements FingerTapTransitions,FingerTapStateMethods
 
 		private boolean tapPressed = false;
 		
-		@Override
 		public synchronized void tapPress(FingerTapSelection sel,InputCursor cursor,MTComponent comp){
 							
 			if(sel.getCurrentlyPressedCursors().size()==1)
@@ -177,7 +162,6 @@ public enum FingerTapState implements FingerTapTransitions,FingerTapStateMethods
 			//System.out.println("Cluster selected");
 		}
 
-		@Override
 		public synchronized void tapRelease(FingerTapSelection sel,InputCursor cursor,MTComponent comp) {
 			//System.out.println("Cluster selected Tap Release");
 			Cluster cluster = sel.getClusterDataManager().getClusterForComponent(comp);
@@ -252,13 +236,11 @@ public enum FingerTapState implements FingerTapTransitions,FingerTapStateMethods
 			}
 		}
 
-		@Override
 		public void stateEntry(FingerTapSelection sel) {
 			//System.out.println("CLUSTERSELECTED STATEENTRY");
 			sel.getSelectionManager().fireClusterSelectionEvent(new MTClusterEvent(this,MTClusterEvent.CLUSTER_SELECTED,sel.getCurrentlySelectedCluster()));
 		}
 
-		@Override
 		public void stateExit(FingerTapSelection sel) {
 			sel.setCurrentlySelectedCluster(null);		
 		}

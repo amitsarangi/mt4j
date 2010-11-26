@@ -75,7 +75,6 @@ public class FingerTapSelection implements ISelection {
 		canvas.removeChild(comp);
 	}
 	
-	@Override	
 	public ArrayList<MTComponent> getSelectedComponents() {
 		return selectedComps;
 	}

@@ -10,14 +10,12 @@ public enum FingerTapCursorState implements FingerTapCursorMethods {
 	OBJECTWITHNOTAP
 	{
 
-		@Override
 		public void tapPress(FingerTapSelectionManager selManager,MTComponent comp,InputCursor c) {
 			
 			selManager.setLockedCursorForComponent(comp, c);
 			selManager.setCursorStateForComponent(comp, OBJECTWITHLOCKEDCURSOR);
 		}
 
-		@Override
 		public void tapRelease(FingerTapSelectionManager selManager,MTComponent comp,InputCursor c) {
 			//cannot be			
 		}
@@ -28,13 +26,11 @@ public enum FingerTapCursorState implements FingerTapCursorMethods {
 	OBJECTWITHLOCKEDCURSOR
 	{
 
-		@Override
 		public void tapPress(FingerTapSelectionManager selManager,MTComponent comp,InputCursor c) {
 			selManager.addUnUsedCursorsForComponent(comp, c);
 			selManager.setCursorStateForComponent(comp, OBJECTWITHONEUNUSEDCURSOR);
 		}
 
-		@Override
 		public void tapRelease(FingerTapSelectionManager selManager,MTComponent comp,InputCursor c) {
 			if(selManager.getLockedCursorForComponent(comp)==c)
 			{
@@ -50,7 +46,6 @@ public enum FingerTapCursorState implements FingerTapCursorMethods {
 	OBJECTWITHONEUNUSEDCURSOR
 	{
 
-		@Override
 		public void tapPress(FingerTapSelectionManager selManager,
 				MTComponent comp, InputCursor c) {
 			selManager.addUnUsedCursorsForComponent(comp, c);
@@ -58,7 +53,6 @@ public enum FingerTapCursorState implements FingerTapCursorMethods {
 			
 		}
 
-		@Override
 		public void tapRelease(FingerTapSelectionManager selManager,
 				MTComponent comp, InputCursor c) {
 			if(selManager.getLockedCursorForComponent(comp)==c)
@@ -79,13 +73,11 @@ public enum FingerTapCursorState implements FingerTapCursorMethods {
 	OBJECTWITHMANYUNUSEDCURSORS
 	{
 
-		@Override
 		public void tapPress(FingerTapSelectionManager selManager,
 				MTComponent comp, InputCursor c) {
 			selManager.addUnUsedCursorsForComponent(comp, c);			
 		}
 
-		@Override
 		public void tapRelease(FingerTapSelectionManager selManager,
 				MTComponent comp, InputCursor c) {
 			selManager.removeUnUsedCursorsForComponent(comp, c);

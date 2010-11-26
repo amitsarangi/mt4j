@@ -35,7 +35,6 @@ import org.mt4j.util.opengl.GLTexture.TEXTURE_TARGET;
 import org.mt4j.util.opengl.GLTexture.WRAP_MODE;
 import org.mt4jx.components.visibleComponents.widgets.MTSuggestionTextArea;
 
-
 import processing.core.PImage;
 
 /**

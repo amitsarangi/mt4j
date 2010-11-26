@@ -65,7 +65,6 @@ public class FingerTapSelectionManager extends AbstractGlobalInputProcessor impl
 	}
 	
 	
-	@Override
 	public void addSelectionListener(ISelectionListener listener) {
 		if(!(selectionListeners.contains(listener)))
 		{
@@ -73,7 +72,6 @@ public class FingerTapSelectionManager extends AbstractGlobalInputProcessor impl
 		}
 	}
 
-	@Override
 	public void fireEvent(MTEvent event) {
 		for(int i=0;i<selectionListeners.size();i++)
 		{
@@ -81,7 +79,6 @@ public class FingerTapSelectionManager extends AbstractGlobalInputProcessor impl
 		}	
 	}
 
-	@Override
 	public void removeSelectionListener(ISelectionListener listener) {
 		if(selectionListeners.contains(listener))
 		{

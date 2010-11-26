@@ -35,7 +35,7 @@ import processing.opengl.PGraphicsOpenGL;
  * @author Christopher Ruff
  */
 public class Frustum implements IFrustum{
-//	private static float ANG2RAD = (3.14159265358979323846f/360.0f); //FIXME warum /360 ? müsste doch /180 sein?
+//	private static float ANG2RAD = (3.14159265358979323846f/360.0f); //FIXME warum /360 ? mï¿½sste doch /180 sein?
 	private float ratio;
 	private float angle;
 	private float nearD;
@@ -147,7 +147,7 @@ public class Frustum implements IFrustum{
 //	}
 
 
-//TODO immer wenn sich perspective ändert
+//TODO immer wenn sich perspective ï¿½ndert
 
 	/**
 	 * Sets the cam internals. Has to be called if perspective
@@ -625,7 +625,6 @@ public void setCamDef(Vector3D camPos, Vector3D viewCenterPos, float xUp, float 
 	 * Returns the height of the near plane
 	 * @return the float
 	 */
-	@Override
 	public float getHeightOfNearPlane() {
 		return Math.abs(ntl.y - nbl.y);
 	}
@@ -634,7 +633,6 @@ public void setCamDef(Vector3D camPos, Vector3D viewCenterPos, float xUp, float 
 	 * Returns the width of the near plane
 	 * @return the float
 	 */
-	@Override
 	public float getWidthOfNearPlane() {
 		  return Math.abs(ntl.x - ntr.x);
 	}
@@ -643,7 +641,6 @@ public void setCamDef(Vector3D camPos, Vector3D viewCenterPos, float xUp, float 
 	 * Returns the top left point of the near plane
 	 * @return the Vector3D
 	 */
-	@Override
 	public Vector3D getNearTopLeft() {
 		return ntl.getCopy();
 	}
@@ -653,7 +650,6 @@ public void setCamDef(Vector3D camPos, Vector3D viewCenterPos, float xUp, float 
 	 * Returns the z value of the near plane
 	 * @return the float
 	 */
-	@Override
 	public float getZValueOfNearPlane()
 	{
 		return ntl.getZ();

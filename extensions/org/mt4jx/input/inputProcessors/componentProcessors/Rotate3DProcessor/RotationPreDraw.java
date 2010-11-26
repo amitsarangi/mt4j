@@ -12,13 +12,11 @@ public class RotationPreDraw implements IPreDrawAction {
 		this.action = action;
 	}
 	
-	@Override
 	public boolean isLoop() {
 		// TODO Auto-generated method stub
 		return true;
 	}
 
-	@Override
 	public void processAction() {
 		System.out.println("process predraw aciton");
 		action.draw();

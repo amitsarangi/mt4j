@@ -33,7 +33,6 @@ public class BlinkingLineVisualizationAction implements IMTEventListener,IVisual
 		this.pApplet = pApplet;
 		startTime = System.currentTimeMillis();
 	}
-	@Override
 	public void processMTEvent(MTEvent mtEvent) {
 		if(mtEvent instanceof MTClusterEvent)
 		{

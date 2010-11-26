@@ -15,7 +15,7 @@ public class InertiaDragAction implements IGestureEventListener {
 	private int integrationTime;
 	
 	public InertiaDragAction(){
-		this(120, 0.85f, 17);
+		this(125, 0.85f, 25);
 //		this(120, 0.85f, 100);
 	}
 
