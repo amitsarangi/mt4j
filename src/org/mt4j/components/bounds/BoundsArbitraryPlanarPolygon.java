@@ -484,7 +484,7 @@ public class BoundsArbitraryPlanarPolygon implements IBoundingShape {
 
 	@Override
 	public MTComponent getPeerComponent() {
-		return this.getPeerComponent();
+		return this.peerComponent;
 	}
 
 
