@@ -196,7 +196,9 @@ public class InputCursor{
 	public boolean isLockedBy(AbstractCursorProcessor cp){
 //		return lockSeekingProcessorsToPriority.containsKey(cp);
 		for (AbstractCursorProcessor abstractCursorProcessor : lockingProcessorsToPriority.keySet()) {
-			if (abstractCursorProcessor.equals(cp)){
+			if (abstractCursorProcessor.equals(cp) 
+					|| abstractCursorProcessor.getLockPriority() == -1 //FIXME TEST!
+			){
 				return true;
 			}
 		}
@@ -219,8 +221,10 @@ public class InputCursor{
                 //FIXME the lock is already lost here? -it was like this, yes -> change so we can use
                 //if (this.getLockedCursors.contains(inputCursor)) ... in the processors' cursorLocked() method to check if 
                 //the cursor was used in the processor
-                //TODO check if we get concurrent modification exc if the processors would call unlock() while we iterate here!!!
-                if (this.isLockedBy(processor)){//FIXME test - only send lockLost to processors who actually had the cursor locked
+                //TODO check if we get concurrent modification exception if the processors would call unlock() while we iterate here!!!
+                if (this.isLockedBy(processor) && processor.getLockPriority() != -1){//FIXME test - only send lockLost to processors who actually had the cursor locked
+                	//FIXME how to treat processor priority -1 ? we want to return true at isLockedBy but we don't want to send cursorLocked to them! 
+                	
 //                	processor.cursorLocked(this, ia);
                 	processor.cursorLostLock(this, ia);
                 	
@@ -316,7 +320,7 @@ public class InputCursor{
 			//Only send released signal if the priority really was lowered by releasing (there can be more than 1 lock with the same lock priority)
 			if (beforeLockPriority > afterRemoveLockPriority){ 
 				if (!registeredProcessorsToPriority.isEmpty()){
-					//Get strictly smaller priority gestures than the one relreasing, so that the ones with same priority dont get a signal
+					//Get strictly smaller priority gestures than the one releasing, so that the ones with same priority dont get a signal
 					SortedMap<AbstractCursorProcessor, Float> lesserPriorityGestureMap = registeredProcessorsToPriority.headMap(registeredProcessorsToPriority.lastKey());
 //					SortedMap<IInputAnalyzer, Integer> lesserPriorityGestureMap = watchingAnalyzersToPriority.headMap(ia);
 					Set<AbstractCursorProcessor> lesserPriorityGestureKeys = lesserPriorityGestureMap.keySet();
@@ -325,12 +329,12 @@ public class InputCursor{
                         //the current highest priority of the cursor can change when released is called on a gesture that successfully
                         //locks this cursor, so check each loop iteration
                         if (processor.getLockPriority() < unlockingGesturePriority //Only call on gestures with a lower priority than the one releasing the lock
-                                && this.getCurrentLockPriority() <= processor.getLockPriority() //only call unLocked on analyzers with a lower or equal lockpriority
+                                && this.getCurrentLockPriority() <= processor.getLockPriority() //only call unLocked on processors with a lower or equal lockpriority
 //                                && this.isLockedBy(processor) //FIXME TEST
                                 ) {
 //                            processor.cursorUnlocked(this);
                         	processor.cursorFreed(this);
-                            //FIXME funktioniert das, wenn bei claim in anderer geste wieder was in die liste geadded wird etc?
+                            //FIXME funktioniert das, wenn bei getLock in anderer geste wieder was in die liste geadded wird etc?
                         }
                     }
 				}

@@ -269,18 +269,17 @@ public class ScaleProcessor extends AbstractCursorProcessor {
 //			//TODO fire ended evt?
 //			logger.debug(this.getName() + " cursor:" + m.getId() + " MOTION LOCKED. Was an active cursor in this gesture!");
 //		}
-		if (sc != null && (sc.getFirstFingerCursor().equals(c) || sc.getSecondFingerCursor().equals(c))){
+		if (sc != null && (sc.getFirstFingerCursor().equals(c) || sc.getSecondFingerCursor().equals(c))){ //Check if gesture was in progress
 			//TODO do we have to unlock the 2nd cursor, besides "c" ??
 			this.unLockAllCursors();
+			//FIXME TEST
+			this.fireGestureEvent(new ScaleEvent(this, MTGestureEvent.GESTURE_ENDED, c.getCurrentTarget(), sc.getFirstFingerCursor(), sc.getSecondFingerCursor(), 1, 1, 1, sc.getFirstFingerNewPos()));
 			sc = null;
 			logger.debug(this.getName() + " cursor:" + c.getId() + " CURSOR LOCKED. Was an active cursor in this gesture!");
 		}
 	}
 	
 	
-	/* (non-Javadoc)
-	 * @see org.mt4j.input.inputAnalyzers.IInputAnalyzer#cursorUnlocked(org.mt4j.input.inputData.InputCursor)
-	 */
 	@Override
 	public void cursorUnlocked(InputCursor c) {
 		logger.debug(this.getName() + " Recieved UNLOCKED signal for cursor ID: " + c.getId());
@@ -338,6 +337,8 @@ public class ScaleProcessor extends AbstractCursorProcessor {
 			if (!newContext.isGestureAborted()){ //Check if we could start gesture (ie. if fingers on component)
 				sc = newContext;
 				this.getLock(firstCursor, secondCursor);
+				//FIXME TEST
+				this.fireGestureEvent(new ScaleEvent(this, MTGestureEvent.GESTURE_DETECTED, c.getCurrentTarget(), firstCursor, secondCursor, 1, 1, 1, sc.getSecondFingerNewPos()));
 				logger.debug(this.getName() + " we could lock cursors: " + firstCursor.getId() +", " + secondCursor.getId());
 			}else{
 				sc = null;

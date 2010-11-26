@@ -151,7 +151,7 @@ public class ArcballProcessor extends AbstractCursorProcessor {
 	
 	@Override
 	public void cursorEnded(InputCursor m, MTFingerInputEvt positionEvent) {
-		logger.debug(this.getName() + " INPUT_ENDED RECIEVED - MOTION: " + m.getId());
+		logger.debug(this.getName() + " INPUT_ENDED RECIEVED - cursor: " + m.getId());
 		
 		if (lockedCursors.contains(m)){ //cursor was a actual drag cursor
 			lockedCursors.remove(m);
@@ -180,50 +180,44 @@ public class ArcballProcessor extends AbstractCursorProcessor {
 	
 	
 
-	/* (non-Javadoc)
-	 * @see org.mt4j.input.inputAnalyzers.IInputAnalyzer#cursorLocked(org.mt4j.input.inputData.InputCursor, org.mt4j.input.inputAnalyzers.IInputAnalyzer)
-	 */
 	@Override
-	public void cursorLocked(InputCursor m, IInputProcessor lockingAnalyzer) {
+	public void cursorLocked(InputCursor c, IInputProcessor lockingAnalyzer) {
 		if (lockingAnalyzer instanceof AbstractComponentProcessor){
-			logger.debug(this.getName() + " Recieved MOTION LOCKED by (" + ((AbstractComponentProcessor)lockingAnalyzer).getName()  + ") - cursor ID: " + m.getId());
+			logger.debug(this.getName() + " Recieved cursor LOCKED by (" + ((AbstractComponentProcessor)lockingAnalyzer).getName()  + ") - cursor ID: " + c.getId());
 		}else{
-			logger.debug(this.getName() + " Recieved MOTION LOCKED by higher priority signal - cursor ID: " + m.getId());
+			logger.debug(this.getName() + " Recieved cursor LOCKED by higher priority signal - cursor ID: " + c.getId());
 		}
 
-		if (lockedCursors.contains(m)){ //cursor was a actual gesture cursor
-			lockedCursors.remove(m);
-			//TODO fire ended evt?
-			unUsedCursors.add(m);
-			logger.debug(this.getName() + " cursor:" + m.getId() + " MOTION LOCKED. Was an active cursor in this gesture!");
+		if (lockedCursors.contains(c)){ //cursor was a actual gesture cursor
+			lockedCursors.remove(c);
+			this.fireGestureEvent(new ArcBallGestureEvent(this, ArcBallGestureEvent.GESTURE_ENDED, c.getCurrentTarget(), identityDummy));
+			unUsedCursors.add(c);
+			logger.debug(this.getName() + " cursor:" + c.getId() + " cursor LOCKED. Was an active cursor in this gesture!");
 		}else{ //TODO remove else, it is pretty useless
-			if (unUsedCursors.contains(m)){
-				logger.debug(this.getName() + " MOTION LOCKED. But it was NOT an active cursor in this gesture!");
+			if (unUsedCursors.contains(c)){
+				logger.debug(this.getName() + " cursor LOCKED. But it was NOT an active cursor in this gesture!");
 			}
 		}
 	}
 
 
 
-	/* (non-Javadoc)
-	 * @see org.mt4j.input.inputAnalyzers.IInputAnalyzer#cursorUnlocked(org.mt4j.input.inputData.InputCursor)
-	 */
 	@Override
-	public void cursorUnlocked(InputCursor m) {
-		logger.debug(this.getName() + " Recieved UNLOCKED signal for cursor ID: " + m.getId());
+	public void cursorUnlocked(InputCursor c) {
+		logger.debug(this.getName() + " Recieved UNLOCKED signal for cursor ID: " + c.getId());
 
-		if (lockedCursors.size() >= 1){ //we dont need the unlocked cursor, gesture still in progress
+		if (lockedCursors.size() >= 1){ //we don't need the unlocked cursor, gesture still in progress
 			return;
 		}
 		
-		if (unUsedCursors.contains(m)){
-			if (this.canLock(m)){
-				this.getLock(m);
-				unUsedCursors.remove(m);
-				lockedCursors.add(m);
-				ac = new MyArcBall(m);
-				//TODO fire started? maybe not.. do we have to?
-				logger.debug(this.getName() + " can resume its gesture with cursor: " + m.getId());
+		if (unUsedCursors.contains(c)){
+			if (this.canLock(c)){
+				this.getLock(c);
+				unUsedCursors.remove(c);
+				lockedCursors.add(c);
+				ac = new MyArcBall(c);
+				this.fireGestureEvent(new ArcBallGestureEvent(this, ArcBallGestureEvent.GESTURE_DETECTED, c.getCurrentTarget(), identityDummy));
+				logger.debug(this.getName() + " can resume its gesture with cursor: " + c.getId());
 			}else{
 				logger.debug(this.getName() + " still in progress - we dont need the unlocked cursor" );
 			}

@@ -409,6 +409,22 @@ public abstract class AbstractCursorProcessor extends AbstractComponentProcessor
 	}
 	
 	
+//	/**
+//	 * Checks if this processor has a lock on the specified cursor(s).
+//	 *
+//	 * @param cursors the cursors
+//	 * @return true, if successful
+//	 */
+//	protected boolean hasLock(InputCursor... cursors){
+//		int locked = 0;
+//        for (InputCursor c : cursors) {
+//            if (c.isLockedBy(this)) {
+//                locked++;
+//            }
+//        }
+//		return locked == cursors.length;
+//	}
+	
 	
 	/**
 	 * Locks the cursor with this processor if the processors lock priority
@@ -510,9 +526,13 @@ public abstract class AbstractCursorProcessor extends AbstractComponentProcessor
 
 	
 	/**
-	 * This method is called if a input processor with a higher locking-priority than this one sucessfully
-	 * locked the specified cursor. If this cursor was used in this input processor, we have to stop using it until it
-	 * is unlocked by the other processor!
+	 * This method is called if a input processor with a higher locking-priority than this one successfully
+	 * locked the specified cursor which was previously locked by this processor. We should stop using it and end the gesture until it
+	 * is unlocked by the other processor again!
+	 * So when this method is invoked, usually we can follow these instructions in our processor:
+	 * <br>-> if we can't continue the gesture without the cursor that we just lost the lock on (usually the case)
+	 * <br>-> unlock all other cursors that we used in this processor/gesture ( unlockAllCursors())
+	 * <br>-> fire a gesture event with ID = GESTURE_ENDED
 	 * 
 	 * @param cursor the cursor
 	 * @param lockingprocessor the locking processor
@@ -521,9 +541,18 @@ public abstract class AbstractCursorProcessor extends AbstractComponentProcessor
 
 	
 	/**
-	 * This method is called if a input processor with a higher locking-priority than this one removes his lock on the specified
+	 * This method is called if an input processor with a higher locking-priority than this one releases his lock on the specified
 	 * cursor (i.e. because the conditions for continuing the gesture aren't met anymore). This gives this input processor the chance to
 	 * see if it can use the cursor and try to lock it again.
+	 * <br>So first of all we should check if our gesture in this processor is still in progress and if it isnt we can check if the cursor is still free for us to lock. 
+	 * using canLock(cursor) and then obtain the lock using getLock(cursor);
+	 * So when this method is invoked, usually we can follow these instructions in our processor:
+	 * <br>-> Is the processor/gesture resumable?
+	 * <br>-> If not -> do nothing, we don't want any released cursor that was used by a higher priority gesture previously
+	 * <br>-> If yes -> check if the gesture is still in progress (i.e. by checking if the getLockedCursors() list has the same size as the cursors used by this processor/gesture
+	 * <br>-> Check if all gesture preconditions are met and we can lock the cursor(s) using canLock(..) to restart the gesture 
+	 * <br>-> lock the cursor(s) using getLock(..)
+	 * <br>-> fire a new gesture event with id = GESTURE_DETECTED
 	 * 
 	 * @param cursor the cursor
 	 */

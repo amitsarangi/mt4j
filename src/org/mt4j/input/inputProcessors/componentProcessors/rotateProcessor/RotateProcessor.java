@@ -103,7 +103,7 @@ public class RotateProcessor extends AbstractCursorProcessor {
 	
 	@Override
 	public void cursorStarted(InputCursor newCursor, MTFingerInputEvt positionEvent) {
-		IMTComponent3D comp = positionEvent.getTargetComponent();
+		IMTComponent3D comp = positionEvent.getTarget();
 		logger.debug(this.getName() + " INPUT_STARTED, Cursor: " + newCursor.getId());
 		
 		List<InputCursor> alreadyLockedCursors = getLockedCursors();
@@ -111,6 +111,7 @@ public class RotateProcessor extends AbstractCursorProcessor {
 			//TODO get the 2 cursors which are most far away from each other
 			InputCursor firstCursor = alreadyLockedCursors.get(0);
 			InputCursor secondCursor = alreadyLockedCursors.get(1);
+			//Check if the new finger is more far away, so use that one
 			if (isCursorDistanceGreater(firstCursor, secondCursor, newCursor) && canLock(firstCursor, newCursor)){
 				RotationContext newContext = new RotationContext(firstCursor, newCursor, comp);
 				if (!newContext.isGestureAborted()){ //Check if we could start gesture (ie. if fingers on component)
@@ -255,9 +256,6 @@ public class RotateProcessor extends AbstractCursorProcessor {
 	
 	//TODO at resuming scale check if cursor still on object! else we get problems and a wrong startPoint etc
 	
-	/* (non-Javadoc)
-	 * @see org.mt4j.input.inputAnalyzers.IInputAnalyzer#cursorLocked(org.mt4j.input.inputData.InputCursor, org.mt4j.input.inputAnalyzers.IInputAnalyzer)
-	 */
 	@Override
 	public void cursorLocked(InputCursor c, IInputProcessor lockingAnalyzer) {
 		if (lockingAnalyzer instanceof AbstractComponentProcessor){
@@ -271,18 +269,17 @@ public class RotateProcessor extends AbstractCursorProcessor {
 		if (rc != null && (rc.getFirstCursor().equals(c) || rc.getSecondCursor().equals(c))){
 			//TODO do we have to unlock the 2nd cursor, besides "c" ??
 			this.unLockAllCursors();
+			//FIXME TEST
+			this.fireGestureEvent(new RotateEvent(this, MTGestureEvent.GESTURE_ENDED, c.getCurrentTarget(), rc.getFirstCursor(), rc.getSecondCursor(), Vector3D.ZERO_VECTOR, rc.getRotationPoint(), 0));
 			rc = null;
 			logger.debug(this.getName() + " cursor:" + c.getId() + " CURSOR LOCKED. Was an active cursor in this gesture!");
 		}
 	}
 
 	
-	/* (non-Javadoc)
-	 * @see org.mt4j.input.inputAnalyzers.IInputAnalyzer#cursorUnlocked(org.mt4j.input.inputData.InputCursor)
-	 */
 	@Override
-	public void cursorUnlocked(InputCursor m) {
-		logger.debug(this.getName() + " Recieved UNLOCKED signal for cursor ID: " + m.getId());
+	public void cursorUnlocked(InputCursor c) {
+		logger.debug(this.getName() + " Recieved UNLOCKED signal for cursor ID: " + c.getId());
 		
 		if (getLockedCursors().size() >= 2){ //we dont need the unlocked cursor, gesture still in progress
 			return;
@@ -300,9 +297,11 @@ public class RotateProcessor extends AbstractCursorProcessor {
 			//See if we can obtain a lock on both cursors
 			IMTComponent3D comp = firstCursor.getFirstEvent().getTarget();
 			RotationContext newContext = new RotationContext(firstCursor, secondCursor, comp);
-			if (!newContext.isGestureAborted()){ //Check if we could start gesture (ie. if fingers on component)
+			if (!newContext.isGestureAborted()){ //Check if we could start gesture (i.e. if fingers on component)
 				rc = newContext;
 				this.getLock(firstCursor, secondCursor);
+				//FIXME TEST
+				this.fireGestureEvent(new RotateEvent(this, MTGestureEvent.GESTURE_DETECTED, c.getCurrentTarget(), firstCursor, secondCursor, Vector3D.ZERO_VECTOR, rc.getRotationPoint(), 0f));
 				logger.debug(this.getName() + " we could lock cursors: " + firstCursor.getId() +", " + secondCursor.getId());
 			}else{
 				rc = null;

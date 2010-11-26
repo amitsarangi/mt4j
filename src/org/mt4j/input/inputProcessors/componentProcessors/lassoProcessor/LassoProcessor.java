@@ -106,14 +106,14 @@ public class LassoProcessor extends AbstractCursorProcessor {
 	 * @see org.mt4j.input.inputProcessors.componentProcessors.AbstractCursorProcessor#cursorStarted(org.mt4j.input.inputData.InputCursor, org.mt4j.input.inputData.AbstractCursorInputEvt)
 	 */
 	@Override
-	public void cursorStarted(InputCursor m, MTFingerInputEvt positionEvent) {
-		if (this.getLock(m)){
-			ClusteringContext context = new ClusteringContext(m);
+	public void cursorStarted(InputCursor c, MTFingerInputEvt positionEvent) {
+		if (this.getLock(c)){
+			ClusteringContext context = new ClusteringContext(c);
 			if (!context.gestureAborted){
-				cursorToContext.put(m, context);
+				cursorToContext.put(c, context);
 				//To speed things up, selection is only checked at the end of the gesture
 				IdragClusterable[] selectedComps = new IdragClusterable[0]; //no things selected anyway yet
-				this.fireGestureEvent(new LassoEvent(this, MTGestureEvent.GESTURE_DETECTED, canvas, m, context.getPolygon(), selectedComps));
+				this.fireGestureEvent(new LassoEvent(this, MTGestureEvent.GESTURE_DETECTED, canvas, c, context.getPolygon(), selectedComps));
 			}
 		}
 		
@@ -125,14 +125,14 @@ public class LassoProcessor extends AbstractCursorProcessor {
 	 * @see org.mt4j.input.inputProcessors.componentProcessors.AbstractCursorProcessor#cursorUpdated(org.mt4j.input.inputData.InputCursor, org.mt4j.input.inputData.AbstractCursorInputEvt)
 	 */
 	@Override
-	public void cursorUpdated(InputCursor m, MTFingerInputEvt positionEvent) {
-		ClusteringContext context = cursorToContext.get(m);
+	public void cursorUpdated(InputCursor c, MTFingerInputEvt positionEvent) {
+		ClusteringContext context = cursorToContext.get(c);
 		if (context != null){ //cursor was used here
 			if (!context.gestureAborted){
-				context.update(m);
+				context.update(c);
 				//TODO visually mark selected cards and give back real selected cards again..
 				IdragClusterable[] selectedComps = new IdragClusterable[0];
-				this.fireGestureEvent(new LassoEvent(this, MTGestureEvent.GESTURE_UPDATED, canvas, m, context.getPolygon(), selectedComps));
+				this.fireGestureEvent(new LassoEvent(this, MTGestureEvent.GESTURE_UPDATED, canvas, c, context.getPolygon(), selectedComps));
 			}
 		}
 	}
@@ -142,34 +142,34 @@ public class LassoProcessor extends AbstractCursorProcessor {
 	 * @see org.mt4j.input.inputProcessors.componentProcessors.AbstractCursorProcessor#cursorEnded(org.mt4j.input.inputData.InputCursor, org.mt4j.input.inputData.AbstractCursorInputEvt)
 	 */
 	@Override
-	public void cursorEnded(InputCursor m, MTFingerInputEvt positionEvent) {
-		logger.debug(this.getName() + " INPUT_ENDED RECIEVED - MOTION: " + m.getId());
-		ClusteringContext context = cursorToContext.get(m);
+	public void cursorEnded(InputCursor c, MTFingerInputEvt positionEvent) {
+		logger.debug(this.getName() + " INPUT_ENDED RECIEVED - cursor: " + c.getId());
+		ClusteringContext context = cursorToContext.get(c);
 		if (context != null){ //cursor was used here
-			cursorToContext.remove(m); 
+			cursorToContext.remove(c); 
 			IdragClusterable[] selectedComps = context.getselectedComps();
-			this.fireGestureEvent(new LassoEvent(this, MTGestureEvent.GESTURE_ENDED, canvas, m, context.getPolygon(), selectedComps));
-			this.unLock(m);
+			this.fireGestureEvent(new LassoEvent(this, MTGestureEvent.GESTURE_ENDED, canvas, c, context.getPolygon(), selectedComps));
+			this.unLock(c);
 		}
 	}
 
 
 
 	@Override
-	public void cursorLocked(InputCursor m, IInputProcessor lockingAnalyzer) {
+	public void cursorLocked(InputCursor c, IInputProcessor lockingAnalyzer) {
 		if (lockingAnalyzer instanceof AbstractComponentProcessor){
-			logger.debug(this.getName() + " Recieved MOTION LOCKED by (" + ((AbstractComponentProcessor)lockingAnalyzer).getName()  + ") - cursor ID: " + m.getId());
+			logger.debug(this.getName() + " Recieved cursor LOCKED by (" + ((AbstractComponentProcessor)lockingAnalyzer).getName()  + ") - cursor ID: " + c.getId());
 		}else{
-			logger.debug(this.getName() + " Recieved MOTION LOCKED by higher priority signal - cursor ID: " + m.getId());
+			logger.debug(this.getName() + " Recieved cursor LOCKED by higher priority signal - cursor ID: " + c.getId());
 		}
-		this.abortGesture(m);
+		this.abortGesture(c);
 	}
 
 
 
 	@Override
-	public void cursorUnlocked(InputCursor m) {
-		logger.debug(this.getName() + " Recieved UNLOCKED signal for cursor ID: " + m.getId());
+	public void cursorUnlocked(InputCursor c) {
+		logger.debug(this.getName() + " Recieved UNLOCKED signal for cursor ID: " + c.getId());
 		//Do nothing here, we dont want this gesture to be resumable
 	}
 
@@ -178,19 +178,19 @@ public class LassoProcessor extends AbstractCursorProcessor {
 	/**
 	 * Abort gesture.
 	 * 
-	 * @param m the involved cursor
+	 * @param c the involved cursor
 	 */
-	public void abortGesture(InputCursor m){
-		ClusteringContext context = cursorToContext.get(m);
+	public void abortGesture(InputCursor c){
+		ClusteringContext context = cursorToContext.get(c);
 		if (context != null){ //cursor was used here
-			cursorToContext.remove(m); 
-			context.update(m);
-			//because of aborting we send an empty selectionarrray 
+			cursorToContext.remove(c); 
+			context.update(c);
+			//because of aborting we send an empty selection array 
 			IdragClusterable[] selectedComps = new IdragClusterable[0];
-			this.fireGestureEvent(new LassoEvent(this,MTGestureEvent.GESTURE_ENDED, canvas, m, context.getPolygon(), selectedComps));
-			logger.debug(this.getName() + " cursor:" + m.getId() + " MOTION LOCKED. Was an active cursor in this gesture!");
+			this.fireGestureEvent(new LassoEvent(this, MTGestureEvent.GESTURE_ENDED, canvas, c, context.getPolygon(), selectedComps));
+			logger.debug(this.getName() + " cursor:" + c.getId() + " cursor LOCKED. Was an active cursor in this gesture!");
 		}else{
-			logger.debug(this.getName() + " MOTION LOCKED. But it was NOT an active cursor in this gesture!");
+			logger.debug(this.getName() + " cursor LOCKED. But it was NOT an active cursor in this gesture!");
 		}
 	}
 	
@@ -210,7 +210,7 @@ public class LassoProcessor extends AbstractCursorProcessor {
 					if (evt.getSource() instanceof IdragClusterable) {
 						IdragClusterable clusterAble = (IdragClusterable) evt.getSource();
 						removeClusterable(clusterAble);
-						//logger.debug("Removed comp from clustergesture analyzers tracking");
+						//logger.debug("Removed comp from cluster gesture analyzers tracking");
 					}
 				}
 			});

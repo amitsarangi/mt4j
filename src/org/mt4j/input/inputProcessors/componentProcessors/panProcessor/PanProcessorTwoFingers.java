@@ -34,7 +34,7 @@ import org.mt4j.util.math.Vector3D;
 import processing.core.PApplet;
 
 /**
- * The Class PanProcessorTwoFingers. Multitouch gesture processor for panning the
+ * The Class PanProcessorTwoFingers. Multi-touch gesture processor for panning the
  * canvas by moving the scene's camera. Should only be registered with MTCanvas components.
  * Fires PanEvent gesture events.
  * <br><strong>NOTE:</strong> Should be only used in combination with a MTCanvas component. 
@@ -48,7 +48,7 @@ public class PanProcessorTwoFingers extends AbstractCursorProcessor {
 	/** The applet. */
 	private PApplet applet;
 	
-	/** The un used cursors. */
+	/** The unused cursors. */
 	private List<InputCursor> unUsedCursors;
 	
 	/** The locked cursors. */
@@ -88,84 +88,79 @@ public class PanProcessorTwoFingers extends AbstractCursorProcessor {
 	
 
 	@Override
-	public void cursorStarted(InputCursor m, MTFingerInputEvt positionEvent) {
+	public void cursorStarted(InputCursor c, MTFingerInputEvt positionEvent) {
 		if (lockedCursors.size() >= 2){ //gesture with 2 fingers already in progress
-			unUsedCursors.add(m);
-			logger.debug(this.getName() + " has already enough cursors for this gesture - adding to unused ID:" + m.getId());
+			unUsedCursors.add(c);
+			logger.debug(this.getName() + " has already enough cursors for this gesture - adding to unused ID:" + c.getId());
 		}else{ //no gesture in progress yet
 			if (unUsedCursors.size() == 1){
-				logger.debug(this.getName() + " has already has 1 unused cursor - we can try start gesture! used with ID:" + unUsedCursors.get(0).getId() + " and new cursor ID:" + m.getId());
+				logger.debug(this.getName() + " has already has 1 unused cursor - we can try start gesture! used with ID:" + unUsedCursors.get(0).getId() + " and new cursor ID:" + c.getId());
 				InputCursor otherCursor = unUsedCursors.get(0);
 				
 				//See if we can obtain a lock on both cursors
-				if (this.canLock(otherCursor, m)){
-					float newDistance = Vector3D.distance(otherCursor.getPosition(), m.getPosition());
+				if (this.canLock(otherCursor, c)){
+					float newDistance = Vector3D.distance(otherCursor.getPosition(), c.getPosition());
 					if (newDistance < detectRadius) {
-						this.getLock(otherCursor, m);
+						this.getLock(otherCursor, c);
 						logger.debug(this.getName() + " we could lock both cursors! And fingers in distance! - " + newDistance);
 						unUsedCursors.remove(otherCursor);
 						lockedCursors.add(otherCursor);
-						lockedCursors.add(m);
-						this.fireGestureEvent(new PanTwoFingerEvent(this, MTGestureEvent.GESTURE_DETECTED, positionEvent.getTarget(), otherCursor, m, new Vector3D(0,0,0), positionEvent.getTarget().getViewingCamera()));
+						lockedCursors.add(c);
+						this.fireGestureEvent(new PanTwoFingerEvent(this, MTGestureEvent.GESTURE_DETECTED, positionEvent.getTarget(), otherCursor, c, new Vector3D(0,0,0), positionEvent.getTarget().getViewingCamera()));
 					}else{
 						logger.debug(this.getName() + " Cursors not close enough to start gesture. Distance: " + newDistance);
 					}
 				}else{
 					logger.debug(this.getName() + " we could NOT lock both cursors!");
-					unUsedCursors.add(m);	
+					unUsedCursors.add(c);	
 				}
 			}else{
 				logger.debug(this.getName() + " we didnt have a unused cursor previously to start gesture now");
-				unUsedCursors.add(m);
+				unUsedCursors.add(c);
 			}
 		}
 	}
 
 	@Override
-	public void cursorUpdated(InputCursor m, MTFingerInputEvt positionEvent) {
-		if (lockedCursors.size() == 2 && lockedCursors.contains(m)){
+	public void cursorUpdated(InputCursor c, MTFingerInputEvt positionEvent) {
+		if (lockedCursors.size() == 2 && lockedCursors.contains(c)){
 			InputCursor firstCursor = lockedCursors.get(0);
 			InputCursor secondCursor = lockedCursors.get(1);
-			Vector3D distance = (m.equals(firstCursor))? getNewTranslation(positionEvent.getTarget(), firstCursor, secondCursor) : getNewTranslation(positionEvent.getTarget(), secondCursor, firstCursor);
-//			//logger.debug("DIST: " + distance);
+			Vector3D distance = (c.equals(firstCursor))? getNewTranslation(positionEvent.getTarget(), firstCursor, secondCursor) : getNewTranslation(positionEvent.getTarget(), secondCursor, firstCursor);
+			//logger.debug("DIST: " + distance);
 			this.fireGestureEvent(new PanTwoFingerEvent(this, MTGestureEvent.GESTURE_UPDATED, positionEvent.getTarget(), firstCursor, secondCursor, new Vector3D(distance.getX(),distance.getY(),0), positionEvent.getTarget().getViewingCamera()));
 		}
 	}
 	
 	
 	@Override
-	public void cursorEnded(InputCursor m, MTFingerInputEvt positionEvent) {
+	public void cursorEnded(InputCursor c, MTFingerInputEvt positionEvent) {
 		IMTComponent3D comp = positionEvent.getTarget();
-		logger.debug(this.getName() + " INPUT_ENDED RECIEVED - MOTION: " + m.getId());
+		logger.debug(this.getName() + " INPUT_ENDED RECIEVED - cursor: " + c.getId());
 		
-		if (lockedCursors.size() == 2 && lockedCursors.contains(m)){
-			InputCursor leftOverCursor = (lockedCursors.get(0).equals(m))? lockedCursors.get(1) : lockedCursors.get(0);
+		if (lockedCursors.size() == 2 && lockedCursors.contains(c)){
+			InputCursor leftOverCursor = (lockedCursors.get(0).equals(c))? lockedCursors.get(1) : lockedCursors.get(0);
 			
-			lockedCursors.remove(m);
+			lockedCursors.remove(c);
 			if (unUsedCursors.size() > 0){ //Check if there are other cursors we could use for scaling if one was removed
-				InputCursor futureCursor = unUsedCursors.get(0);
-				if (this.canLock(futureCursor)){ //check if we have priority to lock another cursor and use it
-					float newDistance = Vector3D.distance(leftOverCursor.getPosition(), futureCursor.getPosition());
-					if (newDistance < detectRadius) {//Check if other cursor is in distance 
-						this.getLock(futureCursor);
-						unUsedCursors.remove(futureCursor);
-						lockedCursors.add(futureCursor);
-						logger.debug(this.getName() + " we could lock another cursor! (ID:" + futureCursor.getId() +")");
-						logger.debug(this.getName() + " continue with different cursors (ID: " + futureCursor.getId() + ")" + " " + "(ID: " + leftOverCursor.getId() + ")");
-						//TODO fire start evt?
-					}else{
-						this.endGesture(m, leftOverCursor, comp);
-					}
-				}else{ //we dont have permission to use other cursor  - End scale
-					this.endGesture(m, leftOverCursor, comp);
+				InputCursor futureCursor = getFarthestFreeCursorTo(leftOverCursor);
+				float newDistance = Vector3D.distance(leftOverCursor.getPosition(), futureCursor.getPosition());
+				if (newDistance < detectRadius) {//Check if other cursor is in distance 
+					this.getLock(futureCursor);
+					unUsedCursors.remove(futureCursor);
+					lockedCursors.add(futureCursor);
+					logger.debug(this.getName() + " we could lock another cursor! (ID:" + futureCursor.getId() +")");
+					logger.debug(this.getName() + " continue with different cursors (ID: " + futureCursor.getId() + ")" + " " + "(ID: " + leftOverCursor.getId() + ")");
+				}else{
+					this.endGesture(c, leftOverCursor, comp);
 				}
 			}else{ //no more unused cursors on comp - End scale
-				this.endGesture(m, leftOverCursor, comp);
+				this.endGesture(c, leftOverCursor, comp);
 			}
-			this.unLock(m); //FIXME TEST
+			this.unLock(c);
 		}else{ //cursor was not a scaling involved cursor
-			if (unUsedCursors.contains(m)){
-				unUsedCursors.remove(m);
+			if (unUsedCursors.contains(c)){
+				unUsedCursors.remove(c);
 			}
 		}
 	}
@@ -188,33 +183,34 @@ public class PanProcessorTwoFingers extends AbstractCursorProcessor {
 	
 
 	@Override
-	public void cursorLocked(InputCursor m, IInputProcessor lockingAnalyzer) {
-		if (lockingAnalyzer instanceof AbstractComponentProcessor){
-			logger.debug(this.getName() + " Recieved MOTION LOCKED by (" + ((AbstractComponentProcessor)lockingAnalyzer).getName()  + ") - cursor ID: " + m.getId());
+	public void cursorLocked(InputCursor c, IInputProcessor lockingProcessor) {
+		if (lockingProcessor instanceof AbstractComponentProcessor){
+			logger.debug(this.getName() + " Recieved cursor LOCKED by (" + ((AbstractComponentProcessor)lockingProcessor).getName()  + ") - cursor ID: " + c.getId());
 		}else{
-			logger.debug(this.getName() + " Recieved MOTION LOCKED by higher priority signal - cursor ID: " + m.getId());
+			logger.debug(this.getName() + " Recieved cursor LOCKED by higher priority signal - cursor ID: " + c.getId());
 		}
 		
-		if (lockedCursors.contains(m)){ //cursors was used here! -> we have to stop the gesture
+		if (lockedCursors.contains(c)){ //cursors was used here! -> we have to stop the gesture
 			//put all used cursors in the unused cursor list and clear the usedcursorlist
 			unUsedCursors.addAll(lockedCursors); 
 			lockedCursors.clear();
-			//TODO fire ended evt?
-			logger.debug(this.getName() + " cursor:" + m.getId() + " MOTION LOCKED. Was an active cursor in this gesture!");
+			InputCursor leftOverCursor = (lockedCursors.get(0).equals(c))? lockedCursors.get(1) : lockedCursors.get(0);
+			this.fireGestureEvent(new PanTwoFingerEvent(this, MTGestureEvent.GESTURE_ENDED, c.getCurrentTarget(), c, leftOverCursor, new Vector3D(0,0,0), c.getCurrentTarget().getViewingCamera()));
+			logger.debug(this.getName() + " cursor:" + c.getId() + " cursor LOCKED. Was an active cursor in this gesture!");
 		}
 	}
 
 	
 	
 	@Override
-	public void cursorUnlocked(InputCursor m) {
-		logger.debug(this.getName() + " Recieved UNLOCKED signal for cursor ID: " + m.getId());
+	public void cursorUnlocked(InputCursor c) {
+		logger.debug(this.getName() + " Recieved UNLOCKED signal for cursor ID: " + c.getId());
 		
 		if (lockedCursors.size() >= 2){ //we dont need the unlocked cursor, gesture still in progress
 			return;
 		}
 		
-		if (unUsedCursors.contains(m)){ //should always be true here!?
+		if (unUsedCursors.contains(c)){ //should always be true here!?
 			if (unUsedCursors.size() >= 2){ //we can try to resume the gesture
 				InputCursor firstCursor = unUsedCursors.get(0);
 				InputCursor secondCursor = unUsedCursors.get(1);
@@ -230,7 +226,7 @@ public class PanProcessorTwoFingers extends AbstractCursorProcessor {
 						lockedCursors.add(secondCursor);
 						logger.debug(this.getName() + " we could lock cursors: " + firstCursor.getId() +", " + secondCursor.getId());
 						logger.debug(this.getName() + " continue with different cursors (ID: " + firstCursor.getId() + ")" + " " + "(ID: " + secondCursor.getId() + ")");
-						//TODO fire start evt?
+						this.fireGestureEvent(new PanTwoFingerEvent(this, MTGestureEvent.GESTURE_DETECTED, c.getCurrentTarget(), firstCursor, secondCursor, new Vector3D(0,0,0), c.getCurrentTarget().getViewingCamera()));
 					}else{
 						logger.debug(this.getName() + " distance was too great between cursors: " + firstCursor.getId() +", " + secondCursor.getId() + " distance: " + newDistance);
 					}
@@ -288,7 +284,7 @@ public class PanProcessorTwoFingers extends AbstractCursorProcessor {
 	 * @return the middle point between fingers
 	 */
 	private Vector3D getMiddlePointBetweenFingers(Vector3D firstFinger, Vector3D secondFinger){
-		Vector3D bla = secondFinger.getSubtracted(firstFinger); //= Richtungsvektor vom 1. zum 2. finger
+		Vector3D bla = secondFinger.getSubtracted(firstFinger); //= direction vector of 1. to 2. finger
 		bla.scaleLocal(0.5f); //take the half
 		return (new Vector3D(firstFinger.getX() + bla.getX(), firstFinger.getY() + bla.getY(), firstFinger.getZ() + bla.getZ()));
 	}
