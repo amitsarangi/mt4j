@@ -19,6 +19,7 @@ package org.mt4j.components.bounds;
 
 import org.mt4j.components.MTComponent;
 import org.mt4j.components.TransformSpace;
+import org.mt4j.components.visibleComponents.shapes.AbstractShape;
 import org.mt4j.util.camera.IFrustum;
 import org.mt4j.util.math.Matrix;
 import org.mt4j.util.math.Ray;
@@ -331,6 +332,39 @@ public class BoundsArbitraryPlanarPolygon implements IBoundingShape {
         }
 		return false;
 	}
+	
+	@Override
+	public MTComponent getPeerComponent() {
+		return this.peerComponent;
+	}
+
+
+	@Override
+	public IBoundingShape transform(Matrix transformMatrix) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	@Override
+	public IBoundingShape getBoundsTransformed(TransformSpace transformSpace) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	@Override
+	public void setPeerComponent(MTComponent peerComponent) {
+		this.peerComponent = peerComponent;
+	}
+	
+	@Override
+	public IBoundingShape merge(IBoundingShape shape) {
+		
+		//TODO
+		return null;
+	}
+
 
 	
 

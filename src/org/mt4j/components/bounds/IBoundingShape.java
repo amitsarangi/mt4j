@@ -17,8 +17,10 @@
  ***********************************************************************/
 package org.mt4j.components.bounds;
 
+import org.mt4j.components.MTComponent;
 import org.mt4j.components.TransformSpace;
 import org.mt4j.util.camera.IFrustum;
+import org.mt4j.util.math.Matrix;
 import org.mt4j.util.math.Ray;
 import org.mt4j.util.math.Vector3D;
 
@@ -131,5 +133,16 @@ public interface IBoundingShape {
 	//update(Matrix) //getTransformedCoords(Matrix)
 	
 	public boolean isContainedInFrustum(IFrustum frustum);
+	
+	public IBoundingShape merge(IBoundingShape shape);
+	
+	public IBoundingShape transform(Matrix transformMatrix);
+	
+	public MTComponent getPeerComponent();
+	
+	public void setPeerComponent(MTComponent peerComponent);
+	
+	public IBoundingShape getBoundsTransformed(TransformSpace transformSpace);
+	
 	
 }

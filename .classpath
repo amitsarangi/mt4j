@@ -56,5 +56,8 @@
 	</classpathentry>
 	<classpathentry kind="lib" path="mt4jLibs/ani.jar"/>
 	<classpathentry kind="lib" path="mt4jLibs/junit-4.8.2.jar"/>
+	<classpathentry kind="lib" path="mt4jLibs/jbullet/jbullet.jar"/>
+	<classpathentry kind="lib" path="mt4jLibs/jbullet/stack-alloc.jar"/>
+	<classpathentry kind="lib" path="mt4jLibs/jbullet/vecmath.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

@@ -19,6 +19,7 @@ package org.mt4j.input.gestureAction;
 
 import org.mt4j.components.MTComponent;
 import org.mt4j.components.interfaces.IMTComponent3D;
+import org.mt4j.input.inputProcessors.ICollisionAction;
 import org.mt4j.input.inputProcessors.IGestureEventListener;
 import org.mt4j.input.inputProcessors.MTGestureEvent;
 import org.mt4j.input.inputProcessors.componentProcessors.scaleProcessor.ScaleEvent;
@@ -31,7 +32,7 @@ import org.mt4j.util.math.Vector3D;
  * 
  * @author Christopher Ruff
  */
-public class DefaultScaleAction implements IGestureEventListener {
+public class DefaultScaleAction implements IGestureEventListener,ICollisionAction {
 	
 	/** The target. */
 	private IMTComponent3D target;
@@ -41,6 +42,10 @@ public class DefaultScaleAction implements IGestureEventListener {
 	private float minScale;
 	
 	private float maxScale;
+	
+	private MTGestureEvent lastEvent;
+	
+	private boolean gestureAborted = false;
 	
 	/**
 	 * Instantiates a new default scale action.
@@ -111,6 +116,7 @@ public class DefaultScaleAction implements IGestureEventListener {
 	public boolean processGestureEvent(MTGestureEvent g) {
 		if (g instanceof ScaleEvent){
 			ScaleEvent scaleEvent = (ScaleEvent)g;
+			this.lastEvent = scaleEvent;
 			
 			if (target == null)
 				target = scaleEvent.getTargetComponent(); 
@@ -129,44 +135,46 @@ public class DefaultScaleAction implements IGestureEventListener {
 				}
 				break;
 			case MTGestureEvent.GESTURE_UPDATED:
-				
-				if (this.hasScaleLimit){
-					if (target instanceof MTComponent) {
-						MTComponent comp = (MTComponent) target;
-						
-						//FIXME actually we should use globalmatrix but performance is better for localMatrix..
-						Vector3D currentScale = comp.getLocalMatrix().getScale(); 
-						
-//						if (currentScale.x != currentScale.y){
-//							System.out.println("non uniform scale!");
-//						}
-						
-						//We only check X because only uniform scales (x=y factor) should be used!
-						if (currentScale.x * scaleEvent.getScaleFactorX() > this.maxScale){
-//							System.out.println("Scale MAX Limit Hit!");
-							//We should set to min scale, but we choose performance over accuracy
-							//float factor = (1f/currentScale.x) * maxScale;
-							//target.scaleGlobal(factor, factor, scaleEvent.getScaleFactorZ(), scaleEvent.getScalingPoint());
-						}else if (currentScale.x * scaleEvent.getScaleFactorX() < this.minScale){
-//							System.out.println("Scale MIN Limit Hit!");
-							//We should set to min scale, but we choose performance over accuracy
-							//float factor = (1f/currentScale.x) * minScale;
-							//target.scaleGlobal(factor, factor, scaleEvent.getScaleFactorZ(), scaleEvent.getScalingPoint());
-						}else{
-							target.scaleGlobal(
-									scaleEvent.getScaleFactorX(), 
-									scaleEvent.getScaleFactorY(), 
-									scaleEvent.getScaleFactorZ(), 
-									scaleEvent.getScalingPoint());
+				if(!gestureAborted)
+				{
+					if (this.hasScaleLimit){
+						if (target instanceof MTComponent) {
+							MTComponent comp = (MTComponent) target;
+							
+							//FIXME actually we should use globalmatrix but performance is better for localMatrix..
+							Vector3D currentScale = comp.getLocalMatrix().getScale(); 
+							
+	//						if (currentScale.x != currentScale.y){
+	//							System.out.println("non uniform scale!");
+	//						}
+							
+							//We only check X because only uniform scales (x=y factor) should be used!
+							if (currentScale.x * scaleEvent.getScaleFactorX() > this.maxScale){
+	//							System.out.println("Scale MAX Limit Hit!");
+								//We should set to min scale, but we choose performance over accuracy
+								//float factor = (1f/currentScale.x) * maxScale;
+								//target.scaleGlobal(factor, factor, scaleEvent.getScaleFactorZ(), scaleEvent.getScalingPoint());
+							}else if (currentScale.x * scaleEvent.getScaleFactorX() < this.minScale){
+	//							System.out.println("Scale MIN Limit Hit!");
+								//We should set to min scale, but we choose performance over accuracy
+								//float factor = (1f/currentScale.x) * minScale;
+								//target.scaleGlobal(factor, factor, scaleEvent.getScaleFactorZ(), scaleEvent.getScalingPoint());
+							}else{
+								target.scaleGlobal(
+										scaleEvent.getScaleFactorX(), 
+										scaleEvent.getScaleFactorY(), 
+										scaleEvent.getScaleFactorZ(), 
+										scaleEvent.getScalingPoint());
+							}
+							
 						}
-						
+					}else{
+						target.scaleGlobal(
+								scaleEvent.getScaleFactorX(), 
+								scaleEvent.getScaleFactorY(), 
+								scaleEvent.getScaleFactorZ(), 
+								scaleEvent.getScalingPoint());
 					}
-				}else{
-					target.scaleGlobal(
-							scaleEvent.getScaleFactorX(), 
-							scaleEvent.getScaleFactorY(), 
-							scaleEvent.getScaleFactorZ(), 
-							scaleEvent.getScalingPoint());
 				}
 				break;
 			case MTGestureEvent.GESTURE_ENDED:
@@ -176,6 +184,21 @@ public class DefaultScaleAction implements IGestureEventListener {
 			}
 		}
 		return false;
+	}
+	
+	@Override
+	public boolean gestureAborted() {
+		return this.gestureAborted;
+	}
+
+	@Override
+	public MTGestureEvent getLastEvent() {
+		return this.lastEvent;
+	}
+
+	@Override
+	public void setGestureAborted(boolean aborted) {
+		this.gestureAborted = aborted;
 	}
 
 }

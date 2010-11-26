@@ -39,6 +39,7 @@ import org.mt4j.components.visibleComponents.shapes.AbstractShape;
 import org.mt4j.components.visibleComponents.shapes.mesh.MTTriangleMesh;
 import org.mt4j.components.visibleComponents.shapes.mesh.Triangle;
 import org.mt4j.util.camera.IFrustum;
+import org.mt4j.util.math.Quaternion;
 import org.mt4j.util.math.ToolsMath;
 import org.mt4j.util.math.Matrix;
 import org.mt4j.util.math.Plane;
@@ -155,6 +156,23 @@ import processing.core.PGraphics;
 //			this.centerPointWorld 	= this.getCenterPointGlobal();
 			this.radiusWorldDirty = true;
 //			this.radiusWorld = this.getRadiusWorld();
+	    }
+	    
+	    /**
+    	 * The Constructor.
+    	 * 
+    	 * @param sphere the boundingSphere 
+    	 * @param vectors the vectors
+    	 */
+	    public BoundingSphere(BoundingSphere sphere)
+	    {
+	    	this.peerComponent = sphere.peerComponent;
+	    	this.worldVecsDirty 	= true;
+			this.centerWorldDirty 	= true;
+//			this.worldVecs 			= this.getVectorsGlobal();
+//			this.centerPointWorld 	= this.getCenterPointGlobal();
+			this.radiusWorldDirty = true;
+	    	
 	    }
 	    
 	    /**
@@ -863,7 +881,10 @@ import processing.core.PGraphics;
 	        return center;
 	    }
 
-
+	    public void setCenter(Vector3D center) {
+	    	this.center = center;
+	    }
+	    
 //	    /*
 //	     * (non-Javadoc)
 //	     *
@@ -1253,6 +1274,50 @@ import processing.core.PGraphics;
 //			return tmpVec.length();
 		}
 		
+		/**
+	     * <code>transform</code> modifies the center of the sphere to reflect the
+	     * change made via a rotation, translation and scale.
+	     *
+	     * @param rotate
+	     *            the rotation change.
+	     * @param translate
+	     *            the translation change.
+	     * @param scale
+	     *            the size change.
+	     * @param store
+	     *            sphere to store result in
+	     * @return BoundingVolume
+	     * @return ref
+	     */
+	    public IBoundingShape transform(Matrix transformMatrix) {
+	        BoundingSphere sphere = this;
+	        
+	       // sphere = new BoundingSphere((AbstractShape)this.peerComponent);
+	        
+	        sphere.center = this.center;
+	        sphere.radius = this.radius;
+	        
+	        Quaternion rotate = new Quaternion();
+	        //transformMatrix.addLocal(this.peerComponent.getLocalMatrix());
+	        rotate.fromRotationMatrix(transformMatrix);
+	      
+	        Vector3D translate = new Vector3D(transformMatrix.m03,transformMatrix.m13,transformMatrix.m23);
+	        Vector3D scale = new Vector3D(transformMatrix.getScale());
+	        
+	        Matrix mat = new Matrix();
+	        mat.loadIdentity();
+	        mat.m00 = scale.x;
+	        mat.m11 = scale.y;
+	        mat.m12 = scale.z;
+	        sphere.center.transform(mat);
+	        //center.mult(scale, sphere.center);
+	        rotate.mult(sphere.center, sphere.center);
+	        sphere.center.addLocal(translate);
+	        sphere.radius = Math.abs(getMaxAxis(scale) * radius) + radiusEpsilon - 1f;
+	        
+	        return sphere;
+	    }
+		
 		//ADDTOMT4J
 		/**
 		 *  calculates the boundingsphere points on the sphere
@@ -1316,6 +1381,207 @@ import processing.core.PGraphics;
 			return vec;
 			
 		}
+		
+		/**
+	     * <code>merge</code> combines this sphere with a second bounding sphere.
+	     * This new sphere contains both bounding spheres and is returned.
+	     *
+	     * @param volume
+	     *            the sphere to combine with this sphere.
+	     * @return a new sphere
+	     */
+	    public IBoundingShape merge(IBoundingShape shape) {
+	        if (shape == null) {
+	            return this;
+	        }
+	     
+	        if(shape instanceof BoundingSphere)
+	        {
+	        	BoundingSphere sphere = (BoundingSphere) shape;
+	            float temp_radius = sphere.getRadius();
+	            Vector3D temp_center = sphere.getCenter().getCopy();
+	            
+	            BoundingSphere rVal = new BoundingSphere((AbstractShape)sphere.getPeerComponent());
+	            IBoundingShape rVal2 = merge(temp_radius, temp_center, rVal,rVal);
+	            
+	            return rVal2;
+	        }else if(shape instanceof OrientedBoundingBox)
+	        {
+	        	OrientedBoundingBox box = (OrientedBoundingBox) shape;
+	            BoundingSphere rVal = new BoundingSphere((AbstractShape)box.getPeerComponent());
+	            BoundingSphere rVal2 =(BoundingSphere) ((BoundingSphere)this.clone()).mergeOBB(box);
+	            
+	            return rVal2;
+	        }else if(shape instanceof BoundsArbitraryPlanarPolygon)
+	        {
+	        	BoundsArbitraryPlanarPolygon polygon = (BoundsArbitraryPlanarPolygon) shape;
+	        	BoundingSphere rVal = (BoundingSphere)this.clone();//TODO
+	        	return rVal;
+	        }else if(shape instanceof BoundsZPlaneRectangle)
+	        {
+	        	BoundsZPlaneRectangle rectangle = (BoundsZPlaneRectangle) shape;
+	        	BoundingSphere rVal = (BoundingSphere)this.clone();//TODO
+	        	return rVal;
+	        }        
+	        else
+	        {
+	        	return null;
+	        }
+	    }
+	    
+	    private IBoundingShape merge(float temp_radius, Vector3D temp_center,
+	            BoundingSphere rVal,BoundingSphere result) {
+	    	
+	    	//result.setPeerComponent(this.peerComponent);
+	        Vector3D diff = temp_center.getSubtracted(center);
+	      
+	        float lengthSquared = diff.lengthSquared();
+	        float radiusDiff = temp_radius - radius;
+
+	        float fRDiffSqr = radiusDiff * radiusDiff;
+	       
+	        
+	        if (fRDiffSqr >= lengthSquared) {
+	            if (radiusDiff <= 0.0f) {
+	                return this;
+	            } 
+	                
+	            Vector3D rCenter = rVal.getCenter();
+	            
+	            rCenter = temp_center;	            
+	            result.setRadius(temp_radius);
+	            return rVal;
+	        }
+
+	        float length = (float) Math.sqrt(lengthSquared);
+
+	        Vector3D rCenter = rVal.getCenter();
+	       
+	        if (length > radiusEpsilon) {
+	        
+	            float coeff = (length + radiusDiff) / (2.0f * length);
+	            rCenter = (center.addLocal(diff.getScaled(coeff))).getCopy();
+	        } else {
+	            rCenter = center.getCopy();
+	        }
+
+	        result.setRadius(0.5f * (length + radius + temp_radius));
+	        result.setCenter (rCenter);
+	        
+	        return result;
+	    }
+
+	    /**
+	     * Merges this sphere with the given OBB.
+	     *
+	     * @param volume
+	     *            The OBB to merge.
+	     * @return This sphere, after merging.
+	     */
+	    private IBoundingShape mergeOBB(OrientedBoundingBox volume) {
+	    	this.peerComponent = volume.getPeerComponent();
+
+	    	// compute edge points from the obb
+	    	
+	    	
+	        if (!volume.correctCorners)
+	            volume.computeCorners();
+	        _mergeBuf.rewind();
+	        for (int i = 0; i < 8; i++) {	        	
+	            _mergeBuf.put(volume.vectorStore[i].x);
+	            _mergeBuf.put(volume.vectorStore[i].y);
+	            _mergeBuf.put(volume.vectorStore[i].z);
+	        }
+	        
+	        // remember old radius and center
+	        float oldRadius = radius;
+	        Vector3D oldCenter =  center.getCopy();
+	      
+	        // compute new radius and center from obb points
+	        System.out.println("center" + center);
+	        computeFromPoints(_mergeBuf);	        
+	        Vector3D newCenter = center.getCopy();
+	       
+	        float newRadius = radius;
+	       
+	        // restore old center and radius
+	        center = oldCenter;
+	        System.out.println("newCenter: " + newCenter + " center " + center);
+	        radius = oldRadius;
+	       
+	        //merge obb points result
+	        BoundingSphere sphere = new BoundingSphere((AbstractShape)volume.getPeerComponent());
+	        BoundingSphere shape =  (BoundingSphere)merge( newRadius, newCenter, this,sphere);
+	        System.out.println("Shape " + shape.getCenterPointGlobal() + " " + shape.getRadius());
+	        return shape;
+	        
+	    }
+	    
+	    /**
+	     * <code>clone</code> creates a new BoundingSphere object containing the
+	     * same data as this one.
+	     *
+	     * @param store
+	     *            where to store the cloned information. if null or wrong class,
+	     *            a new store is created.
+	     * @return the new BoundingSphere
+	     */
+	    public IBoundingShape clone() {
+	    	/*if(store !=null && store instanceof BoundingSphere) {
+	            BoundingSphere rVal = (BoundingSphere) store;
+	            if (null == rVal.center) {
+	                rVal.center = new Vector3D();
+	            }
+	            rVal.center = center;
+	            rVal.radius = radius;
+	            
+	            return rVal;
+	        } */
+	    	
+	    	BoundingSphere sphere = new BoundingSphere(this);
+	    	sphere.center = this.center;
+	    	sphere.radius = this.radius;
+		
+	        return sphere;
+	    }
+
+		@Override
+		public MTComponent getPeerComponent() {
+			return this.peerComponent;
+		}
+		
+		@Override
+		public void setPeerComponent(MTComponent peerComponent) {
+			this.peerComponent = peerComponent;
+		}	
+		
+		public IBoundingShape getBoundsTransformed(TransformSpace transformSpace){
+		
+			BoundingSphere sphere = (BoundingSphere)this.clone();
+			sphere.setRadius(this.getRadius());
+			sphere.setCenter(this.getCenter().getCopy());
+			
+			switch(transformSpace)
+			{
+				case LOCAL:
+		    		return sphere;        		
+		    	case RELATIVE_TO_PARENT:
+		    		if(this.peerComponent.getParent()!=null)
+		    		{		    			
+		    			sphere.transform(this.peerComponent.getLocalMatrix());		    			
+		    			return sphere;
+		    		}else
+		    		{
+		    			return sphere;
+		    		}
+		    	case GLOBAL:
+		    		return sphere.transform(this.peerComponent.getGlobalMatrix());
+		    	default:
+		    		return sphere;
+			}
+			
+		}
+		
 		
 		
 	}

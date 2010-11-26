@@ -581,6 +581,86 @@ public void setCamDef(Vector3D camPos, Vector3D viewCenterPos, float xUp, float 
 		gl.glEnd();
 	}
 
+	/**
+	 * Returns the height of the plane at a specific z value
+	 * @return the float
+	 */
+	public float getHeightOfPlane(float z)
+	{
+		
+		Vector3D ntlToftl = ftl.getSubtracted(ntl);
+		float lengthComplete = ntlToftl.length();
+		float zLengthComplete = Math.abs(ftl.z-ntl.z);
+		float zLength = Math.abs(ntl.z-z);
+		float factor = zLength/zLengthComplete;
+		
+		Vector3D zPlaneTopLeft = ntl.getAdded(ntlToftl.getScaled(factor));
+		
+		Vector3D zPlaneBottomLeft = nbl.getAdded(fbl.getSubtracted(nbl).getScaled(factor));
+		
+		return zPlaneTopLeft.getSubtracted(zPlaneBottomLeft).length();
+		
+	}
+	
+	/**
+	 * Returns the width of the plane at a specific z value
+	 * @return the float
+	 */
+	public float getWidthOfPlane(float z)
+	{
+		
+		Vector3D ntrToftr = ftr.getSubtracted(ntr);
+		float lengthComplete = ntrToftr.length();
+		float zLength = Math.abs(ntl.z-z);
+		float zLengthComplete = Math.abs(ftl.z-ntl.z);
+		float factor = zLength/zLengthComplete;
+				
+		Vector3D zPlaneTopRight = ntr.getAdded(ntrToftr.getScaled(factor));
+		Vector3D zPlaneTopLeft = ntl.getAdded(ftl.getSubtracted(ntl).getScaled(factor));
+				
+		return zPlaneTopLeft.getSubtracted(zPlaneTopRight).length();
+	}
+		
+	/**
+	 * Returns the height of the near plane
+	 * @return the float
+	 */
+	@Override
+	public float getHeightOfNearPlane() {
+		return Math.abs(ntl.y - nbl.y);
+	}
+	
+	/**
+	 * Returns the width of the near plane
+	 * @return the float
+	 */
+	@Override
+	public float getWidthOfNearPlane() {
+		  return Math.abs(ntl.x - ntr.x);
+	}
+	
+	/**
+	 * Returns the top left point of the near plane
+	 * @return the Vector3D
+	 */
+	@Override
+	public Vector3D getNearTopLeft() {
+		return ntl.getCopy();
+	}
+		
+	
+	/**
+	 * Returns the z value of the near plane
+	 * @return the float
+	 */
+	@Override
+	public float getZValueOfNearPlane()
+	{
+		return ntl.getZ();
+	}
+
+
+	
 //	public void printPlanes() {
 //
 //		for (int i = 0; i < 6; i++) {

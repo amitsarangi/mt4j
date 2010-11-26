@@ -19,6 +19,7 @@ package org.mt4j.input.gestureAction;
 
 import org.mt4j.components.MTComponent;
 import org.mt4j.components.interfaces.IMTComponent3D;
+import org.mt4j.input.inputProcessors.ICollisionAction;
 import org.mt4j.input.inputProcessors.IGestureEventListener;
 import org.mt4j.input.inputProcessors.MTGestureEvent;
 import org.mt4j.input.inputProcessors.componentProcessors.dragProcessor.DragEvent;
@@ -29,9 +30,11 @@ import org.mt4j.input.inputProcessors.componentProcessors.dragProcessor.DragEven
  * The Class DefaultDragAction.
  * @author Christopher Ruff
  */
-public class DefaultDragAction implements IGestureEventListener {
+public class DefaultDragAction implements IGestureEventListener,ICollisionAction  {
 	private IMTComponent3D dragTarget;
 	private boolean useCustomTarget;
+	private boolean gestureAborted = false;
+	private MTGestureEvent lastEvent;
 	
 	public DefaultDragAction(){
 		this.useCustomTarget = false;
@@ -49,6 +52,7 @@ public class DefaultDragAction implements IGestureEventListener {
 	public boolean processGestureEvent(MTGestureEvent g) {
 		if (g instanceof DragEvent){
 			DragEvent dragEvent = (DragEvent)g;
+			lastEvent = dragEvent;
 			
 			if (!useCustomTarget)
 				dragTarget = dragEvent.getTargetComponent(); 
@@ -70,10 +74,16 @@ public class DefaultDragAction implements IGestureEventListener {
 					}
 					*/
 				}
-				dragTarget.translateGlobal(dragEvent.getTranslationVect());
+				if(!gestureAborted)
+				{ 	
+					dragTarget.translateGlobal(dragEvent.getTranslationVect());
+				}
 				break;
 			case MTGestureEvent.GESTURE_UPDATED:
-				dragTarget.translateGlobal(dragEvent.getTranslationVect());
+				if(!gestureAborted)
+				{ 	
+					dragTarget.translateGlobal(dragEvent.getTranslationVect());
+				}
 				break;
 			case MTGestureEvent.GESTURE_ENDED:
 				break;
@@ -82,6 +92,22 @@ public class DefaultDragAction implements IGestureEventListener {
 			}
 		}
 		return false;
+	}
+
+
+	@Override
+	public boolean gestureAborted() {
+		return this.gestureAborted;
+	}
+
+	@Override
+	public MTGestureEvent getLastEvent() {
+		return this.lastEvent;
+	}
+
+	@Override
+	public void setGestureAborted(boolean aborted) {
+		this.gestureAborted = aborted;
 	}
 
 }

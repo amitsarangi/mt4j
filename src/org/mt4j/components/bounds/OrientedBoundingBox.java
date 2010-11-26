@@ -32,12 +32,16 @@
 
 package org.mt4j.components.bounds;
 
+import java.nio.FloatBuffer;
+
 import org.mt4j.components.MTComponent;
 import org.mt4j.components.TransformSpace;
 import org.mt4j.components.visibleComponents.shapes.AbstractShape;
 import org.mt4j.components.visibleComponents.shapes.mesh.MTTriangleMesh;
 import org.mt4j.components.visibleComponents.shapes.mesh.Triangle;
 import org.mt4j.util.camera.IFrustum;
+import org.mt4j.util.math.Quaternion;
+import org.mt4j.util.math.ToolsBuffers;
 import org.mt4j.util.math.ToolsMath;
 import org.mt4j.util.math.Matrix;
 import org.mt4j.util.math.Ray;
@@ -66,25 +70,53 @@ public class OrientedBoundingBox implements IBoundingShape {
 	
 	/** The Constant _compVect3. */
 	protected static final transient Vector3D _compVect3 = new Vector3D();
+	
+	/** The Constant _compVect4. */	
+	protected static final transient Vector3D _compVect4 = new Vector3D();
+	
+	/** The Constant _compVect5. */	
+	protected static final transient Vector3D _compVect5 = new Vector3D();
+	
+	/** The Constant _compVect6. */	
+	protected static final transient Vector3D _compVect6 = new Vector3D();
+	
+	/** The Constant _compVect7. */	
+	protected static final transient Vector3D _compVect7 = new Vector3D();
+	
+	/** The Constant _compVect8. */	
+	protected static final transient Vector3D _compVect8 = new Vector3D();
+
+	/** The Constant _compVect9. */
+	protected static final transient  Vector3D _compVect9 = new Vector3D();
+
+	/** The Constant _compVect10. */
+	protected static final transient  Vector3D _compVect10 = new Vector3D();
 
 	 /** Extents of the box along the x,y,z axis. */
-    public final Vector3D extent = new Vector3D(0, 0, 0); //Extent from the center of the bbox?
+    public Vector3D extent = new Vector3D(0, 0, 0); //Extent from the center of the bbox?
 
     /** Center point of the bounding box    *. */
     protected Vector3D center = new Vector3D();
     
     /** X axis of the Oriented Box. */
-    public final Vector3D xAxis = new Vector3D(1, 0, 0);
+    public Vector3D xAxis = new Vector3D(1, 0, 0);
 
     /** Y axis of the Oriented Box. */
-    public final Vector3D yAxis = new Vector3D(0, 1, 0);
+    public Vector3D yAxis = new Vector3D(0, 1, 0);
 
     /** Z axis of the Oriented Box. */
-    public final Vector3D zAxis = new Vector3D(0, 0, 1);
+    public Vector3D zAxis = new Vector3D(0, 0, 1);
 
     /** Vector array used to store the array of 8 corners the box has. */
     public final Vector3D[] vectorStore = new Vector3D[8];
 
+    static private final Matrix tempMa = new Matrix();
+
+    static private final Quaternion tempQa = new Quaternion();
+
+    static private final Quaternion tempQb = new Quaternion();
+    
+    static private final Vector3D tempVe = new Vector3D();
     
     /** The min x. */
     private float minX;
@@ -104,7 +136,7 @@ public class OrientedBoundingBox implements IBoundingShape {
     /** The max z. */
     private float maxZ;
     
-    
+    static private final FloatBuffer _mergeBuf = ToolsBuffers.createVector3Buffer(16);
 //    private Vector3D centerPointObjSpace;
 	
 	private Vector3D[] worldVecs;
@@ -880,7 +912,385 @@ public class OrientedBoundingBox implements IBoundingShape {
         }
 		return false;
 	}
+	
+	public IBoundingShape transform(Matrix transformMatrix) {
+       	
+        OrientedBoundingBox toReturn = new OrientedBoundingBox((AbstractShape)this.peerComponent);
+               
+        Quaternion rotate = new Quaternion();
+        //transformMatrix.addLocal(this.peerComponent.getLocalMatrix());
+        rotate.fromRotationMatrix(transformMatrix);
+      
+        Vector3D translate = new Vector3D(transformMatrix.m03,transformMatrix.m13,transformMatrix.m23);
+        Vector3D scale = new Vector3D(transformMatrix.getScale());
+        
+        Matrix mat = new Matrix();
+        mat.loadIdentity();
+        mat.m00 = scale.x;
+        mat.m11 = scale.y;
+        mat.m12 = scale.z;
+        
+        
+        toReturn.extent.x = Math.abs(extent.x * scale.x);
+        toReturn.extent.y = Math.abs(extent.y*scale.y);
+        toReturn.extent.z = Math.abs(extent.z*scale.z);
+        
+        rotate.mult(xAxis, toReturn.xAxis);
+        rotate.mult(yAxis, toReturn.yAxis);
+        rotate.mult(zAxis, toReturn.zAxis);
+        
+        Matrix scaleMat = new Matrix();
+        mat.loadIdentity();
+        mat.m00 = scale.x;
+        mat.m11 = scale.y;
+        mat.m12 = scale.z;
+        toReturn.center.transform(mat);
+               
+        rotate.mult(toReturn.center, toReturn.center);
+                
+        toReturn.center.addLocal(translate).translate(this.getCenterPointLocal());
+        toReturn.correctCorners = false;
+        Vector3D[] vecs = toReturn.getVectorsGlobal();
+               
+        return toReturn;
+    }
+	
+	 /**
+     * Calculates an AABB of the given point values for this OBB.
+     * 
+     * @param points
+     *            The points this OBB should contain.
+     */
+    private void containAABB(FloatBuffer points) {
+        if (points == null || points.limit() <= 2) { // we need at least a 3
+            // float vector
+            return;
+        }
 
+        populateFromBuffer(_compVect1, points, 0);
+        float minX = _compVect1.x, minY = _compVect1.y, minZ = _compVect1.z;
+        float maxX = _compVect1.x, maxY = _compVect1.y, maxZ = _compVect1.z;
+
+        for (int i = 1, len = points.limit() / 3; i < len; i++) {
+            populateFromBuffer(_compVect1, points, i);
+
+            if (_compVect1.x < minX)
+                minX = _compVect1.x;
+            else if (_compVect1.x > maxX)
+                maxX = _compVect1.x;
+
+            if (_compVect1.y < minY)
+                minY = _compVect1.y;
+            else if (_compVect1.y > maxY)
+                maxY = _compVect1.y;
+
+            if (_compVect1.z < minZ)
+                minZ = _compVect1.z;
+            else if (_compVect1.z > maxZ)
+                maxZ = _compVect1.z;
+        }
+
+        center.x = minX + maxX;
+        center.y = minY + maxY;
+        center.z = minZ + maxZ;
+        
+       center.scaleLocal(0.5f);
+
+        extent.x = maxX - center.x;
+        extent.y = maxY - center.y;
+        extent.z = maxZ - center.z;
+
+        xAxis.x = 1;
+        xAxis.y = 0;
+        xAxis.z = 0;
+        yAxis.x = 0;
+        yAxis.y = 1;
+        yAxis.z = 0;
+        zAxis.x = 0;
+        zAxis.y = 0;
+        zAxis.z = 1;
+        correctCorners = false;
+    }
+    
+    /**
+     * Updates the values of the given vector from the specified buffer at the
+     * index provided.
+     *
+     * @param vector
+     *            the vector to set data on
+     * @param buf
+     *            the buffer to read from
+     * @param index
+     *            the position (in terms of vectors, not floats) to read from
+     *            the buf
+     */
+    private static void populateFromBuffer(Vector3D vector, FloatBuffer buf, int index) {
+        vector.x = buf.get(index*3);
+        vector.y = buf.get(index*3+1);
+        vector.z = buf.get(index*3+2);
+    }
+
+	
+    public IBoundingShape merge(IBoundingShape volume) {
+        // clone ourselves into a new bounding volume, then merge.
+	   OrientedBoundingBox box = ((OrientedBoundingBox)clone());
+	   IBoundingShape boxShape = box.mergeLocal(volume);
+	   
+        return boxShape;
+    }
+
+    public IBoundingShape mergeLocal(IBoundingShape volume) {
+        if (volume == null)
+            return this;        
+        if(volume instanceof OrientedBoundingBox){
+                return mergeOBB((OrientedBoundingBox) volume);
+        }else if(volume instanceof BoundingSphere)
+        {
+        	return mergeSphere((BoundingSphere)volume);
+        }else
+        {
+        	return null;
+        }
+    }
+
+    private IBoundingShape mergeSphere(BoundingSphere volume) {
+        BoundingSphere mergeSphere = volume;
+       	this.peerComponent = volume.getPeerComponent();
+        if (!correctCorners)
+            this.computeCorners();
+       
+        _mergeBuf.rewind();
+        for (int i = 0; i < 8; i++) {
+            _mergeBuf.put(vectorStore[i].x);
+            _mergeBuf.put(vectorStore[i].y);
+            _mergeBuf.put(vectorStore[i].z);         
+        }
+        _mergeBuf.put(mergeSphere.center.x + mergeSphere.radius).put(
+                mergeSphere.center.y + mergeSphere.radius).put(
+                mergeSphere.center.z + mergeSphere.radius);
+        _mergeBuf.put(mergeSphere.center.x - mergeSphere.radius).put(
+                mergeSphere.center.y + mergeSphere.radius).put(
+                mergeSphere.center.z + mergeSphere.radius);
+        _mergeBuf.put(mergeSphere.center.x + mergeSphere.radius).put(
+                mergeSphere.center.y - mergeSphere.radius).put(
+                mergeSphere.center.z + mergeSphere.radius);
+        _mergeBuf.put(mergeSphere.center.x + mergeSphere.radius).put(
+                mergeSphere.center.y + mergeSphere.radius).put(
+                mergeSphere.center.z - mergeSphere.radius);
+        _mergeBuf.put(mergeSphere.center.x - mergeSphere.radius).put(
+                mergeSphere.center.y - mergeSphere.radius).put(
+                mergeSphere.center.z + mergeSphere.radius);
+        _mergeBuf.put(mergeSphere.center.x - mergeSphere.radius).put(
+                mergeSphere.center.y + mergeSphere.radius).put(
+                mergeSphere.center.z - mergeSphere.radius);
+        _mergeBuf.put(mergeSphere.center.x + mergeSphere.radius).put(
+                mergeSphere.center.y - mergeSphere.radius).put(
+                mergeSphere.center.z - mergeSphere.radius);
+        _mergeBuf.put(mergeSphere.center.x - mergeSphere.radius).put(
+                mergeSphere.center.y - mergeSphere.radius).put(
+                mergeSphere.center.z - mergeSphere.radius);
+        containAABB(_mergeBuf);
+        correctCorners = false;
+      
+        return this;
+    }
+	    private IBoundingShape mergeOBB(OrientedBoundingBox volume) {
+	        // OrientedBoundingBox mergeBox=(OrientedBoundingBox) volume;
+	        // if (!correctCorners) this.computeCorners();
+	        // if (!mergeBox.correctCorners) mergeBox.computeCorners();
+	        // Vector3f[] mergeArray=new Vector3f[16];
+	        // for (int i=0;i<vectorStore.length;i++){
+	        // mergeArray[i*2+0]=this .vectorStore[i];
+	        // mergeArray[i*2+1]=mergeBox.vectorStore[i];
+	        // }
+	        // containAABB(mergeArray);
+	        // correctCorners=false;
+	        // return this;
+	        // construct a box that contains the input boxes
+	        // Box3<Real> kBox;
+	    	this.peerComponent = volume.peerComponent;
+	    	
+	        OrientedBoundingBox rkBox0 = this;
+	        OrientedBoundingBox rkBox1 = volume;
+             
+	        // The first guess at the box center. This value will be updated later
+	        // after the input box vertices are projected onto axes determined by an
+	        // average of box axes.
+	        Vector3D kBoxCenter = (rkBox0.center.getAdded(rkBox1.center))
+	                .scaleLocal(.5f);
+
+	        // A box's axes, when viewed as the columns of a matrix, form a rotation
+	        // matrix. The input box axes are converted to quaternions. The average
+	        // quaternion is computed, then normalized to unit length. The result is
+	        // the slerp of the two input quaternions with t-value of 1/2. The
+	        // result is converted back to a rotation matrix and its columns are
+	        // selected as the merged box axes.
+	        Quaternion kQ0 = tempQa, kQ1 = tempQb;
+	        kQ0.fromAxes(rkBox0.xAxis, rkBox0.yAxis, rkBox0.zAxis);
+	        kQ1.fromAxes(rkBox1.xAxis, rkBox1.yAxis, rkBox1.zAxis);
+
+	        if (kQ0.dot(kQ1) < 0.0f)
+	            kQ1.negate();
+
+	        Quaternion kQ = kQ0.addLocal(kQ1);
+	        kQ.normalize();
+
+	        Matrix kBoxaxis = kQ.toRotationMatrix(tempMa);
+	        float[] xAxis,yAxis,zAxis;
+			try {
+				xAxis = kBoxaxis.getColumn(0);
+				yAxis = kBoxaxis.getColumn(1);
+			    zAxis = kBoxaxis.getColumn(2);
+			    
+			    Vector3D newXaxis = new Vector3D(xAxis[0],xAxis[1],xAxis[2]);
+		        Vector3D newYaxis = new Vector3D(yAxis[0],yAxis[1],yAxis[2]);
+		        Vector3D newZaxis = new Vector3D(zAxis[0],zAxis[1],zAxis[2]);
+		             
+		        // Project the input box vertices onto the merged-box axes. Each axis
+		        // D[i] containing the current center C has a minimum projected value
+		        // pmin[i] and a maximum projected value pmax[i]. The corresponding end
+		        // points on the axes are C+pmin[i]*D[i] and C+pmax[i]*D[i]. The point C
+		        // is not necessarily the midpoint for any of the intervals. The actual
+		        // box center will be adjusted from C to a point C' that is the midpoint
+		        // of each interval,
+		        // C' = C + sum_{i=0}^1 0.5*(pmin[i]+pmax[i])*D[i]
+		        // The box extents are
+		        // e[i] = 0.5*(pmax[i]-pmin[i])
+
+		        int i;
+		        float fDot;
+		        Vector3D kDiff = _compVect4;
+		        Vector3D kMin = _compVect5;
+		        Vector3D kMax = _compVect6;
+		        
+		        kMin.x = kMin.y = kMin.z = 0;
+		        kMax.x = kMax.y = kMax.z = 0;
+		        
+		        if (!rkBox0.correctCorners)
+		            rkBox0.computeCorners();
+		        		       
+		        for (i = 0; i < 8; i++) {
+		            kDiff = rkBox0.vectorStore[i].getSubtracted(kBoxCenter);
+
+		            fDot = kDiff.dot(newXaxis);
+		            if (fDot > kMax.x)
+		                kMax.x = fDot;
+		            else if (fDot < kMin.x)
+		                kMin.x = fDot;
+
+		            fDot = kDiff.dot(newYaxis);
+		            if (fDot > kMax.y)
+		                kMax.y = fDot;
+		            else if (fDot < kMin.y)
+		                kMin.y = fDot;
+
+		            fDot = kDiff.dot(newZaxis);
+		            if (fDot > kMax.z)
+		                kMax.z = fDot;
+		            else if (fDot < kMin.z)
+		                kMin.z = fDot;
+
+		        }
+
+		        if (!rkBox1.correctCorners)
+		            rkBox1.computeCorners();		        
+		        
+		        for (i = 0; i < 8; i++) {
+		           kDiff = rkBox1.vectorStore[i].getSubtracted(kBoxCenter);
+		           
+		            fDot = kDiff.dot(newXaxis);
+		            if (fDot > kMax.x)
+		                kMax.x = fDot;
+		            else if (fDot < kMin.x)
+		                kMin.x = fDot;
+
+		            fDot = kDiff.dot(newYaxis);
+		            if (fDot > kMax.y)
+		                kMax.y = fDot;
+		            else if (fDot < kMin.y)
+		                kMin.y = fDot;
+
+		            fDot = kDiff.dot(newZaxis);
+		            if (fDot > kMax.z)
+		                kMax.z = fDot;
+		            else if (fDot < kMin.z)
+		                kMin.z = fDot;
+		        }
+		       
+		        this.xAxis = newXaxis;
+		        this.yAxis = newYaxis;
+		        this.zAxis = newZaxis;
+		      
+		        this.extent.x = .5f * (kMax.x - kMin.x);
+		        	        
+		        kBoxCenter.addLocal(this.xAxis.getScaled(.5f * (kMax.x + kMin.x)));
+		       		        
+		        this.extent.y = .5f * (kMax.y - kMin.y);
+		        kBoxCenter.addLocal(this.yAxis.getScaled(.5f * (kMax.y + kMin.y)));
+
+		        this.extent.z = .5f * (kMax.z - kMin.z);
+		        kBoxCenter.addLocal(this.zAxis.getScaled(.5f * (kMax.z + kMin.z)));
+
+		        this.center = kBoxCenter;
+		        
+		        this.correctCorners = false;
+		        	        
+		        return this;
+			} catch (Exception e) {
+				// TODO Auto-generated catch block				
+				e.printStackTrace();
+				return null;
+			}
+	    }
+
+
+	@Override
+	public MTComponent getPeerComponent() {
+		return this.peerComponent;
+	}
+	
+	@Override
+	public void setPeerComponent(MTComponent peerComponent) {
+		this.peerComponent = peerComponent;
+	}	
+
+	public IBoundingShape getBoundsTransformed(TransformSpace transformSpace){
+		switch(transformSpace)
+		{
+			case LOCAL:
+	    		return this;        		
+	    	case RELATIVE_TO_PARENT:
+	    		if(this.peerComponent.getParent()!=null)
+	    		{
+	    			OrientedBoundingBox shape = (OrientedBoundingBox)this.transform(this.peerComponent.getLocalMatrix());		    			
+	    			return shape;
+	    		}else
+	    		{
+	    			return this;
+	    		}
+	    	case GLOBAL:
+	    		return this.transform(this.peerComponent.getGlobalMatrix());
+	    	default:
+	    		return this;
+		}
+		
+	}
+
+	 public IBoundingShape clone() {
+	        OrientedBoundingBox toReturn = new OrientedBoundingBox((AbstractShape)this.peerComponent);
+	        
+	        toReturn.extent = extent;
+	        toReturn.xAxis = xAxis;
+	        toReturn.yAxis = yAxis;
+	        toReturn.zAxis = zAxis;
+	        toReturn.center = center;
+	       // toReturn.checkPlane = checkPlane;
+	        for (int x = vectorStore.length; --x >= 0; )
+	            toReturn.vectorStore[x] = vectorStore[x];
+	        toReturn.correctCorners = this.correctCorners;
+	       
+	        return toReturn;
+	    }
 
 
 	//TODO getDepth()

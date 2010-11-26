@@ -28,11 +28,13 @@ import java.util.StringTokenizer;
 import javax.media.opengl.GL;
 import javax.media.opengl.glu.GLU;
 
+import org.mt4j.MTApplication;
 import org.mt4j.components.interfaces.IMTComponent3D;
 import org.mt4j.components.visibleComponents.GeometryInfo;
 import org.mt4j.components.visibleComponents.StyleInfo;
 import org.mt4j.input.inputData.InputCursor;
 import org.mt4j.util.MT4jSettings;
+import org.mt4j.util.camera.IFrustum;
 import org.mt4j.util.camera.Icamera;
 import org.mt4j.util.opengl.GLTexture;
 
@@ -1398,6 +1400,42 @@ public class Tools3D {
             }
         }
     }
+    
+    /**
+	 * projects a specific point on a plane with a specific depth
+	 * @param gl
+	 * @param point
+	 * @param frustum
+	 * @param z
+	 * @return
+	 */
+	public static Vector3D projectPointToPlaneInPerspectiveMode(Vector3D point,IFrustum frustum,float z,MTApplication mtApp)
+	{
+		float heightOfPlaneAtZ = frustum.getHeightOfPlane(z);
+		float widthOfPlaneAtZ = frustum.getWidthOfPlane(z);
+		
+		float heightOfPlaneAtPoint = frustum.getHeightOfPlane(point.z);
+		float widthOfPlaneAtPoint = frustum.getWidthOfPlane(point.z);
+		
+		//float centerX = mtApp.width/2;
+		//float centerY = mtApp.height/2;
+		
+		Vector3D ntl = frustum.getNearTopLeft();
+		
+		//subtract getWidthofNearPlane, because frustum is upside down
+		float centerX = ntl.x - frustum.getWidthOfNearPlane() + frustum.getWidthOfNearPlane()/2f;
+		float centerY = ntl.y + frustum.getHeightOfNearPlane()/2f;
+		
+		float percentWidth = (point.x - (centerX-(widthOfPlaneAtPoint/2.f)))/widthOfPlaneAtPoint;
+		float percentHeight = (point.y - (centerY-(heightOfPlaneAtPoint/2.f)))/heightOfPlaneAtPoint;
+		
+		Vector3D projectedPoint = new Vector3D();
+		projectedPoint.x = (centerX - (widthOfPlaneAtZ/2.f))+widthOfPlaneAtZ*percentWidth;
+		projectedPoint.y = (centerY - (heightOfPlaneAtZ/2.f))+heightOfPlaneAtZ*percentHeight;
+		projectedPoint.z = z;
+		
+		return projectedPoint;
+	}
     
 
 }
