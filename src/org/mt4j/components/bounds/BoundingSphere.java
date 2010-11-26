@@ -46,6 +46,8 @@ import org.mt4j.util.math.Plane;
 import org.mt4j.util.math.Ray;
 import org.mt4j.util.math.ToolsBuffers;
 import org.mt4j.util.math.Vector3D;
+import org.mt4j.util.math.Vertex;
+
 import processing.core.PGraphics;
 
 
@@ -64,6 +66,8 @@ import processing.core.PGraphics;
 	public class BoundingSphere implements IBoundingShape{
 //	    private static final Logger logger = Logger.getLogger(BoundingSphere.class.getName());
 	    
+		private static long counter;
+		
 	    public float radius;
 	    
 	    private static final long serialVersionUID = 2L;
@@ -110,7 +114,8 @@ import processing.core.PGraphics;
 //	        this.center.setValues(c);
 //	        this.radius = r;
 //	    }
-	    
+
+	
 	    /**
 	     * The Constructor.
 	     * 
@@ -121,7 +126,7 @@ import processing.core.PGraphics;
 //	    	this.computeFromVertices(peerComponent.getGeometryInfo().getVertices());
 //	    	this.computeFromPoints(peerComponent.getGeometryInfo().getVertBuff());
 //	    	this.computeFromPoints(Vector3D.getDeepVertexArrayCopy(peerComponent.getGeometryInfo().getVertices()));
-	    	
+	   
 	    	if (peerComponent instanceof MTTriangleMesh){
 	    		MTTriangleMesh mesh = (MTTriangleMesh)peerComponent;
 	    		Triangle[] tris = mesh.getTriangles();
@@ -130,13 +135,25 @@ import processing.core.PGraphics;
 	    		this.computeFromPoints(Vector3D.getDeepVertexArrayCopy(peerComponent.getGeometryInfo().getVertices())); //FIXME can we avoid the copy??
 //	    		this.computeFromPoints(peerComponent.getGeometryInfo().getVertBuff()); //FIXME can we avoid the copy??
 	    	}
-	    	
+	    		
+	    
 	    	this.worldVecsDirty 	= true;
 			this.centerWorldDirty 	= true;
 //			this.worldVecs 			= this.getVectorsGlobal();
 //			this.centerPointWorld 	= this.getCenterPointGlobal();
 			this.radiusWorldDirty = true;
 //			this.radiusWorld = this.getRadiusWorld();
+	    }
+	    
+	    public BoundingSphere(BoundingSphere sphere)
+	    {
+	    	this.peerComponent = sphere.peerComponent;
+	    	this.worldVecsDirty 	= true;
+			this.centerWorldDirty 	= true;
+//			this.worldVecs 			= this.getVectorsGlobal();
+//			this.centerPointWorld 	= this.getCenterPointGlobal();
+			this.radiusWorldDirty = true;
+	    	
 	    }
 	    
 	    /**
@@ -266,7 +283,8 @@ import processing.core.PGraphics;
 	     * @param end
 	     */
 	    public void computeFromTris(Triangle[] tris, int start, int end) {
-	        if (end - start <= 0) {
+	     
+	    	if (end - start <= 0) {
 	            return;
 	        }
 
@@ -281,6 +299,7 @@ import processing.core.PGraphics;
 	        	vertList[count++] = tris[i].v1;
 	        	vertList[count++] = tris[i].v2;
 	        }
+	        
 	        averagePoints(vertList);
 	    }
 	    
@@ -634,7 +653,7 @@ import processing.core.PGraphics;
 	        for (int i = 1; i < points.length; i++) {
 	            center.addLocal(points[i]);
 	        }
-	        
+	       
 	        float quantity = 1.0f / points.length;
 //	        center.multLocal(quantity);
 	        center.scaleLocal(quantity);
@@ -1252,7 +1271,7 @@ import processing.core.PGraphics;
 		//To avoid obj creation for each frustum test
 		private Vector3D tmpVec = new Vector3D(); 
 		private Matrix tmpMatrix = new Matrix();
-		
+
 		private float getRadiusWorld(){
 			if (this.radiusWorldDirty){
 				tmpVec.setXYZ(this.getRadius(), 0,0);
@@ -1289,9 +1308,9 @@ import processing.core.PGraphics;
 	     * @return ref
 	     */
 	    public IBoundingShape transform(Matrix transformMatrix) {
-	        BoundingSphere sphere;
+	        BoundingSphere sphere = this;
 	        
-	        sphere = new BoundingSphere((AbstractShape)this.peerComponent);
+	       // sphere = new BoundingSphere((AbstractShape)this.peerComponent);
 	        
 	        sphere.center = this.center;
 	        sphere.radius = this.radius;
@@ -1537,10 +1556,10 @@ import processing.core.PGraphics;
 	            return rVal;
 	        } */
 	    	
-	    	BoundingSphere sphere = new BoundingSphere((AbstractShape)this.peerComponent);
+	    	BoundingSphere sphere = new BoundingSphere(this);
 	    	sphere.center = this.center;
 	    	sphere.radius = this.radius;
-	        
+		
 	        return sphere;
 	    }
 
@@ -1555,7 +1574,8 @@ import processing.core.PGraphics;
 		}	
 		
 		public IBoundingShape getBoundsTransformed(TransformSpace transformSpace){
-			BoundingSphere sphere = new BoundingSphere((AbstractShape)this.getPeerComponent());
+		
+			BoundingSphere sphere = (BoundingSphere)this.clone();
 			sphere.setRadius(this.getRadius());
 			sphere.setCenter(this.getCenter().getCopy());
 			
