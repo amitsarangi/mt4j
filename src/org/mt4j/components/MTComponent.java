@@ -370,25 +370,7 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 		return this.bounds;
 	}
 	
-	public IBoundingShape getBoundsTransformed(TransformSpace transformSpace){
-		switch(transformSpace)
-		{
-			case LOCAL:
-	    		return this.getBounds();        		
-	    	case RELATIVE_TO_PARENT:
-	    		if(this.getParent()!=null)
-	    		{
-	    			return this.bounds.transform(this.getLocalMatrix());
-	    		}else
-	    		{
-	    			return this.getBounds();
-	    		}
-	    	case GLOBAL:
-	    		return this.bounds.transform(this.getGlobalMatrix());
-		}
-		return this.bounds;
-	}
-	
+
 
 	/**
 	 * Checks if is bounding shape set.
