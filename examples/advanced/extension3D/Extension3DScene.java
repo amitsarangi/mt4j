@@ -108,7 +108,7 @@ public class Extension3DScene extends AbstractScene {
 		material.setShininess(110);// 0=no shine,  127=max shine
 		
 
-		MTComponent group1;
+		/*MTComponent group1;
 		
 		group1 = getMeshGroup(mtApplication, new Vector3D(0.0f,0.0f,-200.0f),System.getProperty("user.dir")  + File.separator + "examples" +  File.separator +"advanced"+ File.separator+  "extension3D"  + File.separator + "data" +  File.separator +
 				"CWK500" + File.separator + "CWK500_mit_kuehlmittelbehaelter.obj",light,material,"machine1");
@@ -150,7 +150,7 @@ public class Extension3DScene extends AbstractScene {
 		MTComponent dreh;
 		
 		dreh = getMeshGroup(mtApplication, new Vector3D(-100.0f,-150.0f,-200.0f), System.getProperty("user.dir")  + File.separator + "examples" +  File.separator +"advanced"+ File.separator+ File.separator + "extension3D"  + File.separator + "data" +  File.separator +
-				"drehmaschine" + File.separator + "maschine1.obj",light,material,"drehmaschine");
+				"drehmaschine" + File.separator + "maschine1.obj",light,material,"drehmaschine");*/
 				
 				
 		
@@ -160,14 +160,14 @@ public class Extension3DScene extends AbstractScene {
 		
 		/**/
 		//NORMAL 3D OBJECTS VERSION
-		/*MTCube cube1 = new MTCube(mtApplication, 50.0f);
+		MTCube cube1 = new MTCube(mtApplication, 50.0f);
 		MTComponent group10 = getMeshGroupForSimpleObject(mtApplication,cube1,new Vector3D(0.0f,0.0f,0.0f),light,material,"cube");
 		
 		MTSphere sphere1 = new MTSphere(mtApplication,"sphere1",32,32,100.0f);
 		MTComponent group20 = getMeshGroupForSimpleObject(mtApplication,sphere1,new Vector3D(0.0f,200.0f,0.0f),light,material,"sphere1");
 		MTSphere sphere2 = new MTSphere(mtApplication,"sphere2",32,32,100.0f);
 		MTComponent group30 = getMeshGroupForSimpleObject(mtApplication,sphere2,new Vector3D(200.0f,000.0f,0.0f),light,material,"sphere2");
-		*///END NORMAL 3D OBJECTS VERSION DO NOT FORGET selectionManager addclusterable below 
+		//END NORMAL 3D OBJECTS VERSION DO NOT FORGET selectionManager addclusterable below 
 		
 		
 		ClusterDataManager clusterManager = new ClusterDataManager(mtApplication,this.getCanvas(),collisionManager);
@@ -192,18 +192,18 @@ public class Extension3DScene extends AbstractScene {
 		this.registerGlobalInputProcessor(selectionManager);
 		//FINGERTAP GROUPING END
 						
-		selectionManager.addClusterable(group1);
+		/*selectionManager.addClusterable(group1);
 		selectionManager.addClusterable(machine);
 		selectionManager.addClusterable(machine2);
 		selectionManager.addClusterable(machine3);
 		selectionManager.addClusterable(machine4);
 		selectionManager.addClusterable(robotArm);
-		selectionManager.addClusterable(dreh);
+		selectionManager.addClusterable(dreh);*/
 	
 		//NORMAL 3D OBJECTS VERSION
-		//selectionManager.addClusterable(group10);
-		//selectionManager.addClusterable(group20);
-		//selectionManager.addClusterable(group30);
+		selectionManager.addClusterable(group10);
+		selectionManager.addClusterable(group20);
+		selectionManager.addClusterable(group30);
 		//NORMAL 3D OBJECTS VERSION END
 		
 		collisionManager.addObjectsToCollisionDomain();

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.mt4j.components.MTCanvas;
 import org.mt4j.components.MTComponent;
@@ -60,6 +61,7 @@ public class FingerTapSelectionManager extends AbstractGlobalInputProcessor impl
 		this.selectionListeners = new ArrayList<ISelectionListener>();
 		this.selection = new FingerTapSelection(clusterDataManager,canvas,this);
 		this.canvas = canvas;
+		logger.setLevel(Level.ERROR);
 	}
 	
 	
@@ -148,8 +150,7 @@ public class FingerTapSelectionManager extends AbstractGlobalInputProcessor impl
 			logger.debug("COMP IS FROM CLASS " + mtComp.getClass().getName());
 			
 			if(getDragSelectables().contains(comp))
-			{
-				logger.debug("DRAG SELECTABLES CONTAINS COMP");
+			{				
 				switch (cursorEvt.getId()) {
 				case AbstractCursorInputEvt.INPUT_DETECTED:
 					//update cursor state
@@ -201,9 +202,7 @@ public class FingerTapSelectionManager extends AbstractGlobalInputProcessor impl
 			{	
 				//special behaviour in case of 3D Rotation
 				//when fingerinput ended with fingers not intersecting 
-				//with the cluster itself
-				logger.debug("INSTANCE OF CLUSTER");
-				
+				//with the cluster itself			
 				selection.getCurrentlyPressedCursors().clear();
 				selection.setState(FingerTapState.NOELEMENTSELECTED);
 			}

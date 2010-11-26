@@ -4,7 +4,7 @@ import javax.media.opengl.GL;
 
 import org.mt4j.MTApplication;
 import org.mt4j.components.MTComponent;
-import org.mt4j.components.clusters.Cluster;
+
 import org.mt4j.components.interfaces.IMTComponent3D;
 import org.mt4j.components.visibleComponents.shapes.MTPolygon;
 import org.mt4j.input.inputProcessors.ICollisionAction;
@@ -14,6 +14,7 @@ import org.mt4j.input.inputProcessors.componentProcessors.rotateProcessor.Rotate
 import org.mt4j.util.math.Tools3D;
 import org.mt4j.util.math.Vector3D;
 import org.mt4j.components.*;
+import org.mt4jx.input.inputProcessors.componentProcessors.Group3DProcessorNew.Cluster;
 import org.mt4jx.input.inputProcessors.componentProcessors.Rotate3DProcessor.Rotate3DEvent;
 import org.mt4jx.input.inputProcessors.componentProcessors.Rotate3DProcessor.RotationPreDraw;
 
@@ -60,6 +61,7 @@ public class Rotate3DAction implements IGestureEventListener,ICollisionAction {
 					}else
 					{
 						Cluster clu = (Cluster)target;
+						
 						for(MTComponent comp : clu.getChildren())
 						{
 							//only move children, not cluster itself

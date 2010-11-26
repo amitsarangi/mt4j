@@ -260,7 +260,7 @@ public enum FingerTapState implements FingerTapTransitions,FingerTapStateMethods
 
 		@Override
 		public void stateExit(FingerTapSelection sel) {
-			sel.setCurrentlySelectedCluster(null);			
+			sel.setCurrentlySelectedCluster(null);		
 		}
 		
 	};

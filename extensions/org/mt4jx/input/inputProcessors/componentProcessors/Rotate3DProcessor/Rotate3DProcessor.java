@@ -66,7 +66,7 @@ public class Rotate3DProcessor extends AbstractCursorProcessor {
 		this.unUsedCursors 	= new ArrayList<InputCursor>();
 		this.lockedCursors 	= new ArrayList<InputCursor>();
 		this.dragPlaneNormal = new Vector3D(0,0,1);
-		this.setLockPriority(2);
+		this.setLockPriority(3);
 		this.targetComp = targetComp;
 	}
 	
@@ -187,14 +187,16 @@ public class Rotate3DProcessor extends AbstractCursorProcessor {
 				MTComponent sourceComponent = (MTComponent) currentEvent.getTargetComponent();
 				Vector3D currentPos = new Vector3D(currentEvent.getPosX(),currentEvent.getPosY(),0.0f);				
 				MTCanvas parentCanvas = this.getParentCanvas(sourceComponent);
+				cluster.setComposite(false);
                 PickResult prCanvas = parentCanvas.pick(currentPos.getX(), currentPos.getY(), true);
+                cluster.setComposite(true);
                 List<PickEntry> plCanvas = prCanvas.getPickList();
                 //get the most top element in the picklist
                 if(plCanvas.size()>0)
                 {
                 	PickEntry currentPickEntry = plCanvas.get(plCanvas.size()-1);
                 	
-                	MTComponent currentComponent = currentPickEntry.hitObj;
+                	MTComponent currentComponent = currentPickEntry.hitObj;                	
                 	cluster.setCurrentlySelectedChildren(currentComponent);
                 }
                 

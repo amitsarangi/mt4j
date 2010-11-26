@@ -72,14 +72,16 @@ public class CreateDragHelperAction implements IGestureEventListener{
 		if(ge instanceof DragEvent)
 		{
 			DragEvent evt = (DragEvent)ge;
+			System.out.println("DragEvent");
 			switch (evt.getId()) {
 			case MTGestureEvent.GESTURE_DETECTED:
 				depthHelper = new MTDepthHelper(pApplet,targetComponent,cam,canvas);				
 				canvas.addChild(depthHelper);				
 				break;
-			case MTGestureEvent.GESTURE_UPDATED:
+			case MTGestureEvent.GESTURE_UPDATED:				
 				break;
-			case MTGestureEvent.GESTURE_ENDED:	
+			case MTGestureEvent.GESTURE_ENDED:
+				System.out.println("Ended");
 				deleteDepthHelper();
 				break;
 			}
