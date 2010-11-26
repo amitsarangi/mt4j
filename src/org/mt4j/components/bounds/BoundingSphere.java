@@ -39,12 +39,12 @@ import org.mt4j.components.visibleComponents.shapes.AbstractShape;
 import org.mt4j.components.visibleComponents.shapes.mesh.MTTriangleMesh;
 import org.mt4j.components.visibleComponents.shapes.mesh.Triangle;
 import org.mt4j.util.camera.IFrustum;
-import org.mt4j.util.math.Quaternion;
-import org.mt4j.util.math.ToolsMath;
 import org.mt4j.util.math.Matrix;
 import org.mt4j.util.math.Plane;
+import org.mt4j.util.math.Quaternion;
 import org.mt4j.util.math.Ray;
 import org.mt4j.util.math.ToolsBuffers;
+import org.mt4j.util.math.ToolsMath;
 import org.mt4j.util.math.Vector3D;
 
 import processing.core.PGraphics;
@@ -62,7 +62,7 @@ import processing.core.PGraphics;
 	 *
 	 * @author Mark Powell, Christopher Ruff
 	 */
-	public class BoundingSphere implements IBoundingShape{
+	public class BoundingSphere implements IBoundingShapeMergable{
 //	    private static final Logger logger = Logger.getLogger(BoundingSphere.class.getName());
 	    
 	    public float radius;
@@ -1289,7 +1289,7 @@ import processing.core.PGraphics;
 	     * @return BoundingVolume
 	     * @return ref
 	     */
-	    public IBoundingShape transform(Matrix transformMatrix) {
+	    public IBoundingShapeMergable transform(Matrix transformMatrix) {
 	        BoundingSphere sphere = this;
 	        
 	       // sphere = new BoundingSphere((AbstractShape)this.peerComponent);
@@ -1390,7 +1390,7 @@ import processing.core.PGraphics;
 	     *            the sphere to combine with this sphere.
 	     * @return a new sphere
 	     */
-	    public IBoundingShape merge(IBoundingShape shape) {
+	    public IBoundingShapeMergable merge(IBoundingShape shape) {
 	        if (shape == null) {
 	            return this;
 	        }
@@ -1402,7 +1402,7 @@ import processing.core.PGraphics;
 	            Vector3D temp_center = sphere.getCenter().getCopy();
 	            
 	            BoundingSphere rVal = new BoundingSphere((AbstractShape)sphere.getPeerComponent());
-	            IBoundingShape rVal2 = merge(temp_radius, temp_center, rVal,rVal);
+	            IBoundingShapeMergable rVal2 = merge(temp_radius, temp_center, rVal,rVal);
 	            
 	            return rVal2;
 	        }else if(shape instanceof OrientedBoundingBox)
@@ -1429,8 +1429,7 @@ import processing.core.PGraphics;
 	        }
 	    }
 	    
-	    private IBoundingShape merge(float temp_radius, Vector3D temp_center,
-	            BoundingSphere rVal,BoundingSphere result) {
+	    private IBoundingShapeMergable merge(float temp_radius, Vector3D temp_center, BoundingSphere rVal,BoundingSphere result) {
 	    	
 	    	//result.setPeerComponent(this.peerComponent);
 	        Vector3D diff = temp_center.getSubtracted(center);
@@ -1545,18 +1544,15 @@ import processing.core.PGraphics;
 	        return sphere;
 	    }
 
-		@Override
 		public MTComponent getPeerComponent() {
 			return this.peerComponent;
 		}
 		
-		@Override
 		public void setPeerComponent(MTComponent peerComponent) {
 			this.peerComponent = peerComponent;
 		}	
 		
-		public IBoundingShape getBoundsTransformed(TransformSpace transformSpace){
-		
+		public IBoundingShapeMergable getBoundsTransformed(TransformSpace transformSpace){
 			BoundingSphere sphere = (BoundingSphere)this.clone();
 			sphere.setRadius(this.getRadius());
 			sphere.setCenter(this.getCenter().getCopy());

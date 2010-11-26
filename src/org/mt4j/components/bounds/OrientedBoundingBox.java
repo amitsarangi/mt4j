@@ -54,7 +54,7 @@ import processing.core.PGraphics;
  * The Class BoundingBox.
  * Based on the bounding box class from jMonkeyEngine.
  */
-public class OrientedBoundingBox implements IBoundingShape {
+public class OrientedBoundingBox implements IBoundingShapeMergable {
 	
 	/** The peer component. */
 	private MTComponent peerComponent;
@@ -913,7 +913,7 @@ public class OrientedBoundingBox implements IBoundingShape {
 		return false;
 	}
 	
-	public IBoundingShape transform(Matrix transformMatrix) {
+	public IBoundingShapeMergable transform(Matrix transformMatrix) {
        	
         OrientedBoundingBox toReturn = new OrientedBoundingBox((AbstractShape)this.peerComponent);
                
@@ -1031,15 +1031,15 @@ public class OrientedBoundingBox implements IBoundingShape {
     }
 
 	
-    public IBoundingShape merge(IBoundingShape volume) {
+    public IBoundingShapeMergable merge(IBoundingShape volume) {
         // clone ourselves into a new bounding volume, then merge.
 	   OrientedBoundingBox box = ((OrientedBoundingBox)clone());
-	   IBoundingShape boxShape = box.mergeLocal(volume);
+	   IBoundingShapeMergable boxShape = box.mergeLocal(volume);
 	   
         return boxShape;
     }
 
-    public IBoundingShape mergeLocal(IBoundingShape volume) {
+    public IBoundingShapeMergable mergeLocal(IBoundingShape volume) {
         if (volume == null)
             return this;        
         if(volume instanceof OrientedBoundingBox){
@@ -1053,7 +1053,7 @@ public class OrientedBoundingBox implements IBoundingShape {
         }
     }
 
-    private IBoundingShape mergeSphere(BoundingSphere volume) {
+    private IBoundingShapeMergable mergeSphere(BoundingSphere volume) {
         BoundingSphere mergeSphere = volume;
        	this.peerComponent = volume.getPeerComponent();
         if (!correctCorners)
@@ -1094,7 +1094,7 @@ public class OrientedBoundingBox implements IBoundingShape {
       
         return this;
     }
-	    private IBoundingShape mergeOBB(OrientedBoundingBox volume) {
+	    private IBoundingShapeMergable mergeOBB(OrientedBoundingBox volume) {
 	        // OrientedBoundingBox mergeBox=(OrientedBoundingBox) volume;
 	        // if (!correctCorners) this.computeCorners();
 	        // if (!mergeBox.correctCorners) mergeBox.computeCorners();
@@ -1244,17 +1244,15 @@ public class OrientedBoundingBox implements IBoundingShape {
 	    }
 
 
-	@Override
 	public MTComponent getPeerComponent() {
 		return this.peerComponent;
 	}
 	
-	@Override
 	public void setPeerComponent(MTComponent peerComponent) {
 		this.peerComponent = peerComponent;
 	}	
 
-	public IBoundingShape getBoundsTransformed(TransformSpace transformSpace){
+	public IBoundingShapeMergable getBoundsTransformed(TransformSpace transformSpace){
 		switch(transformSpace)
 		{
 			case LOCAL:
@@ -1276,7 +1274,7 @@ public class OrientedBoundingBox implements IBoundingShape {
 		
 	}
 
-	 public IBoundingShape clone() {
+	 public IBoundingShapeMergable clone() {
 	        OrientedBoundingBox toReturn = new OrientedBoundingBox((AbstractShape)this.peerComponent);
 	        
 	        toReturn.extent = extent;

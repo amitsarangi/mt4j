@@ -173,7 +173,6 @@ public class LassoProcessor extends AbstractCursorProcessor {
 		//Do nothing here, we dont want this gesture to be resumable
 	}
 
-
 	
 	/**
 	 * Abort gesture.

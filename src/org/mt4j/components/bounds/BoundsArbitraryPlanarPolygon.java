@@ -333,39 +333,6 @@ public class BoundsArbitraryPlanarPolygon implements IBoundingShape {
 		return false;
 	}
 	
-	@Override
-	public MTComponent getPeerComponent() {
-		return this.peerComponent;
-	}
-
-
-	@Override
-	public IBoundingShape transform(Matrix transformMatrix) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-
-	@Override
-	public IBoundingShape getBoundsTransformed(TransformSpace transformSpace) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-
-	@Override
-	public void setPeerComponent(MTComponent peerComponent) {
-		this.peerComponent = peerComponent;
-	}
-	
-	@Override
-	public IBoundingShape merge(IBoundingShape shape) {
-		
-		//TODO
-		return null;
-	}
-
-
 	
 
 }

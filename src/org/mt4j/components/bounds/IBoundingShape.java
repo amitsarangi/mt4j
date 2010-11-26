@@ -134,15 +134,6 @@ public interface IBoundingShape {
 	
 	public boolean isContainedInFrustum(IFrustum frustum);
 	
-	public IBoundingShape merge(IBoundingShape shape);
-	
-	public IBoundingShape transform(Matrix transformMatrix);
-	
-	public MTComponent getPeerComponent();
-	
-	public void setPeerComponent(MTComponent peerComponent);
-	
-	public IBoundingShape getBoundsTransformed(TransformSpace transformSpace);
-	
+
 	
 }

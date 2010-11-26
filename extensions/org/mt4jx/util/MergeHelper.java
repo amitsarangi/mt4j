@@ -10,6 +10,7 @@ import org.mt4j.components.StateChangeEvent;
 import org.mt4j.components.StateChangeListener;
 import org.mt4j.components.TransformSpace;
 import org.mt4j.components.bounds.IBoundingShape;
+import org.mt4j.components.bounds.IBoundingShapeMergable;
 import org.mt4jx.input.inputProcessors.componentProcessors.Group3DProcessorNew.Cluster;
 
 public class MergeHelper implements StateChangeListener {
@@ -76,12 +77,16 @@ public class MergeHelper implements StateChangeListener {
 			return comp.getBounds();
 		}
 		
-		ArrayList<IBoundingShape> shapesToMerge = new ArrayList<IBoundingShape>();
+		ArrayList<IBoundingShapeMergable> shapesToMerge = new ArrayList<IBoundingShapeMergable>();
 		
 		if(comp.hasBounds())
 		{
-			addMTComponentWithMergedBounding(comp,comp.getBounds());
-			shapesToMerge.add(comp.getBounds());
+			if (comp.getBounds() instanceof IBoundingShapeMergable) {
+				IBoundingShapeMergable mergeableBounds = (IBoundingShapeMergable)comp.getBounds(); 
+				addMTComponentWithMergedBounding(comp, mergeableBounds);
+				shapesToMerge.add(mergeableBounds);
+			}
+			
 		}
 		
 		for(int i=0;i < comp.getChildren().length;i++)
@@ -89,13 +94,16 @@ public class MergeHelper implements StateChangeListener {
 			MTComponent children = comp.getChildren()[i];
 			IBoundingShape shape1 = mergeBoundsWithChildren(children,false);
 			
-			IBoundingShape shape = shape1.getBoundsTransformed(TransformSpace.RELATIVE_TO_PARENT);
-			shapesToMerge.add(shape);
+			if (shape1 instanceof IBoundingShapeMergable) {
+				IBoundingShapeMergable mergeableBounds = (IBoundingShapeMergable)shape1; 
+				IBoundingShapeMergable shape = mergeableBounds.getBoundsTransformed(TransformSpace.RELATIVE_TO_PARENT);
+				shapesToMerge.add(shape);
+			}
 		}
 		
 		for(int i=shapesToMerge.size()-1;i>0;i--)
 		{
-			IBoundingShape mergedShape = shapesToMerge.get(i).merge(shapesToMerge.get(i-1));
+			IBoundingShapeMergable mergedShape = shapesToMerge.get(i).merge(shapesToMerge.get(i-1));
 			shapesToMerge.set(i-1,mergedShape);			
 		}
 				
