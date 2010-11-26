@@ -329,6 +329,7 @@ public class MTGesturesExampleScene extends AbstractScene {
 		recognizedGestureText.setStrokeColor(textAreaColor);
 		recognizedGestureText.setText("Recognized: NO_GESTURE");
 		recognizedGestureText.setAnchor(PositionAnchor.LOWER_LEFT);
+		recognizedGestureText.setPickable(false);
 		strokeGestureRect.setAnchor(PositionAnchor.LOWER_LEFT);
 		strokeGestureRect.addChild(recognizedGestureText);
 		recognizedGestureText.setPositionRelativeToParent(strokeGestureRect.getPosition(TransformSpace.LOCAL));
