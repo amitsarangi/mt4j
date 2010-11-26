@@ -24,8 +24,6 @@ import org.mt4j.input.inputProcessors.IInputProcessor;
 import org.mt4j.input.inputProcessors.MTGestureEvent;
 import org.mt4j.input.inputProcessors.componentProcessors.AbstractComponentProcessor;
 import org.mt4j.input.inputProcessors.componentProcessors.AbstractCursorProcessor;
-import org.mt4j.util.math.Tools3D;
-import org.mt4j.util.math.ToolsGeometry;
 import org.mt4j.util.math.Vector3D;
 
 import processing.core.PApplet;
@@ -68,7 +66,7 @@ public class DragProcessor extends AbstractCursorProcessor {
 	public void cursorStarted(InputCursor cursor, MTFingerInputEvt fe) {
 		IMTComponent3D comp = fe.getTarget();
 		InputCursor[] theLockedCursors = getLockedCursorsArray();
-		//if gesture isnt started and no other cursor on comp is locked by higher priority gesture -> start
+		//if gesture isnt started and no other cursor on comp is locked by higher priority gesture -> start gesture
 		if (theLockedCursors.length == 0 && this.canLock(getCurrentComponentCursorsArray())){ 
 			dc = new DragContext(cursor, comp); 
 			if (!dc.isGestureAborted()){ //See if the drag couldnt start (i.e. cursor doesent hit component anymore etc)
@@ -88,25 +86,10 @@ public class DragProcessor extends AbstractCursorProcessor {
 	 */
 	@Override
 	public void cursorUpdated(InputCursor c, MTFingerInputEvt fe) {
-		IMTComponent3D comp = fe.getTarget();
 		if (getLockedCursors().contains(c) && dc.getCursor().equals(c)){
 			dc.updateDragPosition();
 			this.fireGestureEvent(new DragEvent(this, MTGestureEvent.GESTURE_UPDATED, fe.getCurrentTarget(), dc.getCursor(), dc.getLastPosition(), dc.getNewPosition()));
 		}
-//		else{
-////			System.out.println("this.isGestureInProgress() " + this.isGestureInProgress() +  " this.getLockedCursors().isEmpty() " + this.getLockedCursors().isEmpty() + " getFreeComponentCursors().size() > 0 " + (getFreeComponentCursors().size() > 0) + " this.canLock(getCurrentComponentCursorsArray() " + this.canLock(getCurrentComponentCursorsArray()) );
-//			if (this.getLockedCursors().isEmpty() &&  getFreeComponentCursors().size() > 0 && this.canLock(getCurrentComponentCursorsArray())){ //If 
-//				DragContext newContext = new DragContext(c, c.getTarget());
-////				DragContext newContext = new DragContext(c, c.getCurrentEvent().getCurrentTarget());
-//				if (!newContext.isGestureAborted()){
-//					dc = newContext;
-//					this.getLock(c);
-//					this.fireGestureEvent(new DragEvent(this, MTGestureEvent.GESTURE_UPDATED, fe.getCurrentTarget(), dc.getCursor(), dc.getLastPosition(), dc.getNewPosition()));
-//				}else{
-//					dc = null; 
-//				}
-//			}
-//		}
 	}
 
 	
@@ -115,20 +98,6 @@ public class DragProcessor extends AbstractCursorProcessor {
 	 */
 	@Override
 	public void cursorEnded(InputCursor c, MTFingerInputEvt fe) {
-//		if (this.isGestureInProgress() && this.getLockedCursors().isEmpty()){ //The case if the gesture was interrupted because a higher priority gesture needed the cursor 
-//			DragContext newContext = new DragContext(c, c.getTarget());
-//			if (!newContext.isGestureAborted()){
-//				dc = newContext;
-//				this.getLock(c);
-//				logger.debug(this.getName() + " can resume its gesture with cursors: " + c.getId());
-//			}else{
-//				dc = null;
-//				logger.debug(this.getName() + " we could NOT start gesture - cursors not on component: " + c.getId());
-//			}
-//		}else{
-//			logger.debug(this.getName() + " still in progress - we dont need the unlocked cursors" );
-//		}
-		
 		IMTComponent3D comp = fe.getTarget();
 		logger.debug(this.getName() + " INPUT_ENDED RECIEVED - MOTION: " + c.getId());
 		if (getLockedCursors().contains(c)){ //cursors was a actual gesture cursors
@@ -184,7 +153,6 @@ public class DragProcessor extends AbstractCursorProcessor {
 
 		if (getFreeComponentCursors().size() > 0 && this.canLock(getCurrentComponentCursorsArray())){ 
 			DragContext newContext = new DragContext(c, c.getTarget());
-//			DragContext newContext = new DragContext(c, c.getCurrentEvent().getCurrentTarget());
 			if (!newContext.isGestureAborted()){
 				dc = newContext;
 				this.getLock(c);
@@ -252,7 +220,6 @@ public class DragProcessor extends AbstractCursorProcessor {
 //						Vector3D interSectPssss = getIntersection(applet, dragObject, m); //FIXME REMOVE
 						gestureAborted = true; 
 						this.startPosition = new Vector3D(0,0,0); //TODO ABORT GESTURE!
-						//abortGesture(m); //TODO in anderen analyzern auch machen
 					}
 					
 					this.newPosition = startPosition.getCopy();
@@ -267,11 +234,6 @@ public class DragProcessor extends AbstractCursorProcessor {
 						this.gestureAborted = true;
 						return ;
 					}
-					
-//					Vector3D newPos = ToolsGeometry.getRayPlaneIntersection(
-//							Tools3D.getCameraPickRay(applet, dragObject, m.getCurrentEvtPosX(), m.getCurrentEvtPosY()), 
-//							dragPlaneNormal, 
-//							startPosition);
 					Vector3D newPos = getPlaneIntersection(applet, dragPlaneNormal, startPosition, m);
 					if (newPos != null){
 						lastPosition = newPosition;

@@ -33,8 +33,10 @@ public class GestureUtils {
 	 * @return the intersection
 	 */
 	public static Vector3D getIntersection(PApplet app, IMTComponent3D component, InputCursor c){
+		//First check intersection with the specified component
 		Vector3D ret = component.getIntersectionGlobal(Tools3D.getCameraPickRay(app, component, c));
 		
+		//Then if no intersection -> check with the current target of the cursor
 		IMTComponent3D currentTarget = c.getCurrentEvent().getCurrentTarget();
 		if (ret == null && currentTarget != component && currentTarget != null){
 			ret = c.getCurrentEvent().getCurrentTarget().getIntersectionGlobal(Tools3D.getCameraPickRay(app, currentTarget, c));

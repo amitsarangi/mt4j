@@ -241,15 +241,10 @@ public class ZoomProcessor extends AbstractCursorProcessor {
 	}
 	
 	
-	
 	@Override
 	public String getName() {
 		return "Zoom Processor";
 	}
-
-
-	
-
 	
 
 }
