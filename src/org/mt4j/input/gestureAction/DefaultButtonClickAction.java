@@ -63,7 +63,7 @@ public class DefaultButtonClickAction implements IGestureEventListener  {
 	
 	
 	/* (non-Javadoc)
-	 * @see com.jMT.input.gestureAction.IGestureAction#processGesture(com.jMT.input.inputAnalyzers.GestureEvent)
+	 * @see org.mt4j.input.inputProcessors.IGestureEventListener#processGestureEvent(org.mt4j.input.inputProcessors.MTGestureEvent)
 	 */
 	public boolean processGestureEvent(MTGestureEvent g) {
 //		width = polyButton.getWidthLocal();//
@@ -72,8 +72,8 @@ public class DefaultButtonClickAction implements IGestureEventListener  {
 			TapEvent clickEvent = (TapEvent)g;
 			
 			
-			if (g.getTargetComponent() instanceof MTComponent){ 
-				MTComponent comp = (MTComponent)g.getTargetComponent();
+			if (g.getTarget() instanceof MTComponent){ 
+				MTComponent comp = (MTComponent)g.getTarget();
 				
 				//Hack for keeping up with the buttons current width if it was changed
 				//due to .scale or something sometime
@@ -110,7 +110,7 @@ public class DefaultButtonClickAction implements IGestureEventListener  {
 							this.shrink(width-sizeChangeValue, height-sizeChangeValue);
 							
 							if (comp instanceof IclickableButton){
-								IclickableButton polyButton = (IclickableButton)g.getTargetComponent();
+								IclickableButton polyButton = (IclickableButton)g.getTarget();
 								polyButton.fireActionPerformed((TapEvent)g);
 								polyButton.setSelected(true);
 							}
@@ -125,7 +125,7 @@ public class DefaultButtonClickAction implements IGestureEventListener  {
 //						if ( ((TapEvent)g).getId() == TapEvent.BUTTON_DOWN){
 					if ( ((TapEvent)g).getTapID() == TapEvent.BUTTON_DOWN){
 							if (comp instanceof IclickableButton){
-								IclickableButton polyButton = (IclickableButton)g.getTargetComponent();
+								IclickableButton polyButton = (IclickableButton)g.getTarget();
 								polyButton.fireActionPerformed((TapEvent)g);
 							}
 						}
@@ -154,7 +154,7 @@ public class DefaultButtonClickAction implements IGestureEventListener  {
 //							this.getCompToResize().scale(width, width, 1, centerPoint);
 							
 							if (comp instanceof IclickableButton){
-								IclickableButton polyButton = (IclickableButton)g.getTargetComponent();
+								IclickableButton polyButton = (IclickableButton)g.getTarget();
 								polyButton.fireActionPerformed((TapEvent)g);
 								polyButton.setSelected(false);
 							}

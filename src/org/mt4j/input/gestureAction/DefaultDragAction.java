@@ -31,15 +31,31 @@ import org.mt4j.input.inputProcessors.componentProcessors.dragProcessor.DragEven
  * @author Christopher Ruff
  */
 public class DefaultDragAction implements IGestureEventListener,ICollisionAction  {
+	
+	/** The drag target. */
 	private IMTComponent3D dragTarget;
+	
+	/** The use custom target. */
 	private boolean useCustomTarget;
+	
+	/** The gesture aborted. */
 	private boolean gestureAborted = false;
+	
+	/** The last event. */
 	private MTGestureEvent lastEvent;
 	
+	/**
+	 * Instantiates a new default drag action.
+	 */
 	public DefaultDragAction(){
 		this.useCustomTarget = false;
 	}
 	
+	/**
+	 * Instantiates a new default drag action.
+	 *
+	 * @param dragTarget the drag target
+	 */
 	public DefaultDragAction(IMTComponent3D dragTarget){
 		this.dragTarget = dragTarget;
 		this.useCustomTarget = true;
@@ -47,7 +63,7 @@ public class DefaultDragAction implements IGestureEventListener,ICollisionAction
 	
 
 	/* (non-Javadoc)
-	 * @see com.jMT.input.gestureAction.IGestureAction#processGesture(com.jMT.input.inputAnalyzers.GestureEvent)
+	 * @see org.mt4j.input.inputProcessors.IGestureEventListener#processGestureEvent(org.mt4j.input.inputProcessors.MTGestureEvent)
 	 */
 	public boolean processGestureEvent(MTGestureEvent g) {
 		if (g instanceof DragEvent){
@@ -55,7 +71,7 @@ public class DefaultDragAction implements IGestureEventListener,ICollisionAction
 			lastEvent = dragEvent;
 			
 			if (!useCustomTarget)
-				dragTarget = dragEvent.getTargetComponent(); 
+				dragTarget = dragEvent.getTarget(); 
 			
 			switch (dragEvent.getId()) {
 			case MTGestureEvent.GESTURE_DETECTED:
@@ -95,16 +111,25 @@ public class DefaultDragAction implements IGestureEventListener,ICollisionAction
 	}
 
 
+	/* (non-Javadoc)
+	 * @see org.mt4j.input.inputProcessors.ICollisionAction#gestureAborted()
+	 */
 	@Override
 	public boolean gestureAborted() {
 		return this.gestureAborted;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.mt4j.input.inputProcessors.ICollisionAction#getLastEvent()
+	 */
 	@Override
 	public MTGestureEvent getLastEvent() {
 		return this.lastEvent;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.mt4j.input.inputProcessors.ICollisionAction#setGestureAborted(boolean)
+	 */
 	@Override
 	public void setGestureAborted(boolean aborted) {
 		this.gestureAborted = aborted;

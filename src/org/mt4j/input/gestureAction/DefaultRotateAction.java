@@ -39,8 +39,10 @@ public class DefaultRotateAction implements IGestureEventListener,ICollisionActi
 	/** The use custom target. */
 	private boolean useCustomTarget;
 	
+	/** The last event. */
 	private MTGestureEvent lastEvent;
 	
+	/** The gesture aborted. */
 	private boolean gestureAborted = false;
 	
 	/**
@@ -61,7 +63,7 @@ public class DefaultRotateAction implements IGestureEventListener,ICollisionActi
 	}
 
 	/* (non-Javadoc)
-	 * @see com.jMT.input.gestureAction.IGestureAction#processGesture(com.jMT.input.inputAnalyzers.GestureEvent)
+	 * @see org.mt4j.input.inputProcessors.IGestureEventListener#processGestureEvent(org.mt4j.input.inputProcessors.MTGestureEvent)
 	 */
 	public boolean processGestureEvent(MTGestureEvent g) {
 		if (g instanceof RotateEvent){
@@ -69,7 +71,7 @@ public class DefaultRotateAction implements IGestureEventListener,ICollisionActi
 			lastEvent = rotateEvent;
 			
 			if (!useCustomTarget)
-				target = rotateEvent.getTargetComponent(); 
+				target = rotateEvent.getTarget(); 
 			
 			switch (rotateEvent.getId()) {
 			case MTGestureEvent.GESTURE_DETECTED:
@@ -101,16 +103,25 @@ public class DefaultRotateAction implements IGestureEventListener,ICollisionActi
 		return false;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.mt4j.input.inputProcessors.ICollisionAction#gestureAborted()
+	 */
 	@Override
 	public boolean gestureAborted() {
 		return this.gestureAborted;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.mt4j.input.inputProcessors.ICollisionAction#getLastEvent()
+	 */
 	@Override
 	public MTGestureEvent getLastEvent() {
 		return this.lastEvent;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.mt4j.input.inputProcessors.ICollisionAction#setGestureAborted(boolean)
+	 */
 	@Override
 	public void setGestureAborted(boolean aborted) {
 		this.gestureAborted = aborted;

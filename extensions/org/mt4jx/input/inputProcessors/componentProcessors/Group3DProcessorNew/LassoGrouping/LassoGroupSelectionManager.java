@@ -21,7 +21,7 @@ import org.mt4jx.input.inputProcessors.componentProcessors.Group3DProcessorNew.I
 import org.mt4jx.input.inputProcessors.componentProcessors.Group3DProcessorNew.ISelectionManager;
 import org.mt4jx.input.inputProcessors.componentProcessors.Group3DProcessorNew.MTLassoSelectionEvent;
 import org.mt4jx.input.inputProcessors.componentProcessors.Group3DProcessorNew.MTSelectionEvent;
-import org.mt4jx.util.MergeHelper;
+import org.mt4jx.util.extension3D.MergeHelper;
 
 import java.util.*;
 

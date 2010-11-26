@@ -27,7 +27,7 @@ public class InertiaDragAction implements IGestureEventListener {
 	}
 
 	public boolean processGestureEvent(MTGestureEvent ge) {
-		IMTComponent3D t = ge.getTargetComponent();
+		IMTComponent3D t = ge.getTarget();
 		if (t instanceof MTComponent) {
 			MTComponent comp = (MTComponent) t;
 			DragEvent de = (DragEvent)ge;

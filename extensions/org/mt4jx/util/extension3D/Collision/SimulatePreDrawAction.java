@@ -1,4 +1,4 @@
-package org.mt4jx.util.Collision;
+package org.mt4jx.util.extension3D.Collision;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -34,7 +34,7 @@ import org.mt4jx.input.gestureAction.Rotate3DAction;
 import org.mt4jx.input.inputProcessors.componentProcessors.Group3DProcessorNew.Cluster;
 import org.mt4jx.input.inputProcessors.componentProcessors.Rotate3DProcessor.Rotate3DEvent;
 import org.mt4jx.input.inputProcessors.componentProcessors.depthProcessor.DepthGestureEvent;
-import org.mt4jx.util.ComponentHelper;
+import org.mt4jx.util.extension3D.ComponentHelper;
 
 
 import com.bulletphysics.collision.dispatch.CollisionObject;

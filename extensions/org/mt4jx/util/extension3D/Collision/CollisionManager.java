@@ -1,4 +1,4 @@
-package org.mt4jx.util.Collision;
+package org.mt4jx.util.extension3D.Collision;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;

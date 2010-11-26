@@ -63,9 +63,9 @@ import org.mt4jx.input.inputProcessors.componentProcessors.Group3DProcessorNew.G
 import org.mt4jx.input.inputProcessors.componentProcessors.Group3DProcessorNew.LassoGrouping.LassoGroupSelectionManager;
 import org.mt4jx.input.inputProcessors.componentProcessors.Rotate3DProcessor.Rotate3DProcessor;
 import org.mt4jx.input.inputProcessors.componentProcessors.depthProcessor.DepthProcessor;
-import org.mt4jx.util.ComponentHelper;
-import org.mt4jx.util.MergeHelper;
-import org.mt4jx.util.Collision.CollisionManager;
+import org.mt4jx.util.extension3D.ComponentHelper;
+import org.mt4jx.util.extension3D.MergeHelper;
+import org.mt4jx.util.extension3D.Collision.CollisionManager;
 
 
 import processing.core.PGraphics;

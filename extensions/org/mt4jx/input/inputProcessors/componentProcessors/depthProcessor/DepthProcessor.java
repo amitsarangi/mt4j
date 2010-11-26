@@ -21,7 +21,7 @@ import org.mt4j.util.camera.Icamera;
 
 import org.mt4j.util.math.Tools3D;
 import org.mt4j.util.math.Vector3D;
-import org.mt4jx.util.VelocityMotionMapper;
+import org.mt4jx.util.extension3D.VelocityMotionMapper;
 
 import processing.core.PApplet;
 

@@ -19,7 +19,7 @@ import org.mt4j.util.math.Vector3D;
 import org.mt4jx.input.gestureAction.DefaultDepthAction;
 import org.mt4jx.input.gestureAction.HelperDragAction;
 import org.mt4jx.input.inputProcessors.componentProcessors.depthProcessor.DepthProcessor;
-import org.mt4jx.util.BoundingHelper;
+import org.mt4jx.util.extension3D.BoundingHelper;
 
 import processing.core.PApplet;
 import processing.core.PGraphics3D;

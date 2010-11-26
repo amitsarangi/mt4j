@@ -1,4 +1,4 @@
-package org.mt4jx.util;
+package org.mt4jx.util.extension3D;
 
 import org.mt4j.components.MTComponent;
 import org.mt4j.components.PickInfo;

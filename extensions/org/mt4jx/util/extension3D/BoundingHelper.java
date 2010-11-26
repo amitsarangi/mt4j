@@ -1,4 +1,4 @@
-package org.mt4jx.util;
+package org.mt4jx.util.extension3D;
 
 import java.util.ArrayList;
 import java.util.Iterator;

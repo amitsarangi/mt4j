@@ -37,14 +37,19 @@ public class DefaultScaleAction implements IGestureEventListener,ICollisionActio
 	/** The target. */
 	private IMTComponent3D target;
 	
+	/** The has scale limit. */
 	private boolean hasScaleLimit;
 	
+	/** The min scale. */
 	private float minScale;
 	
+	/** The max scale. */
 	private float maxScale;
 	
+	/** The last event. */
 	private MTGestureEvent lastEvent;
 	
+	/** The gesture aborted. */
 	private boolean gestureAborted = false;
 	
 	/**
@@ -111,7 +116,7 @@ public class DefaultScaleAction implements IGestureEventListener,ICollisionActio
 
 
 	/* (non-Javadoc)
-	 * @see com.jMT.input.gestureAction.IGestureAction#processGesture(com.jMT.input.inputAnalyzers.GestureEvent)
+	 * @see org.mt4j.input.inputProcessors.IGestureEventListener#processGestureEvent(org.mt4j.input.inputProcessors.MTGestureEvent)
 	 */
 	public boolean processGestureEvent(MTGestureEvent g) {
 		if (g instanceof ScaleEvent){
@@ -119,7 +124,7 @@ public class DefaultScaleAction implements IGestureEventListener,ICollisionActio
 			this.lastEvent = scaleEvent;
 			
 			if (target == null)
-				target = scaleEvent.getTargetComponent(); 
+				target = scaleEvent.getTarget(); 
 			
 			switch (scaleEvent.getId()) {
 			case MTGestureEvent.GESTURE_DETECTED:
@@ -186,16 +191,25 @@ public class DefaultScaleAction implements IGestureEventListener,ICollisionActio
 		return false;
 	}
 	
+	/* (non-Javadoc)
+	 * @see org.mt4j.input.inputProcessors.ICollisionAction#gestureAborted()
+	 */
 	@Override
 	public boolean gestureAborted() {
 		return this.gestureAborted;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.mt4j.input.inputProcessors.ICollisionAction#getLastEvent()
+	 */
 	@Override
 	public MTGestureEvent getLastEvent() {
 		return this.lastEvent;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.mt4j.input.inputProcessors.ICollisionAction#setGestureAborted(boolean)
+	 */
 	@Override
 	public void setGestureAborted(boolean aborted) {
 		this.gestureAborted = aborted;

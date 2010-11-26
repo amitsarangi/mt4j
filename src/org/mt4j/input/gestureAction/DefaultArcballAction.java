@@ -61,7 +61,7 @@ public class DefaultArcballAction implements IGestureEventListener {
 		ArcBallGestureEvent aEvt =  (ArcBallGestureEvent)g;
 		
 		if (!useCustomTarget)
-			target = aEvt.getTargetComponent(); 
+			target = aEvt.getTarget(); 
 		
 		if (target instanceof MTComponent){
 			((MTComponent)target).sendToFront();

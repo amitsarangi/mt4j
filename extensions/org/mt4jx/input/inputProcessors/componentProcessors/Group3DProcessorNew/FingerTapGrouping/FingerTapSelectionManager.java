@@ -29,7 +29,7 @@ import org.mt4jx.input.inputProcessors.componentProcessors.Group3DProcessorNew.C
 import org.mt4jx.input.inputProcessors.componentProcessors.Group3DProcessorNew.ISelectionListener;
 import org.mt4jx.input.inputProcessors.componentProcessors.Group3DProcessorNew.ISelectionManager;
 import org.mt4jx.input.inputProcessors.componentProcessors.Group3DProcessorNew.MTClusterEvent;
-import org.mt4jx.util.ComponentHelper;
+import org.mt4jx.util.extension3D.ComponentHelper;
 
 public class FingerTapSelectionManager extends AbstractGlobalInputProcessor implements ISelectionManager {
 
