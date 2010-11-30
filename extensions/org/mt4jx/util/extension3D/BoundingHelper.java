@@ -141,9 +141,9 @@ public class BoundingHelper {
 		}
 
 		if (component instanceof AbstractShape) {		
-			if(((AbstractShape)component).getBoundingShape()!=null)
+			if(((AbstractShape)component).getBounds()!=null)
 			{
-				shapes.add(((AbstractShape) component).getBoundingShape());
+				shapes.add(((AbstractShape) component).getBounds());
 			}
 		}
 

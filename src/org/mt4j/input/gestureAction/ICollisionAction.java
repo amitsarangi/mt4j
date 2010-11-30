@@ -1,4 +1,6 @@
-package org.mt4j.input.inputProcessors;
+package org.mt4j.input.gestureAction;
+
+import org.mt4j.input.inputProcessors.MTGestureEvent;
 
 public interface ICollisionAction {
 	public boolean gestureAborted();

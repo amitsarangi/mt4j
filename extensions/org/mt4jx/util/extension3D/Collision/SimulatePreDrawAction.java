@@ -17,7 +17,7 @@ import org.mt4j.components.visibleComponents.widgets.MTOverlayContainer;
 import org.mt4j.input.gestureAction.DefaultDragAction;
 import org.mt4j.input.gestureAction.DefaultRotateAction;
 import org.mt4j.input.gestureAction.DefaultScaleAction;
-import org.mt4j.input.inputProcessors.ICollisionAction;
+import org.mt4j.input.gestureAction.ICollisionAction;
 import org.mt4j.input.inputProcessors.IGestureEventListener;
 import org.mt4j.input.inputProcessors.componentProcessors.dragProcessor.DragEvent;
 import org.mt4j.input.inputProcessors.componentProcessors.rotateProcessor.RotateEvent;
@@ -405,9 +405,9 @@ public class SimulatePreDrawAction implements IPreDrawAction {
 			
 			for(int b=0;b<getFirstNonMTTriangleMeshParent(comp).getGestureListeners().length;b++)
 			{
-				if(comp.getParent().getGestureListeners()[b] instanceof org.mt4j.input.inputProcessors.ICollisionAction)
+				if(comp.getParent().getGestureListeners()[b] instanceof org.mt4j.input.gestureAction.ICollisionAction)
 				{
-					org.mt4j.input.inputProcessors.ICollisionAction dragAction = (org.mt4j.input.inputProcessors.ICollisionAction)getFirstNonMTTriangleMeshParent(comp).getGestureListeners()[b];
+					org.mt4j.input.gestureAction.ICollisionAction dragAction = (org.mt4j.input.gestureAction.ICollisionAction)getFirstNonMTTriangleMeshParent(comp).getGestureListeners()[b];
 					dragAction.setGestureAborted(true);              					
 				}			        					    					
 			}

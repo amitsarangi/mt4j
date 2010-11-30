@@ -32,10 +32,12 @@ import processing.core.PApplet;
 /**
  * The Class MultipleDragProcessor. Fires drag events for every cursor on the component instead
  * of only one cursor, like the DragProcessor.
- * Fires DragEvent gesture events.
+ * Fires DragEvent gesture events. 
+ * <br>Note: At the moment this processor does not care about locks on cursors!
  * @author Christopher Ruff
  */
 public class MultipleDragProcessor extends AbstractCursorProcessor {
+	//TODO also use cursor locking mechanism?
 	
 	/** The app. */
 	private PApplet app;
@@ -149,9 +151,6 @@ public class MultipleDragProcessor extends AbstractCursorProcessor {
 			//Calculate the normal of the plane we will be dragging at (useful if camera isnt default)
 			this.dragPlaneNormal =  dragObject.getViewingCamera().getPosition().getSubtracted(dragObject.getViewingCamera().getViewCenterPos()).normalizeLocal();
 			//Set the Drag Startposition
-//			Vector3D interSectP = dragObject.getIntersectionGlobal(
-//					Tools3D.getCameraPickRay(app, dragObject, m.getCurrentEvent().getPosX(), m.getCurrentEvent().getPosY()));
-
 			Vector3D interSectP = getIntersection(app, m);
 			
 			if (interSectP != null)
@@ -170,11 +169,6 @@ public class MultipleDragProcessor extends AbstractCursorProcessor {
 		 * Update drag position.
 		 */
 		public void updateDragPosition(){
-//			Vector3D newPos = ToolsGeometry.getRayPlaneIntersection(
-//					Tools3D.getCameraPickRay(app, dragObject, m.getCurrentEvent().getPosX(), m.getCurrentEvent().getPosY()), 
-//					dragPlaneNormal, 
-//					startPosition);
-			
 			Vector3D newPos = getPlaneIntersection(app, dragPlaneNormal, startPosition, m);
 			if (newPos != null){
 				lastPosition = newPosition;

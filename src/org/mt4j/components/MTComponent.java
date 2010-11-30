@@ -305,50 +305,15 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 		this.attachedCamera = attachedCamera;
 		this.viewingCamera = attachedCamera;
 
-		//FIXME TEST
-		this.boundsGlobalVerticesDirty = true;
-
 		this.inversePrecisionErrors = 0;
 		this.orthogonalityErrors  = 0;
 	}
 
 	
-	//TODO
 	// BOUNDS STUFF ///////////////////////////////////
 	/** The bounds */
 	private IBoundingShape bounds;
 	
-	/** The bounds global vertices dirty. */
-	private boolean boundsGlobalVerticesDirty;
-	
-	//TODO REMOVE THESE DEPRECATED METHODS IN THE NEXT RELEASE!
-	/**
-	 * Sets the bounding shape.
-	 * 
-	 * @param boundingShape the new bounding shape
-	 * @deprecated renamed to <code>setBounds</code>
-	 */
-	public void setBoundingShape(IBoundingShape boundingShape){
-		this.bounds = boundingShape;
-		this.setBoundsGlobalDirty(true);
-	}	
-	/**
-	 * Gets the bounding shape.
-	 * 
-	 * @return the bounding shape
-	 * @deprecated renamed to <code>getBounds</code>
-	 */
-	public IBoundingShape getBoundingShape(){
-		return this.bounds;
-	}
-	/**
-	 * Checks if is bounding shape set.
-	 * @return true, if is bounding shape set
-	 * @deprecated renamed to <code>hasBounds</code>
-	 */
-	public boolean isBoundingShapeSet(){
-		return this.bounds != null;
-	}
 	
 	/**
 	 * Sets the bounding shape.
@@ -382,7 +347,7 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 	 * @param boundsWorldVerticesDirty the new bounds world vertices dirty
 	 */
 	private void setBoundsGlobalDirty(boolean boundsWorldVerticesDirty) {
-		this.boundsGlobalVerticesDirty = boundsWorldVerticesDirty;
+//		this.boundsGlobalVerticesDirty = boundsWorldVerticesDirty;
 		if (this.hasBounds()){
 			this.getBounds().setGlobalBoundsChanged();
 		}
@@ -850,7 +815,7 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 		Matrix resMatrix = this.globalMatrix;
 		//Calculate the absolute local to global matrix only if necessary
 		if (this.isGlobalMatrixDirty()){
-//			System.out.println(this.getName() + "'s global matrix is dirty! calculate it:");
+			//System.out.println(this.getName() + "'s global matrix is dirty! calculate it:");
 			resMatrix = new Matrix();
 			this.getGlobalMatrixRecursive(this, resMatrix);
 			//System.out.println("Applying Matrix of: '" + this.getName() + "' Matrix: " + this.getLocalBasisMatrix().toString());
@@ -2218,14 +2183,8 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 			&& !getChildByIndex(getChildCount()-1).equals(child)
 		){
 			//System.out.println("Drawlast: " + tangibleComp.getName());
-//			this.removeChild((child)); 
-//			this.addChild((child)); //FIXME THIS DOES A LOT OF UNNECESSARY STUFF - statechange, cam search, matrix dirty!
-
 			childComponents.add(getChildCount(),child);
 			childComponents.remove(child);
-			
-//			childComponents.remove(child);
-//			childComponents.add(getChildCount(),child);
 		}
 	}
 	
@@ -2604,7 +2563,7 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 			Ray invertedRay = this.getGlobalInverseMatrix().isIdentity()? currentRay : this.globalToLocal(currentRay);
 			
 			/*
-			//FIXME REMOVE!!!!! 
+			//DEBUG HELP!!!!! 
 			//This adds lines indicating the world ray and the local object ray used for ray-test
 			MTLine l1 = new MTLine(this.getRenderer(), new Vertex(currentRay.getRayStartPoint()), new Vertex(currentRay.getPointInRayDirection()));
 			this.getAncestor().addChild(l1);
@@ -2618,8 +2577,7 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 			if (clip == null || (clip != null && clip.getClipShapeIntersectionLocal(invertedRay) != null)){
 				interSP = this.getIntersectionLocal(invertedRay);
 				if (interSP != null){
-					//FIXME TRIAL - muss f�r die distance messung der world ray genommen
-					//werden oder geht der invertierte ray? -> musss wohl der world ray sein
+					//i guess we have to use the ray in global coords to measure the distance
 					interSP.transform(this.getGlobalMatrix());
 					// Get distance from raystart to the intersecting point
 					objDistance = interSP.getSubtracted(currentRay.getRayStartPoint()).length();
@@ -2632,7 +2590,7 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 ////					System.out.println("-> Now nearest: " + this.getName());
 //					}
 
-					//FIXME TEST - ADD ALL PICKED OBJECTS - SORT LATER
+					//TEST - ADD ALL PICKED OBJECTS - SORT LATER
 					pickResult.addPickedObject(this, interSP, objDistance);
 				}
 			}

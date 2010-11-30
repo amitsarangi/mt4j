@@ -181,12 +181,12 @@ public class LassoVisualizationAction implements IMTEventListener {
 				AbstractShape shape = (AbstractShape)comp;
 //				Vertex[] verts = shape.getVerticesPickingWorld();
 				Vector3D[] verts = null;
-				if (shape.isBoundingShapeSet()){
-					 verts = shape.getBoundingShape().getVectorsGlobal();
+				if (shape.hasBounds()){
+					 verts = shape.getBounds().getVectorsGlobal();
 					 //FIXME add for all not only for boundingsphere
-					 if(shape.getBoundingShape() instanceof BoundingSphere)
+					 if(shape.getBounds() instanceof BoundingSphere)
 					 {
-						 BoundingSphere bSphere = (BoundingSphere)shape.getBoundingShape();
+						 BoundingSphere bSphere = (BoundingSphere)shape.getBounds();
 						 verts = bSphere.getVectorsOnBoundingSphereGlobal(4);						 
 					 }
 					 //check if points should be projected in case of 3D grouping
