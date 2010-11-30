@@ -17,7 +17,6 @@
  ***********************************************************************/
 package org.mt4j.input.inputProcessors.componentProcessors.zoomProcessor;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.mt4j.components.interfaces.IMTComponent3D;
@@ -46,8 +45,6 @@ public class ZoomProcessor extends AbstractCursorProcessor {
 	/** The old distance. */
 	private float oldDistance;
 	
-	/** The applet. */
-	private PApplet applet;
 
 	/**
 	 * Instantiates a new zoom processor.
@@ -65,7 +62,6 @@ public class ZoomProcessor extends AbstractCursorProcessor {
 	 * @param zoomDetectRadius the zoom detect radius
 	 */
 	public ZoomProcessor(PApplet graphicsContext, float zoomDetectRadius){
-		this.applet = graphicsContext;
 		this.zoomDetectRadius = zoomDetectRadius;
 		this.setLockPriority(2);
 	}
@@ -187,7 +183,7 @@ public class ZoomProcessor extends AbstractCursorProcessor {
 		List<InputCursor> availableCursors = getFreeComponentCursors();
 		if (availableCursors.size() >= 2){ //we can try to resume the gesture
 			InputCursor firstCursor = availableCursors.get(0);
-			InputCursor secondCursor = availableCursors.get(1);
+			InputCursor secondCursor = getFarthestFreeCursorToLimited(firstCursor, zoomDetectRadius);
 
 			//See if we can obtain a lock on both cursors
 			if (this.canLock(firstCursor, secondCursor)){

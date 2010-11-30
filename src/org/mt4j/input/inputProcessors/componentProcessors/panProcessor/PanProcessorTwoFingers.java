@@ -191,7 +191,7 @@ public class PanProcessorTwoFingers extends AbstractCursorProcessor {
 		List<InputCursor> availableCursors = getFreeComponentCursors();
 		if (availableCursors.size() >= 2){ //we can try to resume the gesture
 			InputCursor firstCursor = availableCursors.get(0);
-			InputCursor secondCursor = availableCursors.get(1);
+			InputCursor secondCursor = getFarthestFreeCursorToLimited(firstCursor, detectRadius);
 
 			//See if we can obtain a lock on both cursors
 			if (this.canLock(firstCursor, secondCursor)){
