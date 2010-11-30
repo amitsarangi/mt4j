@@ -28,6 +28,7 @@ import org.mt4j.components.TransformSpace;
 import org.mt4j.components.bounds.BoundingSphere;
 import org.mt4j.components.bounds.IBoundingShape;
 import org.mt4j.components.bounds.OrientedBoundingBox;
+import org.mt4j.components.css.style.CSSStyle;
 import org.mt4j.components.css.util.CSSHelper;
 import org.mt4j.components.css.util.CSSStylableComponent;
 import org.mt4j.components.visibleComponents.GeometryInfo;
@@ -53,7 +54,7 @@ import processing.core.PGraphics;
  * 
  * @author Christopher Ruff
  */
-public class MTPolygon extends AbstractShape implements CSSStylableComponent{
+public class MTPolygon extends MTCSSStylableShape{
 	
 	//FIXME TRIAL REMOVE LATER
 //	boolean useLocalObjectSpace;
@@ -100,6 +101,8 @@ public class MTPolygon extends AbstractShape implements CSSStylableComponent{
 		
 		this.setBoundsBehaviour(AbstractShape.BOUNDS_DONT_USE);
 //		this.setBoundsPickingBehaviour(AbstractShape.BOUNDS_ONLY_CHECK);
+		
+		/*
 		if (pApplet instanceof MTApplication) {
 			this.mtApp = (MTApplication)pApplet;
 			this.cssHelper = new CSSHelper(this, mtApp);
@@ -107,6 +110,7 @@ public class MTPolygon extends AbstractShape implements CSSStylableComponent{
 				this.enableCSS();
 			}
 		}
+		*/
 	}
 	
 	/* (non-Javadoc)
@@ -748,7 +752,16 @@ public class MTPolygon extends AbstractShape implements CSSStylableComponent{
 		
 	}
 
+	@Override
+	protected void applyStyleSheetCustom(CSSStyle virtualStyleSheet) {
+		if (virtualStyleSheet.isModifiedBackgroundImage()) {
+			getCssHelper().setBackground(this);
+		}
+	}
+
 	
+	
+	/*
 	private MTApplication mtApp;
 	private boolean cssStyled = false;
 	private boolean cssForceDisabled = false;
@@ -792,7 +805,7 @@ public class MTPolygon extends AbstractShape implements CSSStylableComponent{
 		}
 		
 	}
-	
+	*/
 
 	
 

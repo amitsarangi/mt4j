@@ -1296,6 +1296,24 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
 		}
 		
 	}
+	
+	
+	@Override
+	protected void applyStyleSheetCustom(CSSStyle virtualStyleSheet) {
+		super.applyStyleSheetCustom(virtualStyleSheet);
+
+		if (this.getRenderer() instanceof MTApplication) {
+			MTApplication app = (MTApplication) this.getRenderer();
+			if (!virtualStyleSheet.getFont().equals(
+					app.getCssStyleManager().getDefaultFont(app))
+					&& !this.isIgnoreCSSFont()) {
+				this.setFont(virtualStyleSheet.getFont());
+			}
+			if (virtualStyleSheet.isModifiedPaddingWidth()) {
+				this.setPadding(virtualStyleSheet.getPaddingWidth());
+			}
+		}
+	}
 
 	
 }

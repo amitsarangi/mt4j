@@ -21,6 +21,36 @@ import org.mt4j.util.MTColor;
  */
 public class CSSStyleManager {
 	
+	/** The components (of registered MTComponents). */
+	private List<CSSStylableComponent> components = new ArrayList<CSSStylableComponent>();
+
+	/** The MTApplication. */
+	private MTApplication app = null;
+
+	/** The styles. */
+	private List<CSSStyleHierarchy> styles = new ArrayList<CSSStyleHierarchy>();
+
+	/** CSS Styles globally enabled. */
+	private boolean globallyEnabled = false;
+
+	/** CSS Styles globally disabled. */
+	private boolean globallyDisabled = false;
+
+	/** The default font. */
+	private IFont defaultFont = null;
+
+
+
+	/**
+	 * Instantiates a new (empty) CSS style manager.
+	 *
+	 * @param app the MTApplication
+	 */
+	public CSSStyleManager(MTApplication app) {
+		this.app = app;
+	}
+
+
 	/**
 	 * Instantiates a new CSS style manager.
 	 *
@@ -43,16 +73,8 @@ public class CSSStyleManager {
 	public void registerComponent(CSSStylableComponent c) {
 		components.add(c);
 	}
-	
-	/**
-	 * Instantiates a new (empty) CSS style manager.
-	 *
-	 * @param app the MTApplication
-	 */
-	public CSSStyleManager(MTApplication app) {
-		this.app = app;
-	}
-	
+
+
 	/**
 	 * Load styles from file.
 	 *
@@ -122,23 +144,6 @@ public class CSSStyleManager {
 		this.styles.clear();
 		applyStyles();
 	}
-	
-	/** The components (of registered MTComponents). */
-	List<CSSStylableComponent> components = new ArrayList<CSSStylableComponent>();
-	
-	/** The MTApplication. */
-	MTApplication app = null;
-	
-	/** The styles. */
-	List<CSSStyleHierarchy> styles = new ArrayList<CSSStyleHierarchy>();
-
-	/** CSS Styles globally enabled. */
-	boolean globallyEnabled = false;
-	
-	/** CSS Styles globally disabled. */
-	boolean globallyDisabled = false;
-	
-	
 	
 	/**
 	 * Checks if is globally enabled.
@@ -245,10 +250,7 @@ public class CSSStyleManager {
 			} else {
 				toDelete.add(c);
 			}
-			
-			
 		}
-		
 		components.removeAll(toDelete);
 	}
 	
@@ -262,7 +264,9 @@ public class CSSStyleManager {
 	 */
 	public CSSStyle getFirstStyleForSelector(CSSSelector s) {
 		for (CSSStyleHierarchy sty: styles) {
-			if (sty.getStyle().getSelector().equals(s)) return sty.getStyle();
+			if (sty.getStyle().getSelector().equals(s)){ 
+				return sty.getStyle();
+			}
 		}
 		return null;
 	}
@@ -274,7 +278,9 @@ public class CSSStyleManager {
 	 * @return the relevant styles
 	 */
 	public List<CSSStyleHierarchy> getRelevantStyles(MTComponent c) {
-		if (!components.contains(c) && c instanceof CSSStylableComponent) components.add((CSSStylableComponent)c);
+		if (!components.contains(c) && c instanceof CSSStylableComponent){ 
+			components.add((CSSStylableComponent)c);
+		}
 		
 		List<CSSStyleHierarchy> relevantStyles = new ArrayList<CSSStyleHierarchy>();
 
@@ -294,9 +300,6 @@ public class CSSStyleManager {
 		return relevantStyles;
 	}
 	
-	
-	/** The default font. */
-	IFont defaultFont = null;
 	
 	/**
 	 * Gets the default font.

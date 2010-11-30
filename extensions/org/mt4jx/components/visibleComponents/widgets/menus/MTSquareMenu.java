@@ -36,114 +36,33 @@ import processing.core.PImage;
  */
 public class MTSquareMenu extends MTRectangle implements CSSStylableComponent {
 
-	/**
-	 * The Class PolygonListeners.
-	 */
-	public class PolygonListeners {
-		
-		/** The component. */
-		public MTPolygon component;
-		
-		/** The listener. */
-		public IGestureEventListener listener;
-		
-		/**
-		 * Instantiates a new polygon listeners.
-		 *
-		 * @param component the component
-		 * @param listener the listener
-		 */
-		public PolygonListeners(MTPolygon component, IGestureEventListener listener) {
-			this.component = component;
-			this.listener = listener;
-		}
-		
-	}
-	
-	/**
-	 * The listener interface for receiving tap events.
-	 * The class that is interested in processing a tap
-	 * event implements this interface, and the object created
-	 * with that class is registered with a component using the
-	 * component's <code>addTapListener<code> method. When
-	 * the tap event occurs, that object's appropriate
-	 * method is invoked.
-	 *
-	 * @see TapEvent
-	 */
-	public class TapListener implements IGestureEventListener {
-		//Tap Listener to reach through TapListeners to children
-		
-		/** The children. */
-		List<PolygonListeners> children;
-		
-		/**
-		 * Instantiates a new tap listener.
-		 *
-		 * @param children the children
-		 */
-		public TapListener(List<PolygonListeners> children) {
-			this.children = children;
-		}
-		
-		
-		/* (non-Javadoc)
-		 * @see org.mt4j.input.inputProcessors.IGestureEventListener#processGestureEvent(org.mt4j.input.inputProcessors.MTGestureEvent)
-		 */
-		public boolean processGestureEvent(MTGestureEvent ge) {
-			if (ge instanceof TapEvent) {
-				
-				TapEvent te = (TapEvent)ge;
-				if (te.getTapID() == TapEvent.BUTTON_CLICKED) {
-					//Vector3D w = Tools3D.project(app, app.getCurrentScene().getSceneCam(), te.getLocationOnScreen());
-					for (PolygonListeners pl: children) {
-						pl.component.setPickable(true);
-						if (pl.component.getIntersectionGlobal(Tools3D
-								.getCameraPickRay(app, pl.component, te.getCursor().getPosition().x,
-										te.getCursor().getPosition().y)) != null) {
-							pl.listener.processGestureEvent(ge);
-						} else {
-					
-						}
-						pl.component.setPickable(false);
-					}
-				}
-			}
-			return false;
-		}
-		
-		
-		
-		
-	}
-	
 	/** The app. */
-	MTApplication app;
+	private MTApplication app;
 	
 	/** The menu contents. */
-	List<MTRectangle> menuContents = new ArrayList<MTRectangle>();
+	private List<MTRectangle> menuContents = new ArrayList<MTRectangle>();
 	
 	/** The layout. */
-	List<ArrayList<MTRectangle>> layout = new ArrayList<ArrayList<MTRectangle>>();
+	private List<ArrayList<MTRectangle>> layout = new ArrayList<ArrayList<MTRectangle>>();
 	
 	/** The size. */
-	float size;
+	private float size;
 	
 	/** The current item. */
-	int current = 0;
+	private int current = 0;
 
 	/** The max per line. */
-	int maxPerLine = 0;
+	private int maxPerLine = 0;
 	
 	/** The bezel. */
-	float bezel = 10f;
+	private float bezel = 10f;
 	
 	// List of the Child Polygons and their IGestureEventListeners
 	/** The polygon listeners. */
-	List<PolygonListeners> polygonListeners = new ArrayList<PolygonListeners>();
+	private List<PolygonListeners> polygonListeners = new ArrayList<PolygonListeners>();
 	
 	/** The menu items. */
-	List<MenuItem> menuItems = new ArrayList<MenuItem>();
+	private List<MenuItem> menuItems = new ArrayList<MenuItem>();
 	
 	/**
 	 * Instantiates a new MTSquareMenu
@@ -608,6 +527,93 @@ public class MTSquareMenu extends MTRectangle implements CSSStylableComponent {
 		}
 		//Set Vertices to include all children
 		this.setVertices(new Vertex[] {new Vertex(minx,miny), new Vertex(maxx,miny), new Vertex(maxx,maxy), new Vertex(minx,maxy),new Vertex(minx,miny)});
+	}
+
+
+
+
+	/**
+	 * The listener interface for receiving tap events.
+	 * The class that is interested in processing a tap
+	 * event implements this interface, and the object created
+	 * with that class is registered with a component using the
+	 * component's <code>addTapListener<code> method. When
+	 * the tap event occurs, that object's appropriate
+	 * method is invoked.
+	 *
+	 * @see TapEvent
+	 */
+	public class TapListener implements IGestureEventListener {
+		//Tap Listener to reach through TapListeners to children
+		
+		/** The children. */
+		List<PolygonListeners> children;
+		
+		/**
+		 * Instantiates a new tap listener.
+		 *
+		 * @param children the children
+		 */
+		public TapListener(List<PolygonListeners> children) {
+			this.children = children;
+		}
+		
+		
+		/* (non-Javadoc)
+		 * @see org.mt4j.input.inputProcessors.IGestureEventListener#processGestureEvent(org.mt4j.input.inputProcessors.MTGestureEvent)
+		 */
+		public boolean processGestureEvent(MTGestureEvent ge) {
+			if (ge instanceof TapEvent) {
+				
+				TapEvent te = (TapEvent)ge;
+				if (te.getTapID() == TapEvent.BUTTON_CLICKED) {
+					//Vector3D w = Tools3D.project(app, app.getCurrentScene().getSceneCam(), te.getLocationOnScreen());
+					for (PolygonListeners pl: children) {
+						pl.component.setPickable(true);
+						if (pl.component.getIntersectionGlobal(Tools3D
+								.getCameraPickRay(app, pl.component, te.getCursor().getPosition().x,
+										te.getCursor().getPosition().y)) != null) {
+							pl.listener.processGestureEvent(ge);
+						} else {
+					
+						}
+						pl.component.setPickable(false);
+					}
+				}
+			}
+			return false;
+		}
+		
+		
+		
+		
+	}
+
+
+
+
+	/**
+	 * The Class PolygonListeners.
+	 */
+	public class PolygonListeners {
+		
+		/** The component. */
+		public MTPolygon component;
+		
+		/** The listener. */
+		public IGestureEventListener listener;
+		
+		/**
+		 * Instantiates a new polygon listeners.
+		 *
+		 * @param component the component
+		 * @param listener the listener
+		 */
+		public PolygonListeners(MTPolygon component, IGestureEventListener listener) {
+			this.component = component;
+			this.listener = listener;
+		}
+		
 	}
 	
 	

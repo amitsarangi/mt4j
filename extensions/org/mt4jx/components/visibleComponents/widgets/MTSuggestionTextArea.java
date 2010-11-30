@@ -8,6 +8,7 @@ import org.mt4j.components.StateChange;
 import org.mt4j.components.StateChangeEvent;
 import org.mt4j.components.StateChangeListener;
 import org.mt4j.components.TransformSpace;
+import org.mt4j.components.css.style.CSSStyle;
 import org.mt4j.components.visibleComponents.font.IFont;
 import org.mt4j.components.visibleComponents.shapes.MTPolygon;
 import org.mt4j.components.visibleComponents.shapes.MTRectangle;
@@ -27,175 +28,29 @@ import processing.core.PGraphics;
  */
 public class MTSuggestionTextArea extends MTTextArea {
 
-	/**
-	 * The listener interface for receiving edit events. The class that is
-	 * interested in processing a edit event implements this interface, and the
-	 * object created with that class is registered with a component using the
-	 * component's <code>addEditListener<code> method. When
-	 * the edit event occurs, that object's appropriate
-	 * method is invoked.
-	 * 
-	 * @see EditEvent
-	 */
-	public class EditListener implements IGestureEventListener {
-
-		/** The ta. */
-		MTTextArea ta;
-
-		/**
-		 * Instantiates a new edits the listener.
-		 * 
-		 * @param ta
-		 *            the ta
-		 */
-		public EditListener(MTTextArea ta) {
-			this.ta = ta;
-		}
-
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see
-		 * org.mt4j.input.inputProcessors.IGestureEventListener#processGestureEvent
-		 * (org.mt4j.input.inputProcessors.MTGestureEvent)
-		 */
-		public boolean processGestureEvent(MTGestureEvent ge) {
-			if (ge instanceof TapEvent) {
-				TapEvent te = (TapEvent) ge;
-				if (te.getTapID() == TapEvent.BUTTON_CLICKED) {
-					System.out.println(ta.getText() + ": " + te.getTapID() + " (" + te.getId() + ")");
-					if (keyboard == null
-							&& te.getTapID() == TapEvent.BUTTON_CLICKED) {
-						keyboard = new MTKeyboard(app);
-						addChild(keyboard);
-						keyboard.addTextInputListener(ta);
-						keyboard.addStateChangeListener(
-								StateChange.COMPONENT_DESTROYED,
-								new KeyboardListener());
-
-						keyboard.setCssForceDisable(true);
-
-						keyboard.setNoFill(ta.isNoFill());
-						keyboard.setNoStroke(ta.isNoStroke());
-						keyboard.setFillColor(ta.getFillColor());
-						keyboard.setStrokeColor(new MTColor(ta.getStrokeColor().getR(),
-								ta.getStrokeColor().getG(), ta.getStrokeColor().getG(),
-								ta.getStrokeColor().getAlpha() * 0.75f));
-						keyboard.setStrokeWeight(ta.getStrokeWeight());
-
-
-
-
-						keyboard.setPositionRelativeToParent(calcPos(
-								ta,
-								keyboard,
-								0,
-								ta.getHeightXY(TransformSpace.LOCAL)
-								+ suggestionBox
-								.getHeightXY(TransformSpace.LOCAL)));
-					}
-				}
-			}
-			return false;
-		}
-
-	}
-
-	/**
-	 * The listener interface for receiving keyboard events. The class that is
-	 * interested in processing a keyboard event implements this interface, and
-	 * the object created with that class is registered with a component using
-	 * the component's <code>addKeyboardListener<code> method. When
-	 * the keyboard event occurs, that object's appropriate
-	 * method is invoked.
-	 * 
-	 * @see KeyboardEvent
-	 */
-	public class KeyboardListener implements StateChangeListener {
-
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see
-		 * org.mt4j.components.StateChangeListener#stateChanged(org.mt4j.components
-		 * .StateChangeEvent)
-		 */
-		public void stateChanged(StateChangeEvent evt) {
-			if (evt.getState() == StateChange.COMPONENT_DESTROYED) {
-				keyboard = null;
-			}
-
-		}
-
-	}
-
-	/**
-	 * The listener interface for receiving suggestionBox events. The class that
-	 * is interested in processing a suggestionBox event implements this
-	 * interface, and the object created with that class is registered with a
-	 * component using the component's
-	 * <code>addSuggestionBoxListener<code> method. When
-	 * the suggestionBox event occurs, that object's appropriate
-	 * method is invoked.
-	 * 
-	 * @see SuggestionBoxEvent
-	 */
-	public class SuggestionBoxListener implements IGestureEventListener {
-
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see
-		 * org.mt4j.input.inputProcessors.IGestureEventListener#processGestureEvent
-		 * (org.mt4j.input.inputProcessors.MTGestureEvent)
-		 */
-		public boolean processGestureEvent(MTGestureEvent ge) {
-			if (ge instanceof TapEvent) {
-				TapEvent te = (TapEvent) ge;
-				if (te.getTapID() == TapEvent.BUTTON_CLICKED) {
-					Vector3D w = Tools3D.project(app, app.getCurrentScene()
-							.getSceneCam(), te.getLocationOnScreen());
-					Vector3D x = suggestionBox.globalToLocal(w);
-					float zero = suggestionBox.getVerticesLocal()[0].y;
-					float heightPerLine = suggestionBox
-							.getHeightXY(TransformSpace.LOCAL)
-							/ (float) (suggestionBox.getLineCount() + 1);
-					int line = (int) ((x.y - zero) / heightPerLine);
-
-					if (currentSuggestions.size() > line) {
-						setText(currentSuggestions.get(line));
-					}
-
-				}
-			}
-			return false;
-		}
-
-	}
-
 	/** The available suggestions. */
-	List<String> availableValues;
+	private List<String> availableValues;
 
 	/** The MTApplication. */
-	MTApplication app;
+	private MTApplication app;
 
 	/** The suggestion box. */
-	MTTextArea suggestionBox;
+	private MTTextArea suggestionBox;
 
 	/** The keyboard. */
-	MTKeyboard keyboard;
+	private MTKeyboard keyboard;
 
 	/** The width. */
-	float width = -1f;
+	private float width = -1f;
 
 	/** The current suggestions. */
-	List<String> currentSuggestions = new ArrayList<String>();
+	private List<String> currentSuggestions = new ArrayList<String>();
 
 	/** The o (Counting Variable). */
-	int o = 0;
+	private int o = 0;
 
 	/** The p (Counting Variable). */
-	int p = 0;
+	private int p = 0;
 
 	/**
 	 * Instantiates a new MTSuggestionTextArea.
@@ -420,7 +275,159 @@ public class MTSuggestionTextArea extends MTTextArea {
 		if (app != null && width != -1f && this.availableValues != null) {
 			init(app, width, this.availableValues);
 		}
-		
-		
+	}
+	
+	
+	@Override
+	protected void applyStyleSheetCustom(CSSStyle virtualStyleSheet) {
+		super.applyStyleSheetCustom(virtualStyleSheet);
+		this.init();
+	}
+
+
+	/**
+	 * The listener interface for receiving suggestionBox events. The class that
+	 * is interested in processing a suggestionBox event implements this
+	 * interface, and the object created with that class is registered with a
+	 * component using the component's
+	 * <code>addSuggestionBoxListener<code> method. When
+	 * the suggestionBox event occurs, that object's appropriate
+	 * method is invoked.
+	 * 
+	 * @see SuggestionBoxEvent
+	 */
+	public class SuggestionBoxListener implements IGestureEventListener {
+	
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see
+		 * org.mt4j.input.inputProcessors.IGestureEventListener#processGestureEvent
+		 * (org.mt4j.input.inputProcessors.MTGestureEvent)
+		 */
+		public boolean processGestureEvent(MTGestureEvent ge) {
+			if (ge instanceof TapEvent) {
+				TapEvent te = (TapEvent) ge;
+				if (te.getTapID() == TapEvent.BUTTON_CLICKED) {
+					Vector3D w = Tools3D.project(app, app.getCurrentScene()
+							.getSceneCam(), te.getLocationOnScreen());
+					Vector3D x = suggestionBox.globalToLocal(w);
+					float zero = suggestionBox.getVerticesLocal()[0].y;
+					float heightPerLine = suggestionBox
+							.getHeightXY(TransformSpace.LOCAL)
+							/ (float) (suggestionBox.getLineCount() + 1);
+					int line = (int) ((x.y - zero) / heightPerLine);
+	
+					if (currentSuggestions.size() > line) {
+						setText(currentSuggestions.get(line));
+					}
+	
+				}
+			}
+			return false;
+		}
+	
+	}
+
+	/**
+	 * The listener interface for receiving keyboard events. The class that is
+	 * interested in processing a keyboard event implements this interface, and
+	 * the object created with that class is registered with a component using
+	 * the component's <code>addKeyboardListener<code> method. When
+	 * the keyboard event occurs, that object's appropriate
+	 * method is invoked.
+	 * 
+	 * @see KeyboardEvent
+	 */
+	public class KeyboardListener implements StateChangeListener {
+	
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see
+		 * org.mt4j.components.StateChangeListener#stateChanged(org.mt4j.components
+		 * .StateChangeEvent)
+		 */
+		public void stateChanged(StateChangeEvent evt) {
+			if (evt.getState() == StateChange.COMPONENT_DESTROYED) {
+				keyboard = null;
+			}
+	
+		}
+	
+	}
+
+	/**
+	 * The listener interface for receiving edit events. The class that is
+	 * interested in processing a edit event implements this interface, and the
+	 * object created with that class is registered with a component using the
+	 * component's <code>addEditListener<code> method. When
+	 * the edit event occurs, that object's appropriate
+	 * method is invoked.
+	 * 
+	 * @see EditEvent
+	 */
+	public class EditListener implements IGestureEventListener {
+	
+		/** The ta. */
+		private MTTextArea ta;
+	
+		/**
+		 * Instantiates a new edits the listener.
+		 * 
+		 * @param ta
+		 *            the ta
+		 */
+		public EditListener(MTTextArea ta) {
+			this.ta = ta;
+		}
+	
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see
+		 * org.mt4j.input.inputProcessors.IGestureEventListener#processGestureEvent
+		 * (org.mt4j.input.inputProcessors.MTGestureEvent)
+		 */
+		public boolean processGestureEvent(MTGestureEvent ge) {
+			if (ge instanceof TapEvent) {
+				TapEvent te = (TapEvent) ge;
+				if (te.getTapID() == TapEvent.BUTTON_CLICKED) {
+					System.out.println(ta.getText() + ": " + te.getTapID() + " (" + te.getId() + ")");
+					if (keyboard == null
+							&& te.getTapID() == TapEvent.BUTTON_CLICKED) {
+						keyboard = new MTKeyboard(app);
+						addChild(keyboard);
+						keyboard.addTextInputListener(ta);
+						keyboard.addStateChangeListener(
+								StateChange.COMPONENT_DESTROYED,
+								new KeyboardListener());
+	
+						keyboard.setCssForceDisable(true);
+	
+						keyboard.setNoFill(ta.isNoFill());
+						keyboard.setNoStroke(ta.isNoStroke());
+						keyboard.setFillColor(ta.getFillColor());
+						keyboard.setStrokeColor(new MTColor(ta.getStrokeColor().getR(),
+								ta.getStrokeColor().getG(), ta.getStrokeColor().getG(),
+								ta.getStrokeColor().getAlpha() * 0.75f));
+						keyboard.setStrokeWeight(ta.getStrokeWeight());
+	
+	
+	
+	
+						keyboard.setPositionRelativeToParent(calcPos(
+								ta,
+								keyboard,
+								0,
+								ta.getHeightXY(TransformSpace.LOCAL)
+								+ suggestionBox
+								.getHeightXY(TransformSpace.LOCAL)));
+					}
+				}
+			}
+			return false;
+		}
+	
 	}
 }

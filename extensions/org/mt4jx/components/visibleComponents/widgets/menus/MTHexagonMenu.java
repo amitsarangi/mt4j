@@ -10,7 +10,6 @@ import org.mt4j.components.clipping.Clip;
 import org.mt4j.components.css.style.CSSFont;
 import org.mt4j.components.css.style.CSSStyle;
 import org.mt4j.components.css.util.CSSFontManager;
-import org.mt4j.components.css.util.CSSStylableComponent;
 import org.mt4j.components.css.util.CSSKeywords.CSSFontWeight;
 import org.mt4j.components.visibleComponents.font.IFont;
 import org.mt4j.components.visibleComponents.shapes.MTPolygon;
@@ -24,7 +23,6 @@ import org.mt4j.util.MTColor;
 import org.mt4j.util.math.Tools3D;
 import org.mt4j.util.math.Vector3D;
 import org.mt4j.util.math.Vertex;
-import org.mt4jx.components.visibleComponents.widgets.menus.MenuItem;
 
 import processing.core.PConstants;
 import processing.core.PImage;
@@ -33,120 +31,37 @@ import processing.core.PImage;
  * The Class MTHexagonMenu. Menu that contains Hexagons as buttons containing
  * text or images
  */
-public class MTHexagonMenu extends MTRectangle implements CSSStylableComponent {
-
-	/**
-	 * The Class PolygonListeners.
-	 */
-	public class PolygonListeners {
-
-		/** The component. */
-		public MTPolygon component;
-
-		/** The listener. */
-		public IGestureEventListener listener;
-
-		/**
-		 * Instantiates a new polygon listeners mapping.
-		 *
-		 * @param component the component
-		 * @param listener the listener
-		 */
-		public PolygonListeners(MTPolygon component,
-				IGestureEventListener listener) {
-			this.component = component;
-			this.listener = listener;
-		}
-
-	}
-
-	/**
-	 * The listener interface for receiving tap events. The class that is
-	 * interested in processing a tap event implements this interface, and the
-	 * object created with that class is registered with a component using the
-	 * component's <code>addTapListener<code> method. When
-	 * the tap event occurs, that object's appropriate
-	 * method is invoked.
-	 * 
-	 * @see TapEvent
-	 */
-	public class TapListener implements IGestureEventListener {
-		// Tap Listener to reach through TapListeners to children
-
-		/** The children. */
-		List<PolygonListeners> children;
-
-		/**
-		 * Instantiates a new tap listener.
-		 * 
-		 * @param children
-		 *            the children
-		 */
-		public TapListener(List<PolygonListeners> children) {
-			this.children = children;
-		}
-
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see
-		 * org.mt4j.input.inputProcessors.IGestureEventListener#processGestureEvent
-		 * (org.mt4j.input.inputProcessors.MTGestureEvent)
-		 */
-		public boolean processGestureEvent(MTGestureEvent ge) {
-			if (ge instanceof TapEvent) {
-
-				TapEvent te = (TapEvent) ge;
-				if (te.getTapID() == TapEvent.BUTTON_CLICKED) {
-
-					for (PolygonListeners pl : children) {
-						pl.component.setPickable(true);
-						if (pl.component.getIntersectionGlobal(Tools3D
-								.getCameraPickRay(app, pl.component, te
-										.getCursor().getPosition().x, te
-										.getCursor().getPosition().y)) != null) {
-							pl.listener.processGestureEvent(ge);
-						} else {
-
-						}
-						pl.component.setPickable(false);
-					}
-				}
-			}
-			return false;
-		}
-
-	}
+public class MTHexagonMenu extends MTRectangle{
 
 	/** The app. */
-	MTApplication app;
+	private MTApplication app;
 
 	/** The menu contents. */
-	List<MTPolygon> menuContents = new ArrayList<MTPolygon>();
+	private List<MTPolygon> menuContents = new ArrayList<MTPolygon>();
 
 	/** The layout. */
-	List<ArrayList<MTPolygon>> layout = new ArrayList<ArrayList<MTPolygon>>();
+	private List<ArrayList<MTPolygon>> layout = new ArrayList<ArrayList<MTPolygon>>();
 
 	/** The size. */
-	float size;
+	private float size;
 
 	/** The current. */
-	int current = 0;
+	private int current = 0;
 
 	/** The max per line. */
-	int maxPerLine = 0;
+	private int maxPerLine = 0;
 
 	/** The bezel. */
-	float bezel = 4f;
+	private float bezel = 4f;
 	
 
 	// List of the Child Polygons and their IGestureEventListeners
 	/** The polygon listeners. */
-	List<PolygonListeners> polygonListeners = new ArrayList<PolygonListeners>();
+	private List<PolygonListeners> polygonListeners = new ArrayList<PolygonListeners>();
 
 
 	/** The menu items. */
-	List<MenuItem> menuItems = new ArrayList<MenuItem>();
+	private List<MenuItem> menuItems = new ArrayList<MenuItem>();
 
 
 	/**
@@ -669,6 +584,89 @@ public class MTHexagonMenu extends MTRectangle implements CSSStylableComponent {
 		this.setVertices(new Vertex[] { new Vertex(minx, miny),
 				new Vertex(maxx, miny), new Vertex(maxx, maxy),
 				new Vertex(minx, maxy), new Vertex(minx, miny) });
+	}
+
+	/**
+	 * The listener interface for receiving tap events. The class that is
+	 * interested in processing a tap event implements this interface, and the
+	 * object created with that class is registered with a component using the
+	 * component's <code>addTapListener<code> method. When
+	 * the tap event occurs, that object's appropriate
+	 * method is invoked.
+	 * 
+	 * @see TapEvent
+	 */
+	public class TapListener implements IGestureEventListener {
+		// Tap Listener to reach through TapListeners to children
+	
+		/** The children. */
+		List<PolygonListeners> children;
+	
+		/**
+		 * Instantiates a new tap listener.
+		 * 
+		 * @param children
+		 *            the children
+		 */
+		public TapListener(List<PolygonListeners> children) {
+			this.children = children;
+		}
+	
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see
+		 * org.mt4j.input.inputProcessors.IGestureEventListener#processGestureEvent
+		 * (org.mt4j.input.inputProcessors.MTGestureEvent)
+		 */
+		public boolean processGestureEvent(MTGestureEvent ge) {
+			if (ge instanceof TapEvent) {
+	
+				TapEvent te = (TapEvent) ge;
+				if (te.getTapID() == TapEvent.BUTTON_CLICKED) {
+	
+					for (PolygonListeners pl : children) {
+						pl.component.setPickable(true);
+						if (pl.component.getIntersectionGlobal(Tools3D
+								.getCameraPickRay(app, pl.component, te
+										.getCursor().getPosition().x, te
+										.getCursor().getPosition().y)) != null) {
+							pl.listener.processGestureEvent(ge);
+						} else {
+	
+						}
+						pl.component.setPickable(false);
+					}
+				}
+			}
+			return false;
+		}
+	
+	}
+
+	/**
+	 * The Class PolygonListeners.
+	 */
+	public class PolygonListeners {
+	
+		/** The component. */
+		public MTPolygon component;
+	
+		/** The listener. */
+		public IGestureEventListener listener;
+	
+		/**
+		 * Instantiates a new polygon listeners mapping.
+		 *
+		 * @param component the component
+		 * @param listener the listener
+		 */
+		public PolygonListeners(MTPolygon component,
+				IGestureEventListener listener) {
+			this.component = component;
+			this.listener = listener;
+		}
+	
 	}
 
 }

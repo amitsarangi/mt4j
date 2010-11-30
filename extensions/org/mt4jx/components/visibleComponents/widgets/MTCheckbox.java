@@ -16,13 +16,13 @@ import processing.core.PApplet;
 public class MTCheckbox extends MTForm implements BooleanForm{
 
 	/** The boolean value. */
-	boolean booleanValue = false;;	
+	private boolean booleanValue = false;;	
 	
 	/** The background color. */
-	MTColor backgroundColor;
+	private MTColor backgroundColor;
 	
 	/** The stroke color. */
-	MTColor strokeColor;
+	private MTColor strokeColor;
 	
 	/**
 	 * Instantiates a new MTCheckBox

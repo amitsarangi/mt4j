@@ -18,19 +18,19 @@ import processing.core.PApplet;
 public class MTOptionBox extends MTForm implements BooleanForm {
 	
 	/** The boolean value. */
-	boolean booleanValue = false;
+	private boolean booleanValue = false;
 	
 	/** The background color. */
-	MTColor backgroundColor;
+	private MTColor backgroundColor;
 	
 	/** The stroke color. */
-	MTColor strokeColor;
+	private MTColor strokeColor;
 	
 	/** The option box. */
-	MTEllipse optionBox;
+	private MTEllipse optionBox;
 	
 	/** The group. */
-	OptionGroup group;
+	private OptionGroup group;
 	
 	/**
 	 * Instantiates a new MTOptionBox

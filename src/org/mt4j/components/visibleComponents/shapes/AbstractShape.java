@@ -78,14 +78,14 @@ public abstract class AbstractShape extends AbstractVisibleComponent {
 		logger.addAppender(ca);
 	}
 	
-	/** Default gesture actions. */
-	private static final IGestureEventListener defaultScaleAction 	= new DefaultScaleAction();
-	
-	/** Default gesture actions*. */
-	private static final IGestureEventListener defaultRotateAction = new DefaultRotateAction();
-	
-	/** Default gesture actions*. */
-	private static final IGestureEventListener defaultDragAction	= new DefaultDragAction();
+//	/** Default gesture actions. */
+//	private static final IGestureEventListener defaultScaleAction 	= new DefaultScaleAction();
+//	
+//	/** Default gesture actions*. */
+//	private static final IGestureEventListener defaultRotateAction = new DefaultRotateAction();
+//	
+//	/** Default gesture actions*. */
+//	private static final IGestureEventListener defaultDragAction	= new DefaultDragAction();
 	
 	
 	//Texture Stuff
@@ -211,7 +211,6 @@ public abstract class AbstractShape extends AbstractVisibleComponent {
 	*/
 	
 	
-	//FIXME TEST
 	public static boolean createDefaultGestures = true;
 	
 	/**
@@ -224,17 +223,14 @@ public abstract class AbstractShape extends AbstractVisibleComponent {
 		if (createDefaultGestures){
 			this.registerInputProcessor(new RotateProcessor(this.getRenderer()));
 			this.setGestureAllowance(RotateProcessor.class, true);
-//			this.addGestureListener(RotateProcessor.class, defaultRotateAction);
 			this.addGestureListener(RotateProcessor.class, new DefaultRotateAction());
 			
 			this.registerInputProcessor(new ScaleProcessor(this.getRenderer()));
 			this.setGestureAllowance(ScaleProcessor.class, true);
-//			this.addGestureListener(ScaleProcessor.class, defaultScaleAction);
 			this.addGestureListener(ScaleProcessor.class, new DefaultScaleAction());
 			
 			this.registerInputProcessor(new DragProcessor(this.getRenderer()));
 			this.setGestureAllowance(DragProcessor.class, true);
-//			this.addGestureListener(DragProcessor.class, defaultDragAction);
 			this.addGestureListener(DragProcessor.class, new DefaultDragAction());
 		}
 //		*/
@@ -273,12 +269,6 @@ public abstract class AbstractShape extends AbstractVisibleComponent {
 	/** The bounds auto compute. */
 	private boolean boundsAutoCompute;
 	
-	//TODO!!
-//	@Override
-	//INterface geometryNode mit getCenter getBounds etc? f�r Abstractshape und ShapeContainer?
-//	public void addChild(AbstractShape b){  
-//		
-//	}
 	
 	/**
 	 * Sets the bounds behaviour. The behaviour influences 
@@ -336,57 +326,8 @@ public abstract class AbstractShape extends AbstractVisibleComponent {
 		return this.boundsBehaviour;
 	}
 	
-//	/**
-//	 * Sets the bounding shape.
-//	 * 
-//	 * @param boundingShape the new bounding shape
-//	 */
-//	public void setBoundingShape(IBoundingShape boundingShape){
-//		this.boundingShape = boundingShape;
-//		this.setBoundsGlobalDirty(true);
-//	}	
-//	
-//	/**
-//	 * Gets the bounding shape.
-//	 * 
-//	 * @return the bounding shape
-//	 */
-//	public IBoundingShape getBounds(){
-//		return this.boundingShape;
-//	}
-//	
-//	/**
-//	 * Checks if is bounding shape set.
-//	 * @return true, if is bounding shape set
-//	 */
-//	public boolean hasBounds(){
-//		return this.boundingShape != null;
-//	}
-//	
-//	/**
-//	 * Sets the bounding shape.
-//	 * 
-//	 * @param boundingShape the new bounding shape
-//	 */
-//	public void setBoundingShape(IBoundingShape boundingShape){
-//		super.setBoundingShape(boundingShape);
-//		this.setBoundsGlobalDirty(true);
-//	}	
-//	
-//	//TODO REMOVE?
-//	/**
-//	 * Sets the bounds global vertices dirty.
-//	 * 
-//	 * @param boundsWorldVerticesDirty the new bounds world vertices dirty
-//	 */
-//	private void setBoundsGlobalDirty(boolean boundsWorldVerticesDirty) {
-//		this.boundsGlobalVerticesDirty = boundsWorldVerticesDirty;
-//		IBoundingShape bounds = this.getBounds();
-//		if (bounds != null){
-//			bounds.setGlobalBoundsChanged();
-//		}
-//	}
-//	
+	
+	
 	@Override
 	public void setMatricesDirty(boolean baseMatrixDirty) {
 		/* 
@@ -394,8 +335,6 @@ public abstract class AbstractShape extends AbstractVisibleComponent {
 		 * the bounds vertices
 		 */
 		if (baseMatrixDirty){
-//			this.setBoundsGlobalDirty(true);
-			
 			this.globalVerticesDirty	= true;
 		}
 //		System.out.println("Set pickmat dirty on obj: " + this.getName());
@@ -489,10 +428,6 @@ public abstract class AbstractShape extends AbstractVisibleComponent {
 		}else{
 			this.setBounds(null);
 		}
-
-		//Sets the base matrix dirty, so that when inquiring info about
-		//vertices, they get updated first
-//		this.setLocalBaseMatrixDirty(true);
 		this.globalVerticesDirty = true;
 	}
 	
@@ -542,7 +477,6 @@ public abstract class AbstractShape extends AbstractVisibleComponent {
 		this.globalVerticesDirty = true;
 	}
 	
-	
 	/**
 	 * Returns the vertices of this shape without any transformations applied
 	 * <br> <b>Caution:</b> If you alter them in anyway, changes will only
@@ -586,7 +520,6 @@ public abstract class AbstractShape extends AbstractVisibleComponent {
 		}
 	}
 	
-
 	
 	/**
 	 * Gets the vertex count.
@@ -625,9 +558,8 @@ public abstract class AbstractShape extends AbstractVisibleComponent {
 	 */
 	public void setUseDirectGL(boolean drawPureGL){
 		if (MT4jSettings.getInstance().isOpenGlMode()){
-			if (
-					!this.isUseDirectGL()  &&
-				drawPureGL //FIXME WHY WAS THIS MISSING? is there a reason not to put this condition?
+			if (!this.isUseDirectGL()
+				&&	drawPureGL 
 				&& this.getGeometryInfo().getVertices() != null 
 				&& this.getGeometryInfo().getVertexCount() > 0){
 				//Generate buffers for opengl array use
@@ -637,9 +569,7 @@ public abstract class AbstractShape extends AbstractVisibleComponent {
 			this.drawDirectGL = drawPureGL; 
 			//Wrap the current texture into a gl texture object for openGl use
 			if 	(this.drawDirectGL
-				&& this.getTexture() != null 
-//				&& !(this.getTexture() instanceof MTTexture) //dont do so that tex coords get updated if previously set GLTexture was set with no directGL mode
-			){
+				&& this.getTexture() != null){
 				this.setTexture(this.getTexture());
 			}
 		}else{
@@ -757,23 +687,6 @@ public abstract class AbstractShape extends AbstractVisibleComponent {
 		this.setUseDisplayList(false);
 	}
 	
-	
-	//FIXME move to TOols3D!?
-	/**
-	 * Calculates the 2D XY convex hull for this shape.
-	 * 
-	 * @return the convex hull xy global
-	 */
-	public Vector3D[] getConvexHullXYGlobal(){
-		ArrayList<Vector3D> vers = new ArrayList<Vector3D>();
-		Vertex[] transVerts = this.getVerticesGlobal();
-        for (Vertex vertex : transVerts) {
-            vers.add(vertex);
-        }
-		ArrayList<Vector3D> edgeList = ConvexQuickHull2D.getConvexHull2D(vers);
-		return (edgeList.toArray(new Vector3D[edgeList.size()]));
-	}
-
 	
 	@Override
 	public void setFillColor(MTColor color) {
@@ -936,7 +849,7 @@ public abstract class AbstractShape extends AbstractVisibleComponent {
 		}
 	}
 	
-	//TODO save the set texture dimensions so we can always scale from one NPOT texture to another NPOT texture coords
+	//save the set texture dimensions so we can always scale from one NPOT texture to another NPOT texture coords
 	//(even if texture was set to null in between)
 	private Vector3D lastTextureDimension = new Vector3D(); 
 	
@@ -1041,58 +954,7 @@ public abstract class AbstractShape extends AbstractVisibleComponent {
 		centerpointGlobal.transform(this.getLocalMatrix()); //to parent relative space
 		
 		Vector3D diff = pos.getSubtracted(centerpointGlobal);
-		
 		this.translate(diff, TransformSpace.RELATIVE_TO_PARENT);
-		
-//		Vector3D globalCenter = this.getCenterPointGlobal();
-//		
-//		Vector3D localObjCenter = this.getCenterPointGlobal();
-//		localObjCenter.transform(this.getAbsoluteWorldToLocalMatrix()); //to localobj space
-////		localObjCenter.transform(this.getLocalBasisMatrix()); //to parent relative space
-//		
-//		
-////		pos = MTBaseComponent.getWorldVecToParentRelativeSpace(otherComp, pos);
-////		pos.transform(otherComp.getLocalBasisMatrix());
-////		pos = MTBaseComponent.getWorldVecToLocalRelativeSpace(otherComp, pos);
-//		
-////		pos.transform(otherComp.getAbsoluteLocalToWorldMatrix());
-//		
-//		Matrix m = MTBaseComponent.getTransformToDestinationLocalSpace(this, otherComp);
-////		m.multLocal(otherComp.getLocalBasisMatrix());
-//		Matrix m2 = MTBaseComponent.getTransformToDestinationParentSpace(this, otherComp);
-////		pos.transform(m);
-//		
-//		/*
-//		
-////		localObjCenter.transform(m2);
-////		System.out.println("Localobjcenter transformed to other: " + localObjCenter);
-//		
-//		Vector3D diff = pos.minus(localObjCenter);
-//		diff.transformDirectionVector(m2);
-//		this.translateGlobal(diff);
-//		*/
-//		
-//		
-////		pos.transform(otherComp.getAbsoluteLocalToWorldMatrix());
-////		localObjCenter.transform(this.getAbsoluteLocalToWorldMatrix());
-////		localObjCenter.transform(otherComp.getAbsoluteWorldToLocalMatrix());
-////		Vector3D diff = pos.minus(localObjCenter);
-//		
-//		Vector3D centerPoint = this.getBounds().getCenterPointLocal();
-////		centerPoint.transform(this.getLocalBasisMatrix());
-//		
-//		//Muss punkt nach svgComp space transformieren, da diese comp gescaled wird
-//		centerPoint.transform(m);
-//		pos.transform(otherComp.getAbsoluteLocalToWorldMatrix());
-//		Vector3D diff = pos.minus(centerPoint);
-//		
-//		System.out.println("Point from where to start: " + localObjCenter);
-//		System.out.println("Destination pos: " + pos);
-//		System.out.println("Translation vector: " + diff);
-////		Vector3D diff = pos.minus(localObjCenter);
-////		diff.transformDirectionVector(m);
-//		
-//		this.translate(diff, TransformSpace.RELATIVE_TO_PARENT);
 	}
 	
 	
@@ -1221,33 +1083,6 @@ public abstract class AbstractShape extends AbstractVisibleComponent {
 	 */
 	abstract public Vector3D getCenterPointLocal();
 
-//	
-//	/**
-//	 * Get the width of the shape in the XY-Plane. Uses the x and y coordinate
-//	 * values for calculation. Usually the calculation is delegated to the shapes
-//	 * bounding shape.
-//	 * 
-//	 * @param transformSpace the space the width is calculated in, can be global space, parent relative- or object space
-//	 * 
-//	 * @return the width xy
-//	 * 
-//	 * the width
-//	 */
-//	abstract public float getWidthXY(TransformSpace transformSpace);
-//	
-//	/**
-//	 * Get the height of the shape in the XY-Plane. Uses the x and y coordinate
-//	 * values for calculation. Usually the calculation is delegated to the shapes
-//	 * bounding shape.
-//	 * 
-//	 * @param transformSpace the space the width is calculated in, can be world space, parent relative- or object space
-//	 * 
-//	 * @return the height xy
-//	 * 
-//	 * the height
-//	 */
-//	abstract public float getHeightXY(TransformSpace transformSpace);
-//	
 	
 	/**
 	 * Get the height of the shape in the XY-Plane. Uses the x and y coordinate
@@ -1663,7 +1498,7 @@ public abstract class AbstractShape extends AbstractVisibleComponent {
 		 * @see util.animation.IAnimationListener#processAnimationEvent(util.animation.AnimationEvent)
 		 */
 		public void processAnimationEvent(AnimationEvent ae) {
-			Object target = ae.getTargetObject();
+			Object target = ae.getTarget();
 			if (target != null && target.equals(this.shape)){
 				AbstractShape shape = (AbstractShape)target;
 				float amount = ae.getAnimation().getDelta();

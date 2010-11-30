@@ -49,25 +49,25 @@ public class MTHUD extends MTOverlayContainer implements CSSStylableComponent {
 	public final static short BOTTOM = 4;
 
 	/** The app. */
-	MTApplication app;
+	private MTApplication app;
 
 	/** The menu contents. */
-	List<MTRectangle> menuContents = new ArrayList<MTRectangle>();
+	private List<MTRectangle> menuContents = new ArrayList<MTRectangle>();
 
 	/** The menu items. */
-	List<MenuItem> menuItems = new ArrayList<MenuItem>();
+	private List<MenuItem> menuItems = new ArrayList<MenuItem>();
 
 	/** The size. */
-	float size;
+	private float size;
 
 	/** The offset. */
-	float offset;
+	private float offset;
 
 	/** The position. */
-	short position;
+	private short position;
 
 	/** The css helper. */
-	CSSHelper cssHelper;
+	private CSSHelper cssHelper;
 
 	/** The mt app. */
 	private MTApplication mtApp;
@@ -119,8 +119,7 @@ public class MTHUD extends MTOverlayContainer implements CSSStylableComponent {
 	 *            the position (MTHUD.LEFT, MTHUD.RIGHT, MTHUD.TOP,
 	 *            MTHUD.BOTTOM)
 	 */
-	public MTHUD(MTApplication applet, List<MenuItem> menuItems, float size,
-			float offset, short position) {
+	public MTHUD(MTApplication applet, List<MenuItem> menuItems, float size, float offset, short position) {
 		super(applet);
 		this.app = applet;
 		this.menuItems = menuItems;
@@ -148,8 +147,7 @@ public class MTHUD extends MTOverlayContainer implements CSSStylableComponent {
 	 *            the position (MTHUD.LEFT, MTHUD.RIGHT, MTHUD.TOP,
 	 *            MTHUD.BOTTOM)
 	 */
-	public MTHUD(MTApplication applet, List<MenuItem> menuItems, float size,
-			short position) {
+	public MTHUD(MTApplication applet, List<MenuItem> menuItems, float size, short position) {
 		this(applet, menuItems, size, (float) Math.sqrt(size), position);
 	}
 
@@ -160,9 +158,8 @@ public class MTHUD extends MTOverlayContainer implements CSSStylableComponent {
 	 */
 	public void applyStyleSheet() {
 		if (cssStyled && mtApp != null && cssHelper != null) {
-			cssHelper.applyStyleSheet();
+			cssHelper.applyStyleSheet(this);
 		}
-
 	}
 
 	/**
@@ -589,7 +586,7 @@ public class MTHUD extends MTOverlayContainer implements CSSStylableComponent {
 				r.setAnchor(PositionAnchor.UPPER_LEFT);
 
 				if (yoffset + r.getHeightXY(TransformSpace.LOCAL) > MT4jSettings
-						.getInstance().getScreenHeight()) {
+						.getInstance().getWindowHeight()) {
 					xoffset += r.getWidthXY(TransformSpace.LOCAL) + offset;
 					yoffset = offset / 2f;
 				}
@@ -600,13 +597,13 @@ public class MTHUD extends MTOverlayContainer implements CSSStylableComponent {
 			}
 			break;
 		case RIGHT:
-			xoffset = MT4jSettings.getInstance().getScreenWidth() - size
+			xoffset = MT4jSettings.getInstance().getWindowWidth() - size
 					- xoffset;
 			for (MTRectangle r : menuContents) {
 				r.setAnchor(PositionAnchor.UPPER_LEFT);
 
 				if (yoffset + r.getHeightXY(TransformSpace.LOCAL) > MT4jSettings
-						.getInstance().getScreenHeight()) {
+						.getInstance().getWindowHeight()) {
 					xoffset -= r.getWidthXY(TransformSpace.LOCAL) + offset;
 					yoffset = offset / 2f;
 				}
@@ -621,7 +618,7 @@ public class MTHUD extends MTOverlayContainer implements CSSStylableComponent {
 				r.setAnchor(PositionAnchor.UPPER_LEFT);
 
 				if (xoffset + r.getWidthXY(TransformSpace.LOCAL) > MT4jSettings
-						.getInstance().getScreenWidth()) {
+						.getInstance().getWindowWidth()) {
 					xoffset = offset / 2f;
 					yoffset += r.getHeightXY(TransformSpace.LOCAL) + offset;
 				}
@@ -632,13 +629,13 @@ public class MTHUD extends MTOverlayContainer implements CSSStylableComponent {
 			}
 			break;
 		case BOTTOM:
-			yoffset = MT4jSettings.getInstance().getScreenHeight() - size
+			yoffset = MT4jSettings.getInstance().getWindowHeight() - size
 					- yoffset;
 			for (MTRectangle r : menuContents) {
 				r.setAnchor(PositionAnchor.UPPER_LEFT);
 
 				if (xoffset + r.getWidthXY(TransformSpace.LOCAL) > MT4jSettings
-						.getInstance().getScreenWidth()) {
+						.getInstance().getWindowWidth()) {
 					xoffset = offset / 2f;
 					yoffset -= r.getHeightXY(TransformSpace.LOCAL) + offset;
 				}

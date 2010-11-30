@@ -21,6 +21,7 @@ import org.mt4j.MTApplication;
 import org.mt4j.components.TransformSpace;
 import org.mt4j.components.bounds.BoundsZPlaneRectangle;
 import org.mt4j.components.bounds.IBoundingShape;
+import org.mt4j.components.css.style.CSSStyle;
 import org.mt4j.util.MT4jSettings;
 import org.mt4j.util.math.Vector3D;
 import org.mt4j.util.math.Vertex;
@@ -444,5 +445,49 @@ public class MTRectangle extends MTPolygon {
 	//TODO also overRide setSizeGlobal()!!
 	//TODO setSize setzt obj space size nicht relative bis jetzt! einfach width vector transformen und length() holen!
 	
+	
+	@Override
+	protected void applyStyleSheetCustom(CSSStyle virtualStyleSheet) {
+		super.applyStyleSheetCustom(virtualStyleSheet);
+		
+		if (virtualStyleSheet.isWidthPercentage()
+				&& virtualStyleSheet.isHeightPercentage()) {
+			if (this.getParent() != null) {
+				if (virtualStyleSheet.getWidth() > 0)
+					this.setWidthLocal(virtualStyleSheet.getWidth() / 100f
+							* this.getParent().getBounds()
+									.getWidthXY(TransformSpace.RELATIVE_TO_PARENT));
+
+				if (virtualStyleSheet.getHeight() > 0)
+					this.setHeightLocal(virtualStyleSheet.getHeight()/ 100f
+							* this.getParent().getBounds()
+									.getHeightXY(TransformSpace.RELATIVE_TO_PARENT));
+
+			}
+		} else if (virtualStyleSheet.isWidthPercentage()) {
+			if (virtualStyleSheet.getWidth() > 0)
+				this.setWidthLocal(virtualStyleSheet.getWidth() / 100f
+						* this.getParent().getBounds()
+								.getWidthXY(TransformSpace.RELATIVE_TO_PARENT));
+
+			if (virtualStyleSheet.getHeight() > 0)
+				this.setHeightLocal(virtualStyleSheet.getHeight());
+		} else if (virtualStyleSheet.isHeightPercentage()) {
+			if (virtualStyleSheet.getWidth() > 0)
+				this.setWidthLocal(virtualStyleSheet.getWidth());
+
+			if (virtualStyleSheet.getHeight() > 0)
+				this.setHeightLocal(virtualStyleSheet.getHeight() / 100f
+						* this.getParent().getBounds()
+								.getHeightXY(TransformSpace.RELATIVE_TO_PARENT));
+
+		} else {
+			if (virtualStyleSheet.getWidth() > 0)
+				this.setWidthLocal(virtualStyleSheet.getWidth());
+
+			if (virtualStyleSheet.getHeight() > 0)
+				this.setHeightLocal(virtualStyleSheet.getHeight());
+		}
+	}
 
 }

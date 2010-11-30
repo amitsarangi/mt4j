@@ -93,16 +93,10 @@ public class CssExample  extends AbstractScene{
 	}
 
 	@Override
-	public void init() {
-		// TODO Auto-generated method stub
-		
-	}
+	public void init() {	}
 
 	@Override
-	public void shutDown() {
-		// TODO Auto-generated method stub
-		
-	}
+	public void shutDown() {	}
 
 	public class gestureListener implements IGestureEventListener {
 		String string;

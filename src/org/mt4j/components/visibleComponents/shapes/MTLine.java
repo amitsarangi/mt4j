@@ -25,6 +25,7 @@ import org.mt4j.MTApplication;
 import org.mt4j.components.TransformSpace;
 import org.mt4j.components.bounds.BoundsArbitraryPlanarPolygon;
 import org.mt4j.components.bounds.IBoundingShape;
+import org.mt4j.components.css.style.CSSStyle;
 import org.mt4j.components.css.util.CSSHelper;
 import org.mt4j.components.css.util.CSSStylableComponent;
 import org.mt4j.components.visibleComponents.GeometryInfo;
@@ -46,7 +47,7 @@ import processing.opengl.PGraphicsOpenGL;
  * 
  * @author Christopher Ruff
  */
-public class MTLine extends AbstractShape implements CSSStylableComponent{
+public class MTLine extends MTCSSStylableShape{
 	
 	/** The p context. */
 	private PApplet pContext;
@@ -109,6 +110,8 @@ public class MTLine extends AbstractShape implements CSSStylableComponent{
 		this.setBoundsBehaviour(BOUNDS_ONLY_CHECK);
 		
 		this.setName("unnamed MTLine");
+		
+		/*
 		if (pApplet instanceof MTApplication) {
 			this.mtApp = (MTApplication)pApplet;
 			this.cssHelper = new CSSHelper(this, mtApp);
@@ -116,6 +119,7 @@ public class MTLine extends AbstractShape implements CSSStylableComponent{
 				this.enableCSS();
 			}
 		}
+		*/
 	}
 
 	//TODO getNormal() will crash ..
@@ -630,7 +634,7 @@ public class MTLine extends AbstractShape implements CSSStylableComponent{
 //		return width;
 //	}
 
-
+	/*
 	private MTApplication mtApp;
 	private boolean cssStyled = false;
 	private CSSHelper cssHelper;
@@ -672,6 +676,12 @@ public class MTLine extends AbstractShape implements CSSStylableComponent{
 
 	public CSSHelper getCssHelper() {
 		return this.cssHelper;
+	}
+	*/
+	
+	@Override
+	protected void applyStyleSheetCustom(CSSStyle virtualStyleSheet) {
+		
 	}
 	
 }

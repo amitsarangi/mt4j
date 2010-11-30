@@ -21,6 +21,7 @@ import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.mt4j.components.visibleComponents.shapes.AbstractShape;
 import org.mt4j.components.visibleComponents.shapes.MTPolygon;
 import org.mt4j.components.visibleComponents.shapes.mesh.MTTriangleMesh;
 import processing.core.PApplet;
@@ -1773,6 +1774,20 @@ public class ToolsGeometry {
 
 
 
+	/**
+	 * Calculates the 2D XY convex hull for this shape.
+	 * 
+	 * @return the convex hull xy global
+	 */
+	public Vector3D[] getConvexHullXYGlobal(AbstractShape shape){
+		ArrayList<Vector3D> vers = new ArrayList<Vector3D>();
+		Vertex[] transVerts = shape.getVerticesGlobal();
+        for (Vertex vertex : transVerts) {
+            vers.add(vertex);
+        }
+		ArrayList<Vector3D> edgeList = ConvexQuickHull2D.getConvexHull2D(vers);
+		return (edgeList.toArray(new Vector3D[edgeList.size()]));
+	}
 
 }
 

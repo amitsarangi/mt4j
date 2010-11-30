@@ -123,25 +123,35 @@ public abstract class AbstractScene implements Iscene {
 	}
 
 	
+	public void init(){
+		onEnter();
+	}
+	
+	
 	/**
 	 * Is invoked on a scene just before it is set to be the currently active scene.
 	 */
-	abstract public void init() ;
+//	abstract public void onEnter() ; //FIXME USE!
 	
-	/*
-	public void update(long timeDelta) {
-		this.getMainCanvas().update(timeDelta);
+	public void onEnter(){
+		
 	}
-	*/
 	
-	/*//Replaces by drawAndUpdate
-	public void draw() {
-//		this.getMainCanvas().draw();
-		this.getMainCanvas().drawAndUpdateCanvas(0);
+	
+	public void shutdown(){
+		onLeave();
 	}
-	*/
 	
+	/**
+	 * Gets called on the current scene just before the current scene gets changed to another scene.
+	 */
+//	abstract public void onLeave();
 	
+	public void onLeave(){
+		
+	}
+
+
 	/* (non-Javadoc)
 	 * @see org.mt4j.sceneManagement.Iscene#drawAndUpdate(processing.core.PGraphics, long)
 	 */
@@ -183,12 +193,6 @@ public abstract class AbstractScene implements Iscene {
 			graphics.background(this.clearColor.getR(), this.clearColor.getG(), this.clearColor.getB(), this.clearColor.getAlpha());				
 		}
 	}
-	
-	/**
-	 * Gets called on the current scene just before the current scene gets changed to another scene.
-	 */
-	abstract public void shutDown();
-	
 	
 	/**
 	 * Sets the clear color to use when the screen is cleared each frame

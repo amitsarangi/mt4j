@@ -17,8 +17,10 @@
  ***********************************************************************/
 package org.mt4j.components.visibleComponents.shapes;
 
+import org.mt4j.components.TransformSpace;
 import org.mt4j.components.bounds.BoundsZPlaneRectangle;
 import org.mt4j.components.bounds.IBoundingShape;
+import org.mt4j.components.css.style.CSSStyle;
 import org.mt4j.util.MTColor;
 import org.mt4j.util.math.Vector3D;
 import org.mt4j.util.math.Vertex;
@@ -149,10 +151,6 @@ public class MTEllipse extends MTPolygon {
 		
 		for (int i = 0; i < resolution; i++){
 			t = 0 + (i * inc);
-//			float x = (float) (centerPoint.x + (radiusX * Math.cos(t) * cosTheta) //TODO remove theta stuff? oder enablen als parameter?
-//						- (radiusY * Math.sin(t) * sinTheta) );
-//			float y = (float) (centerPoint.y + (radiusX * Math.cos(t) * sinTheta)
-//						+ (radiusY * Math.sin(t) * cosTheta) );
 			float x = (float) (centerPoint.x - (radiusX * Math.cos(t) * cosTheta)
 					+ (radiusY * Math.sin(t) * sinTheta) );
 			float y = (float) (centerPoint.y - (radiusX * Math.cos(t) * sinTheta)
@@ -176,71 +174,40 @@ public class MTEllipse extends MTPolygon {
 		
 		return verts;
 	}
-	
-//	public List<Vector3D> getVerticesAbsolute(int resolution){
-//		List<Vector3D> returnPts = new ArrayList<Vector3D>();
-//
-//		float t;
-//
-//		float inc = (float)Math.toRadians(rangeAng) / (float)resolution;
-//		for (int i = 0; i < resolution; i++)
-//		{
-//			t = minAng + (i * inc);
-//
-//			float x = (float) (centerPt.x + (a * Math.cos(t) * Math.cos(theta))
-//						- (b * Math.sin(t) * Math.sin(theta)) );
-//			float y = (float) (centerPt.y + (a * Math.cos(t) * Math.sin(theta))
-//						+ (b * Math.sin(t) * Math.cos(theta)) );
-//		}
-//
-//		return returnPts;
-//	}
-	
-	//
-	//
-	//
-//		@Override
-//		public Vector3D getGeometryIntersection(Ray ray) {
-//			// TODO Auto-generated method stub
-//			return null;
-//		}
-	//
-	//
-	//
-//		@Override
-//		public boolean isGeometryContainsPoint(Vector3D testPoint) {
-//			// TODO Auto-generated method stub
-//			return false;
-//		}
-	
-	/* (non-Javadoc)
- * @see com.jMT.components.visibleComponents.shapes.MTPolygon#getCenterPointObjectSpace()
- */
-@Override
+
+
+	@Override
 	public Vector3D getCenterPointLocal() {
 		return new Vector3D(this.centerPoint);
 	}
-	
 
-	//FIXME doesent work, seems to only get points in the shape of a outer rectangle
-	/*
-	public boolean isInsideEllipse(float ex,float ey,float w,float h,float px,float py) {
-	    //Determine and normalize quadrant.
-		float dx = Math.abs(ex-px);
-		float dy = Math.abs(ey-py);
-		double l;
-	 
-	    //Shortcut
-	    if( dx > w/2 || dy > h/2 ) {
-	      return false;
-	    }
-	 
-	    //Calculate the semi-latus rectum of the ellipse at the given point
-	    l = Math.sqrt( (double)((1-((dx*dx)/(w*w))) * (h*h)) ); 
-	 
-	    return dy < l;
-	}  
-	*/
+
+	@Override
+	protected void applyStyleSheetCustom(CSSStyle virtualStyleSheet) {
+		super.applyStyleSheetCustom(virtualStyleSheet);
+		
+		if (virtualStyleSheet.isModifiedHeight()) {
+			if (virtualStyleSheet.isHeightPercentage()) {
+				if (getParent() != null)
+					setHeightXYRelativeToParent(virtualStyleSheet.getHeight() / 100f
+							* getParent().getBounds()
+									.getHeightXY(TransformSpace.RELATIVE_TO_PARENT));
+			} else {
+				setHeightXYRelativeToParent(virtualStyleSheet.getHeight());
+			}
+		}
+		
+		if (virtualStyleSheet.isModifiedWidth()) {
+			if (virtualStyleSheet.isWidthPercentage()) {
+				if (getParent() != null)
+					setWidthXYRelativeToParent(virtualStyleSheet.getWidth() / 100f
+							* getParent().getBounds()
+									.getWidthXY(TransformSpace.RELATIVE_TO_PARENT));
+			} else {
+				setWidthXYRelativeToParent(virtualStyleSheet.getWidth());
+			}
+		}
+	}
 
 
 	

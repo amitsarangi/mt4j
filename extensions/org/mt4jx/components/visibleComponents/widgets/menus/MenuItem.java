@@ -5,10 +5,10 @@ import org.mt4j.input.inputProcessors.IGestureEventListener;
 import processing.core.PImage;
 
 public class MenuItem {
-	String menuText = "";
-	short type = 0;
-	PImage menuImage = null;
-	IGestureEventListener gestureListener = null;
+	private String menuText = "";
+	private short type = 0;
+	private PImage menuImage = null;
+	private IGestureEventListener gestureListener = null;
 	
 	
 	public static short TEXT = 1;

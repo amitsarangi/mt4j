@@ -16,6 +16,7 @@ import org.mt4j.components.css.style.CSSStyleHierarchy;
 import org.mt4j.components.css.style.CSSStyle.BackgroundRepeat;
 import org.mt4j.components.css.util.CSSKeywords.Position;
 import org.mt4j.components.visibleComponents.shapes.AbstractShape;
+import org.mt4j.components.visibleComponents.shapes.MTCSSStylableShape;
 import org.mt4j.components.visibleComponents.shapes.MTEllipse;
 import org.mt4j.components.visibleComponents.shapes.MTLine;
 import org.mt4j.components.visibleComponents.shapes.MTPolygon;
@@ -33,7 +34,7 @@ import org.mt4j.util.opengl.GLTexture.EXPANSION_FILTER;
 import org.mt4j.util.opengl.GLTexture.SHRINKAGE_FILTER;
 import org.mt4j.util.opengl.GLTexture.TEXTURE_TARGET;
 import org.mt4j.util.opengl.GLTexture.WRAP_MODE;
-import org.mt4jx.components.visibleComponents.widgets.MTSuggestionTextArea;
+//import org.mt4jx.components.visibleComponents.widgets.MTSuggestionTextArea;
 
 import processing.core.PImage;
 
@@ -43,19 +44,19 @@ import processing.core.PImage;
 public class CSSHelper {
 
 	/** The private style sheets (unique to an object) */
-	List<CSSStyle> privateStyleSheets = new ArrayList<CSSStyle>();
+	private List<CSSStyle> privateStyleSheets = new ArrayList<CSSStyle>();
 
 	/** The currently relevant global style sheet */
-	List<CSSStyleHierarchy> sheets = new ArrayList<CSSStyleHierarchy>();
+	private List<CSSStyleHierarchy> sheets = new ArrayList<CSSStyleHierarchy>();
 	
 	/** The virtual style sheet (generated from the global and private style sheets) */
-	public CSSStyle virtualStyleSheet = null;
+	private CSSStyle virtualStyleSheet = null;
 	
 	/** The CSS style manager. */
-	CSSStyleManager cssStyleManager;
+	private CSSStyleManager cssStyleManager;
 	
 	/** The MTApplication. */
-	MTApplication app;
+	private MTApplication app;
 	
 	/** The MTComponent. */
 	private MTComponent c;
@@ -97,32 +98,43 @@ public class CSSHelper {
 	public CSSHelper(MTComponent c, MTApplication a, List<CSSStyle> s) {
 		this(c,a);
 		this.getPrivateStyleSheets().addAll(s);
-		
-
 	}
 
 	/**
 	 * Adds the listeners to the MTComponent, so applyStyleSheet() is called every time the component is added as child
 	 */
 	private void addListeners() {
+		if (c instanceof MTCSSStylableShape) {
+			final MTCSSStylableShape cssShape = (MTCSSStylableShape) c;
+			cssShape.addStateChangeListener(StateChange.ADDED_TO_PARENT,
+					new StateChangeListener() {
+						public void stateChanged(StateChangeEvent evt) {
+							cssShape.applyStyleSheet();
+						}
+					});
+			
+		}
+		/*
 		c.addStateChangeListener(StateChange.ADDED_TO_PARENT,
 				new StateChangeListener() {
 					public void stateChanged(StateChangeEvent evt) {
 						applyStyleSheet();
 					}
 				});
-
+		*/
 	}
 
 	/**
 	 * Apply the style sheet. Disambiguate between different subclasses of MTComponent
 	 */
-	public void applyStyleSheet() {
+	public void applyStyleSheet(MTComponent c) {
 		
 		if (c instanceof CSSStylableComponent) {
 			CSSStylableComponent sc = (CSSStylableComponent)c;
 			if (!sc.isCssForceDisabled() && ((sc.isCSSStyled() && !app.getCssStyleManager().isGloballyDisabled()) || app.getCssStyleManager().isGloballyEnabled())) {
 				evaluateStyleSheets();
+				
+				/*
 				if ((c instanceof MTPolygon) || (c instanceof MTLine)) {
 					applyStyleSheetBasic((AbstractShape) c);
 				}
@@ -144,6 +156,7 @@ public class CSSHelper {
 					MTSuggestionTextArea sta = (MTSuggestionTextArea)c;
 					sta.init();
 				}
+				*/
 				
 				for (MTComponent d : c.getChildren()) {
 					if (d instanceof CSSStylableComponent) {
@@ -155,134 +168,133 @@ public class CSSHelper {
 		}
 	}
 
-	/**
-	 * Apply basic style sheet properties, applicable to all objects.
-	 *
-	 * @param p the AbstractShape (MTPolygon or MTLine)
-	 */
-	private void applyStyleSheetBasic(AbstractShape p) {
-
-		if (virtualStyleSheet.isModifiedBackgroundColor())
-			p.setFillColor(virtualStyleSheet.getBackgroundColor());
-		if (virtualStyleSheet.isModifiedBorderColor())
-			p.setStrokeColor(virtualStyleSheet.getBorderColor());
-		if (virtualStyleSheet.isModifiedBorderWidth())
-			p.setStrokeWeight(virtualStyleSheet.getBorderWidth());
-		if (virtualStyleSheet.isModifiedVisibility())
-			p.setVisible(virtualStyleSheet.isVisibility());
-		
-		if (virtualStyleSheet.isModifiedBorderStyle()) {
-			if (virtualStyleSheet.getBorderStylePattern() >= 0) {
-				p.setNoStroke(false);
-				p.setLineStipple(virtualStyleSheet.getBorderStylePattern());
-			} else {
-				p.setNoStroke(true);
-			}
-		}
-	}
+//	/**
+//	 * Apply basic style sheet properties, applicable to all objects.
+//	 *
+//	 * @param p the AbstractShape (MTPolygon or MTLine)
+//	 */
+//	public void applyStyleSheetBasic(MTCSSStylableShape p) {
+//		if (virtualStyleSheet.isModifiedBackgroundColor())
+//			p.setFillColor(virtualStyleSheet.getBackgroundColor());
+//		if (virtualStyleSheet.isModifiedBorderColor())
+//			p.setStrokeColor(virtualStyleSheet.getBorderColor());
+//		if (virtualStyleSheet.isModifiedBorderWidth())
+//			p.setStrokeWeight(virtualStyleSheet.getBorderWidth());
+//		if (virtualStyleSheet.isModifiedVisibility())
+//			p.setVisible(virtualStyleSheet.isVisibility());
+//		
+//		if (virtualStyleSheet.isModifiedBorderStyle()) {
+//			if (virtualStyleSheet.getBorderStylePattern() >= 0) {
+//				p.setNoStroke(false);
+//				p.setLineStipple(virtualStyleSheet.getBorderStylePattern());
+//			} else {
+//				p.setNoStroke(true);
+//			}
+//		}
+//	}
 	
-	/**
-	 * Apply style sheet specific to a MTPolygon (and subclasses)
-	 *
-	 * @param p the MTPolygon
-	 */
-	private void applyStyleSheetPolygon(MTPolygon p) {
-		if (virtualStyleSheet.isModifiedBackgroundImage()) {
-			setBackground(p);
-		}
-	}
-
-	/**
-	 * Apply style sheet to a MTEllipse.
-	 *
-	 * @param e the MTEllipse
-	 */
-	private void applyStyleSheetEllipse(MTEllipse e) {
-		if (virtualStyleSheet.isModifiedHeight()) {
-			if (virtualStyleSheet.isHeightPercentage()) {
-				if (e.getParent() != null)
-					e.setHeightXYRelativeToParent(virtualStyleSheet.getHeight() / 100f
-							* e.getParent().getBounds()
-									.getHeightXY(TransformSpace.RELATIVE_TO_PARENT));
-			} else {
-				e.setHeightXYRelativeToParent(virtualStyleSheet.getHeight());
-			}
-		}
-		
-		if (virtualStyleSheet.isModifiedWidth()) {
-			if (virtualStyleSheet.isWidthPercentage()) {
-				if (e.getParent() != null)
-					e.setWidthXYRelativeToParent(virtualStyleSheet.getWidth() / 100f
-							* e.getParent().getBounds()
-									.getWidthXY(TransformSpace.RELATIVE_TO_PARENT));
-			} else {
-				e.setWidthXYRelativeToParent(virtualStyleSheet.getWidth());
-			}
-		}
-	}
-
-	/**
-	 * Apply style sheet to a MTRectangle.
-	 *
-	 * @param r the MTRectangle
-	 */
-	private void applyStyleSheetRectangle(MTRectangle r) {
-		
-		if (virtualStyleSheet.isWidthPercentage()
-				&& virtualStyleSheet.isHeightPercentage()) {
-			if (r.getParent() != null) {
-				if (virtualStyleSheet.getWidth() > 0)
-					r.setWidthLocal(virtualStyleSheet.getWidth() / 100f
-							* r.getParent().getBounds()
-									.getWidthXY(TransformSpace.RELATIVE_TO_PARENT));
-
-				if (virtualStyleSheet.getHeight() > 0)
-					r.setHeightLocal(virtualStyleSheet.getHeight()/ 100f
-							* r.getParent().getBounds()
-									.getHeightXY(TransformSpace.RELATIVE_TO_PARENT));
-
-			}
-		} else if (virtualStyleSheet.isWidthPercentage()) {
-			if (virtualStyleSheet.getWidth() > 0)
-				r.setWidthLocal(virtualStyleSheet.getWidth() / 100f
-						* r.getParent().getBounds()
-								.getWidthXY(TransformSpace.RELATIVE_TO_PARENT));
-
-			if (virtualStyleSheet.getHeight() > 0)
-				r.setHeightLocal(virtualStyleSheet.getHeight());
-		} else if (virtualStyleSheet.isHeightPercentage()) {
-			if (virtualStyleSheet.getWidth() > 0)
-				r.setWidthLocal(virtualStyleSheet.getWidth());
-
-			if (virtualStyleSheet.getHeight() > 0)
-				r.setHeightLocal(virtualStyleSheet.getHeight() / 100f
-						* r.getParent().getBounds()
-								.getHeightXY(TransformSpace.RELATIVE_TO_PARENT));
-
-		} else {
-			if (virtualStyleSheet.getWidth() > 0)
-				r.setWidthLocal(virtualStyleSheet.getWidth());
-
-			if (virtualStyleSheet.getHeight() > 0)
-				r.setHeightLocal(virtualStyleSheet.getHeight());
-		}
-	}
-
-	/**
-	 * Apply style sheet to a MTTextArea
-	 *
-	 * @param ta the MTTextArea
-	 */
-	private void applyStyleSheetTextArea(MTTextArea ta) {
-		if (!virtualStyleSheet.getFont().equals(
-				cssStyleManager.getDefaultFont(app))
-				&& !ta.isIgnoreCSSFont()) {
-			ta.setFont(virtualStyleSheet.getFont());
-		}
-		if (virtualStyleSheet.isModifiedPaddingWidth()) {
-			ta.setPadding(virtualStyleSheet.getPaddingWidth());
-		}
-	}
+//	/**
+//	 * Apply style sheet specific to a MTPolygon (and subclasses)
+//	 *
+//	 * @param p the MTPolygon
+//	 */
+//	private void applyStyleSheetPolygon(MTPolygon p) {
+//		if (virtualStyleSheet.isModifiedBackgroundImage()) {
+//			setBackground(p);
+//		}
+//	}
+//
+//	/**
+//	 * Apply style sheet to a MTEllipse.
+//	 *
+//	 * @param e the MTEllipse
+//	 */
+//	private void applyStyleSheetEllipse(MTEllipse e) {
+//		if (virtualStyleSheet.isModifiedHeight()) {
+//			if (virtualStyleSheet.isHeightPercentage()) {
+//				if (e.getParent() != null)
+//					e.setHeightXYRelativeToParent(virtualStyleSheet.getHeight() / 100f
+//							* e.getParent().getBounds()
+//									.getHeightXY(TransformSpace.RELATIVE_TO_PARENT));
+//			} else {
+//				e.setHeightXYRelativeToParent(virtualStyleSheet.getHeight());
+//			}
+//		}
+//		
+//		if (virtualStyleSheet.isModifiedWidth()) {
+//			if (virtualStyleSheet.isWidthPercentage()) {
+//				if (e.getParent() != null)
+//					e.setWidthXYRelativeToParent(virtualStyleSheet.getWidth() / 100f
+//							* e.getParent().getBounds()
+//									.getWidthXY(TransformSpace.RELATIVE_TO_PARENT));
+//			} else {
+//				e.setWidthXYRelativeToParent(virtualStyleSheet.getWidth());
+//			}
+//		}
+//	}
+//
+//	/**
+//	 * Apply style sheet to a MTRectangle.
+//	 *
+//	 * @param r the MTRectangle
+//	 */
+//	private void applyStyleSheetRectangle(MTRectangle r) {
+//		
+//		if (virtualStyleSheet.isWidthPercentage()
+//				&& virtualStyleSheet.isHeightPercentage()) {
+//			if (r.getParent() != null) {
+//				if (virtualStyleSheet.getWidth() > 0)
+//					r.setWidthLocal(virtualStyleSheet.getWidth() / 100f
+//							* r.getParent().getBounds()
+//									.getWidthXY(TransformSpace.RELATIVE_TO_PARENT));
+//
+//				if (virtualStyleSheet.getHeight() > 0)
+//					r.setHeightLocal(virtualStyleSheet.getHeight()/ 100f
+//							* r.getParent().getBounds()
+//									.getHeightXY(TransformSpace.RELATIVE_TO_PARENT));
+//
+//			}
+//		} else if (virtualStyleSheet.isWidthPercentage()) {
+//			if (virtualStyleSheet.getWidth() > 0)
+//				r.setWidthLocal(virtualStyleSheet.getWidth() / 100f
+//						* r.getParent().getBounds()
+//								.getWidthXY(TransformSpace.RELATIVE_TO_PARENT));
+//
+//			if (virtualStyleSheet.getHeight() > 0)
+//				r.setHeightLocal(virtualStyleSheet.getHeight());
+//		} else if (virtualStyleSheet.isHeightPercentage()) {
+//			if (virtualStyleSheet.getWidth() > 0)
+//				r.setWidthLocal(virtualStyleSheet.getWidth());
+//
+//			if (virtualStyleSheet.getHeight() > 0)
+//				r.setHeightLocal(virtualStyleSheet.getHeight() / 100f
+//						* r.getParent().getBounds()
+//								.getHeightXY(TransformSpace.RELATIVE_TO_PARENT));
+//
+//		} else {
+//			if (virtualStyleSheet.getWidth() > 0)
+//				r.setWidthLocal(virtualStyleSheet.getWidth());
+//
+//			if (virtualStyleSheet.getHeight() > 0)
+//				r.setHeightLocal(virtualStyleSheet.getHeight());
+//		}
+//	}
+//
+//	/**
+//	 * Apply style sheet to a MTTextArea
+//	 *
+//	 * @param ta the MTTextArea
+//	 */
+//	private void applyStyleSheetTextArea(MTTextArea ta) {
+//		if (!virtualStyleSheet.getFont().equals(
+//				cssStyleManager.getDefaultFont(app))
+//				&& !ta.isIgnoreCSSFont()) {
+//			ta.setFont(virtualStyleSheet.getFont());
+//		}
+//		if (virtualStyleSheet.isModifiedPaddingWidth()) {
+//			ta.setPadding(virtualStyleSheet.getPaddingWidth());
+//		}
+//	}
 
 	/**
 	 * Evaluate the style sheets (in order of relevance).
@@ -327,7 +339,7 @@ public class CSSHelper {
 	 * @param v2 the vertex to compare to
 	 * @return the x-distance
 	 */
-	public static float getXDistance(float x, Vertex v2) {
+	private static float getXDistance(float x, Vertex v2) {
 		float distance = v2.x - x;
 		if (distance >= 0)
 			return distance;
@@ -343,7 +355,7 @@ public class CSSHelper {
 	 * @param v2 the vertex to compare to
 	 * @return the y-distance
 	 */
-	public static  float getYDistance(float y, Vertex v2) {
+	private static  float getYDistance(float y, Vertex v2) {
 		float distance = v2.y - y;
 		if (distance >= 0)
 			return distance;
@@ -384,7 +396,7 @@ public class CSSHelper {
 	 * @param p the MTPolygon to apply it to
 	 * @param bgImage the background-image
 	 */
-	private void setBackground(MTPolygon p) {
+	public void setBackground(MTPolygon p) {
 		PImage bgImage = virtualStyleSheet.getBackgroundImage();
 		if (bgImage != null) {
 		if (virtualStyleSheet.getBackgroundRepeat() != BackgroundRepeat.NONE) {
@@ -551,7 +563,7 @@ public class CSSHelper {
 		}
 		
 	}
-	public Vector3D calcPos(MTPolygon box, PImage ta, float xo, float yo) {
+	private Vector3D calcPos(MTPolygon box, PImage ta, float xo, float yo) {
 
 		return new Vector3D((ta.width / 2)	+ xo, 
 				(ta.height / 2) + yo);
