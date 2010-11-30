@@ -680,16 +680,6 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
 	@Override
 	public void setWidthLocal(float width){
 		super.setWidthLocal(width);
-//				Vertex[] v = this.getVerticesLocal();
-//				MTColor c = this.getFillColor();
-//				this.setVertices(
-//						new Vertex[]{
-//								v[0], 
-//								new Vertex(width, v[1].getY(), v[1].getZ(), c.getR(), c.getG(), c.getB(), c.getAlpha()), 
-//								new Vertex(width, v[2].getY(), v[2].getZ(), c.getR(), c.getG(), c.getB(), c.getAlpha()), 
-//								v[3], 
-//								v[4]});
-
 		switch (this.mode) {
 		case MODE_EXPAND:
 			
@@ -718,24 +708,9 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
 	@Override
 	public void setHeightLocal(float height){ 
 		Vertex[] v = this.getVerticesLocal();
-//		this.setVertices(
-//				new Vertex[]{
-//						new Vertex(v[2].getX(), upperLeftLocal.y + height, v[2].getZ(), this.getFillRed(), this.getFillGreen(), this.getFillBlue(), this.getFillAlpha()),
-//						v[0], 
-//						v[1] , 
-//						new Vertex(v[2].getX(), upperLeftLocal.y + height, v[2].getZ(), this.getFillRed(), this.getFillGreen(), this.getFillBlue(), this.getFillAlpha()),
-//						new Vertex(v[3].getX(), upperLeftLocal.y + height, v[3].getZ(), this.getFillRed(), this.getFillGreen(), this.getFillBlue(), this.getFillAlpha()),
-//						v[4]});
-		
 		switch (this.mode) {
 		case MODE_EXPAND:
 			this.setVertices(new Vertex[]{
-//					new Vertex(v[0].x,	- innerPaddingTop, 		v[0].z, v[0].getTexCoordU(), v[0].getTexCoordV(), v[0].getR(), v[0].getG(), v[0].getB(), v[0].getA()), 
-//					new Vertex(v[1].x, 	- innerPaddingTop, 		v[1].z, v[1].getTexCoordU(), v[1].getTexCoordV(), v[1].getR(), v[1].getG(), v[1].getB(), v[1].getA()), 
-//					new Vertex(v[2].x, 	- innerPaddingTop + height + (2 * innerPaddingTop), 	v[2].z, v[2].getTexCoordU(), v[2].getTexCoordV(), v[2].getR(), v[2].getG(), v[2].getB(), v[2].getA()), 
-//					new Vertex(v[3].x,	- innerPaddingTop + height + (2 * innerPaddingTop),	v[3].z, v[3].getTexCoordU(), v[3].getTexCoordV(), v[3].getR(), v[3].getG(), v[3].getB(), v[3].getA()), 
-//					new Vertex(v[4].x,	- innerPaddingTop,			v[4].z, v[4].getTexCoordU(), v[4].getTexCoordV(), v[4].getR(), v[4].getG(), v[4].getB(), v[4].getA()), 
-					
 					new Vertex(v[0].x,	0, 								v[0].z, v[0].getTexCoordU(), v[0].getTexCoordV(), v[0].getR(), v[0].getG(), v[0].getB(), v[0].getA()), 
 					new Vertex(v[1].x, 	0, 								v[1].z, v[1].getTexCoordU(), v[1].getTexCoordV(), v[1].getR(), v[1].getG(), v[1].getB(), v[1].getA()), 
 					new Vertex(v[2].x, 	height + (2 * innerPaddingTop), v[2].z, v[2].getTexCoordU(), v[2].getTexCoordV(), v[2].getR(), v[2].getG(), v[2].getB(), v[2].getA()), 
@@ -786,12 +761,6 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
 			switch (this.mode) {
 			case MODE_EXPAND:
 				this.setVertices(new Vertex[]{
-//						new Vertex(v[0].x,			- innerPaddingTop, 		v[0].z, v[0].getTexCoordU(), v[0].getTexCoordV(), v[0].getR(), v[0].getG(), v[0].getB(), v[0].getA()), 
-//						new Vertex(v[0].x+width, 	- innerPaddingTop, 		v[1].z, v[1].getTexCoordU(), v[1].getTexCoordV(), v[1].getR(), v[1].getG(), v[1].getB(), v[1].getA()), 
-//						new Vertex(v[0].x+width, 	- innerPaddingTop + height + (2 * innerPaddingTop), v[2].getTexCoordV(), v[2].getR(), v[2].getG(), v[2].getB(), v[2].getA()), 
-//						new Vertex(v[3].x,			- innerPaddingTop + height + (2 * innerPaddingTop),	v[3].z, v[3].getTexCoordU(), v[3].getTexCoordV(), v[3].getR(), v[3].getG(), v[3].getB(), v[3].getA()), 
-//						new Vertex(v[4].x,			- innerPaddingTop,			v[4].z, v[4].getTexCoordU(), v[4].getTexCoordV(), v[4].getR(), v[4].getG(), v[4].getB(), v[4].getA()), 
-						
 						new Vertex(v[0].x,			0, 								v[0].z, v[0].getTexCoordU(), v[0].getTexCoordV(), v[0].getR(), v[0].getG(), v[0].getB(), v[0].getA()), 
 						new Vertex(v[0].x+width, 	0, 								v[1].z, v[1].getTexCoordU(), v[1].getTexCoordV(), v[1].getR(), v[1].getG(), v[1].getB(), v[1].getA()), 
 						new Vertex(v[0].x+width, 	height + (2 * innerPaddingTop), v[2].getTexCoordV(), v[2].getR(), v[2].getG(), v[2].getB(), v[2].getA()), 
