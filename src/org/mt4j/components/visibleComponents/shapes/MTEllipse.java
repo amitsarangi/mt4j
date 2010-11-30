@@ -125,9 +125,6 @@ public class MTEllipse extends MTPolygon {
 	
 	@Override
 	protected IBoundingShape computeDefaultBounds() {
-//		super.computeDefaultBounds();
-		 //FIXME if the ellipse is rotatet X or Y, the bounding shape doesent work anymore.. to be safe we
-		//would have to use boundingshpere or box..but slower..
 		return new BoundsZPlaneRectangle(this);
 	}
 
@@ -159,7 +156,7 @@ public class MTEllipse extends MTPolygon {
 			verts[i] = new Vertex(x, y, centerPoint.z, fillColor.getR(), fillColor.getG(), fillColor.getB(), fillColor.getAlpha());
 		}
 		verts[verts.length-1] = (Vertex) verts[0].getCopy(); //NEED TO USE COPY BECAUSE TEX COORDS MAY GET SCALED DOUBLE IF SAME VERTEX OBJECT!
-//		System.out.println("Points: " + verts.length);
+		//System.out.println("Points: " + verts.length);
 		
 		//Create tex coords
 		float width = radiusX*2;
@@ -169,9 +166,8 @@ public class MTEllipse extends MTPolygon {
         for (Vertex vertex : verts) {
             vertex.setTexCoordU((vertex.x - upperLeftX) / width);
             vertex.setTexCoordV((vertex.y - upperLeftY) / height);
-//			System.out.println("TexU:" + vertex.getTexCoordU() + " TexV:" + vertex.getTexCoordV());
+			//System.out.println("TexU:" + vertex.getTexCoordU() + " TexV:" + vertex.getTexCoordV());
         }
-		
 		return verts;
 	}
 
@@ -209,6 +205,13 @@ public class MTEllipse extends MTPolygon {
 		}
 	}
 
+	public float getRadiusX() {
+		return radiusX;
+	}
+
+	public float getRadiusY() {
+		return radiusY;
+	}
 
 	
 }

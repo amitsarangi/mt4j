@@ -12,29 +12,23 @@ import org.mt4j.components.StateChangeListener;
 import org.mt4j.components.TransformSpace;
 import org.mt4j.components.clipping.Clip;
 import org.mt4j.components.css.style.CSSStyle;
-import org.mt4j.components.css.style.CSSStyleHierarchy;
 import org.mt4j.components.css.style.CSSStyle.BackgroundRepeat;
+import org.mt4j.components.css.style.CSSStyleHierarchy;
 import org.mt4j.components.css.util.CSSKeywords.Position;
-import org.mt4j.components.visibleComponents.shapes.AbstractShape;
 import org.mt4j.components.visibleComponents.shapes.MTCSSStylableShape;
-import org.mt4j.components.visibleComponents.shapes.MTEllipse;
-import org.mt4j.components.visibleComponents.shapes.MTLine;
 import org.mt4j.components.visibleComponents.shapes.MTPolygon;
-import org.mt4j.components.visibleComponents.shapes.MTRectangle;
 import org.mt4j.components.visibleComponents.widgets.MTImage;
-import org.mt4j.components.visibleComponents.widgets.MTTextArea;
 import org.mt4j.util.MT4jSettings;
 import org.mt4j.util.MTColor;
 import org.mt4j.util.math.Tools3D;
 import org.mt4j.util.math.Vector3D;
 import org.mt4j.util.math.Vertex;
 import org.mt4j.util.opengl.GLTexture;
-import org.mt4j.util.opengl.GLTextureSettings;
 import org.mt4j.util.opengl.GLTexture.EXPANSION_FILTER;
 import org.mt4j.util.opengl.GLTexture.SHRINKAGE_FILTER;
 import org.mt4j.util.opengl.GLTexture.TEXTURE_TARGET;
 import org.mt4j.util.opengl.GLTexture.WRAP_MODE;
-//import org.mt4jx.components.visibleComponents.widgets.MTSuggestionTextArea;
+import org.mt4j.util.opengl.GLTextureSettings;
 
 import processing.core.PImage;
 
@@ -109,54 +103,25 @@ public class CSSHelper {
 			cssShape.addStateChangeListener(StateChange.ADDED_TO_PARENT,
 					new StateChangeListener() {
 						public void stateChanged(StateChangeEvent evt) {
-							cssShape.applyStyleSheet();
+							cssShape.applyStyleSheet();//rather leave the applyStyleSheet() method and implementation to the component itself
+//							applyStyleSheet(CSSHelper.this.c);
 						}
 					});
 			
 		}
-		/*
-		c.addStateChangeListener(StateChange.ADDED_TO_PARENT,
-				new StateChangeListener() {
-					public void stateChanged(StateChangeEvent evt) {
-						applyStyleSheet();
-					}
-				});
-		*/
 	}
 
 	/**
 	 * Apply the style sheet. Disambiguate between different subclasses of MTComponent
 	 */
 	public void applyStyleSheet(MTComponent c) {
-		
+		//This method can be used by a component which  only implements the cssstylable interface and 
+		//doesent extend MTCssStylableShape to get some standard behaviour
+		//like the calling of applyStyleSheet on all their children
 		if (c instanceof CSSStylableComponent) {
 			CSSStylableComponent sc = (CSSStylableComponent)c;
 			if (!sc.isCssForceDisabled() && ((sc.isCSSStyled() && !app.getCssStyleManager().isGloballyDisabled()) || app.getCssStyleManager().isGloballyEnabled())) {
 				evaluateStyleSheets();
-				
-				/*
-				if ((c instanceof MTPolygon) || (c instanceof MTLine)) {
-					applyStyleSheetBasic((AbstractShape) c);
-				}
-				if (c instanceof MTPolygon) {
-					applyStyleSheetPolygon((MTPolygon)c);
-				}
-				
-				if (c instanceof MTRectangle) {
-					applyStyleSheetRectangle((MTRectangle) c);
-				}
-				if (c instanceof MTTextArea) {
-					applyStyleSheetTextArea((MTTextArea) c);
-				}
-				if (c instanceof MTEllipse) {
-					applyStyleSheetEllipse((MTEllipse) c);
-				}
-				
-				if (c instanceof MTSuggestionTextArea) {
-					MTSuggestionTextArea sta = (MTSuggestionTextArea)c;
-					sta.init();
-				}
-				*/
 				
 				for (MTComponent d : c.getChildren()) {
 					if (d instanceof CSSStylableComponent) {
@@ -168,133 +133,6 @@ public class CSSHelper {
 		}
 	}
 
-//	/**
-//	 * Apply basic style sheet properties, applicable to all objects.
-//	 *
-//	 * @param p the AbstractShape (MTPolygon or MTLine)
-//	 */
-//	public void applyStyleSheetBasic(MTCSSStylableShape p) {
-//		if (virtualStyleSheet.isModifiedBackgroundColor())
-//			p.setFillColor(virtualStyleSheet.getBackgroundColor());
-//		if (virtualStyleSheet.isModifiedBorderColor())
-//			p.setStrokeColor(virtualStyleSheet.getBorderColor());
-//		if (virtualStyleSheet.isModifiedBorderWidth())
-//			p.setStrokeWeight(virtualStyleSheet.getBorderWidth());
-//		if (virtualStyleSheet.isModifiedVisibility())
-//			p.setVisible(virtualStyleSheet.isVisibility());
-//		
-//		if (virtualStyleSheet.isModifiedBorderStyle()) {
-//			if (virtualStyleSheet.getBorderStylePattern() >= 0) {
-//				p.setNoStroke(false);
-//				p.setLineStipple(virtualStyleSheet.getBorderStylePattern());
-//			} else {
-//				p.setNoStroke(true);
-//			}
-//		}
-//	}
-	
-//	/**
-//	 * Apply style sheet specific to a MTPolygon (and subclasses)
-//	 *
-//	 * @param p the MTPolygon
-//	 */
-//	private void applyStyleSheetPolygon(MTPolygon p) {
-//		if (virtualStyleSheet.isModifiedBackgroundImage()) {
-//			setBackground(p);
-//		}
-//	}
-//
-//	/**
-//	 * Apply style sheet to a MTEllipse.
-//	 *
-//	 * @param e the MTEllipse
-//	 */
-//	private void applyStyleSheetEllipse(MTEllipse e) {
-//		if (virtualStyleSheet.isModifiedHeight()) {
-//			if (virtualStyleSheet.isHeightPercentage()) {
-//				if (e.getParent() != null)
-//					e.setHeightXYRelativeToParent(virtualStyleSheet.getHeight() / 100f
-//							* e.getParent().getBounds()
-//									.getHeightXY(TransformSpace.RELATIVE_TO_PARENT));
-//			} else {
-//				e.setHeightXYRelativeToParent(virtualStyleSheet.getHeight());
-//			}
-//		}
-//		
-//		if (virtualStyleSheet.isModifiedWidth()) {
-//			if (virtualStyleSheet.isWidthPercentage()) {
-//				if (e.getParent() != null)
-//					e.setWidthXYRelativeToParent(virtualStyleSheet.getWidth() / 100f
-//							* e.getParent().getBounds()
-//									.getWidthXY(TransformSpace.RELATIVE_TO_PARENT));
-//			} else {
-//				e.setWidthXYRelativeToParent(virtualStyleSheet.getWidth());
-//			}
-//		}
-//	}
-//
-//	/**
-//	 * Apply style sheet to a MTRectangle.
-//	 *
-//	 * @param r the MTRectangle
-//	 */
-//	private void applyStyleSheetRectangle(MTRectangle r) {
-//		
-//		if (virtualStyleSheet.isWidthPercentage()
-//				&& virtualStyleSheet.isHeightPercentage()) {
-//			if (r.getParent() != null) {
-//				if (virtualStyleSheet.getWidth() > 0)
-//					r.setWidthLocal(virtualStyleSheet.getWidth() / 100f
-//							* r.getParent().getBounds()
-//									.getWidthXY(TransformSpace.RELATIVE_TO_PARENT));
-//
-//				if (virtualStyleSheet.getHeight() > 0)
-//					r.setHeightLocal(virtualStyleSheet.getHeight()/ 100f
-//							* r.getParent().getBounds()
-//									.getHeightXY(TransformSpace.RELATIVE_TO_PARENT));
-//
-//			}
-//		} else if (virtualStyleSheet.isWidthPercentage()) {
-//			if (virtualStyleSheet.getWidth() > 0)
-//				r.setWidthLocal(virtualStyleSheet.getWidth() / 100f
-//						* r.getParent().getBounds()
-//								.getWidthXY(TransformSpace.RELATIVE_TO_PARENT));
-//
-//			if (virtualStyleSheet.getHeight() > 0)
-//				r.setHeightLocal(virtualStyleSheet.getHeight());
-//		} else if (virtualStyleSheet.isHeightPercentage()) {
-//			if (virtualStyleSheet.getWidth() > 0)
-//				r.setWidthLocal(virtualStyleSheet.getWidth());
-//
-//			if (virtualStyleSheet.getHeight() > 0)
-//				r.setHeightLocal(virtualStyleSheet.getHeight() / 100f
-//						* r.getParent().getBounds()
-//								.getHeightXY(TransformSpace.RELATIVE_TO_PARENT));
-//
-//		} else {
-//			if (virtualStyleSheet.getWidth() > 0)
-//				r.setWidthLocal(virtualStyleSheet.getWidth());
-//
-//			if (virtualStyleSheet.getHeight() > 0)
-//				r.setHeightLocal(virtualStyleSheet.getHeight());
-//		}
-//	}
-//
-//	/**
-//	 * Apply style sheet to a MTTextArea
-//	 *
-//	 * @param ta the MTTextArea
-//	 */
-//	private void applyStyleSheetTextArea(MTTextArea ta) {
-//		if (!virtualStyleSheet.getFont().equals(
-//				cssStyleManager.getDefaultFont(app))
-//				&& !ta.isIgnoreCSSFont()) {
-//			ta.setFont(virtualStyleSheet.getFont());
-//		}
-//		if (virtualStyleSheet.isModifiedPaddingWidth()) {
-//			ta.setPadding(virtualStyleSheet.getPaddingWidth());
-//		}
-//	}
 
 	/**
 	 * Evaluate the style sheets (in order of relevance).

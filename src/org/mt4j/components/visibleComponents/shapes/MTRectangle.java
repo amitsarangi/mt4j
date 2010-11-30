@@ -39,9 +39,6 @@ public class MTRectangle extends MTPolygon {
 	/** The current anchor. */
 	private PositionAnchor currentAnchor;
 	
-	// (if the rectangle is x or y, rotated, the boundsZPlaneRectangle wont work anymore as a boundingshape!)
-	// actually it works..only wouldnt work if the local vertices arent lying on a z=0 parallel plane.
-	
 	/**
 	 * The Enum PositionAnchor.
 	 * 
@@ -101,23 +98,6 @@ public class MTRectangle extends MTPolygon {
 				this.setUseDirectGL(false);
 			}
 		}
-
-//		//hm..this is for when we create textured rects in other threads
-//		//, because when we init gl texture in other thread it breaks..
-//		this.setUseDirectGL(false);
-//
-//		//IF we are useing OpenGL, set useDirectGL to true 
-//		//(=>creates OpenGL texture, draws with pure OpenGL commands)
-//		//in our main thread.
-//		if (MT4jSettings.getInstance().isOpenGlMode() && applet instanceof MTApplication){
-//			MTApplication app = (MTApplication)applet;
-//			app.invokeLater(new Runnable() {
-//				public void run() {
-//					if (!isUseDirectGL())
-//						setUseDirectGL(true);
-//				}
-//			});
-//		}
 
 		this.setTexture(texture);
 		this.setTextureEnabled(true);
@@ -441,9 +421,6 @@ public class MTRectangle extends MTPolygon {
 			});
 		}
 	}
-	
-	//TODO also overRide setSizeGlobal()!!
-	//TODO setSize setzt obj space size nicht relative bis jetzt! einfach width vector transformen und length() holen!
 	
 	
 	@Override

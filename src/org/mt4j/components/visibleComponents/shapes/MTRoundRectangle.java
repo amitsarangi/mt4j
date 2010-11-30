@@ -107,9 +107,6 @@ public class MTRoundRectangle extends MTPolygon {
 		this.setBoundsBehaviour(AbstractShape.BOUNDS_ONLY_CHECK);
 	}
 
-	/* (non-Javadoc)
-	 * @see com.jMT.components.visibleComponents.shapes.MTPolygon#computeDefaultBounds()
-	 */
 	@Override
 	protected IBoundingShape computeDefaultBounds(){
 		return new BoundsZPlaneRectangle(this);

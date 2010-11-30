@@ -110,15 +110,15 @@ public abstract class AbstractShape extends AbstractVisibleComponent {
 	/** The geometry of this shape. */
 	private GeometryInfo geometryInfo;
 	
-//	/** The bounds global vertices dirty. */
-//	private boolean boundsGlobalVerticesDirty;
-	
-	
 	/** The vertices global. */
 	private Vertex[] verticesGlobal;
 	
 	/** global vertices dirty. */
 	private boolean globalVerticesDirty;
+	
+	//save the set texture dimensions so we can always scale from one NPOT texture to another NPOT texture coords
+	//(even if texture was set to null in between)
+	private Vector3D lastTextureDimension = new Vector3D(); 
 	
 	
 	/**
@@ -180,7 +180,6 @@ public abstract class AbstractShape extends AbstractVisibleComponent {
 	}
 	*/
 	
-	
 	/*
 	//Test for drawing bounding shape aligned to coordinate axis, like getWidth/getHeightRelativeToParent would return
 	@Override
@@ -237,9 +236,6 @@ public abstract class AbstractShape extends AbstractVisibleComponent {
 	}
 	
 //////////////// BOUNDING STUFF ///////////////////////////////
-//	/** The bounding shape. */
-//	private IBoundingShape boundingShape;
-	
 	/** The Constant BOUNDS_ONLY_CHECK. */
 	public static final int BOUNDS_ONLY_CHECK 					= 1;
 	
@@ -253,15 +249,6 @@ public abstract class AbstractShape extends AbstractVisibleComponent {
 //	BOUNDSBEHAVIOUR_USE_GEOMETRY
 //	BOUNDSBEHAVIOUR_USE_BOUNDS_AND_GEOMETRY
 //	BOUNDSBEHAVIOUR_USE_BOUNDS
-//	
-//	/** The Constant BOUNDS_ONLY_CHECK. */
-//	public static final int BOUNDS_ONLY_CHECK 					= 1;
-//	
-//	/** The Constant BOUNDS_CHECK_THEN_GEOMETRY_CHECK. */
-//	public static final int BOUNDS_CHECK_THEN_GEOMETRY_CHECK 	= 2;
-//	
-//	/** The Constant BOUNDS_DONT_USE. */
-//	public static final int BOUNDS_DONT_USE						= 3;
 	
 	/** The bounds picking behaviour. */
 	private int boundsBehaviour;
@@ -303,31 +290,6 @@ public abstract class AbstractShape extends AbstractVisibleComponent {
 	}
 	
 	
-	//FIXME REMOVE THESE METHODS IN THE NEXT VERSION!
-	/**
-	 * Sets the bounds picking behaviour.
-	 * @param boundsPickingBehaviour the new bounds picking behaviour
-	 * 
-	 * @deprecated
-	 * Method was renamed! Use setBoundsBehaviour()!
-	 */
-	public void setBoundsPickingBehaviour(int boundsPickingBehaviour){
-		this.boundsBehaviour = boundsPickingBehaviour;
-	}
-	//FIXME REMOVE THESE METHODS IN THE NEXT VERSION!
-	/**
-	 * Gets the bounds picking behaviour.
-	 * 
-	 * @return the bounds picking behaviour
-	 * @deprecated
-	 * Method was renamed! Use getBoundsBehaviour()!
-	 */
-	private int getBoundsPickingBehaviour(){
-		return this.boundsBehaviour;
-	}
-	
-	
-	
 	@Override
 	public void setMatricesDirty(boolean baseMatrixDirty) {
 		/* 
@@ -337,7 +299,7 @@ public abstract class AbstractShape extends AbstractVisibleComponent {
 		if (baseMatrixDirty){
 			this.globalVerticesDirty	= true;
 		}
-//		System.out.println("Set pickmat dirty on obj: " + this.getName());
+//		System.out.println("Set baseMatrixDirty dirty on obj: " + this.getName());
 		super.setMatricesDirty(baseMatrixDirty);
 	}
 	
@@ -473,7 +435,6 @@ public abstract class AbstractShape extends AbstractVisibleComponent {
 		}
 		//Sets the base matrix dirty, so that when inquiring info about
 		//vertices, they get updated first
-//		this.setLocalBaseMatrixDirty(true);
 		this.globalVerticesDirty = true;
 	}
 	
@@ -725,7 +686,6 @@ public abstract class AbstractShape extends AbstractVisibleComponent {
 	}
 	
 	
-
 	/**
 	 * Sets a texture for this shape.
 	 * <br>Uses the texture coordinates in the provided vertices for drawing.
@@ -749,10 +709,6 @@ public abstract class AbstractShape extends AbstractVisibleComponent {
 		//-> updateTextureBuffer still needed if custom tex coords wanted 
 		//-> use before setTexture()!
 		
-		//TODO delete old GLTexture object??? may cause memory leak if not!
-		
-		//But how to know if its not needed elsewhere? register in GLTexture object when its used and not?
-		
 		//TODO make sure that NORMALIZED texture coords are supplied and BEFORE setting the texture!
 		
 		//TODO Note that if we want to change the tex coords mannually, do it normalized, then for precaution update the buffer and then set the texture
@@ -765,7 +721,6 @@ public abstract class AbstractShape extends AbstractVisibleComponent {
 			lastTextureDimension.setXYZ(newTexImage.width, newTexImage.height, 0);
 		}
 		
-//		if (MT4jSettings.getInstance().isOpenGlMode()){ //FIXME USE WHICH ONE? 
 		if (this.isUseDirectGL()){
 			if (newTexImage instanceof GLTexture) {
 				GLTexture glTex = (GLTexture) newTexImage;
@@ -795,7 +750,7 @@ public abstract class AbstractShape extends AbstractVisibleComponent {
 					}
 				}
 				this.textureImage = newTexImage;
-				//FIXME always save last tex dimensions? also if POT?
+				//save last tex dimensions? also if POT?
 				this.lastTextureDimension.setXYZ(newTexImage.width, newTexImage.height, 0);
 			}else{
 				//We are in OpenGL mode but the new texture is not a GLTexture -> create new GLTexture from PImage
@@ -837,7 +792,6 @@ public abstract class AbstractShape extends AbstractVisibleComponent {
 				ts.wrappingHorizontal 	= WRAP_MODE.CLAMP_TO_EDGE;
 				ts.wrappingVertical 	= WRAP_MODE.CLAMP_TO_EDGE;
 				GLTexture newGLTexture = new GLTexture(this.getRenderer(), newTexImage, ts);
-//				newGLTexture.format = newTexImage.format;  //FIXME REMOVE?
 				
 				this.textureImage = newGLTexture;
 				this.lastTextureDimension.setXYZ(newTexImage.width, newTexImage.height, 0);
@@ -848,11 +802,6 @@ public abstract class AbstractShape extends AbstractVisibleComponent {
 			this.lastTextureDimension.setXYZ(newTexImage.width, newTexImage.height, 0);
 		}
 	}
-	
-	//save the set texture dimensions so we can always scale from one NPOT texture to another NPOT texture coords
-	//(even if texture was set to null in between)
-	private Vector3D lastTextureDimension = new Vector3D(); 
-	
 	
 	
 	
@@ -869,7 +818,6 @@ public abstract class AbstractShape extends AbstractVisibleComponent {
         for (Vertex vertex : verts) {
             //    		vertex.setTexCoordU(ToolsMath.map(vertex.getTexCoordU(), 0, oldTexWidth, 0, 1));
 //    		vertex.setTexCoordV(ToolsMath.map(vertex.getTexCoordV(), 0, oldTexWidth, 0, 1));
-
             vertex.setTexCoordU(vertex.getTexCoordU() / oldTexWidth);
             vertex.setTexCoordV(vertex.getTexCoordV() / oldTexHeight);
         }
@@ -963,7 +911,7 @@ public abstract class AbstractShape extends AbstractVisibleComponent {
 	 */
 	@Override
 	public Vector3D getIntersectionLocal(Ray ray) {
-		//TODO be aware that we dont call the super implementation here..
+		// be aware that we dont call the super implementation here..!
 		
 		switch (this.getBoundsBehaviour()) {
 		case AbstractShape.BOUNDS_DONT_USE:
@@ -1294,8 +1242,6 @@ public abstract class AbstractShape extends AbstractVisibleComponent {
 		this.disableAndDeleteDisplayLists();
 		*/
 		
-//		this.geometryInfo = null; //FIXME TEST
-//		this.boundingShape = null;
 		this.setBounds(null);
 		
 		//Delete openGL texture object

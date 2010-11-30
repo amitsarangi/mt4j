@@ -6,26 +6,47 @@ import org.mt4j.components.css.style.CSSStyle;
 import org.mt4j.components.css.util.CSSHelper;
 import org.mt4j.components.css.util.CSSStylableComponent;
 import org.mt4j.components.visibleComponents.GeometryInfo;
-import org.mt4j.components.visibleComponents.widgets.MTTextArea;
 import org.mt4j.util.math.Vertex;
-import org.mt4jx.components.visibleComponents.widgets.MTSuggestionTextArea;
 
 import processing.core.PApplet;
 
+/**
+ * The Class MTCSSStylableShape.
+ */
 public abstract class MTCSSStylableShape extends AbstractShape implements CSSStylableComponent {
+	
+	/** The mt app. */
 	private MTApplication mtApp;
+	
+	/** The css styled. */
 	private boolean cssStyled = false;
+	
+	/** The css force disabled. */
 	private boolean cssForceDisabled = false;
+	
+	/** The css helper. */
 	private CSSHelper cssHelper;
 	
 	
 	
+	/**
+	 * Instantiates a new mTCSS stylable shape.
+	 *
+	 * @param vertices the vertices
+	 * @param pApplet the applet
+	 */
 	public MTCSSStylableShape(Vertex[] vertices, PApplet pApplet) {
 		this(new GeometryInfo(pApplet, vertices), pApplet);
 	}
 
 	
 	
+	/**
+	 * Instantiates a new mTCSS stylable shape.
+	 *
+	 * @param geometryInfo the geometry info
+	 * @param pApplet the applet
+	 */
 	public MTCSSStylableShape(GeometryInfo geometryInfo, PApplet pApplet) {
 		super(geometryInfo, pApplet);
 		
@@ -40,11 +61,17 @@ public abstract class MTCSSStylableShape extends AbstractShape implements CSSSty
 
 
 	
+	/* (non-Javadoc)
+	 * @see org.mt4j.components.css.util.CSSStylableComponent#getCssHelper()
+	 */
 	public CSSHelper getCssHelper() {
 		return cssHelper;
 	}
 
 
+	/* (non-Javadoc)
+	 * @see org.mt4j.components.css.util.CSSStylableComponent#enableCSS()
+	 */
 	public void enableCSS() {
 		if (mtApp != null && cssHelper != null) {
 			cssStyled = true;
@@ -52,25 +79,40 @@ public abstract class MTCSSStylableShape extends AbstractShape implements CSSSty
 		applyStyleSheet();
 	}
 
+	/* (non-Javadoc)
+	 * @see org.mt4j.components.css.util.CSSStylableComponent#disableCSS()
+	 */
 	public void disableCSS() {
 		cssStyled = false;
 	}
 		
+	/* (non-Javadoc)
+	 * @see org.mt4j.components.css.util.CSSStylableComponent#isCSSStyled()
+	 */
 	public boolean isCSSStyled() {
 		return cssStyled;
 	}
 
 	
+	/* (non-Javadoc)
+	 * @see org.mt4j.components.css.util.CSSStylableComponent#isCssForceDisabled()
+	 */
 	public boolean isCssForceDisabled() {
 		return cssForceDisabled;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.mt4j.components.css.util.CSSStylableComponent#setCssForceDisable(boolean)
+	 */
 	public void setCssForceDisable(boolean cssForceDisabled) {
 		this.cssForceDisabled = cssForceDisabled;
 	}
 
 
 	
+	/* (non-Javadoc)
+	 * @see org.mt4j.components.css.util.CSSStylableComponent#applyStyleSheet()
+	 */
 	public void applyStyleSheet(){
 		if (this.isCSSStyled() && mtApp != null && this.getCssHelper() != null) {
 
@@ -96,10 +138,9 @@ public abstract class MTCSSStylableShape extends AbstractShape implements CSSSty
 	/**
 	 * Apply basic style sheet properties, applicable to all objects.
 	 *
-	 * @param p the AbstractShape (MTPolygon or MTLine)
+	 * @param virtualStyleSheet the virtual style sheet
 	 */
 	private void applyStyleSheetBasic(CSSStyle virtualStyleSheet) {
-//		/*
 		if (virtualStyleSheet.isModifiedBackgroundColor())
 			this.setFillColor(virtualStyleSheet.getBackgroundColor());
 		if (virtualStyleSheet.isModifiedBorderColor())
@@ -117,9 +158,13 @@ public abstract class MTCSSStylableShape extends AbstractShape implements CSSSty
 				this.setNoStroke(true);
 			}
 		}
-//		*/
 	}
 
+	/**
+	 * Apply style sheet custom.
+	 *
+	 * @param virtualStyleSheet the virtual style sheet
+	 */
 	abstract protected void applyStyleSheetCustom(CSSStyle virtualStyleSheet);
 
 

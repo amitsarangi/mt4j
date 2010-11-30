@@ -22,15 +22,10 @@ import java.nio.IntBuffer;
 
 import javax.media.opengl.GL;
 
-
-import org.mt4j.MTApplication;
-import org.mt4j.components.TransformSpace;
 import org.mt4j.components.bounds.BoundingSphere;
 import org.mt4j.components.bounds.IBoundingShape;
 import org.mt4j.components.bounds.OrientedBoundingBox;
 import org.mt4j.components.css.style.CSSStyle;
-import org.mt4j.components.css.util.CSSHelper;
-import org.mt4j.components.css.util.CSSStylableComponent;
 import org.mt4j.components.visibleComponents.GeometryInfo;
 import org.mt4j.util.MT4jSettings;
 import org.mt4j.util.MTColor;
@@ -55,9 +50,6 @@ import processing.core.PGraphics;
  * @author Christopher Ruff
  */
 public class MTPolygon extends MTCSSStylableShape{
-	
-	//FIXME TRIAL REMOVE LATER
-//	boolean useLocalObjectSpace;
 	
 	/** The normal. */
 	private Vector3D normal;
@@ -86,7 +78,6 @@ public class MTPolygon extends MTCSSStylableShape{
 		
 		this.normalDirty = true;
 //		this.hasVertexColor = false;//Dont set here, gets set to false after being true in super constructor
-//		this.normal = this.getNormal();
 		
 		this.setTextureEnabled(false);
 		this.setTextureMode(PApplet.NORMALIZED);
@@ -100,17 +91,7 @@ public class MTPolygon extends MTCSSStylableShape{
 		this.setName("Polygon");
 		
 		this.setBoundsBehaviour(AbstractShape.BOUNDS_DONT_USE);
-//		this.setBoundsPickingBehaviour(AbstractShape.BOUNDS_ONLY_CHECK);
-		
-		/*
-		if (pApplet instanceof MTApplication) {
-			this.mtApp = (MTApplication)pApplet;
-			this.cssHelper = new CSSHelper(this, mtApp);
-			if (this.mtApp.getCssStyleManager().isGloballyEnabled()) {
-				this.enableCSS();
-			}
-		}
-		*/
+//		this.setBoundsBehaviour(AbstractShape.BOUNDS_ONLY_CHECK);
 	}
 	
 	/* (non-Javadoc)
@@ -118,12 +99,9 @@ public class MTPolygon extends MTCSSStylableShape{
 	 */
 	@Override
 	protected IBoundingShape computeDefaultBounds(){
-//		this.setBounds(new BoundsArbitraryPlanarPolygon(this, this.getVerticesObjSpace())); //Works inly in z=0
 		return new BoundingSphere(this);
-//		return new BoundingSphere(new OrientedBoundingBox(this);
 	}
 	
-
 	
 	/* (non-Javadoc)
 	 * @see org.mt4j.components.visibleComponents.shapes.AbstractShape#setGeometryInfo(org.mt4j.components.visibleComponents.GeometryInfo)
@@ -505,32 +483,6 @@ public class MTPolygon extends MTCSSStylableShape{
 
 	
 	/**
-	 * calculates an intersection point from a ray and the plane the polygon lies in, this doesent check whether
-	 * the intersectionpoint is inside the polygon or not!<br>
-	 * <br><b>NOTE:</b> The polygon has to have at least 3 vertices, the Polygon should be coplanar and convex
-	 * <br><b>NOTE:</b> The calculation is done in local object space, so the ray has to be transformed into this objects
-	 * space aswell!.
-	 * 
-	 * @param ray the ray
-	 * @param polygonNormal the polygon normal
-	 * @return the ray poly plane intersection point
-	 * 
-	 * a possible intersectionPoint or null if there is none
-	 */
-	private Vector3D getRayPolyPlaneIntersectionPoint(Ray ray, Vector3D polygonNormal){
-		//get the polygons normal vector
-		Vertex[] vertices;
-//		if (useLocalObjectSpace)
-//			vertices = this.getVerticesPickingLocal();
-//		else
-//			vertices = this.getVerticesPickingWorld();
-		vertices = this.getVerticesLocal();
-		return ToolsGeometry.getRayPlaneIntersection(ray, polygonNormal, vertices[0]);
-	}
-	
-	
-	
-	/**
 	 * Returns a normalized vector, perpendicular to the polygon (the normal)<br>
 	 * <br>The normal vector is calculated in local object space! To transform it into
 	 * world space use <code>normal.transformNormal(Matrix worldMatrix);</code>
@@ -543,11 +495,7 @@ public class MTPolygon extends MTCSSStylableShape{
 		try {
 			if (normalDirty){
 				Vertex[] vertices;
-//				if (useLocalObjectSpace)
-					vertices = this.getVerticesLocal();
-//				else
-//					vertices = this.getVerticesWorld();
-					
+				vertices = this.getVerticesLocal();
 				if (vertices[0].equalsVector(vertices[1])
 					|| vertices[0].equalsVector(vertices[2])
 				){
@@ -555,9 +503,9 @@ public class MTPolygon extends MTCSSStylableShape{
 				}
 				this.normal = ToolsGeometry.getNormal(vertices[0], vertices[1], vertices[2], true);
 				this.normalDirty = false;
-				return this.normal; //FIXME return copy or original?
+				return this.normal.getCopy(); 
 			}else{
-				return this.normal;
+				return this.normal.getCopy();
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -586,7 +534,6 @@ public class MTPolygon extends MTCSSStylableShape{
 	 * @return the center or mass as a Vector3D
 	 */
 	public Vector3D getCenterOfMass2DLocal(){
-		//FIXME doesent work if polygon not in x,y plane!?
 		return ToolsGeometry.getPolygonCenterOfMass2D(this.getVerticesLocal());
 	}
 	
@@ -599,8 +546,6 @@ public class MTPolygon extends MTCSSStylableShape{
 		if (this.hasBounds()){
 			return this.getBounds().getCenterPointLocal();
 		}else{
-			//TODO this fails if the polygon isnt in the X,Y,0 Plane!
-//			return this.getCenterOfMas2DLocal();
 			return new OrientedBoundingBox(this).getCenterPointLocal();
 		}
 	}
@@ -621,8 +566,6 @@ public class MTPolygon extends MTCSSStylableShape{
 	public boolean setSizeXYRelativeToParent(float width, float height){
 		if (width > 0 && height > 0){
 			Vector3D centerPoint = this.getCenterPointRelativeToParent();
-//			this.scale(1/this.getWidthXYRelativeToParent(), 1/this.getHeightXYRelativeToParent(), 1, centerPoint);
-//			this.scale(width, height, 1, centerPoint);
 			this.scale( (1f/this.getWidthXYRelativeToParent()) * width, (1f/this.getHeightXYRelativeToParent()) * height, 1, centerPoint);
 			return true;
 		}else
@@ -641,8 +584,6 @@ public class MTPolygon extends MTCSSStylableShape{
 	public boolean setSizeXYGlobal(float width, float height){
 		if (width > 0 && height > 0){
 			Vector3D centerPoint = this.getCenterPointGlobal();
-//			this.scaleGlobal(1/this.getWidthXYGlobal(), 1/this.getHeightXYGlobal(), 1, centerPoint);
-//			this.scaleGlobal(width, height, 1, centerPoint); 
 			this.scaleGlobal( (1f/this.getWidthXYGlobal())* width , (1f/this.getHeightXYGlobal()) * height, 1, centerPoint);
 			return true;
 		}else
@@ -662,10 +603,7 @@ public class MTPolygon extends MTCSSStylableShape{
 	 */
 	public boolean setHeightXYRelativeToParent(float height){
 		if (height > 0){
-//			Vector3D centerPoint = this.getCenterPointGlobal(); //FIXME why was centerpoint global used here?? BUG?
 			Vector3D centerPoint = this.getCenterPointRelativeToParent();
-//			this.scale(1/this.getHeightXYRelativeToParent(), 1/this.getHeightXYRelativeToParent(), 1, centerPoint);
-//			this.scale(height, height, 1, centerPoint);
 			float factor = (1f/this.getHeightXYRelativeToParent()) * height;
 			this.scale(factor, factor, 1, centerPoint);
 			return true;
@@ -687,8 +625,6 @@ public class MTPolygon extends MTCSSStylableShape{
 	public boolean setHeightXYGlobal(float height){
 		if (height > 0){
 			Vector3D centerPoint = this.getCenterPointGlobal();
-//			this.scaleGlobal(1/this.getHeightXYGlobal(), 1/this.getHeightXYGlobal(), 1, centerPoint);
-//			this.scaleGlobal(height, height, 1, centerPoint);
 			float factor = (1f/this.getHeightXYGlobal())* height;
 			this.scaleGlobal(factor, factor, 1, centerPoint);
 			return true;
@@ -709,10 +645,7 @@ public class MTPolygon extends MTCSSStylableShape{
 	 */
 	public boolean setWidthXYRelativeToParent(float width){
 		if (width > 0){
-//			Vector3D centerPoint = this.getCenterPointGlobal(); //FIXME why was centerpoint global used here?? BUG?
 			Vector3D centerPoint = this.getCenterPointRelativeToParent(); 
-//			this.scale(1/this.getWidthXYRelativeToParent(), 1/this.getWidthXYRelativeToParent(), 1, centerPoint);
-//			this.scale(width, width, 1, centerPoint);
 			float factor = (1f/this.getWidthXYRelativeToParent()) * width;
 			this.scale(factor, factor, 1, centerPoint);
 			return true;
@@ -734,8 +667,6 @@ public class MTPolygon extends MTCSSStylableShape{
 	public boolean setWidthXYGlobal(float width){
 		if (width > 0){
 			Vector3D centerPoint = this.getCenterPointGlobal();
-//			this.scaleGlobal(1/this.getWidthXYGlobal(), 1/this.getWidthXYGlobal(), 1, centerPoint);
-//			this.scaleGlobal(width, width, 1, centerPoint);
 			float factor = (1f/this.getWidthXYGlobal())* width;
 			this.scaleGlobal(factor, factor, 1, centerPoint);
 			return true;
@@ -748,9 +679,7 @@ public class MTPolygon extends MTCSSStylableShape{
 	 * @see org.mt4j.components.visibleComponents.shapes.AbstractShape#destroyComponent()
 	 */
 	@Override
-	protected void destroyComponent() {
-		
-	}
+	protected void destroyComponent() { 	}
 
 	@Override
 	protected void applyStyleSheetCustom(CSSStyle virtualStyleSheet) {
@@ -759,54 +688,5 @@ public class MTPolygon extends MTCSSStylableShape{
 		}
 	}
 
-	
-	
-	/*
-	private MTApplication mtApp;
-	private boolean cssStyled = false;
-	private boolean cssForceDisabled = false;
-	private CSSHelper cssHelper;
-	
-	
-	
-	public CSSHelper getCssHelper() {
-		return cssHelper;
-	}
-
-	public boolean isCSSStyled() {
-		return cssStyled;
-	}
-
-	public void enableCSS() {
-		if (mtApp != null && cssHelper != null) {
-			cssStyled = true;
-		}
-		applyStyleSheet();
-	}
-
-	
-	
-	public boolean isCssForceDisabled() {
-		return cssForceDisabled;
-	}
-
-	public void setCssForceDisable(boolean cssForceDisabled) {
-		this.cssForceDisabled = cssForceDisabled;
-	}
-
-	public void disableCSS() {
-		cssStyled = false;
-		
-	}
-
-	public void applyStyleSheet() {
-		if (cssStyled && mtApp != null && cssHelper != null) {
-			cssHelper.applyStyleSheet();
-		}
-		
-	}
-	*/
-
-	
 
 }

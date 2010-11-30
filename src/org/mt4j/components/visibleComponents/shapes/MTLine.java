@@ -21,18 +21,13 @@ import java.nio.FloatBuffer;
 
 import javax.media.opengl.GL;
 
-import org.mt4j.MTApplication;
-import org.mt4j.components.TransformSpace;
 import org.mt4j.components.bounds.BoundsArbitraryPlanarPolygon;
 import org.mt4j.components.bounds.IBoundingShape;
 import org.mt4j.components.css.style.CSSStyle;
-import org.mt4j.components.css.util.CSSHelper;
-import org.mt4j.components.css.util.CSSStylableComponent;
 import org.mt4j.components.visibleComponents.GeometryInfo;
 import org.mt4j.components.visibleComponents.StyleInfo;
 import org.mt4j.util.MT4jSettings;
 import org.mt4j.util.MTColor;
-import org.mt4j.util.math.Matrix;
 import org.mt4j.util.math.Ray;
 import org.mt4j.util.math.Tools3D;
 import org.mt4j.util.math.Vector3D;
@@ -51,12 +46,6 @@ public class MTLine extends MTCSSStylableShape{
 	
 	/** The p context. */
 	private PApplet pContext;
-	
-//	/** The use display list. */
-//	private boolean  useDisplayList;
-//	
-//	/** The display list i ds. */
-//	private int[] displayListIDs;
 	
 	/**
 	 * Instantiates a new mT line.
@@ -97,36 +86,20 @@ public class MTLine extends MTCSSStylableShape{
 		super(new Vertex[]{startPoint, endPoint},pApplet);
 		this.pContext = pApplet;
 		
-//		useDisplayList = false;
-//		displayListIDs = new int[1];
-		
 		this.setNoFill(true);
 		this.setPickable(true);
 		
 		if (MT4jSettings.getInstance().isOpenGlMode()){
 			this.getGeometryInfo().generateOrUpdateBuffersLocal(new StyleInfo(new MTColor(255,255,255,255), new MTColor(startPoint.getR(), startPoint.getG(), startPoint.getB(), startPoint.getA()), this.isDrawSmooth(), this.isNoStroke(), this.isNoFill(), this.getStrokeWeight(), this.getFillDrawMode(), this.getLineStipple()));
 		}
-//		this.setBoundsBehaviour(AbstractShape.BOUNDS_DONT_USE);
 		this.setBoundsBehaviour(BOUNDS_ONLY_CHECK);
 		
 		this.setName("unnamed MTLine");
-		
-		/*
-		if (pApplet instanceof MTApplication) {
-			this.mtApp = (MTApplication)pApplet;
-			this.cssHelper = new CSSHelper(this, mtApp);
-			if (this.mtApp.getCssStyleManager().isGloballyEnabled()) {
-				this.enableCSS();
-			}
-		}
-		*/
 	}
 
-	//TODO getNormal() will crash ..
 	//TODO override vobs?
 	
 	
-	//TODO  this works only on z=0..better create a boundingbox? -> but that wont fit very tightly..
 	@Override
 	protected IBoundingShape computeDefaultBounds() {
 		Vertex v0 = getVerticesLocal()[0];
@@ -352,336 +325,8 @@ public class MTLine extends MTCSSStylableShape{
 	@Override
 	protected void destroyComponent() {		}
 
-//	
-//	@Override
-//	public float getHeightXY(TransformSpace transformSpace) {
-////		switch (transformSpace) {
-////		case RELATIVE_TO_SELF:
-////			return this.getHeightXYObjSpace();
-////		case RELATIVE_TO_PARENT:
-////			return this.getHeightXYRelativeToParent();
-////		case RELATIVE_TO_WORLD:
-////			return this.getHeightXYGlobal();
-////		default:
-////			return -1;
-////		}
-//		return 0;
-//	}
-	
-	
-//	private float getHeightXYObjSpace() {
-//		return this.getHeightXYVectObjSpace().length();
-//	}
-//	
-//	
-//	/**
-//	 * Calculates the Height of this shape, by using its
-//	 * bounding rectangle.
-//	 * <br><strong>NOTE: </strong> This method will only work, if the polygon is parallel 
-//	 * to the x/y plane in space AND has a boundingShape rectangle thats meets the same crieria
-//	 * because the calculations are done with the bounding rectangle. (bounds instance of <code>BoundsZPlaneRectangle</code>)
-//	 * @return the height
-//	 */
-//	private float getHeightXYRelativeToParent() {
-//		Vector3D p = this.getHeightXYVectObjSpace();
-//		Matrix m = new Matrix(this.getLocalBasisMatrix());
-//		m.removeTranslationFromMatrix();
-//		p.transform(m);
-//		return p.length();
-//	}
-//	
-//	
-//	/**
-//	 * <br><strong>NOTE: </strong> This method will only work, if the polygon is parallel 
-//	 * to the x/y plane in space AND has a boundingShape rectangle thats meets the same crieria
-//	 * because the calculations are done with the bounding rectangle. (bounds instance of <code>BoundsZPlaneRectangle</code>)
-//	 * 
-//	 * @return
-//	 */
-//	private float getHeightXYGlobal() {
-//		Vector3D p = this.getHeightXYVectObjSpace();
-//		Matrix m = new Matrix(this.getAbsoluteLocalToWorldMatrix());
-//		m.removeTranslationFromMatrix();
-//		p.transform(m);
-//		return p.length();
-//	}
-//
-//	
-//	public Vector3D getHeightXYVectObjSpace() {
-//		Vector3D[] boundRectVertsLocal = this.getGeometryInfo().getVertices();
-//		Vector3D height = boundRectVertsLocal[2].getSubtracted(boundRectVertsLocal[1]);
-//		return height;
-//	}
-//	
-//	
-//
-//
-//
-//	@Override
-//	public float getWidthXY(TransformSpace transformSpace) {
-//		switch (transformSpace) {
-//		case LOCAL:
-//			return this.getWidthXYLocal();
-//		case RELATIVE_TO_PARENT:
-//			return this.getWidthXYRealtiveToParent();
-//		case GLOBAL:
-//			return this.getWidthXYGlobal();
-//		default:
-//			return -1;
-//		}
-//	}
-//
-//	/**
-//	 * Gets the width xy obj space.
-//	 * 
-//	 * @return the width xy obj space
-//	 */
-//	private float getWidthXYLocal() {
-//		return this.getWidthXYVectLocal().length();
-//	}
-//	
-//	
-//	/**
-//	 * Calculates the width of this shape, by using its
-//	 * bounding rectangle.
-//	 * Uses the objects local transform. So the width will be
-//	 * relative to the parent only - not the whole world
-//	 * <br><strong>NOTE: </strong> This method will only work, if the polygon is parallel
-//	 * to the x/y plane in space AND has a boundingShape rectangle thats meets the same crieria
-//	 * because the calculations are done with the bounding rectangle. (bounds instance of <code>BoundsZPlaneRectangle</code>)
-//	 * 
-//	 * @return the height
-//	 */
-//	private float getWidthXYRealtiveToParent() {
-//		Vector3D p = this.getWidthXYVectLocal();
-//		Matrix m = new Matrix(this.getLocalMatrix());
-//		m.removeTranslationFromMatrix();
-//		p.transform(m);
-//		return p.length();
-//	}
-//	
-//	/**
-//	 * The length of the line in world coordinates.
-//	 * 
-//	 * @return the width xy global
-//	 */
-//	protected float getWidthXYGlobal() {
-//		Vector3D p = this.getWidthXYVectLocal();
-//		Matrix m = new Matrix(this.getGlobalMatrix());
-//		m.removeTranslationFromMatrix();
-//		p.transform(m);
-//		return p.length();
-//	}
-//
-//	/**
-//	 * Gets the width xy vect obj space.
-//	 * 
-//	 * @return the width xy vect obj space
-//	 */
-//	@Override
-//	public Vector3D getWidthXYVectLocal() {
-//		Vector3D[] vertsLocal = this.getGeometryInfo().getVertices();
-//		Vector3D width = vertsLocal[1].getSubtracted(vertsLocal[0]);
-////		System.out.println("Width of " + this.getName()+ " :" + width);
-//		return width;
-//	}
-
-
-//	
-//	
-//
-//
-//
-//	@Override
-//	public float getWidthXY(TransformSpace transformSpace) {
-//		switch (transformSpace) {
-//		case LOCAL:
-//			return this.getWidthXYLocal();
-//		case RELATIVE_TO_PARENT:
-//			return this.getWidthXYRealtiveToParent();
-//		case GLOBAL:
-//			return this.getWidthXYGlobal();
-//		default:
-//			return -1;
-//		}
-//	}
-//
-//	/**
-//	 * Gets the width xy obj space.
-//	 * 
-//	 * @return the width xy obj space
-//	 */
-//	private float getWidthXYLocal() {
-//		return this.getWidthXYVectLocal().length();
-//	}
-//	
-//	
-//	/**
-//	 * Calculates the width of this shape, by using its
-//	 * bounding rectangle.
-//	 * Uses the objects local transform. So the width will be
-//	 * relative to the parent only - not the whole world
-//	 * <br><strong>NOTE: </strong> This method will only work, if the polygon is parallel
-//	 * to the x/y plane in space AND has a boundingShape rectangle thats meets the same crieria
-//	 * because the calculations are done with the bounding rectangle. (bounds instance of <code>BoundsZPlaneRectangle</code>)
-//	 * 
-//	 * @return the height
-//	 */
-//	private float getWidthXYRealtiveToParent() {
-//		Vector3D p = this.getWidthXYVectLocal();
-//		Matrix m = new Matrix(this.getLocalMatrix());
-//		m.removeTranslationFromMatrix();
-//		p.transform(m);
-//		return p.length();
-//	}
-//	
-//	/**
-//	 * The length of the line in world coordinates.
-//	 * 
-//	 * @return the width xy global
-//	 */
-//	protected float getWidthXYGlobal() {
-//		Vector3D p = this.getWidthXYVectLocal();
-//		Matrix m = new Matrix(this.getGlobalMatrix());
-//		m.removeTranslationFromMatrix();
-//		p.transform(m);
-//		return p.length();
-//	}
-//
-//	/**
-//	 * Gets the width xy vect obj space.
-//	 * 
-//	 * @return the width xy vect obj space
-//	 */
-//	@Override
-//	public Vector3D getWidthXYVectLocal() {
-//		Vector3D[] vertsLocal = this.getGeometryInfo().getVertices();
-//		Vector3D width = vertsLocal[1].getSubtracted(vertsLocal[0]);
-////		System.out.println("Width of " + this.getName()+ " :" + width);
-//		return width;
-//	}
-//	
-//	
-//
-//
-//
-//	@Override
-//	public float getWidthXY(TransformSpace transformSpace) {
-//		switch (transformSpace) {
-//		case LOCAL:
-//			return this.getWidthXYLocal();
-//		case RELATIVE_TO_PARENT:
-//			return this.getWidthXYRealtiveToParent();
-//		case GLOBAL:
-//			return this.getWidthXYGlobal();
-//		default:
-//			return -1;
-//		}
-//	}
-//
-//	/**
-//	 * Gets the width xy obj space.
-//	 * 
-//	 * @return the width xy obj space
-//	 */
-//	private float getWidthXYLocal() {
-//		return this.getWidthXYVectLocal().length();
-//	}
-//	
-//	
-//	/**
-//	 * Calculates the width of this shape, by using its
-//	 * bounding rectangle.
-//	 * Uses the objects local transform. So the width will be
-//	 * relative to the parent only - not the whole world
-//	 * <br><strong>NOTE: </strong> This method will only work, if the polygon is parallel
-//	 * to the x/y plane in space AND has a boundingShape rectangle thats meets the same crieria
-//	 * because the calculations are done with the bounding rectangle. (bounds instance of <code>BoundsZPlaneRectangle</code>)
-//	 * 
-//	 * @return the height
-//	 */
-//	private float getWidthXYRealtiveToParent() {
-//		Vector3D p = this.getWidthXYVectLocal();
-//		Matrix m = new Matrix(this.getLocalMatrix());
-//		m.removeTranslationFromMatrix();
-//		p.transform(m);
-//		return p.length();
-//	}
-//	
-//	/**
-//	 * The length of the line in world coordinates.
-//	 * 
-//	 * @return the width xy global
-//	 */
-//	protected float getWidthXYGlobal() {
-//		Vector3D p = this.getWidthXYVectLocal();
-//		Matrix m = new Matrix(this.getGlobalMatrix());
-//		m.removeTranslationFromMatrix();
-//		p.transform(m);
-//		return p.length();
-//	}
-//
-//	/**
-//	 * Gets the width xy vect obj space.
-//	 * 
-//	 * @return the width xy vect obj space
-//	 */
-//	@Override
-//	public Vector3D getWidthXYVectLocal() {
-//		Vector3D[] vertsLocal = this.getGeometryInfo().getVertices();
-//		Vector3D width = vertsLocal[1].getSubtracted(vertsLocal[0]);
-////		System.out.println("Width of " + this.getName()+ " :" + width);
-//		return width;
-//	}
-
-	/*
-	private MTApplication mtApp;
-	private boolean cssStyled = false;
-	private CSSHelper cssHelper;
-	
-	public boolean isCSSStyled() {
-		return cssStyled;
-	}
-
-	public void enableCSS() {
-		if (mtApp != null && cssHelper != null) {
-			cssStyled = true;
-		}
-		applyStyleSheet();
-		applyStyleSheet();
-	}
-
-	public void disableCSS() {
-		cssStyled = false;
-		
-	}
-
-	public void applyStyleSheet() {
-		if (cssStyled && mtApp != null && cssHelper != null) {
-			cssHelper.applyStyleSheet();
-		}
-		
-	}
-	
-	private boolean cssForceDisabled = false;
-	
-	public boolean isCssForceDisabled() {
-		return cssForceDisabled;
-	}
-
-	public void setCssForceDisable(boolean cssForceDisabled) {
-		this.cssForceDisabled = cssForceDisabled;
-		
-	}
-
-	public CSSHelper getCssHelper() {
-		return this.cssHelper;
-	}
-	*/
 	
 	@Override
-	protected void applyStyleSheetCustom(CSSStyle virtualStyleSheet) {
-		
-	}
+	protected void applyStyleSheetCustom(CSSStyle virtualStyleSheet) {	}
 	
 }

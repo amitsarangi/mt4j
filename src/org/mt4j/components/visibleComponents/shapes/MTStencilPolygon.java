@@ -174,7 +174,7 @@ public class MTStencilPolygon extends MTPolygon {
 	    
 		this.setStrokeWeight(1.0f);
 		
-		//FIXME use?
+		// use?
 //		this.setEnableTesselation(true);
 	}
 	
