@@ -285,7 +285,43 @@ public abstract class AbstractCursorProcessor extends AbstractComponentProcessor
 	 */
 	public InputCursor getFarthestFreeCursorTo(InputCursor cursor, InputCursor... excludedFromSearch){
 		float currDist = Float.MIN_VALUE;
-		InputCursor fartherstCursor = null;
+		InputCursor farthestCursor = null;
+		
+		Vector3D cursorPos = cursor.getPosition();
+		for (InputCursor currentCursor : this.getCurrentComponentCursors()) {
+			if (currentCursor.equals(cursor) || !currentCursor.canLock(this) || currentCursor.isLockedBy(this))
+				continue;
+			
+			boolean continueLoop = false;
+			for (InputCursor excludedCursor : excludedFromSearch) {
+				if (currentCursor.equals(excludedCursor)){
+					continueLoop = true;
+//					continue; // this exits only this loop, not the outer
+				}
+			}
+			if (continueLoop)
+				continue;
+			
+			float distanceToCurrentCursor = currentCursor.getPosition().distance2D(cursorPos);
+			if (distanceToCurrentCursor >= currDist || distanceToCurrentCursor == 0.0f){
+				currDist = distanceToCurrentCursor;
+				farthestCursor = currentCursor;
+			}
+		}
+		return farthestCursor;
+	}
+	
+	/**
+	 * Returns the closest cursor to the specified cursor that started on the current target component.
+	 * Only returns a cursor if it is free to use and could be locked by this processor.
+	 * 
+	 * @param cursor the cursor
+	 * @param excludedFromSearch the excluded from search
+	 * @return the closest free cursor to
+	 */
+	public InputCursor getClosestFreeCursorTo(InputCursor cursor, InputCursor... excludedFromSearch){
+		float currDist = Float.MAX_VALUE;
+		InputCursor closestCursor = null;
 		
 		Vector3D cursorPos = cursor.getPosition();
 		for (InputCursor currentCursor : this.getCurrentComponentCursors()) {
@@ -303,12 +339,49 @@ public abstract class AbstractCursorProcessor extends AbstractComponentProcessor
 				continue;
 			
 			float distanceToCurrentCursor = currentCursor.getPosition().distance2D(cursorPos);
-			if (distanceToCurrentCursor >= currDist || distanceToCurrentCursor == 0.0f){
+			if (distanceToCurrentCursor <= currDist || distanceToCurrentCursor == 0.0f){
 				currDist = distanceToCurrentCursor;
-				fartherstCursor = currentCursor;
+				closestCursor = currentCursor;
 			}
 		}
-		return fartherstCursor;
+		return closestCursor;
+	}
+	
+	
+	/**
+	 * Returns the most far away component cursor to the specified cursor but limited to a specified maximum radius.
+	 * Only returns a cursor if it is free to use and could be locked by this processor.
+	 *
+	 * @param cursor the cursor
+	 * @param maxRadius the max radius
+	 * @param excludedFromSearch the excluded from search
+	 * @return the farthest free cursor to limited
+	 */
+	public InputCursor getFarthestFreeCursorToLimited(InputCursor cursor, float maxRadius, InputCursor... excludedFromSearch){
+		float currDist = Float.MIN_VALUE;
+		InputCursor farthestCursor = null;
+		
+		Vector3D cursorPos = cursor.getPosition();
+		for (InputCursor currentCursor : this.getCurrentComponentCursors()) {
+			if (currentCursor.equals(cursor) || !currentCursor.canLock(this) || currentCursor.isLockedBy(this))
+				continue;
+			
+			boolean continueLoop = false;
+			for (InputCursor excludedCursor : excludedFromSearch) {
+				if (currentCursor.equals(excludedCursor)){
+					continueLoop = true;
+				}
+			}
+			if (continueLoop)
+				continue;
+			
+			float distanceToCurrentCursor = currentCursor.getPosition().distance2D(cursorPos);
+			if ((distanceToCurrentCursor >= currDist || distanceToCurrentCursor == 0.0f) && distanceToCurrentCursor <= maxRadius){
+				currDist = distanceToCurrentCursor;
+				farthestCursor = currentCursor;
+			}
+		}
+		return farthestCursor;
 	}
 	
 

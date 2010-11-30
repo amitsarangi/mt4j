@@ -49,12 +49,6 @@ public class ZoomProcessor extends AbstractCursorProcessor {
 	/** The applet. */
 	private PApplet applet;
 
-	/** The unused cursors. */
-	private List<InputCursor> unUsedCursors;
-	
-	/** The locked cursors. */
-	private List<InputCursor> lockedCursors;
-	
 	/**
 	 * Instantiates a new zoom processor.
 	 * 
@@ -72,8 +66,6 @@ public class ZoomProcessor extends AbstractCursorProcessor {
 	 */
 	public ZoomProcessor(PApplet graphicsContext, float zoomDetectRadius){
 		this.applet = graphicsContext;
-		this.unUsedCursors 	= new ArrayList<InputCursor>();
-		this.lockedCursors 	= new ArrayList<InputCursor>();
 		this.zoomDetectRadius = zoomDetectRadius;
 		this.setLockPriority(2);
 	}
@@ -81,14 +73,15 @@ public class ZoomProcessor extends AbstractCursorProcessor {
 	
 	@Override
 	public void cursorStarted(InputCursor c, MTFingerInputEvt positionEvent) {
-		IMTComponent3D comp = positionEvent.getTarget();
-		if (lockedCursors.size() >= 2){ //scale with 2 fingers already in progress
-			unUsedCursors.add(c);
+		InputCursor[] locked = getLockedCursorsArray();
+		if (locked.length >= 2){ //gesture with 2 fingers already in progress
 			logger.debug(this.getName() + " has already enough cursors for this gesture - adding to unused ID:" + c.getId());
-		}else{ //no scale in progress yet
-			if (unUsedCursors.size() == 1){
-				logger.debug(this.getName() + " has already has 1 unused cursor - we can try start gesture! used with ID:" + unUsedCursors.get(0).getId() + " and new cursor ID:" + c.getId());
-				InputCursor otherCursor = unUsedCursors.get(0);
+		}else{//not in progress yet
+			List<InputCursor> availableCursors = getFreeComponentCursors();
+			logger.debug(this.getName() + " Available cursors: " + availableCursors.size());
+			
+			if (availableCursors.size() >= 2){
+				InputCursor otherCursor = (availableCursors.get(0).equals(c))? availableCursors.get(1) : availableCursors.get(0);
 				
 				//See if we can obtain a lock on both cursors
 				if (this.canLock(otherCursor, c)){
@@ -96,71 +89,54 @@ public class ZoomProcessor extends AbstractCursorProcessor {
 					if (newDistance < zoomDetectRadius) {
 						this.oldDistance = newDistance;
 						this.getLock(otherCursor, c);
-						lockedCursors.add(otherCursor);
-						lockedCursors.add(c);
-						unUsedCursors.remove(otherCursor);
 						logger.debug(this.getName() + " we could lock both cursors! And fingers in zoom distance!");
-						this.fireGestureEvent(new ZoomEvent(this, MTGestureEvent.GESTURE_DETECTED, comp, c, otherCursor, 0f, comp.getViewingCamera() ));
+						this.fireGestureEvent(new ZoomEvent(this, MTGestureEvent.GESTURE_DETECTED, positionEvent.getCurrentTarget(), c, otherCursor, 0f, positionEvent.getCurrentTarget().getViewingCamera() ));
 					}else{
 						logger.debug(this.getName() + " cursors not close enough to start gesture. Distance: " + newDistance);
 					}
 				}else{
 					logger.debug(this.getName() + " we could NOT lock both cursors!");
-					unUsedCursors.add(c);	
 				}
-			}else{
-				logger.debug(this.getName() + " we didnt have a unused cursor previously to start gesture now");
-				unUsedCursors.add(c);
 			}
 		}
 	}
 
 	@Override
 	public void cursorUpdated(InputCursor c, MTFingerInputEvt positionEvent) {
-		IMTComponent3D comp = positionEvent.getTarget();
-		if (lockedCursors.size() == 2 && lockedCursors.contains(c)){
-			InputCursor firstCursor = lockedCursors.get(0);
-			InputCursor secondCursor = lockedCursors.get(1);
+		List<InputCursor> locked = getLockedCursors();
+		if (locked.contains(c)){ //in progress with this cursors
+			InputCursor firstCursor = locked.get(0);
+			InputCursor secondCursor = locked.get(1);
 			float fingerDistance = Vector3D.distance(firstCursor.getPosition(), secondCursor.getPosition());
 			float camZoomAmount = fingerDistance - oldDistance;
 			oldDistance = fingerDistance;
 			if (c.equals(firstCursor)){
-				this.fireGestureEvent(new ZoomEvent(this, MTGestureEvent.GESTURE_UPDATED, comp, firstCursor, secondCursor, camZoomAmount, comp.getViewingCamera()));
+				this.fireGestureEvent(new ZoomEvent(this, MTGestureEvent.GESTURE_UPDATED, positionEvent.getCurrentTarget(), firstCursor, secondCursor, camZoomAmount, positionEvent.getCurrentTarget().getViewingCamera()));
 			}else{
-				this.fireGestureEvent(new ZoomEvent(this, MTGestureEvent.GESTURE_UPDATED, comp, firstCursor, secondCursor, camZoomAmount, comp.getViewingCamera()));
+				this.fireGestureEvent(new ZoomEvent(this, MTGestureEvent.GESTURE_UPDATED, positionEvent.getCurrentTarget(), firstCursor, secondCursor, camZoomAmount, positionEvent.getCurrentTarget().getViewingCamera()));
 			}
 		}
 	}
 
 	@Override
 	public void cursorEnded(InputCursor c,	MTFingerInputEvt positionEvent) {
-		IMTComponent3D comp = positionEvent.getTarget();
 		logger.debug(this.getName() + " INPUT_ENDED RECIEVED - cursor: " + c.getId());
-		
-		if (lockedCursors.size() == 2 && lockedCursors.contains(c)){
-			InputCursor leftOverCursor = (lockedCursors.get(0).equals(c))? lockedCursors.get(1) : lockedCursors.get(0);
-			
-			lockedCursors.remove(c);
-			if (unUsedCursors.size() > 0){ //Check if there are other cursors we could use for scaling if one was removed
-				InputCursor futureCursor = getFarthestFreeCursorTo(leftOverCursor);
+		List<InputCursor> locked = getLockedCursors();
+		if (locked.contains(c)){
+			InputCursor leftOverCursor = (locked.get(0).equals(c))? locked.get(1) : locked.get(0);
+			InputCursor futureCursor = getFarthestFreeCursorToLimited(leftOverCursor, zoomDetectRadius);
+			if (futureCursor != null){
 				float newDistance = Vector3D.distance(leftOverCursor.getPosition(),	futureCursor.getPosition());
 				if (newDistance < zoomDetectRadius) {//Check if other cursor is in distance 
 					this.oldDistance = newDistance;
 					this.getLock(futureCursor);
-					unUsedCursors.remove(futureCursor);
-					lockedCursors.add(futureCursor);
 					logger.debug(this.getName() + " we could lock another cursor! (ID:" + futureCursor.getId() +")");
 					logger.debug(this.getName() + " continue with different cursors (ID: " + futureCursor.getId() + ")" + " " + "(ID: " + leftOverCursor.getId() + ")");
 				}else{
-					this.endGesture(c, leftOverCursor, comp);
+					this.endGesture(c, leftOverCursor, positionEvent.getCurrentTarget());
 				}
-			}else{ //no more unused cursors on comp - End scale
-				this.endGesture(c, leftOverCursor, comp);
-			}
-			this.unLock(c); 
-		}else{ //cursor was not a scaling involved cursor
-			if (unUsedCursors.contains(c)){
-				unUsedCursors.remove(c);
+			}else{
+				this.endGesture(c, leftOverCursor, positionEvent.getCurrentTarget());
 			}
 		}
 	}
@@ -174,8 +150,6 @@ public class ZoomProcessor extends AbstractCursorProcessor {
 	 * @param comp the comp
 	 */
 	private void endGesture(InputCursor inputEndedCursor, InputCursor leftOverCursor, IMTComponent3D comp){
-		lockedCursors.clear();
-		unUsedCursors.add(leftOverCursor);
 		this.unLock(leftOverCursor);
 		this.fireGestureEvent(new ZoomEvent(this, MTGestureEvent.GESTURE_ENDED, comp, inputEndedCursor, leftOverCursor, 0f, comp.getViewingCamera()));
 	}
@@ -190,11 +164,10 @@ public class ZoomProcessor extends AbstractCursorProcessor {
 			logger.debug(this.getName() + " Recieved cursor LOCKED by higher priority signal - cursor ID: " + c.getId());
 		}
 		
-		if (lockedCursors.contains(c)){ //cursors was used here! -> we have to stop the gesture
-			//put all used cursors in the unused cursor list and clear the usedcursorlist
-			unUsedCursors.addAll(lockedCursors); 
-			lockedCursors.clear();
-			this.fireGestureEvent(new ZoomEvent(this, MTGestureEvent.GESTURE_ENDED, c.getCurrentTarget(), lockedCursors.get(0), lockedCursors.get(1), 0f, c.getCurrentTarget().getViewingCamera()));
+		List<InputCursor> locked = getLockedCursors();
+		if (locked.contains(c)){
+			this.fireGestureEvent(new ZoomEvent(this, MTGestureEvent.GESTURE_ENDED, c.getCurrentTarget(), locked.get(0), locked.get(1), 0f, c.getCurrentTarget().getViewingCamera()));			
+			this.unLockAllCursors();
 			logger.debug(this.getName() + " cursor:" + c.getId() + " cursor LOCKED. Was an active cursor in this gesture - we therefor have to stop this gesture!");
 		}
 	}
@@ -205,38 +178,32 @@ public class ZoomProcessor extends AbstractCursorProcessor {
 	public void cursorUnlocked(InputCursor c) {
 		logger.debug(this.getName() + " Recieved UNLOCKED signal for cursor ID: " + c.getId());
 		
-		if (lockedCursors.size() >= 2){ //we dont need the unlocked cursor, gesture still in progress
+		if (getLockedCursors().size() >= 2){ //we dont need the unlocked cursor, gesture still in progress
 			return;
 		}
 		
-		if (unUsedCursors.contains(c)){ //should always be true here!?
-			if (unUsedCursors.size() >= 2){ //we can try to resume the gesture
-				InputCursor firstCursor = unUsedCursors.get(0);
-				InputCursor secondCursor = unUsedCursors.get(1);
+		this.unLockAllCursors();
+		
+		List<InputCursor> availableCursors = getFreeComponentCursors();
+		if (availableCursors.size() >= 2){ //we can try to resume the gesture
+			InputCursor firstCursor = availableCursors.get(0);
+			InputCursor secondCursor = availableCursors.get(1);
 
-				//See if we can obtain a lock on both cursors
-				if (this.canLock(firstCursor, secondCursor)){
-					float newDistance = Vector3D.distance(firstCursor.getPosition(), secondCursor.getPosition());
-					if (newDistance < zoomDetectRadius) {//Check if other cursor is in distance 
-						this.oldDistance = newDistance;
-						this.getLock(firstCursor, secondCursor);
-
-						unUsedCursors.remove(firstCursor);
-						unUsedCursors.remove(secondCursor);
-						lockedCursors.add(firstCursor);
-						lockedCursors.add(secondCursor);
-						logger.debug(this.getName() + " we could lock cursors: " + firstCursor.getId() +", " + secondCursor.getId());
-						logger.debug(this.getName() + " continue with different cursors (ID: " + firstCursor.getId() + ")" + " " + "(ID: " + secondCursor.getId() + ")");
-						this.fireGestureEvent(new ZoomEvent(this, MTGestureEvent.GESTURE_DETECTED, c.getCurrentTarget(), firstCursor, secondCursor, 0f, c.getCurrentTarget().getViewingCamera() ));
-					}else{
-						logger.debug(this.getName() + " distance was too great between cursors: " + firstCursor.getId() +", " + secondCursor.getId() + " distance: " + newDistance);
-					}
+			//See if we can obtain a lock on both cursors
+			if (this.canLock(firstCursor, secondCursor)){
+				float newDistance = Vector3D.distance(firstCursor.getPosition(), secondCursor.getPosition());
+				if (newDistance < zoomDetectRadius) {//Check if other cursor is in distance 
+					this.oldDistance = newDistance;
+					this.getLock(firstCursor, secondCursor);
+					logger.debug(this.getName() + " we could lock cursors: " + firstCursor.getId() +", " + secondCursor.getId());
+					logger.debug(this.getName() + " continue with different cursors (ID: " + firstCursor.getId() + ")" + " " + "(ID: " + secondCursor.getId() + ")");
+					this.fireGestureEvent(new ZoomEvent(this, MTGestureEvent.GESTURE_DETECTED, c.getCurrentTarget(), firstCursor, secondCursor, 0f, c.getCurrentTarget().getViewingCamera() ));
 				}else{
-					logger.debug(this.getName() + " we could NOT lock cursors: " + firstCursor.getId() +", " + secondCursor.getId());
+					logger.debug(this.getName() + " distance was too great between cursors: " + firstCursor.getId() +", " + secondCursor.getId() + " distance: " + newDistance);
 				}
+			}else{
+				logger.debug(this.getName() + " we could NOT lock cursors: " + firstCursor.getId() +", " + secondCursor.getId());
 			}
-		}else{
-			logger.error(this.getName() + "hmmm - investigate why is cursor not in unusedList?");
 		}
 	}
 	
