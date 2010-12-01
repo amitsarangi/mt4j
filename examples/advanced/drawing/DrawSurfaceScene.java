@@ -80,7 +80,7 @@ public class DrawSurfaceScene extends AbstractScene {
 							public void processAction() {
 								boolean firstPoint = false;
 								Vector3D lastDrawnPoint = cursorToLastDrawnPoint.get(m);
-								Vector3D pos = new Vector3D(posEvt.getPosX(), posEvt.getPosY(), 0);
+								Vector3D pos = new Vector3D(posEvt.getScreenX(), posEvt.getScreenY(), 0);
 
 								if (lastDrawnPoint == null){
 									lastDrawnPoint = new Vector3D(pos);
@@ -123,7 +123,7 @@ public class DrawSurfaceScene extends AbstractScene {
 									mtApp.pushMatrix();
 									mtApp.translate(diff.x, diff.y);
 
-									//FIXME works only if brush upper left at 0,0
+									//NOTE: works only if brush upper left at 0,0
 									mtApp.translate(brushWidthHalf, brushHeightHalf);
 									mtApp.scale(brushScale);
 									

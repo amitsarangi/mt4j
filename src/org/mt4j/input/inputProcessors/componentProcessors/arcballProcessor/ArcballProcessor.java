@@ -17,7 +17,6 @@
  ***********************************************************************/
 package org.mt4j.input.inputProcessors.componentProcessors.arcballProcessor;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.media.opengl.GL;
@@ -30,11 +29,11 @@ import org.mt4j.input.inputData.MTFingerInputEvt;
 import org.mt4j.input.inputProcessors.IInputProcessor;
 import org.mt4j.input.inputProcessors.componentProcessors.AbstractComponentProcessor;
 import org.mt4j.input.inputProcessors.componentProcessors.AbstractCursorProcessor;
-import org.mt4j.util.math.ToolsMath;
 import org.mt4j.util.math.Matrix;
 import org.mt4j.util.math.Quaternion;
 import org.mt4j.util.math.Ray;
 import org.mt4j.util.math.Tools3D;
+import org.mt4j.util.math.ToolsMath;
 import org.mt4j.util.math.Vector3D;
 
 import processing.core.PApplet;
@@ -50,20 +49,11 @@ public class ArcballProcessor extends AbstractCursorProcessor {
 	private Matrix identityDummy;
 	private BoundingSphere bSphere;
 	
-//	private AbstractShape shape;
 	private MTComponent shape;
 	
 	private float sizeScaled = 1;
 	
 	private IArcball ac;
-	
-	/** The un used cursors. */
-	private List<InputCursor> unUsedCursors;
-	
-	/** The locked cursors. */
-	private List<InputCursor> lockedCursors;
-
-	
 	
 	/**
 	 * Instantiates a new arcball processor.
@@ -72,34 +62,12 @@ public class ArcballProcessor extends AbstractCursorProcessor {
 	 * @param shape the shape
 	 */
 	public ArcballProcessor(PApplet applet, AbstractShape shape){
-		/*
-		super();
-		this.applet = applet;
-		this.shape = shape;
-		
-		this.unUsedCursors = new ArrayList<InputCursor>();
-		this.lockedCursors = new ArrayList<InputCursor>();
-		
-		if (identityDummy == null)
-			identityDummy = new Matrix();
-		
-		this.bSphere = new BoundingSphere(shape);
-		this.bSphere.setRadius(bSphere.getRadius() * sizeScaled);
-//		((BoundingSphere)shape.getBoundingShape()).setRadius(((BoundingSphere)shape.getBoundingShape()).getRadius()*2);
-		
-		this.ac = null;
-		
-		this.setLockPriority(1);
-		*/
 		this(applet, shape, new BoundingSphere(shape));
 	}
 	
 	
 	public ArcballProcessor(PApplet applet, MTComponent component, BoundingSphere bSphere){
 		this.applet = applet;
-		
-		this.unUsedCursors = new ArrayList<InputCursor>();
-		this.lockedCursors = new ArrayList<InputCursor>();
 		
 		if (identityDummy == null)
 			identityDummy = new Matrix();
@@ -120,21 +88,14 @@ public class ArcballProcessor extends AbstractCursorProcessor {
 	
 	@Override
 	public void cursorStarted(InputCursor m, MTFingerInputEvt positionEvent) {
-		if (lockedCursors.size() >= 1){ //We assume that drag is already in progress and add this new cursor to the unUsedList 
-			unUsedCursors.add(m); 
-		}else{
-			if (unUsedCursors.size() == 0){ //Only start drag if no other finger on the component yet
-				if (this.canLock(m)){//See if we can obtain a lock on this cursor (depends on the priority)
-					this.getLock(m);
-					lockedCursors.add(m);
-					ac = new MyArcBall(m);
-					logger.debug(this.getName() + " successfully locked cursor (id:" + m.getId() + ")");
-					this.fireGestureEvent(new ArcBallGestureEvent(this, ArcBallGestureEvent.GESTURE_DETECTED, positionEvent.getCurrentTarget(), identityDummy));
-				}else{
-					unUsedCursors.add(m);
-				}
-			}else{
-				unUsedCursors.add(m);
+		InputCursor[] theLockedCursors = getLockedCursorsArray();
+		//if gesture isnt started and no other cursor on comp is locked by higher priority gesture -> start gesture
+		if (theLockedCursors.length == 0 && this.canLock(getCurrentComponentCursorsArray())){ 
+			if (this.canLock(m)){//See if we can obtain a lock on this cursor (depends on the priority)
+				this.getLock(m);
+				ac = new MyArcBall(m);
+				logger.debug(this.getName() + " successfully locked cursor (id:" + m.getId() + ")");
+				this.fireGestureEvent(new ArcBallGestureEvent(this, ArcBallGestureEvent.GESTURE_DETECTED, positionEvent.getCurrentTarget(), identityDummy));
 			}
 		}
 	}
@@ -142,7 +103,7 @@ public class ArcballProcessor extends AbstractCursorProcessor {
 
 	@Override
 	public void cursorUpdated(InputCursor m, MTFingerInputEvt positionEvent) {
-		if (lockedCursors.contains(m)){
+		if (getLockedCursors().contains(m)){
 			Matrix mat = ac.getNewRotation(m);
 			this.fireGestureEvent(new ArcBallGestureEvent(this, ArcBallGestureEvent.GESTURE_UPDATED, positionEvent.getCurrentTarget(), mat));
 		}
@@ -150,29 +111,17 @@ public class ArcballProcessor extends AbstractCursorProcessor {
 	
 	
 	@Override
-	public void cursorEnded(InputCursor m, MTFingerInputEvt positionEvent) {
-		logger.debug(this.getName() + " INPUT_ENDED RECIEVED - cursor: " + m.getId());
-		
-		if (lockedCursors.contains(m)){ //cursor was a actual drag cursor
-			lockedCursors.remove(m);
-			
-			if (unUsedCursors.size() > 0){ //check if there are other cursors on the component, we could use for drag
-				InputCursor otherCursor = unUsedCursors.get(0); //TODO cycle through all available unUsedCursors and try to claim one, maybe the first one is claimed but another isnt!
-				if (this.canLock(otherCursor)){ //Check if we have the priority to use this cursor
-					this.getLock(otherCursor);
-					unUsedCursors.remove(otherCursor);
-					lockedCursors.add(otherCursor);
-					ac = new MyArcBall(otherCursor);
-				}else{
-					this.fireGestureEvent(new ArcBallGestureEvent(this, ArcBallGestureEvent.GESTURE_ENDED, positionEvent.getCurrentTarget(), identityDummy));
-				}
+	public void cursorEnded(InputCursor c, MTFingerInputEvt positionEvent) {
+		logger.debug(this.getName() + " INPUT_ENDED RECIEVED - cursor: " + c.getId());
+		if (getLockedCursors().contains(c)){ //cursors was a actual gesture cursors
+			//Check if we can resume the gesture with another cursor
+			InputCursor[] availableCursors = getFreeComponentCursorsArray();
+			if (availableCursors.length > 0 && this.canLock(getCurrentComponentCursorsArray())){ 
+				InputCursor otherCursor = availableCursors[0]; 
+				ac = new MyArcBall(otherCursor);
+				this.getLock(otherCursor);
 			}else{
 				this.fireGestureEvent(new ArcBallGestureEvent(this, ArcBallGestureEvent.GESTURE_ENDED, positionEvent.getCurrentTarget(), identityDummy));
-			}
-			this.unLock(m);
-		}else{ //cursor was not used for dragging
-			if (unUsedCursors.contains(m)){
-				unUsedCursors.remove(m);
 			}
 		}
 	}
@@ -188,16 +137,8 @@ public class ArcballProcessor extends AbstractCursorProcessor {
 			logger.debug(this.getName() + " Recieved cursor LOCKED by higher priority signal - cursor ID: " + c.getId());
 		}
 
-		if (lockedCursors.contains(c)){ //cursor was a actual gesture cursor
-			lockedCursors.remove(c);
-			this.fireGestureEvent(new ArcBallGestureEvent(this, ArcBallGestureEvent.GESTURE_ENDED, c.getCurrentTarget(), identityDummy));
-			unUsedCursors.add(c);
-			logger.debug(this.getName() + " cursor:" + c.getId() + " cursor LOCKED. Was an active cursor in this gesture!");
-		}else{ //TODO remove else, it is pretty useless
-			if (unUsedCursors.contains(c)){
-				logger.debug(this.getName() + " cursor LOCKED. But it was NOT an active cursor in this gesture!");
-			}
-		}
+		this.fireGestureEvent(new ArcBallGestureEvent(this, ArcBallGestureEvent.GESTURE_ENDED, c.getCurrentTarget(), identityDummy));
+		logger.debug(this.getName() + " cursor:" + c.getId() + " cursor LOCKED. Was an active cursor in this gesture!");
 	}
 
 
@@ -206,21 +147,14 @@ public class ArcballProcessor extends AbstractCursorProcessor {
 	public void cursorUnlocked(InputCursor c) {
 		logger.debug(this.getName() + " Recieved UNLOCKED signal for cursor ID: " + c.getId());
 
-		if (lockedCursors.size() >= 1){ //we don't need the unlocked cursor, gesture still in progress
+		List<InputCursor> locked = getLockedCursors();
+		if (locked.size() >= 1)
 			return;
-		}
 		
-		if (unUsedCursors.contains(c)){
-			if (this.canLock(c)){
-				this.getLock(c);
-				unUsedCursors.remove(c);
-				lockedCursors.add(c);
-				ac = new MyArcBall(c);
-				this.fireGestureEvent(new ArcBallGestureEvent(this, ArcBallGestureEvent.GESTURE_DETECTED, c.getCurrentTarget(), identityDummy));
-				logger.debug(this.getName() + " can resume its gesture with cursor: " + c.getId());
-			}else{
-				logger.debug(this.getName() + " still in progress - we dont need the unlocked cursor" );
-			}
+		if (getFreeComponentCursors().size() > 0 && this.canLock(getCurrentComponentCursorsArray())){ 
+			ac = new MyArcBall(c);
+			this.getLock(c);
+			this.fireGestureEvent(new ArcBallGestureEvent(this, ArcBallGestureEvent.GESTURE_DETECTED, c.getCurrentTarget(), identityDummy));
 		}
 	}
 
@@ -720,16 +654,10 @@ public class ArcballProcessor extends AbstractCursorProcessor {
 //
 //	}
 	
-	
-	
-	
 	@Override
 	public String getName() {
 		return "Arcball Processor";
 	}
-
-
-
 
 
 }

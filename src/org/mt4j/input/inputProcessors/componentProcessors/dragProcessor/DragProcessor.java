@@ -99,7 +99,7 @@ public class DragProcessor extends AbstractCursorProcessor {
 	@Override
 	public void cursorEnded(InputCursor c, MTFingerInputEvt fe) {
 		IMTComponent3D comp = fe.getTarget();
-		logger.debug(this.getName() + " INPUT_ENDED RECIEVED - MOTION: " + c.getId());
+		logger.debug(this.getName() + " INPUT_ENDED RECIEVED - CURSOR: " + c.getId());
 		if (getLockedCursors().contains(c)){ //cursors was a actual gesture cursors
 			dc.updateDragPosition();
 			//Check if we can resume the gesture with another cursor
@@ -127,9 +127,9 @@ public class DragProcessor extends AbstractCursorProcessor {
 	@Override
 	public void cursorLocked(InputCursor c, IInputProcessor p) {
 		if (p instanceof AbstractComponentProcessor){
-			logger.debug(this.getName() + " Recieved MOTION LOCKED by (" + ((AbstractComponentProcessor)p).getName()  + ") - cursors ID: " + c.getId());
+			logger.debug(this.getName() + " Recieved cursor LOCKED by (" + ((AbstractComponentProcessor)p).getName()  + ") - cursors ID: " + c.getId());
 		}else{
-			logger.debug(this.getName() + " Recieved MOTION LOCKED by higher priority signal - cursors ID: " + c.getId());
+			logger.debug(this.getName() + " Recieved cursor LOCKED by higher priority signal - cursors ID: " + c.getId());
 		}
 		
 		if (dc != null && dc.getCursor().equals(c)){ 
@@ -197,29 +197,28 @@ public class DragProcessor extends AbstractCursorProcessor {
 				/**
 				 * Instantiates a new drag context.
 				 * 
-				 * @param m the m
+				 * @param c the cursor
 				 * @param dragObject the drag object
 				 */
-				public DragContext(InputCursor m, IMTComponent3D dragObject_){	
+				public DragContext(InputCursor c, IMTComponent3D dragObject_){	
 					this.dragObject = dragObject_;
-					this.m = m;
+					this.m = c;
 					gestureAborted = false;
 					
-					this.dragObject = m.getCurrentEvent().getCurrentTarget();
+					this.dragObject = c.getCurrentEvent().getCurrentTarget();
 					
 					//Calculate the normal of the plane we will be dragging at (useful if camera isnt default)
 					this.dragPlaneNormal =  dragObject.getViewingCamera().getPosition().getSubtracted(dragObject.getViewingCamera().getViewCenterPos()).normalizeLocal();
 					
 					//Set the Drag Startposition
-					Vector3D interSectP = getIntersection(applet, dragObject, m);
+					Vector3D interSectP = getIntersection(applet, dragObject, c);
 					
 					if (interSectP != null)
 						this.startPosition = interSectP;
 					else{
 						logger.warn(getName() + " Drag StartPoint Null -> aborting drag");
-//						Vector3D interSectPssss = getIntersection(applet, dragObject, m); //FIXME REMOVE
 						gestureAborted = true; 
-						this.startPosition = new Vector3D(0,0,0); //TODO ABORT GESTURE!
+						this.startPosition = new Vector3D(0,0,0); 
 					}
 					
 					this.newPosition = startPosition.getCopy();
