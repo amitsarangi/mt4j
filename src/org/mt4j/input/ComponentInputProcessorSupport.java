@@ -34,10 +34,19 @@ import processing.core.PApplet;
  * @author Christopher Ruff
  */
 public class ComponentInputProcessorSupport implements IMTInputEventListener /*, IGestureEventListener*/ {
+	
+	/** The registered processors. */
 	private List<AbstractComponentProcessor> registeredProcessors;
 	
+	/** The associated component. */
 	private MTComponent associatedComponent;
 	
+	/**
+	 * Instantiates a new component input processor support.
+	 *
+	 * @param graphicsContext the graphics context
+	 * @param associatedComponent the associated component
+	 */
 	public ComponentInputProcessorSupport(PApplet graphicsContext, MTComponent associatedComponent) {
 		super();
 				
@@ -46,6 +55,9 @@ public class ComponentInputProcessorSupport implements IMTInputEventListener /*,
 	}
 
 
+	/* (non-Javadoc)
+	 * @see org.mt4j.input.IMTInputEventListener#processInputEvent(org.mt4j.input.inputData.MTInputEvent)
+	 */
 	public boolean processInputEvent(MTInputEvent inEvt){
 //		/*
 		boolean handled = false;
@@ -71,6 +83,11 @@ public class ComponentInputProcessorSupport implements IMTInputEventListener /*,
 	}
 	
 	
+	/**
+	 * Register input processor.
+	 *
+	 * @param inputProcessor the input processor
+	 */
 	public synchronized void registerInputProcessor(AbstractComponentProcessor inputProcessor){
 		if (!this.registeredProcessors.contains(inputProcessor)){
 			this.registeredProcessors.add(inputProcessor);
@@ -84,12 +101,22 @@ public class ComponentInputProcessorSupport implements IMTInputEventListener /*,
 		}
 	}
 	
+	/**
+	 * Unregister input processor.
+	 *
+	 * @param inputProcessor the input processor
+	 */
 	public synchronized void unregisterInputProcessor(AbstractComponentProcessor inputProcessor){
 		if (this.registeredProcessors.contains(inputProcessor)){
 			this.registeredProcessors.remove(inputProcessor);
 		}
 	}
 	
+	/**
+	 * Gets the input processors.
+	 *
+	 * @return the input processors
+	 */
 	public AbstractComponentProcessor[] getInputProcessors(){
 		return this.registeredProcessors.toArray(new AbstractComponentProcessor[this.registeredProcessors.size()]);
 	}

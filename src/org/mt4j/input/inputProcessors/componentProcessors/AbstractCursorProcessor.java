@@ -120,7 +120,6 @@ public abstract class AbstractCursorProcessor extends AbstractComponentProcessor
 		switch (posEvt.getId()) {
 		case MTFingerInputEvt.INPUT_DETECTED:
 //			activeCursors.add(c);
-//			c.registerGeneralInterest(this);
 			cursorStarted(c, posEvt);
 			break;
 		case MTFingerInputEvt.INPUT_UPDATED:
@@ -132,7 +131,6 @@ public abstract class AbstractCursorProcessor extends AbstractComponentProcessor
 //			if (c.isLockedBy(this)){
 				unLock(c);
 //			}
-//			c.unregisterGeneralInterest(this);
 			activeCursorsWithEndedOnes.remove(c);
 			break;
 		default:
@@ -236,7 +234,7 @@ public abstract class AbstractCursorProcessor extends AbstractComponentProcessor
 	}
 	
 	/**
-	 * Return all the component cursors that this component processor has successfully locked.
+	 * Return all the component cursors that this component processor has currently locked successfully.
 	 * @return the locked cursors
 	 */
 	public List<InputCursor> getLockedCursors(){
@@ -254,7 +252,7 @@ public abstract class AbstractCursorProcessor extends AbstractComponentProcessor
 	 * Releases all cursors that this component input processor currently holds a lock on.
 	 */
 	public void unLockAllCursors(){
-		//FIXME we should also unlock the cursors that have input_ended, so that processors with lower priority can start the gesture and end it correctly aferwards
+		//we should also unlock the cursors that have input_ended, so that processors with lower priority can start the gesture and end it correctly aferwards
 //		List<InputCursor> activeCursorsOnComp = acp.getActiveComponentCursors(); 
 		List<InputCursor> activeCursorsOnCompWithENDED = this.activeCursorsWithEndedOnes;
 		for (InputCursor inputCursor : activeCursorsOnCompWithENDED) {

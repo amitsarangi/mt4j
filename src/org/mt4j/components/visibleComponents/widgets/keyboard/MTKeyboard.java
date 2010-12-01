@@ -556,16 +556,20 @@ public class MTKeyboard extends MTRoundRectangle {
 		dp.setLockPriority(0.5f);
 		registerInputProcessor(dp);
 		addGestureListener(DragProcessor.class, new DefaultDragAction());
+		dp.setEnableForBubbledEvents(true); //FIXME TEST
 		
 		RotateProcessor rp = new RotateProcessor(getRenderer());
 		rp.setLockPriority(0.8f);
 		registerInputProcessor(rp);
 		addGestureListener(RotateProcessor.class, new DefaultRotateAction());
+		rp.setEnableForBubbledEvents(true);  //FIXME TEST
 		
 		ScaleProcessor sp = new ScaleProcessor(getRenderer());
 		sp.setLockPriority(0.8f);
 		registerInputProcessor(sp);
 		addGestureListener(ScaleProcessor.class, new DefaultScaleAction());
+		sp.setEnableForBubbledEvents(true);  //FIXME TEST
+		
 	}
 	
 	

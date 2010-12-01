@@ -56,12 +56,23 @@ public abstract class AbstractComponentProcessor implements IMTInputEventListene
 	private boolean debug;
 	
 	private boolean stopPropagation;
+	
+	//FIXME test
+	private boolean enableForBubbledEvents;
+	public boolean isEnableForBubbledEvents() {
+		return enableForBubbledEvents;
+	}
+	public void setEnableForBubbledEvents(boolean enableForBubbledEvents) {
+		this.enableForBubbledEvents = enableForBubbledEvents;
+	}
+	////
+	
 
 	/**
 	 * Instantiates a new abstract component input processor.
 	 */
 	public AbstractComponentProcessor() {
-		this(true);
+		this(false);
 	}
 
 	/**
@@ -75,6 +86,8 @@ public abstract class AbstractComponentProcessor implements IMTInputEventListene
 		this.debug = false;
 
 		this.stopPropagation = stopPropagation;
+		
+		this.enableForBubbledEvents = false;
 	}
 
 
@@ -85,7 +98,15 @@ public abstract class AbstractComponentProcessor implements IMTInputEventListene
 	public boolean processInputEvent(MTInputEvent inEvt){
 //	public void processInputEvent(MTInputEvent inEvt){
 		if(!this.isDisabled() && inEvt.hasTarget()){ //Allow component processors to recieve inputevts only if they have a target (Canvas is target if null is picked..)
-			this.processInputEvtImpl(inEvt);
+			
+			//FIXME TEST
+			if (enableForBubbledEvents){
+				this.processInputEvtImpl(inEvt);
+			}else{
+				if (inEvt.getTarget().equals(inEvt.getCurrentTarget())){
+					this.processInputEvtImpl(inEvt);
+				}
+			}
 			
 			//FIXME TEST 
 			if (this.stopPropagation){
