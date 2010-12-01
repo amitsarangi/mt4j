@@ -314,6 +314,34 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 	/** The bounds */
 	private IBoundingShape bounds;
 	
+	/**
+	 * Sets the bounding shape.
+	 * 
+	 * @param boundingShape the new bounding shape
+	 * @deprecated renamed to <code>setBounds</code>
+	 */
+	public void setBoundingShape(IBoundingShape boundingShape){
+		this.bounds = boundingShape;
+		this.setBoundsGlobalDirty(true);
+	}	
+	/**
+	 * Gets the bounding shape.
+	 * 
+	 * @return the bounding shape
+	 * @deprecated renamed to <code>getBounds</code>
+	 */
+	public IBoundingShape getBoundingShape(){
+		return this.bounds;
+	}
+	/**
+	 * Checks if is bounding shape set.
+	 * @return true, if is bounding shape set
+	 * @deprecated renamed to <code>hasBounds</code>
+	 */
+	public boolean isBoundingShapeSet(){
+		return this.bounds != null;
+	}
+	
 	
 	/**
 	 * Sets the bounding shape.

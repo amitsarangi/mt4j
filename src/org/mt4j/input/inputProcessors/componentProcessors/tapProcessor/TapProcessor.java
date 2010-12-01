@@ -17,10 +17,9 @@
  ***********************************************************************/
 package org.mt4j.input.inputProcessors.componentProcessors.tapProcessor;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import org.mt4j.components.MTCanvas;
-import org.mt4j.components.interfaces.IMTComponent3D;
 import org.mt4j.input.inputData.InputCursor;
 import org.mt4j.input.inputData.MTFingerInputEvt;
 import org.mt4j.input.inputProcessors.IInputProcessor;
@@ -34,7 +33,7 @@ import processing.core.PApplet;
 
 /**
  * The Class TapProcessor. Tap multitouch gesture. Triggered on a component
- * that is tapped with a finger.
+ * that is tapped with a finger. Also allows to recognized double-tapps if the "enableDoubleTap" is set to true.
  * Fires TapEvent gesture events.
  * @author Christopher Ruff
  */
@@ -45,12 +44,6 @@ public class TapProcessor extends AbstractCursorProcessor {
 	
 	/** The max finger up dist. */
 	private float maxFingerUpDist;
-	
-	/** The un used cursors. */
-	private ArrayList<InputCursor> unUsedCursors;
-	
-	/** The locked cursors. */
-	private ArrayList<InputCursor> lockedCursors;
 	
 	/** The button down screen pos. */
 	private Vector3D buttonDownScreenPos;
@@ -119,8 +112,6 @@ public class TapProcessor extends AbstractCursorProcessor {
 		super(stopEventPropagation);
 		this.applet = pa;
 		this.maxFingerUpDist = maxFingerUpDistance;
-		this.unUsedCursors 	= new ArrayList<InputCursor>();
-		this.lockedCursors 	= new ArrayList<InputCursor>();
 		this.setLockPriority(1);
 		this.setDebug(false);
 		
@@ -135,21 +126,14 @@ public class TapProcessor extends AbstractCursorProcessor {
 	 */
 	@Override
 	public void cursorStarted(InputCursor m, MTFingerInputEvt positionEvent) {
-		if (lockedCursors.size() >= 1){ //We assume that the gesture is already in progress and add this new cursor to the unUsedList 
-			unUsedCursors.add(m); 
-		}else{
-			if (unUsedCursors.size() == 0){ //Only start gesture if no other finger on the component yet
-				if (this.canLock(m)){//See if we can obtain a lock on this cursor (depends on the priority)
-					this.getLock(m);
-					logger.debug(this.getName() + " successfully locked cursor (id:" + m.getId() + ")");
-					lockedCursors.add(m);
-					buttonDownScreenPos = m.getPosition();
-					this.fireGestureEvent(new TapEvent(this, MTGestureEvent.GESTURE_DETECTED, positionEvent.getCurrentTarget(), m, buttonDownScreenPos, TapEvent.BUTTON_DOWN));
-				}else{
-					unUsedCursors.add(m);
-				}
-			}else{
-				unUsedCursors.add(m);
+		InputCursor[] theLockedCursors = getLockedCursorsArray();
+		//if gesture isnt started and no other cursor on comp is locked by higher priority gesture -> start gesture
+		if (theLockedCursors.length == 0 && this.canLock(getCurrentComponentCursorsArray())){ 
+			if (this.canLock(m)){//See if we can obtain a lock on this cursor (depends on the priority)
+				this.getLock(m);
+				logger.debug(this.getName() + " successfully locked cursor (id:" + m.getId() + ")");
+				buttonDownScreenPos = m.getPosition();
+				this.fireGestureEvent(new TapEvent(this, MTGestureEvent.GESTURE_DETECTED, positionEvent.getCurrentTarget(), m, buttonDownScreenPos, TapEvent.BUTTON_DOWN));
 			}
 		}
 	}
@@ -160,12 +144,11 @@ public class TapProcessor extends AbstractCursorProcessor {
 	 */
 	@Override
 	public void cursorUpdated(InputCursor c, MTFingerInputEvt positionEvent) {
-		if (lockedCursors.contains(c)){ //cursor is a actual used cursor
+		if (getLockedCursors().contains(c)){
 			Vector3D screenPos = c.getPosition();
 			//logger.debug("Distance between buttondownScreenPos: " + buttonDownScreenPos + " and upScrPos: " + buttonUpScreenPos +  " is: " + Vector3D.distance(buttonDownScreenPos, buttonUpScreenPos));
 			if (Vector3D.distance2D(buttonDownScreenPos, screenPos) > this.maxFingerUpDist){
-				logger.debug("DISTANCE TOO FAR");
-				lockedCursors.remove(c);
+				logger.debug(this.getName() + " DISTANCE TOO FAR");
 				this.endGesture(c, positionEvent);
 				this.unLock(c); 
 			}
@@ -178,28 +161,15 @@ public class TapProcessor extends AbstractCursorProcessor {
 	 */
 	@Override
 	public void cursorEnded(InputCursor m, MTFingerInputEvt positionEvent) {
-		IMTComponent3D comp = positionEvent.getTarget();
 		logger.debug(this.getName() + " INPUT_ENDED RECIEVED - CURSOR: " + m.getId());
-
-		if (lockedCursors.contains(m)){ //cursor was a actual gesture cursor
-			lockedCursors.remove(m);
-			if (unUsedCursors.size() > 0){ //check if there are other cursors on the component, we could use 
-				InputCursor otherCursor = unUsedCursors.get(0); //TODO cycle through all available unUsedCursors and try to lock one, maybe the first one is lock but another isnt!
-				if (this.canLock(otherCursor)){ //Check if we have the priority to use this cursor
-					this.getLock(otherCursor);
-					unUsedCursors.remove(otherCursor);
-					lockedCursors.add(otherCursor);
-					//TODO fire started? maybe not.. do we have to?
-				}else{
-					this.endGesture(m, positionEvent);
-				}
+		List<InputCursor> locked = this.getLockedCursors();
+		if (locked.contains(m)){
+			InputCursor[] availableCursors = getFreeComponentCursorsArray();
+			if (availableCursors.length > 0 && this.canLock(getCurrentComponentCursorsArray())){ 
+				InputCursor otherCursor = availableCursors[0]; 
+				this.getLock(otherCursor);
 			}else{
 				this.endGesture(m, positionEvent);
-			}
-			this.unLock(m); //FIXME TEST
-		}else{ //cursor was not used here
-			if (unUsedCursors.contains(m)){
-				unUsedCursors.remove(m);
 			}
 		}
 	}
@@ -221,7 +191,7 @@ public class TapProcessor extends AbstractCursorProcessor {
 			return;
 		}
 		
-		Vector3D intersection = positionEvent.getCurrentTarget().getIntersectionGlobal(Tools3D.getCameraPickRay(applet, positionEvent.getCurrentTarget(), m.getCurrentEvent().getPosX(), m.getCurrentEvent().getPosY()));
+		Vector3D intersection = positionEvent.getCurrentTarget().getIntersectionGlobal(Tools3D.getCameraPickRay(applet, positionEvent.getCurrentTarget(), m.getCurrentEvent().getScreenX(), m.getCurrentEvent().getScreenY()));
 		//logger.debug("Distance between buttondownScreenPos: " + buttonDownScreenPos + " and upScrPos: " + buttonUpScreenPos +  " is: " + Vector3D.distance(buttonDownScreenPos, buttonUpScreenPos));
 		//Check if at finger_Up the cursor is still on that object or if the cursor has moved too much 
 		if ((intersection != null || positionEvent.getCurrentTarget() instanceof MTCanvas)
@@ -261,20 +231,8 @@ public class TapProcessor extends AbstractCursorProcessor {
 			logger.debug(this.getName() + " Recieved CURSOR LOCKED by higher priority signal - cursor ID: " + m.getId());
 		}
 
-		if (lockedCursors.contains(m)){ //cursor was in use here
-			lockedCursors.remove(m);
-			unUsedCursors.add(m);
-			logger.debug(this.getName() + " cursor:" + m.getId() + " CURSOR LOCKED. Was an active cursor in this gesture!");
-			
-			//FIXME TEST -> dont allow resuming of gesture if the cursor was locked by a higher priority gesture
-			//-> fire gesture ended
-			this.fireGestureEvent(new TapEvent(this, MTGestureEvent.GESTURE_ENDED, m.getCurrentEvent().getCurrentTarget(), m, new Vector3D(m.getCurrentEvent().getPosX(), m.getCurrentEvent().getPosY()), TapEvent.BUTTON_UP));	
-			
-		}else{ //Else is just for debug
-			if (unUsedCursors.contains(m)){
-				logger.debug(this.getName() + " CURSOR LOCKED. But it was NOT an active cursor in this gesture!");
-			}
-		}
+		logger.debug(this.getName() + " cursor:" + m.getId() + " CURSOR LOCKED. Was an active cursor in this gesture!");
+		this.fireGestureEvent(new TapEvent(this, MTGestureEvent.GESTURE_ENDED, m.getCurrentEvent().getCurrentTarget(), m, new Vector3D(m.getCurrentEvent().getScreenX(), m.getCurrentEvent().getScreenY()), TapEvent.BUTTON_UP));
 	}
 
 
@@ -286,24 +244,10 @@ public class TapProcessor extends AbstractCursorProcessor {
 	public void cursorUnlocked(InputCursor m) {
 		logger.debug(this.getName() + " Recieved UNLOCKED signal for cursor ID: " + m.getId());
 
-		if (lockedCursors.size() >= 1){ //we dont need the unlocked cursor, gesture still in progress
+		if (getLockedCursors().size() >= 1){ //we dont need the unlocked cursor, gesture still in progress
 			logger.debug(this.getName() + " still in progress - we dont need the unlocked cursor" );
 			return;
 		}
-
-		/*
-		//FIXME TEST -> dont allow resuming of tap if the tap cursor was locked by a higher priority gesture
-		//-> dont resume gesture here
-		if (unUsedCursors.contains(m)){
-			if (this.canLock(m)){
-				this.getLock(m);
-				unUsedCursors.remove(m);
-				lockedCursors.add(m);
-				//TODO fire started? maybe not.. do we have to?
-				logger.debug(this.getName() + " can resume its gesture with cursor: " + m.getId());
-			}
-		}
-		*/
 	}
 
 	
@@ -376,9 +320,4 @@ public class TapProcessor extends AbstractCursorProcessor {
 	public void setDoubleTapTime(int doubleTapTime) {
 		this.doubleTapTime = doubleTapTime;
 	}
-
-	
-	
-	
-
 }
