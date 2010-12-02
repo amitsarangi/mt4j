@@ -96,7 +96,7 @@ public class TapProcessor extends AbstractCursorProcessor {
 	 * @param doubleTapTime the double tap time
 	 */
 	public TapProcessor(PApplet pa, float maxFingerUpDistance, boolean enableDoubleTap, int doubleTapTime){
-		this(pa, maxFingerUpDistance, enableDoubleTap, doubleTapTime, true);
+		this(pa, maxFingerUpDistance, enableDoubleTap, doubleTapTime, false);
 	}
 
 	/**

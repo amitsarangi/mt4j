@@ -35,7 +35,11 @@ public class InertiaDragAction implements IGestureEventListener {
 			switch (de.getId()) {
 			case DragEvent.GESTURE_DETECTED:
 				break;
+			case DragEvent.GESTURE_RESUMED:
+				break;
 			case DragEvent.GESTURE_UPDATED:
+				break;
+			case DragEvent.GESTURE_CANCELED:
 				break;
 			case DragEvent.GESTURE_ENDED:
 				Vector3D vel = de.getDragCursor().getVelocityVector(integrationTime);

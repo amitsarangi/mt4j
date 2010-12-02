@@ -66,11 +66,11 @@ public class TapAndHoldProcessor extends AbstractCursorProcessor {
 	 * @param pa the pa
 	 */
 	public TapAndHoldProcessor(PApplet pa) {
-		this(pa, 1800, true);
+		this(pa, 1800, false);
 	}
 	
 	public TapAndHoldProcessor(PApplet pa, int duration){
-		this(pa, duration, true);
+		this(pa, duration, false);
 	}
 	
 	/**

@@ -36,13 +36,19 @@ public abstract class MTGestureEvent extends MTInputEvent {
 //	private InputMotion[] motions;
 	
 	/** The Constant GESTURE_DETECTED. */
-	public static final int GESTURE_DETECTED = 0;
+	public static final int GESTURE_DETECTED 	= 0;
 	
 	/** The Constant GESTURE_UPDATED. */
-	public static final int GESTURE_UPDATED = 1;
+	public static final int GESTURE_UPDATED 	= 1;
 	
 	/** The Constant GESTURE_ENDED. */
-	public static final int GESTURE_ENDED 	= 2;
+	public static final int GESTURE_ENDED		= 2;
+	
+	
+	public static final int GESTURE_CANCELED	= 3;
+	
+	
+	public static final int GESTURE_RESUMED		= 4;
 	
 	/**
 	 * Instantiates a new gesture event.

@@ -559,7 +559,6 @@ public class MTCanvas extends MTComponent implements IHitTestInfoProvider{
 	 * Class used for the pickobject cache.
 	 */
 	private class Position{
-		
 		/** The y. */
 		float x,y;
 		
@@ -582,25 +581,11 @@ public class MTCanvas extends MTComponent implements IHitTestInfoProvider{
 		public float getX() {return x;}
 		
 		/**
-		 * Sets the x.
-		 * 
-		 * @param x the new x
-		 */
-		public void setX(float x) {this.x = x;}
-		
-		/**
 		 * Gets the y.
 		 * 
 		 * @return the y
 		 */
 		public float getY() {return y;}
-		
-		/**
-		 * Sets the y.
-		 * 
-		 * @param y the new y
-		 */
-		public void setY(float y) {this.y = y;}
 		
 		/* (non-Javadoc)
 		 * @see java.lang.Object#equals(java.lang.Object)

@@ -239,7 +239,8 @@ public class MTKeyboard extends MTRoundRectangle {
             keyList.add(key);
             key.setGestureAllowance(TapProcessor.class, true);
             TapProcessor tp = new TapProcessor(pa);
-            tp.setLockPriority(1.5f); //FIXME TEST
+//            tp.setLockPriority(1.5f); //FIXME TEST
+            tp.setLockPriority(5f); //FIXME TEST
             tp.setStopPropagation(false);
             key.registerInputProcessor(tp);
             key.addGestureListener(TapProcessor.class, keyClickAction);
@@ -553,22 +554,22 @@ public class MTKeyboard extends MTRoundRectangle {
 		this.addGestureListener(DragProcessor.class, new InertiaDragAction());
 		
 		DragProcessor dp = new DragProcessor(getRenderer());
-		dp.setLockPriority(0.5f);
+//		dp.setLockPriority(0.5f);
 		registerInputProcessor(dp);
 		addGestureListener(DragProcessor.class, new DefaultDragAction());
-		dp.setEnableForBubbledEvents(true); //FIXME TEST
+		dp.setBubbledEventsEnabled(true); //FIXME TEST
 		
 		RotateProcessor rp = new RotateProcessor(getRenderer());
-		rp.setLockPriority(0.8f);
+//		rp.setLockPriority(0.8f);
 		registerInputProcessor(rp);
 		addGestureListener(RotateProcessor.class, new DefaultRotateAction());
-		rp.setEnableForBubbledEvents(true);  //FIXME TEST
+		rp.setBubbledEventsEnabled(true);  //FIXME TEST
 		
 		ScaleProcessor sp = new ScaleProcessor(getRenderer());
-		sp.setLockPriority(0.8f);
+//		sp.setLockPriority(0.8f);
 		registerInputProcessor(sp);
 		addGestureListener(ScaleProcessor.class, new DefaultScaleAction());
-		sp.setEnableForBubbledEvents(true);  //FIXME TEST
+		sp.setBubbledEventsEnabled(true);  //FIXME TEST
 		
 	}
 	
@@ -648,7 +649,7 @@ public class MTKeyboard extends MTRoundRectangle {
 		public boolean processGestureEvent(MTGestureEvent g) {
 			if (g instanceof TapEvent){
 				TapEvent clickEvent = (TapEvent)g;
-				IMTComponent3D clicked = clickEvent.getTargetComponent();
+				IMTComponent3D clicked = clickEvent.getTarget();
 				
 				if (clicked != null && clicked instanceof MTKey){
 					MTKey clickedKey = (MTKey)clicked;

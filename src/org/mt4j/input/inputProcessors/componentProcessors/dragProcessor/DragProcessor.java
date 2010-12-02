@@ -42,7 +42,7 @@ public class DragProcessor extends AbstractCursorProcessor {
 	private DragContext dc;
 	
 	public DragProcessor(PApplet graphicsContext){
-		this(graphicsContext, true);
+		this(graphicsContext, false);
 	}
 
 	/**
@@ -133,7 +133,7 @@ public class DragProcessor extends AbstractCursorProcessor {
 		}
 		
 		if (dc != null && dc.getCursor().equals(c)){ 
-			this.fireGestureEvent(new DragEvent(this, MTGestureEvent.GESTURE_ENDED, dc.getCursor().getCurrentTarget(), dc.getCursor(), dc.getLastPosition(), dc.getNewPosition()));
+			this.fireGestureEvent(new DragEvent(this, MTGestureEvent.GESTURE_CANCELED, dc.getCursor().getCurrentTarget(), dc.getCursor(), dc.getLastPosition(), dc.getNewPosition()));
 			dc = null;
 			logger.debug(this.getName() + " cursors:" + c.getId() + " CURSOR LOCKED. Was an locked cursor in this gesture!");
 		}
@@ -156,7 +156,7 @@ public class DragProcessor extends AbstractCursorProcessor {
 			if (!newContext.isGestureAborted()){
 				dc = newContext;
 				this.getLock(c);
-				this.fireGestureEvent(new DragEvent(this, MTGestureEvent.GESTURE_DETECTED, c.getCurrentTarget(), c, dc.getLastPosition(), dc.getNewPosition()));
+				this.fireGestureEvent(new DragEvent(this, MTGestureEvent.GESTURE_RESUMED, c.getCurrentTarget(), c, dc.getLastPosition(), dc.getNewPosition()));
 				logger.debug(this.getName() + " can resume its gesture with cursors: " + c.getId());
 			}else{
 				dc = null;

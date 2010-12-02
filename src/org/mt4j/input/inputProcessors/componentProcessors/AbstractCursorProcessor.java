@@ -48,7 +48,7 @@ public abstract class AbstractCursorProcessor extends AbstractComponentProcessor
 	
 	
 	public AbstractCursorProcessor(){
-		 this(true);
+		 this(false);
 	}
 	
 	
@@ -102,18 +102,30 @@ public abstract class AbstractCursorProcessor extends AbstractComponentProcessor
 		for (Object element : cursorLockLostKeys) {
 			InputCursor inputCursor = (InputCursor) element;
 			AbstractCursorProcessor ip = this.cursorToLockLostInputProcessor.get(element);
+			
+			//so we can use getCurrentTarget() in the processors method
+			//because  the current target may have changed through bubbling
+			IMTComponent3D saved = inputCursor.getCurrentTarget(); //FIXME Hack
+			inputCursor.getCurrentEvent().setCurrentTarget(inputEvent.getCurrentTarget()); //FIXME Hack
+			
 			this.cursorLocked(inputCursor, ip);
+			
+			inputCursor.getCurrentEvent().setCurrentTarget(saved); //FIXME Hack
+			
+			posEvt.getCursor(); //FIXME REMOVE
 		}
 		this.cursorToLockLostInputProcessor.clear();
 		
-//		while (!this.cursorToLockLostInputProcessor.isEmpty()){
-//			InputCursor cursorLockLost = this.cursorLocked.poll();
-//			this.cursorLocked(cursorLockLost, lockingprocessor)
-//		}
 		
 		while (!this.cursorUnlocked.isEmpty()){
-			InputCursor cursorUnloccked = this.cursorUnlocked.pollFirst();
-			this.cursorUnlocked(cursorUnloccked);
+			InputCursor cursorUnlocked = this.cursorUnlocked.pollFirst();
+			
+			IMTComponent3D saved = cursorUnlocked.getCurrentTarget(); //FIXME Hack
+			cursorUnlocked.getCurrentEvent().setCurrentTarget(inputEvent.getCurrentTarget()); //FIXME Hack
+			
+			this.cursorUnlocked(cursorUnlocked);
+			
+			cursorUnlocked.getCurrentEvent().setCurrentTarget(saved); //FIXME Hack
 		}
 		////////////////////////////
 		

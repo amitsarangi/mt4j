@@ -74,6 +74,7 @@ public class DefaultDragAction implements IGestureEventListener,ICollisionAction
 			
 			switch (dragEvent.getId()) {
 			case MTGestureEvent.GESTURE_DETECTED:
+			case MTGestureEvent.GESTURE_RESUMED:
 				//Put target on top -> draw on top of others
 				if (dragTarget instanceof MTComponent){
 					MTComponent baseComp = (MTComponent)dragTarget;
@@ -99,6 +100,8 @@ public class DefaultDragAction implements IGestureEventListener,ICollisionAction
 				{ 	
 					dragTarget.translateGlobal(dragEvent.getTranslationVect());
 				}
+				break;
+			case MTGestureEvent.GESTURE_CANCELED:
 				break;
 			case MTGestureEvent.GESTURE_ENDED:
 				break;

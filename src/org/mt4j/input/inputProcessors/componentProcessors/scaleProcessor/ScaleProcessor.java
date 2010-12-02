@@ -44,7 +44,7 @@ public class ScaleProcessor extends AbstractCursorProcessor {
 	private ScaleContext sc;
 	
 	public ScaleProcessor(PApplet graphicsContext){
-		this(graphicsContext, true);
+		this(graphicsContext, false);
 	}
 	
 	/**
@@ -174,7 +174,7 @@ public class ScaleProcessor extends AbstractCursorProcessor {
 		if (sc != null && (sc.getFirstFingerCursor().equals(c) || sc.getSecondFingerCursor().equals(c))){ //Check if gesture was in progress
 			this.unLockAllCursors();
 			//FIXME TEST
-			this.fireGestureEvent(new ScaleEvent(this, MTGestureEvent.GESTURE_ENDED, c.getCurrentTarget(), sc.getFirstFingerCursor(), sc.getSecondFingerCursor(), 1, 1, 1, sc.getFirstFingerNewPos()));
+			this.fireGestureEvent(new ScaleEvent(this, MTGestureEvent.GESTURE_CANCELED, c.getCurrentTarget(), sc.getFirstFingerCursor(), sc.getSecondFingerCursor(), 1, 1, 1, sc.getFirstFingerNewPos()));
 			sc = null;
 			logger.debug(this.getName() + " cursor:" + c.getId() + " CURSOR LOCKED. Was an active cursor in this gesture!");
 		}
@@ -205,7 +205,7 @@ public class ScaleProcessor extends AbstractCursorProcessor {
 				sc = newContext;
 				this.getLock(firstCursor, secondCursor);
 				//FIXME TEST
-				this.fireGestureEvent(new ScaleEvent(this, MTGestureEvent.GESTURE_DETECTED, c.getCurrentTarget(), firstCursor, secondCursor, 1, 1, 1, sc.getSecondFingerNewPos()));
+				this.fireGestureEvent(new ScaleEvent(this, MTGestureEvent.GESTURE_RESUMED, c.getCurrentTarget(), firstCursor, secondCursor, 1, 1, 1, sc.getSecondFingerNewPos()));
 				logger.debug(this.getName() + " we could lock cursors: " + firstCursor.getId() +", " + secondCursor.getId());
 			}else{
 				sc = null;

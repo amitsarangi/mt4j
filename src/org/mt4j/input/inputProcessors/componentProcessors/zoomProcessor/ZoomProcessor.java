@@ -162,7 +162,7 @@ public class ZoomProcessor extends AbstractCursorProcessor {
 		
 		List<InputCursor> locked = getLockedCursors();
 		if (locked.contains(c)){
-			this.fireGestureEvent(new ZoomEvent(this, MTGestureEvent.GESTURE_ENDED, c.getCurrentTarget(), locked.get(0), locked.get(1), 0f, c.getCurrentTarget().getViewingCamera()));			
+			this.fireGestureEvent(new ZoomEvent(this, MTGestureEvent.GESTURE_CANCELED, c.getCurrentTarget(), locked.get(0), locked.get(1), 0f, c.getCurrentTarget().getViewingCamera()));			
 			this.unLockAllCursors();
 			logger.debug(this.getName() + " cursor:" + c.getId() + " cursor LOCKED. Was an active cursor in this gesture - we therefor have to stop this gesture!");
 		}
@@ -193,7 +193,7 @@ public class ZoomProcessor extends AbstractCursorProcessor {
 					this.getLock(firstCursor, secondCursor);
 					logger.debug(this.getName() + " we could lock cursors: " + firstCursor.getId() +", " + secondCursor.getId());
 					logger.debug(this.getName() + " continue with different cursors (ID: " + firstCursor.getId() + ")" + " " + "(ID: " + secondCursor.getId() + ")");
-					this.fireGestureEvent(new ZoomEvent(this, MTGestureEvent.GESTURE_DETECTED, c.getCurrentTarget(), firstCursor, secondCursor, 0f, c.getCurrentTarget().getViewingCamera() ));
+					this.fireGestureEvent(new ZoomEvent(this, MTGestureEvent.GESTURE_RESUMED, c.getCurrentTarget(), firstCursor, secondCursor, 0f, c.getCurrentTarget().getViewingCamera() ));
 				}else{
 					logger.debug(this.getName() + " distance was too great between cursors: " + firstCursor.getId() +", " + secondCursor.getId() + " distance: " + newDistance);
 				}

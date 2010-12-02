@@ -80,20 +80,14 @@ public class FlickrScene extends AbstractScene {
 		
 		MTComponent topLayer = new MTComponent(app, "top layer group", new MTCamera(app));
 		
-		//Load from file system
-//		PImage keyboardImg = app.loadImage(System.getProperty("user.dir")+File.separator + "examples"+  File.separator +"advanced"+ File.separator+ File.separator + "flickrMT"+ File.separator +  File.separator + "data"+ File.separator 
-////		+ "keyb2.png");
-//		+ "keyb128.png");
 		//Load from classpath
 		PImage keyboardImg = app.loadImage("advanced" + MTApplication.separator + "flickrMT"+ MTApplication.separator + "data"+ MTApplication.separator 
-//				+ "keyb2.png");
 				+ "keyb128.png");
 		
 		final MTImageButton keyboardButton = new MTImageButton(keyboardImg, app);
 		keyboardButton.setFillColor(new MTColor(255,255,255,200));
 		keyboardButton.setName("KeyboardButton");
 		keyboardButton.setNoStroke(true);
-//		keyboardButton.translateGlobal(new Vector3D(5,5,0));
 		keyboardButton.translateGlobal(new Vector3D(-2,app.height-keyboardButton.getWidthXY(TransformSpace.GLOBAL)+2,0));
 		topLayer.addChild(keyboardButton);
 

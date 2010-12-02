@@ -48,7 +48,7 @@ public class RotateProcessor extends AbstractCursorProcessor {
 	
 	
 	public RotateProcessor(PApplet graphicsContext){
-		this(graphicsContext, true);
+		this(graphicsContext, false);
 	}
 	
 	/**
@@ -175,13 +175,11 @@ public class RotateProcessor extends AbstractCursorProcessor {
 			logger.debug(this.getName() + " Recieved CURSOR LOCKED by higher priority signal - cursor ID: " + c.getId());
 		}
 		
-		//FIXME do nothing now? since locked stuff is done in getLockedCursors() method? -> check in cursorUpated() method if cursor is in getLockedCzrsir list instead of lockedCursor list!
-		//cursors are already unlocked from the processor in the InputCursor class
 		if (rc != null && (rc.getFirstCursor().equals(c) || rc.getSecondCursor().equals(c))){
 			//TODO do we have to unlock the 2nd cursor, besides "c" ??
 			this.unLockAllCursors();
 			//FIXME TEST
-			this.fireGestureEvent(new RotateEvent(this, MTGestureEvent.GESTURE_ENDED, c.getCurrentTarget(), rc.getFirstCursor(), rc.getSecondCursor(), Vector3D.ZERO_VECTOR, rc.getRotationPoint(), 0));
+			this.fireGestureEvent(new RotateEvent(this, MTGestureEvent.GESTURE_CANCELED, c.getCurrentTarget(), rc.getFirstCursor(), rc.getSecondCursor(), Vector3D.ZERO_VECTOR, rc.getRotationPoint(), 0));
 			rc = null;
 			logger.debug(this.getName() + " cursor:" + c.getId() + " CURSOR LOCKED. Was an active cursor in this gesture!");
 		}
@@ -212,7 +210,7 @@ public class RotateProcessor extends AbstractCursorProcessor {
 				rc = newContext;
 				this.getLock(firstCursor, secondCursor);
 				//FIXME TEST
-				this.fireGestureEvent(new RotateEvent(this, MTGestureEvent.GESTURE_DETECTED, c.getCurrentTarget(), firstCursor, secondCursor, Vector3D.ZERO_VECTOR, rc.getRotationPoint(), 0f));
+				this.fireGestureEvent(new RotateEvent(this, MTGestureEvent.GESTURE_RESUMED, c.getCurrentTarget(), firstCursor, secondCursor, Vector3D.ZERO_VECTOR, rc.getRotationPoint(), 0f));
 				logger.debug(this.getName() + " we could lock cursors: " + firstCursor.getId() +", " + secondCursor.getId());
 			}else{
 				rc = null;

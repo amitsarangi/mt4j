@@ -137,7 +137,7 @@ public class ArcballProcessor extends AbstractCursorProcessor {
 			logger.debug(this.getName() + " Recieved cursor LOCKED by higher priority signal - cursor ID: " + c.getId());
 		}
 
-		this.fireGestureEvent(new ArcBallGestureEvent(this, ArcBallGestureEvent.GESTURE_ENDED, c.getCurrentTarget(), identityDummy));
+		this.fireGestureEvent(new ArcBallGestureEvent(this, ArcBallGestureEvent.GESTURE_CANCELED, c.getCurrentTarget(), identityDummy));
 		logger.debug(this.getName() + " cursor:" + c.getId() + " cursor LOCKED. Was an active cursor in this gesture!");
 	}
 
@@ -154,7 +154,7 @@ public class ArcballProcessor extends AbstractCursorProcessor {
 		if (getFreeComponentCursors().size() > 0 && this.canLock(getCurrentComponentCursorsArray())){ 
 			ac = new MyArcBall(c);
 			this.getLock(c);
-			this.fireGestureEvent(new ArcBallGestureEvent(this, ArcBallGestureEvent.GESTURE_DETECTED, c.getCurrentTarget(), identityDummy));
+			this.fireGestureEvent(new ArcBallGestureEvent(this, ArcBallGestureEvent.GESTURE_RESUMED, c.getCurrentTarget(), identityDummy));
 		}
 	}
 

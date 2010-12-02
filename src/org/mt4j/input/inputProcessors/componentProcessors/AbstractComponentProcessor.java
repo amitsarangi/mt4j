@@ -58,12 +58,12 @@ public abstract class AbstractComponentProcessor implements IMTInputEventListene
 	private boolean stopPropagation;
 	
 	//FIXME test
-	private boolean enableForBubbledEvents;
-	public boolean isEnableForBubbledEvents() {
-		return enableForBubbledEvents;
+	private boolean bubbledEventsEnabled;
+	public boolean isBubbledEventsEnabled() {
+		return bubbledEventsEnabled;
 	}
-	public void setEnableForBubbledEvents(boolean enableForBubbledEvents) {
-		this.enableForBubbledEvents = enableForBubbledEvents;
+	public void setBubbledEventsEnabled(boolean enableForBubbledEvents) {
+		this.bubbledEventsEnabled = enableForBubbledEvents;
 	}
 	////
 	
@@ -87,7 +87,9 @@ public abstract class AbstractComponentProcessor implements IMTInputEventListene
 
 		this.stopPropagation = stopPropagation;
 		
-		this.enableForBubbledEvents = false;
+		
+		//TODO also change default behaviour in all processors, to NOT stop propagation!
+		this.bubbledEventsEnabled = false;
 	}
 
 
@@ -100,10 +102,11 @@ public abstract class AbstractComponentProcessor implements IMTInputEventListene
 		if(!this.isDisabled() && inEvt.hasTarget()){ //Allow component processors to recieve inputevts only if they have a target (Canvas is target if null is picked..)
 			
 			//FIXME TEST
-			if (enableForBubbledEvents){
+			if (bubbledEventsEnabled){
 				this.processInputEvtImpl(inEvt);
 			}else{
-				if (inEvt.getTarget().equals(inEvt.getCurrentTarget())){
+//				if (inEvt.getTarget().equals(inEvt.getCurrentTarget())){
+				if (inEvt.getEventPhase() == MTInputEvent.AT_TARGET){
 					this.processInputEvtImpl(inEvt);
 				}
 			}
