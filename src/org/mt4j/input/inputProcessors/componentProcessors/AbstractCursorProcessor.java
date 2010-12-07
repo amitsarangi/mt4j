@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.mt4j.components.interfaces.IMTComponent3D;
+import org.mt4j.input.inputData.AbstractCursorInputEvt;
 import org.mt4j.input.inputData.ActiveCursorPool;
 import org.mt4j.input.inputData.InputCursor;
 import org.mt4j.input.inputData.MTFingerInputEvt;
@@ -67,11 +68,9 @@ public abstract class AbstractCursorProcessor extends AbstractComponentProcessor
 			&& inputEvt.hasTarget();
 	}
 
-	
+
 	@Override
-	public void preProcess(MTInputEvent inputEvent) {
-		super.preProcess(inputEvent);
-		
+	public void preProcessImpl(MTInputEvent inputEvent) {
 		MTFingerInputEvt posEvt = (MTFingerInputEvt)inputEvent;
 		InputCursor c = posEvt.getCursor();
 		switch (posEvt.getId()) {
@@ -90,6 +89,7 @@ public abstract class AbstractCursorProcessor extends AbstractComponentProcessor
 			break;
 		}
 	}
+	
 
 	@Override
 	protected void processInputEvtImpl(MTInputEvent inputEvent) {
@@ -119,6 +119,11 @@ public abstract class AbstractCursorProcessor extends AbstractComponentProcessor
 		
 		while (!this.cursorUnlocked.isEmpty()){
 			InputCursor cursorUnlocked = this.cursorUnlocked.pollFirst();
+			
+			//Check if we Unlock a already ended cursor - just for debugging - shouldnt happen actually..
+			if (cursorUnlocked.getCurrentEvent().getId() == AbstractCursorInputEvt.INPUT_ENDED){
+				logger.warn(this + ": Unlocking already ENDED input event");
+			}
 			
 			IMTComponent3D saved = cursorUnlocked.getCurrentTarget(); //FIXME Hack
 			cursorUnlocked.getCurrentEvent().setCurrentTarget(inputEvent.getCurrentTarget()); //FIXME Hack

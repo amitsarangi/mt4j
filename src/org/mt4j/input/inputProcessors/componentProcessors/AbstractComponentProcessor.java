@@ -102,13 +102,8 @@ public abstract class AbstractComponentProcessor implements IMTInputEventListene
 		if(!this.isDisabled() && inEvt.hasTarget()){ //Allow component processors to recieve inputevts only if they have a target (Canvas is target if null is picked..)
 			
 			//FIXME TEST
-			if (bubbledEventsEnabled){
+			if (this.isBubbledEventsEnabled()  ||  (inEvt.getEventPhase() == MTInputEvent.AT_TARGET)){
 				this.processInputEvtImpl(inEvt);
-			}else{
-//				if (inEvt.getTarget().equals(inEvt.getCurrentTarget())){
-				if (inEvt.getEventPhase() == MTInputEvent.AT_TARGET){
-					this.processInputEvtImpl(inEvt);
-				}
 			}
 			
 			//FIXME TEST 
@@ -127,7 +122,14 @@ public abstract class AbstractComponentProcessor implements IMTInputEventListene
 	 *
 	 * @param inEvt the in evt
 	 */
-	public void preProcess(MTInputEvent inEvt) {	}
+	public void preProcess(MTInputEvent inEvt) {
+		//FIXME TEST
+		if(!this.isDisabled() && inEvt.hasTarget()){
+			if (this.isBubbledEventsEnabled()  ||  (inEvt.getEventPhase() == MTInputEvent.AT_TARGET) ){
+				preProcessImpl(inEvt);
+			}
+		}
+	}
 	
 	/**
 	 * Process input evt implementation.
@@ -135,6 +137,8 @@ public abstract class AbstractComponentProcessor implements IMTInputEventListene
 	 * @param inputEvent the input event
 	 */
 	abstract protected void processInputEvtImpl(MTInputEvent inputEvent);
+	
+	abstract protected void preProcessImpl(MTInputEvent inputEvent);
 	
 	
 	

@@ -63,7 +63,7 @@ public class ComponentInputProcessorSupport implements IMTInputEventListener /*,
 		boolean handled = false;
 		
 		for (AbstractComponentProcessor p : registeredProcessors) {
-			if (p.isInterestedIn(inEvt)){
+			if (p.isInterestedIn(inEvt) && this.associatedComponent.isGestureAllowed(p.getClass())){
 				p.preProcess(inEvt);
 			}
 		}
@@ -71,9 +71,7 @@ public class ComponentInputProcessorSupport implements IMTInputEventListener /*,
 		for (int i = 0; i < registeredProcessors.size(); i++) {
 			AbstractComponentProcessor inputProcessor = registeredProcessors.get(i);
 			//Send events
-			if (inputProcessor.isInterestedIn(inEvt) 
-				&& this.associatedComponent.isGestureAllowed(inputProcessor.getClass())
-			){
+			if (inputProcessor.isInterestedIn(inEvt) && this.associatedComponent.isGestureAllowed(inputProcessor.getClass())){
 				handled = true;
 				inputProcessor.processInputEvent(inEvt);
 			}
