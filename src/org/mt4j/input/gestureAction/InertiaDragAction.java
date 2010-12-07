@@ -1,6 +1,7 @@
 package org.mt4j.input.gestureAction;
 
 import org.mt4j.components.MTComponent;
+import org.mt4j.components.TransformSpace;
 import org.mt4j.components.interfaces.IMTComponent3D;
 import org.mt4j.components.interfaces.IMTController;
 import org.mt4j.input.inputProcessors.IGestureEventListener;
@@ -87,6 +88,7 @@ public class InertiaDragAction implements IGestureEventListener {
 			moveVectNorm = startVelocityVec.getNormalized();
 			moveVect = new Vector3D();
 			*/
+			
 		}
 		
 		//TODO ? inertia animation is frame based, not time - so framerate decides how long it goes..
@@ -113,7 +115,12 @@ public class InertiaDragAction implements IGestureEventListener {
 				return;
 			}
 			startVelocityVec.scaleLocal(damping);
-			target.translateGlobal(startVelocityVec);
+			
+			Vector3D vec = new Vector3D(startVelocityVec);
+			vec.transformDirectionVector(target.getGlobalInverseMatrix()); //Transform direction vector into component local coordinates
+			target.translate(vec,TransformSpace.LOCAL);
+			
+//			target.translateGlobal(startVelocityVec);
 //			*/
 			
 			if (oldController != null){
