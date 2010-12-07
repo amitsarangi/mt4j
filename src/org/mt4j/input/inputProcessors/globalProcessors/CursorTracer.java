@@ -184,6 +184,7 @@ public class CursorTracer extends AbstractGlobalInputProcessor{
 				displayShape = createDisplayComponent(app, position);
 				cursorIDToDisplayShape.put(c, displayShape);
 				overlayGroup.addChild(displayShape);
+				displayShape.setPositionGlobal(position);
 				
 //				compToCreationTime.put(displayShape, System.currentTimeMillis()); //FIXME REMOVE
 //				displayShape.setUserData("Cursor", c);//FIXME REMOVE
