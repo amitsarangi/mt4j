@@ -27,6 +27,8 @@ import org.mt4j.util.math.Tools3D;
 import org.mt4j.util.math.Vector3D;
 import org.mt4j.util.modelImporter.ModelImporterFactory;
 import org.mt4j.util.opengl.GLMaterial;
+import org.mt4jx.input.gestureAction.Rotate3DAction;
+import org.mt4jx.input.inputProcessors.componentProcessors.Rotate3DProcessor.Rotate3DProcessor;
 
 public class Models3DScene extends AbstractScene {
 	private MTApplication mtApp;
@@ -147,6 +149,9 @@ public class Models3DScene extends AbstractScene {
 		
 		meshGroup.registerInputProcessor(new RotateProcessor(mtApplication));
 		meshGroup.addGestureListener(RotateProcessor.class, new DefaultRotateAction());
+		
+		meshGroup.registerInputProcessor(new Rotate3DProcessor(mtApplication, meshGroup));
+		meshGroup.addGestureListener(Rotate3DProcessor.class, new Rotate3DAction(meshGroup, mtApplication));
 	}
 
 	

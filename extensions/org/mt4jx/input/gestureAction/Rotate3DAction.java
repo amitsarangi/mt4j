@@ -80,6 +80,7 @@ public class Rotate3DAction implements IGestureEventListener,ICollisionAction {
 			case MTGestureEvent.GESTURE_UPDATED:
 				if(!(target instanceof Cluster))
 				{					
+//					System.out.println("Rotating: " + target + "\n RotationPoint: " + rotateEvent.getRotationPoint() + " ZrotDeg: " + rotateEvent.getRotationDegreesZ() + " XrotDeg: " + rotateEvent.getRotationDegreesX() + " YrotDeg: " + rotateEvent.getRotationDegreesY());
 					target.rotateZGlobal(rotateEvent.getRotationPoint(), rotateEvent.getRotationDirection()*rotateEvent.getRotationDegreesZ());
 					target.rotateXGlobal(rotateEvent.getRotationPoint(),rotateEvent.getRotationDirection()*rotateEvent.getRotationDegreesX());
 					target.rotateYGlobal(rotateEvent.getRotationPoint(),rotateEvent.getRotationDirection()*rotateEvent.getRotationDegreesY());

@@ -4,35 +4,23 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import javax.media.opengl.GL;
-
 import org.mt4j.MTApplication;
 import org.mt4j.components.MTCanvas;
 import org.mt4j.components.MTComponent;
 import org.mt4j.components.PickResult;
 import org.mt4j.components.PickResult.PickEntry;
-
 import org.mt4j.components.interfaces.IMTComponent3D;
-import org.mt4j.components.visibleComponents.shapes.mesh.MTTriangleMesh;
-import org.mt4j.input.inputData.AbstractCursorInputEvt;
 import org.mt4j.input.inputData.InputCursor;
 import org.mt4j.input.inputData.MTFingerInputEvt;
-
 import org.mt4j.input.inputProcessors.IInputProcessor;
 import org.mt4j.input.inputProcessors.MTGestureEvent;
 import org.mt4j.input.inputProcessors.componentProcessors.AbstractComponentProcessor;
 import org.mt4j.input.inputProcessors.componentProcessors.AbstractCursorProcessor;
-import org.mt4j.input.inputProcessors.componentProcessors.rotateProcessor.RotateEvent;
-import org.mt4j.input.inputProcessors.componentProcessors.tapProcessor.TapEvent;
 import org.mt4j.util.camera.IFrustum;
-import org.mt4j.util.math.Matrix;
 import org.mt4j.util.math.Tools3D;
-import org.mt4j.util.math.ToolsGeometry;
-
 import org.mt4j.util.math.Vector3D;
 import org.mt4jx.input.inputProcessors.componentProcessors.Group3DProcessorNew.Cluster;
 import org.mt4jx.util.extension3D.ComponentHelper;
-import org.mt4jx.util.extension3D.MergeHelper;
 
 import processing.core.PApplet;
 
@@ -72,12 +60,9 @@ public class Rotate3DProcessor extends AbstractCursorProcessor {
 	
 	
 	@Override
-	public void cursorEnded(InputCursor inputCursor,
-			MTFingerInputEvt currentEvent) {
-		
-		IMTComponent3D comp = currentEvent.getTargetComponent();
+	public void cursorEnded(InputCursor inputCursor, MTFingerInputEvt currentEvent) {
+		IMTComponent3D comp = currentEvent.getTarget();
 		logger.debug(this.getName() + " INPUT_ENDED RECIEVED - MOTION: " + inputCursor.getId());
-		
 		
 		if (lockedCursors.size() == 3 && lockedCursors.contains(inputCursor)){
 			//there must be 3 cursors for a 3d rotation
@@ -174,17 +159,17 @@ public class Rotate3DProcessor extends AbstractCursorProcessor {
 	@Override
 	public void cursorStarted(InputCursor inputCursor,
 			MTFingerInputEvt currentEvent) {
-		IMTComponent3D comp = currentEvent.getTargetComponent();
+		IMTComponent3D comp = currentEvent.getTarget();
 		if (lockedCursors.size() >= 3){ //gesture with 3 fingers already in progress
 			unUsedCursors.add(inputCursor);
 			logger.debug(this.getName() + " has already enough cursors for this gesture - adding to unused ID:" + inputCursor.getId());
 		}else{ //no gesture in progress yet
 			
 			//save current selected Object inside of Cluster for correct rotation
-			if(currentEvent.getTargetComponent() instanceof Cluster)
+			if(currentEvent.getTarget() instanceof Cluster)
 			{
-				Cluster cluster = (Cluster)currentEvent.getTargetComponent();
-				MTComponent sourceComponent = (MTComponent) currentEvent.getTargetComponent();
+				Cluster cluster = (Cluster)currentEvent.getTarget();
+				MTComponent sourceComponent = (MTComponent) currentEvent.getTarget();
 				Vector3D currentPos = new Vector3D(currentEvent.getPosX(),currentEvent.getPosY(),0.0f);				
 				MTCanvas parentCanvas = this.getParentCanvas(sourceComponent);
 				cluster.setComposite(false);
@@ -267,7 +252,7 @@ public class Rotate3DProcessor extends AbstractCursorProcessor {
 				InputCursor thirdCursor = unUsedCursors.get(2);
 				//See if we can obtain a lock on both cursors
 				if (this.canLock(firstCursor, secondCursor,thirdCursor)){
-					IMTComponent3D comp = firstCursor.getFirstEvent().getTargetComponent();
+					IMTComponent3D comp = firstCursor.getFirstEvent().getTarget();
 					rc = new RotationContext(firstCursor, secondCursor,thirdCursor, comp);
 					if (!rc.isGestureAborted()){ //Check if we could start gesture (ie. if fingers on component)
 						this.getLock(firstCursor, secondCursor,thirdCursor);
@@ -295,7 +280,7 @@ public class Rotate3DProcessor extends AbstractCursorProcessor {
 	
 	public void cursorUpdated(InputCursor inputCursor,
 			MTFingerInputEvt currentEvent) {
-		IMTComponent3D comp = currentEvent.getTargetComponent();
+		IMTComponent3D comp = currentEvent.getTarget();
 		if (lockedCursors.size() == 3 && lockedCursors.contains(inputCursor)){
 			rc.updateAndGetRotationAngle(inputCursor);
 			this.fireGestureEvent(new Rotate3DEvent(this, MTGestureEvent.GESTURE_UPDATED, comp, rc.getPinFingerCursor(), rc.getPinFingerSecondCursor(),rc.getRotateFingerCursor(), Vector3D.ZERO_VECTOR, rc.getRotationPoint(),rc.getRotationDirection(),rc.getRotationDegreesX(),rc.getRotationDegreesY(),rc.getRotationDegreesZ(),rc.getRotationAxis() ));			
@@ -402,11 +387,8 @@ public class Rotate3DProcessor extends AbstractCursorProcessor {
 			this.rotateFingerCursor = rotateFingerCursor;
 			
 			//check if first two fingers hit an object
-			Vector3D interPoint = object.getIntersectionGlobal(
-					Tools3D.getCameraPickRay(pApplet, object, pinFingerCursor.getCurrentEvent().getPosX(), pinFingerCursor.getCurrentEvent().getPosY()));
-
-			Vector3D interPoint2 = object.getIntersectionGlobal(
-					Tools3D.getCameraPickRay(pApplet, object, pinFingerSecondCursor.getCurrentEvent().getPosX(), pinFingerSecondCursor.getCurrentEvent().getPosY()));
+			Vector3D interPoint = getIntersection(pApplet, object, pinFingerCursor);
+  			Vector3D interPoint2 = getIntersection(pApplet, object, pinFingerSecondCursor);
 			
 			this.object = object;
 			
@@ -437,17 +419,7 @@ public class Rotate3DProcessor extends AbstractCursorProcessor {
 				
 			this.rotateCursorVectorLast = new Vector3D(rotateFingerCursor.getCurrentEvtPosX(),rotateFingerCursor.getCurrentEvtPosY(),0.0f);
 			
-			//this.rotationPoint = getMiddlePointBetweenPinFingers();
-						
-			//this.rotationAxis = pinFingerStart.subtractLocal(pinFingerSecondStart);
-			
 			updateCalculations();
-						
-			//comp.translate((new Vector3D()).subtractLocal(rotationPoint));
-						
-			//FIXME REMOVE!
-//			dragPlaneNormal = ((MTPolygon)object).getNormal();
-//			logger.debug("DragNormal: " + dragPlaneNormal);
 		}
 		
 		private void updateCalculations()
@@ -459,8 +431,6 @@ public class Rotate3DProcessor extends AbstractCursorProcessor {
 			//get center point 			
 			if(!(comp instanceof Cluster))
 			{
-				
-				
 				rotationPoint = ComponentHelper.getCenterPointGlobal(comp);
 				
 			}else
@@ -468,6 +438,7 @@ public class Rotate3DProcessor extends AbstractCursorProcessor {
 				Cluster cl = (Cluster)comp;				
 				rotationPoint = ComponentHelper.getCenterPointGlobal(cl.getCurrentlySelectedChildren());
 			}
+			
 			
 			Vector3D vec = rotationPoint.getCopy();
 			vec.z = vec.z - 1.0f;
@@ -489,7 +460,7 @@ public class Rotate3DProcessor extends AbstractCursorProcessor {
 			Vector3D rotationPartY = new Vector3D(0.0f,getRotationAxis().y,0.0f);
 			Vector3D rotationPartZ = new Vector3D(0.0f,0.0f,getRotationAxis().z);
 							
-			Tools3D.endGL(pApplet);
+//			Tools3D.endGL(pApplet);
 			
 			float dotX = rotationPartX.dot(getRotationAxis());
 			float dotY = rotationPartY.dot(getRotationAxis());
@@ -504,7 +475,14 @@ public class Rotate3DProcessor extends AbstractCursorProcessor {
 			float degreesX = (float)Math.toDegrees(Math.acos(dotX/(rotationPartX.length()*getRotationAxis().length())));
 			float degreesY = (float)Math.toDegrees(Math.acos(dotY/(rotationPartY.length()*getRotationAxis().length())));
 			//float degreesZ = (float)Math.toDegrees(Math.acos(dotZ/(rotationPartZ.length()*rotationAxis.length())));
-				
+			
+			if (Float.isNaN(degreesY)){
+				degreesY = 0.0f;
+			}
+			if (Float.isNaN(degreesX)){
+				degreesX = 0.0f;
+			}
+			
 			percentageX = (degreesY/90.0f)*100.0f;
 			percentageY = (degreesX/90.0f)*100.0f;
 			
@@ -590,13 +568,7 @@ public class Rotate3DProcessor extends AbstractCursorProcessor {
 				this.rotateFingerNew = this.rotateFingerLast; 
 				resumed = false;
 			}
-		
-			
-		
-			
-			
 			////			*/
-//			return 0;
 		}
 
 
@@ -641,8 +613,6 @@ public class Rotate3DProcessor extends AbstractCursorProcessor {
 				{
 					dotRight = -dotRight;
 				}
-				
-				
 				   /*if(directionFinder.dot(rotateLengthVec)>0.0f&&rotateLengthVec.x>yAxis.x)
 					{
 						setRotationDirection((short)-1);
@@ -680,13 +650,7 @@ public class Rotate3DProcessor extends AbstractCursorProcessor {
 					{
 						setRotationDirection((short)1);
 					}
-				   
-					
-				 
-				
 				//System.out.println("Rotate legnth" + rotateLineLength + " dir "  + rotationDirection);
-				
-				
 			/*}else{
 				logger.error(getName() + " new newRotateFinger Pos = null at update");
 			}*/
@@ -697,10 +661,7 @@ public class Rotate3DProcessor extends AbstractCursorProcessor {
 		 * Update pin finger.
 		 */
 		private void updatePinFinger(){  
-			Vector3D newPinFingerPos = ToolsGeometry.getRayPlaneIntersection(
-					Tools3D.getCameraPickRay(pApplet, object, pinFingerCursor.getCurrentEvent().getPosX(), pinFingerCursor.getCurrentEvent().getPosY()), 
-					dragPlaneNormal, 
-					pinFingerStart.getCopy()); 
+			Vector3D newPinFingerPos = getPlaneIntersection(pApplet, dragPlaneNormal, pinFingerStart.getCopy(), pinFingerCursor);
 			if (newPinFingerPos != null){
 				newPinFingerPos = projectPointToNearPlane(newPinFingerPos);
 				this.pinFingerNew = newPinFingerPos;				
@@ -714,11 +675,7 @@ public class Rotate3DProcessor extends AbstractCursorProcessor {
 		
 		private void updatePinFingerSecond() 
 		{
-			Vector3D newPinFingerPos = ToolsGeometry.getRayPlaneIntersection(
-					Tools3D.getCameraPickRay(pApplet, object, pinFingerSecondCursor.getCurrentEvent().getPosX(), pinFingerSecondCursor.getCurrentEvent().getPosY()), 
-					dragPlaneNormal, 
-					pinFingerSecondStart.getCopy()); 
-			
+			Vector3D newPinFingerPos = getPlaneIntersection(pApplet, dragPlaneNormal, pinFingerSecondStart.getCopy(), pinFingerSecondCursor);
 			if(newPinFingerPos != null)
 			{
 				newPinFingerPos = projectPointToNearPlane(newPinFingerPos);
@@ -731,7 +688,7 @@ public class Rotate3DProcessor extends AbstractCursorProcessor {
 			}
 		}
 
-		//if obj is drag enabled, und not scalable! send middlepoint delta für translate, 
+		//if obj is drag enabled, und not scalable! send middlepoint delta fï¿½r translate, 
 		/**
 		 * Gets the updated middle finger pos delta.
 		 * 
@@ -903,15 +860,6 @@ public class Rotate3DProcessor extends AbstractCursorProcessor {
 	public String getName() {
 		return "Rotate3DProcessor";
 	}
-
-
-
-
-	private void setGesturePaused(boolean gesturePaused) {
-		this.gesturePaused = gesturePaused;
-	}
-
-
 
 }
 

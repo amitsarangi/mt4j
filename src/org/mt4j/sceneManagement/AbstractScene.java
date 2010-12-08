@@ -138,7 +138,7 @@ public abstract class AbstractScene implements Iscene {
 	}
 	
 	
-	public void shutdown(){
+	public void shutDown(){
 		onLeave();
 	}
 	
