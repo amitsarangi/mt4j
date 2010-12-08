@@ -95,7 +95,7 @@ public class MTKeyboard extends MTRoundRectangle {
 	 * @param pApplet the applet
 	 */
 	public MTKeyboard(PApplet pApplet) {
-		super(0,0,0, 700, 245, 30,30, pApplet);
+		super(pApplet,0,0, 0, 700, 245,30, 30);
 		this.pa = pApplet;
 		//Set drawing mode
 		this.setDrawSmooth(true);
@@ -129,8 +129,8 @@ public class MTKeyboard extends MTRoundRectangle {
 		
 //		/*
 		//TODO load button only once!
-		MTSvgButton keybCloseSvg = new MTSvgButton(MT4jSettings.getInstance().getDefaultSVGPath()
-				+ "keybClose.svg", pa);
+		MTSvgButton keybCloseSvg = new MTSvgButton(pa, MT4jSettings.getInstance().getDefaultSVGPath()
+						+ "keybClose.svg");
 		//Transform
 		keybCloseSvg.scale(0.8f, 0.8f, 1, new Vector3D(0,0,0));
 		keybCloseSvg.translate(new Vector3D(640,5,0));
@@ -147,7 +147,7 @@ public class MTKeyboard extends MTRoundRectangle {
 		//INITIALIZE SPACE-Button "by hand"
 		VectorFontCharacter SpaceF = (VectorFontCharacter) keyFont.getFontCharacterByUnicode("k");
 //		MTKey space = new MTKey(SpaceF.getGeometryInfo().getVertices(), /*spaceOutlines,*/pa, " ", " ");
-		MTKey space = new MTKey(SpaceF.getGeometryInfo(), /*spaceOutlines,*/pa, " ", " ");
+		MTKey space = new MTKey(/*spaceOutlines,*/pa, SpaceF.getGeometryInfo(), " ", " ");
 		space.setName(SpaceF.getName());
 		//Set the contours to draw the outline - do this after settings the geominfo
 		//so the outline displaylist will be overridden with the new contours list
@@ -187,7 +187,7 @@ public class MTKeyboard extends MTRoundRectangle {
             //FIXME expensive..
 //			MTKey key = new MTKey(fontChar.getGeometryInfo().getVertices(), fontChar.getContours(),pa, keyInfo.charUnicodeToWrite, keyInfo.charUnicodeToWriteShifted);
 //			MTKey key = new MTKey(new Vertex[]{new Vertex(0,0,0),new Vertex(10,0,0),new Vertex(0,10,0),}, /*fontChar.getContours(),*/ pa, keyInfo.charUnicodeToWrite, keyInfo.charUnicodeToWriteShifted);
-            MTKey key = new MTKey(fontChar.getGeometryInfo(), pa, keyInfo.charUnicodeToWrite, keyInfo.charUnicodeToWriteShifted);
+            MTKey key = new MTKey(pa, fontChar.getGeometryInfo(), keyInfo.charUnicodeToWrite, keyInfo.charUnicodeToWriteShifted);
 //			key.setGeometryInfo(fontChar.getGeometryInfo());
             key.setName(fontChar.getName());
             key.setPickable(true);

@@ -56,14 +56,13 @@ public class MTColorPicker extends MTRectangle {
 	  
 	  /**
   	 * Instantiates a new mT color picker.
-  	 * 
-  	 * @param x the x
-  	 * @param y the y
-  	 * @param texture the texture
-  	 * @param applet the applet
+	 * @param applet the applet
+	 * @param x the x
+	 * @param y the y
+	 * @param texture the texture
   	 */
-  	public MTColorPicker(int x, int y, PImage texture, PApplet applet) {
-		  super(x, y, texture.width, texture.height, applet);
+  	public MTColorPicker(PApplet applet, int x, int y, PImage texture) {
+		  super(applet, x, y, texture.width, texture.height);
 		  
 		  this.app = applet;
 		  this.x = x;
@@ -79,15 +78,14 @@ public class MTColorPicker extends MTRectangle {
 
 	/**
 	 * Instantiates a new mT color picker.
-	 * 
+	 * @param applet the applet
 	 * @param x the x
 	 * @param y the y
 	 * @param width the width
 	 * @param height the height
-	 * @param applet the applet
 	 */
-	public MTColorPicker(int x, int y, int width, int height, PApplet applet) {
-		super(x, y, width, height, applet);
+	public MTColorPicker(PApplet applet, int x, int y, int width, int height) {
+		super(applet, x, y, width, height);
 		
 		this.app = applet;
 		this.x = x;
@@ -112,7 +110,7 @@ public class MTColorPicker extends MTRectangle {
 	    this.currentColor = new MTColor(255,255,255,255);
 //	    this.setNoFill(true);
 	    
-	    this.selectionRect = new MTRectangle(x,y, 3,3, app);
+	    this.selectionRect = new MTRectangle(app,x, y,3, 3);
 	    this.selectionRect.setStrokeColor(new MTColor(150,150,150,255));
 	    this.selectionRect.setNoFill(true);
 	    this.selectionRect.setPickable(false);

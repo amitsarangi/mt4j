@@ -187,7 +187,7 @@ public class MTHUD extends MTOverlayContainer implements CSSStylableComponent {
 
 			if (s != null && s.getType() == MenuItem.TEXT) {
 				// Create a new menu cell
-				MTRectangle container = new MTRectangle(0, 0, size, size, app);
+				MTRectangle container = new MTRectangle(app, 0, 0, size, size);
 				this.addChild(container);
 
 				// Add MTTextArea Children to take single lines of the Menu Text
@@ -229,8 +229,8 @@ public class MTHUD extends MTOverlayContainer implements CSSStylableComponent {
 					}
 
 					// Create a new menu cell
-					MTRectangle container = new MTRectangle(0, 0, size, size,
-							app);
+					MTRectangle container = new MTRectangle(app, 0, 0, size,
+							size);
 					this.addChild(container);
 					// Set the background texture
 					container.setTexture(texture);

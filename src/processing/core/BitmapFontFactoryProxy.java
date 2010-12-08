@@ -133,7 +133,7 @@ public class BitmapFontFactoryProxy implements IFontFactory {
 		PImage dummy = new PImage(1,1);
 //		/*
 		//Manually add a newLine character to the font
-		BitmapFontCharacter newLine = new BitmapFontCharacter(dummy, pa, "\n", 0, 0, 0);
+		BitmapFontCharacter newLine = new BitmapFontCharacter(pa, dummy, "\n", 0, 0, 0);
 		newLine.setPickable(false);						    		
 		newLine.setVisible(false);
 		newLine.setNoFill(true);
@@ -151,7 +151,7 @@ public class BitmapFontFactoryProxy implements IFontFactory {
 		int spaceAdvancex = Math.round((p5Font.width('i') * (float) fontSize));
 //		int spaceAdvancex = Math.round(pa.textWidth(' '));
 //		int spaceAdvancex = Math.round(p5Font.width(' ') * p5Font.size);
-		BitmapFontCharacter space = new BitmapFontCharacter(dummy, pa, " ", 0, 0, spaceAdvancex);
+		BitmapFontCharacter space = new BitmapFontCharacter(pa, dummy, " ", 0, 0, spaceAdvancex);
 		space.setPickable(false);						    		
 		space.setVisible(false);
 		space.setNoFill(true);
@@ -161,7 +161,7 @@ public class BitmapFontFactoryProxy implements IFontFactory {
 		
 		//Manually add a TAB character to the font
 		int defaultTabWidth = spaceAdvancex*4;
-		BitmapFontCharacter tab = new BitmapFontCharacter(dummy, pa, "\t", 0, 0, defaultTabWidth);
+		BitmapFontCharacter tab = new BitmapFontCharacter(pa, dummy, "\t", 0, 0, defaultTabWidth);
 		try {
 			int tabWidth = 4 * space.getHorizontalDist();
 			tab.setHorizontalDist(tabWidth);
@@ -391,7 +391,7 @@ public class BitmapFontFactoryProxy implements IFontFactory {
 				
 				//Create bitmap font character
 				String StringChar = Character.toString(c);
-				BitmapFontCharacter character = new BitmapFontCharacter(charImage, pa, StringChar, leftExtend, topOffset, widthDisplacement);
+				BitmapFontCharacter character = new BitmapFontCharacter(pa, charImage, StringChar, leftExtend, topOffset, widthDisplacement);
 				character.setName(StringChar);
 				character.setFillColor(new MTColor(fillColor));
 				if (MT4jSettings.getInstance().isOpenGlMode()){

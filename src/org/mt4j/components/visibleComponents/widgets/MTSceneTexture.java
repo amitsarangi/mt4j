@@ -71,7 +71,7 @@ public class MTSceneTexture extends MTRectangle {
 	}
 
 	public MTSceneTexture(MTApplication pa, float x,	float y, int fboWidth, int fboHeight, Iscene theScene){
-		super(x, y, 0, MT4jSettings.getInstance().getWindowWidth(), MT4jSettings.getInstance().getWindowHeight(), pa);
+		super(pa, x, y, 0, MT4jSettings.getInstance().getWindowWidth(), MT4jSettings.getInstance().getWindowHeight());
 		
 		this.scene = theScene;
 		this.app = pa;
@@ -354,7 +354,7 @@ public class MTSceneTexture extends MTRectangle {
 			float menuHeight = 64;
 //			this.sceneMenu = new MTSceneMenu(this, app.width-menuWidth/2f, 0-menuHeight/2f, menuWidth, menuHeight, app);
 //			this.sceneMenu = new MTSceneMenu(this, app.width-menuWidth, 0, menuWidth, menuHeight, app);
-			this.sceneMenu = new MTSceneMenu(this, app.width-menuWidth, app.height-menuHeight, menuWidth, menuHeight, app);
+			this.sceneMenu = new MTSceneMenu(app, this, app.width-menuWidth, app.height-menuHeight, menuWidth, menuHeight);
 			this.sceneMenu.setVisible(false);
 		}
 		

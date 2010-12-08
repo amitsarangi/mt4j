@@ -50,11 +50,10 @@ public class VectorFontCharacter extends
 	/**
 	 * A vector font character class.
 	 * The specified contour vertices are assumed to lie in the z=0 plane.
-	 * 
-	 * @param contours the contours
 	 * @param pApplet the applet
+	 * @param contours the contours
 	 */
-	public VectorFontCharacter(/*Vertex[] innerVertices,*/ List<Vertex[]> contours, PApplet pApplet) {
+	public VectorFontCharacter(PApplet pApplet, /*Vertex[] innerVertices,*/ List<Vertex[]> contours) {
 //		super(innerVertices, outlines, pApplet);
 //		/*
 		 //Create dummy vertices, will be replaced later in the constructor

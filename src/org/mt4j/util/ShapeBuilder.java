@@ -246,7 +246,7 @@ public class ShapeBuilder {
 	
 	private class MTPolygon2D extends MTPolygon{
 		public MTPolygon2D(Vertex[] vertices, PApplet applet) {
-			super(vertices, applet);
+			super(applet, vertices);
 		}
 		
 		protected IBoundingShape computeDefaultBounds() {

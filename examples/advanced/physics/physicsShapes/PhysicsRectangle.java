@@ -48,7 +48,7 @@ public class PhysicsRectangle extends MTRectangle implements IPhysicsComponent{
 			float width, float height, PApplet applet,
 			World world, float density, float friction, float restitution, float scale
 	) {
-		super(0, 0, PhysicsHelper.scaleDown(width, scale), PhysicsHelper.scaleDown(height, scale), applet);
+		super(applet, 0, 0, PhysicsHelper.scaleDown(width, scale), PhysicsHelper.scaleDown(height, scale));
 		this.angle = 0;
 		this.drawBounds = false;
 		this.world = world;
@@ -99,7 +99,7 @@ public class PhysicsRectangle extends MTRectangle implements IPhysicsComponent{
 			Vertex[] physicsVertices,
 			World world, float density, float friction, float restitution, float scale
 	) {
-		super(texture, applet);
+		super(applet, texture);
 		this.angle = 0;
 		this.drawBounds = false;
 		this.world = world;

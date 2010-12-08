@@ -26,12 +26,11 @@ public class MTCheckbox extends MTForm implements BooleanForm{
 	
 	/**
 	 * Instantiates a new MTCheckBox
-	 *
-	 * @param size the size of the side of the square
 	 * @param pApplet the applet
+	 * @param size the size of the side of the square
 	 */
-	public MTCheckbox(float size, PApplet pApplet) {
-		super(0, 0, size, size, pApplet, MTForm.BOOLEAN);
+	public MTCheckbox(PApplet pApplet, float size) {
+		super(pApplet, 0, 0, size, size, MTForm.BOOLEAN);
 		
 		this.setCssForceDisable(true);
 

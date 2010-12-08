@@ -34,14 +34,13 @@ public class MTOptionBox extends MTForm implements BooleanForm {
 	
 	/**
 	 * Instantiates a new MTOptionBox
-	 *
-	 * @param size the size of the ellipse
 	 * @param app the PApplet
+	 * @param size the size of the ellipse
 	 * @param group the OptionGroup
 	 */
-	public MTOptionBox(float size,
-			PApplet app, OptionGroup group) {
-		super(0, 0, size, size, app, MTForm.BOOLEAN);
+	public MTOptionBox(PApplet app,
+			float size, OptionGroup group) {
+		super(app, 0, 0, size, size, MTForm.BOOLEAN);
 		group.addOptionBox(this);
 		this.setCssForceDisable(true);
 		this.setNoStroke(true);

@@ -317,7 +317,7 @@ public class MTGesturesExampleScene extends AbstractScene {
 		strokeText.setText("Draw a stroke gesture here");
 		strokeText.setAnchor(PositionAnchor.UPPER_LEFT);
 		
-		MTRectangle strokeGestureRect = new MTRectangle(strokeText.getWidthXY(TransformSpace.LOCAL) + 50,200,getMTApplication());
+		MTRectangle strokeGestureRect = new MTRectangle(getMTApplication(),strokeText.getWidthXY(TransformSpace.LOCAL) + 50,200);
 		strokeGestureRect.setFillColor(textAreaColor);
 		strokeGestureRect.setStrokeColor(textAreaColor);
 		strokeGestureRect.addChild(strokeText);

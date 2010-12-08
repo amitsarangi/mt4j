@@ -235,7 +235,7 @@ public class SvgFontFactory extends DefaultHandler implements IFontFactory {
 						Vertex[] spaceVerts = new Vertex[]{new Vertex(0,0,0), new Vertex(fontDefaultXAdvancing,0,0),new Vertex(fontDefaultXAdvancing,100,0), /*new Vertex(0,100,0)*/};
 						ArrayList<Vertex[]> spaceContours = new ArrayList<Vertex[]>();
 						spaceContours.add(spaceVerts);
-						VectorFontCharacter spaceCharacter = new VectorFontCharacter(spaceContours, pa);
+						VectorFontCharacter spaceCharacter = new VectorFontCharacter(pa, spaceContours);
 //						VectorFontCharacter spaceCharacter = new VectorFontCharacter(new Vertex[]{new Vertex(0,0,0), new Vertex(100,0,0),new Vertex(100,100,0),new Vertex(0,100,0)}, new ArrayList<Vertex[]>(), pa);
 						spaceCharacter.setPickable(false);
 						if (MT4jSettings.getInstance().isOpenGlMode()){
@@ -253,7 +253,7 @@ public class SvgFontFactory extends DefaultHandler implements IFontFactory {
 						Vertex[] spaceVerts = new Vertex[]{new Vertex(0,0,0), new Vertex(fontDefaultXAdvancing,0,0),new Vertex(fontDefaultXAdvancing,100,0), /*new Vertex(0,100,0)*/};
 						ArrayList<Vertex[]> spaceContours = new ArrayList<Vertex[]>();
 						spaceContours.add(spaceVerts);
-						VectorFontCharacter spaceCharacter = new VectorFontCharacter(spaceContours, pa);
+						VectorFontCharacter spaceCharacter = new VectorFontCharacter(pa, spaceContours);
 //						VectorFontCharacter spaceCharacter = new VectorFontCharacter(new Vertex[]{new Vertex(0,0,0), new Vertex(100,0,0),new Vertex(100,100,0),new Vertex(0,100,0)}, new ArrayList<Vertex[]>(), pa);
 						spaceCharacter.setPickable(false);
 						if (MT4jSettings.getInstance().isOpenGlMode()){
@@ -347,7 +347,7 @@ public class SvgFontFactory extends DefaultHandler implements IFontFactory {
 		Vertex.scaleVectorArray(allPathVertices, new Vector3D(0,0,0), this.scaleFactor);
 		
 		//TODO nur contours als parameter is intuitiver
-		VectorFontCharacter character = new VectorFontCharacter(contours,  pa);
+		VectorFontCharacter character = new VectorFontCharacter(pa,  contours);
 		
 		if (MT4jSettings.getInstance().isOpenGlMode())
 			character.setUseDirectGL(true);
@@ -384,7 +384,7 @@ public class SvgFontFactory extends DefaultHandler implements IFontFactory {
 		Vertex[] nlVerts = new Vertex[]{new Vertex(0,0,0), new Vertex(200,0,0),new Vertex(200,100,0),/*new Vertex(0,100,0)*/};
 		ArrayList<Vertex[]> nlContours = new ArrayList<Vertex[]>();
 		nlContours.add(nlVerts);
-		VectorFontCharacter newLine = new VectorFontCharacter(nlContours, pa);
+		VectorFontCharacter newLine = new VectorFontCharacter(pa, nlContours);
 //		VectorFontCharacter newLine = new VectorFontCharacter(new Vertex[]{new Vertex(0,0,0), new Vertex(200,0,0),new Vertex(200,100,0),new Vertex(0,100,0)}, new ArrayList<Vertex[]>(), pa);
 		newLine.setPickable(false);						    		
 		newLine.setVisible(false);
@@ -400,7 +400,7 @@ public class SvgFontFactory extends DefaultHandler implements IFontFactory {
 		Vertex[] tabVerts = new Vertex[]{new Vertex(0,0,0), new Vertex(200,0,0),new Vertex(200,100,0),/*new Vertex(0,100,0)*/};
 		ArrayList<Vertex[]> tabContours = new ArrayList<Vertex[]>();
 		tabContours.add(tabVerts);
-		VectorFontCharacter tab = new VectorFontCharacter(tabContours, pa);
+		VectorFontCharacter tab = new VectorFontCharacter(pa, tabContours);
 //		VectorFontCharacter tab = new VectorFontCharacter(new Vertex[]{new Vertex(0,0,0), new Vertex(defaultTabWidth,0,0),new Vertex(defaultTabWidth,100,0),new Vertex(0,100,0)}, new ArrayList<Vertex[]>(), pa);
 		tab.setPickable(false);
 		try {

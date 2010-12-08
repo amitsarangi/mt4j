@@ -57,14 +57,24 @@ public class MTImage extends MTRectangle implements IdragClusterable{
 	
 	/**
 	 * Instantiates a new framed image.
-	 * 
+	 *
 	 * @param texture the texture
 	 * @param pApplet the applet
+	 * @deprecated constructor will be deleted! Please , use the constructor with the PApplet instance as the first parameter.
 	 */
 	public MTImage(PImage texture, PApplet pApplet) {
-		super(-7, -7, texture.width + 14, texture.height + 14, pApplet);
+		this(pApplet, texture);
+	}
+	
+	/**
+	 * Instantiates a new framed image.
+	 * @param pApplet the applet
+	 * @param texture the texture
+	 */
+	public MTImage(PApplet pApplet, PImage texture) {
+		super(pApplet, -7, -7, texture.width + 14, texture.height + 14);
 		
-		image = new MTRectangle(texture, pApplet);
+		image = new MTRectangle(pApplet, texture);
 		image.setStrokeColor(new MTColor(255,255,255,255));
 		image.setPickable(false);
 		this.addChild(image);
@@ -157,8 +167,8 @@ public class MTImage extends MTRectangle implements IdragClusterable{
 	 */
 	public void setDisplayCloseButton(boolean dispClose){
 		if (dispClose){
-			MTSvgButton keybCloseSvg = new MTSvgButton(MT4jSettings.getInstance().getDefaultSVGPath()
-					+ "keybClose.svg", this.getRenderer());
+			MTSvgButton keybCloseSvg = new MTSvgButton(this.getRenderer(), MT4jSettings.getInstance().getDefaultSVGPath()
+							+ "keybClose.svg");
 			//Transform
 			keybCloseSvg.scale(0.5f, 0.5f, 1, new Vector3D(0,0,0));
 			keybCloseSvg.translate(new Vector3D(this.getWidthXY(TransformSpace.RELATIVE_TO_PARENT) - 45, 2,0));

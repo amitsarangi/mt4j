@@ -34,7 +34,7 @@ public class Rotate3DAction implements IGestureEventListener,ICollisionAction {
 	
 	private boolean drawAble = false;
 	
-	public Rotate3DAction(IMTComponent3D target,PApplet pApplet)
+	public Rotate3DAction(PApplet pApplet,IMTComponent3D target)
 	{
 		this.target = target;
 		this.pApplet = pApplet;	

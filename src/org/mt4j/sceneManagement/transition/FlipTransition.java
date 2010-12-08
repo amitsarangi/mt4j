@@ -154,12 +154,12 @@ public class FlipTransition extends AbstractTransition {
 				lastSceneWindow = new MTSceneTexture(app,0, 0, lastScene);
 				nextSceneWindow = new MTSceneTexture(app,0, 0, nextScene);
 
-				lastSceneRectangle = new MTRectangle(0,0, app.width, app.height, app);
+				lastSceneRectangle = new MTRectangle(app,0, 0, app.width, app.height);
 				lastSceneRectangle.setGeometryInfo(lastSceneWindow.getGeometryInfo());
 				lastSceneRectangle.setTexture(lastSceneWindow.getTexture());
 				lastSceneRectangle.setStrokeColor(new MTColor(0,0,0,255));
 
-				nextSceneRectangle = new MTRectangle(0,0, app.width, app.height, app);
+				nextSceneRectangle = new MTRectangle(app,0, 0, app.width, app.height);
 				nextSceneRectangle.setGeometryInfo(nextSceneWindow.getGeometryInfo());
 				nextSceneRectangle.setTexture(nextSceneWindow.getTexture());
 				nextSceneRectangle.setStrokeColor(new MTColor(0,0,0,255));

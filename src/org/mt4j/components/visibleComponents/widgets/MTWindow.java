@@ -61,10 +61,10 @@ public class MTWindow extends MTRoundRectangle {
 	//TODO add titlebar, maximize, close buttons
 	//TODO scale border so its width doesent change..
 	
-
+	
 	/**
 	 * Instantiates a new mT window.
-	 * 
+	 *
 	 * @param x the x
 	 * @param y the y
 	 * @param z the z
@@ -73,10 +73,27 @@ public class MTWindow extends MTRoundRectangle {
 	 * @param arcWidth the arc width
 	 * @param arcHeight the arc height
 	 * @param applet the applet
+	 * @deprecated constructor will be deleted! Please , use the constructor with the PApplet instance as the first parameter.
 	 */
 	public MTWindow(float x, float y, float z, float width, float height,
 			float arcWidth, float arcHeight, PApplet applet) {
-		super(x, y, z, width, height, arcWidth, arcHeight, applet);
+		this(applet, x, y, z, width, height, arcWidth, arcHeight);
+	}
+
+	/**
+	 * Instantiates a new mT window.
+	 * @param applet the applet
+	 * @param x the x
+	 * @param y the y
+	 * @param z the z
+	 * @param width the width
+	 * @param height the height
+	 * @param arcWidth the arc width
+	 * @param arcHeight the arc height
+	 */
+	public MTWindow(PApplet applet, float x, float y, float z, float width,
+			float height, float arcWidth, float arcHeight) {
+		super(applet, x, y, z, width, height, arcWidth, arcHeight);
 
 		this.setName("unnamed MTWindow");
 		
@@ -89,7 +106,7 @@ public class MTWindow extends MTRoundRectangle {
 		float border = 10;
 		GL gl = ((PGraphicsOpenGL)applet.g).gl;
 //		MTRoundRectangle clipRect =  new MTRoundRectangle(x+border, y+border, z, width-(2*border), height-(2*border), arcWidth, arcHeight, applet);
-		MTRectangle clipRect =  new MTRectangle(x+border, y+border, z, width-(2*border), height-(2*border), applet);
+		MTRectangle clipRect =  new MTRectangle(applet, x+border, y+border, z, width-(2*border), height-(2*border));
 		clipRect.setDrawSmooth(true);
 		clipRect.setNoStroke(true);
 		clipRect.setBoundsBehaviour(MTRectangle.BOUNDS_ONLY_CHECK);
@@ -98,7 +115,7 @@ public class MTWindow extends MTRoundRectangle {
 		this.drawInnerBorder = true;
 		
 		//Add window background
-		final MTRectangle windowBackGround = new MTRectangle(x, y, z, 100, 200, applet);
+		final MTRectangle windowBackGround = new MTRectangle(applet, x, y, z, 100, 200);
 		windowBackGround.setFillColor(new MTColor(200,200,200,255));
 		windowBackGround.setNoStroke(true);
 		windowBackGround.setPickable(false);

@@ -60,21 +60,22 @@ public class MTPolygon extends MTCSSStylableShape{
 	/**
 	 * Instantiates a new mT polygon.
 	 * 
-	 * @param pApplet the applet
 	 * @param vertices the vertices
+	 * @param pApplet the applet
+	 * @deprecated constructor will be deleted! Please , use the constructor with the PApplet instance as the first parameter.
 	 */
-	public MTPolygon(PApplet pApplet, Vertex[] vertices) { //Added for consitency
-		this(vertices, pApplet);
+	public MTPolygon(Vertex[] vertices, PApplet pApplet) {
+		this(pApplet,vertices);
 	}
 	
 	/**
 	 * Instantiates a new mT polygon.
 	 * 
-	 * @param vertices the vertices
 	 * @param pApplet the applet
+	 * @param vertices the vertices
 	 */
-	public MTPolygon(Vertex[] vertices, PApplet pApplet) {
-		super(vertices, pApplet);
+	public MTPolygon(PApplet pApplet, Vertex[] vertices) { //Added for consitency
+		super(pApplet, vertices);
 		
 		this.normalDirty = true;
 //		this.hasVertexColor = false;//Dont set here, gets set to false after being true in super constructor
@@ -93,6 +94,7 @@ public class MTPolygon extends MTCSSStylableShape{
 		this.setBoundsBehaviour(AbstractShape.BOUNDS_DONT_USE);
 //		this.setBoundsBehaviour(AbstractShape.BOUNDS_ONLY_CHECK);
 	}
+	
 	
 	/* (non-Javadoc)
 	 * @see org.mt4j.components.visibleComponents.shapes.AbstractShape#computeDefaultBounds()

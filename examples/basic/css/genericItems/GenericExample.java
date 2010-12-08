@@ -66,7 +66,7 @@ public class GenericExample  extends AbstractScene{
 			//Set CSSID of all elements
 			
 			//Create Checkbox
-			MTCheckbox a_cb = new MTCheckbox(40, app);
+			MTCheckbox a_cb = new MTCheckbox(app, 40);
 			a_cb.setCSSID("Group A");
 			
 			this.getCanvas().addChild(a_cb);
@@ -74,9 +74,9 @@ public class GenericExample  extends AbstractScene{
 			
 			//Create OptionGroup, add two OptionBoxes
 			OptionGroup a_group = new OptionGroup();
-			MTOptionBox a_box1 = new MTOptionBox(40,app, a_group);
+			MTOptionBox a_box1 = new MTOptionBox(app,40, a_group);
 			a_box1.setCSSID("Group A");
-			MTOptionBox a_box2 = new MTOptionBox(40,app, a_group);
+			MTOptionBox a_box2 = new MTOptionBox(app,40, a_group);
 			a_box2.setCSSID("Group A");
 			this.getCanvas().addChild(a_box1);
 			this.getCanvas().addChild(a_box2);
@@ -107,14 +107,14 @@ public class GenericExample  extends AbstractScene{
 			
 			//Group B
 			
-			MTCheckbox b_cb = new MTCheckbox(40, app);
+			MTCheckbox b_cb = new MTCheckbox(app, 40);
 			b_cb.setCSSID("Group B");
 			this.getCanvas().addChild(b_cb);
 			
 			OptionGroup b_group = new OptionGroup();
-			MTOptionBox b_box1 = new MTOptionBox(40,app, b_group);
+			MTOptionBox b_box1 = new MTOptionBox(app,40, b_group);
 			b_box1.setCSSID("Group B");
-			MTOptionBox b_box2 = new MTOptionBox(40,app, b_group);
+			MTOptionBox b_box2 = new MTOptionBox(app,40, b_group);
 			b_box2.setCSSID("Group B");
 			this.getCanvas().addChild(b_box1);
 			this.getCanvas().addChild(b_box2);

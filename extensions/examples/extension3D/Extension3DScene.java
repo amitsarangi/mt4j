@@ -503,7 +503,7 @@ public class Extension3DScene extends AbstractScene {
 		meshGroup.addGestureListener(DragProcessor.class, new CreateDragHelperAction(mtApplication,this.getCanvas(),this.getSceneCam(),meshGroup));
 				
 		meshGroup.registerInputProcessor(new Rotate3DProcessor(mtApplication,meshGroup));
-		 Rotate3DAction act = new Rotate3DAction(meshGroup,mtApplication);
+		 Rotate3DAction act = new Rotate3DAction(mtApplication,meshGroup);
 		 drawAction.add(act);
 		meshGroup.addGestureListener(Rotate3DProcessor.class,act);
 		meshGroup.setGestureAllowance(Rotate3DProcessor.class,true);

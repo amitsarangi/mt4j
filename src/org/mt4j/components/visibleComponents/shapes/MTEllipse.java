@@ -73,7 +73,7 @@ public class MTEllipse extends MTPolygon {
 	 * @param segments the segments
 	 */
 	public MTEllipse(PApplet pApplet, Vector3D centerPoint, float radiusX, float radiusY, int segments) {
-		super(new Vertex[0], pApplet);
+		super(pApplet, new Vertex[0]);
 		this.radiusX 		= radiusX;
 		this.radiusY 		= radiusY;
 		this.centerPoint 	= centerPoint;

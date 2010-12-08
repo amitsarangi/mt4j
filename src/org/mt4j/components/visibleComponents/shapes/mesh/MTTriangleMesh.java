@@ -98,7 +98,7 @@ public class MTTriangleMesh extends AbstractShape{
 	 * IF THE MESH IS TO BE USED WITH LIGHTNING!
 	 */
 	public MTTriangleMesh(PApplet pApplet, GeometryInfo geometryInfo, boolean calculateDefaultNormals) {
-		super(geometryInfo, pApplet);
+		super(pApplet, geometryInfo);
 		
 		this.calculateDefaultNormals = calculateDefaultNormals;
 		

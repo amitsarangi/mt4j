@@ -163,7 +163,7 @@ public class TTFontFactory implements IFontFactory{
 		Vertex[] nlVerts = new Vertex[]{new Vertex(0,0,0), new Vertex(200,0,0),new Vertex(200,100,0),/*new Vertex(0,100,0)*/};
 		ArrayList<Vertex[]> nlContours = new ArrayList<Vertex[]>();
 		nlContours.add(nlVerts);
-		VectorFontCharacter newLine = new VectorFontCharacter(nlContours, pa);
+		VectorFontCharacter newLine = new VectorFontCharacter(pa, nlContours);
 		newLine.setPickable(false);						    		
 		newLine.setVisible(false);
 		newLine.setNoFill(true);
@@ -191,7 +191,7 @@ public class TTFontFactory implements IFontFactory{
 		Vertex[] spaceVerts = new Vertex[]{new Vertex(0,0,0), new Vertex(xadvance,0,0),new Vertex(xadvance,100,0), /*new Vertex(0,100,0)*/};
 		ArrayList<Vertex[]> spaceContours = new ArrayList<Vertex[]>();
 		spaceContours.add(spaceVerts);
-		VectorFontCharacter space = new VectorFontCharacter(spaceContours, pa);
+		VectorFontCharacter space = new VectorFontCharacter(pa, spaceContours);
 		space.setPickable(false);						    		
 		space.setVisible(false);
 		space.setNoFill(true);
@@ -206,7 +206,7 @@ public class TTFontFactory implements IFontFactory{
 		Vertex[] tabVerts = new Vertex[]{new Vertex(0,0,0), new Vertex(200,0,0),new Vertex(200,100,0),/*new Vertex(0,100,0)*/};
 		ArrayList<Vertex[]> tabContours = new ArrayList<Vertex[]>();
 		tabContours.add(tabVerts);
-		VectorFontCharacter tab = new VectorFontCharacter(tabContours, pa);
+		VectorFontCharacter tab = new VectorFontCharacter(pa, tabContours);
 		tab.setPickable(false);
 		try {
 			int tabWidth = 4 * space.getHorizontalDist();
@@ -581,7 +581,7 @@ public class TTFontFactory implements IFontFactory{
 				Vertex.scaleVectorArray(contour, new Vector3D(0,0,0), this.scaleFactor);
 			}
 			
-			VectorFontCharacter character = new VectorFontCharacter(allContours,  pa);
+			VectorFontCharacter character = new VectorFontCharacter(pa,  allContours);
 			
 			if (MT4jSettings.getInstance().isOpenGlMode())
 				character.setUseDirectGL(true);

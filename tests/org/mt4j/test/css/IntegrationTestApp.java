@@ -53,7 +53,7 @@ public class IntegrationTestApp extends AbstractScene{
 			styles= pc.getCssh().getStyles();
 			cssm = new CSSStyleManager(styles, app);
 		
-			MTRectangle r = new MTRectangle(500, 500, 500, 500, app);
+			MTRectangle r = new MTRectangle(app, 500, 500, 500, 500);
 			r.enableCSS();
 			this.getCanvas().addChild(r);
 

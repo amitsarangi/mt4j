@@ -69,7 +69,7 @@ public class SelectorIntegrationTest extends AbstractWindowTestcase {
 	
 	@Test
 	public void testDirectStyleSheets() {
-		MTRectangle r = new MTRectangle(0,0,100,100, app);
+		MTRectangle r = new MTRectangle(app,0,0,100, 100);
 		//r.enableCSS();
 		getCanvas().addChild(r);
 		assertTrue(r.getFillColor().equals(MTColor.GREEN));
@@ -104,9 +104,9 @@ public class SelectorIntegrationTest extends AbstractWindowTestcase {
 		this.runTest(new TestRunnable() {
 			@Override
 			public void runMTTestCode() {
-				MTRectangle r1 = new MTRectangle(100,100,100,100, app);
-				MTRectangle r2 = new MTRectangle(100,100,100,100, app);
-				MTRectangle r3 = new MTRectangle(100,100,100,100, app);
+				MTRectangle r1 = new MTRectangle(app,100,100,100, 100);
+				MTRectangle r2 = new MTRectangle(app,100,100,100, 100);
+				MTRectangle r3 = new MTRectangle(app,100,100,100, 100);
 				//r1.enableCSS(); r2.enableCSS(); r3.enableCSS();
 				
 				MTEllipse e = new MTEllipse(app, new Vector3D(200,200), 50,50);
@@ -143,9 +143,9 @@ public class SelectorIntegrationTest extends AbstractWindowTestcase {
 	
 	@Test
 	public void testSizes() {
-		MTRectangle r1 = new MTRectangle(100,100,100,100, app);
-		MTRectangle r2 = new MTRectangle(100,100,100,100, app);
-		MTRectangle r3 = new MTRectangle(100,100,100,100, app);
+		MTRectangle r1 = new MTRectangle(app,100,100,100, 100);
+		MTRectangle r2 = new MTRectangle(app,100,100,100, 100);
+		MTRectangle r3 = new MTRectangle(app,100,100,100, 100);
 		//r1.enableCSS(); r2.enableCSS(); r3.enableCSS();
 		
 		r1.setCSSID("widthtest");

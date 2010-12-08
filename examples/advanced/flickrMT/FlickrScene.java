@@ -84,7 +84,7 @@ public class FlickrScene extends AbstractScene {
 		PImage keyboardImg = app.loadImage("advanced" + MTApplication.separator + "flickrMT"+ MTApplication.separator + "data"+ MTApplication.separator 
 				+ "keyb128.png");
 		
-		final MTImageButton keyboardButton = new MTImageButton(keyboardImg, app);
+		final MTImageButton keyboardButton = new MTImageButton(app, keyboardImg);
 		keyboardButton.setFillColor(new MTColor(255,255,255,200));
 		keyboardButton.setName("KeyboardButton");
 		keyboardButton.setNoStroke(true);
@@ -119,8 +119,8 @@ public class FlickrScene extends AbstractScene {
 					keyb.addTextInputListener(t);
 			        
 			        //Flickr Button for the keyboard
-			        MTSvgButton flickrButton = new MTSvgButton( "advanced" + MTApplication.separator +  "flickrMT" + MTApplication.separator + "data" + MTApplication.separator
-							+ "Flickr_Logo.svg", app);
+			        MTSvgButton flickrButton = new MTSvgButton( app, "advanced" + MTApplication.separator +  "flickrMT" + MTApplication.separator + "data" + MTApplication.separator
+									+ "Flickr_Logo.svg");
 			        flickrButton.scale(0.4f, 0.4f, 1, new Vector3D(0,0,0), TransformSpace.LOCAL);
 			        flickrButton.translate(new Vector3D(0, 15,0));
 			        flickrButton.setBoundsPickingBehaviour(AbstractShape.BOUNDS_ONLY_CHECK);

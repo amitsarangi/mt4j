@@ -18,7 +18,7 @@ public class TestScene extends AbstractScene {
 		registerGlobalInputProcessor(c);
 		int count = 2;
 		for (int i = 0; i < count; i++) {
-			MTRectangle r = new MTRectangle(0,0,ToolsMath.getRandom(50, 250),ToolsMath.getRandom(50, 250),mtApplication);
+			MTRectangle r = new MTRectangle(mtApplication,0,0,ToolsMath.getRandom(50, 250),ToolsMath.getRandom(50, 250));
 			r.setFillColor(new MTColor(ToolsMath.getRandom(50,255),ToolsMath.getRandom(50,255),ToolsMath.getRandom(50,255)));
 			r.addGestureListener(DragProcessor.class, new InertiaDragAction());
 			getCanvas().addChild(r);

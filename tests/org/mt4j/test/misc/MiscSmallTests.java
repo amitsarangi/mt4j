@@ -26,10 +26,10 @@ public class MiscSmallTests extends AbstractWindowTestcase {
 			public void runMTTestCode() {
 				//MTOverlayContainer test
       MTOverlayContainer c1 = new MTOverlayContainer(getMTApplication(), "c1");
-		MTRectangle r1 = new MTRectangle(0,0, 100,100, getMTApplication());
+		MTRectangle r1 = new MTRectangle(getMTApplication(),0, 0,100, 100);
 		c1.addChild(r1);
 		MTOverlayContainer c2 = new MTOverlayContainer(getMTApplication(), "c2");
-		MTRectangle r2 = new MTRectangle(20,20, 100,100, getMTApplication());
+		MTRectangle r2 = new MTRectangle(getMTApplication(),20, 20,100, 100);
 		r2.setFillColor(new MTColor(255,150,150));
 		c2.addChild(r2);
 		scene.getCanvas().addChild(c1);

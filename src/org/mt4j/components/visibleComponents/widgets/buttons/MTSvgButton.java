@@ -52,11 +52,10 @@ public class MTSvgButton extends MTSvg implements IclickableButton{
 	
 	/**
 	 * Instantiates a new mT svg button.
-	 * 
-	 * @param fileString the file string
 	 * @param pa the pa
+	 * @param fileString the file string
 	 */
-	public MTSvgButton(String fileString, PApplet pa) {
+	public MTSvgButton(PApplet pa, String fileString) {
 		super(pa, fileString);
 		registeredActionListeners = new ArrayList<ActionListener>();
 		

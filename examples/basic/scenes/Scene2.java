@@ -51,7 +51,7 @@ public class Scene2 extends AbstractScene {
 		
 		//Button to change to the previous scene on the scene stack
 		PImage arrow = mtApplication.loadImage(imagePath + "arrowRight.png");
-		MTImageButton previousSceneButton = new MTImageButton(arrow, mtApplication);
+		MTImageButton previousSceneButton = new MTImageButton(mtApplication, arrow);
 		previousSceneButton.setNoStroke(true);
 		if (MT4jSettings.getInstance().isOpenGlMode())
 			previousSceneButton.setUseDirectGL(true);
@@ -71,7 +71,7 @@ public class Scene2 extends AbstractScene {
 		previousSceneButton.setPositionGlobal(new Vector3D(previousSceneButton.getWidthXY(TransformSpace.GLOBAL) + 5, mtApp.height - previousSceneButton.getHeightXY(TransformSpace.GLOBAL) - 5, 0));
 		
 		//Button to get to the next scene
-		MTImageButton nextSceneButton = new MTImageButton(arrow, mtApplication);
+		MTImageButton nextSceneButton = new MTImageButton(mtApplication, arrow);
 		nextSceneButton.setNoStroke(true);
 		if (MT4jSettings.getInstance().isOpenGlMode())
 			nextSceneButton.setUseDirectGL(true);

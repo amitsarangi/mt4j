@@ -8,7 +8,6 @@ import org.mt4j.components.visibleComponents.shapes.AbstractShape;
 import org.mt4j.components.visibleComponents.shapes.MTPolygon;
 import org.mt4j.input.inputData.InputCursor;
 import org.mt4j.input.inputProcessors.componentProcessors.dragProcessor.DragProcessor;
-import org.mt4j.input.inputProcessors.componentProcessors.lassoProcessor.IdragClusterable;
 import org.mt4j.input.inputProcessors.componentProcessors.rotateProcessor.RotateProcessor;
 import org.mt4j.input.inputProcessors.componentProcessors.scaleProcessor.ScaleProcessor;
 import org.mt4j.input.inputProcessors.componentProcessors.tapProcessor.TapProcessor;
@@ -21,7 +20,6 @@ import org.mt4j.util.math.Vector3D;
 import org.mt4j.util.math.Vertex;
 import org.mt4jx.input.inputProcessors.componentProcessors.Group3DProcessorNew.ISelection;
 import org.mt4jx.util.extension3D.ComponentHelper;
-import org.mt4jx.util.extension3D.MergeHelper;
 
 import processing.core.PApplet;
 
@@ -74,7 +72,7 @@ public class LassoSelection implements ISelection {
 		planeNormal = new Vector3D(0,0,1);
 		
 		Vector3D newPos = ToolsGeometry.getRayPlaneIntersection(
-				Tools3D.getCameraPickRay(pApplet, camera, cursor.getCurrentEvent().getPosX(), cursor.getCurrentEvent().getPosY()), 
+				Tools3D.getCameraPickRay(pApplet, camera, cursor.getCurrentEvtPosX(), cursor.getCurrentEvtPosY()), 
 				planeNormal, 
 				pointInPlane);
 		
@@ -96,11 +94,12 @@ public class LassoSelection implements ISelection {
 						new Vertex(newPos.getX(), newPos.getY(), newPos.getZ())},
 				pa);*/
 		
-		setPolygon(new MTPolygon(new Vertex[]{
-						new Vertex(newPos.getX(), newPos.getY(), newPos.getZ()),
-						new Vertex(newPos.getX()+0.1f, newPos.getY(), newPos.getZ()),
-						new Vertex(newPos.getX(), newPos.getY()+0.1f, newPos.getZ()),
-						new Vertex(newPos.getX(), newPos.getY(), newPos.getZ())},pApplet));
+		setPolygon(new MTPolygon(pApplet,
+				new Vertex[]{
+				new Vertex(newPos.getX(), newPos.getY(), newPos.getZ()),
+				new Vertex(newPos.getX()+0.1f, newPos.getY(), newPos.getZ()),
+				new Vertex(newPos.getX(), newPos.getY()+0.1f, newPos.getZ()),
+				new Vertex(newPos.getX(), newPos.getY(), newPos.getZ())}));
 		Vertex[] vertices = getPolygon().getVerticesLocal();
 		
 		for(Vertex v : vertices)
@@ -141,7 +140,7 @@ public class LassoSelection implements ISelection {
 		{
 			lastPosition = newPosition;
 				
-			this.newPosition = Tools3D.unprojectScreenCoords(pApplet, camera, cursor.getCurrentEvent().getPosX(), cursor.getCurrentEvent().getPosY());
+			this.newPosition = Tools3D.unprojectScreenCoords(pApplet, camera, cursor.getCurrentEvtPosX(), cursor.getCurrentEvtPosY());
 
 			Vector3D rayStartPoint = camera.getPosition(); //default cam
 			Vector3D newPos = ToolsGeometry.getRayPlaneIntersection(new Ray(rayStartPoint, newPosition), planeNormal,pointInPlane);

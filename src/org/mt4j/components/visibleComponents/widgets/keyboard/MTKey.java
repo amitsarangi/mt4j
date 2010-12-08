@@ -66,14 +66,13 @@ public class MTKey extends
 	
 	/**
 	 * Instantiates a new mT key.
-	 *
-	 * @param geom the geom
 	 * @param pApplet the applet
+	 * @param geom the geom
 	 * @param characterUnicodeToWrite the character unicode to write
 	 * @param characterUnicodeToWriteShifted the character unicode to write shifted
 	 */
 //	public MTKey(Vertex[] vertices, /*List<Vertex[]> contours,*/ PApplet pApplet,String characterUnicodeToWrite, String characterUnicodeToWriteShifted) {
-	public MTKey(GeometryInfo geom, /*List<Vertex[]> contours,*/ PApplet pApplet,String characterUnicodeToWrite, String characterUnicodeToWriteShifted) {
+	public MTKey(/*List<Vertex[]> contours,*/ PApplet pApplet, GeometryInfo geom,String characterUnicodeToWrite, String characterUnicodeToWriteShifted) {
 //		super(vertices, outLines, pApplet);
 		
 //		/*
@@ -170,7 +169,7 @@ public class MTKey extends
 	
 	private class ButtonBackground extends MTPolygon{
 		public ButtonBackground(Vertex[] vertices, PApplet applet) {
-			super(vertices, applet);
+			super(applet, vertices);
 			/*
 			//Color the background
 			float[] minMax = Tools3D.getMinXYMaxXY(vertices);

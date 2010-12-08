@@ -79,16 +79,16 @@ public class MTDepthHelper extends MTComponent {
 		float visualHelperHeight = nearPlaneHeight*0.2f;
 		float visualHelperWidth = nearPlaneWidth*0.06f;
 		
-		MTRectangle visualHelperBody = new MTRectangle(0.0f, (visualHelperHeight/10.0f), visualHelperWidth,
-				visualHelperHeight*0.9f, this.getRenderer());
+		MTRectangle visualHelperBody = new MTRectangle(this.getRenderer(), 0.0f, (visualHelperHeight/10.0f),
+				visualHelperWidth, visualHelperHeight*0.9f);
 		visualHelperBody.unregisterAllInputProcessors();
 		visualHelperBody.setGestureAllowance(DragProcessor.class,false);
 		
 		visualHelperBody.setFillColor(new MTColor(255, 255, 255,
 				MTColor.ALPHA_HALF_TRANSPARENCY));
 			
-		MTRectangle visualHelperDrag = new MTRectangle(0.0f, 0.0f, visualHelperWidth,
-				visualHelperHeight*0.1f,  this.getRenderer());
+		MTRectangle visualHelperDrag = new MTRectangle(this.getRenderer(), 0.0f, 0.0f,
+				visualHelperWidth,  visualHelperHeight*0.1f);
 		
 		visualHelperDrag.removeAllGestureEventListeners(DragProcessor.class);
 		visualHelperDrag.setGestureAllowance(DragProcessor.class,true);
@@ -97,8 +97,8 @@ public class MTDepthHelper extends MTComponent {
 		
 		visualHelperDrag.setFillColor(new MTColor(100, 100, 100,
 				MTColor.ALPHA_HALF_TRANSPARENCY));
-		MTRectangle visualHelperTouch = new MTRectangle(visualHelperWidth/4f, visualHelperHeight/9.0f+1.0f, visualHelperWidth/2f,
-				visualHelperHeight/1.4f,  this.getRenderer());
+		MTRectangle visualHelperTouch = new MTRectangle(this.getRenderer(), visualHelperWidth/4f, visualHelperHeight/9.0f+1.0f,
+				visualHelperWidth/2f,  visualHelperHeight/1.4f);
 		
 		visualHelperTouch.setGestureAllowance(DragProcessor.class, false);
 		visualHelperTouch.setGestureAllowance(ScaleProcessor.class,false);
@@ -113,7 +113,7 @@ public class MTDepthHelper extends MTComponent {
 		visualHelperTouch.setGestureAllowance(DepthProcessor.class,true);
 		visualHelperTouch.setName("visualHelperTouch"); //TODO remove 
 				
-		visualHelper = new MTRectangle(0.0f,0.0f,visualHelperWidth,visualHelperHeight/11f, this.getRenderer());
+		visualHelper = new MTRectangle(this.getRenderer(),0.0f,0.0f,visualHelperWidth, visualHelperHeight/11f);
 		visualHelper.setFillColor(new MTColor(255,255,255,MTColor.ALPHA_FULL_TRANSPARENCY));
 		
 		visualHelper.addChild(visualHelperBody);

@@ -111,13 +111,11 @@ public class MTProgressBar extends MTRoundRectangle {
 	 * @param font the font
 	 */
 	public MTProgressBar(PApplet pApplet, IprogressInfoProvider progressInfo, PFont font) {
-		super(0,0,0, MT4jSettings.getInstance().getWindowWidth()/(3.5f), 100, 15, 15, pApplet);
-//		super(0,0,0, ConstantsAndSettings.getInstance().getScreenWidth(),  ConstantsAndSettings.getInstance().getScreenHeight(), 15, 15, pApplet);
+		super(pApplet,0,0, 0, MT4jSettings.getInstance().getWindowWidth()/(3.5f), 100, 15, 15);
 		
 		this.progressInfo = progressInfo;
 		this.font = font;
 		this.pa = pApplet;
-//		this.pgraphics3D = (PGraphics3D)pApplet.g;
 		if (openGl){
 			this.pgl = ((PGraphicsOpenGL)pa.g);
 		}
@@ -140,9 +138,8 @@ public class MTProgressBar extends MTRoundRectangle {
 		
 		b =  new Vector3D(this.getWidthXY(TransformSpace.RELATIVE_TO_PARENT)/2, this.getHeightXY(TransformSpace.RELATIVE_TO_PARENT)/2, 0);
 		
-		outerBar = new MTRectangle(0, 0, 0, 200, 30, pa);
+		outerBar = new MTRectangle(pa, 0, 0, 0, 200, 30);
 		outerBar.setStrokeWeight(1);
-//		outerBar.setNoStroke(true);
 		outerBar.setStrokeColor(new MTColor(0, 0, 0, 255));
 		outerBar.setFillColor(new MTColor(100, 100, 100, 200));
 		
@@ -156,7 +153,7 @@ public class MTProgressBar extends MTRoundRectangle {
 		outerBar.setName("MTProgressbar outer bar");
 		this.addChild(outerBar);
 		
-		innerBar = new MTRectangle(0, 0, 0, 199, 29, pa);
+		innerBar = new MTRectangle(pa, 0, 0, 0, 199, 29);
 		innerBar.setStrokeWeight(1);
 		innerBar.setNoStroke(true);
 		innerBar.setStrokeColor(new MTColor(255, 255, 255, 200));
@@ -204,22 +201,8 @@ public class MTProgressBar extends MTRoundRectangle {
 		this.setDepthBufferDisabled(true);
 	}
 	
-	
-//	/* (non-Javadoc)
-//	 * @see com.jMT.components.MTBaseComponent#setCustomAndGlobalCam(util.camera.Icamera, util.camera.Icamera)
-//	 */
-//	@Override
-//	public void setCustomAndGlobalCam(Icamera globalCamera, Icamera customObjectCamera) {
-//		super.setCustomAndGlobalCam(globalCamera, customObjectCamera);
-//		innerBar.setCustomAndGlobalCam(this.getGlobalCam(), this.getCustomObjectCam());
-//		outerBar.setCustomAndGlobalCam(this.getGlobalCam(), this.getCustomObjectCam());
-//	}
 
 
-
-	/* (non-Javadoc)
-	 * @see com.jMT.components.visibleComponents.shapes.MTPolygon#drawComponent()
-	 */
 	@Override
 	public void drawComponent(PGraphics g) {
 		if (progressInfo == null){
@@ -261,25 +244,17 @@ public class MTProgressBar extends MTRoundRectangle {
 		
 		//Draw text
 		if (this.isDrawActionText()){
-//			pa.pushMatrix();
 			pa.textMode(PApplet.MODEL);
-//			pa.textAlign(PApplet.CENTER);
 			pa.textAlign(PApplet.LEFT);
 			pa.textFont(font, 12);
 			pa.fill(20);
 			pa.noStroke();
 			
-//			pa.translate(b.x, b.y  - font.theight +2, 0);
-			
 			pa.text(this.getProgressInfoProvider().getCurrentAction(), /*b.x*/c.x, b.y  - 20 );
-			
-//			pa.text(this.getProgressInfoProvider().getCurrentAction(), this.getLocationX() , this.getLocationY() - rectHeight/2 - rectStrokeWeight - 7);
-//			pa.popMatrix();
 		}
 		
 		
 		float barDrawLength = (this.targetWidth/100) * this.getProgressInfoProvider().getPercentageFinished();
-//		
 		float currentWidth = this.innerBar.getWidthXY(TransformSpace.GLOBAL);
 		if (currentWidth != 0){
 			if (barDrawLength == 0)
@@ -290,23 +265,16 @@ public class MTProgressBar extends MTRoundRectangle {
 		}
 		
 		if (this.isDrawActionText()){
-//			pa.pushMatrix();
-//			float fillText = ((int)this.getProgressInfoProvider().getPercentageFinished() > 50)? 250 : 20;
 			float fillText = 0;
 				
 			pa.fill(fillText);
 			pa.textFont(font, 10);
 			
 			pa.text((int)this.getProgressInfoProvider().getPercentageFinished() + "%", this.getWidthXY(TransformSpace.RELATIVE_TO_PARENT)/2, this.getHeightXY(TransformSpace.RELATIVE_TO_PARENT) /2  + font.ascent()+ font.descent()  );
-			
-//			pa.text((int)this.getProgressInfoProvider().getPercentageFinished() + "%", this.getLocationX() , this.getLocationY() + font.theight/4);
-//			pa.popMatrix();
 		}
 		
 		if (openGl){
-//			gl= pgl.beginGL();
 			gl.glDisable(GL.GL_SCISSOR_TEST);
-//			pgl.endGL();
 		}
 	}
 	

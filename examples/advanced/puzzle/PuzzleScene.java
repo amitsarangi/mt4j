@@ -111,7 +111,7 @@ public class PuzzleScene extends AbstractScene{
 		float cellHeight = 40;
 		MTColor cellFillColor = new MTColor(MTColor.BLACK);
 		MTColor cellPressedFillColor = new MTColor(new MTColor(105,105,105));
-		list = new MTList(r.getWidthXY(TransformSpace.GLOBAL) + 5, 0, cellWidth+2, imagesNames.length* cellHeight + imagesNames.length*3, getMTApplication());
+		list = new MTList(getMTApplication(), r.getWidthXY(TransformSpace.GLOBAL) + 5, 0, cellWidth+2, imagesNames.length* cellHeight + imagesNames.length*3);
 		list.setNoFill(true);
 		list.setNoStroke(true);
 		list.unregisterAllInputProcessors();
@@ -135,7 +135,7 @@ public class PuzzleScene extends AbstractScene{
 	
 	
 	private MTRoundRectangle getRoundRectWithText(float x, float y, float width, float height, String text, IFont font){
-		MTRoundRectangle r = new MTRoundRectangle(x, y, 0, width, height, 12, 12, getMTApplication());
+		MTRoundRectangle r = new MTRoundRectangle(getMTApplication(), x, y, 0, width, height, 12, 12);
 		r.unregisterAllInputProcessors();
 		r.setFillColor(MTColor.BLACK);
 		r.setStrokeColor(MTColor.BLACK);
@@ -152,7 +152,7 @@ public class PuzzleScene extends AbstractScene{
 	
 	
 	private MTListCell createListCell(final String imageName, IFont font, float cellWidth, float cellHeight, final MTColor cellFillColor, final MTColor cellPressedFillColor){
-		final MTListCell cell = new MTListCell(cellWidth, cellHeight, getMTApplication());
+		final MTListCell cell = new MTListCell(getMTApplication(), cellWidth, cellHeight);
 		cell.setFillColor(cellFillColor);
 		MTTextArea listLabel = new MTTextArea(getMTApplication(), font);
 		listLabel.setNoFill(true);

@@ -82,11 +82,11 @@ public class MTComponentTest extends AbstractWindowTestcase {
 			@Override
 			public void runMTTestCode() {
 				//Create 3 rectangles
-				MTRectangle rect1 = new MTRectangle(100,100,getMTApplication());
+				MTRectangle rect1 = new MTRectangle(getMTApplication(),100,100);
 				rect1.setFillColor(new MTColor(255,0,0));
-				MTRectangle rect2 = new MTRectangle(100,100,getMTApplication());
+				MTRectangle rect2 = new MTRectangle(getMTApplication(),100,100);
 				rect2.setFillColor(new MTColor(0,255,0));
-				MTRectangle rect3 = new MTRectangle(100,100,getMTApplication());
+				MTRectangle rect3 = new MTRectangle(getMTApplication(),100,100);
 				rect3.setFillColor(new MTColor(0,0,255));
 				
 				parent.addChild(rect1);

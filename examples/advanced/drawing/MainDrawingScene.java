@@ -50,7 +50,7 @@ public class MainDrawingScene extends AbstractScene {
 		this.registerGlobalInputProcessor(new CursorTracer(mtApplication, this));
 		
 		//Create window frame
-        MTRoundRectangle frame = new MTRoundRectangle(-50,-50, 0, pa.width+100, pa.height+100, 25,25, pa);
+        MTRoundRectangle frame = new MTRoundRectangle(pa,-50, -50, 0, pa.width+100, pa.height+100,25, 25);
         frame.setSizeXYGlobal(pa.width-10, pa.height-10);
         this.getCanvas().addChild(frame);
         //Create the scene in which we actually draw
@@ -59,7 +59,7 @@ public class MainDrawingScene extends AbstractScene {
        
         //Create texture brush
         PImage brushImage = getMTApplication().loadImage(imagesPath + "brush1.png");
-		textureBrush = new MTRectangle(brushImage, getMTApplication());
+		textureBrush = new MTRectangle(getMTApplication(), brushImage);
 		textureBrush.setPickable(false);
 		textureBrush.setNoFill(false);
 		textureBrush.setNoStroke(true);
@@ -87,7 +87,7 @@ public class MainDrawingScene extends AbstractScene {
         
         //Eraser button
         PImage eraser = pa.loadImage(imagesPath + "Kde_crystalsvg_eraser.png");
-        MTImageButton b = new MTImageButton(eraser, pa);
+        MTImageButton b = new MTImageButton(pa, eraser);
         b.setNoStroke(true);
         b.translate(new Vector3D(-50,0,0));
         b.addActionListener(new ActionListener(){
@@ -110,7 +110,7 @@ public class MainDrawingScene extends AbstractScene {
         
         //Pen brush selector button
         PImage penIcon = pa.loadImage(imagesPath + "pen.png");
-        final MTImageButton penButton = new MTImageButton(penIcon, pa);
+        final MTImageButton penButton = new MTImageButton(pa, penIcon);
         frame.addChild(penButton);
         penButton.translate(new Vector3D(-50f, 65,0));
         penButton.setNoStroke(true);
@@ -118,7 +118,7 @@ public class MainDrawingScene extends AbstractScene {
         
         //Texture brush selector button
         PImage brushIcon = pa.loadImage(imagesPath + "paintbrush.png");
-        final MTImageButton brushButton = new MTImageButton(brushIcon, pa);
+        final MTImageButton brushButton = new MTImageButton(pa, brushIcon);
         frame.addChild(brushButton);
         brushButton.translate(new Vector3D(-50f, 130,0));
         brushButton.setStrokeColor(new MTColor(0,0,0));
@@ -152,7 +152,7 @@ public class MainDrawingScene extends AbstractScene {
         
         //Save to file button
         PImage floppyIcon = pa.loadImage(imagesPath + "floppy.png");
-        final MTImageButton floppyButton = new MTImageButton(floppyIcon, pa);
+        final MTImageButton floppyButton = new MTImageButton(pa, floppyIcon);
         frame.addChild(floppyButton);
         floppyButton.translate(new Vector3D(-50f, 260,0));
         floppyButton.setNoStroke(true);
@@ -187,7 +187,7 @@ public class MainDrawingScene extends AbstractScene {
         //ColorPicker and colorpicker button
         PImage colPick = pa.loadImage(imagesPath + "colorcircle.png");
 //        final MTColorPicker colorWidget = new MTColorPicker(0, pa.height-colPick.height, colPick, pa);
-        final MTColorPicker colorWidget = new MTColorPicker(0, 0, colPick, pa);
+        final MTColorPicker colorWidget = new MTColorPicker(pa, 0, 0, colPick);
         colorWidget.translate(new Vector3D(0f, 135,0));
         colorWidget.setStrokeColor(new MTColor(0,0,0));
         colorWidget.addGestureListener(DragProcessor.class, new IGestureEventListener() {
@@ -206,7 +206,7 @@ public class MainDrawingScene extends AbstractScene {
         colorWidget.setVisible(false);
         
         PImage colPickIcon = pa.loadImage(imagesPath + "ColorPickerIcon.png");
-        MTImageButton colPickButton = new MTImageButton(colPickIcon, pa);
+        MTImageButton colPickButton = new MTImageButton(pa, colPickIcon);
         frame.addChild(colPickButton);
         colPickButton.translate(new Vector3D(-50f, 195,0));
         colPickButton.setNoStroke(true);
@@ -228,7 +228,7 @@ public class MainDrawingScene extends AbstractScene {
         });
         
         //Add a slider to set the brush width
-        MTSlider slider = new MTSlider(0, 0, 200, 38, 0.05f, 2.0f, pa);
+        MTSlider slider = new MTSlider(pa, 0, 0, 200, 38, 0.05f, 2.0f);
         slider.setValue(1.0f);
         frame.addChild(slider);
         slider.rotateZ(new Vector3D(), 90, TransformSpace.LOCAL);
@@ -243,13 +243,14 @@ public class MainDrawingScene extends AbstractScene {
 			}
 		});
         //Add triangle in slider to indicate brush width
-        MTPolygon p = new MTPolygon(new Vertex[]{
+        MTPolygon p = new MTPolygon(pa, 
+        		new Vertex[]{
         		new Vertex(2 + slider.getKnob().getWidthXY(TransformSpace.LOCAL), slider.getHeightXY(TransformSpace.LOCAL)/2f, 0),
         		new Vertex(slider.getWidthXY(TransformSpace.LOCAL)-3, slider.getHeightXY(TransformSpace.LOCAL)/4f +2, 0),
         		new Vertex(slider.getWidthXY(TransformSpace.LOCAL)-1, slider.getHeightXY(TransformSpace.LOCAL)/2f, 0),
         		new Vertex(slider.getWidthXY(TransformSpace.LOCAL)-3, -slider.getHeightXY(TransformSpace.LOCAL)/4f -2 + slider.getHeightXY(TransformSpace.LOCAL), 0),
         		new Vertex(2, slider.getHeightXY(TransformSpace.LOCAL)/2f, 0),
-        }, pa);
+        });
         p.setFillColor(new MTColor(150,150,150, 150));
         p.setStrokeColor(new MTColor(160,160,160, 190));
         p.unregisterAllInputProcessors();

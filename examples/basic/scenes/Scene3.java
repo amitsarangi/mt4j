@@ -50,7 +50,7 @@ public class Scene3 extends AbstractScene {
 		
 		//Button to return to the previous scene
 		PImage arrow = mtApplication.loadImage(imagePath + "arrowRight.png");
-		MTImageButton previousSceneButton = new MTImageButton(arrow, mtApplication);
+		MTImageButton previousSceneButton = new MTImageButton(mtApplication, arrow);
 		previousSceneButton.setNoStroke(true);
 		if (MT4jSettings.getInstance().isOpenGlMode())
 			previousSceneButton.setUseDirectGL(true);

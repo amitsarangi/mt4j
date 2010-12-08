@@ -57,9 +57,10 @@ public class MTRoundRectangle extends MTPolygon {
 	private float width;
 	private float height;
 	
+	
 	/**
 	 * Instantiates a new mT round rectangle.
-	 * 
+	 *
 	 * @param x the x
 	 * @param y the y
 	 * @param z the z
@@ -68,14 +69,31 @@ public class MTRoundRectangle extends MTPolygon {
 	 * @param arcWidth the arc width
 	 * @param arcHeight the arc height
 	 * @param pApplet the applet
+	 * @deprecated constructor will be deleted! Please , use the constructor with the PApplet instance as the first parameter.
 	 */
 	public MTRoundRectangle(float x, float y, float z, float width, float height, float arcWidth, float arcHeight,  PApplet pApplet) {
-		this(x, y, z, width, height, arcWidth, arcHeight, 50, pApplet);
+		this(pApplet, x, y, z, width, height, arcWidth, arcHeight);
 	}
-
+	
 	/**
 	 * Instantiates a new mT round rectangle.
-	 * 
+	 * @param pApplet the applet
+	 * @param x the x
+	 * @param y the y
+	 * @param z the z
+	 * @param width the width
+	 * @param height the height
+	 * @param arcWidth the arc width
+	 * @param arcHeight the arc height
+	 */
+	public MTRoundRectangle(PApplet pApplet, float x, float y, float z, float width, float height, float arcWidth,  float arcHeight) {
+		this(pApplet, x, y, z, width, height, arcWidth, arcHeight, 50);
+	}
+
+	
+	/**
+	 * Instantiates a new mT round rectangle.
+	 *
 	 * @param x the x
 	 * @param y the y
 	 * @param z the z
@@ -85,9 +103,26 @@ public class MTRoundRectangle extends MTPolygon {
 	 * @param arcHeight the arc height
 	 * @param segments the segments
 	 * @param pApplet the applet
+	 * @deprecated constructor will be deleted! Please , use the constructor with the PApplet instance as the first parameter.
 	 */
 	public MTRoundRectangle(float x, float y, float z, float width, float height, float arcWidth, float arcHeight, int segments, PApplet pApplet) {
-		super(new Vertex[]{}, pApplet);
+		this(pApplet, x, y, z, width, height, arcWidth, arcHeight, segments);
+	}
+	
+	/**
+	 * Instantiates a new mT round rectangle.
+	 * @param pApplet the applet
+	 * @param x the x
+	 * @param y the y
+	 * @param z the z
+	 * @param width the width
+	 * @param height the height
+	 * @param arcWidth the arc width
+	 * @param arcHeight the arc height
+	 * @param segments the segments
+	 */
+	public MTRoundRectangle(PApplet pApplet, float x, float y, float z, float width, float height, float arcWidth, float arcHeight, int segments) {
+		super(pApplet, new Vertex[]{});
 		
 		this.x = x;
 		this.y = y;

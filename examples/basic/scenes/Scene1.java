@@ -50,7 +50,7 @@ public class Scene1 extends AbstractScene {
 		
 		//Button to get to the next scene
 		PImage arrow = mtApplication.loadImage(imagePath +	"arrowRight.png");
-		MTImageButton nextSceneButton = new MTImageButton(arrow, mtApplication);
+		MTImageButton nextSceneButton = new MTImageButton(mtApplication, arrow);
 		nextSceneButton.setNoStroke(true);
 		if (MT4jSettings.getInstance().isOpenGlMode())
 			nextSceneButton.setUseDirectGL(true);

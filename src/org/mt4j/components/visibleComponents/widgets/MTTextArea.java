@@ -157,10 +157,10 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
 	 * @param font the font
 	 */
 	public MTTextArea(PApplet pApplet, IFont font) {
-		super(	0, 0, 	//upper left corner
+		super(	pApplet, 0, 	//upper left corner
 				0, 	//width
 				0,  //height
-				pApplet);
+				0);
 		
 		init(pApplet, font, MODE_EXPAND);
 		
@@ -176,40 +176,68 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
 	}
 	
 	
+	
+	/**
+	 * Instantiates a new mT text area.
+	 *
+	 * @param x the x
+	 * @param y the y
+	 * @param width the width
+	 * @param height the height
+	 * @param pApplet the applet
+	 * @deprecated constructor will be deleted! Please , use the constructor with the PApplet instance as the first parameter.
+	 */
+	public MTTextArea(float x, float y, float width, float height, PApplet pApplet) {
+		this(pApplet, x, y, width, height, FontManager.getInstance().getDefaultFont(pApplet));
+	}
+	
     /**
      * Instantiates a new mT text area.
      * This constructor creates a textarea with fixed dimensions.
      * If the text exceeds the dimensions the text is clipped.
      * A default font is used.
-     * 
+     * @param pApplet the applet
      * @param x the x
      * @param y the y
      * @param width the width
      * @param height the height
-     * @param pApplet the applet
      */
-	public MTTextArea(float x, float y, float width, float height, PApplet pApplet) {
-		this(x, y, width, height, FontManager.getInstance().getDefaultFont(pApplet), pApplet);
+	public MTTextArea(PApplet pApplet, float x, float y, float width, float height) {
+		this(pApplet, x, y, width, height, FontManager.getInstance().getDefaultFont(pApplet));
 	}
 	
-    
+	
 	/**
-	 * Instantiates a new mT text area. 
-	 * This constructor creates a textarea with fixed dimensions. 
-	 * If the text exceeds the dimensions the text is clipped.
-	 * 
+	 * Instantiates a new mT text area.
+	 *
 	 * @param x the x
 	 * @param y the y
 	 * @param width the width
 	 * @param height the height
 	 * @param font the font
 	 * @param pApplet the applet
+	 * @deprecated constructor will be deleted! Please , use the constructor with the PApplet instance as the first parameter.
 	 */
 	public MTTextArea(float x, float y, float width, float height, IFont font, PApplet pApplet) {
-		super(	0, 0, 	//upper left corner
-				width, 	//width
-				height,  //height
-				pApplet);
+		this(pApplet, x, y, width, height, font);
+	}
+    
+	/**
+	 * Instantiates a new mT text area. 
+	 * This constructor creates a textarea with fixed dimensions. 
+	 * If the text exceeds the dimensions the text is clipped.
+	 * @param pApplet the applet
+	 * @param x the x
+	 * @param y the y
+	 * @param width the width
+	 * @param height the height
+	 * @param font the font
+	 */
+	public MTTextArea(PApplet pApplet, float x, float y, float width, float height, IFont font) {
+		super(	pApplet, 0, 	//upper left corner
+				0, 	//width
+				width,  //height
+				height);
 		
 		init(pApplet, font, MODE_WRAP);
 		

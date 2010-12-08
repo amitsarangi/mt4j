@@ -148,7 +148,7 @@ public class MTShellScene extends AbstractScene {
 					new Vertex(0,			app.height/1.7f,0,	170,170,140,255),
 					new Vertex(0, 			app.height/3,	0,	0,0,0,255),
 			};
-			MTPolygon p = new MTPolygon(vertices, getMTApplication());
+			MTPolygon p = new MTPolygon(getMTApplication(), vertices);
 			p.setName("upper gradient");
 			p.setNoStroke(true);
 			p.generateAndUseDisplayLists();
@@ -162,7 +162,7 @@ public class MTShellScene extends AbstractScene {
 					new Vertex(0,			app.height,			0,	0,0,0,255),
 					new Vertex(0, 			app.height/1.7f,	0, 	170,170,140,255),
 			};
-			MTPolygon p2 = new MTPolygon(vertices2, getMTApplication());
+			MTPolygon p2 = new MTPolygon(getMTApplication(), vertices2);
 			p2.setNoStroke(true);
 			p2.generateAndUseDisplayLists();
 			p2.setPickable(false);
@@ -179,7 +179,7 @@ public class MTShellScene extends AbstractScene {
 		listWidth = preferredIconHeight + displayHeightOfReflection + gapBetweenIconAndReflection;
 //		listHeight = app.width - 50;
 		listHeight = app.width;
-		list = new MTList(0,0, listWidth, listHeight, 40, mtApplication);
+		list = new MTList(mtApplication,0, 0, listWidth, listHeight, 40);
 		list.setFillColor(new MTColor(150,150,150,200));
 		list.setNoFill(true);
 		list.setNoStroke(true);
@@ -360,7 +360,7 @@ public class MTShellScene extends AbstractScene {
 							((AbstractScene) scene).setTransition(new BlendTransition(app, 300));	
 						}
 						
-						final MTSceneWindow sceneWindow = new MTSceneWindow(scene, 100,50, app);
+						final MTSceneWindow sceneWindow = new MTSceneWindow(app, scene,100, 50);
 						sceneWindow.setFillColor(new MTColor(50,50,50,200));
 						sceneWindow.scaleGlobal(0.5f, 0.5f, 0.5f, sceneWindow.getCenterPointGlobal());
 						sceneWindow.addGestureListener(DragProcessor.class, new InertiaDragAction());
@@ -372,7 +372,7 @@ public class MTShellScene extends AbstractScene {
 						float menuHeight = 64;
 						MTSceneMenu sceneMenu = 
 						//new MTSceneMenu(this, app.width-menuWidth/2f, 0-menuHeight/2f, menuWidth, menuHeight, app);
-						new MTSceneMenu(scene, app.width-menuWidth, app.height-menuHeight, menuWidth, menuHeight, app);
+						new MTSceneMenu(app, scene, app.width-menuWidth, app.height-menuHeight, menuWidth, menuHeight);
 						sceneMenu.addToScene();
 						
 						app.addScene(scene);
@@ -408,7 +408,7 @@ public class MTShellScene extends AbstractScene {
 //		float listCellHeight = preferredIconWidth - border;
 		float listCellHeight = preferredIconWidth ;
 		
-		MTListCell cell = new MTListCell(realListCellWidth ,  listCellHeight, app);
+		MTListCell cell = new MTListCell(app ,  realListCellWidth, listCellHeight);
 		cell.setNoFill(true);
 		cell.setNoStroke(true);
 		
@@ -420,7 +420,7 @@ public class MTShellScene extends AbstractScene {
 				new Vertex(realListCellWidth-topShift - icon.height,	border,		  		0, 0,1),
 				new Vertex(realListCellWidth-topShift, 				border,		  		0, 0,0),
 		};
-		MTPolygon p = new MTPolygon(vertices, getMTApplication());
+		MTPolygon p = new MTPolygon(getMTApplication(), vertices);
 		p.setTexture(icon);
 //		p.setNoStroke(true);
 //		p.setStrokeColor(new MTColor(150,150,150, 255));
@@ -433,7 +433,7 @@ public class MTShellScene extends AbstractScene {
 				new Vertex(listCellWidth - icon.height - reflection.height - reflectionDistanceFromImage,				border,	0, 	0,1),
 				new Vertex(listCellWidth - icon.height - reflectionDistanceFromImage, 									border,	0, 	0,0),
 		};
-		MTPolygon pRef = new MTPolygon(verticesRef, getMTApplication());
+		MTPolygon pRef = new MTPolygon(getMTApplication(), verticesRef);
 		pRef.setTexture(reflection);
 		pRef.setNoStroke(true);
 		

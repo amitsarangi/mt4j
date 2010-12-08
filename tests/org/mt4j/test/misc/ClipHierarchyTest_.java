@@ -25,30 +25,30 @@ import org.mt4j.util.MTColor;
 				super(mtApplication, name);
 				
 				// CLIP HIERARCHY RECTANGLE TEST
-		        MTRectangle drawRect7 = new MTRectangle(0,0, 80, 90, getMTApplication());
+		        MTRectangle drawRect7 = new MTRectangle(getMTApplication(),0, 0, 80, 90);
 		        drawRect7.setFillColor(new MTColor(40, 190, 230, 255));
 		        drawRect7.setStrokeColor(new MTColor(0, 0, 0, 255));
 		        
-		        MTClipRectangle drawRect6 = new MTClipRectangle(0,0,0, 100, 110, getMTApplication());
+		        MTClipRectangle drawRect6 = new MTClipRectangle(getMTApplication(),0,0, 0, 100, 110);
 		        drawRect6.setFillColor(new MTColor(30, 110, 130, 255));
 		        drawRect6.setStrokeColor(new MTColor(0, 0, 0, 255));
 		        drawRect6.setStrokeWeight(1);
 		        drawRect6.addChild(drawRect7);
 		        
-		        MTRectangle drawRect5 = new MTRectangle(8,8, 120, 138, getMTApplication());
+		        MTRectangle drawRect5 = new MTRectangle(getMTApplication(),8, 8, 120, 138);
 		        drawRect5.setName("drawRect5");
 		        drawRect5.setFillColor(new MTColor(140, 150, 30, 255));
 		        drawRect5.setStrokeColor(new MTColor(0, 0, 0, 255));
 //		        drawRect5.addChild(drawRect6);
 		        
-		        MTClipRectangle drawRect4 = new MTClipRectangle(0,0,0, 180, 205, getMTApplication());
+		        MTClipRectangle drawRect4 = new MTClipRectangle(getMTApplication(),0,0, 0, 180, 205);
 		        drawRect4.setName("Clipwindow 4");
 		        drawRect4.setFillColor(new MTColor(130, 250, 70, 255));
 		        drawRect4.setStrokeColor(new MTColor(0, 0, 0, 255));
 		        drawRect4.setStrokeWeight(5);
 		        drawRect4.addChild(drawRect5);
 		        
-		        MTClipRectangle drawRect3 = new MTClipRectangle(0,0,0, 120, 105, getMTApplication());
+		        MTClipRectangle drawRect3 = new MTClipRectangle(getMTApplication(),0,0, 0, 120, 105);
 		        drawRect3.setName("Clipwindow 3");
 		        drawRect3.addChild(drawRect6);
 		        drawRect3.setFillColor(new MTColor(230, 150, 70, 255));
@@ -57,7 +57,7 @@ import org.mt4j.util.MTColor;
 		        
 		        //Top window
 //		        MTClipRoundRect cr = new MTClipRoundRect(0, 0, 0, 200, 300, 20, 20, getMTApplication());
-		        MTClipRectangle cr = new MTClipRectangle(0, 0, 0, 200, 300, getMTApplication());
+		        MTClipRectangle cr = new MTClipRectangle(getMTApplication(), 0, 0, 0, 200, 300);
 //		        cr.setPickable(false);
 		        cr.setName("TopLevel clip window");
 		        cr.setStrokeColor(new MTColor(0, 0, 0, 255));

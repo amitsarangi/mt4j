@@ -141,7 +141,7 @@ public class BlendTransition extends AbstractTransition {
 		app.invokeLater(new Runnable() {
 			public void run() {
 				lastSceneWindow = new MTSceneTexture(app,0, 0, Math.round(app.width/2f), Math.round(app.height/2f), lastScene);
-				lastSceneRectangle = new MTRectangle(0,0, app.width, app.height, app);
+				lastSceneRectangle = new MTRectangle(app,0, 0, app.width, app.height);
 				
 				lastSceneRectangle.setGeometryInfo(lastSceneWindow.getGeometryInfo());
 				lastSceneRectangle.setTexture(lastSceneWindow.getTexture());

@@ -295,12 +295,12 @@ public class LassoProcessor extends AbstractCursorProcessor {
 //							new Vertex(newPos.getX(), newPos.getY(), newPos.getZ())},
 //					pa);
 			polygon = new MTStencilPolygon(
+					pa,
 					new Vertex[]{
 							new Vertex(newPos.getX(), newPos.getY(), newPos.getZ()),
 							new Vertex(newPos.getX()+0.1f, newPos.getY(), newPos.getZ()),
 							new Vertex(newPos.getX(), newPos.getY()+0.1f, newPos.getZ()),
-							new Vertex(newPos.getX(), newPos.getY(), newPos.getZ())},
-					pa);
+							new Vertex(newPos.getX(), newPos.getY(), newPos.getZ())});
 			polygon.setPickable(true);
 			polygon.setNoStroke(false);
 			polygon.setNoFill(false);

@@ -31,7 +31,7 @@ public class FontLoadingTest extends AbstractWindowTestcase {
 				scene.getCanvas().addChild(ta);
 				ta.setFont(font2);
 				
-				MTTextArea ta2 = new MTTextArea(200,200, 100,200, font2, getMTApplication());
+				MTTextArea ta2 = new MTTextArea(getMTApplication(),200, 200,100, 200, font2);
 				ta2.setText("this is another test text written for testing purposes");
 				scene.getCanvas().addChild(ta2);
 				ta2.setFont(font1);

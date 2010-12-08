@@ -62,12 +62,60 @@ public class MTList extends MTClipRectangle {
 	
 	//TODO scrollbar in list and/or other indicator that we can scroll in a direction
 	
+	/**
+	 * Instantiates a new mT list.
+	 *
+	 * @param x the x
+	 * @param y the y
+	 * @param width the width
+	 * @param height the height
+	 * @param applet the applet
+	 * @deprecated constructor will be deleted! Please , use the constructor with the PApplet instance as the first parameter.
+	 */
 	public MTList(float x, float y, float width, float height,  PApplet applet) {
-		this(x, y, width, height, 2, applet);
+		this(applet, x, y, width, height);
 	}
 	
+	/**
+	 * Instantiates a new mT list.
+	 *
+	 * @param x the x
+	 * @param y the y
+	 * @param width the width
+	 * @param height the height
+	 * @param cellPaddingY the cell padding y
+	 * @param applet the applet
+	 * @deprecated constructor will be deleted! Please use the constructor with the PApplet instance as the first parameter.
+	 */
 	public MTList(float x, float y, float width, float height, float cellPaddingY, PApplet applet) {
-		super(x, y, 0, width, height, applet);
+		this(applet, x, y, width, height, cellPaddingY);
+	}
+	
+	/**
+	 * Instantiates a new mT list.
+	 *
+	 * @param applet the applet
+	 * @param x the x
+	 * @param y the y
+	 * @param width the width
+	 * @param height the height
+	 */
+	public MTList(PApplet applet, float x, float y, float width,  float height) {
+		this(applet, x, y, width, height, 2);
+	}
+	
+	/**
+	 * Instantiates a new mT list.
+	 *
+	 * @param applet the applet
+	 * @param x the x
+	 * @param y the y
+	 * @param width the width
+	 * @param height the height
+	 * @param cellPaddingY the cell padding y
+	 */
+	public MTList(PApplet applet, float x, float y, float width, float height, float cellPaddingY) {
+		super(applet, x, y, 0, width, height);
 		
 		this.width = width;
 		this.height = height;
@@ -186,7 +234,7 @@ public class MTList extends MTClipRectangle {
 		
 
 		public MTListCellContainer(float x, float y, float width, float height,	PApplet applet) {
-			super(x, y, width, height, applet);
+			super(applet, x, y, width, height);
 			this.app = applet;
 			
 			this.setNoFill(true); //ENABLE LATER!

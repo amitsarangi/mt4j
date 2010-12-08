@@ -36,23 +36,21 @@ public class MTClipRectangle extends MTRectangle {
 
 	/**
 	 * Instantiates a new mT clip rectangle.
-	 * 
+	 * @param applet the applet
 	 * @param x the x
 	 * @param y the y
 	 * @param z the z
 	 * @param width the width
 	 * @param height the height
-	 * @param applet the applet
 	 */
-	public MTClipRectangle(float x, float y, float z, float width,
-			float height, PApplet applet) {
-		super(x, y, z, width, height, applet);
+	public MTClipRectangle(PApplet applet, float x, float y, float z, float width, float height) {
+		super(applet, x, y, z, width, height);
 
 		this.setStrokeWeight(1);
 
 		if (MT4jSettings.getInstance().isOpenGlMode()){
 //			MTRectangle clipRect = new MTRectangle(x+0.25f, y+0.25f, z, width - 0.5f, height - 0.5f, applet);
-			MTRectangle clipRect = new MTRectangle(x, y, z, width, height, applet);
+			MTRectangle clipRect = new MTRectangle(applet, x, y, z, width, height);
 			clipRect.setNoStroke(true);
 			clipRect.setBoundsBehaviour(MTRectangle.BOUNDS_ONLY_CHECK);
 

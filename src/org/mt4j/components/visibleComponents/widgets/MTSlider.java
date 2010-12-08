@@ -88,7 +88,7 @@ public class MTSlider extends MTRectangle {
 
 	/**
 	 * Instantiates a new mT slider.
-	 * 
+	 *
 	 * @param _x the _x
 	 * @param _y the _y
 	 * @param width the width
@@ -96,9 +96,25 @@ public class MTSlider extends MTRectangle {
 	 * @param minValue the min value
 	 * @param maxValue the max value
 	 * @param applet the applet
+	 * @deprecated constructor will be deleted! Please , use the constructor with the PApplet instance as the first parameter.
 	 */
 	public MTSlider(float _x, float _y, float width, float height, float minValue, float maxValue, PApplet applet) {
-		super(_x, _y, width, height, applet);
+		this(applet, _x, _y, width, height, minValue, maxValue);
+	}
+	
+	
+	/**
+	 * Instantiates a new mT slider.
+	 * @param applet the applet
+	 * @param _x the _x
+	 * @param _y the _y
+	 * @param width the width
+	 * @param height the height
+	 * @param minValue the min value
+	 * @param maxValue the max value
+	 */
+	public MTSlider(PApplet applet, float _x, float _y, float width, float height, float minValue, float maxValue) {
+		super(applet, _x, _y, width, height);
 		this.app = applet;
 		
 		this.propertyChangeSupport = new PropertyChangeSupport(this);
@@ -143,7 +159,7 @@ public class MTSlider extends MTRectangle {
 		}
 		
 //		outerShape = new MTRectangle(x,y, width, height, applet);
-		outerShape = new MTRoundRectangle(x,y,0, width, height, knobWidth/2f + innerPadding, knobHeight/2f  + innerPadding, applet);
+		outerShape = new MTRoundRectangle(applet,x,y, 0, width, height, knobWidth/2f + innerPadding, knobHeight/2f  + innerPadding);
 		outerShape.unregisterAllInputProcessors();
 		//When we click on the outershape move the knob in that direction a certain step
 		outerShape.registerInputProcessor(new TapProcessor(applet, 35));

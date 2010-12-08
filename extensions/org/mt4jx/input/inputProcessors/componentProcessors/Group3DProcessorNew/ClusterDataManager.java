@@ -74,7 +74,7 @@ public class ClusterDataManager implements ISelectionListener {
 		cl.addGestureListener(RotateProcessor.class, new DefaultRotateAction());
 		
 		cl.registerInputProcessor(new Rotate3DProcessor(pApplet,cl));
-		cl.addGestureListener(Rotate3DProcessor.class,new Rotate3DAction(cl,pApplet));
+		cl.addGestureListener(Rotate3DProcessor.class,new Rotate3DAction(pApplet,cl));
 		
 		cl.registerInputProcessor(new ScaleProcessor(pApplet));
 		cl.addGestureListener(ScaleProcessor.class,  new DefaultScaleAction());

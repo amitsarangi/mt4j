@@ -110,8 +110,8 @@ public class MTTextKeyboard extends MTKeyboard {
 		dragFromKeybAction 	= new DragTextAreaFromKeyboardAction();
 		
 		
-		MTSvgButton newTextFieldSvg = new MTSvgButton(MT4jSettings.getInstance().getDefaultSVGPath()
-				+ "keybNewTextField.svg", pa);
+		MTSvgButton newTextFieldSvg = new MTSvgButton(pa, MT4jSettings.getInstance().getDefaultSVGPath()
+						+ "keybNewTextField.svg");
 		newTextFieldSvg.setBoundsPickingBehaviour(AbstractShape.BOUNDS_ONLY_CHECK);
 		newTextFieldSvg.scale(0.8f, 0.8f, 1, new Vector3D(0,0,0));
 		newTextFieldSvg.translate(new Vector3D(10,5,0));

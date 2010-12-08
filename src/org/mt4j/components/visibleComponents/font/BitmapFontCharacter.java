@@ -49,16 +49,15 @@ public class BitmapFontCharacter extends MTRectangle implements IFontCharacter {
 	
 	/**
 	 * Instantiates a new bitmap font character.
-	 * 
-	 * @param texture the texture
 	 * @param applet the applet
+	 * @param texture the texture
 	 * @param unicode the unicode
 	 * @param leftOffset the left offset
 	 * @param topOffset the top offset
 	 * @param horizontalAdvance the horizontal advance
 	 */
-	public BitmapFontCharacter(PImage texture, PApplet applet, String unicode, int leftOffset, int topOffset, int horizontalAdvance) {
-		super(new Vertex(leftOffset, topOffset,0), texture.width, texture.height, applet);
+	public BitmapFontCharacter(PApplet applet, PImage texture, String unicode, int leftOffset, int topOffset, int horizontalAdvance) {
+		super(applet, new Vertex(leftOffset, topOffset,0), texture.width, texture.height);
 		//hm..this is for the card loading, because
 		//when we init gl texture in other thread it breaks..
 //		this.setUseDirectGL(false);

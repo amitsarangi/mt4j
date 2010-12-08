@@ -317,7 +317,7 @@ public class CSSHelper {
 		}
 		} else {
 			if (virtualStyleSheet.getBackgroundPosition() != null) {
-			MTImage img = new MTImage(bgImage,app);
+			MTImage img = new MTImage(app,bgImage);
 			p.addChild(img);
 			img.setPickable(false);
 			

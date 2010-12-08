@@ -92,16 +92,15 @@ public class MTSceneMenu extends MTRectangle{
 	
 	/**
 	 * Instantiates a new mT scene menu.
-	 * 
+	 * @param app the app
 	 * @param scene the scene
 	 * @param x the x
 	 * @param y the y
 	 * @param width the width
 	 * @param height the height
-	 * @param app the app
 	 */
-	public MTSceneMenu(Iscene scene, float x, float y, float width, float height, MTApplication app) {
-		super(x, y, width, height, app);
+	public MTSceneMenu(MTApplication app, Iscene scene, float x, float y, float width, float height) {
+		super(app, x, y, width, height);
 		this.app = app;
 		this.scene = scene;
 		
@@ -112,16 +111,15 @@ public class MTSceneMenu extends MTRectangle{
 	
 	/**
 	 * Instantiates a new mT scene menu.
-	 * 
+	 * @param app the app
 	 * @param sceneTexture the scene texture
 	 * @param x the x
 	 * @param y the y
 	 * @param width the width
 	 * @param height the height
-	 * @param app the app
 	 */
-	public MTSceneMenu(MTSceneTexture sceneTexture, float x, float y, float width, float height, MTApplication app) {
-		super(x, y, width, height, app);
+	public MTSceneMenu(MTApplication app, MTSceneTexture sceneTexture, float x, float y, float width, float height) {
+		super(app, x, y, width, height);
 		this.app = app;
 		this.scene = sceneTexture.getScene();
 		this.sceneTexture = sceneTexture;
@@ -189,7 +187,7 @@ public class MTSceneMenu extends MTRectangle{
 //		Vector3D a = new Vector3D(-width * 1.2f, height/2f);
 		Vector3D a = new Vector3D(-width * 1.55f, 0);
 		a.rotateZ(PApplet.radians(80));
-		final MTRectangle closeButton = new MTRectangle(x + a.x, y + a.y, buttonWidth, buttonHeight, app);
+		final MTRectangle closeButton = new MTRectangle(app, x + a.x, y + a.y, buttonWidth, buttonHeight);
 		
 		if (closeButtonImage == null){
 			closeButtonImage = app.loadImage(MT4jSettings.getInstance().getDefaultImagesPath() +
@@ -215,7 +213,7 @@ public class MTSceneMenu extends MTRectangle{
 			//RESTORE BUTTON
 			Vector3D b = new Vector3D(-width * 1.55f, 0);
 			b.rotateZ(PApplet.radians(10));
-			final MTRectangle restoreButton = new MTRectangle(x + b.x, y + b.y, buttonWidth, buttonHeight, app);
+			final MTRectangle restoreButton = new MTRectangle(app, x + b.x, y + b.y, buttonWidth, buttonHeight);
 			
 			if (restoreButtonImage == null){
 				restoreButtonImage = app.loadImage(MT4jSettings.getInstance().getDefaultImagesPath() +

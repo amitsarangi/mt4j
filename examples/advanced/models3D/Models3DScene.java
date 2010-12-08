@@ -151,7 +151,7 @@ public class Models3DScene extends AbstractScene {
 		meshGroup.addGestureListener(RotateProcessor.class, new DefaultRotateAction());
 		
 		meshGroup.registerInputProcessor(new Rotate3DProcessor(mtApplication, meshGroup));
-		meshGroup.addGestureListener(Rotate3DProcessor.class, new Rotate3DAction(meshGroup, mtApplication));
+		meshGroup.addGestureListener(Rotate3DProcessor.class, new Rotate3DAction(mtApplication, meshGroup));
 	}
 
 	

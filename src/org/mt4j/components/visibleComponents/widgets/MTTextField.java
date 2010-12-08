@@ -33,18 +33,34 @@ import processing.core.PApplet;
  */
 public class MTTextField extends MTTextArea {
 
+	
 	/**
 	 * Instantiates a new mT text field.
-	 * 
+	 *
 	 * @param x the x
 	 * @param y the y
 	 * @param width the width
 	 * @param height the height
 	 * @param font the font
 	 * @param applet the applet
+	 * @deprecated constructor will be deleted! Please , use the constructor with the PApplet instance as the first parameter.
 	 */
 	public MTTextField(float x, float y, float width, float height, IFont font, PApplet applet) {
-		super(x, y, width, height,font, applet);
+		this(applet, x, y, width, height, font);
+	}
+	
+	
+	/**
+	 * Instantiates a new mT text field.
+	 * @param applet the applet
+	 * @param x the x
+	 * @param y the y
+	 * @param width the width
+	 * @param height the height
+	 * @param font the font
+	 */
+	public MTTextField(PApplet applet, float x, float y, float width, float height, IFont font) {
+		super(applet, x, y, width,height, font);
 	}
 	
 	

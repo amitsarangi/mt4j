@@ -54,11 +54,12 @@ public class MTBackgroundImage extends MTPolygon {
 	 * @param tiled the tiled
 	 */
 	public MTBackgroundImage(MTApplication mtApp, PImage bgImage, boolean tiled) {
-		super(new Vertex[]{
+		super(mtApp, 
+				new Vertex[]{
 				new Vertex(0,0,0 , 0,0),
 				new Vertex(mtApp.width,0,0, 1,0),
 				new Vertex(mtApp.width,mtApp.height,0, 1,1),
-				new Vertex(0,mtApp.height,0, 0,1)}, mtApp);
+				new Vertex(0,mtApp.height,0, 0,1)});
 		
 		boolean pot = Tools3D.isPowerOfTwoDimension(bgImage);
 		
@@ -118,7 +119,7 @@ public class MTBackgroundImage extends MTPolygon {
 	 * @param stretchToFitHeight the stretch to fit height
 	 */
 	public MTBackgroundImage(PApplet pApplet, MTSvg svgImage, boolean stretchToFitWidth, boolean stretchToFitHeight) {
-		super(new Vertex[]{new Vertex(0,0,0 , 0,0),new Vertex(pApplet.width,0,0, 1,0),new Vertex(pApplet.width,pApplet.height,0, 1,1),new Vertex(0,pApplet.height,0, 0,1)}, pApplet);
+		super(pApplet, new Vertex[]{new Vertex(0,0,0 , 0,0),new Vertex(pApplet.width,0,0, 1,0),new Vertex(pApplet.width,pApplet.height,0, 1,1),new Vertex(0,pApplet.height,0, 0,1)});
 		this.svgImage = svgImage;
 		this.setPickable(false);
 		//Actually dont draw this polygon - only its children (this.setVisible(false) would not draw the children)

@@ -78,9 +78,9 @@ public class MTHexagonMenu extends MTRectangle{
 	 */
 	public MTHexagonMenu(MTApplication app, Vector3D position,
 			List<MenuItem> menuItems, float size) {
-		super(position.x, position.y, (float) (int) Math
-				.sqrt(menuItems.size() + 1) * size, (float) (int) Math
-				.sqrt(menuItems.size() + 1) * size, app);
+		super(app, position.x, position.y, (float) (int) Math
+						.sqrt(menuItems.size() + 1) * size, (float) (int) Math
+				.sqrt(menuItems.size() + 1) * size);
 		this.app = app;
 		this.size = size;
 

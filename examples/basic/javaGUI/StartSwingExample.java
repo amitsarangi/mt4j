@@ -107,7 +107,7 @@ public class StartSwingExample extends JFrame {
 					//will be executed the next time the mt4j thread runs.
 					instance.invokeLater(new Runnable() {
 						public void run() {
-							MTRectangle r = new MTRectangle(0,0,ToolsMath.getRandom(50, 250),ToolsMath.getRandom(50, 250), instance);
+							MTRectangle r = new MTRectangle(instance,0,0,ToolsMath.getRandom(50, 250), ToolsMath.getRandom(50, 250));
 							r.setFillColor(new MTColor(ToolsMath.getRandom(50,255),ToolsMath.getRandom(50,255),ToolsMath.getRandom(50,255)));
 							r.addGestureListener(DragProcessor.class, new InertiaDragAction());
 							instance.getCurrentScene().getCanvas().addChild(r);
@@ -130,7 +130,7 @@ public class StartSwingExample extends JFrame {
 					instance.invokeLater(new Runnable() {
 						public void run() {
 							float arc = ToolsMath.getRandom(8, 25);
-							MTRoundRectangle r = new MTRoundRectangle(0,0,0, ToolsMath.getRandom(50, 250),ToolsMath.getRandom(50, 250), arc, arc, instance);
+							MTRoundRectangle r = new MTRoundRectangle(instance,0,0, 0,ToolsMath.getRandom(50, 250), ToolsMath.getRandom(50, 250), arc, arc);
 							r.setFillColor(new MTColor(ToolsMath.getRandom(50,255),ToolsMath.getRandom(50,255),ToolsMath.getRandom(50,255)));
 							r.addGestureListener(DragProcessor.class, new InertiaDragAction());
 							instance.getCurrentScene().getCanvas().addChild(r);

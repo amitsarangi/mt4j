@@ -114,41 +114,63 @@ public class MTStencilPolygon extends MTPolygon {
 	/** The use gradient. */
 	private boolean useGradient;
 	
+	
 	/**
 	 * Instantiates a new mT stencil polygon.
-	 * 
+	 *
 	 * @param vertices the vertices
 	 * @param pApplet the applet
+	 * @deprecated constructor will be deleted! Please use the constructor with the PApplet instance as the first parameter.
 	 */
 	public MTStencilPolygon(Vertex[] vertices, PApplet pApplet) {
-		super(vertices, pApplet);
+		this(pApplet, vertices);
+	}
+	
+	/**
+	 * Instantiates a new mT stencil polygon.
+	 * @param pApplet the applet
+	 * @param vertices the vertices
+	 */
+	public MTStencilPolygon(PApplet pApplet, Vertex[] vertices) {
+		super(pApplet, vertices);
 		
 		ArrayList<Vertex[]> contours = new ArrayList<Vertex[]>();
 		contours.add(vertices);
 		this.contours = contours;
-		this.init(vertices, contours, pa);
+		this.init(pa, vertices, contours);
+	}
+	
+	
+	/**
+	 * Instantiates a new mT stencil polygon.
+	 *
+	 * @param innerVertices the inner vertices
+	 * @param contours the contours
+	 * @param pApplet the applet
+	 * @deprecated constructor will be deleted! Please use the constructor with the PApplet instance as the first parameter.
+	 */
+	public MTStencilPolygon(Vertex[] innerVertices, ArrayList<Vertex[]> contours, PApplet pApplet) {
+		this(pApplet, innerVertices, contours);
 	}
 	
 	/**
 	 * The Constructor.
-	 * 
+	 * @param pApplet the applet
 	 * @param innerVertices the vertices used for picking and other calculations, its best to use the biggest contour for this
 	 * @param contours the contour(s) of the shape
-	 * @param pApplet the applet
 	 */
-	public MTStencilPolygon(Vertex[] innerVertices, ArrayList<Vertex[]> contours, PApplet pApplet) {
-		super(innerVertices, pApplet);
-		this.init(innerVertices, contours, pApplet);
+	public MTStencilPolygon(PApplet pApplet, Vertex[] innerVertices, ArrayList<Vertex[]> contours) {
+		super(pApplet, innerVertices);
+		this.init(pApplet, innerVertices, contours);
 	}
 	
 	/**
 	 * Inits the.
-	 * 
+	 * @param pApplet the applet
 	 * @param innerVertices the inner vertices
 	 * @param contours the contours
-	 * @param pApplet the applet
 	 */
-	private void init(Vertex[] innerVertices, ArrayList<Vertex[]> contours, PApplet pApplet){
+	private void init(PApplet pApplet, Vertex[] innerVertices, ArrayList<Vertex[]> contours){
 		this.pa = this.getRenderer();
 		this.contours = contours;
 		

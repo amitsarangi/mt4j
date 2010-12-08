@@ -202,7 +202,7 @@ public class MapsScene extends AbstractScene implements MouseWheelListener, Mous
 		PImage fotoButtonImg = p.loadImage( "advanced" + MTApplication.separator + "modestMapsMT" + MTApplication.separator + "data" + MTApplication.separator + 
 		"foto6.png");
 		fotoButtonImg.resize((int)(fotoButtonImg.width/1.5f), (int)(fotoButtonImg.height/1.5f));
-		fotoButton = new MTImageButton(fotoButtonImg, p);
+		fotoButton = new MTImageButton(p, fotoButtonImg);
 		fotoButton.setName("fotoButton");
 		fotoButton.setNoStroke(true);
 		fotoButton.setDepthBufferDisabled(true); //Draw on top of everything
@@ -229,7 +229,7 @@ public class MapsScene extends AbstractScene implements MouseWheelListener, Mous
 		
 		/// Create map provider menu \\\
 		IFont font = FontManager.getInstance().createFont(p, "SansSerif.Bold", 15, MTColor.WHITE, MTColor.WHITE);
-		MTRoundRectangle mapMenu = new MTRoundRectangle(0,0,0, 240,335, 20,20, p);
+		MTRoundRectangle mapMenu = new MTRoundRectangle(p,0,0, 0,240, 335,20, 20);
 //		mapMenu.setFillColor(new MTColor(110,110,110,180));
 //		mapMenu.setStrokeColor(new MTColor(110,110,110,180));
 		mapMenu.setFillColor(new MTColor(45,45,45,180));
@@ -243,7 +243,7 @@ public class MapsScene extends AbstractScene implements MouseWheelListener, Mous
 		MTColor cellFillColor = new MTColor(new MTColor(0,0,0,210));
 		MTColor cellPressedFillColor = new MTColor(new MTColor(20,20,20,220));
 		
-		MTList list = new MTList(0,0, 152, 7* cellHeight + 7*3, p);
+		MTList list = new MTList(p,0, 0, 152, 7* cellHeight + 7*3);
 		list.setChildClip(null); //FIXME TEST -> do no clipping for performance
 		list.setNoFill(true);
 		list.setNoStroke(true);
@@ -317,7 +317,7 @@ public class MapsScene extends AbstractScene implements MouseWheelListener, Mous
 	private boolean doSlideIn = false;
 	
 	private MTListCell createListCell(final String label, IFont font, final AbstractMapProvider mapProvider, float cellWidth, float cellHeight, final MTColor cellFillColor, final MTColor cellPressedFillColor){
-		final MTListCell cell = new MTListCell(cellWidth, cellHeight, p);
+		final MTListCell cell = new MTListCell(p, cellWidth, cellHeight);
 		
 		cell.setChildClip(null); //FIXME TEST, no clipping for performance!
 		
@@ -851,7 +851,7 @@ public class MapsScene extends AbstractScene implements MouseWheelListener, Mous
 			}
 //			String fotoUrl = foto.getSmallUrl();
 			String fotoUrl = foto.getMediumUrl(); //Get the bigger photo
-			image = new MTImage(p.loadImage(fotoUrl), p);
+			image = new MTImage(p, p.loadImage(fotoUrl));
 
 			this.addProgressFinishedListener(new IMTEventListener(){
 				public void processMTEvent(MTEvent mtEvent) {

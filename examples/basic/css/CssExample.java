@@ -69,7 +69,7 @@ public class CssExample  extends AbstractScene{
 			app.getCssStyleManager().loadStylesAndOverrideSelector(CSSTemplates.WHITESTYLE, new CSSSelector("Special Component", CSSSelectorType.ID));
 
 			//Create MTRectangle: Only the universal selector applies
-			MTRectangle rect = new MTRectangle(100, 100, mtApplication);
+			MTRectangle rect = new MTRectangle(mtApplication, 100, 100);
 			this.getCanvas().addChild(rect);
 			
 			rect.setAnchor(PositionAnchor.UPPER_LEFT);

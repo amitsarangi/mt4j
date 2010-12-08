@@ -183,9 +183,9 @@ public class AirHockeyScene extends AbstractScene {
 		
 		//Make two components for both game field sides to drag the puks upon
 		MTRectangle leftSide = new MTRectangle(
-				PhysicsHelper.scaleDown(0, scale), PhysicsHelper.scaleDown(0, scale), 
-				PhysicsHelper.scaleDown(app.width/2f, scale), PhysicsHelper.scaleDown(app.height, scale)
-				, app);
+				app, PhysicsHelper.scaleDown(0, scale), 
+				PhysicsHelper.scaleDown(0, scale), PhysicsHelper.scaleDown(app.width/2f, scale)
+				, PhysicsHelper.scaleDown(app.height, scale));
 		leftSide.setName("left side");
 		leftSide.setNoFill(true); //Make it invisible -> only used for dragging
 		leftSide.setNoStroke(true);
@@ -195,9 +195,9 @@ public class AirHockeyScene extends AbstractScene {
 		leftSide.addGestureListener(DragProcessor.class, new GameFieldHalfDragListener(blueCircle));
 		physicsContainer.addChild(0, leftSide);
 		MTRectangle rightSide = new MTRectangle(
-				PhysicsHelper.scaleDown(app.width/2f, scale), PhysicsHelper.scaleDown(0, scale), 
-				PhysicsHelper.scaleDown(app.width, scale), PhysicsHelper.scaleDown(app.height, scale)
-				, app);
+				app, PhysicsHelper.scaleDown(app.width/2f, scale), 
+				PhysicsHelper.scaleDown(0, scale), PhysicsHelper.scaleDown(app.width, scale)
+				, PhysicsHelper.scaleDown(app.height, scale));
 		rightSide.setName("right Side");
 		rightSide.setNoFill(true); //Make it invisible -> only used for dragging
 		rightSide.setNoStroke(true);

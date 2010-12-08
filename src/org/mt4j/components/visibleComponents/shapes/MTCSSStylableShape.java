@@ -31,24 +31,22 @@ public abstract class MTCSSStylableShape extends AbstractShape implements CSSSty
 	
 	/**
 	 * Instantiates a new mTCSS stylable shape.
-	 *
-	 * @param vertices the vertices
 	 * @param pApplet the applet
+	 * @param vertices the vertices
 	 */
-	public MTCSSStylableShape(Vertex[] vertices, PApplet pApplet) {
-		this(new GeometryInfo(pApplet, vertices), pApplet);
+	public MTCSSStylableShape(PApplet pApplet, Vertex[] vertices) {
+		this(pApplet, new GeometryInfo(pApplet, vertices));
 	}
 
 	
 	
 	/**
 	 * Instantiates a new mTCSS stylable shape.
-	 *
-	 * @param geometryInfo the geometry info
 	 * @param pApplet the applet
+	 * @param geometryInfo the geometry info
 	 */
-	public MTCSSStylableShape(GeometryInfo geometryInfo, PApplet pApplet) {
-		super(geometryInfo, pApplet);
+	public MTCSSStylableShape(PApplet pApplet, GeometryInfo geometryInfo) {
+		super(pApplet, geometryInfo);
 		
 		if (pApplet instanceof MTApplication) {
 			this.mtApp = (MTApplication)pApplet;

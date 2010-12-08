@@ -63,7 +63,7 @@ public class Clip {
 	 * @param height the height
 	 */
 	public Clip(PApplet pApplet, float x, float y, float width, float height) {
-		MTRectangle clipRect = new MTRectangle(x, y, width, height, pApplet);
+		MTRectangle clipRect = new MTRectangle(pApplet, x, y, width, height);
 		clipRect.setNoStroke(true);
 		if (clipRect.getBounds() == null ){
 			clipRect.setBounds(new BoundsZPlaneRectangle(clipRect));

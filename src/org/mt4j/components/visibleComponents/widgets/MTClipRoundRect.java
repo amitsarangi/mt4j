@@ -36,7 +36,7 @@ public class MTClipRoundRect extends MTRoundRectangle {
 
 	/**
 	 * Instantiates a new mT clip round rect.
-	 * 
+	 * @param applet the applet
 	 * @param x the x
 	 * @param y the y
 	 * @param z the z
@@ -44,18 +44,15 @@ public class MTClipRoundRect extends MTRoundRectangle {
 	 * @param height the height
 	 * @param arcWidth the arc width
 	 * @param arcHeight the arc height
-	 * @param applet the applet
 	 */
-	public MTClipRoundRect(float x, float y, float z, float width, float height,
-			float arcWidth, float arcHeight, PApplet applet
-	) {
-		super(x, y, z, width, height, arcWidth, arcHeight, applet);
+	public MTClipRoundRect(PApplet applet, float x, float y, float z, float width, float height, float arcWidth, float arcHeight) {
+		super(applet, x, y, z, width, height, arcWidth, arcHeight);
 		
 		this.setStrokeWeight(1);
 		
 		if (MT4jSettings.getInstance().isOpenGlMode()){
 //			MTRoundRectangle clipRect3 = new MTRoundRectangle(x+0.1f, y+0.1f, z, width - 0.8f, height - 0.8f, arcWidth, arcHeight, applet);
-			MTRoundRectangle clipRect = new MTRoundRectangle(x, y, z, width, height, arcWidth, arcHeight, applet);
+			MTRoundRectangle clipRect = new MTRoundRectangle(applet, x, y, z, width, height, arcWidth, arcHeight);
 	        clipRect.setNoStroke(true);
 	        clipRect.setBoundsBehaviour(MTRectangle.BOUNDS_ONLY_CHECK);
 	        

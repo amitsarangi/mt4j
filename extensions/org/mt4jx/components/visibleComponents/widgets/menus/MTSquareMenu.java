@@ -74,9 +74,9 @@ public class MTSquareMenu extends MTRectangle implements CSSStylableComponent {
 	 */
 	public MTSquareMenu(MTApplication app, Vector3D position,
 			List<MenuItem> menuItems, float size) {
-		super(position.x, position.y, (float) (int) Math
-				.sqrt(menuItems.size() + 1) * size, (float) (int) Math
-				.sqrt(menuItems.size() + 1) * size, app);
+		super(app, position.x, position.y, (float) (int) Math
+						.sqrt(menuItems.size() + 1) * size, (float) (int) Math
+				.sqrt(menuItems.size() + 1) * size);
 		this.app = app;
 		this.size = size;
 		
@@ -110,7 +110,7 @@ public class MTSquareMenu extends MTRectangle implements CSSStylableComponent {
 			
 			if (s != null && s.getType() == MenuItem.TEXT) {
 				//Create a new menu cell
-				MTRectangle container = new MTRectangle(0, 0, size, size, app);
+				MTRectangle container = new MTRectangle(app, 0, 0, size, size);
 				this.addChild(container);
 
 				// Add MTTextArea Children to take single lines of the Menu Text
@@ -143,8 +143,8 @@ public class MTSquareMenu extends MTRectangle implements CSSStylableComponent {
 
 					
 					//Create a new menu cell
-					MTRectangle container = new MTRectangle(0, 0, size, size,
-							app);
+					MTRectangle container = new MTRectangle(app, 0, 0, size,
+							size);
 					this.addChild(container);
 					//Set the background texture
 					container.setTexture(texture);

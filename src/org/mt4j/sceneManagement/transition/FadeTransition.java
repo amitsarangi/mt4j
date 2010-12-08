@@ -126,7 +126,7 @@ public class FadeTransition extends AbstractTransition {
         	}});
        anim.setResetOnFinish(true);
        
-       fullScreenQuad = new MTRectangle(0,0, app.width, app.height, app);
+       fullScreenQuad = new MTRectangle(app,0, 0, app.width, app.height);
        fullScreenQuad.setFillColor(new MTColor(0,0,0,0));
        fullScreenQuad.setNoStroke(true);
 	}

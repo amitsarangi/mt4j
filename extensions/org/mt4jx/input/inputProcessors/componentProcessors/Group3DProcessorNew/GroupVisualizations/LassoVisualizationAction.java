@@ -99,7 +99,7 @@ public class LassoVisualizationAction implements IMTEventListener {
 	
 	private MTPolygon createNewPolygon(Cluster cluster)
 	{
-		MTPolygon polygon = new MTPolygon(new Vertex[0],pApplet);
+		MTPolygon polygon = new MTPolygon(pApplet, new Vertex[0]);
 		polygon.setFillColor(new MTColor(100,150,250,50));
 		
 		polygon.setGestureAllowance(DragProcessor.class, true);

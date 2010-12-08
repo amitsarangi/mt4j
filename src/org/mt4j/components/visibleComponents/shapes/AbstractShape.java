@@ -122,22 +122,43 @@ public abstract class AbstractShape extends AbstractVisibleComponent {
 	
 	
 	/**
-	 * Creates a new shape with the vertices provided.
-	 * 
+	 * Instantiates a new abstract shape.
+	 *
 	 * @param vertices the vertices
 	 * @param pApplet the applet
+	 * @deprecated constructor will be deleted! Please , use the constructor with the PApplet instance as the first parameter. 
 	 */
 	public AbstractShape(Vertex[] vertices, PApplet pApplet) {
-		this(new GeometryInfo(pApplet, vertices), pApplet);
+		this(pApplet, vertices);
+	}
+	
+	/**
+	 * Creates a new shape with the vertices provided.
+	 * @param pApplet the applet
+	 * @param vertices the vertices
+	 */
+	public AbstractShape(PApplet pApplet, Vertex[] vertices) {
+		this(pApplet, new GeometryInfo(pApplet, vertices));
+	}
+	
+	
+	/**
+	 * Instantiates a new abstract shape.
+	 *
+	 * @param geometryInfo the geometry info
+	 * @param pApplet the applet
+	 * @deprecated constructor will be deleted! Please , use the constructor with the PApplet instance as the first parameter.
+	 */
+	public AbstractShape(GeometryInfo geometryInfo, PApplet pApplet) {
+		this(pApplet, geometryInfo);
 	}
 	
 	/**
 	 * Creates a new geometry with the geometryInfo provided.
-	 * 
-	 * @param geometryInfo the geometry info
 	 * @param pApplet the applet
+	 * @param geometryInfo the geometry info
 	 */
-	public AbstractShape(GeometryInfo geometryInfo, PApplet pApplet) {
+	public AbstractShape(PApplet pApplet, GeometryInfo geometryInfo) {
 		super(pApplet,"unnamed  AbstractShape", /*null,*/ null);
 		
 		//Initialize fields 

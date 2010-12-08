@@ -59,14 +59,25 @@ public class MTRectangle extends MTPolygon {
 		CENTER
 	}
 	
+	
 	/**
 	 * Instantiates a new mT rectangle.
-	 * 
+	 *
 	 * @param texture the texture
 	 * @param applet the applet
+	 * @deprecated constructor will be deleted! Please , use the constructor with the PApplet instance as the first parameter.
 	 */
 	public MTRectangle(PImage texture, PApplet applet) {
-		this(0 ,0 ,0, texture.width, texture.height, applet);
+		this(applet, texture);
+	}
+	
+	/**
+	 * Instantiates a new mT rectangle.
+	 * @param applet the applet
+	 * @param texture the texture
+	 */
+	public MTRectangle(PApplet applet, PImage texture) {
+		this(applet ,0 ,0, 0, texture.width, texture.height);
 		
 		//To avoid errors if this is created in non opengl thread so the gl texture wont be created correctly when setting setTexture
 		this.setUseDirectGL(false);
@@ -104,62 +115,115 @@ public class MTRectangle extends MTPolygon {
 	}
 	
 	
+	
 	/**
-	 * Instantiates a new mT rectangle with the upper left corner at 0,0,0
-	 * 
+	 * Instantiates a new mT rectangle.
+	 *
 	 * @param width the width
 	 * @param height the height
 	 * @param pApplet the applet
+	 * @deprecated constructor will be deleted! Please , use the constructor with the PApplet instance as the first parameter.
 	 */
 	public MTRectangle(float width, float height, PApplet pApplet) {
-		this(new Vertex(0,0,0,0,0),width,height,pApplet);
+		this(pApplet, width, height);
+	}
+	
+	/**
+	 * Instantiates a new mT rectangle with the upper left corner at 0,0,0
+	 * @param pApplet the applet
+	 * @param width the width
+	 * @param height the height
+	 */
+	public MTRectangle(PApplet pApplet, float width, float height) {
+		this(pApplet,new Vertex(0,0,0,0,0),width,height);
 	}
 	
 	
 	/**
 	 * Instantiates a new mT rectangle.
-	 * 
+	 *
 	 * @param x the x
 	 * @param y the y
 	 * @param width the width
 	 * @param height the height
 	 * @param pApplet the applet
+	 * @deprecated constructor will be deleted! Please , use the constructor with the PApplet instance as the first parameter.
 	 */
 	public MTRectangle(float x, float y, float width, float height, PApplet pApplet) {
-		this(new Vertex(x,y,0,0,0),width,height,pApplet);
+		this(pApplet, x, y, width, height);
 	}
 	
 	/**
 	 * Instantiates a new mT rectangle.
-	 * 
+	 * @param pApplet the applet
+	 * @param x the x
+	 * @param y the y
+	 * @param width the width
+	 * @param height the height
+	 */
+	public MTRectangle(PApplet pApplet, float x, float y, float width, float height) {
+		this(pApplet,new Vertex(x,y,0,0,0),width,height);
+	}
+	
+	
+	/**
+	 * Instantiates a new mT rectangle.
+	 *
 	 * @param x the x
 	 * @param y the y
 	 * @param z the z
 	 * @param width the width
 	 * @param height the height
 	 * @param pApplet the applet
+	 * @deprecated constructor will be deleted! Please , use the constructor with the PApplet instance as the first parameter.
 	 */
 	public MTRectangle(float x, float y, float z, float width, float height, PApplet pApplet) {
-		this(new Vertex(x,y,z,0,0),width,height,pApplet);
+		this(pApplet, x, y, z, width, height);
+	}
+	
+	/**
+	 * Instantiates a new mT rectangle.
+	 * @param pApplet the applet
+	 * @param x the x
+	 * @param y the y
+	 * @param z the z
+	 * @param width the width
+	 * @param height the height
+	 */
+	public MTRectangle(PApplet pApplet, float x, float y, float z, float width, float height) {
+		this(pApplet,new Vertex(x,y,z,0,0),width,height);
 	}
 
 	
 	/**
 	 * Instantiates a new mT rectangle.
-	 * 
+	 *
 	 * @param upperLeft the upper left
 	 * @param width the width
 	 * @param height the height
 	 * @param pApplet the applet
+	 * @deprecated constructor will be deleted! Please , use the constructor with the PApplet instance as the first parameter.
 	 */
 	public MTRectangle(Vertex upperLeft, float width, float height, PApplet pApplet) {
-		super(new Vertex[]{
+		this(pApplet, upperLeft, width, height);
+	}
+	
+	
+	/**
+	 * Instantiates a new mT rectangle.
+	 * @param pApplet the applet
+	 * @param upperLeft the upper left
+	 * @param width the width
+	 * @param height the height
+	 */
+	public MTRectangle(PApplet pApplet, Vertex upperLeft, float width, float height) {
+		super(pApplet,
+				new Vertex[]{
 				new Vertex(upperLeft.x,			upperLeft.y, 		upperLeft.z, 0, 0), 
 				new Vertex(upperLeft.x+width, 	upperLeft.y, 		upperLeft.z, 1, 0), 
 				new Vertex(upperLeft.x+width, 	upperLeft.y+height, upperLeft.z, 1, 1), 
 				new Vertex(upperLeft.x,			upperLeft.y+height,	upperLeft.z, 0, 1), 
-				new Vertex(upperLeft.x,			upperLeft.y,		upperLeft.z, 0, 0)},
-				pApplet);
+				new Vertex(upperLeft.x,			upperLeft.y,		upperLeft.z, 0, 0)});
 		
 		this.setName("unnamed rectangle");
 		//

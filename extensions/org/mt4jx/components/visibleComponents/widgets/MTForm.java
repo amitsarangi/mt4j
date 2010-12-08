@@ -29,16 +29,15 @@ public abstract class MTForm extends MTRectangle{
 	
 	/**
 	 * Instantiates a new mT form.
-	 *
+	 * @param pApplet the applet
 	 * @param x the x
 	 * @param y the y
 	 * @param width the width
 	 * @param height the height
-	 * @param pApplet the applet
 	 * @param type the type (MTForm.BOOLEAN or MTForm.STRING)
 	 */
-	public MTForm(float x, float y, float width, float height, PApplet pApplet, short type) {
-		super(x, y, width, height, pApplet);
+	public MTForm(PApplet pApplet, float x, float y, float width, float height, short type) {
+		super(pApplet, x, y, width, height);
 		this.type = type;
 	}
 	

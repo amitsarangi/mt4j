@@ -52,12 +52,22 @@ public class MTImageButton extends MTRectangle implements IclickableButton {
 	
 	/**
 	 * Instantiates a new mT image button.
-	 * 
+	 *
 	 * @param texture the texture
 	 * @param pApplet the applet
+	 * @deprecated constructor will be deleted! Please , use the constructor with the PApplet instance as the first parameter.
 	 */
 	public MTImageButton(PImage texture, PApplet pApplet) {
-		super(texture, pApplet);
+		this(pApplet, texture);
+	}
+	
+	/**
+	 * Instantiates a new mT image button.
+	 * @param pApplet the applet
+	 * @param texture the texture
+	 */
+	public MTImageButton(PApplet pApplet, PImage texture) {
+		super(pApplet, texture);
 		this.registeredActionListeners = new ArrayList<ActionListener>();
 		
 		this.setName("Unnamed image button");

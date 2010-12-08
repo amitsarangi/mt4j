@@ -83,7 +83,7 @@ public class MTLine extends MTCSSStylableShape{
 	 * @param endPoint the end point
 	 */
 	public MTLine(PApplet pApplet, Vertex startPoint, Vertex endPoint) {
-		super(new Vertex[]{startPoint, endPoint},pApplet);
+		super(pApplet,new Vertex[]{startPoint, endPoint});
 		this.pContext = pApplet;
 		
 		this.setNoFill(true);
