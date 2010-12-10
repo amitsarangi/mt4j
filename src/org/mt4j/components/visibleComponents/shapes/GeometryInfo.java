@@ -899,7 +899,7 @@ public class GeometryInfo {
 		displayListIDs[1] = listIDOutline;
 
 		//Set the new display list IDs
-//		setDisplayListIDs(displayListIDs);
+		setDisplayListIDs(displayListIDs);
 //		 */
 		return true;
 	}
