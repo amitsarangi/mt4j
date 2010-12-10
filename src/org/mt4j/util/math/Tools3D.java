@@ -512,6 +512,14 @@ public class Tools3D {
 	}
 	
 	
+
+
+	//////////////////////////////////////////////////////////
+	//  OPENGL STUFF										//
+	//////////////////////////////////////////////////////////
+	
+	
+	
 	/**
 	 * Prints some available openGL extensions to the console.
 	 * <p><b>NOTE</b>: the openGL context has to be valid at the time of calling this method.
@@ -548,19 +556,6 @@ public class Tools3D {
 		((PGraphicsOpenGL)pa.g).endGL();
 	}
 	
-	/*
-		public static double getPolygonAreaSigned2D(Vector3D[] vertices){
-			int i;
-			int N = vertices.length;
-			double area = 0;
-	
-			for (i=0;i<N-1;i++) {
-				area = area + vertices[i].x * vertices[i+1].y - vertices[i+1].x * vertices[i].y;
-			}
-			area /= 2.0;
-			return area;
-		}
-		*/
 		
 		/**
 		 * Check for gl error.
@@ -591,10 +586,6 @@ public class Tools3D {
 		 * @return the gL
 		 */
 		public static GL getGL(PApplet pa){
-			//TODO experiemtn with 2 async gl contexts!
-	//		 ((PGraphicsOpenGL)pa.g).getContext().makeCurrent();
-	//		((PGraphicsOpenGL)pa.g).getContext().getGLDrawable().createContext(arg0);
-	//		boolean current =((PGraphicsOpenGL)pa.g).getContext().makeCurrent() == GLContext.CONTEXT_NOT_CURRENT;
 			return ((PGraphicsOpenGL)pa.g).gl;
 		}
 		
@@ -603,25 +594,6 @@ public class Tools3D {
 			return ((PGraphicsOpenGL)g).gl;
 		}
 
-
-	//////////////////////////////////////////////////////////
-	//  OPENGL STUFF										//
-	//////////////////////////////////////////////////////////
-	
-	/*
-	public static double getPolygonAreaSigned2D(Vector3D[] vertices){
-		int i;
-		int N = vertices.length;
-		double area = 0;
-	
-		for (i=0;i<N-1;i++) {
-			area = area + vertices[i].x * vertices[i+1].y - vertices[i+1].x * vertices[i].y;
-		}
-		area /= 2.0;
-		return area;
-	}
-	*/
-		
 	
 	/**
 	 * Begin gl.
@@ -632,6 +604,16 @@ public class Tools3D {
 	public static GL beginGL(PApplet pa){
 		return ((PGraphicsOpenGL)pa.g).beginGL();
 	}
+	
+	/**
+	 * Begin gl.
+	 *
+	 * @param g the g
+	 * @return the gL
+	 */
+	public static GL beginGL(PGraphics g){
+		return ((PGraphicsOpenGL)g).beginGL();
+	}
 
 	
 	/**
@@ -641,6 +623,15 @@ public class Tools3D {
 	 */
 	public static void endGL(PApplet pa){
 		((PGraphicsOpenGL)pa.g).endGL();
+	}
+	
+	/**
+	 * End gl.
+	 *
+	 * @param g the g
+	 */
+	public static void endGL(PGraphics g){
+		((PGraphicsOpenGL)g).endGL();
 	}
 
 
@@ -1060,14 +1051,7 @@ public class Tools3D {
 		IntBuffer indexBuff 		= geometryInfo.getIndexBuff(); //null if not indexed
 		
 		GL gl;
-//		gl =((PGraphicsOpenGL)pa.g).beginGL();
 		gl =((PGraphicsOpenGL)pa.g).gl;
-		
-		/*//Shouldnt be neccessary - REMOVE!? TODO
-		//Unbind any VBOs first
-		gl.glBindBufferARB(GL.GL_ARRAY_BUFFER_ARB, 0);
-		gl.glBindBufferARB(GL.GL_ELEMENT_ARRAY_BUFFER_ARB, 0);
-//		*/
 		
 		//Generate new list IDs
 		int[] returnVal = new int[2];
@@ -1091,8 +1075,6 @@ public class Tools3D {
 		
 		gl.glVertexPointer(3, GL.GL_FLOAT, 0, vertBuff);
 		gl.glColorPointer(4, GL.GL_FLOAT, 0, colorBuff);
-		
-//		gl.glDisable(GL.GL_POLYGON_SMOOTH);
 		
 		//Default target
 		int textureTarget = GL.GL_TEXTURE_2D;
@@ -1154,9 +1136,7 @@ public class Tools3D {
 		}
 
 		if (textureDrawn){
-//			gl.glBindTexture(textureTarget, 0);//Unbind texture
 			gl.glDisableClientState(GL.GL_TEXTURE_COORD_ARRAY);
-//			gl.glDisable(textureTarget); //weiter nach unten?
 		}
 		returnVal[0] = listIDFill;
 		
@@ -1192,8 +1172,6 @@ public class Tools3D {
 		//Disable client states
 		gl.glDisableClientState(GL.GL_VERTEX_ARRAY);
 		gl.glDisableClientState(GL.GL_COLOR_ARRAY);
-
-//		((PGraphicsOpenGL)pa.g).endGL();
 		return returnVal;
 	}
 	
@@ -1217,13 +1195,6 @@ public class Tools3D {
 												boolean drawSmooth, float strokeWeight, short lineStipple){
 		GL gl;
 		gl =((PGraphicsOpenGL)pa.g).beginGL();
-//		 WGL.ChoosePixelFormat(arg0, arg1) //TODO check into
-		
-		/*
-		//Unbind any VBOs first
-		gl.glBindBufferARB(GL.GL_ARRAY_BUFFER_ARB, 0);
-		gl.glBindBufferARB(GL.GL_ELEMENT_ARRAY_BUFFER_ARB, 0);
-		*/
 		
 		//Generate new list IDs
 		int returnVal = -1;
@@ -1291,7 +1262,6 @@ public class Tools3D {
 		 // Draw to stencil
 		    gl.glDisable (GL.GL_BLEND);
 		    gl.glEnable (GL.GL_STENCIL_TEST);
-//		    gl.glStencilMask (0x01);
 		    gl.glStencilOp (GL.GL_KEEP, GL.GL_KEEP, GL.GL_INVERT);
 		    gl.glStencilFunc (GL.GL_ALWAYS, 0, ~0);
 		    gl.glColorMask (false, false, false, false);

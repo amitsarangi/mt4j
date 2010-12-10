@@ -3,11 +3,10 @@ ToDo list:
 -> General:
 - processing.com post and bug report (font)
 - add setAnchor(Vector3D anchorPoint) for all AbstractShapes? -> use in set/getPosition() -> per default use centerpoint -> rotate(45) -> use anchor by default?
-- make gesture processor priorities float? (so flick could get 1.3f for example..how to differentiate between manipulations and gestures? )
+- how to differentiate between manipulations and gestures? 
 - add more stateChange events (e.g. transformed, globally position changed etc)
 - in boundingShapes -> calculate width/height screen or object aligned? -> rather object aligned..
-- add org.mt4jx -> new source folder? -> new project? 
-- put get/setWidth/Height into AbstractShape? -> or even MTComponent?
+- put get/setWidth/Height into MTComponent?
 - more JUnit tests
 - compile Win7Touch.dll with VS 2008? -> Check if redistributable package is needed for running
 
@@ -80,9 +79,7 @@ ToDo list:
 - (implement color picking for performance?)
 - (use bitmapfont in mtprogressbar)
 - (make mtmovieclip display the start frame at loading, nicen up ui, add pause button etc)
-- (periodically orthogonalize the local matrix?)
 - (combine appearance -> material, texture, smoothing, colors, lights etc)
-- (try using absolute transformations (with anchor))
 
 -> Online:
 - mention component state changes/listeners in component tutorial
@@ -92,6 +89,8 @@ ToDo list:
 - Gestures: 
 	- tapAndHold
 	- Arcball
+	- doubletap
+	- rotate3D
 - Examples:
 	- new pictures for gestures, water, shell example	
 - Faq: 
@@ -120,6 +119,7 @@ ToDo list:
 
 -> Typography:
 - we can switch the textcolor on textarea draw code instead of creating different memoryhungry fonts
+- scalable bitmapfont/re-create it after zoom end
 - add and implement setCursorPos() in MTTextArea
 - add setText()/setLabel() to buttons
 - (make bitmapfontfactory create the same size fonts as the ttf/svg factories, there is a difference now - fixed, but fontascent's different?)
@@ -128,6 +128,7 @@ ToDo list:
 
 -> Gestures/Input
 - differentiate between manipulation s and gestures? (1 difference is: eg. flick is a gesture, drag a manipulation, we have to wait if it is a flick -> if not switch to drag but start drag from the 1st event, not resume at current)
+- support Linux HID touch
 - add ability in component processors to get informed of other cursors, not from the component?
 - GestureUtil class? -> getDistance(cursor1, cursor2) getAngle(cursor1, movedCursor); etc
 - abort tapGesture if finger moved too much -> check on update as in PressAndHold gesture
@@ -143,8 +144,6 @@ ToDo list:
 - add keyboard input source sending keyboard events to the focused/selected component -> FocusManager?
 - (if object that is dragged, scaled etc is destroyed while during gesture -> nullpointer error -> check if viewing cam is null!)
 - (background rotate gesture? -> not good, would rotate about center of cam.. -> better use MTComp at z=0 with rotateProcessor!)
-- support Linux HID touch
-- (win7touchsource detects touch when wacom tablet installed?)
 
 -> SVG:
 - make loading threaded by doing it in an abstractprogessthread
@@ -164,7 +163,7 @@ ToDo list:
 -> Animations:
 - AnimationUtil static -> fadeOut(component) fadeIn() etc
 - implement keyframe animations - TimeLine?
-- animation with pluggable/extendable interpolation function
+- (animation with pluggable/extendable interpolation function)
 
 
 -> Bounding:

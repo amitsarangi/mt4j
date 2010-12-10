@@ -497,19 +497,17 @@ public class MTTriangleMesh extends AbstractShape{
 		PApplet pa = this.getRenderer();
 		
 		if (this.isUseDirectGL()){
-			GL gl=((PGraphicsOpenGL)g).beginGL();
+			GL gl = Tools3D.beginGL(g);
 				this.drawComponent(gl);
-			((PGraphicsOpenGL)this.getRenderer().g).endGL();
+			Tools3D.endGL(g);
 		}else{ //Draw with pure proccessing...
 			pa.strokeWeight(this.getStrokeWeight());
-			
-//			if (ConstantsAndSettings.getInstance().isOpenGlMode()){
-				if (this.isDrawSmooth()) 
-					pa.smooth();
-				else 			
-					pa.noSmooth();
-//			}
-			
+
+			if (this.isDrawSmooth()) 
+				pa.smooth();
+			else 			
+				pa.noSmooth();
+
 			//NOTE: if noFill() and noStroke()->absolutely nothing will be drawn-even when texture is set
 			if (this.isNoFill())	
 				pa.noFill();
@@ -518,41 +516,17 @@ public class MTTriangleMesh extends AbstractShape{
 				pa.fill(fillColor.getR(), fillColor.getG(), fillColor.getB(), fillColor.getAlpha());
 			}
 			
+			//Set the tint values 
+			MTColor fillColor = this.getFillColor();
+			pa.tint(fillColor.getR(), fillColor.getG(), fillColor.getB(), fillColor.getAlpha());
+			
 			if (this.isNoStroke()) 	
 				pa.noStroke();
 			else{
 				MTColor strokeColor = this.getStrokeColor();
 				pa.stroke(strokeColor.getR(), strokeColor.getG(), strokeColor.getB(), strokeColor.getAlpha());
 			}
-			
-			//Set the tint values 
-			MTColor fillColor = this.getFillColor();
-			pa.tint(fillColor.getR(), fillColor.getG(), fillColor.getB(), fillColor.getAlpha());	
 
-			//handles the drawing of the vertices with the texture coordinates
-			//try doing a smoothed poly outline with opengl
-//			if (
-////					ConstantsAndSettings.getInstance().isOpenGlMode()  &&
-//				this.isDrawSmooth() &&
-//				!this.isNoStroke()
-//			){
-//				pa.noStroke();
-//				pa.noSmooth();
-//				
-//				//draw insided of polygon, without smooth or stroke
-//				this.drawWithProcessing(pa, this.getVerticesObjSpace(), PApplet.TRIANGLES, true); 
-//
-//				pa.smooth();
-//				pa.noFill(); 
-//				pa.stroke(this.getStrokeRed(), this.getStrokeGreen(), this.getStrokeBlue(), this.getStrokeAlpha());
-//
-//				// DRAW SMOOTHED THE OUTLINE SHAPE OF THE POLYGON WIHTOUT FILL OR TEXTURE
-////				drawWithProcessing(pa); 
-//				
-//				for (Vertex[] outline : this.outlineContours){
-//					this.drawWithProcessing(pa, outline, PApplet.LINE, false);
-//				}
-//			}else{
 			if (!this.isNoStroke()){
 				pa.noFill(); 
 				MTColor strokeColor = this.getStrokeColor();
@@ -574,21 +548,18 @@ public class MTTriangleMesh extends AbstractShape{
 				this.drawWithProcessing(pa, this.getVerticesLocal(), PApplet.TRIANGLES, true);
 			}
 
-
-//			}//end if gl and smooth
-
-			//reSet the tint values to defaults 
+			//ReSet the tint values to defaults 
 			pa.tint(255, 255, 255, 255);
 
-			if (/*ConstantsAndSettings.getInstance().isOpenGlMode() && */
-					this.isDrawSmooth())
-				pa.noSmooth(); //because of tesselation bug
+			if (this.isDrawSmooth())
+				pa.noSmooth(); //because of the tesselation/antialias bug
 		}
 
 		if (drawNormals)
 			this.drawNormals();
 	}
-
+	
+	
 	
 	/**
 	 * Can be used to draw if the gl context has already been set up and is ready to use.
@@ -625,7 +596,7 @@ public class MTTriangleMesh extends AbstractShape{
 	 * @param drawMode the draw mode
 	 * @param useTexture the use texture
 	 */
-	private void drawWithProcessing(PApplet p, Vertex[] vertices, int drawMode, boolean useTexture){
+	protected void drawWithProcessing(PApplet p, Vertex[] vertices, int drawMode, boolean useTexture){
 		p.beginShape(drawMode); 
 		if (this.getTexture() != null && this.isTextureEnabled() && useTexture){
 			p.texture(this.getTexture());

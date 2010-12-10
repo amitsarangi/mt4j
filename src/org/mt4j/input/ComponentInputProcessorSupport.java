@@ -62,6 +62,8 @@ public class ComponentInputProcessorSupport implements IMTInputEventListener /*,
 //		/*
 		boolean handled = false;
 		
+		//Call preProcess on _all_ processors before calling processInputEvent on each of them
+		//to allow each processor to take part in the locking mechanism before anyone actually locks something
 		for (AbstractComponentProcessor p : registeredProcessors) {
 			if (p.isInterestedIn(inEvt) && this.associatedComponent.isGestureAllowed(p.getClass())){
 				p.preProcess(inEvt);

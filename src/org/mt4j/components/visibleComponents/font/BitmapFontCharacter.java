@@ -73,8 +73,6 @@ public class BitmapFontCharacter extends MTRectangle implements IFontCharacter {
 		this.setNoStroke(true); 
 		this.setPickable(false);
 		
-//		this.setFillDrawMode(GL.GL_QUADS);//FIXME TEST
-		
 		if (MT4jSettings.getInstance().isOpenGlMode()){
 			//Set the texture to be non-repeating but clamping to the border to avoid artefacts
 			PImage tex = this.getTexture();
@@ -176,7 +174,7 @@ public class BitmapFontCharacter extends MTRectangle implements IFontCharacter {
 			PImage tex = this.getTexture();
 			if (tex instanceof GLTexture) {
 				GLTexture glTex = (GLTexture) tex;
-				//FIXME normally we would use GL_LINEAR as magnification filter but sometimes
+				//normally we would use GL_LINEAR as magnification filter but sometimes
 				//small text is too filtered and smudged so we use NEAREST -> but this makes
 				//scaled text very ugly and pixelated..
 				if (scalable){
