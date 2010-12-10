@@ -17,8 +17,6 @@
  ***********************************************************************/
 package org.mt4j.components.visibleComponents.shapes;
 
-import java.util.ArrayList;
-
 import javax.media.opengl.GL;
 
 import org.apache.log4j.ConsoleAppender;
@@ -30,11 +28,9 @@ import org.mt4j.components.TransformSpace;
 import org.mt4j.components.bounds.IBoundingShape;
 import org.mt4j.components.bounds.OrientedBoundingBox;
 import org.mt4j.components.visibleComponents.AbstractVisibleComponent;
-import org.mt4j.components.visibleComponents.GeometryInfo;
 import org.mt4j.input.gestureAction.DefaultDragAction;
 import org.mt4j.input.gestureAction.DefaultRotateAction;
 import org.mt4j.input.gestureAction.DefaultScaleAction;
-import org.mt4j.input.inputProcessors.IGestureEventListener;
 import org.mt4j.input.inputProcessors.componentProcessors.dragProcessor.DragProcessor;
 import org.mt4j.input.inputProcessors.componentProcessors.rotateProcessor.RotateProcessor;
 import org.mt4j.input.inputProcessors.componentProcessors.scaleProcessor.ScaleProcessor;
@@ -47,18 +43,17 @@ import org.mt4j.util.animation.IAnimation;
 import org.mt4j.util.animation.IAnimationListener;
 import org.mt4j.util.animation.MultiPurposeInterpolator;
 import org.mt4j.util.animation.ani.AniAnimation;
-import org.mt4j.util.math.ConvexQuickHull2D;
 import org.mt4j.util.math.Matrix;
 import org.mt4j.util.math.Ray;
 import org.mt4j.util.math.Tools3D;
 import org.mt4j.util.math.Vector3D;
 import org.mt4j.util.math.Vertex;
 import org.mt4j.util.opengl.GLTexture;
-import org.mt4j.util.opengl.GLTextureSettings;
 import org.mt4j.util.opengl.GLTexture.EXPANSION_FILTER;
 import org.mt4j.util.opengl.GLTexture.SHRINKAGE_FILTER;
 import org.mt4j.util.opengl.GLTexture.TEXTURE_TARGET;
 import org.mt4j.util.opengl.GLTexture.WRAP_MODE;
+import org.mt4j.util.opengl.GLTextureSettings;
 
 import processing.core.PApplet;
 import processing.core.PConstants;
@@ -69,7 +64,7 @@ import processing.core.PImage;
  * 
  * @author Christopher Ruff
  */
-public abstract class AbstractShape extends AbstractVisibleComponent {
+public abstract class AbstractShape extends AbstractVisibleComponent{
 	private static final Logger logger = Logger.getLogger(AbstractShape.class.getName());
 	static{
 		logger.setLevel(Level.ERROR);
@@ -373,29 +368,26 @@ public abstract class AbstractShape extends AbstractVisibleComponent {
 			if (geometryInfo.getVertBuff() == null 	|| geometryInfo.getStrokeColBuff() == null){ 
 				//new geometryinfo has no drawbuffers created yet -> create them!
 				geometryInfo.generateOrUpdateBuffersLocal(this.getStyleInfo());
+				if (this.isUseVBOs()){
+					geometryInfo.generateOrUpdateAllVBOs();
+				}
+				if (this.isUseDisplayList()){
+					this.getGeometryInfo().generateDisplayLists(this);
+				}
 			}else if (this.geometryInfo != null && geometryInfo.equals(this.geometryInfo)){
 				// old geometryinfo is the same than the new one -> assumimg change -> create new buffers!
 				geometryInfo.generateOrUpdateBuffersLocal(this.getStyleInfo());
+				if (this.isUseVBOs()){
+					geometryInfo.generateOrUpdateAllVBOs();
+				}
+				if (this.isUseDisplayList()){
+					this.getGeometryInfo().generateDisplayLists(this);
+				}
 			}else{
 				//the new geometryinfo already has opengl draw buffers and 
 				//the old geometryinfo is null or not the same as the new one 
-				//-> just use the new geometry's buffers without recreating!
-				
-				//TODO do the same check with displaylists and vbos!??!
-				//
-			}
-			
-			if (this.isUseVBOs()){
-				geometryInfo.generateOrUpdateAllVBOs();
-			}
-			
-			if (this.isUseDisplayList()){
-				geometryInfo.generateDisplayLists(
-						this.isTextureEnabled(),
-						this.getTexture(),
-						this.getFillDrawMode(), 
-						this.isDrawSmooth(), 
-						this.getStrokeWeight());
+				//-> just use the new geometry's data without recreating!
+				//=> geometry instancing!
 			}
 		}
 		
@@ -413,6 +405,8 @@ public abstract class AbstractShape extends AbstractVisibleComponent {
 		}
 		this.globalVerticesDirty = true;
 	}
+	
+	abstract protected void drawPureGl(GL gl);
 	
 	/**
 	 * Gets the geometry info. The geometryinfo contains the 
@@ -640,12 +634,13 @@ public abstract class AbstractShape extends AbstractVisibleComponent {
 	 */
 	public void generateDisplayLists(){
 		if (MT4jSettings.getInstance().isOpenGlMode() && this.isUseDirectGL()){
-			this.getGeometryInfo().generateDisplayLists(
-					this.isTextureEnabled(), 
-					this.getTexture(), 
-					this.getFillDrawMode(), 
-					this.isDrawSmooth(), 
-					this.getStrokeWeight());
+//			this.getGeometryInfo().generateDisplayLists(
+//					this.isTextureEnabled(), 
+//					this.getTexture(), 
+//					this.getFillDrawMode(), 
+//					this.isDrawSmooth(), 
+//					this.getStrokeWeight());
+			this.getGeometryInfo().generateDisplayLists(this);
 		}else{
 			logger.error(this.getName() + " - Cannot create displaylist if not in openGL mode or if setUseDirectGL() hasnt been set to true!");
 		}

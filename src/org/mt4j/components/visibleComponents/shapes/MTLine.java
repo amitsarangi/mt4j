@@ -20,11 +20,11 @@ package org.mt4j.components.visibleComponents.shapes;
 import java.nio.FloatBuffer;
 
 import javax.media.opengl.GL;
+import javax.tools.Tool;
 
 import org.mt4j.components.bounds.BoundsArbitraryPlanarPolygon;
 import org.mt4j.components.bounds.IBoundingShape;
 import org.mt4j.components.css.style.CSSStyle;
-import org.mt4j.components.visibleComponents.GeometryInfo;
 import org.mt4j.components.visibleComponents.StyleInfo;
 import org.mt4j.util.MT4jSettings;
 import org.mt4j.util.MTColor;
@@ -157,6 +157,7 @@ public class MTLine extends MTCSSStylableShape{
 	@Override
 	public void generateDisplayLists(){
 		if (MT4jSettings.getInstance().isOpenGlMode() && this.isUseDirectGL()){
+			/*
 			this.getGeometryInfo().deleteDisplayLists();
 			this.getGeometryInfo().setDisplayListIDs(new int[]{
 					Tools3D.generateOutLineDisplayList(
@@ -167,9 +168,32 @@ public class MTLine extends MTCSSStylableShape{
 					this.isDrawSmooth(),
 					this.getStrokeWeight(),
 					this.getLineStipple()), -1});
+			 */
+
+//			/*
+			this.getGeometryInfo().deleteDisplayLists();
+			int[] displayListIDs = new int[]{-1,-1};
+
+			//Create a new empty displaylist
+			GL gl = Tools3D.getGL(getRenderer());
+			int listIDOutline = gl.glGenLists(1);
+			if (listIDOutline == 0){
+				System.err.println("Failed to create display list");
+				return;
 			}
+			//Start recording display list
+			gl.glNewList(listIDOutline, GL.GL_COMPILE);
+			this.drawPureGl(gl);
+			//End recording
+			gl.glEndList();
+
+			displayListIDs[0] = listIDOutline;
+
+			this.getGeometryInfo().setDisplayListIDs(displayListIDs);
+//			*/
+		}
 	}
-	
+
 	
 	@Override
 	public void setUseVBOs(boolean useVBOs) {
@@ -178,10 +202,9 @@ public class MTLine extends MTCSSStylableShape{
 	
 	@Override
 	public void drawComponent(PGraphics g) {
-		PApplet renderer = this.getRenderer();
 		if (MT4jSettings.getInstance().isOpenGlMode()   
 		    && this.isUseDirectGL()){
-				GL gl=((PGraphicsOpenGL)renderer.g).beginGL();
+				GL gl=Tools3D.beginGL(g);
 			
 				//Draw with PURE opengl
 				if (this.isUseDisplayList()){
@@ -192,7 +215,7 @@ public class MTLine extends MTCSSStylableShape{
 					//Use Vertex Arrays or VBOs
 					this.drawPureGl(gl);
 				}
-				((PGraphicsOpenGL)renderer.g).endGL();
+				Tools3D.endGL(g);
 		}else{
 			//Draw with processing
 			MTColor strokeColor = this.getStrokeColor();
@@ -219,7 +242,7 @@ public class MTLine extends MTCSSStylableShape{
 	 * 
 	 * @param gl the gl
 	 */
-	private void drawPureGl(GL gl){
+	protected void drawPureGl(GL gl){
 		FloatBuffer strokeColBuff 	= this.getGeometryInfo().getStrokeColBuff();
 		FloatBuffer vertBuff 		= this.getGeometryInfo().getVertBuff();
 		//Enable Pointers, set vertex array pointer

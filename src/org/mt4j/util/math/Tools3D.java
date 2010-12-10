@@ -30,8 +30,8 @@ import javax.media.opengl.glu.GLU;
 
 import org.mt4j.MTApplication;
 import org.mt4j.components.interfaces.IMTComponent3D;
-import org.mt4j.components.visibleComponents.GeometryInfo;
 import org.mt4j.components.visibleComponents.StyleInfo;
+import org.mt4j.components.visibleComponents.shapes.GeometryInfo;
 import org.mt4j.input.inputData.InputCursor;
 import org.mt4j.util.MT4jSettings;
 import org.mt4j.util.camera.IFrustum;
@@ -1194,7 +1194,7 @@ public class Tools3D {
 	public static int generateOutLineDisplayList(PApplet pa, FloatBuffer vertBuff, FloatBuffer strokeColBuff, IntBuffer indexBuff, 
 												boolean drawSmooth, float strokeWeight, short lineStipple){
 		GL gl;
-		gl =((PGraphicsOpenGL)pa.g).beginGL();
+		gl = beginGL(pa.g);
 		
 		//Generate new list IDs
 		int returnVal = -1;

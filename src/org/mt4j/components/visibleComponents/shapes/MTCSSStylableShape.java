@@ -5,7 +5,6 @@ import org.mt4j.components.MTComponent;
 import org.mt4j.components.css.style.CSSStyle;
 import org.mt4j.components.css.util.CSSHelper;
 import org.mt4j.components.css.util.CSSStylableComponent;
-import org.mt4j.components.visibleComponents.GeometryInfo;
 import org.mt4j.util.math.Vertex;
 
 import processing.core.PApplet;

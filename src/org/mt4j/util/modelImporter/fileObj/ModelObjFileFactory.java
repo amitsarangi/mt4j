@@ -59,7 +59,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 
 import org.mt4j.MTApplication;
-import org.mt4j.components.visibleComponents.GeometryInfo;
+import org.mt4j.components.visibleComponents.shapes.GeometryInfo;
 import org.mt4j.components.visibleComponents.shapes.mesh.MTTriangleMesh;
 import org.mt4j.util.TriangleNormalGenerator;
 import org.mt4j.util.math.Vector3D;

@@ -26,8 +26,8 @@ import javax.media.opengl.GL;
 
 import org.mt4j.components.bounds.BoundingSphere;
 import org.mt4j.components.bounds.IBoundingShape;
-import org.mt4j.components.visibleComponents.GeometryInfo;
 import org.mt4j.components.visibleComponents.shapes.AbstractShape;
+import org.mt4j.components.visibleComponents.shapes.GeometryInfo;
 import org.mt4j.util.MT4jSettings;
 import org.mt4j.util.MTColor;
 import org.mt4j.util.math.BezierVertex;
@@ -670,7 +670,7 @@ public class MTTriangleMesh extends AbstractShape{
 	 * 
 	 * @param gl the gl
 	 */
-	private void drawPureGl(GL gl){
+	protected void drawPureGl(GL gl){
 //		/*
 		//Get display array/buffer pointers
 		FloatBuffer tbuff 			= this.getGeometryInfo().getTexBuff();
@@ -999,6 +999,7 @@ public class MTTriangleMesh extends AbstractShape{
 		//FIXME TEST
 		Tools3D.setLineSmoothEnabled(gl, true);
 
+		//FIXME glBegin etc not available in OpenGL ES
 		gl.glLineWidth(this.getStrokeWeight());
 		FloatBuffer strokeColBuff = this.getGeometryInfo().getStrokeColBuff(); 
 		gl.glColor4d (strokeColBuff.get(0), strokeColBuff.get(1), strokeColBuff.get(2), strokeColBuff.get(3));

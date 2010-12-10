@@ -26,7 +26,6 @@ import org.mt4j.components.bounds.BoundingSphere;
 import org.mt4j.components.bounds.IBoundingShape;
 import org.mt4j.components.bounds.OrientedBoundingBox;
 import org.mt4j.components.css.style.CSSStyle;
-import org.mt4j.components.visibleComponents.GeometryInfo;
 import org.mt4j.util.MT4jSettings;
 import org.mt4j.util.MTColor;
 import org.mt4j.util.math.BezierVertex;

@@ -23,7 +23,7 @@ import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.log4j.SimpleLayout;
-import org.mt4j.components.visibleComponents.GeometryInfo;
+import org.mt4j.components.visibleComponents.shapes.GeometryInfo;
 import org.mt4j.util.math.ToolsGeometry;
 import org.mt4j.util.math.ToolsMath;
 import org.mt4j.util.math.Vector3D;

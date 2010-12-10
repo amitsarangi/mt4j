@@ -20,7 +20,7 @@ package org.mt4j.components.visibleComponents.font;
 import java.util.List;
 
 import org.mt4j.components.bounds.IBoundingShape;
-import org.mt4j.components.visibleComponents.GeometryInfo;
+import org.mt4j.components.visibleComponents.shapes.GeometryInfo;
 import org.mt4j.components.visibleComponents.shapes.mesh.MTTriangleMesh;
 import org.mt4j.util.math.ToolsGeometry;
 import org.mt4j.util.math.Vertex;

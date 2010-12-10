@@ -15,13 +15,14 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  ***********************************************************************/
-package org.mt4j.components.visibleComponents;
+package org.mt4j.components.visibleComponents.shapes;
 
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 
 import javax.media.opengl.GL;
 
+import org.mt4j.components.visibleComponents.StyleInfo;
 import org.mt4j.util.MT4jSettings;
 import org.mt4j.util.math.Tools3D;
 import org.mt4j.util.math.ToolsBuffers;
@@ -845,7 +846,8 @@ public class GeometryInfo {
 	 * @param drawSmooth the draw smooth
 	 * @param strokeWeight the stroke weight
 	 */
-	public void generateDisplayLists(boolean useTexture, PImage texture, int fillDrawMode, boolean drawSmooth, float strokeWeight){
+//	public void generateDisplayLists(boolean useTexture, PImage texture, int fillDrawMode, boolean drawSmooth, float strokeWeight){
+	public boolean generateDisplayLists(AbstractShape shape){
 //		this.setDisplayListIDs(Tools3D.generateDisplayLists(
 //				this.getRenderer(), fillDrawMode, this.getVertBuff(), this.getTexBuff(), 
 //				this.getColorBuff(), this.getStrokeColBuff(), this.getIndexBuff(),
@@ -853,7 +855,53 @@ public class GeometryInfo {
 		//TODO test - automaticall delete old display list before
 		this.deleteDisplayLists();
 		
-		this.setDisplayListIDs(Tools3D.generateDisplayLists(this.getRenderer(), fillDrawMode, this, useTexture, texture, drawSmooth, strokeWeight));
+//		this.setDisplayListIDs(Tools3D.generateDisplayLists(this.getRenderer(), shape.getFillDrawMode(), this, shape.isTextureEnabled(),  shape.getTexture(), shape.isDrawSmooth(), shape.getStrokeWeight()));
+		
+//		/*
+		int[] displayListIDs = new int[]{-1,-1};
+
+		//Create a new empty displaylist
+		GL gl = Tools3D.getGL(getRenderer());
+		int listIDFill = gl.glGenLists(1);
+		if (listIDFill == 0){
+			System.err.println("Failed to create fill display list");
+			return false;
+		}
+		int listIDOutline = gl.glGenLists(1);
+		if (listIDOutline == 0){
+			System.err.println("Failed to create stroke display list");
+			return false;
+		}
+		
+		boolean noFillb4 = shape.isNoFill();
+		boolean noStrokeb4 = shape.isNoStroke();
+		
+		//Start recording display list
+		gl.glNewList(listIDFill, GL.GL_COMPILE);
+		shape.setNoFill(false);
+		shape.setNoStroke(true);
+		shape.drawPureGl(gl);
+		shape.setNoFill(noFillb4);
+		shape.setNoStroke(noStrokeb4);
+		//End recording
+		gl.glEndList();
+		displayListIDs[0] = listIDFill;
+		
+		//Start recording display list
+		gl.glNewList(listIDOutline, GL.GL_COMPILE);
+		shape.setNoFill(true);
+		shape.setNoStroke(false);
+		shape.drawPureGl(gl);
+		shape.setNoFill(noFillb4);
+		shape.setNoStroke(noStrokeb4);
+		//End recording
+		gl.glEndList();
+		displayListIDs[1] = listIDOutline;
+
+		//Set the new display list IDs
+//		setDisplayListIDs(displayListIDs);
+//		 */
+		return true;
 	}
 	
 	/**
