@@ -22,7 +22,6 @@ import java.nio.FloatBuffer;
 import javax.media.opengl.GL;
 
 import processing.core.PApplet;
-import processing.opengl.PGraphicsOpenGL;
 
 import com.sun.opengl.util.BufferUtil;
 
@@ -50,7 +49,7 @@ public class ToolsVBO {
 	 */
 	public static int generateVertexVBO(PApplet pa, FloatBuffer vertexBuffer, int vertexCount){
 		int[] vboVertices = new int[1]; 
-		GL gl =((PGraphicsOpenGL)pa.g).gl;
+		GL gl = Tools3D.getGL(pa);
 			gl.glGenBuffers(1, vboVertices, 0);  // Get A Valid Name
 			gl.glBindBuffer(GL.GL_ARRAY_BUFFER, vboVertices[0]);  // Bind The Buffer
 			// Load The Data
@@ -70,7 +69,7 @@ public class ToolsVBO {
 	 * @param vboName the vbo name
 	 */
 	public static void updateVertexVBO(PApplet pa, FloatBuffer vertexBuffer, int vertexCount, int vboName){
-		GL gl =((PGraphicsOpenGL)pa.g).gl;
+		GL gl = Tools3D.getGL(pa);
 		gl.glBindBuffer(GL.GL_ARRAY_BUFFER, vboName);  // Bind The Buffer
 		// Load The Data
 		gl.glBufferData(GL.GL_ARRAY_BUFFER, vertexCount * 3 * BufferUtil.SIZEOF_FLOAT, vertexBuffer, GL.GL_STATIC_DRAW);
@@ -90,7 +89,7 @@ public class ToolsVBO {
 	 */
 	public static int generateTextureVBO(PApplet pa, FloatBuffer textureBuffer, int vertexCount){
 		int[] vboTexCoords = new int[1];// Texture Coordinate VBO Name
-		GL gl =((PGraphicsOpenGL)pa.g).gl;
+		GL gl = Tools3D.getGL(pa);
 			gl.glGenBuffers(1, vboTexCoords, 0);  // Get A Valid Name
 			gl.glBindBuffer(GL.GL_ARRAY_BUFFER, vboTexCoords[0]); // Bind The Buffer
 			// Load The Data
@@ -110,7 +109,7 @@ public class ToolsVBO {
 	 * @param vboName the vbo name
 	 */
 	public static void updateTextureVBO(PApplet pa, FloatBuffer textureBuffer, int vertexCount, int vboName){
-		GL gl =((PGraphicsOpenGL)pa.g).gl;
+		GL gl = Tools3D.getGL(pa);
 			gl.glBindBuffer(GL.GL_ARRAY_BUFFER, vboName); // Bind The Buffer
 			// Load The Data
 			gl.glBufferData(GL.GL_ARRAY_BUFFER, vertexCount * 2 * BufferUtil.SIZEOF_FLOAT, textureBuffer, GL.GL_STATIC_DRAW);
@@ -130,7 +129,7 @@ public class ToolsVBO {
 	 */
 	public static int generateColorVBO(PApplet pa, FloatBuffer colorBuffer, int vertexCount){
 		int[] vboColor = new int[1];// vertexcolor Coordinate VBO Name
-		GL gl =((PGraphicsOpenGL)pa.g).gl;
+		GL gl = Tools3D.getGL(pa);
 			gl.glGenBuffers(1, vboColor, 0);  // Get A Valid Name
 			gl.glBindBuffer(GL.GL_ARRAY_BUFFER, vboColor[0]); // Bind The Buffer
 			// Load The Data
@@ -150,7 +149,7 @@ public class ToolsVBO {
 	 * @param vboName the vbo name
 	 */
 	public static void updateColorVBO(PApplet pa, FloatBuffer colorBuffer, int vertexCount, int vboName){
-		GL gl =((PGraphicsOpenGL)pa.g).gl;
+		GL gl = Tools3D.getGL(pa);
 			gl.glBindBuffer(GL.GL_ARRAY_BUFFER, vboName); // Bind The Buffer
 			// Load The Data
 			gl.glBufferData(GL.GL_ARRAY_BUFFER, vertexCount * 4 * BufferUtil.SIZEOF_FLOAT, colorBuffer, GL.GL_STATIC_DRAW);
@@ -170,7 +169,7 @@ public class ToolsVBO {
 	 */
 	public static int generateStrokeColorVBO(PApplet pa, FloatBuffer strokeColBuffer, int vertexCount){
 		int[] vboStrokeColor = new int[1];// stroke Coordinate VBO Name
-		GL gl =((PGraphicsOpenGL)pa.g).gl;
+		GL gl = Tools3D.getGL(pa);
 			gl.glGenBuffers(1, vboStrokeColor, 0);  // Get A Valid Name
 			gl.glBindBuffer(GL.GL_ARRAY_BUFFER, vboStrokeColor[0]); // Bind The Buffer
 			// Load The Data
@@ -190,7 +189,7 @@ public class ToolsVBO {
 	 * @param vboName the vbo name
 	 */
 	public static void updateStrokeColorVBO(PApplet pa, FloatBuffer strokeColBuffer, int vertexCount, int vboName){
-		GL gl =((PGraphicsOpenGL)pa.g).gl;
+		GL gl = Tools3D.getGL(pa);
 			gl.glBindBuffer(GL.GL_ARRAY_BUFFER, vboName); // Bind The Buffer
 			// Load The Data
 			gl.glBufferData(GL.GL_ARRAY_BUFFER,vertexCount * 4 * BufferUtil.SIZEOF_FLOAT, strokeColBuffer, GL.GL_STATIC_DRAW);
@@ -211,7 +210,7 @@ public class ToolsVBO {
 	 */
 	public static int generateNormalsVBO(PApplet pa, FloatBuffer normalsBuffer, int normalsCount){
 		int[] vboNormals = new int[1]; 
-		GL gl =((PGraphicsOpenGL)pa.g).gl;
+		GL gl = Tools3D.getGL(pa);
 			gl.glGenBuffers(1, vboNormals, 0);  // Get A Valid Name
 			gl.glBindBuffer(GL.GL_ARRAY_BUFFER, vboNormals[0]);  // Bind The Buffer
 			// Load The Data
@@ -232,7 +231,7 @@ public class ToolsVBO {
 	 * @param vboName the vbo name
 	 */
 	public static void updateNormalsVBO(PApplet pa, FloatBuffer normalsBuffer, int normalsCount, int vboName){
-		GL gl =((PGraphicsOpenGL)pa.g).gl;
+		GL gl = Tools3D.getGL(pa);
 		gl.glBindBuffer(GL.GL_ARRAY_BUFFER, vboName);  // Bind The Buffer
 		// Load The Data
 		gl.glBufferData(GL.GL_ARRAY_BUFFER, normalsCount * 3 * BufferUtil.SIZEOF_FLOAT, normalsBuffer, GL.GL_STATIC_DRAW);

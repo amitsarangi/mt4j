@@ -262,9 +262,9 @@ public class MTStencilPolygon extends MTPolygon {
 		if (isUseDirectGL()){
 			if (isUseDisplayList()){
 				int[] displayListIDs = this.getGeometryInfo().getDisplayListIDs();
-				if (!this.isNoFill())
+				if (!this.isNoFill() && displayListIDs[0] != -1)
 					gl.glCallList(displayListIDs[0]); //Draw fill
-				if (!this.isNoStroke())
+				if (!this.isNoStroke()  && displayListIDs[1] != -1)
 					gl.glCallList(displayListIDs[1]); //Draw outline
 			}else{
 				drawPureGL(gl);

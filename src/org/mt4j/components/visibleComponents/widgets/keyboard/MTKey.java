@@ -30,6 +30,7 @@ import org.mt4j.components.visibleComponents.shapes.MTPolygon;
 import org.mt4j.components.visibleComponents.shapes.mesh.MTTriangleMesh;
 import org.mt4j.util.MT4jSettings;
 import org.mt4j.util.MTColor;
+import org.mt4j.util.math.Tools3D;
 import org.mt4j.util.math.Vertex;
 
 import processing.core.PApplet;
@@ -240,12 +241,12 @@ public class MTKey extends
 	public void drawComponent(PGraphics g) {
 		if (this.isUseDirectGL()){
 			if (this.isUseDisplayList()){
-				GL gl=((PGraphicsOpenGL)this.getRenderer().g).beginGL();
+				GL gl = Tools3D.beginGL(g);
 				int[] pds = buttonBackGround.getGeometryInfo().getDisplayListIDs();
 				//Draw only filling of background polygon, without outer stroke
 				gl.glCallList(pds[0]);
 				super.drawComponent(gl); 
-				((PGraphicsOpenGL)this.getRenderer().g).endGL();
+				Tools3D.endGL(g);
 			}else{
 				buttonBackGround.drawComponent(g);
 				super.drawComponent(g); 

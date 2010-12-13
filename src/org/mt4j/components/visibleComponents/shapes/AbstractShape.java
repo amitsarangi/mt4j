@@ -372,7 +372,7 @@ public abstract class AbstractShape extends AbstractVisibleComponent{
 					geometryInfo.generateOrUpdateAllVBOs();
 				}
 				if (this.isUseDisplayList()){
-					this.getGeometryInfo().generateDisplayLists(this);
+					this.getGeometryInfo().generateDisplayLists(this, true, true);
 				}
 			}else if (this.geometryInfo != null && geometryInfo.equals(this.geometryInfo)){
 				// old geometryinfo is the same than the new one -> assumimg change -> create new buffers!
@@ -381,7 +381,7 @@ public abstract class AbstractShape extends AbstractVisibleComponent{
 					geometryInfo.generateOrUpdateAllVBOs();
 				}
 				if (this.isUseDisplayList()){
-					this.getGeometryInfo().generateDisplayLists(this);
+					this.getGeometryInfo().generateDisplayLists(this, true, true);
 				}
 			}else{
 				//the new geometryinfo already has opengl draw buffers and 
@@ -640,7 +640,7 @@ public abstract class AbstractShape extends AbstractVisibleComponent{
 //					this.getFillDrawMode(), 
 //					this.isDrawSmooth(), 
 //					this.getStrokeWeight());
-			this.getGeometryInfo().generateDisplayLists(this);
+			this.getGeometryInfo().generateDisplayLists(this, true, true);
 		}else{
 			logger.error(this.getName() + " - Cannot create displaylist if not in openGL mode or if setUseDirectGL() hasnt been set to true!");
 		}

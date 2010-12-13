@@ -23,6 +23,7 @@ import java.nio.IntBuffer;
 import javax.media.opengl.GL;
 
 import org.mt4j.components.visibleComponents.StyleInfo;
+import org.mt4j.components.visibleComponents.shapes.mesh.MTTriangleMesh;
 import org.mt4j.util.MT4jSettings;
 import org.mt4j.util.math.Tools3D;
 import org.mt4j.util.math.ToolsBuffers;
@@ -847,7 +848,7 @@ public class GeometryInfo {
 	 * @param strokeWeight the stroke weight
 	 */
 //	public void generateDisplayLists(boolean useTexture, PImage texture, int fillDrawMode, boolean drawSmooth, float strokeWeight){
-	public boolean generateDisplayLists(AbstractShape shape){
+	public boolean generateDisplayLists(AbstractShape shape, boolean genFillList, boolean genStrokeList){
 //		this.setDisplayListIDs(Tools3D.generateDisplayLists(
 //				this.getRenderer(), fillDrawMode, this.getVertBuff(), this.getTexBuff(), 
 //				this.getColorBuff(), this.getStrokeColBuff(), this.getIndexBuff(),
@@ -876,17 +877,20 @@ public class GeometryInfo {
 		boolean noFillb4 = shape.isNoFill();
 		boolean noStrokeb4 = shape.isNoStroke();
 		
-		//Start recording display list
-		gl.glNewList(listIDFill, GL.GL_COMPILE);
-		shape.setNoFill(false);
-		shape.setNoStroke(true);
-		shape.drawPureGl(gl);
-		shape.setNoFill(noFillb4);
-		shape.setNoStroke(noStrokeb4);
-		//End recording
-		gl.glEndList();
-		displayListIDs[0] = listIDFill;
+		if (genFillList){
+			//Start recording display list
+			gl.glNewList(listIDFill, GL.GL_COMPILE);
+			shape.setNoFill(false);
+			shape.setNoStroke(true);
+			shape.drawPureGl(gl);
+			shape.setNoFill(noFillb4);
+			shape.setNoStroke(noStrokeb4);
+			//End recording
+			gl.glEndList();
+			displayListIDs[0] = listIDFill;
+		}
 		
+		if (genStrokeList){
 		//Start recording display list
 		gl.glNewList(listIDOutline, GL.GL_COMPILE);
 		shape.setNoFill(true);
@@ -897,6 +901,7 @@ public class GeometryInfo {
 		//End recording
 		gl.glEndList();
 		displayListIDs[1] = listIDOutline;
+		}
 
 		//Set the new display list IDs
 		setDisplayListIDs(displayListIDs);

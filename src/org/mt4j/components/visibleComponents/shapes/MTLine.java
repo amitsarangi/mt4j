@@ -204,12 +204,12 @@ public class MTLine extends MTCSSStylableShape{
 	public void drawComponent(PGraphics g) {
 		if (MT4jSettings.getInstance().isOpenGlMode()   
 		    && this.isUseDirectGL()){
-				GL gl=Tools3D.beginGL(g);
+				GL gl = Tools3D.beginGL(g);
 			
 				//Draw with PURE opengl
 				if (this.isUseDisplayList()){
 					//Use Display Lists
-					if (!this.isNoStroke())
+					if (!this.isNoStroke() && this.getGeometryInfo().getDisplayListIDs()[0] != -1)
 						gl.glCallList(this.getGeometryInfo().getDisplayListIDs()[0]); //Draw line
 				}else{
 					//Use Vertex Arrays or VBOs

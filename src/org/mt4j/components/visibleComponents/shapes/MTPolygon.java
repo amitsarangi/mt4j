@@ -184,9 +184,9 @@ public class MTPolygon extends MTCSSStylableShape{
 			if (this.isUseDisplayList() /*&& this.getDisplayListIDs() != null && this.getDisplayListIDs()[0] != -1 && this.getDisplayListIDs()[1] != -1*/){
 				int[] displayLists = this.getGeometryInfo().getDisplayListIDs();
 				//Use Display Lists
-				if (!this.isNoFill()) 
+				if (!this.isNoFill()  && displayLists[0] != -1) 
 					gl.glCallList(displayLists[0]); //Draw fill
-				if (!this.isNoStroke())
+				if (!this.isNoStroke()  && displayLists[1] != -1)
 					gl.glCallList(displayLists[1]); //Draw outline
 			}else{
 				//Use Vertex Arrays or VBOs

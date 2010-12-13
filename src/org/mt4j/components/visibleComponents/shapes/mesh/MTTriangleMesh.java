@@ -41,7 +41,6 @@ import org.mt4j.util.opengl.GLTexture;
 
 import processing.core.PApplet;
 import processing.core.PGraphics;
-import processing.opengl.PGraphicsOpenGL;
 
 /**
  * A mesh class for drawing triangle meshes.
@@ -102,7 +101,7 @@ public class MTTriangleMesh extends AbstractShape{
 		
 		this.calculateDefaultNormals = calculateDefaultNormals;
 		
-		//FIXME EXPERIMENTAL
+		//EXPERIMENTAL
 		this.outlineContours = new ArrayList<Vertex[]>();
 		this.outlineBuffers = new ArrayList<FloatBuffer>();
 		
@@ -113,17 +112,6 @@ public class MTTriangleMesh extends AbstractShape{
 		this.setNoStroke(true);
 		
 		this.setBoundsBehaviour(AbstractShape.BOUNDS_CHECK_THEN_GEOMETRY_CHECK);
-//		this.setBoundsPickingBehaviour(AbstractShape.BOUNDS_ONLY_GEOMETRY_CHECK);
-//		this.setBoundsPickingBehaviour(AbstractShape.BOUNDS_ONLY_CHECK);
-		
-		//FIXME we dont create triangles or normals here because we do so in the overriden method setGeometryInfo() 
-		//which gets called in the super (abstractShape) constructor anyway
-		//-> else createTris() and createDefaultNormals would be called twice!!
-		//Create triangles from all the vertices (pairs of 3) or from the indices for internal use
-//		this.createTriangles(this.getGeometryInfo()); 
-		//Create normals for use with OpenGL lighting, 
-		//but only if the geomInfo doesent have norms and createDefaultNormals = true
-//		this.createDefaultNormals(geometryInfo);
 	}
 
 	
@@ -214,7 +202,6 @@ public class MTTriangleMesh extends AbstractShape{
 	private void createDefaultNormals(GeometryInfo geometryInfo){
 		if (!this.getGeometryInfo().isContainsNormals() && this.isCalculateDefaultNormals()){
 //			System.out.println("MTTriangleMesh object: \"" + this + "\" -> Create default normals.");
-			
 			//Create and set the face normals
 			if (!geometryInfo.isIndexed()){
 				Vector3D[] normals = this.getFaceOrVertexNormals();
@@ -238,13 +225,10 @@ public class MTTriangleMesh extends AbstractShape{
 	 */
 	private void createTriangles(GeometryInfo geom){
 		Vertex[] vertices = geom.getVertices();
-		
-		//TODO geometryInfo.getDrawMode()? bei tristrip m�sste ein triangle erzeugt werden f�r jedes neue vertex!?
 		ArrayList<Triangle> tris = new ArrayList<Triangle>();
 		
 		if (geom.isIndexed()){
 			//System.out.println("MTTriangleMesh object: \"" + this.getName() + "\" Debug-> Supplied geometry is INDEXED");
-			
 			int[] indices = geom.getIndices();
 			if (indices.length % 3 != 0){
 				System.err.println("WARNING: the indices of the indexed mesh geometry:\"" + this.getName() + "\" arent dividable by 3 => probably no TRIANGLES indices provided!");
@@ -281,7 +265,6 @@ public class MTTriangleMesh extends AbstractShape{
 			}
 		}
 		this.triangles = tris.toArray(new Triangle[tris.size()]);
-		
 //		System.out.println("MTTriangleMesh object: \"" + this + "\" Debug-> Triangles created: " + this.triangles.length);
 	}
 	
@@ -570,10 +553,10 @@ public class MTTriangleMesh extends AbstractShape{
 	public void drawComponent(GL gl) {
 		if (this.isUseDisplayList()){
 			int[] displayLists = this.getGeometryInfo().getDisplayListIDs();
-			if (!this.isNoFill()){
+			if (!this.isNoFill() && displayLists[0] != -1){
 				gl.glCallList(displayLists[0]);
 			}
-			if (!this.isNoStroke()){
+			if (!this.isNoStroke() && displayLists[1] != -1){
 				if (this.outlineContours != null){
 					gl.glCallList(displayLists[1]);
 				}
@@ -671,7 +654,6 @@ public class MTTriangleMesh extends AbstractShape{
 	 * @param gl the gl
 	 */
 	protected void drawPureGl(GL gl){
-//		/*
 		//Get display array/buffer pointers
 		FloatBuffer tbuff 			= this.getGeometryInfo().getTexBuff();
 		FloatBuffer vertBuff 		= this.getGeometryInfo().getVertBuff();
@@ -738,15 +720,6 @@ public class MTTriangleMesh extends AbstractShape{
 			//DRAW with drawElements if geometry is indexed, else draw with drawArrays!
 			if (this.getGeometryInfo().isIndexed()){
 				gl.glDrawElements(this.getFillDrawMode(), indexBuff.capacity(), GL.GL_UNSIGNED_INT, indexBuff); //limit() oder capacity()??
-
-				/*
-				int error = gl.glGetError();
-				if (error != GL.GL_NO_ERROR){
-					System.out.println("GL Error: " + error);
-				}else{
-					System.out.println("No gl error.");
-				}
-				*/
 			}else{
 				gl.glDrawArrays(this.getFillDrawMode(), 0, vertBuff.capacity()/3);
 			}
@@ -788,12 +761,12 @@ public class MTTriangleMesh extends AbstractShape{
 			
 //			/*
 			//SET LINE STIPPLE
-				short lineStipple = this.getLineStipple();
-				if (lineStipple != 0){
-					gl.glLineStipple(1, lineStipple);
-					gl.glEnable(GL.GL_LINE_STIPPLE);
-				}
-//			*/
+			short lineStipple = this.getLineStipple();
+			if (lineStipple != 0){
+				gl.glLineStipple(1, lineStipple);
+				gl.glEnable(GL.GL_LINE_STIPPLE);
+			}
+			//*/
 			
 			if (this.getStrokeWeight() > 0)
 				gl.glLineWidth(this.getStrokeWeight());
@@ -806,8 +779,6 @@ public class MTTriangleMesh extends AbstractShape{
 			//Always use just buffes and drawarrays instead of vbos..too complicated for a simple outline..
 			for(FloatBuffer outlineBuffer : this.outlineBuffers){ //FIXME EXPERIMENTAL
 				gl.glVertexPointer(3, GL.GL_FLOAT, 0, outlineBuffer); 
-//				gl.glDrawArrays(GL.GL_LINES, 0, outlineBuffer.capacity()/3);
-//				gl.glDrawArrays(GL.GL_LINE_LOOP, 0, outlineBuffer.capacity()/3);
 				gl.glDrawArrays(GL.GL_LINE_STRIP, 0, outlineBuffer.capacity()/3);
 			}
 			
@@ -840,8 +811,6 @@ public class MTTriangleMesh extends AbstractShape{
 			gl.glBindBuffer(GL.GL_ARRAY_BUFFER, 0);
 			gl.glBindBuffer(GL.GL_ELEMENT_ARRAY_BUFFER, 0);
 		}
-//		*/
-
 	}
 
 
@@ -867,21 +836,13 @@ public class MTTriangleMesh extends AbstractShape{
 	@Override
 	protected void destroyComponent() {
 		this.triangles = null;
-
 //		if (!this.outlineBuffers.isEmpty()){
 //			outline = getGeometryInfo().getDisplayListIDs()[1];
 //		}
-		
 		this.outlineBuffers.clear();
 	}
 	
 	
-	@Override
-	protected void destroyDisplayLists() {
-		super.destroyDisplayLists();
-		//System.out.println("Destroying mesh display lists: " + this);
-	}
-
 
 	/**
 	 * Gets the outline contours.
@@ -943,7 +904,7 @@ public class MTTriangleMesh extends AbstractShape{
 			int[] ids = this.getGeometryInfo().getDisplayListIDs();
 			//Delete default outline display list, not really usable in a mesh.
 			if (MT4jSettings.getInstance().isOpenGlMode()){
-				GL gl =((PGraphicsOpenGL)this.getRenderer().g).gl;
+				GL gl =Tools3D.getGL(getRenderer());
 				if (ids[1] != -1){
 					gl.glDeleteLists(ids[1], 1);
 				}
@@ -961,20 +922,24 @@ public class MTTriangleMesh extends AbstractShape{
 	 */
 	@Override
 	public void generateDisplayLists(){
-		super.generateDisplayLists();
-		int[] ids = this.getGeometryInfo().getDisplayListIDs();
 		//Delete default outline display list, not really usable in a mesh. To draw all triangles outlines..
-		//TODO nicht optimal, da erst eine displaylist erstellt wird, die gleich wieder gel�scht wird..
 		if (MT4jSettings.getInstance().isOpenGlMode()
-			&& this.outlineContours != null
+			&& this.isUseDirectGL()
 		){
-			if (ids[1] != -1){
-				GL gl =((PGraphicsOpenGL)this.getRenderer().g).gl;
-				gl.glDeleteLists(ids[1], 1);
+			if (this.outlineContours != null){
+				//Dont create default stroke outline display list (mostly useless with triangle meshes)
+				this.getGeometryInfo().generateDisplayLists(this, true, false);
+				int[] ids = this.getGeometryInfo().getDisplayListIDs();
+				if (ids[1] != -1){
+					GL gl = Tools3D.getGL(getRenderer());
+					gl.glDeleteLists(ids[1], 1);
+				}
+				//Create outline display list from manually set outline contours if available.
+				ids[1] = this.generateContoursDisplayList();
+				this.getGeometryInfo().setDisplayListIDs(ids);
+			}else{
+				super.generateDisplayLists(); //create default display lists
 			}
-			//Create outline display list from manually set outline contours if available.
-			ids[1] = this.generateContoursDisplayList();
-			this.getGeometryInfo().setDisplayListIDs(ids);
 		}
 	}
 	
@@ -984,7 +949,7 @@ public class MTTriangleMesh extends AbstractShape{
 	 * @return the int
 	 */
 	private int generateContoursDisplayList(){
-		GL gl=((PGraphicsOpenGL)this.getRenderer().g).gl;
+		GL gl = Tools3D.getGL(getRenderer());
 		int listId = gl.glGenLists(1);
 		if (listId == 0){
 			System.err.println("Failed to create display list");
@@ -992,17 +957,27 @@ public class MTTriangleMesh extends AbstractShape{
 		}
 
 		gl.glNewList(listId, GL.GL_COMPILE);
-		
 //		if (this.isDrawSmooth()){
-//			gl.glEnable(GL.GL_LINE_SMOOTH);
+//			gl.glEnable(GL.GL_LINE_SMOOTH); 
 //		}
-		//FIXME TEST
+		//TEST
 		Tools3D.setLineSmoothEnabled(gl, true);
-
-		//FIXME glBegin etc not available in OpenGL ES
 		gl.glLineWidth(this.getStrokeWeight());
 		FloatBuffer strokeColBuff = this.getGeometryInfo().getStrokeColBuff(); 
 		gl.glColor4d (strokeColBuff.get(0), strokeColBuff.get(1), strokeColBuff.get(2), strokeColBuff.get(3));
+		
+//		/*
+		//USE BUFFERS
+		gl.glEnableClientState(GL.GL_VERTEX_ARRAY);
+		for (FloatBuffer buffer : this.outlineBuffers) {
+			gl.glVertexPointer(3, GL.GL_FLOAT, 0, buffer);
+			gl.glDrawArrays(GL.GL_LINE_STRIP, 0, buffer.capacity()/3);
+		}
+		gl.glDisableClientState(GL.GL_VERTEX_ARRAY);
+//		*/
+		
+		/*
+		//Immediate mode - wont work in OpenGL ES
 		for (Vertex[] varr : this.outlineContours){
 			gl.glBegin(GL.GL_LINE_STRIP);
 			for(Vertex v : varr){
@@ -1010,10 +985,10 @@ public class MTTriangleMesh extends AbstractShape{
 			}
 			gl.glEnd();
 		}
+		*/
 		
-		//FIXME TEST
+		//TEST
 		Tools3D.setLineSmoothEnabled(gl, false);
-		
 		gl.glEndList();
 		return listId;
 	}
