@@ -1,28 +1,21 @@
 package org.mt4j.test.css;
 
-import static org.junit.Assert.*;
-
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 
 import junit.framework.TestCase;
 
 import org.apache.log4j.ConsoleAppender;
-import org.apache.log4j.FileAppender;
 import org.apache.log4j.Logger;
 import org.apache.log4j.SimpleLayout;
 import org.junit.Before;
 import org.junit.Test;
-import org.mt4j.components.MTComponent;
 import org.mt4j.components.css.parser.CSSParserConnection;
 import org.mt4j.components.css.style.CSSSelector;
 import org.mt4j.components.css.style.CSSStyle;
 import org.mt4j.components.css.util.CSSKeywords.CSSSelectorType;
 import org.mt4j.components.visibleComponents.font.FontManager;
 import org.mt4j.components.visibleComponents.font.IFont;
-import org.mt4j.components.visibleComponents.font.IFontCharacter;
-import org.mt4j.components.visibleComponents.widgets.MTTextArea;
 import org.mt4j.util.MTColor;
 
 
@@ -78,11 +71,11 @@ public class FontParserTest extends TestCase{
 		CSSSelector sansnormalbold = new CSSSelector("sansnormalbold", CSSSelectorType.ID);
 		CSSSelector sansnormallight = new CSSSelector("sansnormallight", CSSSelectorType.ID);
 
-		IFont sansFont = FontManager.getInstance().createFont(app,"SansSerif", 16,w,w);
-		IFont sansBoldFont = FontManager.getInstance().createFont(app,"SansSerif.bold", 16,w,w);
-		IFont sansItalicFont = FontManager.getInstance().createFont(app,"SansSerif.italic", 16,w,w);
-		IFont sansItalicBoldFont = FontManager.getInstance().createFont(app,"SansSerif.bolditalic", 16,w,w);
-		IFont sansLightFont = FontManager.getInstance().createFont(app,"SansSerif", 16,w,w);
+		IFont sansFont = FontManager.getInstance().createFont(app,"SansSerif", 16,w);
+		IFont sansBoldFont = FontManager.getInstance().createFont(app,"SansSerif.bold", 16,w);
+		IFont sansItalicFont = FontManager.getInstance().createFont(app,"SansSerif.italic", 16,w);
+		IFont sansItalicBoldFont = FontManager.getInstance().createFont(app,"SansSerif.bolditalic", 16,w);
+		IFont sansLightFont = FontManager.getInstance().createFont(app,"SansSerif", 16,w);
 
 
 				assertTrue(sameFont(hm.get(sans), sansFont));
@@ -127,11 +120,11 @@ public class FontParserTest extends TestCase{
 		CSSSelector serifnormalbold = new CSSSelector("serifnormalbold", CSSSelectorType.ID);
 		CSSSelector serifnormallight = new CSSSelector("serifnormallight", CSSSelectorType.ID);
 
-		IFont serifFont = FontManager.getInstance().createFont(app,"Serif", 16,w,w);
-		IFont serifBoldFont = FontManager.getInstance().createFont(app,"Serif.bold", 16,w,w);
-		IFont serifItalicFont = FontManager.getInstance().createFont(app,"Serif.italic", 16,w,w);
-		IFont serifItalicBoldFont = FontManager.getInstance().createFont(app,"Serif.bolditalic", 16,w,w);
-		IFont serifLightFont = FontManager.getInstance().createFont(app,"Serif", 16,w,w);
+		IFont serifFont = FontManager.getInstance().createFont(app,"Serif", 16,w);
+		IFont serifBoldFont = FontManager.getInstance().createFont(app,"Serif.bold", 16,w);
+		IFont serifItalicFont = FontManager.getInstance().createFont(app,"Serif.italic", 16,w);
+		IFont serifItalicBoldFont = FontManager.getInstance().createFont(app,"Serif.bolditalic", 16,w);
+		IFont serifLightFont = FontManager.getInstance().createFont(app,"Serif", 16,w);
 
 				assertTrue(sameFont(hm.get(serif), serifFont));
 
@@ -173,11 +166,11 @@ public class FontParserTest extends TestCase{
 		CSSSelector mononormalbold = new CSSSelector("mononormalbold", CSSSelectorType.ID);
 		CSSSelector mononormallight = new CSSSelector("mononormallight", CSSSelectorType.ID);
 
-		IFont monoFont = FontManager.getInstance().createFont(app,"Monospaced", 16,w,w);
-		IFont monoBoldFont = FontManager.getInstance().createFont(app,"Monospaced.bold", 16,w,w);
-		IFont monoItalicFont = FontManager.getInstance().createFont(app,"Monospaced.italic", 16,w,w);
-		IFont monoItalicBoldFont = FontManager.getInstance().createFont(app,"Monospaced.bolditalic", 16,w,w);
-		IFont monoLightFont = FontManager.getInstance().createFont(app,"Monospaced", 16,w,w);
+		IFont monoFont = FontManager.getInstance().createFont(app,"Monospaced", 16,w);
+		IFont monoBoldFont = FontManager.getInstance().createFont(app,"Monospaced.bold", 16,w);
+		IFont monoItalicFont = FontManager.getInstance().createFont(app,"Monospaced.italic", 16,w);
+		IFont monoItalicBoldFont = FontManager.getInstance().createFont(app,"Monospaced.bolditalic", 16,w);
+		IFont monoLightFont = FontManager.getInstance().createFont(app,"Monospaced", 16,w);
 
 
 				assertTrue(sameFont(hm.get(mono), monoFont));
@@ -212,11 +205,11 @@ public class FontParserTest extends TestCase{
 		CSSSelector arialgreen = new CSSSelector("arialgreen", CSSSelectorType.ID);
 		CSSSelector arialsmaller = new CSSSelector("arialsmaller", CSSSelectorType.ID);
 		
-		IFont arialFont = FontManager.getInstance().createFont(app,"arial.ttf", 16,w,w);
-		IFont arial12Font = FontManager.getInstance().createFont(app, "arial.ttf", 12, w, w);
+		IFont arialFont = FontManager.getInstance().createFont(app,"arial.ttf", 16,w);
+		IFont arial12Font = FontManager.getInstance().createFont(app, "arial.ttf", 12, w);
 		MTColor g = new MTColor(0,128,0,255);
-		IFont arialgreenFont = FontManager.getInstance().createFont(app, "arial.ttf", 16, g, g);
-		IFont arialsmallerFont = FontManager.getInstance().createFont(app, "arial.ttf", 8, w, w);
+		IFont arialgreenFont = FontManager.getInstance().createFont(app, "arial.ttf", 16, g);
+		IFont arialsmallerFont = FontManager.getInstance().createFont(app, "arial.ttf", 8, w);
 
 				assertTrue(sameFont(hm.get(arial), arialFont));
 
@@ -231,7 +224,7 @@ public class FontParserTest extends TestCase{
 	public boolean sameFont(IFont f1, IFont f2) {
 		boolean same = true;
 		same = same && f1.getFillColor().equals(f2.getFillColor());
-		same = same && f1.getStrokeColor().equals(f2.getStrokeColor());
+//		same = same && f1.getStrokeColor().equals(f2.getStrokeColor());
 		same = same && f1.getOriginalFontSize() == f2.getOriginalFontSize();
 		same = same && f1.getFontFileName().equalsIgnoreCase(f2.getFontFileName());
 				

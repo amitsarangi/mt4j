@@ -51,11 +51,28 @@ public class BitmapFontFactoryProxy implements IFontFactory {
 		logger.addAppender(ca);
 	}
 	
-	public static String defaultCharacters = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ√Ñ√ñ√úabcdefghijklmnopqrstuvwxyz√§√∂√º<>|,;.:-_#'+*!\"¬ß$%&/()=?¬¥{[]}\\@";
+	public static String defaultCharacters = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ¡¿…»ÕÃ”“abcdefghijklmnopqrstuvwxyz·‡ÈËÌÏÛÚ<>|,;.:-_#'+*!\"ß$%&/()=?¥{[]}\\@";
 	
 //	static{
 //		FontManager.getInstance().registerFontFactory("", new BitmapFontFactory());
 	//	}
+	
+	public IFont getCopy(IFont font) {
+		if (font instanceof BitmapFont) {
+			BitmapFont bf = (BitmapFont) font;
+			BitmapFont copy = new BitmapFont((BitmapFontCharacter[]) bf.getCharacters(), bf.getDefaultHorizontalAdvX(), bf.getFontFamily(), bf.getFontMaxAscent(), bf.getFontMaxDescent(), bf.getUnitsPerEM(), bf.getOriginalFontSize(), bf.getFillColor(),  /*bf.getStrokeColor(),*/ bf.isAntiAliased());
+			return copy;
+		}
+		return null;
+	}
+	
+	public IFont createFont(PApplet pa, String fontName, int fontSize, MTColor color) {
+		return this.createFont(pa, fontName, fontSize, color, color, true);
+	}
+
+	public IFont createFont(PApplet pa, String fontName, int fontSize, MTColor color, boolean antiAliased) {
+		return this.createFont(pa, fontName, fontSize, color, color, antiAliased);
+	}
 
 	/* (non-Javadoc)
 	 * @see org.mt4j.components.visibleComponents.font.fontFactories.IFontFactory#createFont(processing.core.PApplet, java.lang.String, int, org.mt4j.util.MTColor, org.mt4j.util.MTColor)
@@ -87,7 +104,7 @@ public class BitmapFontFactoryProxy implements IFontFactory {
 		} catch (FileNotFoundException e1) {
 			e1.printStackTrace();
 		}
-		List<BitmapFontCharacter> bitMapCharacters = this.createCharacters(pa, p5Font, defaultCharacters, fillColor, strokeColor);
+		List<BitmapFontCharacter> bitMapCharacters = this.createCharacters(pa, p5Font, defaultCharacters, fillColor /*, strokeColor*/);
 	
 		//font is null sometimes (vlw)
 		/*
@@ -183,7 +200,7 @@ public class BitmapFontFactoryProxy implements IFontFactory {
 		BitmapFontCharacter[] characters = bitMapCharacters.toArray(new BitmapFontCharacter[bitMapCharacters.size()]);
 		BitmapFont bitmapFont = new BitmapFont(characters, defaultHorizontalAdvX, fontFamily, fontMaxAscent, fontMaxDescent, unitsPerEm, originalFontSize, 
 				fillColor,
-				strokeColor,
+//				strokeColor,
 				antiAliased
 		);
 		bitmapFont.setFontFileName(fontFileName);
@@ -271,11 +288,11 @@ public class BitmapFontFactoryProxy implements IFontFactory {
 	public List<BitmapFontCharacter> getCharacters(PApplet pa, 
 			String chars,
 			MTColor fillColor, 
-			MTColor strokeColor,
+//			MTColor strokeColor,
 			String fontFileName, 
 			int fontSize
 	){
-		return this.getCharacters(pa, chars, fillColor, strokeColor, fontFileName, fontSize, true);
+		return this.getCharacters(pa, chars, fillColor, /*strokeColor,*/ fontFileName, fontSize, true);
 	}
 	
 	/**
@@ -293,7 +310,7 @@ public class BitmapFontFactoryProxy implements IFontFactory {
 	public List<BitmapFontCharacter> getCharacters(PApplet pa, 
 			String chars,
 			MTColor fillColor, 
-			MTColor strokeColor,
+//			MTColor strokeColor,
 			String fontFileName, 
 			int fontSize,
 			boolean antiAliased
@@ -304,11 +321,11 @@ public class BitmapFontFactoryProxy implements IFontFactory {
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
-		return createCharacters(pa, p5Font, chars, fillColor, strokeColor);
+		return createCharacters(pa, p5Font, chars, fillColor /*, strokeColor*/);
 	}
 	
 	
-	private List<BitmapFontCharacter> createCharacters(PApplet pa, PFont p5Font, String chars, MTColor fillColor, MTColor strokeColor){
+	private List<BitmapFontCharacter> createCharacters(PApplet pa, PFont p5Font, String chars, MTColor fillColor /*, MTColor strokeColor*/){
 		List<BitmapFontCharacter> bitMapCharacters = new ArrayList<BitmapFontCharacter>();
 		
 		for (int i = 0; i < chars.length(); i++) {

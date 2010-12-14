@@ -20,8 +20,7 @@ public class HelloWorldScene extends AbstractScene {
 		
 		IFont fontArial = FontManager.getInstance().createFont(mtApplication, "arial.ttf", 
 				50, 	//Font size
-				white,  //Font fill color
-				white);	//Font outline color
+				white);	//Font color
 		//Create a textfield
 		MTTextArea textField = new MTTextArea(mtApplication, fontArial); 
 		

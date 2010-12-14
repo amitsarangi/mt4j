@@ -50,17 +50,17 @@ import processing.core.PGraphics;
 public class MTTriangleMesh extends AbstractShape{
 	
 	/** The triangles. */
-	private Triangle[] triangles; 
+	protected Triangle[] triangles; 
 	
 	/** The draw normals. */
 	private boolean drawNormals;
 	
 	//FIXME EXPERIMENTAL
 	/** The outline contours. */
-	private List<Vertex[]> outlineContours;
+	protected List<Vertex[]> outlineContours;
 	
 	/** The outline buffers. */
-	private List<FloatBuffer> outlineBuffers;
+	protected List<FloatBuffer> outlineBuffers;
 	
 	private boolean calculateDefaultNormals = true; //has to be initialized here, else not considered in first setGeomInfo()..
 	
@@ -520,7 +520,7 @@ public class MTTriangleMesh extends AbstractShape{
 					pa.smooth();
 				
 				for (Vertex[] outline : this.outlineContours){
-					this.drawWithProcessing(pa, outline, PApplet.POLYGON, false);
+					this.drawWithProcessing(g, outline, PApplet.POLYGON, false);
 				}
 			}
 
@@ -528,7 +528,7 @@ public class MTTriangleMesh extends AbstractShape{
 				pa.noStroke();
 				pa.noSmooth();
 				pa.fill(fillColor.getR(), fillColor.getG(), fillColor.getB(), fillColor.getAlpha());
-				this.drawWithProcessing(pa, this.getVerticesLocal(), PApplet.TRIANGLES, true);
+				this.drawWithProcessing(g, this.getVerticesLocal(), PApplet.TRIANGLES, true);
 			}
 
 			//ReSet the tint values to defaults 
@@ -573,52 +573,52 @@ public class MTTriangleMesh extends AbstractShape{
 	 * loops through all the vertices of the polygon
 	 * and uses processings "vertex()" command to set their position
 	 * and texture.
-	 * 
-	 * @param p the p
+	 *
+	 * @param g the g
 	 * @param vertices the vertices
 	 * @param drawMode the draw mode
 	 * @param useTexture the use texture
 	 */
-	protected void drawWithProcessing(PApplet p, Vertex[] vertices, int drawMode, boolean useTexture){
-		p.beginShape(drawMode); 
+	protected void drawWithProcessing(PGraphics g, Vertex[] vertices, int drawMode, boolean useTexture){
+		g.beginShape(drawMode); 
 		if (this.getTexture() != null && this.isTextureEnabled() && useTexture){
-			p.texture(this.getTexture());
-			p.textureMode(this.getTextureMode());
+			g.texture(this.getTexture());
+			g.textureMode(this.getTextureMode());
 		}
 		if (this.getGeometryInfo().isIndexed()){
 			int[] indices =  this.getGeometryInfo().getIndices();
             for (int index : indices) {
-                drawP5Vertex(p, vertices[index], useTexture);
+                drawP5Vertex(g, vertices[index], useTexture);
             }
 		}
 		else{
             for (Vertex vertice : vertices) {
-                drawP5Vertex(p, vertice, useTexture);
+                drawP5Vertex(g, vertice, useTexture);
             }
 		}
-		p.endShape();
+		g.endShape();
 	}
 	
 	/**
 	 * Draw p5 vertex.
-	 * 
-	 * @param p the p
+	 *
+	 * @param g the g
 	 * @param v the v
 	 * @param useTexture the use texture
 	 */
-	private void drawP5Vertex(PApplet p, Vertex v, boolean useTexture){
+	private void drawP5Vertex(PGraphics g, Vertex v, boolean useTexture){
 		if (this.isTextureEnabled() && useTexture){
-			p.vertex(v.x, v.y, v.z, v.getTexCoordU(), v.getTexCoordV());
+			g.vertex(v.x, v.y, v.z, v.getTexCoordU(), v.getTexCoordV());
 		}else{
 			if (v.getType() == Vector3D.BEZIERVERTEX){
 				BezierVertex b = (BezierVertex)v;
-				p.bezierVertex(
+				g.bezierVertex(
 						b.getFirstCtrlPoint().x,  b.getFirstCtrlPoint().y,  b.getFirstCtrlPoint().z, 
 						b.getSecondCtrlPoint().x, b.getSecondCtrlPoint().y, b.getSecondCtrlPoint().z, 
 						b.x, b.y, b.z  );
 			}
 			else{
-				p.vertex(v.x, v.y, v.z);
+				g.vertex(v.x, v.y, v.z);
 			}
 		}
 	}
@@ -865,7 +865,7 @@ public class MTTriangleMesh extends AbstractShape{
 	
 	
 	/** The stroke r. */
-	private float strokeR = 1;
+	private float strokeR = 0;
 	
 	/** The stroke g. */
 	private float strokeG = 1;
@@ -910,7 +910,7 @@ public class MTTriangleMesh extends AbstractShape{
 				}
 			}
 			if (this.outlineContours != null){
-				ids[1] = generateContoursDisplayList();
+				ids[1] = generateContoursDisplayList(true);
 				this.getGeometryInfo().setDisplayListIDs(ids);
 			}
 		}
@@ -935,7 +935,7 @@ public class MTTriangleMesh extends AbstractShape{
 					gl.glDeleteLists(ids[1], 1);
 				}
 				//Create outline display list from manually set outline contours if available.
-				ids[1] = this.generateContoursDisplayList();
+				ids[1] = this.generateContoursDisplayList(true);
 				this.getGeometryInfo().setDisplayListIDs(ids);
 			}else{
 				super.generateDisplayLists(); //create default display lists
@@ -948,7 +948,7 @@ public class MTTriangleMesh extends AbstractShape{
 	 * 
 	 * @return the int
 	 */
-	private int generateContoursDisplayList(){
+	protected int generateContoursDisplayList(boolean useColor){
 		GL gl = Tools3D.getGL(getRenderer());
 		int listId = gl.glGenLists(1);
 		if (listId == 0){
@@ -964,7 +964,8 @@ public class MTTriangleMesh extends AbstractShape{
 		Tools3D.setLineSmoothEnabled(gl, true);
 		gl.glLineWidth(this.getStrokeWeight());
 		FloatBuffer strokeColBuff = this.getGeometryInfo().getStrokeColBuff(); 
-		gl.glColor4d (strokeColBuff.get(0), strokeColBuff.get(1), strokeColBuff.get(2), strokeColBuff.get(3));
+		if (useColor)
+			gl.glColor4d (strokeColBuff.get(0), strokeColBuff.get(1), strokeColBuff.get(2), strokeColBuff.get(3));
 		
 //		/*
 		//USE BUFFERS

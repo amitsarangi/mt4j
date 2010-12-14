@@ -81,11 +81,29 @@ public class SvgFontFactory extends DefaultHandler implements IFontFactory {
 	private PathParser pathParser;
 	private float scaleFactor;
 	private MTColor fillColor;
-	private MTColor strokeColor;
+//	private MTColor strokeColor;
 	private boolean antiAliased;
 	
 	
-	public SvgFontFactory() {    	}
+	public SvgFontFactory() {  }
+	
+	
+	public IFont getCopy(IFont font) {
+		if (font instanceof VectorFont) {
+			VectorFont vf = (VectorFont) font;
+			VectorFont copy = new VectorFont( (VectorFontCharacter[]) vf.getCharacters(), vf.getDefaultHorizontalAdvX(), vf.getFontFamily(), vf.getFontMaxAscent(), vf.getFontMaxDescent(), vf.getUnitsPerEM(), vf.getOriginalFontSize(), vf.getFillColor(), /*vf.getStrokeColor(),*/ vf.isAntiAliased());
+			return copy;
+		}
+		return null;
+	}
+	
+	public IFont createFont(PApplet pa, String fontName, int fontSize, MTColor color) {
+		return this.createFont(pa, fontName, fontSize, color, color, true);
+	}
+
+	public IFont createFont(PApplet pa, String fontName, int fontSize, MTColor color, boolean antiAliased) {
+		return this.createFont(pa, fontName, fontSize, color, color, antiAliased);
+	}
 	
 	public IFont createFont(
 			PApplet pa, 
@@ -97,9 +115,6 @@ public class SvgFontFactory extends DefaultHandler implements IFontFactory {
 		return this.createFont(pa, svgFontFileName, fontSize, fillColor, strokeColor, true);
 	}
 
-	/* (non-Javadoc)
-	 * @see mTouch.components.visibleComponents.font.IFontFactory#loadFont(processing.core.PApplet, java.lang.String, int, float, float, float, float, float, float, float, float)
-	 */
 	public IFont createFont(
 			PApplet pa, 
 			String svgFontFileName, 
@@ -111,7 +126,7 @@ public class SvgFontFactory extends DefaultHandler implements IFontFactory {
 		this.pa = pa;
 		this.fontSize 		= fontSize;
 		this.fillColor = fillColor;
-		this.strokeColor = strokeColor;
+//		this.strokeColor = strokeColor;
 		this.antiAliased = antiAliased;
 		
 		//List of all (prepared for stencil drawing) Glyph path vertices
@@ -353,7 +368,8 @@ public class SvgFontFactory extends DefaultHandler implements IFontFactory {
 			character.setUseDirectGL(true);
 
 		//Color
-		character.setStrokeColor(new MTColor(strokeColor.getR(), strokeColor.getG(), strokeColor.getB(), strokeColor.getAlpha()));
+//		character.setStrokeColor(new MTColor(strokeColor.getR(), strokeColor.getG(), strokeColor.getB(), strokeColor.getAlpha()));
+		character.setStrokeColor(new MTColor(fillColor.getR(), fillColor.getG(), fillColor.getB(), fillColor.getAlpha()));
 		character.setFillColor(new MTColor(fillColor.getR(), fillColor.getG(), fillColor.getB(), fillColor.getAlpha()));
 		
 		character.setStrokeWeight(0.7f);
@@ -362,7 +378,7 @@ public class SvgFontFactory extends DefaultHandler implements IFontFactory {
 		if (!antiAliased){
 			character.setNoStroke(true);	
 		}else{
-			if (MT4jSettings.getInstance().isMultiSampling() && fillColor.equals(strokeColor)){
+			if (MT4jSettings.getInstance().isMultiSampling() /*&& fillColor.equals(strokeColor)*/){
 				character.setNoStroke(true);
 			}else{
 				character.setNoStroke(false);	
@@ -422,7 +438,7 @@ public class SvgFontFactory extends DefaultHandler implements IFontFactory {
 //		VectorFont svgFont = new VectorFont(this.getCharacters(), fontDefaultXAdvancing, fontFamily, fontMaxAscent, fontMaxDescent, font_units_per_em, fontSize,
 		VectorFont svgFont = new VectorFont(characters.toArray(new VectorFontCharacter[characters.size()]), fontDefaultXAdvancing, fontFamily, fontMaxAscent, fontMaxDescent, font_units_per_em, fontSize,
 				fillColor,
-				strokeColor,
+//				strokeColor,
 				antiAliased
 		);
 		

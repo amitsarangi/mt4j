@@ -108,7 +108,7 @@ public class FontManager {
 	 * @return the default font
 	 */
 	public IFont getDefaultFont(PApplet app){
-		return createFont(app, DEFAULT_FONT, DEFAULT_FONT_SIZE, new MTColor(DEFAULT_FONT_FILL_COLOR), new MTColor(DEFAULT_FONT_STROKE_COLOR), DEFAULT_FONT_ANTIALIASING);
+		return createFont(app, DEFAULT_FONT, DEFAULT_FONT_SIZE, new MTColor(DEFAULT_FONT_STROKE_COLOR), DEFAULT_FONT_ANTIALIASING);
 	}
 	
 	
@@ -122,7 +122,7 @@ public class FontManager {
 	 * @return the i font
 	 */
 	public IFont createFont(PApplet pa, String fontFileName, int fontSize, boolean antiAliased){
-		return createFont(pa, fontFileName,fontSize, new MTColor(0,0,0,255), new MTColor(0,0,0,255), antiAliased);
+		return createFont(pa, fontFileName, fontSize, new MTColor(DEFAULT_FONT_FILL_COLOR), antiAliased);
 	}
 	
 	
@@ -138,13 +138,7 @@ public class FontManager {
 	 * @return the i font
 	 */
 	public IFont createFont(PApplet pa, String fontFileName, int fontSize){
-////		String fontAbsoultePath = System.getProperty("user.dir") + File.separator + "data" + /*File.separator + "fonts"  + */ File.separator + IVectorFontFileName;
-//		String fontAbsoultePath =  MT4jSettings.getInstance().getDefaultFontPath() + fontFileName;
-//		IFont font = this.getCachedFont(fontAbsoultePath, fontSize, new MTColor(0,0,0,255), new MTColor(0,0,0,255), true);
-//		if (font != null){
-//			return font;
-//		}
-		return createFont(pa, fontFileName,fontSize, new MTColor(0,0,0,255), new MTColor(0,0,0,255));
+		return createFont(pa, fontFileName, fontSize, new MTColor(DEFAULT_FONT_FILL_COLOR));
 	}
 	
 	/**
@@ -158,11 +152,33 @@ public class FontManager {
 	 * @param strokeColor the stroke color
 	 * 
 	 * @return the i font
+	 * @deprecated from now on, only a single font color is supported for conformity across factories
 	 */
 	public IFont createFont(PApplet pa, String fontFileName, int fontSize, MTColor fillColor, MTColor strokeColor) {
 		return this.createFont(pa, fontFileName, fontSize, fillColor, strokeColor, true);
 	}
+	
+	public IFont createFont(PApplet pa, String fontFileName, int fontSize, MTColor color) {
+		return this.createFont(pa, fontFileName, fontSize, color, true);
+	}
+	
 
+	/**
+	 * Creates the font.
+	 *
+	 * @param pa the pa
+	 * @param fontFileName the font file name
+	 * @param fontSize the font size
+	 * @param fillColor the fill color
+	 * @param strokeColor the stroke color
+	 * @param antiAliased the anti aliased
+	 * @return the i font
+	 * @deprecated from now on, only a single font color is supported for conformity across factories 
+	 */
+	public IFont createFont(PApplet pa, String fontFileName, int fontSize, MTColor fillColor, MTColor strokeColor, boolean antiAliased) {
+		return this.createFont(pa, fontFileName, fontSize, fillColor, antiAliased);
+	}
+	
 	/**
 	 * Loads and returns a vector font from a file.
 	 * <br>The file has to be located in the ./data/ directory of the program.
@@ -175,12 +191,13 @@ public class FontManager {
 	 * @param antiAliased the anti aliased
 	 * @return the i font
 	 */
-	public IFont createFont(PApplet pa, String fontFileName, int fontSize, MTColor fillColor, MTColor strokeColor, boolean antiAliased) {
+	public IFont createFont(PApplet pa, String fontFileName, int fontSize, MTColor fillColor, boolean antiAliased) {
 //		String fontAbsoultePath = System.getProperty("user.dir") + File.separator + "data" + File.separator + "fonts"+  File.separator + fontFileName;
 		String fontAbsoultePath =  MT4jSettings.getInstance().getDefaultFontPath() + fontFileName;
 		
 		//Return cached font if there
-		IFont font = this.getCachedFont(fontAbsoultePath, fontSize,	fillColor, strokeColor, antiAliased);
+//		IFont font = this.getCachedFont(fontAbsoultePath, fontSize,	fillColor, strokeColor, antiAliased);
+		IFont font = this.getCachedFont(fontAbsoultePath, fontSize,	fillColor, antiAliased);
 		if (font != null){
 			return font;
 		}
@@ -188,15 +205,7 @@ public class FontManager {
 		IFont loadedFont = null;
 //		if (new File(fontAbsoultePath).exists()){
 		try {
-			int indexOfPoint = fontFileName.lastIndexOf(".");
-
-			String suffix;
-			if (indexOfPoint != -1){
-				suffix = fontFileName.substring(indexOfPoint, fontFileName.length());
-				suffix = suffix.toLowerCase();
-			}else{
-				suffix = "";
-			}
+			String suffix = getFontSuffix(fontFileName);
 
 			//Check which factory to use for this file type
 			IFontFactory factoryToUse = this.getFactoryForFileSuffix(suffix);
@@ -205,7 +214,8 @@ public class FontManager {
 			if (factoryToUse != null){
 				System.out.println("Loading new font \"" + fontFileName + "\" with factory: " + factoryToUse.getClass().getName());
 //				loadedFont = factoryToUse.createFont(pa, fontAbsoultePath, fontSize, fillColor, strokeColor);
-				loadedFont = factoryToUse.createFont(pa, fontAbsoultePath, fontSize, fillColor, strokeColor, antiAliased);
+//				loadedFont = factoryToUse.createFont(pa, fontAbsoultePath, fontSize, fillColor, strokeColor, antiAliased);
+				loadedFont = factoryToUse.createFont(pa, fontAbsoultePath, fontSize, fillColor, antiAliased);
 				fonts.add(loadedFont);
 				if (fonts.size() > CACHE_MAX_SIZE && !fonts.isEmpty()){
 					IFont removedFont = fonts.remove(0); //FIXME destroy font, too!
@@ -229,7 +239,17 @@ public class FontManager {
 		return (loadedFont);
 	}
 	
-	
+	private String getFontSuffix(String fontFileName){
+		int indexOfPoint = fontFileName.lastIndexOf(".");
+		String suffix;
+		if (indexOfPoint != -1){
+			suffix = fontFileName.substring(indexOfPoint, fontFileName.length());
+			suffix = suffix.toLowerCase();
+		}else{
+			suffix = "";
+		}
+		return suffix;
+	}
 	
 	/**
 	 * Register a new fontfactory for a file type.
@@ -288,21 +308,32 @@ public class FontManager {
 	 * 
 	 * @return the cached font
 	 */
-	public IFont getCachedFont(String fontAbsoultePath, int fontSize, MTColor fillColor, MTColor strokeColor, boolean antiAliased){
+//	public IFont getCachedFont(String fontAbsoultePath, int fontSize, MTColor fillColor, MTColor strokeColor, boolean antiAliased){
+	public IFont getCachedFont(String fontAbsoultePath, int fontSize, MTColor fillColor, boolean antiAliased){
 		for (IFont font : fonts){
-			if (fontsAreEqual(font, fontAbsoultePath, fontSize,	fillColor,	strokeColor, antiAliased)
-			){
-				System.out.println("Using cached font: " + fontAbsoultePath + " Fontsize: " + Math.round(fontSize) +
-						" FillColor: " + fillColor +
-						" StrokeColor: " + strokeColor);
-				return font;
+//			if (fontsAreEqual(font, fontAbsoultePath, fontSize,	fillColor, antiAliased)){
+//				System.out.println("Using cached font: " + fontAbsoultePath + " Fontsize: " + Math.round(fontSize) +
+//						" FillColor: " + fillColor 
+////						+" StrokeColor: " + strokeColor
+//						);
+//				return font; // also return a COPY here, because a font color change would change font color everywhere..?
+			//}else 
+			if (fontsAreSimilar(font, fontAbsoultePath, fontSize, fillColor, antiAliased)){
+				IFontFactory factoryToUse = this.getFactoryForFileSuffix(getFontSuffix(fontAbsoultePath));
+				if (factoryToUse != null){
+					IFont copy = factoryToUse.getCopy(font);
+					copy.setFillColor(new MTColor(fillColor));
+					return copy;
+				}
 			}
 		}
 		return null;
 	}
 	
 	
-	//TODO should take fontcolor into acount, too
+	//TODO dont if color is the same, return the same font
+	//TODO if everything is equal except the color make a copy of the font and set the other color
+	
 	/**
 	 * Fonts are equal.
 	 * 
@@ -314,23 +345,27 @@ public class FontManager {
 	 * 
 	 * @return true, if successful
 	 */
-	public static boolean fontsAreEqual(IFont font, String IVectorFontFileName, int fontSize, MTColor fillColor, MTColor strokeColor, boolean antiAliased){
-		return (	font.getFontFileName().equalsIgnoreCase(IVectorFontFileName)
-				&& 	font.getOriginalFontSize() == fontSize
+	public static boolean fontsAreEqual(IFont font, String IVectorFontFileName, int fontSize, MTColor fillColor /*, MTColor strokeColor */, boolean antiAliased){
+		return (	
+				font.getFontFileName().equalsIgnoreCase(IVectorFontFileName)
+				&& 	
+				font.getOriginalFontSize() == fontSize
 				&&
-//				font.getFillRed() 		== fillRed 
-//				&& font.getFillGreen() 	== fillGreen
-//				&& font.getFillBlue() 	== fillBlue
-//				&& font.getFillAlpha() 	== fillAlpha
 				font.getFillColor().equals(fillColor)
-								&&
-				font.getStrokeColor().equals(strokeColor)
+//								&&
+//				font.getStrokeColor().equals(strokeColor)
 								&&
 				(font.isAntiAliased() == antiAliased)
-//				font.getStrokeRed() 		== strokeRed 
-//				&& font.getStrokeGreen() 	== strokeGreen
-//				&& font.getStrokeBlue()		== strokeBlue
-//				&& font.getStrokeAlpha() 	== strokeAlpha
+		);
+	}
+	
+	public static boolean fontsAreSimilar(IFont font, String IVectorFontFileName, int fontSize, MTColor fillColor, boolean antiAliased){
+		return (	
+				font.getFontFileName().equalsIgnoreCase(IVectorFontFileName)
+				&& 	
+				font.getOriginalFontSize() == fontSize
+				&&
+				(font.isAntiAliased() == antiAliased)
 		);
 	}
 	
@@ -352,18 +387,9 @@ public class FontManager {
 								&&
 				font1.getFontFamily().equalsIgnoreCase(font2.getFontFamily())
 								&&
-//				font1.getFillRed() 		== font2.getFillRed() 
-//				&& font1.getFillGreen() == font2.getFillGreen()
-//				&& font1.getFillBlue() 	== font2.getFillBlue()
-//				&& font1.getFillAlpha() == font2.getFillAlpha()
 				font1.getFillColor().equals(font2.getFillColor())
-								&&
-				font1.getStrokeColor().equals(font2.getStrokeColor())
-//				font1.getStrokeRed() 		== font2.getStrokeRed() 
-//				&& font1.getStrokeGreen() 	== font2.getStrokeGreen()
-//				&& font1.getStrokeBlue()	== font2.getStrokeBlue()
-//				&& font1.getStrokeAlpha() 	== font2.getStrokeAlpha()
-				
+//								&&
+//				font1.getStrokeColor().equals(font2.getStrokeColor())
 		);
 	}
 

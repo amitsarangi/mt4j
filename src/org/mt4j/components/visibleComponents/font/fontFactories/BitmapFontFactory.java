@@ -34,6 +34,26 @@ public class BitmapFontFactory implements IFontFactory {
 	/** The proxy. */
 	private static BitmapFontFactoryProxy proxy; //Using proxy in other package because we need package visibility in org.processing.core ...
 	
+	
+	public IFont getCopy(IFont font) {
+		if (proxy == null){
+			proxy = new BitmapFontFactoryProxy();
+		}
+		return proxy.getCopy(font);
+	}
+	
+	
+	public IFont createFont(PApplet pa, String fontName, int fontSize, MTColor color) {
+		return this.createFont(pa, fontName, fontSize, color, true);
+	}
+
+	public IFont createFont(PApplet pa, String fontName, int fontSize, MTColor color, boolean antiAliased) {
+		if (proxy == null){
+			proxy = new BitmapFontFactoryProxy();
+		}
+		return proxy.createFont(pa, fontName, fontSize, color, antiAliased);
+	}
+	
 	/* (non-Javadoc)
 	 * @see org.mt4j.components.visibleComponents.font.fontFactories.IFontFactory#createFont(processing.core.PApplet, java.lang.String, int, org.mt4j.util.MTColor, org.mt4j.util.MTColor)
 	 */
@@ -61,20 +81,26 @@ public class BitmapFontFactory implements IFontFactory {
 	 * @return the characters
 	 */
 	public List<BitmapFontCharacter> getCharacters(PApplet pa, String chars,
-			MTColor fillColor, MTColor strokeColor, String fontFileName,
+			MTColor fillColor, 
+//			MTColor strokeColor, 
+			String fontFileName,
 			int fontSize) {
-		return this.getCharacters(pa, chars, fillColor, strokeColor, fontFileName, fontSize, true);
+		return this.getCharacters(pa, chars, fillColor, /*strokeColor,*/ fontFileName, fontSize, true);
 	}
 	
 	public List<BitmapFontCharacter> getCharacters(PApplet pa, String chars,
-			MTColor fillColor, MTColor strokeColor, String fontFileName,
+			MTColor fillColor, 
+//			MTColor strokeColor, 
+			String fontFileName,
 			int fontSize, boolean antiAliased
 	) {
 		if (proxy == null){
 			proxy = new BitmapFontFactoryProxy();
 		}
-		return proxy.getCharacters(pa, chars, fillColor, strokeColor, fontFileName, fontSize, antiAliased);
+		return proxy.getCharacters(pa, chars, fillColor, /*strokeColor,*/ fontFileName, fontSize, antiAliased);
 	}
+
+	
 	
 	
 

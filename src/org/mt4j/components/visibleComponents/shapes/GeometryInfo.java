@@ -876,6 +876,9 @@ public class GeometryInfo {
 		
 		boolean noFillb4 = shape.isNoFill();
 		boolean noStrokeb4 = shape.isNoStroke();
+		boolean displayListUsageb4 = shape.isUseDisplayList();
+		//TODO also vbo?
+		shape.setUseDisplayList(false);
 		
 		if (genFillList){
 			//Start recording display list
@@ -905,6 +908,8 @@ public class GeometryInfo {
 
 		//Set the new display list IDs
 		setDisplayListIDs(displayListIDs);
+		
+		shape.setUseDisplayList(displayListUsageb4);
 //		 */
 		return true;
 	}

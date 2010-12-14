@@ -72,7 +72,7 @@ public class MTColor {
 	private float alpha;
 	
 	
-public static final MTColor RED = new MTColor(255,0,0,255);
+	public static final MTColor RED = new MTColor(255,0,0,255);
 	
 	public static final MTColor GREEN = new MTColor(0,128,0,255);
 	
@@ -197,6 +197,8 @@ public static final MTColor RED = new MTColor(255,0,0,255);
 		this.setColor((float)r, (float)g, (float)b, 255f);
 		this.name = name;
 	}
+	
+	//TODO write protected
 
 	
 	/**

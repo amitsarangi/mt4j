@@ -33,6 +33,7 @@ import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.log4j.SimpleLayout;
+import org.mt4j.components.visibleComponents.font.IFont;
 import org.mt4j.components.visibleComponents.font.VectorFont;
 import org.mt4j.components.visibleComponents.font.VectorFontCharacter;
 import org.mt4j.util.MT4jSettings;
@@ -60,35 +61,43 @@ public class TTFontFactory implements IFontFactory{
 		logger.addAppender(ca);
 	}
 	
-	
-	public static String defaultCharacters = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZÃ„Ã–ÃœabcdefghijklmnopqrstuvwxyzÃ¤Ã¶Ã¼<>|,;.:-_#'+*!\"Â§$%&/()=?Â´{[]}\\@";
+	public static String defaultCharacters = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZÁÀÉÈÍÌÓÒabcdefghijklmnopqrstuvwxyzáàéèíìóò<>|,;.:-_#'+*!\"§$%&/()=?´{[]}\\@";
 	
 //	//Register the factory
 //	static{
-//		//FIXME not working!!? never gets called
+//		// not working!!? never gets called
 //		FontManager.getInstance().registerFontFactory(".ttf", new TTFontFactory());
 //	}
 	
 	private PApplet pa;
-	
 	private Font f;
 	private float scaleFactor;
 	private short unitsPerEm;
 	private int fontDefaultXAdvancing; 
 	private int fontSize; 
 	private String fontPath;
-
 	private boolean antiAliasing;
 	
 
-	public TTFontFactory(){
-//		this.fontPath = fontPath;
-//		this.f = Font.create(fontPath);
-//		this.setSize(50);
-//		this.fontDefaultXAdvancing 	= 500; 
-//		this.fontSize 				= 50; 
-//		this.unitsPerEm = f.getHeadTable().getUnitsPerEm();
+	public TTFontFactory(){	}
+	
+	public IFont getCopy(IFont font) {
+		if (font instanceof VectorFont) {
+			VectorFont vf = (VectorFont) font;
+			VectorFont copy = new VectorFont( (VectorFontCharacter[]) vf.getCharacters(), vf.getDefaultHorizontalAdvX(), vf.getFontFamily(), vf.getFontMaxAscent(), vf.getFontMaxDescent(), vf.getUnitsPerEM(), vf.getOriginalFontSize(), vf.getFillColor(), /*vf.getStrokeColor(),*/ vf.isAntiAliased());
+			return copy;
+		}
+		return null;
 	}
+	
+	public IFont createFont(PApplet pa, String fontName, int fontSize, MTColor color) {
+		return this.createFont(pa, fontName, fontSize, color, color, true);
+	}
+
+	public IFont createFont(PApplet pa, String fontName, int fontSize, MTColor color, boolean antiAliased) {
+		return this.createFont(pa, fontName, fontSize, color, color, antiAliased);
+	}
+	
 
 	public VectorFont createFont(PApplet pa, String fontFileName){
 		return this.createFont(pa, fontFileName, 50, new MTColor(0,0,0,255), new MTColor(0,0,0,255));
@@ -104,9 +113,6 @@ public class TTFontFactory implements IFontFactory{
 		return this.createFont(pa, fontFileName, fontSize, fillColor, strokeColor, true);
 	}
 	
-	/* (non-Javadoc)
-	 * @see mTouch.components.visibleComponents.font.IFontFactory#loadFont(processing.core.PApplet, java.lang.String, int, float, float, float, float, float, float, float, float)
-	 */
 	public VectorFont createFont(
 			PApplet pa, 
 			String fontFileName, 
@@ -115,43 +121,11 @@ public class TTFontFactory implements IFontFactory{
 			MTColor strokeColor,
 			boolean antiAliasing
 	){
-		
-//		//INITIAL SETTINGS
-//		this.pa 					= pa;
-//		this.fontPath 				= svgFontFileName;
-//		this.f 						= Font.create(fontPath);
-//		this.setSize(fontSize);
-//		this.fontDefaultXAdvancing 	= 500; //TODO can we get this from somewhere?
-//		this.fontSize 				= fontSize; 
-//		this.unitsPerEm 			= f.getHeadTable().getUnitsPerEm();
-//		///
-//		
-//		//Get the desired fontsize scaling factor 
-//		short unitsPerEm = f.getHeadTable().getUnitsPerEm();
-//		int resolution = Toolkit.getDefaultToolkit().getScreenResolution();
-//		//logger.info("Screen resolution: " + resolution);
-//		
-//		//This calculates the font in "pt" point size (used in windows)
-//		this.scaleFactor = ((float)fontSize * (float)resolution) / (72F * (float)unitsPerEm); //original
-//		
-//		//FIXME TEST
-//		float test = UnitTranslator.pointsToPixels(scaleFactor*fontSize, Math.round(resolution));
-////		test = Math.round((float)fontSize/(float)unitsPerEm);
-//		//This calculates the font size in..pixels? at least same as in svg
-//		test = (float)(1.0/(float)this.unitsPerEm) * fontSize;
-//		this.scaleFactor = test;
-//		
-//		//System.out.println("->Scalefactor: " + this.scaleFactor);
-//		
-//		//CREATE FONT CHARACTERS
-//		VectorFontCharacter[] chars = this.getTTFCharacters(f, "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZï¿½ï¿½ï¿½abcdefghijklmnopqrstuvwxyzï¿½ï¿½ï¿½<>|,;.:-_#'+*!\"ï¿½$%&/()=?ï¿½~ï¿½ï¿½{[]}\\^ï¿½@ï¿½"
-//														,fillColor, strokeColor, scaleFactor);
-		
 		VectorFontCharacter[] chars = this.getTTFCharacters(
 				pa, 
 				defaultCharacters, 
 				fillColor, 
-				strokeColor, 
+//				strokeColor, 
 				fontFileName, 
 				fontSize,
 				antiAliasing);
@@ -237,87 +211,13 @@ public class TTFontFactory implements IFontFactory{
 		//Create Font
 		VectorFont vectorFont = new VectorFont(newArray, fontDefaultXAdvancing, this.getFamily(f), fontMaxAscent, fontMaxDescent, this.unitsPerEm, fontSize,
 				fillColor,
-				strokeColor,
+//				strokeColor,
 				antiAliasing);
 		vectorFont.setFontFileName(fontPath);
 		vectorFont.setFontId("-1");
 		return vectorFont;
 	}
 
-	
-	
-	
-	/*
-	public SvgFont getFont(){
-		SvgFontCharacter[] chars = this.getTTFCharacters("123456789ABCDEFGHIJKLMNOPQRSTUVWXYZï¿½ï¿½ï¿½abcdefghijklmnopqrstuvwxyzï¿½ï¿½ï¿½<>|,;.:-_#'+*!\"ï¿½$%&/()=?ï¿½ï¿½~#ï¿½ï¿½456{[]}\\^ï¿½@ï¿½");
-
-		SvgFontCharacter[] newArray = new SvgFontCharacter[chars.length+3];
-		System.arraycopy(chars, 0, newArray, 0, chars.length);
-		
-		//Manually add a NEWLINE character to the font
-		SvgFontCharacter newLine = new SvgFontCharacter(new Vertex[]{new Vertex(0,0,0), new Vertex(200,0,0),new Vertex(200,100,0),new Vertex(0,100,0)}, new ArrayList<Vertex[]>(), pa);
-		newLine.setPickable(false);						    		
-		newLine.setVisible(false);
-		newLine.setHorizontalDist(0);
-		newLine.setUnicode("\n");
-		newLine.setName("newline");
-		newArray[newArray.length-3] = newLine;
-		
-		//Manually add a SPACE character to the font
-		int charIndex 			= this.getCmapFormat(f).mapCharCode(32);
-		int default_advance_x 	= f.getHmtxTable().getAdvanceWidth(charIndex);
-		Glyph glyph  			= f.getGlyph(charIndex);
-		
-		int xadvance = 0;
-		if (glyph != null){
-			xadvance = Math.round((default_advance_x * (float)(1.0/(float)this.unitsPerEm)) * fontSize);
-		}else{
-			xadvance = Math.round((fontDefaultXAdvancing * (float)(1.0/(float)this.unitsPerEm)) * fontSize);
-		}
-		SvgFontCharacter space = new SvgFontCharacter(new Vertex[]{new Vertex(0,0,0), new Vertex(xadvance,0,0),new Vertex(xadvance,100,0),new Vertex(0,100,0)}, new ArrayList<Vertex[]>(), pa);
-		space.setPickable(false);						    		
-		space.setVisible(false);
-		space.setHorizontalDist(xadvance);
-		space.setUnicode(" ");
-		space.setName("space");
-		newArray[newArray.length-2] = space;
-		logger.info("Advance of character space " + charIndex + " :" + default_advance_x);
-
-		//Manually add a TAB character to the font
-		int defaultTabWidth = fontDefaultXAdvancing*4;
-		SvgFontCharacter tab = new SvgFontCharacter(new Vertex[]{new Vertex(0,0,0), new Vertex(defaultTabWidth,0,0),new Vertex(defaultTabWidth,100,0),new Vertex(0,100,0)}, new ArrayList<Vertex[]>(), pa);
-		tab.setPickable(false);
-		try {
-			int tabWidth = 4*space.getHorizontalDist();
-			tab.setHorizontalDist(tabWidth);
-			tab.setVerticesLocal(new Vertex[]{new Vertex(0,0,0), new Vertex(tabWidth,0,0),new Vertex(tabWidth,100,0),new Vertex(0,100,0)} );
-			tab.setUseBoundingPickRect();
-		} catch (Exception e) {
-			tab.setHorizontalDist(defaultTabWidth);
-		}
-		tab.setUnicode("tab");
-		tab.setName("tab");
-		tab.setVisible(false);
-		newArray[newArray.length-1] = tab;
-		////////
-
-		int fontMaxAscent 	= f.getAscent();
-		int fontMaxDescent	= f.getDescent();
-		
-		//Set font max descent and ascent according to font size
-		float tmp = fontMaxAscent * (float)(1.0/(float)this.unitsPerEm);
-		fontMaxAscent = Math.round(tmp * fontSize);
-		float tmp2 = fontMaxDescent * (float)(1.0/(float)this.unitsPerEm);
-		fontMaxDescent = Math.round(tmp2 * fontSize);
-
-		//Create Font
-		SvgFont svgFont = new SvgFont(newArray, fontDefaultXAdvancing, this.getFamily(), fontMaxAscent, fontMaxDescent,this.unitsPerEm,  fontSize);
-		svgFont.setFontFileName(fontPath);
-		svgFont.setFontId("-1");
-		
-		return svgFont;
-	}
-	 */
 	
 	
 	/**
@@ -335,11 +235,11 @@ public class TTFontFactory implements IFontFactory{
 			PApplet pa, 
 			String text,
 			MTColor fillColor, 
-			MTColor strokeColor,
+//			MTColor strokeColor,
 			String fontFileName, 
 			int fontSize
 	)  {
-		return this.getTTFCharacters(pa, text, fillColor, strokeColor, fontFileName, fontSize, true);
+		return this.getTTFCharacters(pa, text, fillColor, /*strokeColor,*/ fontFileName, fontSize, true);
 	}
 
 	
@@ -361,7 +261,7 @@ public class TTFontFactory implements IFontFactory{
 			PApplet pa, 
 			String text,
 			MTColor fillColor, 
-			MTColor strokeColor,
+//			MTColor strokeColor,
 			String fontFileName, 
 			int fontSize,
 			boolean antiAliasing
@@ -437,7 +337,7 @@ public class TTFontFactory implements IFontFactory{
 		//logger.info("->Scalefactor: " + this.scaleFactor);
 		
 		//CREATE FONT CHARACTERS
-		VectorFontCharacter[] chars = this.createTTFCharacters(f, text, fillColor, strokeColor, scaleFactor);
+		VectorFontCharacter[] chars = this.createTTFCharacters(f, text, fillColor, /*strokeColor,*/ scaleFactor);
 		return chars;
 	}
 
@@ -457,7 +357,7 @@ public class TTFontFactory implements IFontFactory{
 	 */
 	private VectorFontCharacter[] createTTFCharacters(Font f, String text,
 			MTColor fillColor, 
-			MTColor strokeColor,
+//			MTColor strokeColor,
 			float scaleFactor
 			)throws RuntimeException{
 		
@@ -507,7 +407,7 @@ public class TTFontFactory implements IFontFactory{
 			if (glyph != null) {
 //				glyph.scale(Math.round(scaleFactor)); //Scaling has changed to int!?
 				// Add the Glyph to the Shape with an horizontal offset of x
-				VectorFontCharacter fontChar = getGlyphAsShape(f, glyph, glyphIndex, x, fillColor, strokeColor);
+				VectorFontCharacter fontChar = getGlyphAsShape(f, glyph, glyphIndex, x, fillColor/*, strokeColor*/);
 
 				if (fontChar != null){
 					//Sets characters horizontal advancement and unicode value
@@ -549,8 +449,8 @@ public class TTFontFactory implements IFontFactory{
 			Glyph glyph, 
 			int glyphIndex,
 			float xadv,
-			MTColor fillColor, 
-			MTColor strokeColor
+			MTColor fillColor
+//			,MTColor strokeColor
 	) {
 		int firstIndex = 0;
 		int count = 0;
@@ -577,7 +477,6 @@ public class TTFontFactory implements IFontFactory{
 			for(Vertex[] contour: allContours){
 				Vertex.xRotateVectorArray(contour, new Vector3D((float)(xadv/2.0),0,0), 180);
 //				Vertex.scaleVectorArray(contour, new Vector3D(0,0,0), (float)(1.0/(float)this.unitsPerEm));
-//				Vertex.scaleVectorArray(contour, new Vector3D(0,0,0), fontSize);
 				Vertex.scaleVectorArray(contour, new Vector3D(0,0,0), this.scaleFactor);
 			}
 			
@@ -593,7 +492,7 @@ public class TTFontFactory implements IFontFactory{
 			if (!this.antiAliasing){
 				character.setNoStroke(true);	
 			}else{
-				if (MT4jSettings.getInstance().isMultiSampling() && fillColor.equals(strokeColor)){
+				if (MT4jSettings.getInstance().isMultiSampling() /*&& fillColor.equals(strokeColor)*/){
 					character.setNoStroke(true);
 				}else{
 					character.setNoStroke(false);	
@@ -618,7 +517,8 @@ public class TTFontFactory implements IFontFactory{
 		  character.scale(fontSize , new Vector3D(0,0,0));
 			 */
 
-			character.setStrokeColor(new MTColor(strokeColor));
+//			character.setStrokeColor(new MTColor(strokeColor));
+			character.setStrokeColor(new MTColor(fillColor));
 			character.setFillColor(new MTColor(fillColor));
 			
 			if (MT4jSettings.getInstance().isOpenGlMode())
@@ -748,7 +648,7 @@ public class TTFontFactory implements IFontFactory{
 		
 		Glyph glyph  = f.getGlyph(charIndex);
 		if (glyph != null){
-			VectorFontCharacter character = this.getGlyphAsShape(f, glyph, charIndex, 0, new MTColor(0,0,0,255), new MTColor(0,0,0,255));
+			VectorFontCharacter character = this.getGlyphAsShape(f, glyph, charIndex, 0, new MTColor(0,0,0,255)/*, new MTColor(0,0,0,255)*/);
 			if (character != null){
 				character.setHorizontalDist(default_advance_x);
 				return character;
@@ -849,6 +749,8 @@ public class TTFontFactory implements IFontFactory{
 	private String getFamily(Font f){
 		return f.getNameTable().getRecord(Table.nameFontFamilyName);
 	}
+
+	
 
 
 }

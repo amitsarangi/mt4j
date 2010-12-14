@@ -22,8 +22,9 @@ import java.util.Stack;
 import javax.media.opengl.GL;
 
 import org.mt4j.components.visibleComponents.AbstractVisibleComponent;
+import org.mt4j.util.math.Tools3D;
 
-import processing.opengl.PGraphicsOpenGL;
+import processing.core.PGraphics;
 
 /**
  * Abstracts the OpenGL stencil buffer for
@@ -153,8 +154,8 @@ public class GLStencilUtil {
 	 * 
 	 * @param gl the gl
 	 */
-	public void endClipping(GL gl){
-		this.endClipping(gl, null);
+	public void endClipping(PGraphics g, GL gl){
+		this.endClipping(g, gl, null);
 	}
 	
 	public boolean isClipActive(){
@@ -168,7 +169,7 @@ public class GLStencilUtil {
 	 * @param gl the gl
 	 * @param clipShape the clip shape
 	 */
-	public void endClipping(GL gl, AbstractVisibleComponent clipShape){ //stop clipping
+	public void endClipping(PGraphics g, GL gl, AbstractVisibleComponent clipShape){ //stop clipping
 		//Remove the top/last used stencil mask value from the stack
 		int currentStencilValue = stencilValueStack.pop();
 		
@@ -214,7 +215,7 @@ public class GLStencilUtil {
 //				gl.glStencilFunc (GL.GL_EQUAL, currentStencilValue, currentStencilValue);
 //				gl.glStencilOp(GL.GL_KEEP, GL.GL_KEEP, GL.GL_DECR);
 				
-				((PGraphicsOpenGL)clipShape.getRenderer().g).beginGL();
+				Tools3D.beginGL(g);
 				gl.glMatrixMode(GL.GL_PROJECTION);
 				gl.glPushMatrix();
 				gl.glLoadIdentity();
@@ -236,7 +237,7 @@ public class GLStencilUtil {
 				gl.glPopMatrix();
 
 				gl.glMatrixMode(GL.GL_MODELVIEW);
-				((PGraphicsOpenGL)clipShape.getRenderer().g).endGL();
+				Tools3D.endGL(g);
 //				*/
 				
 			}

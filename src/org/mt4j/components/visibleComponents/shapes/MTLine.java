@@ -170,7 +170,7 @@ public class MTLine extends MTCSSStylableShape{
 					this.getLineStipple()), -1});
 			 */
 
-//			/*
+			/*
 			this.getGeometryInfo().deleteDisplayLists();
 			int[] displayListIDs = new int[]{-1,-1};
 
@@ -186,11 +186,13 @@ public class MTLine extends MTCSSStylableShape{
 			this.drawPureGl(gl);
 			//End recording
 			gl.glEndList();
-
 			displayListIDs[0] = listIDOutline;
-
 			this.getGeometryInfo().setDisplayListIDs(displayListIDs);
-//			*/
+			*/
+			
+			if (MT4jSettings.getInstance().isOpenGlMode() && this.isUseDirectGL()){
+				this.getGeometryInfo().generateDisplayLists(this, false, true);
+			}
 		}
 	}
 
@@ -209,8 +211,8 @@ public class MTLine extends MTCSSStylableShape{
 				//Draw with PURE opengl
 				if (this.isUseDisplayList()){
 					//Use Display Lists
-					if (!this.isNoStroke() && this.getGeometryInfo().getDisplayListIDs()[0] != -1)
-						gl.glCallList(this.getGeometryInfo().getDisplayListIDs()[0]); //Draw line
+					if (!this.isNoStroke() && this.getGeometryInfo().getDisplayListIDs()[1] != -1)
+						gl.glCallList(this.getGeometryInfo().getDisplayListIDs()[1]); //Draw line
 				}else{
 					//Use Vertex Arrays or VBOs
 					this.drawPureGl(gl);

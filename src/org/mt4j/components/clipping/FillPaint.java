@@ -81,7 +81,7 @@ public class FillPaint {
 	public void post(PGraphics g) {
 		GLStencilUtil.getInstance().beginDrawClipped(gl);
 		drawFillPaint(g);
-		GLStencilUtil.getInstance().endClipping(gl, clipShape);
+		GLStencilUtil.getInstance().endClipping(g, gl, clipShape);
 	}
 	
 	/**

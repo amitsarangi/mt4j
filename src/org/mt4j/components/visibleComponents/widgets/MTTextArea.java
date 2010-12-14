@@ -549,6 +549,11 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
 			g.pushMatrix(); //FIXME TEST text scrolling - but IMHO better done with parent list/scroll container
 			g.translate(totalScrollTextX, totalScrollTextY + font.getFontMaxAscent(), 0);
 			
+			MTColor fillColor = this.getFont().getFillColor();
+			g.fill(fillColor.getR(), fillColor.getG(), fillColor.getB(), fillColor.getAlpha());
+			g.stroke(fillColor.getR(), fillColor.getG(), fillColor.getB(), fillColor.getAlpha());
+			g.tint(fillColor.getR(), fillColor.getG(), fillColor.getB(), fillColor.getAlpha()); 
+			
 			for (int i = 0; i < charListSize; i++) {
 				IFontCharacter character = characterList.get(i);
 				//Step to the right by the amount of the last characters x advancement
@@ -579,6 +584,9 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
 					}
 				}
 			}
+			
+			g.tint(255,255,255,255); //Reset Tint
+			
 			g.popMatrix();//FIXME TEST text scrolling - but IMHO better done with parent list/scroll container
 		}
 		
@@ -607,9 +615,18 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
 	}
 	
 	
+	public void setFontColor(MTColor fontColor){
+		this.getFont().setFillColor(fontColor);
+	}
+	
 	private void drawCharactersGL(GL gl, List<IFontCharacter> characterList, int charListSize, int lastXAdv, int lineTotalAdv){
 		int lastXAdvancement = lastXAdv;
 		int thisLineTotalXAdvancement = lineTotalAdv;
+		
+		MTColor fillColor = this.getFont().getFillColor();
+		gl.glColor4f(fillColor.getR()/255f, fillColor.getG()/255f, fillColor.getB()/255f, fillColor.getAlpha()/255f); //FIXME TEST
+//		gl.glColor4f(0.5f, 0.8f, 0.5f, 1.0f); //FIXME TEST
+		
 		for (int i = 0; i < charListSize; i++) {
 			IFontCharacter character = characterList.get(i);
 			//Step to the right by the amount of the last characters x advancement

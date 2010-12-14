@@ -32,38 +32,81 @@ public interface IFontFactory {
 	 * Creates a new IFont object.
 	 * 
 	 * @param pa the pa
-	 * @param svgFontFileName the svg font file name
+	 * @param fontName the svg font file name
 	 * @param fontSize the font size
 	 * @param fillColor the fill color
 	 * @param strokeColor the stroke color
 	 * 
 	 * @return the iFont
+	 * 
+	 * @deprecated font system only allows a single font color now
 	 */
 	public IFont createFont(
 			PApplet pa, 
-			String svgFontFileName, 
+			String fontName, 
 			int fontSize, 
 			MTColor fillColor, 
 			MTColor strokeColor);
+	
 	
 	
 	/**
 	 * Creates a new IFont object.
 	 *
 	 * @param pa the pa
-	 * @param svgFontFileName the svg font file name
+	 * @param fontName the svg font file name
 	 * @param fontSize the font size
 	 * @param fillColor the fill color
 	 * @param strokeColor the stroke color
 	 * @param antiAliased the anti aliased
 	 * @return the iFont
+	 * 
+	 * @deprecated font system only allows a single font color now
 	 */
 	public IFont createFont(
 			PApplet pa, 
-			String svgFontFileName, 
+			String fontName, 
 			int fontSize, 
 			MTColor fillColor, 
 			MTColor strokeColor,
 			boolean antiAliased
 			);
+	
+	
+	
+	/**
+	 * Creates a new IFont object.
+	 *
+	 * @param pa the pa
+	 * @param fontName the font name
+	 * @param fontSize the font size
+	 * @param color the color
+	 * @return the i font
+	 */
+	public IFont createFont(
+			PApplet pa, 
+			String fontName, 
+			int fontSize, 
+			MTColor color);
+	
+	/**
+	 * Creates a new IFont object.
+	 *
+	 * @param pa the pa
+	 * @param fontName the font name
+	 * @param fontSize the font size
+	 * @param color the color
+	 * @param antiAliased the anti aliased
+	 * @return the i font
+	 */
+	public IFont createFont(
+			PApplet pa, 
+			String fontName, 
+			int fontSize, 
+			MTColor color,
+			boolean antiAliased);
+
+
+
+	public IFont getCopy(IFont font);
 }

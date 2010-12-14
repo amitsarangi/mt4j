@@ -81,8 +81,8 @@ public class BitmapFont implements IFont {
 	/** The fill color. */
 	private MTColor fillColor;
 	
-	/** The stroke color. */
-	private MTColor strokeColor;
+//	/** The stroke color. */
+//	private MTColor strokeColor;
 	
 	private List<String> notAvailableChars;
 
@@ -105,7 +105,7 @@ public class BitmapFont implements IFont {
 	 */
 	public BitmapFont(BitmapFontCharacter[] characters, int defaultHorizontalAdvX, String fontFamily, int fontMaxAscent, int fontMaxDescent, int unitsPerEm, int originalFontSize,
 			MTColor fillColor,
-			MTColor strokeColor,
+//			MTColor strokeColor,
 			boolean antiAliased
 	) {
 		this.characters = characters;
@@ -113,7 +113,7 @@ public class BitmapFont implements IFont {
 		this.fontFamily = fontFamily;
 		this.originalFontSize = originalFontSize;
 		this.fillColor = fillColor;
-		this.strokeColor = strokeColor;
+//		this.strokeColor = strokeColor;
 		this.antiAliased = antiAliased;
 		
 //		this.fontId = "";
@@ -169,7 +169,7 @@ public class BitmapFont implements IFont {
 					if (this.getCharacters().length > 0 && this.getCharacters()[0] != null && this.getCharacters()[0] instanceof MTComponent){
 						MTComponent comp = (MTComponent)this.getCharacters()[0];
 						PApplet pa = comp.getRenderer();
-						List<BitmapFontCharacter> charactersList = bitmapFontFactory.getCharacters(pa, unicode, fillColor, strokeColor, this.fontFileName, this.originalFontSize, this.antiAliased);
+						List<BitmapFontCharacter> charactersList = bitmapFontFactory.getCharacters(pa, unicode, fillColor, /*strokeColor,*/ this.fontFileName, this.originalFontSize, this.antiAliased);
 						BitmapFontCharacter[] characters = charactersList.toArray(new BitmapFontCharacter[charactersList.size()]); 
 						if (characters.length >= 1 && characters[0] != null){
 							BitmapFontCharacter loadedCharacter = characters[0];
@@ -309,15 +309,17 @@ public class BitmapFont implements IFont {
 		return fillColor;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.mt4j.components.visibleComponents.font.IFont#getStrokeColor()
-	 */
-	//@Override
-	public MTColor getStrokeColor() {
-		return strokeColor;
-	}
+//	/* (non-Javadoc)
+//	 * @see org.mt4j.components.visibleComponents.font.IFont#getStrokeColor()
+//	 */
+//	//@Override
+//	public MTColor getStrokeColor() {
+//		return strokeColor;
+//	}
 
-	
+	public void setFillColor(MTColor color){
+		this.fillColor = color;
+	}
 	
 
 	/* (non-Javadoc)

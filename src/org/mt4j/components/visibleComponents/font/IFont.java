@@ -115,12 +115,15 @@ public interface IFont {
 	 */
 	public MTColor getFillColor();
 	
-	/**
-	 * Gets the stroke color.
-	 * 
-	 * @return the stroke color
-	 */
-	public MTColor getStrokeColor();
+//	/**
+//	 * Gets the stroke color.
+//	 * 
+//	 * @return the stroke color
+//	 */
+//	public MTColor getStrokeColor();
+	
+	
+	public void setFillColor(MTColor color);
 	
 	
 	/**

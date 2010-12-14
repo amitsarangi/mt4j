@@ -17,11 +17,16 @@
  ***********************************************************************/
 package org.mt4j.components.visibleComponents.font;
 
+import java.nio.FloatBuffer;
+import java.nio.IntBuffer;
+
 import javax.media.opengl.GL;
 
 import org.mt4j.components.bounds.IBoundingShape;
 import org.mt4j.components.visibleComponents.shapes.MTRectangle;
 import org.mt4j.util.MT4jSettings;
+import org.mt4j.util.MTColor;
+import org.mt4j.util.math.Tools3D;
 import org.mt4j.util.math.Vertex;
 import org.mt4j.util.opengl.GLTexture;
 import org.mt4j.util.opengl.GLTexture.EXPANSION_FILTER;
@@ -29,6 +34,7 @@ import org.mt4j.util.opengl.GLTexture.SHRINKAGE_FILTER;
 import org.mt4j.util.opengl.GLTexture.WRAP_MODE;
 
 import processing.core.PApplet;
+import processing.core.PGraphics;
 import processing.core.PImage;
 
 /**
@@ -92,6 +98,26 @@ public class BitmapFontCharacter extends MTRectangle implements IFontCharacter {
 	}
 	
 	
+	
+	@Override
+	public void drawComponent(PGraphics g) {
+		PApplet renderer = this.getRenderer();
+		
+		//Draw the shape
+		if (MT4jSettings.getInstance().isOpenGlMode() && this.isUseDirectGL()){
+			super.drawComponent(g);
+		}else{ //Draw with pure proccessing commands...
+			g.strokeWeight(this.getStrokeWeight());
+			if (this.isNoStroke()) 	
+				g.noStroke();
+
+				drawWithProcessing(g);
+			if (/*MT4jSettings.getInstance().isOpenGlMode() &&*/ this.isDrawSmooth())
+				g.noSmooth(); //because of tesselation bug/lines visibile in shapes
+		}
+	}
+	
+	
 
 	/* (non-Javadoc)
 	 * @see org.mt4j.components.visibleComponents.font.IFontCharacter#drawComponent(javax.media.opengl.GL)
@@ -107,6 +133,82 @@ public class BitmapFontCharacter extends MTRectangle implements IFontCharacter {
 			}else{
 				this.drawPureGl(gl);
 			}
+		}
+//		*/
+	}
+	
+	protected void drawPureGl(GL gl){
+//		/*
+		//Get display array/buffer pointers
+		FloatBuffer tbuff 			= this.getGeometryInfo().getTexBuff();
+		FloatBuffer vertBuff 		= this.getGeometryInfo().getVertBuff();
+		
+		//Enable Pointers, set vertex array pointer
+		gl.glEnableClientState(GL.GL_VERTEX_ARRAY);
+		if (this.isUseVBOs()){//Vertices
+			gl.glBindBuffer(GL.GL_ARRAY_BUFFER, this.getGeometryInfo().getVBOVerticesName());
+			gl.glVertexPointer(3, GL.GL_FLOAT, 0, 0);
+		}else{
+			gl.glVertexPointer(3, GL.GL_FLOAT, 0, vertBuff);
+		}
+		
+		//Default texture target
+		int textureTarget = GL.GL_TEXTURE_2D;
+		
+		/////// DRAW SHAPE ///////
+		if (!this.isNoFill()){ 
+			boolean textureDrawn = false;
+			if (this.isTextureEnabled()
+				&& this.getTexture() != null 
+				&& this.getTexture() instanceof GLTexture) //Bad for performance?
+			{
+				GLTexture tex = (GLTexture)this.getTexture();
+				textureTarget = tex.getTextureTarget();
+				
+				//tells opengl which texture to reference in following calls from now on!
+				//the first parameter is eigher GL.GL_TEXTURE_2D or ..1D
+				gl.glEnable(textureTarget);
+				gl.glBindTexture(textureTarget, tex.getTextureID());
+				
+				gl.glEnableClientState(GL.GL_TEXTURE_COORD_ARRAY);
+				
+				if (this.isUseVBOs()){//Texture
+					gl.glBindBuffer(GL.GL_ARRAY_BUFFER, this.getGeometryInfo().getVBOTextureName());
+					gl.glTexCoordPointer(2, GL.GL_FLOAT, 0, 0);
+				}else
+					gl.glTexCoordPointer(2, GL.GL_FLOAT, 0, tbuff);
+				
+				textureDrawn = true;
+			}
+			
+			//Normals
+			if (this.getGeometryInfo().isContainsNormals()){
+				gl.glEnableClientState(GL.GL_NORMAL_ARRAY);
+				if (this.isUseVBOs()){
+					gl.glBindBuffer(GL.GL_ARRAY_BUFFER, this.getGeometryInfo().getVBONormalsName());
+					gl.glNormalPointer(GL.GL_FLOAT, 0, 0); 
+				}else{
+					gl.glNormalPointer(GL.GL_FLOAT, 0, this.getGeometryInfo().getNormalsBuff());
+				}
+			}
+			
+			gl.glDrawArrays(this.getFillDrawMode(), 0, vertBuff.capacity()/3);
+			
+			if (this.getGeometryInfo().isContainsNormals()){
+				gl.glDisableClientState(GL.GL_NORMAL_ARRAY);
+			}
+			
+			if (textureDrawn){
+				gl.glBindTexture(textureTarget, 0);//Unbind texture
+				gl.glDisableClientState(GL.GL_TEXTURE_COORD_ARRAY);
+				gl.glDisable(textureTarget); //weiter nach unten?
+			}
+		}
+		gl.glDisableClientState(GL.GL_VERTEX_ARRAY);
+		//TEST
+		if (this.isUseVBOs()){
+			gl.glBindBuffer(GL.GL_ARRAY_BUFFER, 0);
+			gl.glBindBuffer(GL.GL_ELEMENT_ARRAY_BUFFER, 0);
 		}
 //		*/
 	}

@@ -259,7 +259,7 @@ public class MTPolygon extends MTCSSStylableShape{
 	 * and texture.
 	 * @param g PGraphics
 	 */
-	private void drawWithProcessing(PGraphics g){
+	protected void drawWithProcessing(PGraphics g){
 		g.beginShape(PApplet.POLYGON); //TODO make setbeginshape() behavior settable
 		if (this.getTexture() != null && this.isTextureEnabled()){
 			g.texture(this.getTexture());

@@ -113,12 +113,14 @@ public class MTKeyboard extends MTRoundRectangle {
 		//TODO buttons textarea clear machen
 		//TODO keyboard durch button heranimated
 		
+		MTColor keyColor = new MTColor(0,0,0,255);
+		
 		// INIT FIELDS
 		//Load the Key font
 		keyFont = FontManager.getInstance().createFont(pa, 
 				"keys.svg", 30, 
-				new MTColor(0,0,0,255), 
-				new MTColor(0,0,0,255)); 
+				keyColor, 
+				keyColor); 
 //				new MTColor(250,250,250,255), 
 //				new MTColor(250,250,250,255));
 		
@@ -159,6 +161,7 @@ public class MTKeyboard extends MTRoundRectangle {
 			space.getGeometryInfo().setDisplayListIDs(SpaceF.getGeometryInfo().getDisplayListIDs()); //Wenn nicht displaylisten, m�ssen wir geometry auch �bernehmen!
 			space.setUseDisplayList(true);
 		}
+		space.setFillColor(keyColor);
 		space.setNoStroke(false);
 		space.setDrawSmooth(true);
 		space.setPickable(true);
@@ -191,6 +194,7 @@ public class MTKeyboard extends MTRoundRectangle {
 //			key.setGeometryInfo(fontChar.getGeometryInfo());
             key.setName(fontChar.getName());
             key.setPickable(true);
+            key.setFillColor(keyColor);
             key.unregisterAllInputProcessors();
 
             key.setOutlineContours(fontChar.getContours());

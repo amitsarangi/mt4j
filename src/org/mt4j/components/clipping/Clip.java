@@ -126,7 +126,7 @@ public class Clip {
 	 * @param g the g
 	 */
 	public void disableClip(PGraphics g){
-		GLStencilUtil.getInstance().endClipping(gl, clipShape);
+		GLStencilUtil.getInstance().endClipping(g, gl, clipShape);
 	}
 	
 	/**
