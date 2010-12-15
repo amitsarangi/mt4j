@@ -35,6 +35,9 @@ public class BitmapFontFactory implements IFontFactory {
 	private static BitmapFontFactoryProxy proxy; //Using proxy in other package because we need package visibility in org.processing.core ...
 	
 	
+	/* (non-Javadoc)
+	 * @see org.mt4j.components.visibleComponents.font.fontFactories.IFontFactory#getCopy(org.mt4j.components.visibleComponents.font.IFont)
+	 */
 	public IFont getCopy(IFont font) {
 		if (proxy == null){
 			proxy = new BitmapFontFactoryProxy();
@@ -43,10 +46,16 @@ public class BitmapFontFactory implements IFontFactory {
 	}
 	
 	
+	/* (non-Javadoc)
+	 * @see org.mt4j.components.visibleComponents.font.fontFactories.IFontFactory#createFont(processing.core.PApplet, java.lang.String, int, org.mt4j.util.MTColor)
+	 */
 	public IFont createFont(PApplet pa, String fontName, int fontSize, MTColor color) {
 		return this.createFont(pa, fontName, fontSize, color, true);
 	}
 
+	/* (non-Javadoc)
+	 * @see org.mt4j.components.visibleComponents.font.fontFactories.IFontFactory#createFont(processing.core.PApplet, java.lang.String, int, org.mt4j.util.MTColor, boolean)
+	 */
 	public IFont createFont(PApplet pa, String fontName, int fontSize, MTColor color, boolean antiAliased) {
 		if (proxy == null){
 			proxy = new BitmapFontFactoryProxy();
@@ -61,6 +70,9 @@ public class BitmapFontFactory implements IFontFactory {
 		return this.createFont(pa, fontFileName, fontSize, fillColor, strokeColor, true);
 	}
 	
+	/* (non-Javadoc)
+	 * @see org.mt4j.components.visibleComponents.font.fontFactories.IFontFactory#createFont(processing.core.PApplet, java.lang.String, int, org.mt4j.util.MTColor, org.mt4j.util.MTColor, boolean)
+	 */
 	public IFont createFont(PApplet pa, String fontFileName, int fontSize, MTColor fillColor, MTColor strokeColor, boolean antiAliased) {
 		if (proxy == null){
 			proxy = new BitmapFontFactoryProxy();
@@ -75,7 +87,6 @@ public class BitmapFontFactory implements IFontFactory {
 	 * @param pa the pa
 	 * @param chars the chars
 	 * @param fillColor the fill color
-	 * @param strokeColor the stroke color
 	 * @param fontFileName the font file name
 	 * @param fontSize the font size
 	 * @return the characters
@@ -88,6 +99,17 @@ public class BitmapFontFactory implements IFontFactory {
 		return this.getCharacters(pa, chars, fillColor, /*strokeColor,*/ fontFileName, fontSize, true);
 	}
 	
+	/**
+	 * Gets the characters.
+	 *
+	 * @param pa the pa
+	 * @param chars the chars
+	 * @param fillColor the fill color
+	 * @param fontFileName the font file name
+	 * @param fontSize the font size
+	 * @param antiAliased the anti aliased
+	 * @return the characters
+	 */
 	public List<BitmapFontCharacter> getCharacters(PApplet pa, String chars,
 			MTColor fillColor, 
 //			MTColor strokeColor, 

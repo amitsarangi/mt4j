@@ -370,6 +370,9 @@ public class VectorFont implements IFont {
 	}
 	
 	
+	/* (non-Javadoc)
+	 * @see org.mt4j.components.visibleComponents.font.IFont#setFillColor(org.mt4j.util.MTColor)
+	 */
 	public void setFillColor(MTColor color){
 		this.fillColor = color;
 	}

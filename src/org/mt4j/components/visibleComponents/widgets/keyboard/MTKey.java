@@ -35,7 +35,6 @@ import org.mt4j.util.math.Vertex;
 
 import processing.core.PApplet;
 import processing.core.PGraphics;
-import processing.opengl.PGraphicsOpenGL;
 
 /**
  * Key class used in the mt keyboard.

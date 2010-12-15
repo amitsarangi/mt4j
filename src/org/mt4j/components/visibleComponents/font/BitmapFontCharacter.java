@@ -18,15 +18,12 @@
 package org.mt4j.components.visibleComponents.font;
 
 import java.nio.FloatBuffer;
-import java.nio.IntBuffer;
 
 import javax.media.opengl.GL;
 
 import org.mt4j.components.bounds.IBoundingShape;
 import org.mt4j.components.visibleComponents.shapes.MTRectangle;
 import org.mt4j.util.MT4jSettings;
-import org.mt4j.util.MTColor;
-import org.mt4j.util.math.Tools3D;
 import org.mt4j.util.math.Vertex;
 import org.mt4j.util.opengl.GLTexture;
 import org.mt4j.util.opengl.GLTexture.EXPANSION_FILTER;
@@ -101,8 +98,6 @@ public class BitmapFontCharacter extends MTRectangle implements IFontCharacter {
 	
 	@Override
 	public void drawComponent(PGraphics g) {
-		PApplet renderer = this.getRenderer();
-		
 		//Draw the shape
 		if (MT4jSettings.getInstance().isOpenGlMode() && this.isUseDirectGL()){
 			super.drawComponent(g);
@@ -123,7 +118,7 @@ public class BitmapFontCharacter extends MTRectangle implements IFontCharacter {
 	 * @see org.mt4j.components.visibleComponents.font.IFontCharacter#drawComponent(javax.media.opengl.GL)
 	 */
 	//@Override
-	public void drawComponent(GL gl) { //FIXME
+	public void drawComponent(GL gl) { 
 //		this.drawPureGl(gl);
 //		/*
 		if (MT4jSettings.getInstance().isOpenGlMode()){

@@ -231,7 +231,6 @@ public class BitmapFont implements IFont {
 	/* (non-Javadoc)
 	 * @see org.mt4j.components.visibleComponents.font.IFont#getDefaultHorizontalAdvX()
 	 */
-	//@Override
 	public int getDefaultHorizontalAdvX() {
 		return this.defaultHorizontalAdvX;
 	}
@@ -239,7 +238,6 @@ public class BitmapFont implements IFont {
 	/* (non-Javadoc)
 	 * @see org.mt4j.components.visibleComponents.font.IFont#getFontAbsoluteHeight()
 	 */
-	//@Override
 	public int getFontAbsoluteHeight() {
 		return ((Math.abs(this.getFontMaxAscent())) + (Math.abs(this.getFontMaxDescent())));
 	}
@@ -247,7 +245,6 @@ public class BitmapFont implements IFont {
 	/* (non-Javadoc)
 	 * @see org.mt4j.components.visibleComponents.font.IFont#getFontFamily()
 	 */
-	//@Override
 	public String getFontFamily() {
 		return this.fontFamily;
 	}
@@ -264,7 +261,6 @@ public class BitmapFont implements IFont {
 	/* (non-Javadoc)
 	 * @see org.mt4j.components.visibleComponents.font.IFont#getFontFileName()
 	 */
-	//@Override
 	public String getFontFileName() {
 		return this.fontFileName;
 	}
@@ -272,7 +268,6 @@ public class BitmapFont implements IFont {
 	/* (non-Javadoc)
 	 * @see org.mt4j.components.visibleComponents.font.IFont#getFontMaxAscent()
 	 */
-	//@Override
 	public int getFontMaxAscent() {
 		return this.fontMaxAscent;
 	}
@@ -280,7 +275,6 @@ public class BitmapFont implements IFont {
 	/* (non-Javadoc)
 	 * @see org.mt4j.components.visibleComponents.font.IFont#getFontMaxDescent()
 	 */
-	//@Override
 	public int getFontMaxDescent() {
 		return this.fontMaxDescent;
 	}
@@ -288,7 +282,6 @@ public class BitmapFont implements IFont {
 	/* (non-Javadoc)
 	 * @see org.mt4j.components.visibleComponents.font.IFont#getOriginalFontSize()
 	 */
-	//@Override
 	public int getOriginalFontSize() {
 		return this.originalFontSize;
 	}
@@ -296,7 +289,6 @@ public class BitmapFont implements IFont {
 	/* (non-Javadoc)
 	 * @see org.mt4j.components.visibleComponents.font.IFont#getUnitsPerEM()
 	 */
-	//@Override
 	public int getUnitsPerEM() {
 		return this.unitsPerEM;
 	}
@@ -304,7 +296,6 @@ public class BitmapFont implements IFont {
 	/* (non-Javadoc)
 	 * @see org.mt4j.components.visibleComponents.font.IFont#getFillColor()
 	 */
-	//@Override
 	public MTColor getFillColor() {
 		return fillColor;
 	}
@@ -312,7 +303,6 @@ public class BitmapFont implements IFont {
 //	/* (non-Javadoc)
 //	 * @see org.mt4j.components.visibleComponents.font.IFont#getStrokeColor()
 //	 */
-//	//@Override
 //	public MTColor getStrokeColor() {
 //		return strokeColor;
 //	}

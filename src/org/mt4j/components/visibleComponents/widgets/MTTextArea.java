@@ -107,10 +107,6 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
 	private float totalScrollTextX;
 	private float totalScrollTextY;
 	
-	//TODO set font color on the fly
-	//TODO different font sizes in one textarea?
-	//TODO (create mode : expand vertically but do word wrap horizontally?)
-	
 	private static final int MODE_EXPAND = 0;
 	private static final int MODE_WRAP = 1;
 	
@@ -120,7 +116,8 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
 
     private ExpandDirection expandDirection ;
 	
-    
+	//TODO different font sizes in one textarea?
+	//TODO (create mode : expand vertically but do word wrap horizontally?
     
     /**
      * Instantiates a new text area. This constructor creates
@@ -498,7 +495,7 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
 		switch (this.mode) {
 		case MODE_EXPAND:
 			//Dont need to translate for innerpadding TOP because we do that in setHeight() making the whole textarea bigger
-			g.pushMatrix(); //FIXME TEST
+			g.pushMatrix(); 
 			g.translate(0, innerPaddingTop);
 			break;
 		case MODE_WRAP:
@@ -549,6 +546,7 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
 			g.pushMatrix(); //FIXME TEST text scrolling - but IMHO better done with parent list/scroll container
 			g.translate(totalScrollTextX, totalScrollTextY + font.getFontMaxAscent(), 0);
 			
+			//Set the color for all characters (since the characters dont set their own fill/stroke color anymore
 			MTColor fillColor = this.getFont().getFillColor();
 			g.fill(fillColor.getR(), fillColor.getG(), fillColor.getB(), fillColor.getAlpha());
 			g.stroke(fillColor.getR(), fillColor.getG(), fillColor.getB(), fillColor.getAlpha());
@@ -590,7 +588,7 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
 			g.popMatrix();//FIXME TEST text scrolling - but IMHO better done with parent list/scroll container
 		}
 		
-		//FIXME TEST //Innerpadding TOP for wrapped textarea -> translates the text content downwards
+		//Innerpadding TOP for wrapped textarea -> translates the text content downwards
 		switch (this.mode) {
 		case MODE_EXPAND:
 			g.popMatrix();
@@ -623,9 +621,9 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
 		int lastXAdvancement = lastXAdv;
 		int thisLineTotalXAdvancement = lineTotalAdv;
 		
+		//Set the color for all characters (since the characters dont set their own fill/stroke color anymore
 		MTColor fillColor = this.getFont().getFillColor();
-		gl.glColor4f(fillColor.getR()/255f, fillColor.getG()/255f, fillColor.getB()/255f, fillColor.getAlpha()/255f); //FIXME TEST
-//		gl.glColor4f(0.5f, 0.8f, 0.5f, 1.0f); //FIXME TEST
+		gl.glColor4f(fillColor.getR()/255f, fillColor.getG()/255f, fillColor.getB()/255f, fillColor.getAlpha()/255f); 
 		
 		for (int i = 0; i < charListSize; i++) {
 			IFontCharacter character = characterList.get(i);

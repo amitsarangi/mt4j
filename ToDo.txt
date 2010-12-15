@@ -118,7 +118,6 @@ ToDo list:
 
 
 -> Typography:
-- we can switch the textcolor on textarea draw code instead of creating different memoryhungry fonts
 - scalable bitmapfont/re-create it after zoom end
 - add and implement setCursorPos() in MTTextArea
 - add setText()/setLabel() to buttons

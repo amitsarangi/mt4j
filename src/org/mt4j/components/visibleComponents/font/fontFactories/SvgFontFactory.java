@@ -46,7 +46,6 @@ import processing.core.PApplet;
  *
  */
 public class SvgFontFactory extends DefaultHandler implements IFontFactory {
-	
 //	//Register the factory
 //	static{
 //		FontManager.getInstance().registerFontFactory(".ttf", new SvgFontFactory());
@@ -395,7 +394,6 @@ public class SvgFontFactory extends DefaultHandler implements IFontFactory {
 	
 	@Override
 	public void endDocument() throws SAXException {
-		
 		//Manually add a NEWLINE character to the font
 		Vertex[] nlVerts = new Vertex[]{new Vertex(0,0,0), new Vertex(200,0,0),new Vertex(200,100,0),/*new Vertex(0,100,0)*/};
 		ArrayList<Vertex[]> nlContours = new ArrayList<Vertex[]>();
@@ -465,14 +463,6 @@ public class SvgFontFactory extends DefaultHandler implements IFontFactory {
 	}
 
 	
-	
-//	/**
-//	 * Returns an array containing all created svg characters 
-//	 * @return the created characters of the parsed svg font 
-//	 */
-//	private VectorFontCharacter[] getCharacters() {
-//		return (VectorFontCharacter[])characters.toArray(new VectorFontCharacter[characters.size()]);
-//	}
 
 	/**
 	 * Returns the created SvgFont Object.

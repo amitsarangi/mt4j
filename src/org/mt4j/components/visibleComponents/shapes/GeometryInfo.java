@@ -22,8 +22,8 @@ import java.nio.IntBuffer;
 
 import javax.media.opengl.GL;
 
+import org.mt4j.MTApplication;
 import org.mt4j.components.visibleComponents.StyleInfo;
-import org.mt4j.components.visibleComponents.shapes.mesh.MTTriangleMesh;
 import org.mt4j.util.MT4jSettings;
 import org.mt4j.util.math.Tools3D;
 import org.mt4j.util.math.ToolsBuffers;
@@ -32,8 +32,6 @@ import org.mt4j.util.math.Vector3D;
 import org.mt4j.util.math.Vertex;
 
 import processing.core.PApplet;
-import processing.core.PImage;
-import processing.opengl.PGraphicsOpenGL;
 
 /**
  * A class which holds the vertices and eventually also
@@ -102,19 +100,8 @@ public class GeometryInfo {
 	/** The contains normals. */
 	private boolean containsNormals;
 	
-	//FIXME TEST
-	private boolean useVertexColorsAsOutline;
-	
-	
 	private boolean textureCoordsNormalized = true;
 	
-	
-//	public static enum type
-	
-	//TODO in displaylists auch die normalen berücksichtigen (v.a. für licht)
-	//!!!
-	//TODO in zeichnenden klassen, normalen pointer und index benutzen auch bei VBOS (MTPoly, complexpoly etc)
-	//TODO auch bei tesselator normalen nutzen
 	
 	/**
 	 * Creates a new GeometryInfo.
@@ -161,9 +148,6 @@ public class GeometryInfo {
 	 * @param indices the indices
 	 */
 	public GeometryInfo(PApplet pApplet, Vertex[] vertices, Vector3D[] normals, int[] indices){
-		//FIXME TEST
-		useVertexColorsAsOutline = false;
-		
 		this.r = pApplet;
 		//VBO Ids
 		this.vboVerticesID 	= -1;
@@ -173,38 +157,12 @@ public class GeometryInfo {
 		this.vboNormalsID 	= -1;
 		//Displaylist Ids
 		this.displayListIDs = new int[]{-1, -1};
-		
-//		if (vertices == null)
-//			System.out.println();
-//		if (vertices.length > 0){
-//			this.reconstruct(vertices, normals, indices, false, false, null);
-//		}else{
-//			System.err.println("Error in " + this + " : tried to create GeometryInfo with no vertices supplied!");
-//		}
 		if (!(vertices.length > 0)){
 //			System.err.println("Warning in " + this + " : trying to create GeometryInfo with no vertices supplied!");
 		}
 		this.reconstruct(vertices, normals, indices, false, false, null);
 	}
 	
-	/*
-	//FIXME TEST TO USE VERTEX COLORS FOR THE OUTLINE
-	public void setUseVertexColorForOutline(boolean useVertexColorForOutline, StyleInfo styleInfo){
-		if (useVertexColorForOutline){
-			if (!this.useVertexColorsAsOutline){
-				//todo create
-				this.setStrokeColorBuffer(ToolsBuffers.generateColorBuffer(this.getVertices()));
-			}
-			this.useVertexColorsAsOutline = useVertexColorForOutline;
-		}else{
-			if (this.useVertexColorsAsOutline){
-				//todo create default
-				this.generateDefaultStrokeColorBuffer(styleInfo);
-			}
-			this.useVertexColorsAsOutline = useVertexColorForOutline;
-		}
-	}
-	*/
 	
 	/**
 	 * Reconstructs the geometry with the given parameters.
@@ -225,18 +183,11 @@ public class GeometryInfo {
 			boolean 	createOrUpdateVBO, 
 			StyleInfo 	styleInfo
 		){
-		//Make untransformed vertex backup
-//		this.verticesLocal = Vertex.getDeepVertexArrayCopy(vertices); //FIXME Unnecessary now?
 		this.vertices = vertices;
-		
-//		//TODO world vertices komplett aus geometry info rausnehmen? 
-//		//stattdessen in abstactshape das selber handlen mit noch einem vertices array 
-//		this.verticesWorld = vertices; 
 		
 		//Set the indices and normals, 
 		//also creates buffers and vbos if createOrUpdateOGLBuffers, createOrUpdateVBO are set
 		this.setIndices(indices, createOrUpdateOGLBuffers);
-		
 		this.setNormals(normals, createOrUpdateOGLBuffers, createOrUpdateVBO);
 		
 		if (createOrUpdateOGLBuffers){
@@ -756,7 +707,7 @@ public class GeometryInfo {
 	 */
 	public void deleteAllVBOs(){
 		if (MT4jSettings.getInstance().isOpenGlMode()){
-			GL gl =((PGraphicsOpenGL)this.getRenderer().g).gl;
+			GL gl = Tools3D.getGL(r);
 			if (this.getVBOVerticesName() != -1){
 				gl.glDeleteBuffersARB(1, new int[]{this.getVBOVerticesName()},0);
 				this.vboVerticesID = -1;
@@ -919,7 +870,7 @@ public class GeometryInfo {
 	 */
 	public void deleteDisplayLists(){
 		if (MT4jSettings.getInstance().isOpenGlMode()){
-			GL gl =((PGraphicsOpenGL)this.getRenderer().g).gl;
+			GL gl = Tools3D.getGL(this.r);
 			for (int id : this.displayListIDs){
 				if (id != -1){
 					gl.glDeleteLists(id, 1);
@@ -1078,25 +1029,6 @@ public class GeometryInfo {
 	//////////////// VERTEX COLORS  //////////////////////
 
 	
-	 //TODO re/move?
-//	/**
-//	 * Calculates the convex hull for this shape in world coordinates. (not cheap)
-//	 * Only uses x,y coordinates!
-//	 *
-//	 * @return
-//	 */
-//	public Vector3D[] getConvexHull2D(){ //TODO return local coordinates
-//		ArrayList<Vector3D> vers = new ArrayList<Vector3D>();
-//		Vector3D[] transVerts = this.getVerticesWorld();
-//		for (int i = 0; i < transVerts.length; i++) {
-//			Vector3D Vector3D = transVerts[i];
-//			vers.add(Vector3D);
-//		}
-//		ArrayList<Vector3D> edgeList = ConvexQuickHull2D.getConvexHull2D(vers);
-//		return (edgeList.toArray(new Vector3D[edgeList.size()]));
-//	}
-	
-	
 	/**
 	 * Gets the vertex count.
 	 * 
@@ -1121,5 +1053,24 @@ public class GeometryInfo {
 	
 	public void setTextureCoordsNormalized(boolean normalized){
 		this.textureCoordsNormalized = normalized;
+	}
+	
+	
+	@Override
+	protected void finalize() throws Throwable {
+		//System.out.println("Finalizing GLTEXTURE - " + this);
+		if (this.r instanceof MTApplication) {
+			MTApplication mtApp = (MTApplication) this.r;
+			mtApp.invokeLater(new Runnable() {
+				public void run() {
+					deleteDisplayLists();
+					deleteAllVBOs();
+				}
+			});
+		}else{
+			//TODO use registerPre()?
+			//is the object even valid after finalize() is called??
+		}
+		super.finalize();
 	}
 }

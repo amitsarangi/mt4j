@@ -1236,26 +1236,20 @@ public abstract class AbstractShape extends AbstractVisibleComponent{
 	 * <br>
 	 * <p>
 	 * By default, the openGl texture object and the VBOs associated with this shape will be deleted.
-	 * Be careful when you share textures or VBOs across more than one object!
-	 * Destroying of displaylists isnt done atm! Use disableAndDeleteDisplaylists() instead.
+	 * Be careful when you share textures across more than one object!
+	 * Destroying of displaylists and VBOs isnt done atm! Use disableAndDeleteDisplaylists() instead.
 	 */
 	@Override
 	public void destroy(){
 //		System.out.println(this + " -> DESTROY() -> (AbstractShape)");
 		
-		//FIXME if vbos or display lists are shared, they shouldnt be deleted!
-		//right now, destroying of displaylists isnt done. Use disableAndDeleteDisplaylists() instead.
-		
+		/*
+		//Deletion ins now done in GeometryInfo's finalize() method
 		if (this.geometryInfo != null){
 			//Delete VBOs
 			this.getGeometryInfo().deleteAllVBOs();
 		}
-		
 		this.destroyDisplayLists();
-		
-		/*
-		//Delete displaylist
-		this.disableAndDeleteDisplayLists();
 		*/
 		
 		this.setBounds(null);

@@ -218,7 +218,7 @@ public class FontManager {
 				loadedFont = factoryToUse.createFont(pa, fontAbsoultePath, fontSize, fillColor, antiAliased);
 				fonts.add(loadedFont);
 				if (fonts.size() > CACHE_MAX_SIZE && !fonts.isEmpty()){
-					IFont removedFont = fonts.remove(0); //FIXME destroy font, too!
+					IFont removedFont = fonts.remove(0); 
 					if (removedFont != null){
 						removedFont.destroy();
 					}
@@ -331,9 +331,6 @@ public class FontManager {
 	}
 	
 	
-	//TODO dont if color is the same, return the same font
-	//TODO if everything is equal except the color make a copy of the font and set the other color
-	
 	/**
 	 * Fonts are equal.
 	 * 
@@ -352,8 +349,6 @@ public class FontManager {
 				font.getOriginalFontSize() == fontSize
 				&&
 				font.getFillColor().equals(fillColor)
-//								&&
-//				font.getStrokeColor().equals(strokeColor)
 								&&
 				(font.isAntiAliased() == antiAliased)
 		);
@@ -388,8 +383,6 @@ public class FontManager {
 				font1.getFontFamily().equalsIgnoreCase(font2.getFontFamily())
 								&&
 				font1.getFillColor().equals(font2.getFillColor())
-//								&&
-//				font1.getStrokeColor().equals(font2.getStrokeColor())
 		);
 	}
 
