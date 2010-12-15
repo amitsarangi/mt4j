@@ -54,7 +54,7 @@ public class MTGesturesExampleScene extends AbstractScene {
 		MTColor white = new MTColor(255,255,255);
 		final MTColor textAreaColor = new MTColor(50,50,50,255);
 		
-		IFont font = FontManager.getInstance().createFont(app, "arial.ttf", 35, white, white);
+		IFont font = FontManager.getInstance().createFont(app, "arial.ttf", 35, white);
 		
 		//Add canvas background gestures
 		//Zoom gesture

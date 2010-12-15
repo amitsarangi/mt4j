@@ -211,7 +211,7 @@ public class AirHockeyScene extends AbstractScene {
 		MTComponent uiLayer = new MTComponent(mtApplication, new MTCamera(mtApplication));
 		uiLayer.setDepthBufferDisabled(true);
 		getCanvas().addChild(uiLayer);
-		IFont font = FontManager.getInstance().createFont(mtApplication, "arial", 50, new MTColor(255,255,255), new MTColor(0,0,0));
+		IFont font = FontManager.getInstance().createFont(mtApplication, "arial", 50, MTColor.WHITE);
 		
 		t1 = new MTTextArea(mtApplication, font);
 		t1.setPickable(false);
@@ -275,7 +275,7 @@ public class AirHockeyScene extends AbstractScene {
 				case DragEvent.GESTURE_UPDATED:
 					mouseJoint = (MouseJoint) comp.getUserData(comp.getID());
 					if (mouseJoint != null){
-						boolean onCorrectGameSide = ((MTComponent)de.getTargetComponent()).containsPointGlobal(de.getTo());
+						boolean onCorrectGameSide = ((MTComponent)de.getTarget()).containsPointGlobal(de.getTo());
 						//System.out.println(((MTComponent)de.getTargetComponent()).getName()  + " Contains  " + to + " -> " + contains);
 						if (onCorrectGameSide){
 							mouseJoint.setTarget(new Vec2(to.x, to.y));	

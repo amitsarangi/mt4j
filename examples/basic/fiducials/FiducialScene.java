@@ -37,9 +37,7 @@ public class FiducialScene extends AbstractScene implements IMTInputEventListene
 		//Maps the fiducial IDs to the visible component so we can keep track
 		fiducialIDToComp = new HashMap<Integer, AbstractShape>();
 		
-		font = FontManager.getInstance().createFont(app, "arial.ttf", 30, 
-				new MTColor(255,255,255,255), //Fill color 
-				new MTColor(255,255,255,255)); //Stroke color
+		font = FontManager.getInstance().createFont(app, "arial.ttf", 30, MTColor.WHITE);
 	}
 
 	//Global input processor listener implementation (IMTInputEventListener)

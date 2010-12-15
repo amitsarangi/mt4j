@@ -84,7 +84,7 @@ public class PuzzleScene extends AbstractScene{
 		//Puzzle tile factory
 		this.pf = new PuzzleFactory(getMTApplication());
 		
-		IFont font = FontManager.getInstance().createFont(mtApplication, "SansSerif", 16, MTColor.WHITE, MTColor.WHITE, false);
+		IFont font = FontManager.getInstance().createFont(mtApplication, "SansSerif", 16, MTColor.WHITE, false);
 		
 		//New Puzzle button
 		MTRoundRectangle r = getRoundRectWithText(0, 0, 120, 35, "New Puzzle", font);

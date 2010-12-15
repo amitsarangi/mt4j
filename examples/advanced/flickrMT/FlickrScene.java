@@ -107,9 +107,7 @@ public class FlickrScene extends AbstractScene {
 			        keyb.setFillColor(new MTColor(30, 30, 30, 210));
 			        keyb.setStrokeColor(new MTColor(0,0,0,255));
 			        
-			        final MTTextArea t = new MTTextArea(app, FontManager.getInstance().createFont(app, "arial.ttf", 50, 
-			        		new MTColor(0,0,0,255), //Fill color 
-							new MTColor(0,0,0,255))); //Stroke color
+			        final MTTextArea t = new MTTextArea(app, FontManager.getInstance().createFont(app, "arial.ttf", 50, MTColor.BLACK)); 
 			        t.setExpandDirection(ExpandDirection.UP);
 					t.setStrokeColor(new MTColor(0,0 , 0, 255));
 					t.setFillColor(new MTColor(205,200,177, 255));

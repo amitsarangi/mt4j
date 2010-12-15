@@ -143,10 +143,7 @@ public class CSSFontManager {
 			currentFont2 = new CSSFont(16);
 		}
 		
-		 return FontManager.getInstance().createFont(app,
-				"SansSerif", currentFont2.getFontsize(), // Font size
-				currentFont2.getColor(), // Font fill color
-				currentFont2.getColor()); 
+		 return FontManager.getInstance().createFont(app,"SansSerif", currentFont2.getFontsize(), currentFont2.getColor()); 
 	}
 
 	/**
@@ -160,18 +157,13 @@ public class CSSFontManager {
 	private IFont getFont(String font, int size, MTColor color) {
 		try {
 			IFont returnFont = FontManager.getInstance().createFont(app,
-		
-				font, size, // Font size
-				color, // Font fill color
-				color);
+				font, size, color);
 			if (returnFont == null) throw new Exception();
 			return returnFont;	
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return FontManager.getInstance().createFont(app,
-				"SansSerif", size, // Font size
-				color, // Font fill color
-				color); 
+				"SansSerif", size, color); 
 	}
 }

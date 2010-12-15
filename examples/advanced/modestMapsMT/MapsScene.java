@@ -228,7 +228,7 @@ public class MapsScene extends AbstractScene implements MouseWheelListener, Mous
 		tagToPhoto = new HashMap<MTEllipse, Photo>();
 		
 		/// Create map provider menu \\\
-		IFont font = FontManager.getInstance().createFont(p, "SansSerif.Bold", 15, MTColor.WHITE, MTColor.WHITE);
+		IFont font = FontManager.getInstance().createFont(p, "SansSerif.Bold", 15, MTColor.WHITE);
 		MTRoundRectangle mapMenu = new MTRoundRectangle(p,0,0, 0,240, 335,20, 20);
 //		mapMenu.setFillColor(new MTColor(110,110,110,180));
 //		mapMenu.setStrokeColor(new MTColor(110,110,110,180));

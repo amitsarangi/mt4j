@@ -118,11 +118,7 @@ public class MTKeyboard extends MTRoundRectangle {
 		// INIT FIELDS
 		//Load the Key font
 		keyFont = FontManager.getInstance().createFont(pa, 
-				"keys.svg", 30, 
-				keyColor, 
-				keyColor); 
-//				new MTColor(250,250,250,255), 
-//				new MTColor(250,250,250,255));
+				"keys.svg", 30, keyColor); 
 		
 		keyList 		= new ArrayList<MTKey>();
 		shiftChangers 	= new ArrayList<MTKey>();

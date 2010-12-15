@@ -2,7 +2,6 @@ package basic.scenes;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
 
 import org.mt4j.MTApplication;
 import org.mt4j.components.TransformSpace;
@@ -12,10 +11,8 @@ import org.mt4j.components.visibleComponents.widgets.buttons.MTImageButton;
 import org.mt4j.input.inputProcessors.componentProcessors.tapProcessor.TapEvent;
 import org.mt4j.input.inputProcessors.globalProcessors.CursorTracer;
 import org.mt4j.sceneManagement.AbstractScene;
-import org.mt4j.sceneManagement.transition.BlendTransition;
 import org.mt4j.sceneManagement.transition.FadeTransition;
 import org.mt4j.sceneManagement.transition.FlipTransition;
-import org.mt4j.sceneManagement.transition.SlideTransition;
 import org.mt4j.util.MT4jSettings;
 import org.mt4j.util.MTColor;
 import org.mt4j.util.math.Vector3D;
@@ -41,7 +38,7 @@ public class Scene3 extends AbstractScene {
 		
 		//Create a textfield
 		MTTextArea textField = new MTTextArea(mtApplication, FontManager.getInstance().createFont(mtApplication, "arial.ttf", 
-				50, new MTColor(255, 255, 255, 255), new MTColor(255, 255, 255, 255))); 
+				50, MTColor.WHITE)); 
 		textField.setNoFill(true);
 		textField.setNoStroke(true);
 		textField.setText("Scene 3");

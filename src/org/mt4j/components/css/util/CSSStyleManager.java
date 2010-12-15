@@ -311,8 +311,7 @@ public class CSSStyleManager {
 		if (defaultFont == null)  {
 			defaultFont = FontManager.getInstance().createFont(app,
 					"SansSerif", 16, // Font size
-					new MTColor(255,255,255,255), // Font fill color
-					new MTColor(255,255,255,255));
+					MTColor.WHITE);
 		}
 		
 		return defaultFont;

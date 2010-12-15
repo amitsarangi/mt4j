@@ -83,7 +83,7 @@ public class MTTextKeyboard extends MTKeyboard {
 	 */
 	public MTTextKeyboard(PApplet pApplet) {
 		this(pApplet, FontManager.getInstance().createFont(pApplet, 
-				"arial.ttf", 35, new MTColor(0,0,0,255), new MTColor(0,0,0,255))); 
+				"arial.ttf", 35, MTColor.BLACK)); 
 //		this(pApplet, FontManager.getInstance().createFont(pApplet, "Eureka90.vlw", 35, new Color(0,0,0,255), new Color(0,0,0,255))); 
 //		this(pApplet, FontManager.getInstance().createFont(pApplet, "arial", 35, new Color(0,0,0,255), new Color(0,0,0,255))); 
 	}

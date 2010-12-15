@@ -559,12 +559,12 @@ public class SVGLoader implements SVGConstants{
 					  if (useVectorFont)
 						  //Vector font
 						  font = FontManager.getInstance().createFont(pa, 
-								  "arial.ttf", Math.round(fontSize), fillColor, strokeColor);
+								  "arial.ttf", Math.round(fontSize), fillColor);
 					  else
 						  //Bitmap font
 						  font = FontManager.getInstance().createFont(pa, 
 //								  "Arial", Math.round(fontSize),
-								  fontFamily, Math.round(fontSize), fillColor, strokeColor);
+								  fontFamily, Math.round(fontSize), fillColor);
 //					  /* 
 
 					  IFont fontToUse = font;
@@ -651,11 +651,11 @@ public class SVGLoader implements SVGConstants{
 								  
 								  if (useVectorFont)
 									  fontToUse = FontManager.getInstance().createFont(pa, 
-											  "arial.ttf", Math.round(newFontSize), newFillColor, newStrokeColor);
+											  "arial.ttf", Math.round(newFontSize), newFillColor);
 								  else
 									  fontToUse = FontManager.getInstance().createFont(pa, //uses cached font if available
 //											  "Arial", Math.round(fontSize),
-											  newFamilyName, Math.round(newFontSize), newFillColor, newStrokeColor);
+											  newFamilyName, Math.round(newFontSize), newFillColor);
 								  if (fontToUse == null){
 									  fontToUse = font;
 								  }
