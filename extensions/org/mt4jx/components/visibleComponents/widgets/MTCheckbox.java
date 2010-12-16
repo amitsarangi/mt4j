@@ -1,11 +1,7 @@
 package org.mt4jx.components.visibleComponents.widgets;
 
 import org.mt4j.components.css.style.CSSStyle;
-import org.mt4j.input.inputProcessors.componentProcessors.dragProcessor.DragProcessor;
-import org.mt4j.input.inputProcessors.componentProcessors.rotateProcessor.RotateProcessor;
-import org.mt4j.input.inputProcessors.componentProcessors.scaleProcessor.ScaleProcessor;
 import org.mt4j.input.inputProcessors.componentProcessors.tapProcessor.TapProcessor;
-import org.mt4j.input.inputProcessors.componentProcessors.zoomProcessor.ZoomProcessor;
 import org.mt4j.util.MTColor;
 
 import processing.core.PApplet;
@@ -33,22 +29,20 @@ public class MTCheckbox extends MTForm implements BooleanForm{
 		super(pApplet, 0, 0, size, size, MTForm.BOOLEAN);
 		
 		this.setCssForceDisable(true);
-
+		
+		this.backgroundColor = new MTColor(MTColor.YELLOW);
 		this.setFillColor(backgroundColor);
 		this.setNoFill(true);
 		this.setNoStroke(false);
 		this.setStrokeWeight(2f);
-		
 		this.style();
-		
-		this.setGestureAllowance(TapProcessor.class, true);
-		this.registerInputProcessor(new TapProcessor(pApplet));
+	}
+	
+	
+	@Override
+	protected void setDefaultGestureActions() {
+		this.registerInputProcessor(new TapProcessor(getRenderer()));
 		this.addGestureListener(TapProcessor.class, new BooleanTapListener());
-		
-		this.setGestureAllowance(DragProcessor.class, false);
-		this.setGestureAllowance(ScaleProcessor.class, false);
-		this.setGestureAllowance(ZoomProcessor.class, false);
-		this.setGestureAllowance(RotateProcessor.class, false);
 	}
 
 	private void style() {
@@ -121,7 +115,6 @@ public class MTCheckbox extends MTForm implements BooleanForm{
 		} else {
 			this.setNoFill(true);
 		}
-		
 	}
 
 
