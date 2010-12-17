@@ -11,8 +11,8 @@ import org.mt4j.components.clipping.Clip;
 import org.mt4j.components.css.style.CSSFont;
 import org.mt4j.components.css.style.CSSStyle;
 import org.mt4j.components.css.util.CSSFontManager;
-import org.mt4j.components.css.util.CSSStylableComponent;
 import org.mt4j.components.css.util.CSSKeywords.CSSFontWeight;
+import org.mt4j.components.css.util.CSSStylableComponent;
 import org.mt4j.components.visibleComponents.font.IFont;
 import org.mt4j.components.visibleComponents.shapes.MTPolygon;
 import org.mt4j.components.visibleComponents.shapes.MTRectangle;
@@ -22,10 +22,8 @@ import org.mt4j.input.inputProcessors.MTGestureEvent;
 import org.mt4j.input.inputProcessors.componentProcessors.tapProcessor.TapEvent;
 import org.mt4j.input.inputProcessors.componentProcessors.tapProcessor.TapProcessor;
 import org.mt4j.util.MTColor;
-import org.mt4j.util.math.Tools3D;
 import org.mt4j.util.math.Vector3D;
 import org.mt4j.util.math.Vertex;
-
 
 import processing.core.PConstants;
 import processing.core.PImage;
@@ -102,7 +100,6 @@ public class MTSquareMenu extends MTRectangle implements CSSStylableComponent {
 		for (MTComponent c : this.getChildren()) {
 			c.destroy();
 		}
-		this.removeAllChildren();
 		menuContents.clear();
 		polygonListeners.clear();
 		
@@ -151,10 +148,8 @@ public class MTSquareMenu extends MTRectangle implements CSSStylableComponent {
 
 					container.setChildClip(new Clip(container));
 					container.setPickable(false);
-					polygonListeners.add(new PolygonListeners(container, s
-							.getGestureListener()));
+					polygonListeners.add(new PolygonListeners(container, s.getGestureListener()));
 					menuContents.add(container);
-
 				}
 
 			}
@@ -320,7 +315,6 @@ public class MTSquareMenu extends MTRectangle implements CSSStylableComponent {
 		for (int i = 0; i < next; i++) {
 			returnValues.add(menuContents.get(current++));
 		}
-
 		return returnValues;
 	}
 	
@@ -429,7 +423,9 @@ public class MTSquareMenu extends MTRectangle implements CSSStylableComponent {
 			layout.get(3).addAll(next(4));
 			maxPerLine = 4;
 			break;
-
+		default:{
+				System.err.println("Unsupported number of menu items in: " + this);
+			}
 		}
 
 	}
@@ -499,7 +495,6 @@ public class MTSquareMenu extends MTRectangle implements CSSStylableComponent {
 
 		//Min/Max Values of the Children
 		float minx = 16000, maxx = -16000, miny = 16000, maxy = -16000;
-		
 		int currentRow = 0;
 		
 		// Position the Polygons in the grid
@@ -516,7 +511,11 @@ public class MTSquareMenu extends MTRectangle implements CSSStylableComponent {
 						this.getVerticesLocal()[0].x + (size / 2 + bezel / 2f)
 								+ currentRow * (size + bezel))));
 				//Determine Min/Max-Positions
-				for (Vertex v: r.getVerticesGlobal()) {
+				//We have to use the childrens relative-to parent vertices for the calculation of this component's local vertices
+				Vertex[] unTransformedCopy = Vertex.getDeepVertexArrayCopy(r.getGeometryInfo().getVertices());
+				//transform the copied vertices and save them in the vertices array
+				Vertex[] verticesRelParent = Vertex.transFormArray(r.getLocalMatrix(), unTransformedCopy);
+				for (Vertex v: verticesRelParent) {
 					if (v.x < minx) minx = v.x;
 					if (v.x > maxx) maxx = v.x;
 					if (v.y < miny) miny = v.y;
@@ -525,11 +524,13 @@ public class MTSquareMenu extends MTRectangle implements CSSStylableComponent {
 			}
 			currentRow++;
 		}
+		
+		MTColor fill = this.getFillColor();
 		//Set Vertices to include all children
-		this.setVertices(new Vertex[] {new Vertex(minx,miny), new Vertex(maxx,miny), new Vertex(maxx,maxy), new Vertex(minx,maxy),new Vertex(minx,miny)});
+		this.setVertices(new Vertex[] {new Vertex(minx,miny, 0, fill.getR(), fill.getG(), fill.getB(), fill.getAlpha()), new Vertex(maxx,miny, 0, fill.getR(), fill.getG(), fill.getB(), fill.getAlpha()), new Vertex(maxx,maxy, 0, fill.getR(), fill.getG(), fill.getB(), fill.getAlpha()), new Vertex(minx,maxy, 0, fill.getR(), fill.getG(), fill.getB(), fill.getAlpha()),new Vertex(minx,miny, 0, fill.getR(), fill.getG(), fill.getB(), fill.getAlpha())});
 	}
 
-
+	
 
 
 	/**
@@ -570,9 +571,13 @@ public class MTSquareMenu extends MTRectangle implements CSSStylableComponent {
 					//Vector3D w = Tools3D.project(app, app.getCurrentScene().getSceneCam(), te.getLocationOnScreen());
 					for (PolygonListeners pl: children) {
 						pl.component.setPickable(true);
-						if (pl.component.getIntersectionGlobal(Tools3D
-								.getCameraPickRay(app, pl.component, te.getCursor().getPosition().x,
-										te.getCursor().getPosition().y)) != null) {
+						if (
+//								pl.component.getIntersectionGlobal(Tools3D
+//								.getCameraPickRay(app, pl.component, te.getCursor().getPosition().x,
+//										te.getCursor().getPosition().y)) != null
+								pl.component.getIntersectionGlobal(te.getCursor()) != null
+										
+						) {
 							pl.listener.processGestureEvent(ge);
 						} else {
 					

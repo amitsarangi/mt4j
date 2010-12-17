@@ -1337,12 +1337,12 @@ public class ToolsGeometry {
 	 * 
 	 * @return a float[4] {minX, minY, maxX, maxY};
 	 */
-	public static float[] getMinXYMaxXY(ArrayList<Vertex[]> Vector3DLists) {
+	public static float[] getMinXYMaxXY(ArrayList<Vector3D[]> Vector3DLists) {
 		float minX = Float.MAX_VALUE;
 		float minY = Float.MAX_VALUE;
 		float maxX = Float.MIN_VALUE;
 		float maxY = Float.MIN_VALUE;
-        for (Vertex[] Vector3DList : Vector3DLists) {
+        for (Vector3D[] Vector3DList : Vector3DLists) {
             Vector3D[] vertices = Vector3DList;
             for (Vector3D Vector3D : vertices) {
                 if (Vector3D.getX() < minX)

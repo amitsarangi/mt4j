@@ -4,6 +4,12 @@ import org.mt4j.MTApplication;
 
 
 public class StartMenuExample extends MTApplication {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+
 	public static void main(String[] args) {
 		initialize();
 	}
@@ -11,7 +17,6 @@ public class StartMenuExample extends MTApplication {
 	
 	@Override
 	public void startUp() {
-		// TODO Auto-generated method stub
 		addScene(new MenuExample(this, "Integration  Test Scene"));
 	}
 }

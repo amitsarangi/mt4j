@@ -139,31 +139,17 @@ public class MTSceneMenu extends MTRectangle{
 	 * @param height the height
 	 */
 	private void init(float x, float y, float width, float height){
-//		this.setNoFill(true);
 		this.setNoStroke(true);
-//		this.setFillColor(new MTColor(255,100,100,100));
 		this.setFillColor(new MTColor(255,255,255,150));
-//		this.unregisterAllInputProcessors();
-//		this.setPickable(false);
 		
 		overlayGroup = new MTOverlayContainer(app, "Window Menu Overlay Group");
 		
 		if (menuImage == null){
 			menuImage = app.loadImage(MT4jSettings.getInstance().getDefaultImagesPath() +
 					"blackRoundSolidCorner64sh2.png");
-					
 		}
 		
 		if (MT4jSettings.getInstance().isOpenGlMode()){
-//			GLTextureParameters tp = new GLTextureParameters();
-//			tp.wrap_s = GL.GL_CLAMP;
-//			tp.wrap_t = GL.GL_CLAMP;
-////			GLTexture glTex = new GLTexture(app, MT4jSettings.getInstance().getDefaultImagesPath()+
-////					"blackRoundSolidCorner64sh2.png", tp);
-//			GLTexture glTex = new GLTexture(app, menuImage.width, menuImage.height, tp);
-//			glTex.putPixelsIntoTexture(menuImage);
-//			this.setTexture(glTex);
-			
 			GLTextureSettings ts = new GLTextureSettings();
 			ts.wrappingHorizontal = WRAP_MODE.CLAMP;
 			ts.wrappingVertical = WRAP_MODE.CLAMP;
@@ -191,9 +177,6 @@ public class MTSceneMenu extends MTRectangle{
 		
 		if (closeButtonImage == null){
 			closeButtonImage = app.loadImage(MT4jSettings.getInstance().getDefaultImagesPath() +
-//					"close_32.png"));
-//					"126182-simple-black-square-icon-alphanumeric-circled-x3_cr.png"));
-//					"124241-matte-white-square-icon-alphanumeric-circled-x3_cr.png");
 					"closeButton64.png");
 		}
 		
@@ -217,9 +200,6 @@ public class MTSceneMenu extends MTRectangle{
 			
 			if (restoreButtonImage == null){
 				restoreButtonImage = app.loadImage(MT4jSettings.getInstance().getDefaultImagesPath() +
-//						"window_app_32.png"));
-//						"126630-simple-black-square-icon-business-document10-sc1_cr.png");
-		//				restoreButton.setFillColor(new MTColor(150, 150, 250, 200));
 						"restoreButton64.png");
 			}
 			

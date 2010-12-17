@@ -479,7 +479,9 @@ public class MTHexagonMenu extends MTRectangle{
 			layout.get(3).addAll(next(5));
 			maxPerLine = 6;
 			break;
-
+		default:{
+			System.err.println("Unsupported number of menu items in: " + this);
+			}
 		}
 
 	}
@@ -566,24 +568,40 @@ public class MTHexagonMenu extends MTRectangle{
 								* (hypotenuse + gegenkathete + bezel))));
 
 				// Determine Min/Max-Positions
-				for (Vertex v : r.getVerticesGlobal()) {
-					if (v.x < minx)
-						minx = v.x;
-					if (v.x > maxx)
-						maxx = v.x;
-					if (v.y < miny)
-						miny = v.y;
-					if (v.y > maxy)
-						maxy = v.y;
+//				for (Vertex v : r.getVerticesGlobal()) {
+//					if (v.x < minx)
+//						minx = v.x;
+//					if (v.x > maxx)
+//						maxx = v.x;
+//					if (v.y < miny)
+//						miny = v.y;
+//					if (v.y > maxy)
+//						maxy = v.y;
+//				}
+				
+				//Determine Min/Max-Positions
+				//We have to use the childrens relative-to parent vertices for the calculation of this component's local vertices
+				Vertex[] unTransformedCopy = Vertex.getDeepVertexArrayCopy(r.getGeometryInfo().getVertices());
+				//transform the copied vertices and save them in the vertices array
+				Vertex[] verticesRelParent = Vertex.transFormArray(r.getLocalMatrix(), unTransformedCopy);
+				for (Vertex v: verticesRelParent) {
+					if (v.x < minx) minx = v.x;
+					if (v.x > maxx) maxx = v.x;
+					if (v.y < miny) miny = v.y;
+					if (v.y > maxy) maxy = v.y;
 				}
 			}
 			currentRow++;
 		}
 
 		// Set Vertices to include all children
-		this.setVertices(new Vertex[] { new Vertex(minx, miny),
-				new Vertex(maxx, miny), new Vertex(maxx, maxy),
-				new Vertex(minx, maxy), new Vertex(minx, miny) });
+//		this.setVertices(new Vertex[] { new Vertex(minx, miny),
+//				new Vertex(maxx, miny), new Vertex(maxx, maxy),
+//				new Vertex(minx, maxy), new Vertex(minx, miny) });
+		
+		MTColor fill = this.getFillColor();
+		//Set Vertices to include all children
+		this.setVertices(new Vertex[] {new Vertex(minx,miny, 0, fill.getR(), fill.getG(), fill.getB(), fill.getAlpha()), new Vertex(maxx,miny, 0, fill.getR(), fill.getG(), fill.getB(), fill.getAlpha()), new Vertex(maxx,maxy, 0, fill.getR(), fill.getG(), fill.getB(), fill.getAlpha()), new Vertex(minx,maxy, 0, fill.getR(), fill.getG(), fill.getB(), fill.getAlpha()),new Vertex(minx,miny, 0, fill.getR(), fill.getG(), fill.getB(), fill.getAlpha())});
 	}
 
 	/**

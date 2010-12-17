@@ -7,42 +7,27 @@ import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.Logger;
 import org.apache.log4j.SimpleLayout;
 import org.mt4j.MTApplication;
-import org.mt4j.components.MTComponent;
-import org.mt4j.components.css.parser.CSSParserConnection;
 import org.mt4j.components.css.style.CSSSelector;
-import org.mt4j.components.css.style.CSSStyle;
-import org.mt4j.components.css.util.CSSStyleManager;
-import org.mt4j.components.css.util.CSSTemplates;
 import org.mt4j.components.css.util.CSSKeywords.CSSSelectorType;
+import org.mt4j.components.css.util.CSSTemplates;
 import org.mt4j.input.inputProcessors.IGestureEventListener;
 import org.mt4j.input.inputProcessors.MTGestureEvent;
 import org.mt4j.input.inputProcessors.componentProcessors.tapProcessor.TapEvent;
 import org.mt4j.sceneManagement.AbstractScene;
-import org.mt4j.util.MTColor;
 import org.mt4j.util.math.Vector3D;
 import org.mt4jx.components.visibleComponents.widgets.menus.MTHUD;
 import org.mt4jx.components.visibleComponents.widgets.menus.MTHexagonMenu;
 import org.mt4jx.components.visibleComponents.widgets.menus.MTSquareMenu;
 import org.mt4jx.components.visibleComponents.widgets.menus.MenuItem;
 
-
-
 import processing.core.PImage;
 
 
 public class MenuExample  extends AbstractScene{
-	List<CSSStyle> CSSStyleManager = new ArrayList<CSSStyle>();
-	
-	private MTComponent parent;
 	private MTApplication app;
-
-	CSSStyleManager cssm;
-	Logger logger = Logger.getLogger("MT4J Extensions");
-	SimpleLayout l = new SimpleLayout();
-	ConsoleAppender ca = new ConsoleAppender(l);
-	CSSParserConnection pc;
-	List<CSSStyle> styles;
-	MTColor w = MTColor.WHITE;
+	private Logger logger = Logger.getLogger("MT4J Extensions");
+	private SimpleLayout l = new SimpleLayout();
+	private ConsoleAppender ca = new ConsoleAppender(l);
 	
 	
 	public MenuExample(MTApplication mtApplication, String name) {
@@ -63,7 +48,6 @@ public class MenuExample  extends AbstractScene{
 			PImage p1 = app.loadImage("basic/css/data/p1.jpg");
 			PImage p2 = app.loadImage("basic/css/data/p2.jpg");
 			PImage p3 = app.loadImage("basic/css/data/p3.jpg");
-			
 			
 			//Create Menu Items
 			List<MenuItem> menus = new ArrayList<MenuItem>();
@@ -95,13 +79,11 @@ public class MenuExample  extends AbstractScene{
 
 	@Override
 	public void init() {
-		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	public void shutDown() {
-		// TODO Auto-generated method stub
 		
 	}
 

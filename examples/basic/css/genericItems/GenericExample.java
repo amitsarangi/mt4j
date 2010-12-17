@@ -1,6 +1,5 @@
 package basic.css.genericItems;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -8,46 +7,24 @@ import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.Logger;
 import org.apache.log4j.SimpleLayout;
 import org.mt4j.MTApplication;
-import org.mt4j.components.MTComponent;
-import org.mt4j.components.css.parser.CSSParserConnection;
 import org.mt4j.components.css.style.CSSSelector;
-import org.mt4j.components.css.style.CSSStyle;
-import org.mt4j.components.css.util.CSSStyleManager;
-import org.mt4j.components.css.util.CSSTemplates;
 import org.mt4j.components.css.util.CSSKeywords.CSSSelectorType;
+import org.mt4j.components.css.util.CSSTemplates;
 import org.mt4j.components.visibleComponents.shapes.MTRectangle.PositionAnchor;
-import org.mt4j.components.visibleComponents.widgets.MTTextArea;
-import org.mt4j.input.inputProcessors.IGestureEventListener;
-import org.mt4j.input.inputProcessors.MTGestureEvent;
-import org.mt4j.input.inputProcessors.componentProcessors.tapProcessor.TapEvent;
 import org.mt4j.sceneManagement.AbstractScene;
-import org.mt4j.util.MTColor;
 import org.mt4j.util.math.Vector3D;
 import org.mt4jx.components.visibleComponents.widgets.MTCheckbox;
 import org.mt4jx.components.visibleComponents.widgets.MTOptionBox;
 import org.mt4jx.components.visibleComponents.widgets.MTSuggestionTextArea;
 import org.mt4jx.components.visibleComponents.widgets.OptionGroup;
-import org.mt4jx.components.visibleComponents.widgets.menus.MTHUD;
-import org.mt4jx.components.visibleComponents.widgets.menus.MenuItem;
-
-
-
-import processing.core.PImage;
 
 
 public class GenericExample  extends AbstractScene{
-	List<CSSStyle> CSSStyleManager = new ArrayList<CSSStyle>();
 	
-	private MTComponent parent;
 	private MTApplication app;
-
-	CSSStyleManager cssm;
-	Logger logger = Logger.getLogger("MT4J Extensions");
-	SimpleLayout l = new SimpleLayout();
-	ConsoleAppender ca = new ConsoleAppender(l);
-	CSSParserConnection pc;
-	List<CSSStyle> styles;
-	MTColor w = new MTColor(255,255,255,255);
+	private Logger logger = Logger.getLogger("MT4J Extensions");
+	private SimpleLayout l = new SimpleLayout();
+	private ConsoleAppender ca = new ConsoleAppender(l);
 	
 	
 	public GenericExample(MTApplication mtApplication, String name) {
@@ -55,7 +32,6 @@ public class GenericExample  extends AbstractScene{
 
 		this.app = mtApplication;
 		
-					
 			app.getCssStyleManager().setGloballyEnabled(true);
 			app.getCssStyleManager().loadStylesAndOverrideSelector(CSSTemplates.MATRIXSTYLE, new CSSSelector("Group A", CSSSelectorType.ID));
 			app.getCssStyleManager().loadStylesAndOverrideSelector(CSSTemplates.BLUESTYLE, new CSSSelector("Group B", CSSSelectorType.ID));
@@ -82,7 +58,6 @@ public class GenericExample  extends AbstractScene{
 			this.getCanvas().addChild(a_box2);
 			
 			
-
 			//Prepare Suggestions for MTSuggestionTextArea
 			String[] su = new String[] {"Nested ", "Class", "Summary", "MTListCell", "visibleComponents" };
 			List<String> suggestions = Arrays.asList(su);
@@ -141,14 +116,10 @@ public class GenericExample  extends AbstractScene{
 
 	@Override
 	public void init() {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public void shutDown() {
-		// TODO Auto-generated method stub
-		
 	}
 
 
