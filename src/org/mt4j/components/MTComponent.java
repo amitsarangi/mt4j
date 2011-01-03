@@ -205,8 +205,8 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 	
 	private int inversePrecisionErrors;
 	private int orthogonalityErrors;
-	private static final int invPrecisionThreshold = 1000;
-	private static final int reOrthogonalizeThreshold = 1500;
+	protected static final int invPrecisionThreshold = 1000;
+	protected static final int reOrthogonalizeThreshold = 1500;
 	
 	/**
 	 * Creates a new component. The component has no initial visual representation.
