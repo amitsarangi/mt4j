@@ -39,17 +39,33 @@ public class TapEvent extends MTGestureEvent {
 	/** The click id. */
 	private int clickID;
 	
+	@Deprecated
 	/** The Constant BUTTON_DOWN. */
 	public static final int BUTTON_DOWN = 3;
 	
+	@Deprecated
 	/** The Constant BUTTON_UP. */
 	public static final int BUTTON_UP	= 4;
 	
+	@Deprecated
 	/** The Constant BUTTON_CLICKED. */
 	public static final int BUTTON_CLICKED = 5;
 	
+	@Deprecated
 	/** The Constant BUTTON_DOUBLE_CLICKED. */
 	public static final int BUTTON_DOUBLE_CLICKED = 6;
+	
+	/** The Constant TAP_DOWN. */
+	public static final int TAP_DOWN = 3;
+	
+	/** The Constant TAP_UP. */
+	public static final int TAP_UP	= 4;
+	
+	/** The Constant TAPPED. */
+	public static final int TAPPED = 5;
+	
+	/** The Constant DOUBLE_TAPPED. */
+	public static final int DOUBLE_TAPPED = 6;
 	
 
 	/**
