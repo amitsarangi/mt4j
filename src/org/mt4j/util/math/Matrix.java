@@ -3075,6 +3075,10 @@ public class Matrix  implements Serializable, Cloneable {
 		m00*m00
 		+ m10*m10 +
 		m20*m20);
+		
+		if (Float.isInfinite(fInvLength)){ //added
+			fInvLength = 0.0f;
+		}
 
 		m00 *= fInvLength;
 		m10 *= fInvLength;
@@ -3094,6 +3098,10 @@ public class Matrix  implements Serializable, Cloneable {
 		m01*m01 +
 		m11*m11 +
 		m21*m21);
+		
+		if (Float.isInfinite(fInvLength)){ //added
+			fInvLength = 0.0f;
+		}
 
 		m01 *= fInvLength;
 		m11 *= fInvLength;
@@ -3118,6 +3126,10 @@ public class Matrix  implements Serializable, Cloneable {
 		m02*m02 +
 		m12*m12 +
 		m22*m22);
+		
+		if (Float.isInfinite(fInvLength)){ //added
+			fInvLength = 0.0f;
+		}
 
 		m02 *= fInvLength;
 		m12 *= fInvLength;
