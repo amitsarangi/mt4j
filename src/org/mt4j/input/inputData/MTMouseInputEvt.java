@@ -9,7 +9,7 @@ import org.mt4j.input.inputSources.AbstractInputSource;
 public class MTMouseInputEvt extends MTFingerInputEvt {
 
 	/** The mouse button. */
-	private int mouseButton;
+	private int mouseModifiers;
 
 	/**
 	 * Instantiates a new mT mouse input evt.
@@ -22,9 +22,9 @@ public class MTMouseInputEvt extends MTFingerInputEvt {
 	 * @param id the id
 	 * @param m the m
 	 */
-	public MTMouseInputEvt(AbstractInputSource source, IMTComponent3D target, int mouseButton, float positionX, float positionY, int id, InputCursor m) {
+	public MTMouseInputEvt(AbstractInputSource source, IMTComponent3D target, int mouseModifiers, float positionX, float positionY, int id, InputCursor m) {
 		super(source, target, positionX, positionY, id, m);
-		this.mouseButton = mouseButton;
+		this.mouseModifiers = mouseModifiers;
 	}
 
 	/**
@@ -37,9 +37,9 @@ public class MTMouseInputEvt extends MTFingerInputEvt {
 	 * @param id the id
 	 * @param m the m
 	 */
-	public MTMouseInputEvt(AbstractInputSource source, int mouseButton, float positionX, float positionY, int id, InputCursor m) {
+	public MTMouseInputEvt(AbstractInputSource source, int mouseModifiers, float positionX, float positionY, int id, InputCursor m) {
 		super(source, positionX, positionY, id, m);
-		this.mouseButton = mouseButton;
+		this.mouseModifiers = mouseModifiers;
 	}
 	
 	/**
@@ -47,8 +47,8 @@ public class MTMouseInputEvt extends MTFingerInputEvt {
 	 *
 	 * @return the button
 	 */
-	public int getButton(){
-		return this.mouseButton;
+	public int getModifiers(){
+		return this.mouseModifiers;
 	}
 
 }

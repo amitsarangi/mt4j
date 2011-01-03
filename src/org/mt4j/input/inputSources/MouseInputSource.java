@@ -124,7 +124,7 @@ public class MouseInputSource extends AbstractInputSource implements MouseMotion
 			mouseBusy = true;
 			
 			InputCursor m = new InputCursor();
-			MTMouseInputEvt te = new MTMouseInputEvt(this, mousePressedButton, e.getX(), e.getY(), MTFingerInputEvt.INPUT_DETECTED, m);
+			MTMouseInputEvt te = new MTMouseInputEvt(this, e.getModifiers(), e.getX(), e.getY(), MTFingerInputEvt.INPUT_DETECTED, m);
 			
 			lastUsedMouseID = m.getId();
 			ActiveCursorPool.getInstance().putActiveCursor(lastUsedMouseID, m);
@@ -141,7 +141,7 @@ public class MouseInputSource extends AbstractInputSource implements MouseMotion
 		try {
 			InputCursor m = ActiveCursorPool.getInstance().getActiveCursorByID(lastUsedMouseID);
 			if (m != null){
-				MTMouseInputEvt te = new MTMouseInputEvt(this, mousePressedButton, e.getX(), e.getY(), MTFingerInputEvt.INPUT_UPDATED, m);
+				MTMouseInputEvt te = new MTMouseInputEvt(this, e.getModifiers(), e.getX(), e.getY(), MTFingerInputEvt.INPUT_UPDATED, m);
 //				System.out.println("MouseSource Finger UPDATE, Motion ID: " + m.getId());
 				this.enqueueInputEvent(te);
 			}
@@ -157,7 +157,7 @@ public class MouseInputSource extends AbstractInputSource implements MouseMotion
 	public void mouseReleased(MouseEvent e) {
 		if (e.getButton() == mousePressedButton) {
 			InputCursor m = ActiveCursorPool.getInstance().getActiveCursorByID(lastUsedMouseID);
-			MTMouseInputEvt te = new MTMouseInputEvt(this, mousePressedButton, e.getX(), e.getY(), MTFingerInputEvt.INPUT_ENDED, m);
+			MTMouseInputEvt te = new MTMouseInputEvt(this, e.getModifiers(), e.getX(), e.getY(), MTFingerInputEvt.INPUT_ENDED, m);
 			
 			//System.out.println("MouseSource Finger UP, Motion ID: " + m.getId());
 			this.enqueueInputEvent(te);
