@@ -16,7 +16,7 @@ public class MTMouseInputEvt extends MTFingerInputEvt {
 	 *
 	 * @param source the source
 	 * @param target the target
-	 * @param mouseButton the mouse button
+	 * @param mouseModifiers the mouse modifiers
 	 * @param positionX the position x
 	 * @param positionY the position y
 	 * @param id the id
@@ -31,7 +31,7 @@ public class MTMouseInputEvt extends MTFingerInputEvt {
 	 * Instantiates a new mT mouse input evt.
 	 *
 	 * @param source the source
-	 * @param mouseButton the mouse button
+	 * @param mouseModifiers the mouse modifiers
 	 * @param positionX the position x
 	 * @param positionY the position y
 	 * @param id the id
@@ -43,9 +43,9 @@ public class MTMouseInputEvt extends MTFingerInputEvt {
 	}
 	
 	/**
-	 * Gets the button.
+	 * Gets the modifiers.
 	 *
-	 * @return the button
+	 * @return the modifiers
 	 */
 	public int getModifiers(){
 		return this.mouseModifiers;

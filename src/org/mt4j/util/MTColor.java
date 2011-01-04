@@ -71,40 +71,42 @@ public class MTColor {
 	/** The alpha. */
 	private float alpha;
 	
+	private boolean writeProtected;
 	
-	public static final MTColor RED = new MTColor(255,0,0,255);
 	
-	public static final MTColor GREEN = new MTColor(0,128,0,255);
+	public static final MTColor RED = new MTColor(255,0,0,255,true);
 	
-	public static final MTColor BLUE = new MTColor(0,0,255,255);
+	public static final MTColor GREEN = new MTColor(0,128,0,255,true);
 	
-	public static final MTColor BLACK = new MTColor(0,0,0,255);
+	public static final MTColor BLUE = new MTColor(0,0,255,255,true);
 	
-	public static final MTColor WHITE = new MTColor(255,255,255,255);
+	public static final MTColor BLACK = new MTColor(0,0,0,255,true);
 	
-	public static final MTColor GREY = new MTColor(128,128,128,255);
+	public static final MTColor WHITE = new MTColor(255,255,255,255,true);
 	
-	public static final MTColor GRAY = new MTColor(128,128,128,255);
+	public static final MTColor GREY = new MTColor(128,128,128,255,true);
 	
-	public static final MTColor SILVER = new MTColor(192,192,192,255);
+	public static final MTColor GRAY = new MTColor(128,128,128,255,true);
 	
-	public static final MTColor MAROON = new MTColor(128,0,0,255);
+	public static final MTColor SILVER = new MTColor(192,192,192,255,true);
 	
-	public static final MTColor PURPLE = new MTColor(128,0,128,255);
+	public static final MTColor MAROON = new MTColor(128,0,0,255,true);
 	
-	public static final MTColor FUCHSIA = new MTColor(255,0,255,255);
+	public static final MTColor PURPLE = new MTColor(128,0,128,255,true);
 	
-	public static final MTColor LIME = new MTColor(0,255,0,255);
+	public static final MTColor FUCHSIA = new MTColor(255,0,255,255,true);
 	
-	public static final MTColor OLIVE = new MTColor(128,128,0,255);
+	public static final MTColor LIME = new MTColor(0,255,0,255,true);
 	
-	public static final MTColor YELLOW = new MTColor(255,255,0,255);
+	public static final MTColor OLIVE = new MTColor(128,128,0,255,true);
 	
-	public static final MTColor NAVY = new MTColor(0,0,128,255);
+	public static final MTColor YELLOW = new MTColor(255,255,0,255,true);
 	
-	public static final MTColor TEAL = new MTColor(0,128,128,255);
+	public static final MTColor NAVY = new MTColor(0,0,128,255,true);
 	
-	public static final MTColor AQUA = new MTColor(0,255,255,255);
+	public static final MTColor TEAL = new MTColor(0,128,128,255,true);
+	
+	public static final MTColor AQUA = new MTColor(0,255,255,255,true);
 	
 	public static MTColor randomColor(){
 		return new MTColor((float)(Math.random() * 255), (float)(Math.random() * 255), (float)(Math.random() * 255), 255);
@@ -116,7 +118,7 @@ public class MTColor {
 	 * @param color the color
 	 */
 	public MTColor(MTColor color){
-		this(color.getR(), color.getG(), color.getB(), color.getAlpha());
+		this(color.getName(), color.getR(), color.getG(), color.getB(), color.getAlpha());
 	}
 	
 	/**
@@ -127,8 +129,7 @@ public class MTColor {
 	 * @param b the b
 	 */
 	public MTColor(float r, float g, float b) {
-		this.setColor(r, g, b, 255);
-		this.name = "undefined"; 
+		this(r, g, b, 255);
 	}
 	
 	/**
@@ -140,23 +141,9 @@ public class MTColor {
 	 * @param alpha the alpha
 	 */
 	public MTColor(float r, float g, float b, float alpha) {
-		this.setColor(r, g, b, alpha);
-		this.name = "undefined";
+		this("undefined", r, g, b, alpha);
 	}
 	
-	/**
-	 * Instantiates a new mT color.
-	 * 
-	 * @param name the name
-	 * @param r the r
-	 * @param g the g
-	 * @param b the b
-	 * @param alpha the alpha
-	 */
-	public MTColor(String name, float r, float g, float b, float alpha) {
-		this.setColor(r, g, b, alpha);
-		this.name = name;
-	}
 	
 	/**
 	 * Instantiates a new mT color.
@@ -167,9 +154,9 @@ public class MTColor {
 	 * @param b the b
 	 */
 	public MTColor(String name, float r, float g, float b) {
-		this.setColor(r, g, b, 255f);
-		this.name = name;
+		this(name, r, g, b, 255);
 	}
+	
 	
 	/**
 	 * Instantiates a new mT color.
@@ -181,8 +168,21 @@ public class MTColor {
 	 * @param alpha the alpha
 	 */
 	public MTColor(String name, int r, int g, int b, int alpha) {
-		this.setColor((float)r, (float)g, (float)b, (float)alpha);
-		this.name = name;
+		this(name, (float)r, (float)g, (float)b, (float)alpha);
+	}
+	
+	/**
+	 * Instantiates a new mT color.
+	 *
+	 * @param name the name
+	 * @param r the r
+	 * @param g the g
+	 * @param b the b
+	 * @param alpha the alpha
+	 * @param writeProtected the write protected
+	 */
+	public MTColor(int r, int g, int b, int alpha, boolean writeProtected) {
+		this("undefined", (float)r, (float)g, (float)b, (float)alpha, writeProtected);
 	}
 	
 	/**
@@ -194,13 +194,36 @@ public class MTColor {
 	 * @param b the b
 	 */
 	public MTColor(String name, int r, int g, int b) {
-		this.setColor((float)r, (float)g, (float)b, 255f);
-		this.name = name;
+		this(name, (float)r, (float)g, (float)b, 255f);
 	}
 	
-	//TODO write protected
-
 	
+	/**
+	 * Instantiates a new mT color.
+	 * 
+	 * @param name the name
+	 * @param r the r
+	 * @param g the g
+	 * @param b the b
+	 * @param alpha the alpha
+	 */
+	public MTColor(String name, float r, float g, float b, float alpha) {
+		this(name, r, g, b, alpha, false);
+	}
+	
+	
+	public MTColor(String name, float r, float g, float b, float alpha, boolean writeProtected) {
+		this.setColor(r, g, b, alpha);
+		this.name = name;
+		this.writeProtected = writeProtected;
+	}
+	
+	
+	public boolean isWriteProtected() {
+		return writeProtected;
+	}
+
+
 	/**
 	 * Gets the r.
 	 * 
@@ -216,7 +239,8 @@ public class MTColor {
 	 * @param r the new r
 	 */
 	public void setR(float r) {
-		this.r = r;
+		if (!this.isWriteProtected())
+			this.r = r;
 	}
 	
 	/**
@@ -234,7 +258,8 @@ public class MTColor {
 	 * @param g the new g
 	 */
 	public void setG(float g) {
-		this.g = g;
+		if (!this.isWriteProtected())
+			this.g = g;
 	}
 	
 	/**
@@ -252,7 +277,8 @@ public class MTColor {
 	 * @param b the new b
 	 */
 	public void setB(float b) {
-		this.b = b;
+		if (!this.isWriteProtected())
+			this.b = b;
 	}
 	
 	/**
@@ -270,7 +296,8 @@ public class MTColor {
 	 * @param alpha the new alpha
 	 */
 	public void setAlpha(float alpha) {
-		this.alpha = alpha;
+		if (!this.isWriteProtected())
+			this.alpha = alpha;
 	}
 	
 	/**
@@ -282,12 +309,14 @@ public class MTColor {
 	 * @param alpha the alpha
 	 */
 	public void setColor(float r, float g, float b, float alpha){
-		this.r = r;
-		this.g = g;
-		this.b = b;
-		this.alpha = alpha;
+		if (!this.isWriteProtected()){
+			this.r = r;
+			this.g = g;
+			this.b = b;
+			this.alpha = alpha;
+		}
 	}
-	
+
 	/**
 	 * Sets the color.
 	 * 
@@ -296,10 +325,12 @@ public class MTColor {
 	 * @param b the b
 	 */
 	public void setColor(float r, float g, float b){
-		this.r = r;
-		this.g = g;
-		this.b = b;
-		this.alpha = 255;
+		if (!this.isWriteProtected()){
+			this.r = r;
+			this.g = g;
+			this.b = b;
+			this.alpha = 255;
+		}
 	}
 	
 	/**
@@ -308,10 +339,12 @@ public class MTColor {
 	 * @param f the new color
 	 */
 	public void setColor(float f){
-		this.r = f;
-		this.g = f;
-		this.b = f;
-		this.alpha = 255;
+		if (!this.isWriteProtected()){
+			this.r = f;
+			this.g = f;
+			this.b = f;
+			this.alpha = 255;
+		}
 	}
 	
 	/**

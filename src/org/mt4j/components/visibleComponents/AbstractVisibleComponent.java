@@ -75,6 +75,9 @@ public abstract class AbstractVisibleComponent extends MTComponent {
 		styleInfo = new StyleInfo();
 	}
 
+	
+	abstract public void drawComponent(PGraphics g);
+	
 
 	/**
 	 * Gets the fill paint.
@@ -239,43 +242,16 @@ public abstract class AbstractVisibleComponent extends MTComponent {
 	}
 
 
-	//	TODO wirklich protected machen? dann kann man im zweifeln nicht nur diese eine komponente fragen ob sie schnittpunkt hat,
-	//	weil auch kinder miteinbezogen werden bei call von public  getInterSectionpoint()
-	
 
-//	abstract public Vector3D getIntersectionLocal(Ray ray);  
-	
-//	abstract protected boolean intersectsComponentWithRay(Ray ray);
-	
-
-	abstract public void drawComponent(PGraphics g);
-	
-	
-
-//	abstract protected boolean componentContainsPointLocal(Vector3D testPoint);
-
-	
-//	/**
-//	 * Sets the fill color.
-//	 * 
-//	 * @param r the r
-//	 * @param g the g
-//	 * @param b the b
-//	 * @param a the a
-//	 * 
-//	 * @see org.mt4j.components.visibleComponents.StyleInfo#setFillColor(float, float, float, float)
-//	 */
-//	public void setFillColor(float r, float g, float b, float a) {
-//		styleInfo.setFillColor(r, g, b, a);
-//	}
 
 	/**
- * Sets the fill color.
- * 
- * @param fillColor the new fill color
- */
+	 * Sets the fill color.
+	 * 
+	 * @param fillColor the new fill color
+	 */
 	public void setFillColor(MTColor fillColor){
-		this.styleInfo.setFillColor(fillColor);
+		//Create a copy because if we use constant/write protected colors we cant change the component's color later
+		this.styleInfo.setFillColor(new MTColor(fillColor)); 
 	}
 
 	/**
@@ -288,28 +264,14 @@ public abstract class AbstractVisibleComponent extends MTComponent {
 	}
 
 
-//	/**
-//	 * Sets the stroke color.
-//	 * 
-//	 * @param r the r
-//	 * @param g the g
-//	 * @param b the b
-//	 * @param a the a
-//	 * 
-//	 * @see org.mt4j.components.visibleComponents.StyleInfo#setStrokeColor(float, float, float, float)
-//	 */
-//	public void setStrokeColor(float r, float g, float b, float a) {
-//		styleInfo.setStrokeColor(r, g, b, a);
-//	}
-
-	
 	/**
- * Sets the stroke color.
- * 
- * @param strokeColor the new stroke color
- */
+	 * Sets the stroke color.
+	 * 
+	 * @param strokeColor the new stroke color
+	 */
 	public void setStrokeColor(MTColor strokeColor){
-		this.styleInfo.setStrokeColor(strokeColor);
+		//Create a copy because if we use constant/write protected colors we cant change the component's color later
+		this.styleInfo.setStrokeColor(new MTColor(strokeColor));
 	}
 
 	/**
