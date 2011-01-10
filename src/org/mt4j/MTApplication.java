@@ -118,9 +118,6 @@ public abstract class MTApplication extends PApplet {
 	/** The already run. */
 	private boolean alreadyRun;
 	
-	/** The v sync. */
-	private boolean vSync = false;
-	
 	/** The input manager. */
 	private InputManager inputManager;
 	
@@ -631,8 +628,8 @@ public abstract class MTApplication extends PApplet {
 			//-> Use with caution! only use with fps rate == monitor Hz!
 			//and fps never drop below Hz! -> else choppy!
 			//-> only works with opengl!
-	    	Tools3D.setVSyncing(this, vSync);
-			logger.info("Vertical Sync enabled: \"" + vSync + "\"");
+	    	Tools3D.setVSyncing(this, MT4jSettings.getInstance().isVerticalSynchronization());
+			logger.info("Vertical Sync enabled: \"" + MT4jSettings.getInstance().isVerticalSynchronization() + "\"");
 	    	
 	    	if ( MT4jSettings.getInstance().isMultiSampling()){
 	    		gl.glEnable(GL.GL_MULTISAMPLE);

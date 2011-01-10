@@ -15,10 +15,10 @@ import org.mt4j.util.math.Vector3D;
 public class FlickProcessor extends AbstractCursorProcessor {
 	
 	/** The vel thresh hold. */
-	private int velThreshHold = 5;
+	private int velThreshHold;
 	
 	/** The flick time. */
-	private int flickTime = 300;
+	private int flickTime;
 	
 	/** The start pos. */
 	private Vector3D startPos;

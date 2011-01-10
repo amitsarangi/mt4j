@@ -190,15 +190,6 @@ public class MT4jSettings {
 	}
 
 
-//	/**
-//	 * Sets the num samples.
-//	 * 
-//	 * @param numSamples the new num samples
-//	 */
-//	public void setNumSamples(int numSamples) {
-//		this.numSamples = numSamples;
-//	}
-	
 	/**
 	 * Checks if is multi sampling.
 	 * 
@@ -298,31 +289,6 @@ public class MT4jSettings {
 		return renderer;
 	}
 
-//	/**
-//	 * Sets the renderer mode.
-//	 * 
-//	 * @param drawMode the new renderer mode
-//	 */
-//	public void setRendererMode(int drawMode) {
-//		this.renderer = drawMode;
-//	}
-	
-//	synchronized public long generateNewID(){
-//		return ConstantsAndHelpers.currentID++;
-//	}
-
-	
-//	/**
-//	 * Sets the title of the application frame.
-//	 * Only takes effect if called right at the start.
-//	 * This should be called by internally only!
-//	 * 
-//	 * @param frameTitle the frame title
-//	 */
-//	public void setFrameTitle(String frameTitle) {
-//		this.frameTitle = frameTitle;
-//	}
-
 
 	/**
 	 * Gets the frame title.
@@ -333,14 +299,6 @@ public class MT4jSettings {
 		return frameTitle;
 	}
 
-//	/**
-//	 * Sets the max frame rate.
-//	 * 
-//	 * @param frameRate the new max frame rate
-//	 */
-//	public void setMaxFrameRate(int frameRate) {
-//		this.maxFrameRate = frameRate;
-//	}
 	
 	/**
 	 * Gets the max frame rate.
@@ -359,33 +317,6 @@ public class MT4jSettings {
 	public long getProgramStartTime() {
 		return programStartTime;
 	}
-
-//	/**
-//	 * Sets the program start time.
-//	 * 
-//	 * @param programStartTime the new program start time
-//	 */
-//	public void setProgramStartTime(long programStartTime) {
-//		this.programStartTime = programStartTime;
-//	}
-
-//	/**
-//	 * NOTE: DONT SET THIS AFTER size() FROM PAPPLET HAS BEEN CALLED!.
-//	 * 
-//	 * @param screenHeight the screen height
-//	 */
-//	public void setScreenHeight(int screenHeight) {
-//		this.screenHeight = screenHeight;
-//	}
-
-//	/**
-//	 * NOTE: DONT SET THIS AFTER size() FROM PAPPLET HAS BEEN CALLED!.
-//	 * 
-//	 * @param screenWidth the screen width
-//	 */
-//	public void setScreenWidth(int screenWidth) {
-//		this.screenWidth = screenWidth;
-//	}
 
 
 	/**
@@ -416,26 +347,6 @@ public class MT4jSettings {
 		return this.architecture;
 	}
 
-
-//	/**
-//	 * Sets the architecture.
-//	 * <br>NOTE: Set automatically. DONT SET THIS YOURSELF!
-//	 *
-//	 * @param architecture the new architecture
-//	 */
-//	public void setArchitecture(int architecture) {
-//		this.architecture = architecture;
-//	}
-
-
-//	/**
-//	 * Sets the vertical synchronization.
-//	 * <br>NOTE: Set automatically. DONT SET THIS YOURSELF!
-//	 * @param parseBoolean the new vertical synchronization
-//	 */
-//	public void setVerticalSynchronization(boolean parseBoolean) {
-//		this.vSync = parseBoolean;
-//	}
 
 	/**
 	 * Checks if is vertical synchronization.
