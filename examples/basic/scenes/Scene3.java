@@ -8,6 +8,10 @@ import org.mt4j.components.TransformSpace;
 import org.mt4j.components.visibleComponents.font.FontManager;
 import org.mt4j.components.visibleComponents.widgets.MTTextArea;
 import org.mt4j.components.visibleComponents.widgets.buttons.MTImageButton;
+import org.mt4j.input.inputProcessors.IGestureEventListener;
+import org.mt4j.input.inputProcessors.MTGestureEvent;
+import org.mt4j.input.inputProcessors.componentProcessors.flickProcessor.FlickEvent;
+import org.mt4j.input.inputProcessors.componentProcessors.flickProcessor.FlickProcessor;
 import org.mt4j.input.inputProcessors.componentProcessors.tapProcessor.TapEvent;
 import org.mt4j.input.inputProcessors.globalProcessors.CursorTracer;
 import org.mt4j.sceneManagement.AbstractScene;
@@ -54,7 +58,7 @@ public class Scene3 extends AbstractScene {
 		previousSceneButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent ae) {
 				switch (ae.getID()) {
-				case TapEvent.BUTTON_CLICKED:
+				case TapEvent.TAPPED:
 					mtApp.popScene();
 					break;
 				default:
@@ -72,6 +76,26 @@ public class Scene3 extends AbstractScene {
 		else{
 			this.setTransition(new FadeTransition(mtApp));
 		}
+		
+		//Register flick gesture with the canvas to change the scene
+		getCanvas().registerInputProcessor(new FlickProcessor());
+		getCanvas().addGestureListener(FlickProcessor.class, new IGestureEventListener() {
+			public boolean processGestureEvent(MTGestureEvent ge) {
+				FlickEvent e = (FlickEvent)ge;
+				if (e.getId() == MTGestureEvent.GESTURE_ENDED && e.isFlick()){
+					switch (e.getDirection()) {
+					case EAST:
+					case NORTH_EAST:
+					case SOUTH_EAST:
+						mtApp.popScene();
+						break;
+					default:
+						break;
+					}
+				}
+				return false;
+			}
+		});
 	}
 
 	@Override

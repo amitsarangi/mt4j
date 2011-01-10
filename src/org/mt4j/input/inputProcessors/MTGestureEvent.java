@@ -35,8 +35,12 @@ public abstract class MTGestureEvent extends MTInputEvent {
 //	private IMTComponent3D targetComponent;
 //	private InputMotion[] motions;
 	
-	/** The Constant GESTURE_DETECTED. */
+	/**
+	 The Constant GESTURE_DETECTED.
+	@deprecated use GESTURE_STARTED instead */
 	public static final int GESTURE_DETECTED 	= 0;
+	
+	public static final int GESTURE_STARTED 	= 0;
 	
 	/** The Constant GESTURE_UPDATED. */
 	public static final int GESTURE_UPDATED 	= 1;

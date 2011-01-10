@@ -165,7 +165,7 @@ public abstract class AbstractVisibleComponent extends MTComponent {
 			this.setNoStroke(savedNoStrokeSetting);
 		}
 		
-	//FIXME wie wieder normalzustand?
+	//FIXME how to get original state back?
 //		if (this.getMaterial() != null){
 //			
 //		}

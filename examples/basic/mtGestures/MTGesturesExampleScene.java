@@ -21,6 +21,8 @@ import org.mt4j.input.inputProcessors.IGestureEventListener;
 import org.mt4j.input.inputProcessors.MTGestureEvent;
 import org.mt4j.input.inputProcessors.componentProcessors.arcballProcessor.ArcballProcessor;
 import org.mt4j.input.inputProcessors.componentProcessors.dragProcessor.DragProcessor;
+import org.mt4j.input.inputProcessors.componentProcessors.flickProcessor.FlickEvent;
+import org.mt4j.input.inputProcessors.componentProcessors.flickProcessor.FlickProcessor;
 import org.mt4j.input.inputProcessors.componentProcessors.lassoProcessor.LassoProcessor;
 import org.mt4j.input.inputProcessors.componentProcessors.panProcessor.PanProcessorTwoFingers;
 import org.mt4j.input.inputProcessors.componentProcessors.rotateProcessor.RotateProcessor;
@@ -38,6 +40,8 @@ import org.mt4j.input.inputProcessors.globalProcessors.CursorTracer;
 import org.mt4j.sceneManagement.AbstractScene;
 import org.mt4j.util.MTColor;
 import org.mt4j.util.math.Vector3D;
+
+import basic.scenes.Scene3;
 
 public class MTGesturesExampleScene extends AbstractScene {
 	private MTApplication app;
@@ -307,6 +311,26 @@ public class MTGesturesExampleScene extends AbstractScene {
 		lassoProcessor.addClusterable(lassoUs3);
 		getCanvas().registerInputProcessor(lassoProcessor);
 		getCanvas().addGestureListener(LassoProcessor.class, new DefaultLassoAction(app, getCanvas().getClusterManager(), getCanvas()));
+		
+		
+		//Flick gesture
+		final MTTextArea flick = new MTTextArea(mtApplication, font);
+		flick.setFillColor(textAreaColor);
+		flick.setStrokeColor(textAreaColor);
+		flick.setText("Flick:    \n");
+		this.clearAllGestures(flick);
+		flick.registerInputProcessor(new FlickProcessor(300, 5));
+		flick.addGestureListener(FlickProcessor.class, new IGestureEventListener() {
+			public boolean processGestureEvent(MTGestureEvent ge) {
+				FlickEvent e = (FlickEvent)ge;
+				if (e.getId() == MTGestureEvent.GESTURE_ENDED)
+					flick.setText("Flicked:    \n " + e.getDirection());
+				return false;
+			}
+		});
+		this.getCanvas().addChild(flick);
+		flick.setAnchor(PositionAnchor.UPPER_LEFT);
+		flick.setPositionGlobal(new Vector3D(1*horizontalPad, 7*verticalPad,0));
 		
 		
 		//Add uni-stroke gesture example

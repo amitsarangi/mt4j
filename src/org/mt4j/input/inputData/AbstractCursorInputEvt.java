@@ -64,16 +64,16 @@ public abstract class AbstractCursorInputEvt extends MTInputEvent {
 	 * @param positionX the position x
 	 * @param positionY the position y
 	 * @param id the id
-	 * @param m the m
+	 * @param c the m
 	 */
-	public AbstractCursorInputEvt(AbstractInputSource source, float positionX, float positionY, int id, InputCursor m) {
+	public AbstractCursorInputEvt(AbstractInputSource source, float positionX, float positionY, int id, InputCursor c) {
 		super(source); 
 		this.id = id;
 		
 		this.positionX = positionX;
 		this.positionY = positionY;
 		
-		this.associatedCursor = m;
+		this.associatedCursor = c;
 	}
 	
 	/**
