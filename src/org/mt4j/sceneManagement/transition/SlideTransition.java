@@ -22,11 +22,9 @@ import org.mt4j.components.visibleComponents.shapes.MTRectangle;
 import org.mt4j.components.visibleComponents.widgets.MTSceneTexture;
 import org.mt4j.sceneManagement.Iscene;
 import org.mt4j.util.MTColor;
-import org.mt4j.util.animation.Animation;
 import org.mt4j.util.animation.AnimationEvent;
 import org.mt4j.util.animation.IAnimation;
 import org.mt4j.util.animation.IAnimationListener;
-import org.mt4j.util.animation.MultiPurposeInterpolator;
 import org.mt4j.util.animation.ani.AniAnimation;
 import org.mt4j.util.math.Vector3D;
 
@@ -67,6 +65,8 @@ public class SlideTransition extends AbstractTransition {
 	/** The next scene rectangle. */
 	private MTRectangle nextSceneRectangle;
 	
+	public boolean slideLeft;
+	
 	
 	/**
 	 * Instantiates a new slide transition.
@@ -77,6 +77,9 @@ public class SlideTransition extends AbstractTransition {
 		this(mtApplication, 2000);
 	}
 	
+	public SlideTransition(MTApplication mtApplication, long duration) {
+		this(mtApplication, duration, true);
+	}
 	
 	/**
 	 * Instantiates a new slide transition.
@@ -84,25 +87,28 @@ public class SlideTransition extends AbstractTransition {
 	 * @param mtApplication the mt application
 	 * @param duration the duration
 	 */
-	public SlideTransition(MTApplication mtApplication, long duration) {
+	public SlideTransition(MTApplication mtApplication, long duration, boolean slideLeft) {
 		super(mtApplication, "Slide Transition");
 		this.app = mtApplication;
 		this.duration = (int) duration;
 		this.finished = true;
+		this.slideLeft = slideLeft;
 		
 //		anim = new Animation("Flip animation 2", new MultiPurposeInterpolator(app.width, 0, this.duration, 0.0f, 0.7f, 1) , this);
 		anim = new AniAnimation(app.width, 0, this.duration, AniAnimation.CIRC_OUT, this);
+		if (!slideLeft)
+			((AniAnimation)anim).reverse();
 		anim.addAnimationListener(new IAnimationListener(){
 			public void processAnimationEvent(AnimationEvent ae) {
 				switch (ae.getId()) {
 				case AnimationEvent.ANIMATION_STARTED:
 				case AnimationEvent.ANIMATION_UPDATED:
-					nextSceneRectangle.translateGlobal(new Vector3D(ae.getCurrentStepDelta(),0,0));
-					lastSceneRectangle.translateGlobal(new Vector3D(ae.getCurrentStepDelta(),0,0));
+					nextSceneRectangle.translateGlobal(new Vector3D(ae.getDelta(),0,0));
+					lastSceneRectangle.translateGlobal(new Vector3D(ae.getDelta(),0,0));
 					break;
 				case AnimationEvent.ANIMATION_ENDED:
-					nextSceneRectangle.translateGlobal(new Vector3D(ae.getCurrentStepDelta(),0,0));
-					lastSceneRectangle.translateGlobal(new Vector3D(ae.getCurrentStepDelta(),0,0));
+					nextSceneRectangle.translateGlobal(new Vector3D(ae.getDelta(),0,0));
+					lastSceneRectangle.translateGlobal(new Vector3D(ae.getDelta(),0,0));
 					finished = true;
 					break;
 				default:
@@ -152,8 +158,12 @@ public class SlideTransition extends AbstractTransition {
 
 				getCanvas().addChild(lastSceneRectangle);
 				getCanvas().addChild(nextSceneRectangle);
-
-				nextSceneRectangle.translateGlobal(new Vector3D(app.width,0,0));
+				
+				if (slideLeft)
+					nextSceneRectangle.translateGlobal(new Vector3D(app.width,0,0));
+				else
+					nextSceneRectangle.translateGlobal(new Vector3D(-app.width,0,0));
+				
 				nextSceneRectangle.setVisible(true);
 
 				//Draw scenes into texture once!

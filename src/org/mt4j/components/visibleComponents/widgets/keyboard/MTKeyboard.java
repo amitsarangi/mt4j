@@ -81,8 +81,6 @@ public class MTKeyboard extends MTRoundRectangle {
 	/** The key click action. */
 	private KeyClickAction keyClickAction;
 
-//	private CloseClickAction closeClickButtonAction;
-	
 	/** The text input acceptors. */
 	private List<ITextInputListener> textInputAcceptors;
 	
@@ -100,7 +98,6 @@ public class MTKeyboard extends MTRoundRectangle {
 		//Set drawing mode
 		this.setDrawSmooth(true);
 		
-		//FIXME TEST
 		this.setHardwareInputEnabled(true);
 		
 		this.setName("unnamed mt-keyboard");
@@ -109,9 +106,8 @@ public class MTKeyboard extends MTRoundRectangle {
 		if (MT4jSettings.getInstance().isOpenGlMode())
 			this.setUseDirectGL(true);
 		
-		//TODO textareas an keyboard andocken lassen zum schreiben, oder doppelklick auf textarea?
-		//TODO buttons textarea clear machen
-		//TODO keyboard durch button heranimated
+		//TODO button textarea clear 
+		//TODO keyboard animated creation
 		
 		MTColor keyColor = new MTColor(0,0,0,255);
 		
@@ -135,16 +131,21 @@ public class MTKeyboard extends MTRoundRectangle {
 		keybCloseSvg.setBoundsPickingBehaviour(AbstractShape.BOUNDS_ONLY_CHECK);
 		keybCloseSvg.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				if (arg0.getID() == TapEvent.BUTTON_CLICKED)
-					closeButtonClicked();
+				if (arg0.getID() == TapEvent.TAPPED)
+					onCloseButtonClicked();
 			}
 		});
 		this.addChild(keybCloseSvg);
 //		*/
 		
+		
+		/*
+		 We get the key's shapes from the keys.svg svg font. 
+		 To save memory, we share the font's characters geometryinfo with the MTKey shapes.
+		 */
+		
 		//INITIALIZE SPACE-Button "by hand"
 		VectorFontCharacter SpaceF = (VectorFontCharacter) keyFont.getFontCharacterByUnicode("k");
-//		MTKey space = new MTKey(SpaceF.getGeometryInfo().getVertices(), /*spaceOutlines,*/pa, " ", " ");
 		MTKey space = new MTKey(/*spaceOutlines,*/pa, SpaceF.getGeometryInfo(), " ", " ");
 		space.setName(SpaceF.getName());
 		//Set the contours to draw the outline - do this after settings the geominfo
@@ -153,7 +154,6 @@ public class MTKeyboard extends MTRoundRectangle {
 		if (MT4jSettings.getInstance().isOpenGlMode()){
 			space.setUseDirectGL(true);
 //			System.out.println(SpaceF.getDisplayListIDs()[0] + "  - " + SpaceF.getDisplayListIDs()[1]);
-//			space.setDisplayListIDs(SpaceF.getDisplayListIDs()); //Wenn nicht displaylisten, m�ssen wir geometry auch �bernehmen!
 			space.getGeometryInfo().setDisplayListIDs(SpaceF.getGeometryInfo().getDisplayListIDs()); //Wenn nicht displaylisten, m�ssen wir geometry auch �bernehmen!
 			space.setUseDisplayList(true);
 		}
@@ -165,8 +165,6 @@ public class MTKeyboard extends MTRoundRectangle {
 		space.setGestureAllowance(RotateProcessor.class, false);
 		space.setGestureAllowance(ScaleProcessor.class, false);
 		space.unregisterAllInputProcessors();
-//		space.translate(new Vector3D(100, space.getOriginalHeight(), 0)); //Translate to 0,0
-//		space.translate(new Vector3D(225, 190,0));
 		scaleKey(space, 40);
 		space.setPositionRelativeToParent(new Vector3D(350,210,0));
 		space.setGestureAllowance(TapProcessor.class, true);
@@ -179,15 +177,9 @@ public class MTKeyboard extends MTRoundRectangle {
 		KeyInfo[] keyInfos = this.getKeysLayout();
 		
 		//CREATE THE KEYS \\
-//		for (int i = 0; i < keyInfos.size(); i++) {
-//			KeyInfo keyInfo = keyInfos.get(i);
         for (KeyInfo keyInfo : keyInfos) {
             VectorFontCharacter fontChar = (VectorFontCharacter) keyFont.getFontCharacterByUnicode(keyInfo.keyfontUnicode);
-            //FIXME expensive..
-//			MTKey key = new MTKey(fontChar.getGeometryInfo().getVertices(), fontChar.getContours(),pa, keyInfo.charUnicodeToWrite, keyInfo.charUnicodeToWriteShifted);
-//			MTKey key = new MTKey(new Vertex[]{new Vertex(0,0,0),new Vertex(10,0,0),new Vertex(0,10,0),}, /*fontChar.getContours(),*/ pa, keyInfo.charUnicodeToWrite, keyInfo.charUnicodeToWriteShifted);
             MTKey key = new MTKey(pa, fontChar.getGeometryInfo(), keyInfo.charUnicodeToWrite, keyInfo.charUnicodeToWriteShifted);
-//			key.setGeometryInfo(fontChar.getGeometryInfo());
             key.setName(fontChar.getName());
             key.setPickable(true);
             key.setFillColor(keyColor);
@@ -200,19 +192,11 @@ public class MTKeyboard extends MTRoundRectangle {
                 key.getGeometryInfo().setDisplayListIDs(fontChar.getGeometryInfo().getDisplayListIDs());
                 key.setUseDisplayList(true);
             }
-//			key.setOutlineContours(fontChar.getContours());
-
-            //Translate to 0,0
-//			key.translate(new Vector3D(0,key.getOriginalHeight(),0));
-            //Translate to its designated position
-//			key.translate(keyInfo.position);
 
             scaleKey(key, 40);
 
             //Scale ENTER and BACKSPACE
             if (key.getCharacterToWrite().equals("\n")) {
-//				key.scale(1.60f, 1.60f, 1, key.getCenterPointLocal());
-//				key.scale(1.70f, 1.70f, 1, new Vector3D(0,0,0), TransformSpace.LOCAL);
                 key.scale(1.70f, 1.70f, 1, key.getCenterPointLocal(), TransformSpace.LOCAL);
             }
 
@@ -239,7 +223,7 @@ public class MTKeyboard extends MTRoundRectangle {
             keyList.add(key);
             key.setGestureAllowance(TapProcessor.class, true);
             TapProcessor tp = new TapProcessor(pa);
-//            tp.setLockPriority(1.5f); //FIXME TEST
+//            tp.setLockPriority(1.5f); 
             tp.setLockPriority(5f); //FIXME TEST
             tp.setStopPropagation(false);
             key.registerInputProcessor(tp);
@@ -411,7 +395,6 @@ public class MTKeyboard extends MTRoundRectangle {
 		keyInfos.add(new KeyInfo("2", "2", "2", new Vector3D(startX+2*advanceMent,lineY), KeyInfo.NORMAL_KEY));
 		//FIXME should be "@" here
 		
-		
 		keyInfos.add(new KeyInfo("3", "3", "3", new Vector3D(startX+3*advanceMent,lineY), KeyInfo.KEY_ONLY_VISIBLE_WHEN_SHIFT_NOTPRESSED));
 		keyInfos.add(new KeyInfo("#", "#", "#", new Vector3D(startX+3*advanceMent,lineY),  KeyInfo.KEY_ONLY_VISIBLE_WHEN_SHIFT_PRESSED));
 		
@@ -520,10 +503,8 @@ public class MTKeyboard extends MTRoundRectangle {
 	
 	
 	private void scaleKey(MTKey key, float scale){
-//		Vector3D scalingPoint = new Vector3D(0,0,0);
 		Vector3D scalingPoint = key.getCenterPointLocal();
-		key.scale(1/key.getHeightXY(TransformSpace.RELATIVE_TO_PARENT), 1/key.getHeightXY(TransformSpace.RELATIVE_TO_PARENT), 1, scalingPoint);
-		key.scale(scale, scale, 1, scalingPoint);
+		key.scale(scale * (1/key.getHeightXY(TransformSpace.RELATIVE_TO_PARENT)), scale* (1/key.getHeightXY(TransformSpace.RELATIVE_TO_PARENT)), 1, scalingPoint);
 	}
 	
 	
@@ -537,10 +518,7 @@ public class MTKeyboard extends MTRoundRectangle {
 				centerPoint = this.getCenterPointGlobal();
 				centerPoint.transform(this.getGlobalInverseMatrix());
 			}
-			this.scale(1/this.getWidthXY(TransformSpace.RELATIVE_TO_PARENT), 1/this.getWidthXY(TransformSpace.RELATIVE_TO_PARENT), 1, centerPoint);
-			this.scale(width, width, 1, centerPoint);
-//			this.scale(1/this.getWidthLocal(), 1/this.getWidthLocal(), 1, centerPoint, TransformSpace.RELATIVE_TO_SELF);
-//			this.scale(width, width, 1, centerPoint, TransformSpace.RELATIVE_TO_SELF);
+			this.scale(width * (1/this.getWidthXY(TransformSpace.RELATIVE_TO_PARENT)) , width* (1/this.getWidthXY(TransformSpace.RELATIVE_TO_PARENT)), 1, centerPoint);
 			return true;
 		}else
 			return false;
@@ -570,7 +548,6 @@ public class MTKeyboard extends MTRoundRectangle {
 		registerInputProcessor(sp);
 		addGestureListener(ScaleProcessor.class, new DefaultScaleAction());
 		sp.setBubbledEventsEnabled(true);  //FIXME TEST
-		
 	}
 	
 	
@@ -580,7 +557,6 @@ public class MTKeyboard extends MTRoundRectangle {
 	 * @author C.Ruff
 	 */
 	private class KeyInfo{
-		
 		/** The keyfont unicode. */
 		String keyfontUnicode;
 		
@@ -622,7 +598,6 @@ public class MTKeyboard extends MTRoundRectangle {
 			this.position = position;
 			this.visibilityInfo = visibilityInfo;
 		}
-		
 	}
 	
 	
@@ -633,8 +608,6 @@ public class MTKeyboard extends MTRoundRectangle {
 	 * @author C.Ruff
 	 */
 	private class KeyClickAction implements IGestureEventListener {
-//		private HashMap<MTKey, MTKey> keysNotToScaleBack;
-		
 		/** The key press indent. */
 		private int keyPressIndent;
 		
@@ -642,7 +615,6 @@ public class MTKeyboard extends MTRoundRectangle {
 		 * Instantiates a new key click action.
 		 */
 		public KeyClickAction(){
-//			keysNotToScaleBack = new HashMap<MTKey, MTKey>();
 			keyPressIndent = 3;
 		}
 		
@@ -650,56 +622,20 @@ public class MTKeyboard extends MTRoundRectangle {
 			if (g instanceof TapEvent){
 				TapEvent clickEvent = (TapEvent)g;
 				IMTComponent3D clicked = clickEvent.getTarget();
-				
 				if (clicked != null && clicked instanceof MTKey){
 					MTKey clickedKey = (MTKey)clicked;
-					
 					switch (clickEvent.getTapID()) {
-					case TapEvent.BUTTON_DOWN:
-						clickedKey.setPressed(true);
-						float keyHeight = clickedKey.getHeightXY(TransformSpace.RELATIVE_TO_PARENT);
-						float keyWidth 	= clickedKey.getWidthXY(TransformSpace.RELATIVE_TO_PARENT);
-						
-//						clickedKey.setSizeXYRelativeToParent(keyWidth-keyPressIndent, keyHeight-keyPressIndent);
-						setSizeXYRelativeToParent(clickedKey, keyWidth-keyPressIndent, keyHeight-keyPressIndent);
-						
-						if (clickedKey.getCharacterToWrite().equals("shift")){
-							shiftPressed = true;
-							// Make certain keys visible / not visible when shift pressed!
-							for (MTKey key: shiftChangers){
-								key.setVisible(!key.isVisible());
-							}
-						}
-						
-						keyboardButtonDown(clickedKey, shiftPressed);
-							
+					case TapEvent.TAP_DOWN:
+						pressKey(clickedKey);
+						onKeyboardButtonDown(clickedKey, shiftPressed);
 						break;
-					case TapEvent.BUTTON_UP:
-					case TapEvent.BUTTON_CLICKED:
-						clickedKey.setPressed(false);
-						float kHeight = clickedKey.getHeightXY(TransformSpace.RELATIVE_TO_PARENT);
-						float kWidth = clickedKey.getWidthXY(TransformSpace.RELATIVE_TO_PARENT);
-						
-//						if (keysNotToScaleBack.get(clickedKey) == null){
-//							clickedKey.setSizeLocal(kWidth+keyPressIndent, kHeight+keyPressIndent);
-//						}else{
-//							keysNotToScaleBack.remove(clickedKey);
-//						}
-						
-//						clickedKey.setSizeXYRelativeToParent(kWidth+keyPressIndent, kHeight+keyPressIndent);
-						setSizeXYRelativeToParent(clickedKey, kWidth+keyPressIndent, kHeight+keyPressIndent);
-						
-						
-						//System.out.println("Button CLICKED: " + clickedKey.getCharacterToWrite());
-						if (clickedKey.getCharacterToWrite().equals("shift")){
-							shiftPressed = false;
-							//Set shift visible keys visible/not visible
-							for (MTKey key: shiftChangers){
-								key.setVisible(!key.isVisible());
-							}
-						}
-						
-						keyboardButtonClicked(clickedKey, shiftPressed);
+					case TapEvent.TAP_UP:
+						unpressKey(clickedKey);
+						onKeyboardButtonUp(clickedKey, shiftPressed);
+						break;
+					case TapEvent.TAPPED:
+						unpressKey(clickedKey);
+						onKeyboardButtonClicked(clickedKey, shiftPressed);
 						break;
 					default:
 						break;
@@ -708,33 +644,66 @@ public class MTKeyboard extends MTRoundRectangle {
 			}//instanceof clickevent
 			return false;
 		}//method
+		
+		
+		private void pressKey(MTKey clickedKey) {
+			clickedKey.setPressed(true);
+			float keyHeight = clickedKey.getHeightXY(TransformSpace.RELATIVE_TO_PARENT);
+			float keyWidth 	= clickedKey.getWidthXY(TransformSpace.RELATIVE_TO_PARENT);
+			
+			setSizeXYRelativeToParent(clickedKey, keyWidth-keyPressIndent, keyHeight-keyPressIndent);
+			
+			if (clickedKey.getCharacterToWrite().equals("shift")){
+				shiftPressed = true;
+				// Make certain keys visible / not visible when shift pressed!
+				for (MTKey key: shiftChangers){
+					key.setVisible(!key.isVisible());
+				}
+			}
+		}
+
+		private void unpressKey(MTKey clickedKey){
+			clickedKey.setPressed(false);
+			float kHeight = clickedKey.getHeightXY(TransformSpace.RELATIVE_TO_PARENT);
+			float kWidth = clickedKey.getWidthXY(TransformSpace.RELATIVE_TO_PARENT);
+			setSizeXYRelativeToParent(clickedKey, kWidth+keyPressIndent, kHeight+keyPressIndent);
+			
+			//System.out.println("Button CLICKED: " + clickedKey.getCharacterToWrite());
+			if (clickedKey.getCharacterToWrite().equals("shift")){
+				shiftPressed = false;
+				//Set shift visible keys visible/not visible
+				for (MTKey key: shiftChangers){
+					key.setVisible(!key.isVisible());
+				}
+			}
+		}
+		
+		/**
+		 * Sets the size xy relative to parent.
+		 * 
+		 * @param shape the shape
+		 * @param width the width
+		 * @param height the height
+		 * 
+		 * @return true, if successful
+		 */
+		private boolean setSizeXYRelativeToParent(AbstractShape shape, float width, float height){
+			if (width > 0 && height > 0){
+				Vector3D centerPoint;
+				if (shape.hasBounds()){
+					centerPoint = shape.getBounds().getCenterPointLocal();
+					centerPoint.transform(shape.getLocalMatrix()); //TODO neccessary?
+				}else{
+					centerPoint = shape.getCenterPointGlobal();
+					centerPoint.transform(shape.getGlobalInverseMatrix());
+				}
+				shape.scale(width* (1/shape.getWidthXY(TransformSpace.RELATIVE_TO_PARENT)), height*(1/shape.getHeightXY(TransformSpace.RELATIVE_TO_PARENT)), 1, centerPoint);
+				return true;
+			}else
+				return false;
+		}
 	}//class
 
-	/**
-	 * Sets the size xy relative to parent.
-	 * 
-	 * @param shape the shape
-	 * @param width the width
-	 * @param height the height
-	 * 
-	 * @return true, if successful
-	 */
-	private boolean setSizeXYRelativeToParent(AbstractShape shape, float width, float height){
-		if (width > 0 && height > 0){
-			Vector3D centerPoint;
-			if (shape.hasBounds()){
-				centerPoint = shape.getBounds().getCenterPointLocal();
-				centerPoint.transform(shape.getLocalMatrix()); //TODO n�tig?
-			}else{
-				centerPoint = shape.getCenterPointGlobal();
-				centerPoint.transform(shape.getGlobalInverseMatrix());
-			}
-			shape.scale(1/shape.getWidthXY(TransformSpace.RELATIVE_TO_PARENT), 1/shape.getHeightXY(TransformSpace.RELATIVE_TO_PARENT), 1, centerPoint);
-			shape.scale(width, height, 1, centerPoint);
-			return true;
-		}else
-			return false;
-	}
 	
 	/**
 	 * Called after keyboard button pressed.
@@ -742,7 +711,7 @@ public class MTKeyboard extends MTRoundRectangle {
 	 * @param clickedKey the clicked key
 	 * @param shiftPressed the shift pressed
 	 */
-	protected void keyboardButtonDown(MTKey clickedKey, boolean shiftPressed){
+	protected void onKeyboardButtonDown(MTKey clickedKey, boolean shiftPressed){
 		ITextInputListener[] listeners = this.getTextInputListeners();
         for (ITextInputListener textInputListener : listeners) {
             if (clickedKey.getCharacterToWrite().equals("back")) {
@@ -762,8 +731,8 @@ public class MTKeyboard extends MTRoundRectangle {
 	 * @param clickedKey the clicked key
 	 * @param shiftPressed the shift pressed
 	 */
-	protected void keyboardButtonUp(MTKey clickedKey, boolean shiftPressed){
-//		keyboardButtonClicked(clickedKey, shiftPressed);
+	protected void onKeyboardButtonUp(MTKey clickedKey, boolean shiftPressed){ 
+		
 	}
 	
 	/**
@@ -772,7 +741,7 @@ public class MTKeyboard extends MTRoundRectangle {
 	 * @param clickedKey the clicked key
 	 * @param shiftPressed the shift pressed
 	 */
-	protected void keyboardButtonClicked(MTKey clickedKey, boolean shiftPressed){
+	protected void onKeyboardButtonClicked(MTKey clickedKey, boolean shiftPressed){
 		
 	}
 	
@@ -804,12 +773,10 @@ public class MTKeyboard extends MTRoundRectangle {
 		IAnimation keybCloseAnim = new Animation("Keyboard Fade", new MultiPurposeInterpolator(width, 1, 300, 0.2f, 0.5f, 1), this);
 		keybCloseAnim.addAnimationListener(new IAnimationListener(){
 			public void processAnimationEvent(AnimationEvent ae) {
-//				float delta = ae.getAnimation().getInterpolator().getCurrentStepDelta();
 				switch (ae.getId()) {
 				case AnimationEvent.ANIMATION_STARTED:
 				case AnimationEvent.ANIMATION_UPDATED:
 					float currentVal = ae.getAnimation().getValue();
-//					keyboard.setWidthXYRelativeToParent(currentVal);
 					setWidthRelativeToParent(currentVal);
 					break;
 				case AnimationEvent.ANIMATION_ENDED:
@@ -825,7 +792,7 @@ public class MTKeyboard extends MTRoundRectangle {
 	}
 
 	
-	protected void closeButtonClicked(){
+	protected void onCloseButtonClicked(){
 		this.close();
 	}
 	
@@ -876,7 +843,6 @@ public class MTKeyboard extends MTRoundRectangle {
 	@Override
 	protected void destroyComponent() {
 		super.destroyComponent();
-		
 		keyFont = null;
 		keyList.clear();
 		shiftChangers.clear();

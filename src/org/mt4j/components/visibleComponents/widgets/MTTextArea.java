@@ -90,7 +90,7 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
 	private boolean showCaret;
 	
 	/** The show caret time. */
-	private long showCaretTime = 1500; //ms
+	private long showCaretTime; //ms
 	
 	/** The caret time counter. */
 	private int caretTimeCounter = 0;
@@ -301,7 +301,7 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
 		
 		showCaret 	= false;
 		enableCaret = false;
-		showCaretTime = 1000;
+		showCaretTime = 600;
 		
 		this.setStrokeWeight(1.5f);
 		this.setStrokeColor(new MTColor(255, 255, 255, 255));
@@ -516,7 +516,7 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
 		
 		if (this.isUseDirectGL()){
 			GL gl = Tools3D.beginGL(pa);
-			if (totalScrollTextX != 0.0f && totalScrollTextY != 0.0f){
+			if (totalScrollTextX != 0.0f || totalScrollTextY != 0.0f){
 				gl.glTranslatef(totalScrollTextX, totalScrollTextY + font.getFontMaxAscent(), 0);
 			}else{
 				gl.glTranslatef(0, font.getFontMaxAscent(), 0);

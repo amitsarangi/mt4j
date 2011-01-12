@@ -43,14 +43,14 @@ public interface ITextInputListener {
 	 */
 	public void setText(String text);
 	
-	/**
-	 * Returns the text.
-	 * <br>NOTE: the text may be different from what was set using <code>setText()</code> since
-	 * the widget may add its own control characters into the text.
-	 * 
-	 * @return the text
-	 */
-	public String getText();
+//	/**
+//	 * Returns the text.
+//	 * <br>NOTE: the text may be different from what was set using <code>setText()</code> since
+//	 * the widget may add its own control characters into the text.
+//	 * 
+//	 * @return the text
+//	 */
+//	public String getText();
 		
 	/**
 	 * Append char by unicode.

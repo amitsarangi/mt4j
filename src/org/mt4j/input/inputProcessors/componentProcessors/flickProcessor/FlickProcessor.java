@@ -222,4 +222,22 @@ public class FlickProcessor extends AbstractCursorProcessor {
 		return "Flick Processor";
 	}
 
+	public int getVelocityThreshHold() {
+		return velThreshHold;
+	}
+
+	public void setVelocityThreshHold(int velThreshHold) {
+		this.velThreshHold = velThreshHold;
+	}
+
+	public int getFlickTime() {
+		return flickTime;
+	}
+
+	public void setFlickTime(int flickTime) {
+		this.flickTime = flickTime;
+	}
+	
+	
+
 }

@@ -203,6 +203,12 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 	/** The user data. */
 	private Map<Object, Object> userData;
 	
+	/** The clip. */
+	private Clip clip;
+	
+	/** The child clip. */
+	private Clip childClip;
+	
 	private int inversePrecisionErrors;
 	private int orthogonalityErrors;
 	protected static final int invPrecisionThreshold = 1000;
@@ -1725,9 +1731,6 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 	}
 	
 	// CLIP ////////////////
-	/** The clip. */
-	protected Clip clip;
-	
 	/**
 	 * Gets the clip.
 	 * @return the clip
@@ -1752,9 +1755,6 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 
 	
 	// CHILDREN CLIP /////////////////////
-	/** The child clip. */
-	private Clip childClip;
-	
 	/**
 	 * Gets the child clip.
 	 * @return the child clip

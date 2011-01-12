@@ -17,6 +17,7 @@ import org.mt4j.input.inputProcessors.globalProcessors.CursorTracer;
 import org.mt4j.sceneManagement.AbstractScene;
 import org.mt4j.sceneManagement.Iscene;
 import org.mt4j.sceneManagement.transition.FadeTransition;
+import org.mt4j.sceneManagement.transition.ITransition;
 import org.mt4j.sceneManagement.transition.SlideTransition;
 import org.mt4j.util.MT4jSettings;
 import org.mt4j.util.MTColor;
@@ -32,6 +33,8 @@ public class Scene2 extends AbstractScene {
 	
 //	private String imagePath = System.getProperty("user.dir") + File.separator + "examples"+  File.separator +"basic"+  File.separator + "scenes" + File.separator + "data" + File.separator;
 	private String imagePath =  "basic"+  MTApplication.separator + "scenes" + MTApplication.separator + "data" + MTApplication.separator;
+	private ITransition slideLeftTransition;
+	private ITransition slideRightTransition;
 
 	public Scene2(MTApplication mtApplication, String name) {
 		super(mtApplication, name);
@@ -61,6 +64,7 @@ public class Scene2 extends AbstractScene {
 			public void actionPerformed(ActionEvent ae) {
 				switch (ae.getID()) {
 				case TapEvent.TAPPED:
+					setTransition(slideRightTransition);
 					mtApp.popScene();
 					break;
 				default:
@@ -81,6 +85,7 @@ public class Scene2 extends AbstractScene {
 			public void actionPerformed(ActionEvent ae) {
 				switch (ae.getID()) {
 				case TapEvent.TAPPED:
+					setTransition(slideLeftTransition); 
 					//Save the current scene on the scene stack before changing
 					mtApp.pushScene();
 					if (scene3 == null){
@@ -99,9 +104,10 @@ public class Scene2 extends AbstractScene {
 		nextSceneButton.setPositionGlobal(new Vector3D(mtApp.width - nextSceneButton.getWidthXY(TransformSpace.GLOBAL) - 5, mtApp.height - nextSceneButton.getHeightXY(TransformSpace.GLOBAL) - 5, 0));
 
 		//Set a scene transition - Flip transition only available using opengl supporting the FBO extenstion
-		if (MT4jSettings.getInstance().isOpenGlMode() && GLFBO.isSupported(mtApp))
-			this.setTransition(new SlideTransition(mtApp, 700)); 
-		else{
+		if (MT4jSettings.getInstance().isOpenGlMode() && GLFBO.isSupported(mtApp)){
+			slideLeftTransition = new SlideTransition(mtApp, 700, true);
+			slideRightTransition = new SlideTransition(mtApp, 700, false);
+		}else{
 			this.setTransition(new FadeTransition(mtApp));
 		}
 		
@@ -115,6 +121,7 @@ public class Scene2 extends AbstractScene {
 					case WEST:
 					case NORTH_WEST:
 					case SOUTH_WEST:
+						setTransition(slideLeftTransition); 
 						//Save the current scene on the scene stack before changing
 						mtApp.pushScene();
 						if (scene3 == null){
@@ -127,6 +134,7 @@ public class Scene2 extends AbstractScene {
 					case EAST:
 					case NORTH_EAST:
 					case SOUTH_EAST:
+						setTransition(slideRightTransition); 
 						mtApp.popScene();
 						break;
 					default:
