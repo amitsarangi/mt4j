@@ -96,7 +96,7 @@ public class ScaleProcessor extends AbstractCursorProcessor {
 					if (!sc.isGestureAborted()){
 						this.getLock(otherCursor, newCursor);
 						logger.debug(this.getName() + " we could lock both cursors!");
-						this.fireGestureEvent(new ScaleEvent(this, MTGestureEvent.GESTURE_DETECTED, fEvt.getCurrentTarget(), otherCursor, newCursor, 1, 1, 1, sc.getSecondFingerNewPos()));
+						this.fireGestureEvent(new ScaleEvent(this, MTGestureEvent.GESTURE_STARTED, fEvt.getCurrentTarget(), otherCursor, newCursor, 1, 1, 1, sc.getSecondFingerNewPos()));
 					}else{
 						logger.debug(this.getName() + " gesture aborted, probably at least 1 finger not on component!");
 						sc = null;

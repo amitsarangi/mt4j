@@ -577,7 +577,7 @@ public class CSSSelector {
 	 */
 	private int searchLevelsThree(MTComponent c) {
 		int numberOfLevels = numberOfLevels(c);
-		boolean found = false;
+//		boolean found = false;
 
 		try {
 			if (numberOfLevels > 3) {
@@ -610,7 +610,7 @@ public class CSSSelector {
 		//return 	isMatch(primaryType, primary, c.getParent().getParent()) &&
 		//isMatch(child.getPrimaryType(), child.getPrimary(), c.getParent());
 		int numberOfLevels = numberOfLevels(c);
-		boolean found = false;
+//		boolean found = false;
 		
 		if (numberOfLevels > 2) {
 			for (int i=3; i <= numberOfLevels; i++) {
@@ -638,8 +638,8 @@ public class CSSSelector {
 	private int searchLevelsFive(MTComponent c) {
 		//Search all above levels for instance of Selector
 		int numberOfLevels = numberOfLevels(c);
-		boolean found = false;
-		int foundAtLevel = 0;
+//		boolean found = false;
+//		int foundAtLevel = 0;
 		try {
 			if (numberOfLevels > 1) {
 					if (isMatch(primaryType, primary, getComponentAtLevel(c,2))) {
@@ -740,7 +740,7 @@ public class CSSSelector {
 	 * @param c the Class
 	 * @return the superclasses
 	 */
-	private List<String> getSuperclasses(Class c) {
+	private List<String> getSuperclasses(Class<?> c) {
 		List<String> superclasses = new ArrayList<String>();
 		superclasses.add(c.getSimpleName().toUpperCase().replace(" ", ""));
 		while (c.getSuperclass() != null) {

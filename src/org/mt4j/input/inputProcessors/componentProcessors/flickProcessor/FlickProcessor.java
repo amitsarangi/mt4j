@@ -88,7 +88,7 @@ public class FlickProcessor extends AbstractCursorProcessor {
 				this.startTime = currentEvent.getTimeStamp();
 				this.flickVelocity = false;
 //				logger.debug(this.getName() + " successfully locked cursor (id:" + cursor.getId() + ")");
-				this.fireGestureEvent(new FlickEvent(this, MTGestureEvent.GESTURE_DETECTED, cursor.getCurrentTarget(), FlickDirection.UNDETERMINED, false));
+				this.fireGestureEvent(new FlickEvent(this, MTGestureEvent.GESTURE_STARTED, cursor.getCurrentTarget(), FlickDirection.UNDETERMINED, false));
 		}
 	}
 

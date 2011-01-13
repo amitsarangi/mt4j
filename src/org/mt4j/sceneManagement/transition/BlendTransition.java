@@ -162,11 +162,7 @@ public class BlendTransition extends AbstractTransition {
 	}
 	
 	
-	/* (non-Javadoc)
-	 * @see org.mt4j.sceneManagement.AbstractScene#shutDown()
-	 */
-	@Override
-	public void shutDown() {
+	public void onLeave() {
 		finished = true;
 		this.lastScene = null;
 		this.nextScene = null;

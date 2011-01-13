@@ -265,7 +265,7 @@ public class AirHockeyScene extends AbstractScene {
 				//Un-scale position from mt4j to box2d
 				PhysicsHelper.scaleDown(to, scale);
 				switch (de.getId()) {
-				case DragEvent.GESTURE_DETECTED:
+				case DragEvent.GESTURE_STARTED:
 					comp.sendToFront();
 					body.wakeUp();
 					body.setXForm(new Vec2(to.x,  to.y), body.getAngle());

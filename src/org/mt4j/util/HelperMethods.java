@@ -21,6 +21,7 @@ package org.mt4j.util;
 import javax.media.opengl.GL;
 
 import org.mt4j.util.math.Matrix;
+import org.mt4j.util.math.Tools3D;
 
 import processing.core.PApplet;
 import processing.core.PGraphics3D;
@@ -173,7 +174,7 @@ public class HelperMethods {
     	switch (RENDERER_STATE) {
 		case PROCESSING_MATRIX_MODE:
 			RENDERER_STATE = OPENGL_MATRIX_MODE;
-			gl = ((PGraphicsOpenGL)pa.g).beginGL();
+			gl = Tools3D.beginGL(pa);
 			return gl;
 		case OPENGL_MATRIX_MODE:
 //			return ((PGraphicsOpenGL)pa.g).gl;
@@ -181,7 +182,7 @@ public class HelperMethods {
 		default:
 			break;
 		}
-    	return ((PGraphicsOpenGL)pa.g).beginGL();
+    	return Tools3D.beginGL(pa);
     }
     
     /*
@@ -231,7 +232,7 @@ public class HelperMethods {
 	    	break;
 		case OPENGL_MATRIX_MODE:
 			RENDERER_STATE = PROCESSING_MATRIX_MODE;
-			((PGraphicsOpenGL)pa.g).endGL();
+			Tools3D.endGL(pa);
 			break;
 		default:
 			break;

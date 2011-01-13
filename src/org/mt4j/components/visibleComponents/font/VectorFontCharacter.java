@@ -19,7 +19,6 @@ package org.mt4j.components.visibleComponents.font;
 
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
-import java.sql.Savepoint;
 import java.util.List;
 
 import javax.media.opengl.GL;
@@ -27,7 +26,6 @@ import javax.media.opengl.GL;
 import org.mt4j.components.bounds.IBoundingShape;
 import org.mt4j.components.visibleComponents.shapes.GeometryInfo;
 import org.mt4j.components.visibleComponents.shapes.mesh.MTTriangleMesh;
-import org.mt4j.util.MTColor;
 import org.mt4j.util.math.Tools3D;
 import org.mt4j.util.math.ToolsGeometry;
 import org.mt4j.util.math.Vertex;

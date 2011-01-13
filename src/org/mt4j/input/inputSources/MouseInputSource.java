@@ -124,7 +124,7 @@ public class MouseInputSource extends AbstractInputSource implements MouseMotion
 			mouseBusy = true;
 			
 			InputCursor m = new InputCursor();
-			MTMouseInputEvt te = new MTMouseInputEvt(this, e.getModifiers(), e.getX(), e.getY(), MTFingerInputEvt.INPUT_DETECTED, m);
+			MTMouseInputEvt te = new MTMouseInputEvt(this, e.getModifiers(), e.getX(), e.getY(), MTFingerInputEvt.INPUT_STARTED, m);
 			
 			lastUsedMouseID = m.getId();
 			ActiveCursorPool.getInstance().putActiveCursor(lastUsedMouseID, m);

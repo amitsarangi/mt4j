@@ -39,7 +39,12 @@ public abstract class AbstractCursorInputEvt extends MTInputEvent {
 //		INPUT_ENDED
 //	}
 	
+	/** The Constant INPUT_DETECTED. 
+	 * @deprecated use INPUT_STARTED instead 
+	 * */
 	public static final int INPUT_DETECTED = 0;
+	
+	public static final int INPUT_STARTED = 0;
 	
 	public static final int INPUT_UPDATED = 1;
 	
@@ -154,11 +159,11 @@ public abstract class AbstractCursorInputEvt extends MTInputEvent {
 		return positionY;
 	}
 	
-	public float getScreenX(){
+	public float getX(){
 		return this.positionX;
 	}
 	
-	public float getScreenY(){
+	public float getY(){
 		return this.positionY;
 	}
 	

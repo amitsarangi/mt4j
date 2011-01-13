@@ -176,11 +176,11 @@ public class CursorTracer extends AbstractGlobalInputProcessor{
 		if (inputEvent instanceof AbstractCursorInputEvt) {
 			AbstractCursorInputEvt cursorEvt = (AbstractCursorInputEvt)inputEvent;
 			InputCursor c = ((AbstractCursorInputEvt)inputEvent).getCursor();
-			Vector3D position = new Vector3D(cursorEvt.getPosX(), cursorEvt.getPosY());
+			Vector3D position = new Vector3D(cursorEvt.getX(), cursorEvt.getY());
 
 			AbstractShape displayShape = null;
 			switch (cursorEvt.getId()) {
-			case AbstractCursorInputEvt.INPUT_DETECTED:
+			case AbstractCursorInputEvt.INPUT_STARTED:
 				displayShape = createDisplayComponent(app, position);
 				cursorIDToDisplayShape.put(c, displayShape);
 				overlayGroup.addChild(displayShape);

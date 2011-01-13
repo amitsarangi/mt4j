@@ -80,7 +80,7 @@ public class UnistrokeProcessor extends AbstractCursorProcessor {
 				context.update(inputCursor);
 				context.update(inputCursor);
 				
-				this.fireGestureEvent(new UnistrokeEvent(this, MTGestureEvent.GESTURE_DETECTED, inputCursor.getCurrentTarget(), context.getVisualizer(), UnistrokeGesture.NOGESTURE));
+				this.fireGestureEvent(new UnistrokeEvent(this, MTGestureEvent.GESTURE_STARTED, inputCursor.getCurrentTarget(), context.getVisualizer(), UnistrokeGesture.NOGESTURE));
 			}
 		}
 

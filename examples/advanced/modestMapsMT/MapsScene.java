@@ -211,7 +211,7 @@ public class MapsScene extends AbstractScene implements MouseWheelListener, Mous
 		fotoButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent ae) {
 				switch (ae.getID()) {
-				case TapEvent.BUTTON_CLICKED:
+				case TapEvent.TAPPED:
 					Point[] p = getScreenPoints();
                     for (Point point : p) {
                         Location loc = map.pointLocation(point.x, point.y);
@@ -295,7 +295,7 @@ public class MapsScene extends AbstractScene implements MouseWheelListener, Mous
 		mapMenu.registerInputProcessor(new TapProcessor(mtApplication, 50));
 		mapMenu.addGestureListener(TapProcessor.class, new IGestureEventListener() {
 			public boolean processGestureEvent(MTGestureEvent ge) {
-				if (((TapEvent)ge).getTapID() == TapEvent.BUTTON_CLICKED){
+				if (((TapEvent)ge).getTapID() == TapEvent.TAPPED){
 					if (!animationRunning){
 						animationRunning = true;
 						if (doSlideIn){
@@ -334,13 +334,13 @@ public class MapsScene extends AbstractScene implements MouseWheelListener, Mous
 			public boolean processGestureEvent(MTGestureEvent ge) {
 				TapEvent te = (TapEvent)ge;
 				switch (te.getTapID()) { 
-				case TapEvent.BUTTON_DOWN:
+				case TapEvent.TAP_DOWN:
 					cell.setFillColor(cellPressedFillColor);
 					break;
-				case TapEvent.BUTTON_UP:
+				case TapEvent.TAP_UP:
 					cell.setFillColor(cellFillColor);
 					break;
-				case TapEvent.BUTTON_CLICKED:
+				case TapEvent.TAPPED:
 //					System.out.println("Button clicked: " + label);
 					cell.setFillColor(cellFillColor);
 					map.setMapProvider(mapProvider);
@@ -393,7 +393,7 @@ public class MapsScene extends AbstractScene implements MouseWheelListener, Mous
 				//Add a little panning to scale, so if we can pan while we scale
 				InputCursor c1 = se.getFirstCursor();
 				InputCursor c2 = se.getSecondCursor();
-				if (se.getId() == MTGestureEvent.GESTURE_DETECTED){
+				if (se.getId() == MTGestureEvent.GESTURE_STARTED){
 					Vector3D i1 = c1.getPosition();
 					Vector3D i2 = c2.getPosition();
 					lastMiddle = i1.getAdded(i2.getSubtracted(i1).scaleLocal(0.5f));
@@ -719,7 +719,7 @@ public class MapsScene extends AbstractScene implements MouseWheelListener, Mous
                                                 if (g instanceof TapEvent) {
                                                     TapEvent ce = (TapEvent) g;
                                                     switch (ce.getTapID()) {
-                                                        case TapEvent.BUTTON_DOWN:
+                                                        case TapEvent.TAP_DOWN:
                                                             IMTComponent3D e = ce.getTarget();
                                                             Photo foto = tagToPhoto.get(e);
                                                             if (foto != null) {

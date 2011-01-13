@@ -182,7 +182,7 @@ public class Win7NativeTouchSource extends AbstractInputSource {
 					
 					InputCursor c = new InputCursor();
 					long cursorID = c.getId();
-					MTWin7TouchInputEvt touchEvt = new MTWin7TouchInputEvt(this, wmTouchEvent.x, wmTouchEvent.y, wmTouchEvent.contactSizeX, wmTouchEvent.contactSizeY, MTFingerInputEvt.INPUT_DETECTED, c);
+					MTWin7TouchInputEvt touchEvt = new MTWin7TouchInputEvt(this, wmTouchEvent.x, wmTouchEvent.y, wmTouchEvent.contactSizeX, wmTouchEvent.contactSizeY, MTFingerInputEvt.INPUT_STARTED, c);
 					int touchID = wmTouchEvent.id;
 					ActiveCursorPool.getInstance().putActiveCursor(cursorID, c);
 					touchToCursorID.put(touchID, cursorID);

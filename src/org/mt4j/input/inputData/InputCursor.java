@@ -464,7 +464,7 @@ public class InputCursor{
 	 * @return the current events position x
 	 */
 	public float getCurrentEvtPosX(){
-		return this.getCurrentEvent().getScreenX();
+		return this.getCurrentEvent().getX();
 	}
 	
 	/**
@@ -473,7 +473,7 @@ public class InputCursor{
 	 * @return the current events position y
 	 */
 	public float getCurrentEvtPosY(){
-		return this.getCurrentEvent().getScreenY();
+		return this.getCurrentEvent().getY();
 	}
 	
 	
@@ -514,7 +514,7 @@ public class InputCursor{
 	 * @return the start position x
 	 */
 	public float getStartPosX(){
-		return this.getFirstEvent().getScreenX();
+		return this.getFirstEvent().getX();
 	}	
 	
 	/**
@@ -523,7 +523,7 @@ public class InputCursor{
 	 * @return the start position y
 	 */
 	public float getStartPosY(){
-		return this.getFirstEvent().getScreenY();
+		return this.getFirstEvent().getY();
 	}	
 	
 	
@@ -710,7 +710,7 @@ public class InputCursor{
 		if (prev == null)
 			prev = posEvt;
 		//TODO normalize direction or not?
-		return new Vector3D(posEvt.getScreenX() - prev.getScreenX(), posEvt.getScreenY() - prev.getScreenY(), 0);
+		return new Vector3D(posEvt.getX() - prev.getX(), posEvt.getY() - prev.getY(), 0);
 	}
 	
 	
@@ -747,8 +747,8 @@ public class InputCursor{
 		float totalY = 0;
 		for (int i = 0; i < lastEvents.size(); i++) {
 			 AbstractCursorInputEvt ce = lastEvents.get(i);
-			 float x = ce.getScreenX();
-			 float y = ce.getScreenY();
+			 float x = ce.getX();
+			 float y = ce.getY();
 			 
 			 if (i == 0){
 				 lastX = x;

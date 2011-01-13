@@ -31,15 +31,12 @@ public abstract class MTGestureEvent extends MTInputEvent {
 	/** The id. */
 	private int id;
 	
-	/** The target component. */
-//	private IMTComponent3D targetComponent;
-//	private InputMotion[] motions;
-	
 	/**
 	 The Constant GESTURE_DETECTED.
 	@deprecated use GESTURE_STARTED instead */
 	public static final int GESTURE_DETECTED 	= 0;
 	
+	/** The Constant GESTURE_STARTED. */
 	public static final int GESTURE_STARTED 	= 0;
 	
 	/** The Constant GESTURE_UPDATED. */
@@ -49,9 +46,16 @@ public abstract class MTGestureEvent extends MTInputEvent {
 	public static final int GESTURE_ENDED		= 2;
 	
 	
+	/** The Constant GESTURE_CANCELED. 
+	 * Used when the gesture/input processing is aborted.
+	 * It is not guaranteed atm that GESTURE_ENDED will be called in the future.
+	 * */
 	public static final int GESTURE_CANCELED	= 3;
 	
 	
+	/** The Constant GESTURE_RESUMED. 
+	 * Used when a gesture is resumed because it has the highest priority again for example.
+	 * */
 	public static final int GESTURE_RESUMED		= 4;
 	
 	/**
@@ -64,8 +68,7 @@ public abstract class MTGestureEvent extends MTInputEvent {
 	public MTGestureEvent(IInputProcessor source, int id, IMTComponent3D targetComponent) {
 		super(source, targetComponent, false);
 		this.id = id;
-		this.setCurrentTarget(targetComponent); //FIXME ..
-//		this.targetComponent = targetComponent;
+		this.setCurrentTarget(targetComponent); //test ..
 	}
 	
 	
@@ -75,8 +78,6 @@ public abstract class MTGestureEvent extends MTInputEvent {
 	public IInputProcessor getSource() {
 		return (IInputProcessor)super.getSource();
 	}
-
-
 
 
 	/**
@@ -94,23 +95,6 @@ public abstract class MTGestureEvent extends MTInputEvent {
 		return id;
 	}
 
-//	/**
-//	 * Gets the target component.
-//	 * 
-//	 * @return the target component
-//	 */
-//	public IMTComponent3D getTargetComponent() {
-//		return targetComponent;
-//	}
-//	
-//	/**
-//	 * Sets the target component.
-//	 * 
-//	 * @param targetComponent the new target component
-//	 */
-//	public void setTargetComponent(IMTComponent3D targetComponent) {
-//		this.targetComponent = targetComponent;
-//	}
 
 	/**
 	 * Sets the id.
@@ -122,10 +106,4 @@ public abstract class MTGestureEvent extends MTInputEvent {
 	}
 
 
-	
-	
-	
-//	public InputMotion[] getMotions() {
-//		return this.motions;
-//	}
 }

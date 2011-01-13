@@ -26,7 +26,7 @@ public class BlinkingEmissionActivateVisualizationAction implements IGestureEven
 			TapEvent tapEv = (TapEvent)ge;
 			switch(tapEv.getId())
 			{
-			case TapEvent.GESTURE_DETECTED:
+			case TapEvent.GESTURE_STARTED:
 				cluster.setVisualizeProvider(methodProvider);
 				break;
 			case TapEvent.GESTURE_ENDED:

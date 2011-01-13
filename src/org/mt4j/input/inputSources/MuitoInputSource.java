@@ -65,10 +65,8 @@ public class MuitoInputSource extends AbstractInputSource implements MotionProvi
 	 */
 	public void newMotionProvided(Motion motion) {
 		MotionEvent me = motion.getLastEvent();
-		
 		InputCursor m = new InputCursor();
-		MTFingerInputEvt touchEvt = new MTFingerInputEvt(this, me.getXAbs(), me.getYAbs(), MTFingerInputEvt.INPUT_DETECTED, m);
-//		m.addEvent(touchEvt);
+		MTFingerInputEvt touchEvt = new MTFingerInputEvt(this, me.getXAbs(), me.getYAbs(), MTFingerInputEvt.INPUT_STARTED, m);
 		
 		long motionID = motion.getId();
 		ActiveCursorPool.getInstance().putActiveCursor(motionID, m);
@@ -84,11 +82,7 @@ public class MuitoInputSource extends AbstractInputSource implements MotionProvi
 	 */
 	public void providedMotionUpdated(Motion m, MotionEvent me) {
 		InputCursor mo = ActiveCursorPool.getInstance().getActiveCursorByID(muitoIDToInputMotionID.get(m.getId()));
-		
 		MTFingerInputEvt te = new MTFingerInputEvt(this, me.getXAbs(), me.getYAbs(), MTFingerInputEvt.INPUT_UPDATED, mo);
-//		m.addEvent(new MTFingerInputEvt2(this, e.getX(), e.getY(), MTFingerInputEvt.FINGER_UPDATE, m));
-		
-		//FIRE
 		this.enqueueInputEvent(te);
 	}
 	
@@ -99,27 +93,16 @@ public class MuitoInputSource extends AbstractInputSource implements MotionProvi
 	public void providedMotionCompleted(Motion m) {
 		long motionID = muitoIDToInputMotionID.get(m.getId());
 		InputCursor mo = ActiveCursorPool.getInstance().getActiveCursorByID(motionID);
-
 		MTFingerInputEvt te;
 		if (mo.getCurrentEvent() != null)
-			te = new MTFingerInputEvt(this, mo.getCurrentEvent().getPosX(), mo.getCurrentEvent().getPosY(), MTFingerInputEvt.INPUT_ENDED, mo);
+			te = new MTFingerInputEvt(this, mo.getCurrentEvent().getX(), mo.getCurrentEvent().getY(), MTFingerInputEvt.INPUT_ENDED, mo);
 		else
 			te = new MTFingerInputEvt(this, 0,0, MTFingerInputEvt.INPUT_ENDED, mo);
 		
-//		m.addEvent(te);
-		
 		this.enqueueInputEvent(te);
-		
 		ActiveCursorPool.getInstance().removeCursor(motionID);
-		
 		muitoIDToInputMotionID.remove(m.getId());		
 	}
-
-	
-//	@Override
-//	public boolean firesEventType(Class<? extends MTInputEvent> evtClass){
-//		return (evtClass == MTFingerInputEvt.class);
-//	}
 
 
 }

@@ -26,8 +26,6 @@ import org.mt4j.components.interfaces.IMTComponent3D;
 import org.mt4j.components.visibleComponents.shapes.MTPolygon;
 import org.mt4j.input.inputProcessors.componentProcessors.lassoProcessor.IdragClusterable;
 
-import processing.core.PApplet;
-
 /**
  * The Class ClusterManager.
  * @author Christopher Ruff
@@ -37,20 +35,15 @@ public class ClusterManager {
 	/** The child objects. */
 	private ArrayList<Cluster> childObjects;
 	
-	/** The pa. */
-	private PApplet pa;
-	
 	/** The canvas. */
 	private MTCanvas canvas;
 
 	/**
 	 * Instantiates a new cluster manager.
-	 * 
-	 * @param pa the pa
+	 *
 	 * @param canvas the canvas
 	 */
-	public ClusterManager(PApplet pa, MTCanvas canvas) {
-		this.pa = pa;
+	public ClusterManager(MTCanvas canvas) {
 		this.canvas = canvas;
 		childObjects = new ArrayList<Cluster>();
 	}

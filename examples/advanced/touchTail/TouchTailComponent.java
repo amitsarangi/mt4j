@@ -82,7 +82,7 @@ public class TouchTailComponent extends AbstractVisibleComponent {
 			DragEvent de = (DragEvent)ge;
 			Vector3D to = de.getTo();
 			switch (de.getId()) {
-			case DragEvent.GESTURE_DETECTED:{
+			case DragEvent.GESTURE_STARTED:{
 				currentGestureID = (currentGestureID+1) % nGestures;
 				//System.out.println("New current gesture ID => " + currentGestureID);
 				TailGesture G = gestureArray[currentGestureID];

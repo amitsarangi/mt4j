@@ -132,7 +132,7 @@ public class MTWindow extends MTRoundRectangle {
 				windowBackGround.scaleGlobal(se.getScaleFactorX(), se.getScaleFactorY(), se.getScaleFactorZ(), se.getScalingPoint());
 				
 				//Scale vertices of the window
-				AbstractShape target = (AbstractShape)ge.getTargetComponent();
+				AbstractShape target = (AbstractShape)ge.getTarget();
 				Vertex[] verts = target.getGeometryInfo().getVertices();
 				Vector3D newScalingPoint = target.globalToLocal(se.getScalingPoint());
 				Matrix m = Matrix.getScalingMatrix(newScalingPoint, se.getScaleFactorX(), se.getScaleFactorY(), se.getScaleFactorZ());

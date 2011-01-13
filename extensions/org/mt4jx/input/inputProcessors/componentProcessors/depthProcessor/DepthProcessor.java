@@ -66,7 +66,7 @@ public class DepthProcessor extends AbstractCursorProcessor {
 	public void cursorEnded(InputCursor inputCursor,
 			MTFingerInputEvt positionEvent) {
 
-		IMTComponent3D comp = positionEvent.getTargetComponent();
+		IMTComponent3D comp = positionEvent.getTarget();
 				
 		logger.debug(this.getName() + " INPUT_ENDED RECIEVED - MOTION: "
 				+ inputCursor.getId());
@@ -160,7 +160,7 @@ public class DepthProcessor extends AbstractCursorProcessor {
 	@Override
 	public void cursorStarted(InputCursor inputCursor,
 			MTFingerInputEvt positionEvent) {
-		IMTComponent3D comp = positionEvent.getTargetComponent();
+		IMTComponent3D comp = positionEvent.getTarget();
 		
 		if (lockedCursors.size() == 0) { 
 			dpc = new DepthContext(inputCursor, comp);
@@ -172,7 +172,7 @@ public class DepthProcessor extends AbstractCursorProcessor {
 						InputCursor otherCursor = lockedCursors.get(0);
 						//dpc = new DepthContext(inputCursor,comp);
 						this.fireGestureEvent(new DepthGestureEvent(this,
-								MTGestureEvent.GESTURE_DETECTED, getTargetComponent(), inputCursor,
+								MTGestureEvent.GESTURE_STARTED, getTargetComponent(), inputCursor,
 								dpc.getTranslationVect()));
 					}
 					depthCursors.add(inputCursor);
@@ -221,11 +221,11 @@ public class DepthProcessor extends AbstractCursorProcessor {
 
 	public void cursorUpdated(InputCursor inputCursor,
 			MTFingerInputEvt positionEvent) {
-		IMTComponent3D comp = positionEvent.getTargetComponent();
+		IMTComponent3D comp = positionEvent.getTarget();
 		
 		
-		Vector3D vec = positionEvent.getTargetComponent().getIntersectionGlobal(
-				Tools3D.getCameraPickRay(applet, comp, inputCursor.getCurrentEvent().getPosX(), inputCursor.getCurrentEvent().getPosY()));
+		Vector3D vec = positionEvent.getTarget().getIntersectionGlobal(
+				Tools3D.getCameraPickRay(applet, comp, inputCursor.getCurrentEvent().getX(), inputCursor.getCurrentEvent().getY()));
 		
 		if(vec!=null)
 		{

@@ -360,7 +360,7 @@ public class PuzzleFactory {
 			InputCursor c2 = re.getSecondCursor();
 			
 			switch (re.getId()) {
-			case RotateEvent.GESTURE_DETECTED:{
+			case RotateEvent.GESTURE_STARTED:{
 				oldC1 = c1;
 				oldC2 = c2;
 				startP1 = comp.getIntersectionGlobal(Tools3D.getCameraPickRay(app, comp, c1));

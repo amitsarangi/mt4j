@@ -34,7 +34,7 @@ public class InertiaDragAction implements IGestureEventListener {
 			DragEvent de = (DragEvent)ge;
 			IMTController oldController;
 			switch (de.getId()) {
-			case DragEvent.GESTURE_DETECTED:
+			case DragEvent.GESTURE_STARTED:
 				break;
 			case DragEvent.GESTURE_RESUMED:
 				break;

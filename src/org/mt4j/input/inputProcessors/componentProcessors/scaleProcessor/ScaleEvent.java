@@ -131,7 +131,7 @@ public class ScaleEvent extends MTGestureEvent{
 	 * @see java.lang.Object#toString()
 	 */
 	public String toString(){
-		return super.toString() + " - " + " Scaleobject:" + this.getTargetComponent().getName() + " X-Scalefactor: " + scaleFactorX + " Y-Scalefactor:" + scaleFactorY + " Z-Scalefactor:" + scaleFactorZ + " Scalingpoint:" + scalingPoint;
+		return super.toString() + " - " + " Scaleobject:" + this.getTarget().getName() + " X-Scalefactor: " + scaleFactorX + " Y-Scalefactor:" + scaleFactorY + " Z-Scalefactor:" + scaleFactorZ + " Scalingpoint:" + scalingPoint;
 	}
 
 	/**

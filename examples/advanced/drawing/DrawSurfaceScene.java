@@ -80,7 +80,7 @@ public class DrawSurfaceScene extends AbstractScene {
 							public void processAction() {
 								boolean firstPoint = false;
 								Vector3D lastDrawnPoint = cursorToLastDrawnPoint.get(m);
-								Vector3D pos = new Vector3D(posEvt.getScreenX(), posEvt.getScreenY(), 0);
+								Vector3D pos = new Vector3D(posEvt.getX(), posEvt.getY(), 0);
 
 								if (lastDrawnPoint == null){
 									lastDrawnPoint = new Vector3D(pos);

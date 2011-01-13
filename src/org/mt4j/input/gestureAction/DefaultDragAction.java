@@ -73,7 +73,7 @@ public class DefaultDragAction implements IGestureEventListener,ICollisionAction
 				dragTarget = dragEvent.getTarget(); 
 			
 			switch (dragEvent.getId()) {
-			case MTGestureEvent.GESTURE_DETECTED:
+			case MTGestureEvent.GESTURE_STARTED:
 			case MTGestureEvent.GESTURE_RESUMED:
 				//Put target on top -> draw on top of others
 				if (dragTarget instanceof MTComponent){

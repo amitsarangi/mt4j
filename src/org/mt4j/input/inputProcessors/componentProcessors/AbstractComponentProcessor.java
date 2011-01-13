@@ -224,8 +224,8 @@ public abstract class AbstractComponentProcessor implements IMTInputEventListene
 //		/*
 		if (debug){
 			switch (ge.getId()) {
-			case MTGestureEvent.GESTURE_DETECTED:
-				System.out.println(((AbstractComponentProcessor)ge.getSource()).getName() +  " fired GESTURE_DETECTED");
+			case MTGestureEvent.GESTURE_STARTED:
+				System.out.println(((AbstractComponentProcessor)ge.getSource()).getName() +  " fired GESTURE_STARTED");
 				break;
 			case MTGestureEvent.GESTURE_UPDATED:
 				System.out.println(((AbstractComponentProcessor)ge.getSource()).getName() +  " fired GESTURE_UPDATED");

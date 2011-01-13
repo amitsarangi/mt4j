@@ -133,7 +133,7 @@ public class TapProcessor extends AbstractCursorProcessor {
 				this.getLock(m);
 				logger.debug(this.getName() + " successfully locked cursor (id:" + m.getId() + ")");
 				buttonDownScreenPos = m.getPosition();
-				this.fireGestureEvent(new TapEvent(this, MTGestureEvent.GESTURE_DETECTED, positionEvent.getCurrentTarget(), m, buttonDownScreenPos, TapEvent.BUTTON_DOWN));
+				this.fireGestureEvent(new TapEvent(this, MTGestureEvent.GESTURE_STARTED, positionEvent.getCurrentTarget(), m, buttonDownScreenPos, TapEvent.TAP_DOWN));
 			}
 		}
 	}
@@ -187,11 +187,11 @@ public class TapProcessor extends AbstractCursorProcessor {
 		
 		//If component is detached from tree, destroyed etc
 		if (positionEvent.getCurrentTarget().getViewingCamera() == null){
-			this.fireGestureEvent(new TapEvent(this, MTGestureEvent.GESTURE_ENDED, positionEvent.getCurrentTarget(), m, buttonUpScreenPos, TapEvent.BUTTON_CLICKED));			
+			this.fireGestureEvent(new TapEvent(this, MTGestureEvent.GESTURE_ENDED, positionEvent.getCurrentTarget(), m, buttonUpScreenPos, TapEvent.TAPPED));			
 			return;
 		}
 		
-		Vector3D intersection = positionEvent.getCurrentTarget().getIntersectionGlobal(Tools3D.getCameraPickRay(applet, positionEvent.getCurrentTarget(), m.getCurrentEvent().getScreenX(), m.getCurrentEvent().getScreenY()));
+		Vector3D intersection = positionEvent.getCurrentTarget().getIntersectionGlobal(Tools3D.getCameraPickRay(applet, positionEvent.getCurrentTarget(), m.getCurrentEvent().getX(), m.getCurrentEvent().getY()));
 		//logger.debug("Distance between buttondownScreenPos: " + buttonDownScreenPos + " and upScrPos: " + buttonUpScreenPos +  " is: " + Vector3D.distance(buttonDownScreenPos, buttonUpScreenPos));
 		//Check if at finger_Up the cursor is still on that object or if the cursor has moved too much 
 		if ((intersection != null || positionEvent.getCurrentTarget() instanceof MTCanvas)
@@ -205,17 +205,17 @@ public class TapProcessor extends AbstractCursorProcessor {
 				if (this.timeLastTap != -1 && (now - this.timeLastTap) <= this.getDoubleTapTime()){
 					//Its a Double tap
 					this.timeLastTap = -1;
-					this.fireGestureEvent(new TapEvent(this, MTGestureEvent.GESTURE_ENDED, positionEvent.getCurrentTarget(), m, buttonUpScreenPos, TapEvent.BUTTON_DOUBLE_CLICKED));
+					this.fireGestureEvent(new TapEvent(this, MTGestureEvent.GESTURE_ENDED, positionEvent.getCurrentTarget(), m, buttonUpScreenPos, TapEvent.DOUBLE_TAPPED));
 				}else{
 					this.timeLastTap = now;
-					this.fireGestureEvent(new TapEvent(this, MTGestureEvent.GESTURE_ENDED, positionEvent.getCurrentTarget(), m, buttonUpScreenPos, TapEvent.BUTTON_CLICKED));
+					this.fireGestureEvent(new TapEvent(this, MTGestureEvent.GESTURE_ENDED, positionEvent.getCurrentTarget(), m, buttonUpScreenPos, TapEvent.TAPPED));
 				}
 			}else{
-				this.fireGestureEvent(new TapEvent(this, MTGestureEvent.GESTURE_ENDED, positionEvent.getCurrentTarget(), m, buttonUpScreenPos, TapEvent.BUTTON_CLICKED));
+				this.fireGestureEvent(new TapEvent(this, MTGestureEvent.GESTURE_ENDED, positionEvent.getCurrentTarget(), m, buttonUpScreenPos, TapEvent.TAPPED));
 			}
 		}else{
 			//logger.debug("FINGER UP NOT ON SAME OBJ!");
-			this.fireGestureEvent(new TapEvent(this, MTGestureEvent.GESTURE_ENDED, positionEvent.getCurrentTarget(), m, buttonUpScreenPos, TapEvent.BUTTON_UP));
+			this.fireGestureEvent(new TapEvent(this, MTGestureEvent.GESTURE_ENDED, positionEvent.getCurrentTarget(), m, buttonUpScreenPos, TapEvent.TAP_UP));
 		}
 	}
 
@@ -232,7 +232,7 @@ public class TapProcessor extends AbstractCursorProcessor {
 		}
 
 		logger.debug(this.getName() + " cursor:" + m.getId() + " CURSOR LOCKED. Was an active cursor in this gesture!");
-		this.fireGestureEvent(new TapEvent(this, MTGestureEvent.GESTURE_ENDED, m.getCurrentEvent().getCurrentTarget(), m, new Vector3D(m.getCurrentEvent().getScreenX(), m.getCurrentEvent().getScreenY()), TapEvent.BUTTON_UP));
+		this.fireGestureEvent(new TapEvent(this, MTGestureEvent.GESTURE_ENDED, m.getCurrentEvent().getCurrentTarget(), m, new Vector3D(m.getCurrentEvent().getX(), m.getCurrentEvent().getY()), TapEvent.TAP_UP));
 	}
 
 

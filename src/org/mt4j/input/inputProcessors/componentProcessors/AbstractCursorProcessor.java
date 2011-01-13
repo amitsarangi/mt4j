@@ -74,7 +74,7 @@ public abstract class AbstractCursorProcessor extends AbstractComponentProcessor
 		MTFingerInputEvt posEvt = (MTFingerInputEvt)inputEvent;
 		InputCursor c = posEvt.getCursor();
 		switch (posEvt.getId()) {
-		case MTFingerInputEvt.INPUT_DETECTED:
+		case MTFingerInputEvt.INPUT_STARTED:
 			activeCursors.add(c);
 			activeCursorsWithEndedOnes.add(c);
 			c.registerForLocking(this);
@@ -135,7 +135,7 @@ public abstract class AbstractCursorProcessor extends AbstractComponentProcessor
 		////////////////////////////
 		
 		switch (posEvt.getId()) {
-		case MTFingerInputEvt.INPUT_DETECTED:
+		case MTFingerInputEvt.INPUT_STARTED:
 //			activeCursors.add(c);
 			cursorStarted(c, posEvt);
 			break;
@@ -157,8 +157,8 @@ public abstract class AbstractCursorProcessor extends AbstractComponentProcessor
 	
 	@Override
 	protected void fireGestureEvent(MTGestureEvent ge) {
-		switch (ge.getId()) { //FIXME TEST
-		case MTGestureEvent.GESTURE_DETECTED:
+		switch (ge.getId()) { 
+		case MTGestureEvent.GESTURE_STARTED:
 			gestureInProgress = true;
 			break;
 		case MTGestureEvent.GESTURE_UPDATED:
@@ -640,7 +640,7 @@ public abstract class AbstractCursorProcessor extends AbstractComponentProcessor
 	 * <br>-> If yes -> check if the gesture is still in progress (i.e. by checking if the getLockedCursors() list has the same size as the cursors used by this processor/gesture
 	 * <br>-> Check if all gesture preconditions are met and we can lock the cursor(s) using canLock(..) to restart the gesture 
 	 * <br>-> lock the cursor(s) using getLock(..)
-	 * <br>-> fire a new gesture event with id = GESTURE_DETECTED
+	 * <br>-> fire a new gesture event with id = GESTURE_
 	 * 
 	 * @param cursor the cursor
 	 */

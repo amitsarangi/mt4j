@@ -25,7 +25,7 @@ public class ActivateVisualizationAction implements IGestureEventListener {
 			DragEvent tapEv = (DragEvent)ge;
 			switch(tapEv.getId())
 			{
-			case DragEvent.GESTURE_DETECTED:
+			case DragEvent.GESTURE_STARTED:
 				cluster.setVisualizeProvider(methodProvider);
 				break;
 			case DragEvent.GESTURE_ENDED:				

@@ -51,7 +51,7 @@ public class MTImageCropScaleAction implements IGestureEventListener{
 
 		public boolean processGestureEvent(MTGestureEvent ge) {
 			ScaleEvent se = (ScaleEvent)ge;
-			if (se.getId() == MTGestureEvent.GESTURE_DETECTED){
+			if (se.getId() == MTGestureEvent.GESTURE_STARTED){
 				l1 = null; l2 = null; l3 = null; l4 = null;
 				shape.setAnchor(PositionAnchor.UPPER_LEFT); //FIXME TEST
 			}
@@ -61,7 +61,7 @@ public class MTImageCropScaleAction implements IGestureEventListener{
 				Vector3D firstCursorInComponent = shape.globalToLocal(firstCursorIntersection);
 				Vector3D secondCursorInComponent = shape.globalToLocal(secondCursorIntersection);
 				float[] minMax = ToolsGeometry.getMinXYMaxXY(new Vector3D[]{firstCursorInComponent, secondCursorInComponent});
-				if (se.getId() == MTGestureEvent.GESTURE_DETECTED){
+				if (se.getId() == MTGestureEvent.GESTURE_STARTED){
 					l1 = new MTLine(shape.getRenderer(), new Vertex(minMax[0],minMax[1]), new Vertex(minMax[2],minMax[1]));
 					l2 = new MTLine(shape.getRenderer(), new Vertex(minMax[0],minMax[1]), new Vertex(minMax[0],minMax[3]));
 					l3 = new MTLine(shape.getRenderer(), new Vertex(minMax[2],minMax[1]), new Vertex(minMax[2],minMax[3]));

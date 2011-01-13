@@ -255,9 +255,6 @@ public class Tools3D {
 	 * @return the pick ray
 	 */
 	public static Ray getCameraPickRay(PApplet applet, IMTComponent3D component, float screenX, float screenY ){
-//		Vector3D rayStartPoint 		= component.getResonsibleCamera().getPosition();
-//		Vector3D newPointInRayDir 	=  Tools3D.unprojectScreenCoords(applet, component.getResonsibleCamera(), screenX, screenY);
-//		return new Ray(rayStartPoint, newPointInRayDir);
 		return Tools3D.getCameraPickRay(applet, component.getViewingCamera(), screenX, screenY);
 	}
 	

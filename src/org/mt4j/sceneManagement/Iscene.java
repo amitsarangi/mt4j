@@ -38,16 +38,20 @@ public interface Iscene {
 //	 * Inits the scene.
 //	 */
 //	public void init();
-	
-	
+//	
 //	/**
 //	 * Shut down scene.
 //	 */
 //	public void shutDown();
-	
+
+	/**
+	 * Is invoked on a scene just before it is set to be the currently active scene.
+	 */
 	public void onEnter();
-	
-	
+
+	/**
+	 * Gets called on the current scene just before the current scene becomes inactive in favor of another scene.
+	 */
 	public void onLeave();
 	
 	/**
@@ -63,8 +67,6 @@ public interface Iscene {
 	 * @return the scene cam
 	 */
 	public Icamera getSceneCam();
-	
-	//public void reset(); //?
 	
 //	public void update(long timeDelta);
 	

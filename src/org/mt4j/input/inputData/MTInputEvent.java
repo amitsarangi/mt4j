@@ -114,7 +114,6 @@ public class MTInputEvent extends MTEvent {
 	
 	
 	
-	
 	private short eventPhase;
 	public static final short CAPTURING_PHASE 	= 1; // The current event phase is the capturing phase.
 	public static final short AT_TARGET 		= 2; 		//  The event is currently being evaluated at the target EventTarget.

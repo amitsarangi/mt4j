@@ -23,11 +23,9 @@ import org.mt4j.components.visibleComponents.shapes.MTRectangle;
 import org.mt4j.components.visibleComponents.widgets.MTSceneTexture;
 import org.mt4j.sceneManagement.Iscene;
 import org.mt4j.util.MTColor;
-import org.mt4j.util.animation.Animation;
 import org.mt4j.util.animation.AnimationEvent;
 import org.mt4j.util.animation.IAnimation;
 import org.mt4j.util.animation.IAnimationListener;
-import org.mt4j.util.animation.MultiPurposeInterpolator;
 import org.mt4j.util.animation.ani.AniAnimation;
 
 /**
@@ -102,7 +100,7 @@ public class FlipTransition extends AbstractTransition {
 		anim2 = new AniAnimation(0, 90, (int)((float)this.duration/2f), AniAnimation.CIRC_OUT, this);
 		anim2.addAnimationListener(new IAnimationListener(){
 			public void processAnimationEvent(AnimationEvent ae) {
-				nextSceneRectangle.rotateYGlobal(nextSceneRectangle.getCenterPointGlobal(), ae.getCurrentStepDelta());
+				nextSceneRectangle.rotateYGlobal(nextSceneRectangle.getCenterPointGlobal(), ae.getDelta());
 				if (ae.getId() == AnimationEvent.ANIMATION_ENDED){
 					finished = true;
 				}
@@ -113,7 +111,7 @@ public class FlipTransition extends AbstractTransition {
 		anim = new AniAnimation(0,90, (int)((float)this.duration/2f), AniAnimation.LINEAR, this);
         anim.addAnimationListener(new IAnimationListener(){
         	public void processAnimationEvent(AnimationEvent ae) {
-        		lastSceneRectangle.rotateYGlobal(lastSceneRectangle.getCenterPointGlobal(), ae.getCurrentStepDelta());
+        		lastSceneRectangle.rotateYGlobal(lastSceneRectangle.getCenterPointGlobal(), ae.getDelta());
         		if (ae.getId() == AnimationEvent.ANIMATION_ENDED){
 //					nextSceneWindow.setVisible(true);
 //					lastSceneWindow.setVisible(false);
@@ -186,11 +184,8 @@ public class FlipTransition extends AbstractTransition {
 	}
 	
 	
-	/* (non-Javadoc)
-	 * @see org.mt4j.sceneManagement.AbstractScene#shutDown()
-	 */
 	@Override
-	public void shutDown() {
+	public void onLeave() {
 		finished = true;
 		this.lastScene = null;
 		this.nextScene = null;

@@ -95,10 +95,10 @@ public class FadeTransition extends AbstractTransition {
 				switch (ae.getId()) {
 				case AnimationEvent.ANIMATION_STARTED:
 				case AnimationEvent.ANIMATION_UPDATED:
-					fullScreenQuad.setFillColor(new MTColor(0,0,0, ae.getCurrentValue()));
+					fullScreenQuad.setFillColor(new MTColor(0,0,0, ae.getValue()));
 					break;
 				case AnimationEvent.ANIMATION_ENDED:
-					fullScreenQuad.setFillColor(new MTColor(0,0,0, ae.getCurrentValue()));
+					fullScreenQuad.setFillColor(new MTColor(0,0,0, ae.getValue()));
 					finished = true;
 					break;
 				default:
@@ -114,7 +114,7 @@ public class FadeTransition extends AbstractTransition {
         		switch (ae.getId()) {
 				case AnimationEvent.ANIMATION_STARTED:
 				case AnimationEvent.ANIMATION_UPDATED:
-					fullScreenQuad.setFillColor(new MTColor(0,0,0, ae.getCurrentValue()));
+					fullScreenQuad.setFillColor(new MTColor(0,0,0, ae.getValue()));
 					break;
 				case AnimationEvent.ANIMATION_ENDED:
 					sceneToDraw = nextScene;
@@ -155,11 +155,8 @@ public class FadeTransition extends AbstractTransition {
 	}
 	
 	
-	/* (non-Javadoc)
-	 * @see org.mt4j.sceneManagement.AbstractScene#shutDown()
-	 */
 	@Override
-	public void shutDown() {
+	public void onLeave() {
 		anim.stop();
 		anim2.stop();
 		finished = true;

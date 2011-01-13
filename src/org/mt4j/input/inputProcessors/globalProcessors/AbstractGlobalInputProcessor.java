@@ -32,8 +32,6 @@ import org.mt4j.input.inputData.MTInputEvent;
 import org.mt4j.input.inputProcessors.GestureUtils;
 import org.mt4j.input.inputProcessors.IInputProcessor;
 import org.mt4j.input.inputSources.IinputSourceListener;
-import org.mt4j.util.math.Tools3D;
-import org.mt4j.util.math.ToolsGeometry;
 import org.mt4j.util.math.Vector3D;
 
 import processing.core.PApplet;
@@ -63,23 +61,19 @@ public abstract class AbstractGlobalInputProcessor implements IinputSourceListen
 	 */
 	public AbstractGlobalInputProcessor() {
 		this.disabled 	= false;
-//		this.gestureListeners = new ArrayList<IMTEventListener>();
 		inputListeners = new ArrayList<IMTInputEventListener>();
 	} 
 
-	
 	
 	
 	/* (non-Javadoc)
 	 * @see org.mt4j.input.inputSources.IinputSourceListener#processInputEvent(org.mt4j.input.test.MTInputEvent)
 	 */
 	final public boolean processInputEvent(MTInputEvent inputEvent){
-//		if(!this.isDisabled()){ //this is commented because we try to handle that in the inputsources
-			this.processInputEvtImpl(inputEvent);
-			return true;
-//		}
+		this.processInputEvtImpl(inputEvent);
+		return true;
 	}
-	
+
 	
 	/**
 	 * Process input evt implementation.
@@ -89,7 +83,6 @@ public abstract class AbstractGlobalInputProcessor implements IinputSourceListen
 	abstract public void processInputEvtImpl(MTInputEvent inputEvent);
 	
 	
-	//FIXME disabled property isnt honored anywhere anymore!
 	/**
 	 * Checks if is disabled.
 	 * 

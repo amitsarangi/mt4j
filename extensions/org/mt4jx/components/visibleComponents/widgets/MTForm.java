@@ -106,7 +106,7 @@ public abstract class MTForm extends MTRectangle{
 		public boolean processGestureEvent(MTGestureEvent ge) {
 			if (ge instanceof TapEvent) {
 				TapEvent te = (TapEvent)ge;
-				if (te.getTapID() == TapEvent.BUTTON_CLICKED) {
+				if (te.getTapID() == TapEvent.TAPPED) {
 					setBooleanValue(!getBooleanValue());
 				}
 				

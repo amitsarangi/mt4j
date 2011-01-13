@@ -137,16 +137,16 @@ public abstract class AbstractScene implements Iscene {
 	}
 	
 	
-	/**
-	 * Is invoked on a scene just before it is set to be the currently active scene.
+	/* (non-Javadoc)
+	 * @see org.mt4j.sceneManagement.Iscene#onEnter()
 	 */
 	public void onEnter(){
 		init(); //for backwards compatibility to call old code, since init() was renamed onEnter();
 	}
 	
 	
-	/**
-	 * Gets called on the current scene just before the current scene becomes inactive in favor of another scene.
+	/* (non-Javadoc)
+	 * @see org.mt4j.sceneManagement.Iscene#onLeave()
 	 */
 	public void onLeave(){
 		shutDown(); //for backwards compatibility to call old code, since shutDown() was renamed onLeave();

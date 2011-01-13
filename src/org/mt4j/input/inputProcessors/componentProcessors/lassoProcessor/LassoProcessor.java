@@ -113,7 +113,7 @@ public class LassoProcessor extends AbstractCursorProcessor {
 				cursorToContext.put(c, context);
 				//To speed things up, selection is only checked at the end of the gesture
 				IdragClusterable[] selectedComps = new IdragClusterable[0]; //no things selected anyway yet
-				this.fireGestureEvent(new LassoEvent(this, MTGestureEvent.GESTURE_DETECTED, canvas, c, context.getPolygon(), selectedComps));
+				this.fireGestureEvent(new LassoEvent(this, MTGestureEvent.GESTURE_STARTED, canvas, c, context.getPolygon(), selectedComps));
 			}
 		}
 		
@@ -273,7 +273,7 @@ public class LassoProcessor extends AbstractCursorProcessor {
 			this.cursor = cursor;
 			
 			Vector3D newPos = ToolsGeometry.getRayPlaneIntersection(
-					Tools3D.getCameraPickRay(pa, camera, cursor.getCurrentEvent().getScreenX(), cursor.getCurrentEvent().getScreenY()), 
+					Tools3D.getCameraPickRay(pa, camera, cursor.getCurrentEvent().getX(), cursor.getCurrentEvent().getY()), 
 					planeNormal, 
 					pointInPlane);
 			
@@ -360,7 +360,7 @@ public class LassoProcessor extends AbstractCursorProcessor {
 //				this.newPosition = Tools3D.unprojectScreenCoords(pa, cursor.getLastEvent().getPositionX(), cursor.getLastEvent().getPositionY());			
 //				pa.popMatrix();
 
-				this.newPosition = Tools3D.unprojectScreenCoords(pa, camera, cursor.getCurrentEvent().getScreenX(), cursor.getCurrentEvent().getScreenY());
+				this.newPosition = Tools3D.unprojectScreenCoords(pa, camera, cursor.getCurrentEvent().getX(), cursor.getCurrentEvent().getY());
 
 				Vector3D rayStartPoint = camera.getPosition(); //default cam
 				Vector3D newPos = ToolsGeometry.getRayPlaneIntersection(new Ray(rayStartPoint, newPosition), planeNormal, pointInPlane);

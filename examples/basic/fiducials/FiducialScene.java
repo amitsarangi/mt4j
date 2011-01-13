@@ -49,7 +49,7 @@ public class FiducialScene extends AbstractScene implements IMTInputEventListene
 
 			AbstractShape comp;
 			switch (fEvt.getId()) {
-			case MTFiducialInputEvt.INPUT_DETECTED:
+			case MTFiducialInputEvt.INPUT_STARTED:
 				//Create a new component for the fiducial
 				AbstractShape newComp = createComponent(fID, position);
 				fiducialIDToComp.put(fID, newComp); //Map id to component

@@ -55,11 +55,11 @@ public class InputRetargeter extends AbstractGlobalInputProcessor {
 			InputCursor m = posEvt.getCursor();
 			
 			switch (posEvt.getId()) {
-			case AbstractCursorInputEvt.INPUT_DETECTED:{
+			case AbstractCursorInputEvt.INPUT_STARTED:{
 //				logger.debug("Finger DOWN-> " + " ID:" + posEvt.getId() + "; X:" + posEvt.getPosX() + " Y:" + posEvt.getPosY() + "; Source: " + posEvt.getSource());
 //				System.out.println("Finger DOWN-> " + " ID:" + posEvt.getId() + "; X:" + posEvt.getPosX() + " Y:" + posEvt.getPosY() + "; Source: " + posEvt.getSource()+  " CursorID: " + m.getId() + " appInfoProv: " + appInfoProvider);
 				//Check if there is an object under the cursor and save it to a hashtable with the event if so
-				IMTComponent3D obj = appInfoProvider.getComponentAt(posEvt.getScreenX(), posEvt.getScreenY());
+				IMTComponent3D obj = appInfoProvider.getComponentAt(posEvt.getX(), posEvt.getY());
 				if (obj != null){
 					cursorToObjectMap.put(m, obj);
 					posEvt.setTarget(obj);

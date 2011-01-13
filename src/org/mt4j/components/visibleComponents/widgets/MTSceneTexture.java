@@ -172,7 +172,7 @@ public class MTSceneTexture extends MTRectangle {
 			if (GLStencilUtil.getInstance().isClipActive()){
 				clipping = true;
 				gl.glPushAttrib(GL.GL_STENCIL_BUFFER_BIT);
-				gl.glClearStencil(GLStencilUtil.getInstance().stencilValueStack.peek());
+				gl.glClearStencil(GLStencilUtil.stencilValueStack.peek());
 				gl.glClear(GL.GL_STENCIL_BUFFER_BIT);
 				//			gl.glDisable(GL.GL_STENCIL_TEST);
 			}
@@ -231,8 +231,8 @@ public class MTSceneTexture extends MTRectangle {
 		//We have to retarget inputevents for this component to the windowed scene
 		if (inEvt instanceof AbstractCursorInputEvt){
 			AbstractCursorInputEvt posEvt = (AbstractCursorInputEvt)inEvt;
-			float x = posEvt.getPosX();
-			float y = posEvt.getPosY();
+			float x = posEvt.getX();
+			float y = posEvt.getY();
 			
 			float newX = 0;
 			float newY = 0;
@@ -252,7 +252,7 @@ public class MTSceneTexture extends MTRectangle {
 			AbstractCursorInputEvt newEvt = null;
 			switch (posEvt.getId()) 
 			{
-			case AbstractCursorInputEvt.INPUT_DETECTED:{
+			case AbstractCursorInputEvt.INPUT_STARTED:{
 				InputCursor newCursor = new InputCursor();
 				try {
 					newEvt = (AbstractCursorInputEvt) posEvt.clone();

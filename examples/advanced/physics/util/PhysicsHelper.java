@@ -113,7 +113,7 @@ public class PhysicsHelper {
 				public boolean processGestureEvent(MTGestureEvent ge) {
 					DragEvent de = (DragEvent)ge;
 					try{
-						MTComponent comp = (MTComponent)de.getTargetComponent();
+						MTComponent comp = (MTComponent)de.getTarget();
 						Body body = (Body)comp.getUserData("box2d");
 						MouseJoint mouseJoint;
 						Vector3D to = new Vector3D(de.getTo());
@@ -123,7 +123,7 @@ public class PhysicsHelper {
 						long cursorID =  de.getDragCursor().getId();
 
 						switch (de.getId()) {
-						case DragEvent.GESTURE_DETECTED:
+						case DragEvent.GESTURE_STARTED:
 							comp.sendToFront();
 							body.wakeUp();
 							mouseJoint = createDragJoint(theWorld, body, to.x, to.y);
@@ -190,13 +190,13 @@ public class PhysicsHelper {
 					DragEvent de = (DragEvent)ge;
 					Vector3D dir = PhysicsHelper.scaleDown(new Vector3D(de.getTranslationVect()), worldScale);
 					try{
-						MTComponent comp = (MTComponent)de.getTargetComponent();
+						MTComponent comp = (MTComponent)de.getTarget();
 						Body body = (Body)comp.getUserData("box2d");
 						body.setXForm(
 								new Vec2(body.getPosition().x + dir.x, body.getPosition().y + dir.y),
 								body.getAngle());
 						switch (de.getId()) {
-						case DragEvent.GESTURE_DETECTED:
+						case DragEvent.GESTURE_STARTED:
 							comp.sendToFront();
 							body.wakeUp();
 							break;

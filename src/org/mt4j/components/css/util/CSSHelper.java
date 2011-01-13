@@ -137,7 +137,6 @@ public class CSSHelper {
 	/**
 	 * Evaluate the style sheets (in order of relevance).
 	 */
-	@SuppressWarnings("unchecked")
 	private void evaluateStyleSheets() {
 		sheets = cssStyleManager.getRelevantStyles(c);
 		Collections.sort(sheets);

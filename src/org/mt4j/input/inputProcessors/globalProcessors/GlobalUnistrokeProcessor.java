@@ -54,7 +54,7 @@ public class GlobalUnistrokeProcessor extends AbstractGlobalInputProcessor {
 			InputCursor inputCursor = ce.getCursor();
 			
 			switch (ce.getId()) {
-			case AbstractCursorInputEvt.INPUT_DETECTED:{
+			case AbstractCursorInputEvt.INPUT_STARTED:{
 				UnistrokeContext context = new UnistrokeContext(pa, planeNormal, pointInPlane, inputCursor, recognizer, du, canvas);
 				if (!context.isGestureAborted()) {
 					cursorToContext.put(inputCursor, context);
@@ -66,7 +66,7 @@ public class GlobalUnistrokeProcessor extends AbstractGlobalInputProcessor {
 					context.update(inputCursor);
 					context.update(inputCursor);
 					
-					this.fireInputEvent(new UnistrokeEvent(this, MTGestureEvent.GESTURE_DETECTED, canvas, context.getVisualizer(), UnistrokeGesture.NOGESTURE));
+					this.fireInputEvent(new UnistrokeEvent(this, MTGestureEvent.GESTURE_STARTED, canvas, context.getVisualizer(), UnistrokeGesture.NOGESTURE));
 				}
 				
 			}break;

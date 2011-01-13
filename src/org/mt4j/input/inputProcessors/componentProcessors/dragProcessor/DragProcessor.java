@@ -73,7 +73,7 @@ public class DragProcessor extends AbstractCursorProcessor {
 				//Lock this cursor with our priority
 				this.getLock(cursor);
 				logger.debug(this.getName() + " successfully locked cursor (id:" + cursor.getId() + ")");
-				this.fireGestureEvent(new DragEvent(this,MTGestureEvent.GESTURE_DETECTED, fe.getCurrentTarget(), cursor, dc.getLastPosition(), dc.getNewPosition()));
+				this.fireGestureEvent(new DragEvent(this,MTGestureEvent.GESTURE_STARTED, fe.getCurrentTarget(), cursor, dc.getLastPosition(), dc.getNewPosition()));
 			}else{
 				logger.debug(this.getName() + " gesture aborted, probably finger not on component!");
 				dc = null;

@@ -25,7 +25,6 @@ import java.nio.IntBuffer;
 import javax.media.opengl.GL;
 
 import processing.core.PApplet;
-import processing.opengl.PGraphicsOpenGL;
 
 /**
  * The Class ToolsLight.
@@ -47,7 +46,7 @@ public class ToolsLight {
      * @param position the position
      */
     public static void setupDefaultLightning(PApplet pa, int lightID, Vector3D position){
-    	GL gl = ((PGraphicsOpenGL)pa.g).gl;
+    	GL gl = Tools3D.getGL(pa);
     	
     	//Set default ambient lightning for all objs
     	setAmbientLight(gl, new float[]{0.2f, 0.2f, 0.2f,1});

@@ -188,10 +188,9 @@ public class MTSuggestionTextArea extends MTTextArea {
 	 * @return the position as Vector3D
 	 */
 	private Vector3D calcPos(MTRectangle rect, MTPolygon ta, float xo, float yo) {
-
-		return new Vector3D((ta.getWidthXYVectLocal().length() / 2)
-				+ rect.getVerticesLocal()[0].getX() + xo, (ta
-				.getHeightXYVectLocal().length() / 2)
+		return new Vector3D((ta.getWidthXY(TransformSpace.LOCAL) / 2)
+				+ rect.getVerticesLocal()[0].getX() + xo, 
+				(ta.getHeightXY(TransformSpace.LOCAL) / 2)
 				+ rect.getVerticesLocal()[0].getY() + yo);
 	}
 
@@ -199,7 +198,6 @@ public class MTSuggestionTextArea extends MTTextArea {
 	 * Draw suggestion box.
 	 */
 	private void drawSuggestionBox() {
-
 		String suggestions = "";
 		int i = 0;
 		List<String> strings = this.getRelevantStrings();
@@ -308,7 +306,7 @@ public class MTSuggestionTextArea extends MTTextArea {
 		public boolean processGestureEvent(MTGestureEvent ge) {
 			if (ge instanceof TapEvent) {
 				TapEvent te = (TapEvent) ge;
-				if (te.getTapID() == TapEvent.BUTTON_CLICKED) {
+				if (te.getTapID() == TapEvent.TAPPED) {
 					Vector3D w = Tools3D.project(app, app.getCurrentScene()
 							.getSceneCam(), te.getLocationOnScreen());
 					Vector3D x = suggestionBox.globalToLocal(w);
@@ -392,10 +390,10 @@ public class MTSuggestionTextArea extends MTTextArea {
 		public boolean processGestureEvent(MTGestureEvent ge) {
 			if (ge instanceof TapEvent) {
 				TapEvent te = (TapEvent) ge;
-				if (te.getTapID() == TapEvent.BUTTON_CLICKED) {
+				if (te.getTapID() == TapEvent.TAPPED) {
 					System.out.println(ta.getText() + ": " + te.getTapID() + " (" + te.getId() + ")");
 					if (keyboard == null
-							&& te.getTapID() == TapEvent.BUTTON_CLICKED) {
+							&& te.getTapID() == TapEvent.TAPPED) {
 						keyboard = new MTKeyboard(app);
 						addChild(keyboard);
 						keyboard.addTextInputListener(ta);
@@ -412,9 +410,6 @@ public class MTSuggestionTextArea extends MTTextArea {
 								ta.getStrokeColor().getG(), ta.getStrokeColor().getG(),
 								ta.getStrokeColor().getAlpha() * 0.75f));
 						keyboard.setStrokeWeight(ta.getStrokeWeight());
-	
-	
-	
 	
 						keyboard.setPositionRelativeToParent(calcPos(
 								ta,

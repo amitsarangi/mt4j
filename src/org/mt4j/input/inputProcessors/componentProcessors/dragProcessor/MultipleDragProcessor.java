@@ -66,7 +66,7 @@ public class MultipleDragProcessor extends AbstractCursorProcessor {
 		IMTComponent3D comp = positionEvent.getTarget();
 		if (!dc.gestureAborted){
 			motionToDragContext.put(inputCursor, dc);
-			this.fireGestureEvent(new DragEvent(this, DragEvent.GESTURE_DETECTED, comp, inputCursor, dc.lastPosition, dc.newPosition));
+			this.fireGestureEvent(new DragEvent(this, DragEvent.GESTURE_STARTED, comp, inputCursor, dc.lastPosition, dc.newPosition));
 		}
 	}
 

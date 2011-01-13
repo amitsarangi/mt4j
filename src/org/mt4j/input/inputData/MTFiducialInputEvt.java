@@ -158,7 +158,7 @@ public class MTFiducialInputEvt extends AbstractCursorInputEvt {
 	 */
 	@Override
 	public Object clone() throws CloneNotSupportedException {
-		return new MTFiducialInputEvt((AbstractInputSource) this.getSource(), this.getPosX(), this.getPosY(), this.getId(), this.getCursor(), this.getFiducialId(), this.getAngle(), this.getX_speed(), this.getY_speed(), this.getR_speed(), this.getM_accel(), this.getR_accel() );
+		return new MTFiducialInputEvt((AbstractInputSource) this.getSource(), this.getX(), this.getY(), this.getId(), this.getCursor(), this.getFiducialId(), this.getAngle(), this.getX_speed(), this.getY_speed(), this.getR_speed(), this.getM_accel(), this.getR_accel() );
 	}
 
 //	/** The Constant FIDUCIAL_ADDED. */

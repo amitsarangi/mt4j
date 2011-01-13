@@ -94,14 +94,14 @@ public class FluidSimulationScene extends AbstractScene{
         	public boolean processInputEvent(MTInputEvent inEvt){
         		if(inEvt instanceof AbstractCursorInputEvt){
         			AbstractCursorInputEvt posEvt = (AbstractCursorInputEvt)inEvt;
-        			if (posEvt.hasTarget() && posEvt.getTargetComponent().equals(getCanvas())){
+        			if (posEvt.hasTarget() && posEvt.getTarget().equals(getCanvas())){
         				InputCursor m = posEvt.getCursor();
         				AbstractCursorInputEvt prev = m.getPreviousEventOf(posEvt);
         				if (prev == null)
         					prev = posEvt;
 
-        				Vector3D pos = new Vector3D(posEvt.getPosX(), posEvt.getPosY(), 0);
-        				Vector3D prevPos = new Vector3D(prev.getPosX(), prev.getPosY(), 0);
+        				Vector3D pos = new Vector3D(posEvt.getX(), posEvt.getY(), 0);
+        				Vector3D prevPos = new Vector3D(prev.getX(), prev.getY(), 0);
 
         				//System.out.println("Pos: " + pos);
         				float mouseNormX = pos.x * invWidth;
@@ -237,7 +237,7 @@ public class FluidSimulationScene extends AbstractScene{
 	        
 	        app.textureMode(PConstants.NORMALIZED);
 //	        app.textureMode(app.IMAGE);
-	        app.beginShape(app.QUADS);
+	        app.beginShape(MTApplication.QUADS);
 	        app.texture(imgFluid);
 	        app.vertex(0, 0, 0, 0);
 	        app.vertex(app.width, 0, 1, 0);

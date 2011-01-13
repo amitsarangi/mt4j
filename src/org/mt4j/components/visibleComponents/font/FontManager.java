@@ -397,7 +397,9 @@ public class FontManager {
 	public boolean removeFromCache(IFont font) {
 		int in = this.fonts.indexOf(font);
 		if (in != -1){
-			IFont removedFont = fonts.remove(in); 
+//			IFont removedFont = 
+				fonts.remove(in); 
+				
 //			if (removedFont != null){ //DOESENT DESTROY THE FONT, font would get destroyed 2 times if font.destroy is called, which calls removeFromCache
 //				removedFont.destroy();
 //			}

@@ -95,7 +95,7 @@ public class ArcballProcessor extends AbstractCursorProcessor {
 				this.getLock(m);
 				ac = new MyArcBall(m);
 				logger.debug(this.getName() + " successfully locked cursor (id:" + m.getId() + ")");
-				this.fireGestureEvent(new ArcBallGestureEvent(this, ArcBallGestureEvent.GESTURE_DETECTED, positionEvent.getCurrentTarget(), identityDummy));
+				this.fireGestureEvent(new ArcBallGestureEvent(this, ArcBallGestureEvent.GESTURE_STARTED, positionEvent.getCurrentTarget(), identityDummy));
 			}
 		}
 	}
@@ -322,7 +322,7 @@ public class ArcballProcessor extends AbstractCursorProcessor {
 //	    	
 //	    	Ray orgRay = new Ray(rayStartPoint, pointInRayDir);
 	    	
-	    	Ray realRayForThisObj = Tools3D.getCameraPickRay(applet, shape, m.getCurrentEvent().getPosX(), m.getCurrentEvent().getPosY());
+	    	Ray realRayForThisObj = Tools3D.getCameraPickRay(applet, shape, m.getCurrentEvent().getX(), m.getCurrentEvent().getY());
 	    		
 //	    	Ray realRayForThisObj = Tools3D.toComponentCameraPickRay(applet, shape, orgRay);
 			
@@ -420,7 +420,7 @@ public class ArcballProcessor extends AbstractCursorProcessor {
 //		    	Ray orgRay = new Ray(rayStartPoint, pointInRayDir);
 //		    	Ray realRayForThisObj = Tools3D.toComponentCameraPickRay(applet, shape, orgRay);
 				
-		    	Ray realRayForThisObj = Tools3D.getCameraPickRay(applet, shape, m.getCurrentEvent().getPosX(), m.getCurrentEvent().getPosY());
+		    	Ray realRayForThisObj = Tools3D.getCameraPickRay(applet, shape, m.getCurrentEvent().getX(), m.getCurrentEvent().getY());
 		    	
 				//TRIAL
 				Ray invertedRay = Ray.getTransformedRay(realRayForThisObj, shape.getGlobalInverseMatrix());
@@ -450,7 +450,7 @@ public class ArcballProcessor extends AbstractCursorProcessor {
 //		    	Ray orgRay = new Ray(rayStartPoint, pointInRayDir);
 //		    	Ray realRayForThisObj = Tools3D.toComponentCameraPickRay(applet, shape, orgRay);
 				
-		    	Ray realRayForThisObj = Tools3D.getCameraPickRay(applet, shape, m.getCurrentEvent().getPosX(), m.getCurrentEvent().getPosY());
+		    	Ray realRayForThisObj = Tools3D.getCameraPickRay(applet, shape, m.getCurrentEvent().getX(), m.getCurrentEvent().getY());
 		    	
 				//TRIAL
 				Ray invertedRay = Ray.getTransformedRay(realRayForThisObj, shape.getGlobalInverseMatrix());

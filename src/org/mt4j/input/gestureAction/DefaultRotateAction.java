@@ -73,7 +73,7 @@ public class DefaultRotateAction implements IGestureEventListener,ICollisionActi
 				target = rotateEvent.getTarget(); 
 			
 			switch (rotateEvent.getId()) {
-			case MTGestureEvent.GESTURE_DETECTED:
+			case MTGestureEvent.GESTURE_STARTED:
 				if (target instanceof MTComponent){
 					((MTComponent)target).sendToFront();
 					/*

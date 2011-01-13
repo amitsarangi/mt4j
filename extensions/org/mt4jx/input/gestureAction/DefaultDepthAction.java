@@ -1,11 +1,8 @@
 package org.mt4jx.input.gestureAction;
 
 import org.mt4j.components.MTComponent;
-
-
 import org.mt4j.components.interfaces.IMTComponent3D;
 import org.mt4j.components.visibleComponents.shapes.MTPolygon;
-import org.mt4j.components.visibleComponents.shapes.mesh.MTTriangleMesh;
 import org.mt4j.input.gestureAction.ICollisionAction;
 import org.mt4j.input.inputProcessors.IGestureEventListener;
 import org.mt4j.input.inputProcessors.MTGestureEvent;
@@ -39,7 +36,7 @@ public class DefaultDepthAction implements IGestureEventListener,ICollisionActio
 		
 		switch(depthEv.getId())
 		{
-			case MTGestureEvent.GESTURE_DETECTED:
+			case MTGestureEvent.GESTURE_STARTED:
 			{
 				if (dragDepthTarget instanceof MTComponent){
 					MTComponent baseComp = (MTComponent)dragDepthTarget;	

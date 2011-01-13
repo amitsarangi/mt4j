@@ -118,7 +118,7 @@ public class TapEvent extends MTGestureEvent {
 	 * @return true, if is tapped
 	 */
 	public boolean isTapped(){
-		return this.getTapID() == BUTTON_CLICKED;
+		return this.getTapID() == TAPPED;
 	}
 	
 	/**
@@ -127,7 +127,7 @@ public class TapEvent extends MTGestureEvent {
 	 * @return true, if is tap down
 	 */
 	public boolean isTapDown(){
-		return this.getTapID() == BUTTON_DOWN;
+		return this.getTapID() == TAP_DOWN;
 	}
 	
 	/**
@@ -136,7 +136,7 @@ public class TapEvent extends MTGestureEvent {
 	 * @return true, if is tap canceled
 	 */
 	public boolean isTapCanceled(){
-		return this.getTapID() == BUTTON_UP;
+		return this.getTapID() == TAP_UP;
 	}
 	
 	/**
@@ -145,7 +145,7 @@ public class TapEvent extends MTGestureEvent {
 	 * @return true, if is double tap
 	 */
 	public boolean isDoubleTap(){
-		return this.getTapID() == BUTTON_DOUBLE_CLICKED;
+		return this.getTapID() == DOUBLE_TAPPED;
 	}
 	
 

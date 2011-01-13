@@ -220,7 +220,7 @@ public class KeyboardInputSource extends AbstractInputSource {
 	private void fingerDown(KeyEvent e){
 		if (!spaceHasBeenPressed){
 			InputCursor m = new InputCursor();
-			MTFingerInputEvt touchEvt = new MTFingerInputEvt(this, locationX, locationY, MTFingerInputEvt.INPUT_DETECTED, m);
+			MTFingerInputEvt touchEvt = new MTFingerInputEvt(this, locationX, locationY, MTFingerInputEvt.INPUT_STARTED, m);
 //			m.addEvent(touchEvt);
 			
 			lastUsedKeybID = m.getId();

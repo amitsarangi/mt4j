@@ -167,7 +167,7 @@ public class MTSlider extends MTRectangle {
 			public boolean processGestureEvent(MTGestureEvent ge) {
 				TapEvent te = (TapEvent)ge;
 				switch (te.getTapID()) {
-				case TapEvent.BUTTON_CLICKED:
+				case TapEvent.TAPPED:
 					Vector3D screenPos = te.getLocationOnScreen();
 					Vector3D intersection = outerShape.getIntersectionGlobal(Tools3D.getCameraPickRay(app, outerShape, screenPos.x, screenPos.y));
 					if (intersection != null){

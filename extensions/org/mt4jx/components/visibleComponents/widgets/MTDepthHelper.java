@@ -7,7 +7,6 @@ import org.mt4j.components.MTCanvas;
 import org.mt4j.components.MTComponent;
 import org.mt4j.components.bounds.IBoundingShape;
 import org.mt4j.components.visibleComponents.shapes.MTRectangle;
-import org.mt4j.input.inputProcessors.IGestureEventListener;
 import org.mt4j.input.inputProcessors.componentProcessors.dragProcessor.DragProcessor;
 import org.mt4j.input.inputProcessors.componentProcessors.rotateProcessor.RotateProcessor;
 import org.mt4j.input.inputProcessors.componentProcessors.scaleProcessor.ScaleProcessor;
@@ -22,7 +21,6 @@ import org.mt4jx.input.inputProcessors.componentProcessors.depthProcessor.DepthP
 import org.mt4jx.util.extension3D.BoundingHelper;
 
 import processing.core.PApplet;
-import processing.core.PGraphics3D;
 
 public class MTDepthHelper extends MTComponent {
 
@@ -153,10 +151,9 @@ public class MTDepthHelper extends MTComponent {
 		Vector3D nearPoint = Tools3D.projectPointToPlaneInPerspectiveMode(rightVector,  this.getAttachedCamera().getFrustum(), nearTopLeft.getZ(),(MTApplication) this.getRenderer());
 		//Vector3D nearPoint  = Tools3D.project(pApplet,cam,new Vector3D(rightVector.x,rightVector.y, rightVector.z));
 			
-		PGraphics3D p3d = ((PGraphics3D)this.getRenderer().g);
-							
-		int width = this.getRenderer().getWidth();
-		int height = this.getRenderer().getHeight();
+//		PGraphics3D p3d = ((PGraphics3D)this.getRenderer().g);
+//		int width = this.getRenderer().getWidth();
+//		int height = this.getRenderer().getHeight();
 		
 		//rightVector.x = nearTopLeft.x + rightVector.x/((float)width)*nearPlaneWidth;
 		//rightVector.y = nearTopLeft.y + rightVector.y/((float)height)*nearPlaneHeight;

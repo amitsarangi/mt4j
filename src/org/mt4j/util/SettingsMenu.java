@@ -194,7 +194,7 @@ public class SettingsMenu extends JFrame{
 		this.setAlwaysOnTop(true);
 		
 		//Center on screen
-        Point center = ge.getCenterPoint();
+//        Point center = ge.getCenterPoint();
         Rectangle bounds = ge.getMaximumWindowBounds();
 //        int w = Math.max(bounds.width/2, Math.min(this.getWidth(), bounds.width));
 //        int h = Math.max(bounds.height/2, Math.min(this.getHeight(), bounds.height));

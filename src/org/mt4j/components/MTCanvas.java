@@ -77,8 +77,6 @@ public class MTCanvas extends MTComponent implements IHitTestInfoProvider{
 	private int culledObjects = 0;
 
 	private long lastUpdateTime;
-	
-	
 
 	
 	
@@ -109,7 +107,7 @@ public class MTCanvas extends MTComponent implements IHitTestInfoProvider{
 		
 		lastUpdateTime = 0;
 		
-		clusterManager = new ClusterManager(pApplet, this);
+		clusterManager = new ClusterManager(this);
 		
 		positionToComponent = new HashMap<Position, IMTComponent3D>();
 		

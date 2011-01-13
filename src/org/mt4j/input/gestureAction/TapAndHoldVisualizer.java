@@ -112,7 +112,7 @@ public class TapAndHoldVisualizer implements IGestureEventListener {
 		float a = 205 * t.getElapsedTimeNormalized();
 		
 		switch (t.getId()) {
-		case TapAndHoldEvent.GESTURE_DETECTED:
+		case TapAndHoldEvent.GESTURE_STARTED:
 			parent.addChild(e);
 			e.setDegrees(0);
 			e.recreate(false);

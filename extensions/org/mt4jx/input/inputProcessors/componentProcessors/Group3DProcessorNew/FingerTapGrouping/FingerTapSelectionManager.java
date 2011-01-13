@@ -9,18 +9,15 @@ import org.apache.log4j.Logger;
 import org.mt4j.components.MTCanvas;
 import org.mt4j.components.MTComponent;
 import org.mt4j.components.PickResult;
+import org.mt4j.components.PickResult.PickEntry;
 import org.mt4j.components.StateChange;
 import org.mt4j.components.StateChangeEvent;
 import org.mt4j.components.StateChangeListener;
-import org.mt4j.components.PickResult.PickEntry;
 import org.mt4j.components.interfaces.IMTComponent3D;
 import org.mt4j.input.MTEvent;
 import org.mt4j.input.inputData.AbstractCursorInputEvt;
 import org.mt4j.input.inputData.InputCursor;
 import org.mt4j.input.inputData.MTInputEvent;
-import org.mt4j.input.inputProcessors.IInputProcessor;
-import org.mt4j.input.inputProcessors.componentProcessors.AbstractComponentProcessor;
-
 import org.mt4j.input.inputProcessors.componentProcessors.lassoProcessor.IdragClusterable;
 import org.mt4j.input.inputProcessors.globalProcessors.AbstractGlobalInputProcessor;
 import org.mt4j.util.math.Vector3D;
@@ -123,7 +120,7 @@ public class FingerTapSelectionManager extends AbstractGlobalInputProcessor impl
 			AbstractCursorInputEvt cursorEvt = (AbstractCursorInputEvt)inputEvent;
 			InputCursor c = ((AbstractCursorInputEvt)inputEvent).getCursor();
 			
-			IMTComponent3D comp  = inputEvent.getTargetComponent();
+			IMTComponent3D comp  = inputEvent.getTarget();
 						
 			//if component is a cluster
 			//get the children object of the cluster 
@@ -149,7 +146,7 @@ public class FingerTapSelectionManager extends AbstractGlobalInputProcessor impl
 			if(getDragSelectables().contains(comp))
 			{				
 				switch (cursorEvt.getId()) {
-				case AbstractCursorInputEvt.INPUT_DETECTED:
+				case AbstractCursorInputEvt.INPUT_STARTED:
 					//update cursor state
 					logger.debug("INPUT_DETECTED FOR COMPONENT " + comp.getName()  + " cursor-id: " + c.getId());
 					if(!objectCursorState.containsKey(comp))

@@ -641,7 +641,7 @@ public class MTHexagonMenu extends MTRectangle{
 			if (ge instanceof TapEvent) {
 	
 				TapEvent te = (TapEvent) ge;
-				if (te.getTapID() == TapEvent.BUTTON_CLICKED) {
+				if (te.getTapID() == TapEvent.TAPPED) {
 	
 					for (PolygonListeners pl : children) {
 						pl.component.setPickable(true);

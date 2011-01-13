@@ -107,7 +107,7 @@ public class TapAndHoldProcessor extends AbstractCursorProcessor {
 					logger.debug(this.getName() + " successfully locked cursor (id:" + c.getId() + ")");
 					buttonDownScreenPos = c.getPosition();
 					tapStartTime = System.currentTimeMillis();
-					this.fireGestureEvent(new TapAndHoldEvent(this, MTGestureEvent.GESTURE_DETECTED, positionEvent.getCurrentTarget(), c, false, c.getPosition(), this.holdTime, 0, 0));
+					this.fireGestureEvent(new TapAndHoldEvent(this, MTGestureEvent.GESTURE_STARTED, positionEvent.getCurrentTarget(), c, false, c.getPosition(), this.holdTime, 0, 0));
 					try {
 						applet.registerPre(this);
 					} catch (Exception e) {

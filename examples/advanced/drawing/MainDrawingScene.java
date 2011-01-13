@@ -93,7 +93,7 @@ public class MainDrawingScene extends AbstractScene {
         b.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent ae) {
 				switch (ae.getID()) {
-				case TapEvent.BUTTON_CLICKED:{
+				case TapEvent.TAPPED:{
 //					//As we are messing with opengl here, we make sure it happens in the rendering thread
 					pa.invokeLater(new Runnable() {
 						public void run() {
@@ -125,7 +125,7 @@ public class MainDrawingScene extends AbstractScene {
         brushButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent ae) {
 				switch (ae.getID()) {
-				case TapEvent.BUTTON_CLICKED:{
+				case TapEvent.TAPPED:{
 					drawingScene.setBrush(textureBrush);
 					brushButton.setNoStroke(false);
 					penButton.setNoStroke(true);
@@ -139,7 +139,7 @@ public class MainDrawingScene extends AbstractScene {
         penButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent ae) {
 				switch (ae.getID()) {
-				case TapEvent.BUTTON_CLICKED:{
+				case TapEvent.TAPPED:{
 					drawingScene.setBrush(pencilBrush);
 					penButton.setNoStroke(false);
 					brushButton.setNoStroke(true);
@@ -159,7 +159,7 @@ public class MainDrawingScene extends AbstractScene {
         floppyButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent ae) {
 				switch (ae.getID()) {
-				case TapEvent.BUTTON_CLICKED:{
+				case TapEvent.TAPPED:{
 //					pa.invokeLater(new Runnable() {
 //						public void run() {
 //							drawingScene.getCanvas().drawAndUpdateCanvas(pa.g, 0);
@@ -213,7 +213,7 @@ public class MainDrawingScene extends AbstractScene {
         colPickButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent ae) {
 				switch (ae.getID()) {
-				case TapEvent.BUTTON_CLICKED:{
+				case TapEvent.TAPPED:{
 					if (colorWidget.isVisible()){
 						colorWidget.setVisible(false);
 					}else{

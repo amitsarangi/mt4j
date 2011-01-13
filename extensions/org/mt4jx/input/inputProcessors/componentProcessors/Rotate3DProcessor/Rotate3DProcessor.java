@@ -222,7 +222,7 @@ public class Rotate3DProcessor extends AbstractCursorProcessor {
 						this.getLock(inputCursor);
 						lockedCursors.add(inputCursor);						
 						logger.debug(this.getName() + " we could lock both cursors!");
-						this.fireGestureEvent(new Rotate3DEvent(this, MTGestureEvent.GESTURE_DETECTED, comp, otherCursor, secondCursor,inputCursor, Vector3D.ZERO_VECTOR, rc.getRotationPoint(),rc.getRotationDirection(), rc.getRotationDegreesX(),rc.getRotationDegreesY(),rc.getRotationDegreesZ(),rc.getRotationAxis()));
+						this.fireGestureEvent(new Rotate3DEvent(this, MTGestureEvent.GESTURE_STARTED, comp, otherCursor, secondCursor,inputCursor, Vector3D.ZERO_VECTOR, rc.getRotationPoint(),rc.getRotationDirection(), rc.getRotationDegreesX(),rc.getRotationDegreesY(),rc.getRotationDegreesZ(),rc.getRotationAxis()));
 					}else{
 						rc = null;
 						unUsedCursors.add(inputCursor);	

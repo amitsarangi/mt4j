@@ -52,7 +52,7 @@ public class MacTrackpadSource extends AbstractInputSource implements Observer {
 				cursor = new InputCursor();
 				fingerIdToCursorId.put(fingerID, cursor.getId());
 				cursorPool.putActiveCursor(cursor.getId(), cursor);
-				inputID = MTFingerInputEvt.INPUT_DETECTED;
+				inputID = MTFingerInputEvt.INPUT_STARTED;
 			} else { //updated finger
 				inputID = MTFingerInputEvt.INPUT_UPDATED;
 			}

@@ -1,22 +1,13 @@
 package org.mt4jx.input.gestureAction;
 
-import javax.media.opengl.GL;
-
-import org.mt4j.MTApplication;
 import org.mt4j.components.MTComponent;
-
 import org.mt4j.components.interfaces.IMTComponent3D;
 import org.mt4j.components.visibleComponents.shapes.MTPolygon;
 import org.mt4j.input.gestureAction.ICollisionAction;
 import org.mt4j.input.inputProcessors.IGestureEventListener;
 import org.mt4j.input.inputProcessors.MTGestureEvent;
-import org.mt4j.input.inputProcessors.componentProcessors.rotateProcessor.RotateEvent;
-import org.mt4j.util.math.Tools3D;
-import org.mt4j.util.math.Vector3D;
-import org.mt4j.components.*;
 import org.mt4jx.input.inputProcessors.componentProcessors.Group3DProcessorNew.Cluster;
 import org.mt4jx.input.inputProcessors.componentProcessors.Rotate3DProcessor.Rotate3DEvent;
-import org.mt4jx.input.inputProcessors.componentProcessors.Rotate3DProcessor.RotationPreDraw;
 
 import processing.core.PApplet;
 
@@ -50,7 +41,7 @@ public class Rotate3DAction implements IGestureEventListener,ICollisionAction {
 			this.drawAble = true;
 			lastRotateEvent = rotateEvent;
 			switch (rotateEvent.getId()) {
-			case MTGestureEvent.GESTURE_DETECTED:
+			case MTGestureEvent.GESTURE_STARTED:
 				if (target instanceof MTComponent){
 					((MTComponent)target).sendToFront();
 					if(!(target instanceof Cluster))

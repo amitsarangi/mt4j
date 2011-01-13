@@ -20,7 +20,6 @@ package org.mt4j.components.visibleComponents.shapes;
 import java.nio.FloatBuffer;
 
 import javax.media.opengl.GL;
-import javax.tools.Tool;
 
 import org.mt4j.components.bounds.BoundsArbitraryPlanarPolygon;
 import org.mt4j.components.bounds.IBoundingShape;
@@ -35,7 +34,6 @@ import org.mt4j.util.math.Vertex;
 
 import processing.core.PApplet;
 import processing.core.PGraphics;
-import processing.opengl.PGraphicsOpenGL;
 
 /**
  * A class for drawing a simple line segment.

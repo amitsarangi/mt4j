@@ -154,7 +154,7 @@ extends MTRoundRectangle {
 		closeButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent r) {
 				switch (r.getID()) {
-				case TapEvent.BUTTON_CLICKED:
+				case TapEvent.TAPPED:
 					close();
 //					destroy();
 					break;
@@ -181,7 +181,7 @@ extends MTRoundRectangle {
 		maximizeButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent r) {
 				switch (r.getID()) {
-				case TapEvent.BUTTON_CLICKED:
+				case TapEvent.TAPPED:
 					maximize();
 					break;
 				default:

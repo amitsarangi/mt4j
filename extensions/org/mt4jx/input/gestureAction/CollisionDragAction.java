@@ -27,10 +27,10 @@ public class CollisionDragAction implements IGestureEventListener {
 				DragEvent dragEvent = (DragEvent)ge;
 				
 				if (!useCustomTarget)
-					dragTarget = dragEvent.getTargetComponent(); 
+					dragTarget = dragEvent.getTarget(); 
 				
 				switch (dragEvent.getId()) {
-				case MTGestureEvent.GESTURE_DETECTED:
+				case MTGestureEvent.GESTURE_STARTED:
 					//Put target on top -> draw on top of others
 					if (dragTarget instanceof MTComponent){
 						MTComponent baseComp = (MTComponent)dragTarget;

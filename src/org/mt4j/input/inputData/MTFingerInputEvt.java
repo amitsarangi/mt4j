@@ -73,7 +73,7 @@ public class MTFingerInputEvt extends AbstractCursorInputEvt{
 	 */
 	@Override
 	public Object clone() throws CloneNotSupportedException {
-		return new MTFingerInputEvt((AbstractInputSource) this.getSource(), this.getPosX(), this.getPosY(), this.getId(), this.getCursor());
+		return new MTFingerInputEvt((AbstractInputSource) this.getSource(), this.getX(), this.getY(), this.getId(), this.getCursor());
 	}
 
 	

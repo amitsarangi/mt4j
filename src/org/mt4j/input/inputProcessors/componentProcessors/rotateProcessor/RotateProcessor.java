@@ -102,7 +102,7 @@ public class RotateProcessor extends AbstractCursorProcessor {
 					if (!rc.isGestureAborted()){
 						this.getLock(otherCursor, newCursor);
 						logger.debug(this.getName() + " we could lock both cursors!");
-						this.fireGestureEvent(new RotateEvent(this, MTGestureEvent.GESTURE_DETECTED, positionEvent.getCurrentTarget(), otherCursor, newCursor, Vector3D.ZERO_VECTOR, rc.getRotationPoint(), 0f));
+						this.fireGestureEvent(new RotateEvent(this, MTGestureEvent.GESTURE_STARTED, positionEvent.getCurrentTarget(), otherCursor, newCursor, Vector3D.ZERO_VECTOR, rc.getRotationPoint(), 0f));
 					}else{
 						logger.debug(this.getName() + " gesture aborted, probably at least 1 finger not on component!");
 						rc = null;
@@ -127,18 +127,13 @@ public class RotateProcessor extends AbstractCursorProcessor {
 	}
 
 	
-	//TODO CLEAN UP - rethink logic, scenrios
-	//TODO check other gestures if they need fixing / resuming gesture in cursorUpdated() or cursorEnded()
-	//TODO speedup
-	//TODO really by default intersect target AND currenttarget? 
-
 	@Override
 	public void cursorEnded(InputCursor c, MTFingerInputEvt positionEvent) {
 		IMTComponent3D comp = positionEvent.getTarget();
 		logger.debug(this.getName() + " INPUT_ENDED RECIEVED - CURSOR: " + c.getId());
 		logger.debug("Rotate ended -> Active cursors: " + getCurrentComponentCursors().size() + " Available cursors: " + getFreeComponentCursors().size() +  " Locked cursors: " + getLockedCursors().size());
 		if (getLockedCursors().contains(c)){
-			InputCursor firstCursor = rc.getFirstCursor(); //FIXME nullpointer now sometimes, why?
+			InputCursor firstCursor = rc.getFirstCursor(); 
 			InputCursor secondCursor = rc.getSecondCursor();
 			if (firstCursor.equals(c) || secondCursor.equals(c)){ //The leaving cursor was used by the processor
 				InputCursor leftOverCursor = firstCursor.equals(c) ? secondCursor : firstCursor;

@@ -18,7 +18,6 @@
 package org.mt4j.input.inputSources;
 
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.WeakHashMap;
 
 import org.mt4j.MTApplication;
@@ -379,7 +378,7 @@ public class MultipleMiceInputSource extends AbstractInputSource {
 		}
 		
 		InputCursor m = new InputCursor();
-		MTFingerInputEvt touchEvt = new MTFingerInputEvt(this, mouseInfo.x, mouseInfo.y, MTFingerInputEvt.INPUT_DETECTED, m);
+		MTFingerInputEvt touchEvt = new MTFingerInputEvt(this, mouseInfo.x, mouseInfo.y, MTFingerInputEvt.INPUT_STARTED, m);
 //		m.addEvent(touchEvt);
 		
 //		long motionID = m.getId();
@@ -535,7 +534,7 @@ public class MultipleMiceInputSource extends AbstractInputSource {
 
 			MTFingerInputEvt te;
 			if (m.getCurrentEvent() != null)
-				te = new MTFingerInputEvt(this, m.getCurrentEvent().getPosX(), m.getCurrentEvent().getPosY(), MTFingerInputEvt.INPUT_ENDED, m);
+				te = new MTFingerInputEvt(this, m.getCurrentEvent().getX(), m.getCurrentEvent().getY(), MTFingerInputEvt.INPUT_ENDED, m);
 			else
 				te = new MTFingerInputEvt(this, 0,0, MTFingerInputEvt.INPUT_ENDED, m);
 

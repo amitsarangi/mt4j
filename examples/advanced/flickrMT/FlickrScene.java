@@ -101,7 +101,7 @@ public class FlickrScene extends AbstractScene {
 		keyboardButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent ae) {
 				switch (ae.getID()) {
-				case TapEvent.BUTTON_CLICKED:
+				case TapEvent.TAPPED:
 					//Flickr Keyboard
 			        MTKeyboard keyb = new MTKeyboard(app);
 			        keyb.setFillColor(new MTColor(30, 30, 30, 210));
@@ -129,7 +129,7 @@ public class FlickrScene extends AbstractScene {
 							if (arg0.getSource() instanceof MTComponent){
 								//MTBaseComponent clickedComp = (MTBaseComponent)arg0.getSource();
 								switch (arg0.getID()) {
-								case TapEvent.BUTTON_CLICKED:
+								case TapEvent.TAPPED:
 									//Get current search parameters
 							        SearchParameters sp = new SearchParameters();
 							        //sp.setSafeSearch("213on");

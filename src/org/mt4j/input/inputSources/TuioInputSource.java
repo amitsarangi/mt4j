@@ -127,7 +127,7 @@ public class TuioInputSource extends AbstractInputSource implements TuioListener
 		
 //		logger.info("TUIO INPUT ADD FINGER - TUIO ID: " + sessionID);
 		InputCursor c = new InputCursor();
-		MTFingerInputEvt touchEvt = new MTFingerInputEvt(this, absoluteX, abosulteY, MTFingerInputEvt.INPUT_DETECTED, c);
+		MTFingerInputEvt touchEvt = new MTFingerInputEvt(this, absoluteX, abosulteY, MTFingerInputEvt.INPUT_STARTED, c);
 		long cursorID = c.getId();
 		ActiveCursorPool.getInstance().putActiveCursor(cursorID, c);
 		tuioIDToCursorID.put(sessionID, cursorID);
@@ -200,7 +200,7 @@ public class TuioInputSource extends AbstractInputSource implements TuioListener
 //		logger.info("Added TuioObj tuio object-> sessionID: " + session_id + " fiducialID: " + fiducial_id + " xpos:" + tuioObject.getX() + " ypos:" + tuioObject.getY() + " angle:" + angle + " x_speed:" + x_speed + " y_speed:" + y_speed + " r_speed:" + r_speed + " m_accel:" + m_accel + " r_accel:" + r_accel);
 		
 		InputCursor c = new InputCursor();
-		MTFiducialInputEvt fiducialEvt = new MTFiducialInputEvt(this, absoluteX, abosulteY, MTFiducialInputEvt.INPUT_DETECTED, c, fiducial_id, angle, x_speed, y_speed, r_speed, m_accel, r_accel);
+		MTFiducialInputEvt fiducialEvt = new MTFiducialInputEvt(this, absoluteX, abosulteY, MTFiducialInputEvt.INPUT_STARTED, c, fiducial_id, angle, x_speed, y_speed, r_speed, m_accel, r_accel);
 		long cursorID = c.getId(); //TODO do implicitly somehow
 		ActiveCursorPool.getInstance().putActiveCursor(cursorID, c);
 		tuioFiducialIDMap.put(session_id, cursorID);
@@ -246,7 +246,7 @@ public class TuioInputSource extends AbstractInputSource implements TuioListener
 			if (c != null){
 				MTFiducialInputEvt te;
 				if (c.getCurrentEvent() != null)
-					te = new MTFiducialInputEvt(this, c.getCurrentEvent().getPosX(), c.getCurrentEvent().getPosY(), MTFiducialInputEvt.INPUT_ENDED, c, fiducial_id);
+					te = new MTFiducialInputEvt(this, c.getCurrentEvent().getX(), c.getCurrentEvent().getY(), MTFiducialInputEvt.INPUT_ENDED, c, fiducial_id);
 				else
 					te = new MTFiducialInputEvt(this, 0,0, MTFiducialInputEvt.INPUT_ENDED, c, fiducial_id);
 

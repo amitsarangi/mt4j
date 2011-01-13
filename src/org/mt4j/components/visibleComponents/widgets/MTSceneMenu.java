@@ -216,7 +216,7 @@ public class MTSceneMenu extends MTRectangle{
 				public boolean processGestureEvent(MTGestureEvent ge) {
 					DragEvent de = (DragEvent)ge;
 					switch (de.getId()) {
-					case MTGestureEvent.GESTURE_DETECTED:
+					case MTGestureEvent.GESTURE_STARTED:
 						restoreButton.setVisible(true);
 						closeButton.setVisible(true);
 						unhighlightButton(closeButton, buttonOpacity);
@@ -276,7 +276,7 @@ public class MTSceneMenu extends MTRectangle{
 					public boolean processGestureEvent(MTGestureEvent ge) {
 						DragEvent de = (DragEvent)ge;
 						switch (de.getId()) {
-						case MTGestureEvent.GESTURE_DETECTED:
+						case MTGestureEvent.GESTURE_STARTED:
 							closeButton.setVisible(true);
 							unhighlightButton(closeButton, buttonOpacity);
 							break;

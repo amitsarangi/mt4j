@@ -43,7 +43,7 @@ public class SimpleParticlesExample extends MTApplication {
 				public boolean processInputEvent(MTInputEvent inEvt) {
 					if (inEvt instanceof AbstractCursorInputEvt) {
 						AbstractCursorInputEvt ce = (AbstractCursorInputEvt) inEvt;
-						mtPs.getParticleSystem().addParticle(new ImageParticle(getMTApplication(), new PVector(ce.getScreenX(), ce.getScreenY()), texture));
+						mtPs.getParticleSystem().addParticle(new ImageParticle(getMTApplication(), new PVector(ce.getX(), ce.getY()), texture));
 					}
 					return false;
 				}

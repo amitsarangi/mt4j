@@ -433,7 +433,7 @@ public class MTList extends MTClipRectangle {
 			dir.transformDirectionVector(theListCellContainer.getGlobalInverseMatrix());
 			
 			switch (de.getId()) {
-			case MTGestureEvent.GESTURE_DETECTED:
+			case MTGestureEvent.GESTURE_STARTED:
 			case MTGestureEvent.GESTURE_UPDATED:
 				//Constrain the movement of the listcellcontainer to the boundaries of the List
 				if (canDrag){

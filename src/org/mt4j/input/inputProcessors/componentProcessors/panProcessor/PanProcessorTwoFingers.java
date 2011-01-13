@@ -95,7 +95,7 @@ public class PanProcessorTwoFingers extends AbstractCursorProcessor {
 					if (newDistance < detectRadius) {
 						this.getLock(otherCursor, c);
 						logger.debug(this.getName() + " we could lock both cursors! And fingers in zoom distance!");
-						this.fireGestureEvent(new PanTwoFingerEvent(this, MTGestureEvent.GESTURE_DETECTED, positionEvent.getCurrentTarget(), otherCursor, c, new Vector3D(0,0,0), positionEvent.getCurrentTarget().getViewingCamera()));
+						this.fireGestureEvent(new PanTwoFingerEvent(this, MTGestureEvent.GESTURE_STARTED, positionEvent.getCurrentTarget(), otherCursor, c, new Vector3D(0,0,0), positionEvent.getCurrentTarget().getViewingCamera()));
 					}else{
 						logger.debug(this.getName() + " cursors not close enough to start gesture. Distance: " + newDistance);
 					}
@@ -224,19 +224,19 @@ public class PanProcessorTwoFingers extends AbstractCursorProcessor {
 	 */
 	private Vector3D getNewTranslation(IMTComponent3D comp, InputCursor movingCursor, InputCursor otherCursor){
 		Vector3D fromFirstFinger = ToolsGeometry.getRayPlaneIntersection(
-				Tools3D.getCameraPickRay(applet, comp.getViewingCamera(), movingCursor.getPreviousEvent().getScreenX(), movingCursor.getPreviousEvent().getScreenY()), 
+				Tools3D.getCameraPickRay(applet, comp.getViewingCamera(), movingCursor.getPreviousEvent().getX(), movingCursor.getPreviousEvent().getY()), 
 				planeNormal, 
 				pointInPlane);
 		
 		Vector3D fromSecondFinger = ToolsGeometry.getRayPlaneIntersection(
-				Tools3D.getCameraPickRay(applet, comp.getViewingCamera(), otherCursor.getCurrentEvent().getScreenX(), otherCursor.getCurrentEvent().getScreenY()), 
+				Tools3D.getCameraPickRay(applet, comp.getViewingCamera(), otherCursor.getCurrentEvent().getX(), otherCursor.getCurrentEvent().getY()), 
 				planeNormal, 
 				pointInPlane);
 		
 		Vector3D oldMiddlePoint = getMiddlePointBetweenFingers(fromSecondFinger, fromFirstFinger);
 		
 		Vector3D toFirstFinger = ToolsGeometry.getRayPlaneIntersection(
-				Tools3D.getCameraPickRay(applet, comp.getViewingCamera(), movingCursor.getCurrentEvent().getScreenX(), movingCursor.getCurrentEvent().getScreenY()), 
+				Tools3D.getCameraPickRay(applet, comp.getViewingCamera(), movingCursor.getCurrentEvent().getX(), movingCursor.getCurrentEvent().getY()), 
 				planeNormal, 
 				pointInPlane);
 		

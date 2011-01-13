@@ -27,9 +27,6 @@ import org.mt4j.sceneManagement.AbstractScene;
  * @author Christopher Ruff
  */
 public abstract class AbstractTransition extends AbstractScene implements ITransition {
-//	private Iscene previousScene;
-//	private Iscene nextScene;
-
 	/**
 	 * Instantiates a new abstract transition.
 	 * 
@@ -44,8 +41,6 @@ public abstract class AbstractTransition extends AbstractScene implements ITrans
         for (AbstractGlobalInputProcessor abstractGlobalInputProcessor : inputProcessors) {
             this.unregisterGlobalInputProcessor(abstractGlobalInputProcessor);
         }
-		//		this.previousScene = previousScene;
-		//		this.nextScene = nextScene;
 	}
 
 	/* (non-Javadoc)
@@ -54,24 +49,12 @@ public abstract class AbstractTransition extends AbstractScene implements ITrans
 	@Override 
 	protected void registerDefaultGlobalInputProcessors() {  } //DONT REGISTER INPUT PROCESSORS!
 
-	/* (non-Javadoc)
-	 * @see org.mt4j.sceneManagement.AbstractScene#init()
-	 */
 	@Override
-	public void init() {
+	public void onEnter() {
 	}
-
-//	@Override
-//	public void shutDown() {
-//	}
-
-//	public Iscene getNextScene() {
-//		return this.nextScene;
-//	}
-//
-//	public Iscene getPreviousScene() {
-//		return this.previousScene;
-//	}
+	
+	@Override
+	public abstract void onLeave();
 
 
 }

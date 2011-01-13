@@ -29,8 +29,8 @@ public class MTEvent {
 	/** The creation time stamp. */
 	private long timeStamp;
 	
-	/** The consumed. */
-	private boolean consumed;
+//	/** The consumed. */
+//	private boolean consumed;
 	
 	/**
 	 * Instantiates a new mT event.
@@ -39,7 +39,7 @@ public class MTEvent {
 	 */
 	public MTEvent(Object source) {
 		super();
-		consumed = false;
+//		consumed = false;
 		this.source = source;
 		this.timeStamp = System.currentTimeMillis();
 	}

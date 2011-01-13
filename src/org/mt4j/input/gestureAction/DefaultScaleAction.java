@@ -126,7 +126,7 @@ public class DefaultScaleAction implements IGestureEventListener,ICollisionActio
 				target = scaleEvent.getTarget(); 
 			
 			switch (scaleEvent.getId()) {
-			case MTGestureEvent.GESTURE_DETECTED:
+			case MTGestureEvent.GESTURE_STARTED:
 				if (target instanceof MTComponent){
 					((MTComponent)target).sendToFront();
 					/*

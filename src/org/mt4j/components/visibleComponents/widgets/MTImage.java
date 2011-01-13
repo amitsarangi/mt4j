@@ -88,67 +88,6 @@ public class MTImage extends MTRectangle implements IdragClusterable{
 		return this.image;
 	}
 	
-//	/**
-//	 * Instantiates a new framed image.
-//	 * 
-//	 * @param texture the texture
-//	 * @param pApplet the applet
-//	 */
-//	public MTImage(PImage texture, PApplet pApplet) {
-//		super(texture, pApplet);
-//		
-//		int borderWidth = 7;
-//        Vertex[] outerFrame = new Vertex[5];
-//        outerFrame[0] = new Vertex(-borderWidth, -borderWidth,0, 255,255,255,255);
-//        outerFrame[1] = new Vertex(texture.width+borderWidth, -borderWidth, 0, 255,255,255,255);
-//        outerFrame[2] = new Vertex(texture.width+borderWidth, texture.height+borderWidth, 0, 255,255,255,255);
-//        outerFrame[3] = new Vertex(-borderWidth, texture.height+borderWidth, 0, 255,255,255,255);
-//        outerFrame[4] = new Vertex(-borderWidth, -borderWidth, 0, 255,255,255,255);
-//        
-//        Vertex[] innerFrame = new Vertex[5];
-//        innerFrame[0] = new Vertex(0, 0, 0, 255,255,255,255);
-//        innerFrame[1] = new Vertex(texture.width, 0, 0, 255,255,255,255);
-//        innerFrame[2] = new Vertex(texture.width, texture.height, 0, 255,255,255,255);
-//        innerFrame[3] = new Vertex(0, texture.height, 0, 255,255,255,255);
-//        innerFrame[4] = new Vertex(0, 0, 0, 255,255,255,255);
-//        
-//        ArrayList<Vertex[]> frame = new ArrayList<Vertex[]>();
-//        frame.add(innerFrame);
-//        frame.add(outerFrame);
-//        GluTrianglulator glutri = new GluTrianglulator(pApplet);
-//        List<Vertex> tris = glutri.tesselate(frame, GLU.GLU_TESS_WINDING_ODD);
-//        glutri.deleteTess();
-//        MTTriangleMesh m = new MTTriangleMesh(pApplet, new GeometryInfo(pApplet, tris.toArray(new Vertex[tris.size()])));
-//        m.setOutlineContours(frame);
-//        m.setDrawSmooth(true);
-////		MTRectangle m = new MTRectangle(-borderWidth,-borderWidth, texture.width + borderWidth, texture.height + borderWidth, pApplet);
-//        m.setUseDirectGL(true);
-//        
-//        m.setNoStroke(false);
-//        m.setStrokeWeight(1);
-//        m.setStrokeColor(new MTColor(255, 255, 255, 255));
-//        
-//        //If the frame is manipulated, manipulate the image instead
-//        m.removeAllGestureEventListeners(DragProcessor.class);
-//        m.removeAllGestureEventListeners(RotateProcessor.class);
-//        m.removeAllGestureEventListeners(ScaleProcessor.class);
-//        m.addGestureListener(DragProcessor.class, new DefaultDragAction(this));
-//        m.addGestureListener(RotateProcessor.class, new DefaultRotateAction(this));
-//        m.addGestureListener(ScaleProcessor.class, new DefaultScaleAction(this));
-//        
-//        this.addChild(m);
-//        
-//        this.setNoStroke(true);
-//        this.setStrokeWeight(1);
-//        this.setStrokeColor(new MTColor(255, 255, 255, 255));
-//        
-//        //FIXME if one finger is on frame and one on picture, they dont start a 2 finger gesture
-//        //FIXME if image in cluster and dragging frame, the cluster should be dragged but the image is
-//        
-//		//Draw this component and its children above 
-//		//everything previously drawn and avoid z-fighting
-//		this.setDepthBufferDisabled(true);
-//	}
 
 	
 	public boolean isSelected() {
@@ -219,7 +158,7 @@ public class MTImage extends MTRectangle implements IdragClusterable{
 			 */
 			public void actionPerformed(ActionEvent arg0) {
 				switch (arg0.getID()) {
-				case TapEvent.BUTTON_CLICKED:
+				case TapEvent.TAPPED:
 					//Get the first polygon type out of the array
                     for (MTComponent comp : comps) { //TODO this is stupid.. redo this whole thing
                         if (comp instanceof MTPolygon) {

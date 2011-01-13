@@ -1,13 +1,10 @@
 package org.mt4jx.input.gestureAction;
 
-import java.awt.dnd.DragGestureEvent;
-
 import org.mt4j.components.MTComponent;
 import org.mt4j.components.interfaces.IMTComponent3D;
 import org.mt4j.input.inputProcessors.IGestureEventListener;
 import org.mt4j.input.inputProcessors.MTGestureEvent;
 import org.mt4j.input.inputProcessors.componentProcessors.dragProcessor.DragEvent;
-import org.mt4jx.input.inputProcessors.componentProcessors.depthProcessor.DepthGestureEvent;
 
 public class HelperDragAction implements IGestureEventListener 
 {
@@ -35,7 +32,7 @@ public class HelperDragAction implements IGestureEventListener
 		
 		switch(dragEv.getId())
 		{
-			case MTGestureEvent.GESTURE_DETECTED:
+			case MTGestureEvent.GESTURE_STARTED:
 			{
 				if (dragObject instanceof MTComponent){
 					MTComponent baseComp = (MTComponent)dragObject;

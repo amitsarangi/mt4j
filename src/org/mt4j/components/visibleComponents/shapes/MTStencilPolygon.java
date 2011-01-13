@@ -385,7 +385,7 @@ public class MTStencilPolygon extends MTPolygon {
 	    	}else{
 	    		//Enable stencilbuffer
 				gl.glEnable(GL.GL_STENCIL_TEST);
-		    	gl.glClearStencil(GLStencilUtil.getInstance().stencilValueStack.peek());
+		    	gl.glClearStencil(GLStencilUtil.stencilValueStack.peek());
 		    	gl.glClear(GL.GL_STENCIL_BUFFER_BIT);
 	    	}
 //	    	gl.glPushAttrib(GL.GL_STENCIL_TEST);
@@ -424,7 +424,7 @@ public class MTStencilPolygon extends MTPolygon {
 //		     gl.glStencilOp (GL.GL_ZERO, GL.GL_ZERO, GL.GL_ZERO); //Org
 //		    gl.glStencilFunc(GL.GL_EQUAL, 0x01, 0x01); //org
 //			if (GLStencilUtil.getInstance().isClipActive()){
-				gl.glStencilFunc(GL.GL_NOTEQUAL, GLStencilUtil.getInstance().stencilValueStack.peek(), GLStencilUtil.getInstance().stencilValueStack.peek());
+				gl.glStencilFunc(GL.GL_NOTEQUAL, GLStencilUtil.stencilValueStack.peek(), GLStencilUtil.stencilValueStack.peek());
 //				gl.glStencilFunc(GL.GL_NOTEQUAL, 0x01, 0x01);
 //			}else{
 //				gl.glStencilFunc(GL.GL_EQUAL, GLStencilUtil.getInstance().stencilValueStack.peek(), GLStencilUtil.getInstance().stencilValueStack.peek());

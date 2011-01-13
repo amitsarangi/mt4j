@@ -3,7 +3,7 @@ package org.mt4j.components.css.style;
 /**
  * The Class CSSStyleHierarchy: Adds hierarchical information to a CSSStyle (for prioritizing/sorting)
  */
-public class CSSStyleHierarchy implements Comparable{
+public class CSSStyleHierarchy implements Comparable<Object>{
 	
 	/** The constant NA. */
 	public final short NA = 0;

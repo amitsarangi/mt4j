@@ -20,11 +20,11 @@ public class MTOptionBox extends MTForm implements BooleanForm {
 	/** The boolean value. */
 	private boolean booleanValue = false;
 	
-	/** The background color. */
-	private MTColor backgroundColor;
-	
-	/** The stroke color. */
-	private MTColor strokeColor;
+//	/** The background color. */
+//	private MTColor backgroundColor;
+//	
+//	/** The stroke color. */
+//	private MTColor strokeColor;
 	
 	/** The option box. */
 	private MTEllipse optionBox;

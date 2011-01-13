@@ -86,7 +86,7 @@ public class ZoomProcessor extends AbstractCursorProcessor {
 						this.oldDistance = newDistance;
 						this.getLock(otherCursor, c);
 						logger.debug(this.getName() + " we could lock both cursors! And fingers in zoom distance!");
-						this.fireGestureEvent(new ZoomEvent(this, MTGestureEvent.GESTURE_DETECTED, positionEvent.getCurrentTarget(), c, otherCursor, 0f, positionEvent.getCurrentTarget().getViewingCamera() ));
+						this.fireGestureEvent(new ZoomEvent(this, MTGestureEvent.GESTURE_STARTED, positionEvent.getCurrentTarget(), c, otherCursor, 0f, positionEvent.getCurrentTarget().getViewingCamera() ));
 					}else{
 						logger.debug(this.getName() + " cursors not close enough to start gesture. Distance: " + newDistance);
 					}

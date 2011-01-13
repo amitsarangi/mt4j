@@ -90,13 +90,13 @@ public class DefaultButtonClickAction implements IGestureEventListener  {
 				}
 				
 				switch (clickEvent.getId()) {
-				case MTGestureEvent.GESTURE_DETECTED:
+				case MTGestureEvent.GESTURE_STARTED:
 //					if (comp.isGestureAllowed(TapAnalyzer.class) 
 //						&& comp.isVisible()
 //					){
 						comp.sendToFront();
 //						if ( ((TapEvent)g).getId() == TapEvent.BUTTON_DOWN){
-						if ( ((TapEvent)g).getTapID() == TapEvent.BUTTON_DOWN){
+						if ( ((TapEvent)g).getTapID() == TapEvent.TAP_DOWN){
 							
 							//Resize button
 //							getCompToResize().setSizeLocal(width-5, width-5);
@@ -123,7 +123,7 @@ public class DefaultButtonClickAction implements IGestureEventListener  {
 //							&& comp.isVisible()
 //						){
 //						if ( ((TapEvent)g).getId() == TapEvent.BUTTON_DOWN){
-					if ( ((TapEvent)g).getTapID() == TapEvent.BUTTON_DOWN){
+					if ( ((TapEvent)g).getTapID() == TapEvent.TAP_DOWN){
 							if (comp instanceof IclickableButton){
 								IclickableButton polyButton = (IclickableButton)g.getTarget();
 								polyButton.fireActionPerformed((TapEvent)g);
@@ -139,8 +139,8 @@ public class DefaultButtonClickAction implements IGestureEventListener  {
 //						if ( ((TapEvent)g).getId() == TapEvent.BUTTON_CLICKED
 //							|| ((TapEvent)g).getId() == TapEvent.BUTTON_UP
 //						){
-						if ( ((TapEvent)g).getTapID() == TapEvent.BUTTON_CLICKED
-								|| ((TapEvent)g).getTapID() == TapEvent.BUTTON_UP
+						if ( ((TapEvent)g).getTapID() == TapEvent.TAPPED
+								|| ((TapEvent)g).getTapID() == TapEvent.TAP_UP
 							){
 							//Resize button
 //							polyButton.setSizeLocal(width, width);

@@ -72,7 +72,7 @@ public class DefaultLassoAction implements IGestureEventListener {
 		if (g instanceof LassoEvent){
 			LassoEvent dse = (LassoEvent)g;
 			switch (dse.getId()) {
-			case MTGestureEvent.GESTURE_DETECTED:
+			case MTGestureEvent.GESTURE_STARTED:
 				//System.out.println("dse detected");
 				canvas.addChild(dse.getSelectionPoly());
 				break;

@@ -122,7 +122,7 @@ public class MTTextKeyboard extends MTKeyboard {
 						MTComponent clickedComp = (MTComponent)arg0.getSource();
 
 						switch (arg0.getID()) {
-						case TapEvent.BUTTON_CLICKED:
+						case TapEvent.TAPPED:
 							//should always be keyboard
 							MTComponent parent = clickedComp.getParent();
 							if (parent instanceof MTTextKeyboard){
@@ -315,8 +315,8 @@ public class MTTextKeyboard extends MTKeyboard {
 				if (g instanceof DragEvent){
 					DragEvent dragEvent = (DragEvent)g;
 					
-					if (dragEvent.getTargetComponent() instanceof MTTextArea){
-						MTTextArea text = (MTTextArea)dragEvent.getTargetComponent();
+					if (dragEvent.getTarget() instanceof MTTextArea){
+						MTTextArea text = (MTTextArea)dragEvent.getTarget();
 
 						//Add default gesture actions to textfield
 //						text.assignGestureClassAndAction(DragGestureAnalyzer.class, defaultDragAction);

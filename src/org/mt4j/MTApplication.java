@@ -1024,7 +1024,7 @@ public abstract class MTApplication extends PApplet {
                     */
                 try {
                     AbstractCursorInputEvt startedEvt = (AbstractCursorInputEvt) lastEvt.clone();
-                    startedEvt.setId(AbstractCursorInputEvt.INPUT_DETECTED);
+                    startedEvt.setId(AbstractCursorInputEvt.INPUT_STARTED);
                     startedEvt.onFired();
 
                     this.sendEvtToSceneProcessors(newScene, startedEvt);
