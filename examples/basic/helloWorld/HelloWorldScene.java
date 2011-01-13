@@ -33,8 +33,8 @@ public class HelloWorldScene extends AbstractScene {
 		//Add the textfield to our canvas
 		this.getCanvas().addChild(textField);
 	}
-	@Override
-	public void init() {}
-	@Override
-	public void shutDown() {}
+	
+	public void onEnter() {}
+	
+	public void onLeave() {}
 }

@@ -260,8 +260,9 @@ public class MainDrawingScene extends AbstractScene {
         
 	}
 
-	public void init() {	}
-	public void shutDown() {	}
+	public void onEnter() {}
+	
+	public void onLeave() {	}
 	
 	@Override
 	public boolean destroy() {

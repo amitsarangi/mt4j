@@ -23,14 +23,14 @@ import org.mt4jx.components.visibleComponents.widgets.menus.MenuItem;
 import processing.core.PImage;
 
 
-public class MenuExample  extends AbstractScene{
+public class MenuExampleScene  extends AbstractScene{
 	private MTApplication app;
 	private Logger logger = Logger.getLogger("MT4J Extensions");
 	private SimpleLayout l = new SimpleLayout();
 	private ConsoleAppender ca = new ConsoleAppender(l);
 	
 	
-	public MenuExample(MTApplication mtApplication, String name) {
+	public MenuExampleScene(MTApplication mtApplication, String name) {
 		super(mtApplication, name);
 
 		this.app = mtApplication;
@@ -77,15 +77,9 @@ public class MenuExample  extends AbstractScene{
 			
 	}
 
-	@Override
-	public void init() {
-		
-	}
-
-	@Override
-	public void shutDown() {
-		
-	}
+	public void onEnter() {}
+	
+	public void onLeave() {}
 
 	public class gestureListener implements IGestureEventListener {
 		String string;
@@ -99,7 +93,7 @@ public class MenuExample  extends AbstractScene{
 
 			if (ge instanceof TapEvent) {
 				TapEvent te = (TapEvent) ge;
-				if (te.getTapID() == TapEvent.BUTTON_CLICKED) {
+				if (te.getTapID() == TapEvent.TAPPED) {
 					System.out.println(string);
 				}
 			}

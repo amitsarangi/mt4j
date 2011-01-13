@@ -716,7 +716,7 @@ public abstract class MTApplication extends PApplet {
 			this.pendingTransition.transition.drawAndUpdate(this.g, timeDelta);
 			
 			if (this.pendingTransition.transition.isFinished()){
-				this.pendingTransition.transition.shutDown();
+				this.pendingTransition.transition.onLeave();
 				this.doSceneChange(this.getCurrentScene(), this.pendingTransition.nextScene);
 				this.pendingTransition = null;
 			}
@@ -880,7 +880,7 @@ public abstract class MTApplication extends PApplet {
 			if (lastScene.getTransition() != null){
 				ITransition t = lastScene.getTransition();
 				this.pendingTransition = new TransitionInfo(t, lastScene, newScene);
-				t.init();
+				t.onEnter();
 				t.setup(lastScene, newScene);
 				return true;
 			}else{
@@ -905,10 +905,10 @@ public abstract class MTApplication extends PApplet {
 			inDoSceneChange = true;
 			
 			//Maybe show loading progress for newScenne.Init first?
-			oldScene.shutDown();
+			oldScene.onLeave();
 			
 			//Initialize new Scene
-			newScene.init();
+			newScene.onEnter();
 
 			//Enable input Processors previously registered with that scene
 			this.getInputManager().enableGlobalInputProcessors(newScene);
@@ -1079,7 +1079,7 @@ public abstract class MTApplication extends PApplet {
 	 */
 	public void addScene(Iscene scene){
 		if (this.getSceneCount() == 0){
-			scene.init();
+			scene.onEnter();
 			this.currentScene = scene;
 			this.getInputManager().enableGlobalInputProcessors(scene);
 			this.fireSceneChangeEvent(new SceneChangeEvent(this, this.currentScene, this.currentScene));

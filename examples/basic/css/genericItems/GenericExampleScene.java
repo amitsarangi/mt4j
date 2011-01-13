@@ -19,7 +19,7 @@ import org.mt4jx.components.visibleComponents.widgets.MTSuggestionTextArea;
 import org.mt4jx.components.visibleComponents.widgets.OptionGroup;
 
 
-public class GenericExample  extends AbstractScene{
+public class GenericExampleScene  extends AbstractScene{
 	
 	private MTApplication app;
 	private Logger logger = Logger.getLogger("MT4J Extensions");
@@ -27,7 +27,7 @@ public class GenericExample  extends AbstractScene{
 	private ConsoleAppender ca = new ConsoleAppender(l);
 	
 	
-	public GenericExample(MTApplication mtApplication, String name) {
+	public GenericExampleScene(MTApplication mtApplication, String name) {
 		super(mtApplication, name);
 
 		this.app = mtApplication;

@@ -191,9 +191,9 @@ public class DrawSurfaceScene extends AbstractScene {
 	}
 	
 	
-	public void init() {
+	public void onEnter() {
 	}
 	
-	public void shutDown() {
+	public void onLeave() {
 	}
 }

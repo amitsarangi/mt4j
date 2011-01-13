@@ -49,15 +49,13 @@ public class SimpleParticlesExample extends MTApplication {
 				}
 			});
 		}
-
-		@Override
-		public void init() {
+		
+		public void onEnter() {
 			getMTApplication().frameRate(60);
 		}
+		
+		public void onLeave() {	}
 
-		@Override
-		public void shutDown() {
-		}
 	}
 
 }

@@ -41,8 +41,6 @@ import org.mt4j.sceneManagement.AbstractScene;
 import org.mt4j.util.MTColor;
 import org.mt4j.util.math.Vector3D;
 
-import basic.scenes.Scene3;
-
 public class MTGesturesExampleScene extends AbstractScene {
 	private MTApplication app;
 	
@@ -185,7 +183,7 @@ public class MTGesturesExampleScene extends AbstractScene {
 			public boolean processGestureEvent(MTGestureEvent ge) {
 				TapEvent te = (TapEvent)ge;
 				switch (te.getId()) {
-				case MTGestureEvent.GESTURE_DETECTED:
+				case MTGestureEvent.GESTURE_STARTED:
 					tapOnly.setFillColor(new MTColor(220,220,220,255));
 					break;
 				case MTGestureEvent.GESTURE_UPDATED:
@@ -242,7 +240,7 @@ public class MTGesturesExampleScene extends AbstractScene {
 			public boolean processGestureEvent(MTGestureEvent ge) {
 				TapAndHoldEvent th = (TapAndHoldEvent)ge;
 				switch (th.getId()) {
-				case TapAndHoldEvent.GESTURE_DETECTED:
+				case TapAndHoldEvent.GESTURE_STARTED:
 					break;
 				case TapAndHoldEvent.GESTURE_UPDATED:
 					break;
@@ -385,7 +383,7 @@ public class MTGesturesExampleScene extends AbstractScene {
 			public boolean processGestureEvent(MTGestureEvent ge) {
 				UnistrokeEvent ue = (UnistrokeEvent)ge;
 				switch (ue.getId()) {
-				case UnistrokeEvent.GESTURE_DETECTED:
+				case UnistrokeEvent.GESTURE_STARTED:
 					getCanvas().addChild(ue.getVisualization());
 					break;
 				case UnistrokeEvent.GESTURE_UPDATED:
@@ -409,14 +407,8 @@ public class MTGesturesExampleScene extends AbstractScene {
 		comp.removeAllGestureEventListeners();
 	}
 	
-	@Override
-	public void init() {
-
-	}
-
-	@Override
-	public void shutDown() {
-
-	}
+	public void onEnter() {}
+	
+	public void onLeave() {}
 
 }

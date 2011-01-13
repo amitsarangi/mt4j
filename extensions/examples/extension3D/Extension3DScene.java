@@ -9,67 +9,38 @@ import javax.media.opengl.GL;
 import org.mt4j.MTApplication;
 import org.mt4j.components.MTComponent;
 import org.mt4j.components.MTLight;
-import org.mt4j.components.StateChange;
 import org.mt4j.components.TransformSpace;
-import org.mt4j.components.visibleComponents.shapes.AbstractShape;
-import org.mt4j.components.visibleComponents.shapes.mesh.MTCube;
-import org.mt4j.components.visibleComponents.shapes.mesh.MTSphere;
 import org.mt4j.components.visibleComponents.shapes.mesh.MTTriangleMesh;
 import org.mt4j.input.IMTEventListener;
 import org.mt4j.input.gestureAction.DefaultDragAction;
-import org.mt4j.input.gestureAction.DefaultLassoAction;
-import org.mt4j.input.gestureAction.DefaultPanAction;
 import org.mt4j.input.gestureAction.DefaultRotateAction;
-import org.mt4j.input.gestureAction.DefaultZoomAction;
 import org.mt4j.input.inputProcessors.IGestureEventListener;
 import org.mt4j.input.inputProcessors.MTGestureEvent;
-
-
-
-import org.mt4j.input.inputProcessors.componentProcessors.arcballProcessor.ArcBallGestureEvent;
-import org.mt4j.input.inputProcessors.componentProcessors.arcballProcessor.ArcballProcessor;
 import org.mt4j.input.inputProcessors.componentProcessors.dragProcessor.DragProcessor;
-import org.mt4j.input.inputProcessors.componentProcessors.lassoProcessor.LassoProcessor;
-import org.mt4j.input.inputProcessors.componentProcessors.panProcessor.PanProcessorTwoFingers;
-
 import org.mt4j.input.inputProcessors.componentProcessors.rotateProcessor.RotateProcessor;
 import org.mt4j.input.inputProcessors.componentProcessors.scaleProcessor.ScaleEvent;
 import org.mt4j.input.inputProcessors.componentProcessors.scaleProcessor.ScaleProcessor;
-import org.mt4j.input.inputProcessors.componentProcessors.tapProcessor.TapProcessor;
-import org.mt4j.input.inputProcessors.componentProcessors.zoomProcessor.ZoomProcessor;
 import org.mt4j.input.inputProcessors.globalProcessors.CursorTracer;
-import org.mt4j.input.inputSources.MouseInputSource;
 import org.mt4j.sceneManagement.AbstractScene;
-import org.mt4j.util.MTColor;
-import org.mt4j.util.camera.Frustum;
 import org.mt4j.util.camera.Icamera;
-import org.mt4j.util.camera.MTCamera;
 import org.mt4j.util.math.Tools3D;
 import org.mt4j.util.math.Vector3D;
 import org.mt4j.util.modelImporter.ModelImporterFactory;
 import org.mt4j.util.opengl.GLMaterial;
 import org.mt4jx.input.gestureAction.CreateDragHelperAction;
-import org.mt4jx.input.gestureAction.DefaultDepthAction;
 import org.mt4jx.input.gestureAction.Rotate3DAction;
 import org.mt4jx.input.inputProcessors.componentProcessors.Group3DProcessorNew.ClusterDataManager;
 import org.mt4jx.input.inputProcessors.componentProcessors.Group3DProcessorNew.ClusterHub;
 import org.mt4jx.input.inputProcessors.componentProcessors.Group3DProcessorNew.IVisualizeMethodProvider;
 import org.mt4jx.input.inputProcessors.componentProcessors.Group3DProcessorNew.FingerTapGrouping.FingerTapSelectionManager;
-import org.mt4jx.input.inputProcessors.componentProcessors.Group3DProcessorNew.GroupVisualizations.BlinkingEmissionActivateVisualizationAction;
 import org.mt4jx.input.inputProcessors.componentProcessors.Group3DProcessorNew.GroupVisualizations.BlinkingLineVisualizationAction;
-import org.mt4jx.input.inputProcessors.componentProcessors.Group3DProcessorNew.GroupVisualizations.LassoVisualizationAction;
 import org.mt4jx.input.inputProcessors.componentProcessors.Group3DProcessorNew.GroupVisualizations.LineVisualizationAction;
 import org.mt4jx.input.inputProcessors.componentProcessors.Group3DProcessorNew.GroupVisualizations.LineVisualizationWithOutlinesAction;
-import org.mt4jx.input.inputProcessors.componentProcessors.Group3DProcessorNew.LassoGrouping.LassoGroupSelectionManager;
 import org.mt4jx.input.inputProcessors.componentProcessors.Rotate3DProcessor.Rotate3DProcessor;
-import org.mt4jx.input.inputProcessors.componentProcessors.depthProcessor.DepthProcessor;
 import org.mt4jx.util.extension3D.ComponentHelper;
-import org.mt4jx.util.extension3D.MergeHelper;
 import org.mt4jx.util.extension3D.Collision.CollisionManager;
 
-
 import processing.core.PGraphics;
-import processing.core.PGraphics3D;
 
 public class Extension3DScene extends AbstractScene {
 	private MTApplication mtApp;
@@ -216,15 +187,12 @@ public class Extension3DScene extends AbstractScene {
 	}
 	
 	
-	
-	//@Override
-	public void init() {
-		mtApp.registerKeyEvent(this);
+	public void onEnter() {
+		getMTApplication().registerKeyEvent(this);
 	}
-
-	//@Override
-	public void shutDown() {
-		mtApp.unregisterKeyEvent(this);
+	
+	public void onLeave() {
+		getMTApplication().unregisterKeyEvent(this);
 	}
 	
 	public void keyEvent(KeyEvent e){

@@ -166,13 +166,13 @@ public class PuzzleScene extends AbstractScene{
 			public boolean processGestureEvent(MTGestureEvent ge) {
 				TapEvent te = (TapEvent)ge;
 				switch (te.getTapID()) { 
-				case TapEvent.BUTTON_DOWN:
+				case TapEvent.TAP_DOWN:
 					cell.setFillColor(cellPressedFillColor);
 					break;
-				case TapEvent.BUTTON_UP:
+				case TapEvent.TAP_UP:
 					cell.setFillColor(cellFillColor);
 					break;
-				case TapEvent.BUTTON_CLICKED:
+				case TapEvent.TAPPED:
 					//System.out.println("Button clicked: " + label);
 					cell.setFillColor(cellFillColor);
 					list.setVisible(false);
@@ -238,11 +238,9 @@ public class PuzzleScene extends AbstractScene{
 	}
 	
 
-	@Override
-	public void init() {}
-
-	@Override
-	public void shutDown() {}
+	public void onEnter() {	}
+	
+	public void onLeave() {	}
 	
 	
 

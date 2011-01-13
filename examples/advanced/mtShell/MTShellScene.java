@@ -547,19 +547,11 @@ public class MTShellScene extends AbstractScene {
 	}
 	
 	
-	/* (non-Javadoc)
-	 * @see org.mt4j.sceneManagement.AbstractScene#init()
-	 */
-	@Override
-	public void init() {
+	public void onEnter() {
 		getMTApplication().registerKeyEvent(this);
 	}
-
-	/* (non-Javadoc)
-	 * @see org.mt4j.sceneManagement.AbstractScene#shutDown()
-	 */
-	@Override
-	public void shutDown() {
+	
+	public void onLeave() {	
 		getMTApplication().unregisterKeyEvent(this);
 	}
 	

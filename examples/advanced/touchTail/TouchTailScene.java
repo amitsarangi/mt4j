@@ -63,14 +63,12 @@ public class TouchTailScene extends AbstractScene {
 		}
 	}
 	
-	@Override
-	public void init() {
-		mtApp.registerKeyEvent(this);
+	public void onEnter() {
+		getMTApplication().registerKeyEvent(this);
 	}
-
-	@Override
-	public void shutDown() {
-		mtApp.unregisterKeyEvent(this);
+	
+	public void onLeave() {	
+		getMTApplication().unregisterKeyEvent(this);
 	}
 
 }

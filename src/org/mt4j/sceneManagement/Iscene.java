@@ -34,10 +34,21 @@ import processing.core.PGraphics;
  */
 public interface Iscene {
 	
-	/**
-	 * Inits the scene.
-	 */
-	public void init();
+//	/**
+//	 * Inits the scene.
+//	 */
+//	public void init();
+	
+	
+//	/**
+//	 * Shut down scene.
+//	 */
+//	public void shutDown();
+	
+	public void onEnter();
+	
+	
+	public void onLeave();
 	
 	/**
 	 * Gets the main canvas.
@@ -75,10 +86,6 @@ public interface Iscene {
 	 */
 	public void registerPreDrawAction(IPreDrawAction action);
 		
-	/**
-	 * Shut down scene.
-	 */
-	public void shutDown();
 	
 	/**
 	 * Gets the name of the scene.

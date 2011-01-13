@@ -146,13 +146,11 @@ public class Scene2 extends AbstractScene {
 		});
 	}
 
-	@Override
-	public void init() {
+	public void onEnter() {
 		System.out.println("Entered scene: " +  this.getName());
 	}
-
-	@Override
-	public void shutDown() {
+	
+	public void onLeave() {	
 		System.out.println("Left scene: " +  this.getName());
 	}
 

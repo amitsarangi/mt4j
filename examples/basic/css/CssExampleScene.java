@@ -15,10 +15,10 @@ import org.mt4j.util.math.Vector3D;
 import org.mt4jx.components.visibleComponents.widgets.MTSuggestionTextArea;
 
 
-public class CssExample  extends AbstractScene{
+public class CssExampleScene  extends AbstractScene{
 	private MTApplication app;
 	
-	public CssExample(MTApplication mtApplication, String name) {
+	public CssExampleScene(MTApplication mtApplication, String name) {
 		super(mtApplication, name);
 
 		this.app = mtApplication;
@@ -59,11 +59,9 @@ public class CssExample  extends AbstractScene{
 			
 	}
 
-	@Override
-	public void init() {	}
-
-	@Override
-	public void shutDown() {	}
+	public void onEnter() { }
+	
+	public void onLeave() {	}
 
 	public class gestureListener implements IGestureEventListener {
 		String string;
@@ -74,10 +72,9 @@ public class CssExample  extends AbstractScene{
 		
 		
 		public boolean processGestureEvent(MTGestureEvent ge) {
-
 			if (ge instanceof TapEvent) {
 				TapEvent te = (TapEvent) ge;
-				if (te.getTapID() == TapEvent.BUTTON_CLICKED) {
+				if (te.getTapID() == TapEvent.TAPPED) {
 					System.out.println(string);
 				}
 			}

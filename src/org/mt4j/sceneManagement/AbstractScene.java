@@ -122,33 +122,34 @@ public abstract class AbstractScene implements Iscene {
 //		this.registerGlobalInputProcessor(new InputRetargeter(this.getCanvas()));
 	}
 
-	
+	/**
+	 * Called before this scene becomes active.
+	 * @deprecated renamed to onEnter(), init() is only kept for backwards compatibility
+	 */
 	public void init(){
-		onEnter();
+	}
+	
+	/**
+	 * Called before this scene loses its status of being the active scene.
+	 * @deprecated renamed to onLeave(), shutDown() is only kept for backwards compatibility
+	 */
+	public void shutDown(){
 	}
 	
 	
 	/**
 	 * Is invoked on a scene just before it is set to be the currently active scene.
 	 */
-//	abstract public void onEnter() ; //FIXME USE!
-	
 	public void onEnter(){
-		
+		init(); //for backwards compatibility to call old code, since init() was renamed onEnter();
 	}
 	
-	
-	public void shutDown(){
-		onLeave();
-	}
 	
 	/**
-	 * Gets called on the current scene just before the current scene gets changed to another scene.
+	 * Gets called on the current scene just before the current scene becomes inactive in favor of another scene.
 	 */
-//	abstract public void onLeave();
-	
 	public void onLeave(){
-		
+		shutDown(); //for backwards compatibility to call old code, since shutDown() was renamed onLeave();
 	}
 
 

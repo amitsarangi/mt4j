@@ -536,20 +536,18 @@ public class MapsScene extends AbstractScene implements MouseWheelListener, Mous
         }
 	}
 
-	
-	public void init() {
-		p.registerKeyEvent(this);
-		p.addMouseWheelListener(this);
-		p.addMouseListener(this);
-	}
-
-	public void shutDown() {
-		p.unregisterKeyEvent(this);
-		p.removeMouseWheelListener(this);
-		p.removeMouseListener(this);
+	public void onEnter() {
+		getMTApplication().registerKeyEvent(this);
+		getMTApplication().addMouseWheelListener(this);
+		getMTApplication().addMouseListener(this);
 	}
 	
-
+	public void onLeave() {	
+		getMTApplication().unregisterKeyEvent(this);
+		getMTApplication().removeMouseWheelListener(this);
+		getMTApplication().removeMouseListener(this);
+	}
+	
 	/**
 	 * Returns some more or less random points
 	 * on the screen to search for nearby flickr fotos.

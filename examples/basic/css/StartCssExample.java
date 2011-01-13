@@ -14,6 +14,6 @@ public class StartCssExample extends MTApplication {
 	
 	@Override
 	public void startUp() {
-		addScene(new CssExample(this, "Integration  Test Scene"));
+		addScene(new CssExampleScene(this, "Integration  Test Scene"));
 	}
 }

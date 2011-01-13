@@ -17,6 +17,6 @@ public class StartGenericExample extends MTApplication {
 	
 	@Override
 	public void startUp() {
-		addScene(new GenericExample(this, "Integration  Test Scene"));
+		addScene(new GenericExampleScene(this, "Integration  Test Scene"));
 	}
 }

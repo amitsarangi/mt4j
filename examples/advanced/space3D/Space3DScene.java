@@ -113,7 +113,7 @@ public class Space3DScene extends AbstractScene {
         //Animate earth rotation
         new Animation("rotation animation", new MultiPurposeInterpolator(0,360, 17000, 0, 1, -1) , earth).addAnimationListener(new IAnimationListener(){
         	public void processAnimationEvent(AnimationEvent ae) {
-        		earth.rotateY(earth.getCenterPointLocal(), ae.getCurrentStepDelta(), TransformSpace.LOCAL);
+        		earth.rotateY(earth.getCenterPointLocal(), ae.getDelta(), TransformSpace.LOCAL);
         	}}).start();
         
         //Put planets in a group that can be manipulated by gestures
@@ -147,24 +147,24 @@ public class Space3DScene extends AbstractScene {
         //Rotate the moon around the earth
         new Animation("moon animation", new MultiPurposeInterpolator(0,360, 12000, 0, 1, -1) , moonSphere).addAnimationListener(new IAnimationListener(){
         	public void processAnimationEvent(AnimationEvent ae) {
-        		moonSphere.rotateZ(earth.getCenterPointLocal(), ae.getCurrentStepDelta(), TransformSpace.RELATIVE_TO_PARENT);
+        		moonSphere.rotateZ(earth.getCenterPointLocal(), ae.getDelta(), TransformSpace.RELATIVE_TO_PARENT);
         	}}).start();
         //Rotate the moon around ints own center
         new Animation("moon animation around own axis", new MultiPurposeInterpolator(0,360, 9000, 0, 1, -1) , moonSphere).addAnimationListener(new IAnimationListener(){
         	public void processAnimationEvent(AnimationEvent ae) {
-        		moonSphere.rotateZ(moonSphere.getCenterPointLocal(), -3*ae.getCurrentStepDelta(), TransformSpace.LOCAL);
-        		moonSphere.rotateY(moonSphere.getCenterPointLocal(), 0.5f*ae.getCurrentStepDelta(), TransformSpace.LOCAL);
+        		moonSphere.rotateZ(moonSphere.getCenterPointLocal(), -3*ae.getDelta(), TransformSpace.LOCAL);
+        		moonSphere.rotateY(moonSphere.getCenterPointLocal(), 0.5f*ae.getDelta(), TransformSpace.LOCAL);
         	}}).start();
         earth.addChild(moonSphere);
 	}
 
 
-	public void init() {
-		pa.registerKeyEvent(this);
+	public void onEnter() {
+		getMTApplication().registerKeyEvent(this);
 	}
-
-	public void shutDown() {
-		pa.unregisterKeyEvent(this);
+	
+	public void onLeave() {	
+		getMTApplication().unregisterKeyEvent(this);
 	}
 	
 	public void keyEvent(KeyEvent e){

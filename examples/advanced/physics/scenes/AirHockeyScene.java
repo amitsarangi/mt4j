@@ -563,14 +563,12 @@ public class AirHockeyScene extends AbstractScene {
 	}
 	
 
-	@Override
-	public void init() {
-		this.getMTApplication().registerKeyEvent(this);
+	public void onEnter() {
+		getMTApplication().registerKeyEvent(this);
 	}
-
-	@Override
-	public void shutDown() {
-		this.getMTApplication().unregisterKeyEvent(this);
+	
+	public void onLeave() {	
+		getMTApplication().unregisterKeyEvent(this);
 	}
 	
 	public void keyEvent(KeyEvent e){

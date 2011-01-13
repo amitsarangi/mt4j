@@ -17,6 +17,6 @@ public class StartMenuExample extends MTApplication {
 	
 	@Override
 	public void startUp() {
-		addScene(new MenuExample(this, "Integration  Test Scene"));
+		addScene(new MenuExampleScene(this, "Integration  Test Scene"));
 	}
 }

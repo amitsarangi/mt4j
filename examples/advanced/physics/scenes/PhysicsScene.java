@@ -136,12 +136,12 @@ public class PhysicsScene extends AbstractScene {
 		parent.addChild(borderBottom);
 	}
 
-	@Override
-	public void init() {
+	public void onEnter() {
+		getMTApplication().registerKeyEvent(this);
 	}
-
-	@Override
-	public void shutDown() {
+	
+	public void onLeave() {	
+		getMTApplication().unregisterKeyEvent(this);
 	}
 
 }

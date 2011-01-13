@@ -9,14 +9,8 @@ public class DummyScene extends AbstractScene {
 		super(mtApplication, name);
 	}
 
-	@Override
-	public void init() {
-
-	}
-
-	@Override
-	public void shutDown() {
-
-	}
+	public void onEnter() {}
+	
+	public void onLeave() {}
 
 }

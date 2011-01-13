@@ -34,6 +34,9 @@ import org.mt4j.util.math.Vector3D;
 
 
 public class StartSwingExample extends JFrame {
+	private static final long serialVersionUID = 1L;
+
+
 
 	public static void main(String[] args) {
 		try {
@@ -41,7 +44,8 @@ public class StartSwingExample extends JFrame {
         } catch (Exception e) {
         	e.printStackTrace();
         }
-		StartSwingExample swingFrame = new StartSwingExample();
+//		StartSwingExample swingFrame = 
+			new StartSwingExample();
 	}
 	
 	
@@ -187,6 +191,8 @@ public class StartSwingExample extends JFrame {
 	
 	
 	private class TestMTApplication extends MTApplication{
+		private static final long serialVersionUID = 1L;
+
 		@Override
 		public void startUp() {
 			//This causeD the craetion of a new rendrer (-> new opengl context)
@@ -195,14 +201,16 @@ public class StartSwingExample extends JFrame {
 //			pack();
 //			setResizable(false);
 			
-			this.addScene(new TestScene(this, "test scene"));
+			this.addScene(new SwingIntegrationScene(this, "test scene"));
 		}
 	}
 	
 	
 	
 	public class SimpleAboutDialog extends JDialog {
-		  public SimpleAboutDialog(JFrame parent) {
+		private static final long serialVersionUID = 1L;
+
+		public SimpleAboutDialog(JFrame parent) {
 		    super(parent, "About", true);
 
 		    Box b = Box.createVerticalBox();

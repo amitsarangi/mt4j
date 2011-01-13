@@ -10,9 +10,9 @@ import org.mt4j.util.MTColor;
 import org.mt4j.util.math.ToolsMath;
 import org.mt4j.util.math.Vector3D;
 
-public class TestScene extends AbstractScene {
+public class SwingIntegrationScene extends AbstractScene {
 	
-	public TestScene(MTApplication mtApplication, String name) {
+	public SwingIntegrationScene(MTApplication mtApplication, String name) {
 		super(mtApplication, name);
 		CursorTracer c = new CursorTracer(mtApplication, this);
 		registerGlobalInputProcessor(c);
@@ -26,11 +26,9 @@ public class TestScene extends AbstractScene {
 		}
 	}
 	
-	@Override
-	public void init() {	}
-
-	@Override
-	public void shutDown() {	}
+	public void onEnter() {}
+	
+	public void onLeave() {}
 
 }
 

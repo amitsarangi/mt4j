@@ -117,8 +117,8 @@ public class FiducialScene extends AbstractScene implements IMTInputEventListene
 		return comp;
 	}
 	
-	public void init() {}
-
-	public void shutDown() {}
+	public void onEnter() {}
+	
+	public void onLeave() {	}
 
 }

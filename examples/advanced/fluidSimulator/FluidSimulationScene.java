@@ -252,14 +252,12 @@ public class FluidSimulationScene extends AbstractScene{
 	}
 
 	
-	//@Override
-	public void init() {
-		app.registerKeyEvent(this);
+	public void onEnter() {
+		getMTApplication().registerKeyEvent(this);
 	}
-
-	//@Override
-	public void shutDown() {
-		app.unregisterKeyEvent(this);
+	
+	public void onLeave() {	
+		getMTApplication().unregisterKeyEvent(this);
 		/*
 		mtApp.noSmooth();
 		mtApp.fill(255,255,255,255);

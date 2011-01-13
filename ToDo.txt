@@ -12,7 +12,6 @@ ToDo list:
 
 - remove logging from model loading -> consumes memory even if the logging level doesent match?
 - nice image for touch cursor
-- update to latest gsvideo
 - allow wrapping of JComponents in a MTComponent (-> swingToTexture, repaintManager update, generate mouse events)
 - use PGraphics.pushStyle()/popStyle when rendering with processing!?
 
@@ -44,6 +43,7 @@ ToDo list:
 - check if for line_smooth disabling/enabling multisampling is too expensive - if so disable/dont use line_smooth when multisampling at all 
 - framework for component persistation (X-Stream?)
 - put perspective and viewport into MTCamera (?)
+- (update to latest gsvideo)
 - (Use nanotimer or currentmillis or gage timer to update and animations? -> nano has more precision but has problems on some systems(?))
 - Central TextureManager/Ogl resource manager that tracks the opengl texture ids and deletes them if not needed anymore
 - (a new MT4JTexture class/interface which internally creates a processing or opengl texture - the mixture make problems)
@@ -129,20 +129,14 @@ ToDo list:
 - differentiate between manipulation s and gestures? (1 difference is: eg. flick is a gesture, drag a manipulation, we have to wait if it is a flick -> if not switch to drag but start drag from the 1st event, not resume at current)
 - support Linux HID touch
 - add ability in component processors to get informed of other cursors, not from the component?
-- GestureUtil class? -> getDistance(cursor1, cursor2) getAngle(cursor1, movedCursor); etc
-- abort tapGesture if finger moved too much -> check on update as in PressAndHold gesture
-- Test if intalled multitouch vista driver + win7 touch screen make problems
-- more gestures: flick(? velocity, straightness, how to deal with drag? make flick priority 2, and 2 scale priority ..10?)
-- Win7 Input -> get and store blobsize
 - Change Tap&Hold gesture behaviour to match Windows -> send gesture_ended only if finger lifted, not if time is up
 - Win7Input source -> use getActiveWindow() -> reject windows Tap and HOld gestures -> set TWF_WANTPALM at registerTouchwindow or not? -> TEST! ->http://social.msdn.microsoft.com/Forums/en/tabletandtouch/thread/2a173296-49b6-4f25-860f-953ae6038857
 - add GenericTwoFingerGesture that delivers the touch points on the drag-plane -> methods for getLastRotation etc
-- at mouseinputsource send mouseInputEvt extends mtinputposEvt/MTFingerInputEvt -> attach mouse button information for pure mouse applications
 - resume some gestures only if the cursor is still on the object -> else abort -> make abortGesture() method in all processors!
 - implement logically meaningful returns of boolean processInputEvent() - when return true, when false, how to react?
 - add keyboard input source sending keyboard events to the focused/selected component -> FocusManager?
 - (if object that is dragged, scaled etc is destroyed while during gesture -> nullpointer error -> check if viewing cam is null!)
-- (background rotate gesture? -> not good, would rotate about center of cam.. -> better use MTComp at z=0 with rotateProcessor!)
+
 
 -> SVG:
 - make loading threaded by doing it in an abstractprogessthread
