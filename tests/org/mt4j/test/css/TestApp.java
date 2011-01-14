@@ -1,12 +1,7 @@
 package org.mt4j.test.css;
 
-import org.apache.log4j.ConsoleAppender;
-import org.apache.log4j.Logger;
-import org.apache.log4j.SimpleLayout;
 import org.mt4j.MTApplication;
-import org.mt4j.components.visibleComponents.shapes.MTRectangle;
 import org.mt4j.sceneManagement.AbstractScene;
-import org.mt4j.util.MTColor;
 
 
 public class TestApp extends AbstractScene{

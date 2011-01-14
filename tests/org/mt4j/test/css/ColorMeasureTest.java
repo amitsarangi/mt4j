@@ -1,19 +1,11 @@
 package org.mt4j.test.css;
 
-import static org.junit.Assert.*;
-
-import java.io.IOException;
 import java.util.List;
 
 import junit.framework.TestCase;
 
-import org.apache.log4j.ConsoleAppender;
-import org.apache.log4j.FileAppender;
-import org.apache.log4j.Logger;
-import org.apache.log4j.SimpleLayout;
 import org.junit.Before;
 import org.junit.Test;
-import org.mt4j.MTApplication;
 import org.mt4j.components.css.parser.CSSParserConnection;
 import org.mt4j.components.css.style.CSSSelector;
 import org.mt4j.components.css.style.CSSStyle;
@@ -23,22 +15,12 @@ import org.mt4j.util.MTColor;
 
 
 public class ColorMeasureTest extends TestCase {
-	Logger logger = Logger.getLogger("MT4J Extensions");
-	SimpleLayout l = new SimpleLayout();
-	ConsoleAppender ca = new ConsoleAppender(l);
-	
-	Logger fileLogger = Logger.getLogger("FileLogger");
-	
-		
-	StartTestApp app = new StartTestApp();
-	CSSParserConnection pc;
-	List<CSSStyle> styles;
+	private StartTestApp app = new StartTestApp();
+	private CSSParserConnection pc;
+	private List<CSSStyle> styles;
 	
 	@Before
 	public void setUp() {
-		logger.addAppender(ca);
-
-		
 		pc = new CSSParserConnection("junit/colormeasuretest.css", app);
 		styles= pc.getCssh().getStyles();
 	}

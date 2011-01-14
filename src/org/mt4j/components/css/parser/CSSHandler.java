@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
 
-import org.apache.log4j.Logger;
 import org.mt4j.MTApplication;
 import org.mt4j.components.css.style.CSSBackgroundPosition;
 import org.mt4j.components.css.style.CSSFont;
@@ -21,6 +20,8 @@ import org.mt4j.components.css.util.CSSKeywords.Position;
 import org.mt4j.components.css.util.CSSKeywords.PositionType;
 import org.mt4j.components.css.util.CSSKeywords.cssproperties;
 import org.mt4j.util.MTColor;
+import org.mt4j.util.logging.ILogger;
+import org.mt4j.util.logging.MTLoggerFactory;
 import org.w3c.css.sac.CSSException;
 import org.w3c.css.sac.DocumentHandler;
 import org.w3c.css.sac.InputSource;
@@ -38,7 +39,7 @@ import processing.core.PImage;
 public class CSSHandler implements DocumentHandler{
 	
 	/** The logger. */
-	Logger logger = null;
+	ILogger logger = null;
 	
 	/** The styles. */
 	List<CSSStyle> styles = null;
@@ -62,7 +63,7 @@ public class CSSHandler implements DocumentHandler{
 	 * @param styles the List, to which the styles are added
 	 */
 	public CSSHandler(MTApplication app, List<CSSStyle> styles) {
-		logger = Logger.getLogger(CSSHandler.class.getName());
+		logger = MTLoggerFactory.getLogger(CSSHandler.class.getName());
 		this.styles = styles;
 		this.app = app;
 	}
@@ -698,7 +699,6 @@ public class CSSHandler implements DocumentHandler{
 	 * @param value the LexicalUnit
 	 */
 	private void handleFontStyle(LexicalUnit value) {
-		
 		CSSFontStyle style = CSSFontStyle.NORMAL;
 		if (currentFont == null) currentFont = new CSSFont(style);
 		if (value.getLexicalUnitType() == LexicalUnit.SAC_IDENT || value.getLexicalUnitType() == LexicalUnit.SAC_STRING_VALUE) {
@@ -717,7 +717,6 @@ public class CSSHandler implements DocumentHandler{
 		switch (value.getLexicalUnitType()) {
 		case LexicalUnit.SAC_RGBCOLOR:
 				try {
-
 					LexicalUnit parameters = value.getParameters();
 					float red = parseMeasuringUnit(parameters, 255);
 					parameters = parameters.getNextLexicalUnit().getNextLexicalUnit();
@@ -881,15 +880,11 @@ public class CSSHandler implements DocumentHandler{
 	 */
 	
 	public void startSelector(SelectorList selectors) throws CSSException {
-		
 		for (int i=0; i < selectors.getLength(); i++) {
 			styles.add(new CSSStyle(parseSelector(selectors.item(i)), app));
 			activeStyles.add(styles.get(styles.size()-1));
 			
 		}
-		
-		
-		
 	}
 	
 	/**
@@ -899,22 +894,17 @@ public class CSSHandler implements DocumentHandler{
 	 * @return the Selector (CSSSelector)
 	 */
 	public CSSSelector parseSelector(org.w3c.css.sac.Selector selector) {
-
-		
 		CSSSelector newSelector = null;
-
 		
 		if (selector.toString().contains(">")) {
 			String[] parts = selector.toString().split(">", 2);
 			newSelector = processElement(parts[0]);
 			newSelector.setChild(processElement(parts[1]));
-
 		} else {
 			//No Children (yet)
 			newSelector = processElement(selector.toString());
 			
 		}
-
 		return newSelector;
 	}
 	
@@ -926,9 +916,6 @@ public class CSSHandler implements DocumentHandler{
 	 */
 	public CSSSelector processElement(String in) {
 		CSSSelector newSelector = null;
-		
-		
-		
 		String work = String.copyValueOf(in.toCharArray());	
 		
 		while (work.startsWith(" ")) work = work.substring(1);
@@ -961,7 +948,6 @@ public class CSSHandler implements DocumentHandler{
 		if (work.startsWith(".")) {
 			firstCharacterDot = true;
 			containsDot = work.substring(1).contains(".");
-			
 		}
 		
 		if (work.startsWith("#")) {
@@ -969,55 +955,46 @@ public class CSSHandler implements DocumentHandler{
 			containsSharp = work.substring(1).contains("#");
 		}
 		
-		
 		if (!containsSharp && !containsDot) {
 			newSelector = new CSSSelector(work.replace(".", "").replace("#", ""), determineType(work));
 		}
 		
 		if (containsSpace) {
 			StringTokenizer st = new StringTokenizer(work, " ");
-
 			if (st.countTokens() > 1) {
 				String part1 = st.nextToken();
 				String part2 = st.nextToken();
 				newSelector = new CSSSelector(part1, determineType(part1));
 				newSelector.setSecondary(part2);
 				newSelector.setSecondaryType(CSSSelectorType.TYPE);
-				
 			} 
-			
 			return newSelector;
 		}
-		
 		
 		if (containsSharp) {
 			if (firstCharacterSharp) {
 				StringTokenizer st = new StringTokenizer(work.substring(1), "#");
-				
 				if (st.countTokens() > 1) {			
-				newSelector = new CSSSelector(st.nextToken(), CSSSelectorType.ID);
-				newSelector.setSecondary(st.nextToken());
-				newSelector.setSecondaryType(CSSSelectorType.ID);
+					newSelector = new CSSSelector(st.nextToken(), CSSSelectorType.ID);
+					newSelector.setSecondary(st.nextToken());
+					newSelector.setSecondaryType(CSSSelectorType.ID);
 				}
 			} else {
-			StringTokenizer st = new StringTokenizer(work, "#");
-
-			if (st.countTokens() > 1) {
-				String part1 = st.nextToken();
-				String part2 = st.nextToken();
-				newSelector = new CSSSelector(part1, determineType(part1));
-				newSelector.setSecondary(part2);
-				newSelector.setSecondaryType(CSSSelectorType.ID);
-				
-			} 
+				StringTokenizer st = new StringTokenizer(work, "#");
+				if (st.countTokens() > 1) {
+					String part1 = st.nextToken();
+					String part2 = st.nextToken();
+					newSelector = new CSSSelector(part1, determineType(part1));
+					newSelector.setSecondary(part2);
+					newSelector.setSecondaryType(CSSSelectorType.ID);
+				} 
 			}
 			return newSelector;
 		}
-		
+
 		if (containsDot) {
 			if (firstCharacterDot) {
 				StringTokenizer st = new StringTokenizer(work.substring(1), ".");
-				
 				if (st.countTokens() > 1) {			
 				newSelector = new CSSSelector(st.nextToken(), CSSSelectorType.CLASS);
 				newSelector.setSecondary(st.nextToken());
@@ -1025,21 +1002,16 @@ public class CSSHandler implements DocumentHandler{
 				}
 			} else {
 				StringTokenizer st = new StringTokenizer(work, ".");
-
 				if (st.countTokens() > 1) {
 					String part1 = st.nextToken();
 					String part2 = st.nextToken();
 					newSelector = new CSSSelector(part1, determineType(part1));
 					newSelector.setSecondary(part2);
 					newSelector.setSecondaryType(CSSSelectorType.CLASS);
-					
 				} 
 			}
 			return newSelector;		
 		}
-		
-		
-		
 		return newSelector;
 	}
 	
@@ -1065,7 +1037,6 @@ public class CSSHandler implements DocumentHandler{
 			
 		return CSSSelectorType.TYPE;
 	}
-	
 
 	
 

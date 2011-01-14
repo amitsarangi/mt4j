@@ -21,10 +21,6 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.log4j.ConsoleAppender;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
-import org.apache.log4j.SimpleLayout;
 import org.mt4j.MTApplication;
 import org.mt4j.components.visibleComponents.font.BitmapFont;
 import org.mt4j.components.visibleComponents.font.BitmapFontCharacter;
@@ -32,6 +28,8 @@ import org.mt4j.components.visibleComponents.font.IFont;
 import org.mt4j.components.visibleComponents.font.fontFactories.IFontFactory;
 import org.mt4j.util.MT4jSettings;
 import org.mt4j.util.MTColor;
+import org.mt4j.util.logging.ILogger;
+import org.mt4j.util.logging.MTLoggerFactory;
 
 import processing.core.PFont.Glyph;
 
@@ -41,14 +39,13 @@ import processing.core.PFont.Glyph;
  */
 public class BitmapFontFactoryProxy implements IFontFactory {
 	/** The Constant logger. */
-	private static final Logger logger = Logger.getLogger(BitmapFontFactoryProxy.class.getName());
+	private static final ILogger logger;
+//	= MTLoggerFactory.getLogger(BitmapFontFactoryProxy.class.getName());
 	static{
-//		logger.setLevel(Level.ERROR);
-//		logger.setLevel(Level.WARN);
-		logger.setLevel(Level.DEBUG);
-		SimpleLayout l = new SimpleLayout();
-		ConsoleAppender ca = new ConsoleAppender(l);
-		logger.addAppender(ca);
+		logger = MTLoggerFactory.getLogger(BitmapFontFactoryProxy.class.getName());
+//		logger.setLevel(ILogger.ERROR);
+//		logger.setLevel(ILogger.WARN);
+		logger.setLevel(ILogger.DEBUG);
 	}
 	
 	public static String defaultCharacters = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ¡¿…»ÕÃ”“abcdefghijklmnopqrstuvwxyz·‡ÈËÌÏÛÚ<>|,;.:-_#'+*!\"ß$%&/()=?¥{[]}\\@";

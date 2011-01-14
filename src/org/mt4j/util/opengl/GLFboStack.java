@@ -22,9 +22,8 @@ import java.util.Stack;
 import javax.media.opengl.GL;
 import javax.media.opengl.glu.GLU;
 
-import org.apache.log4j.ConsoleAppender;
-import org.apache.log4j.Logger;
-import org.apache.log4j.SimpleLayout;
+import org.mt4j.util.logging.ILogger;
+import org.mt4j.util.logging.MTLoggerFactory;
 
 /**
  * The FBO stack manages the current opengl drawing target. It allows to switch drawing to/from different
@@ -37,12 +36,9 @@ import org.apache.log4j.SimpleLayout;
  */
 public class GLFboStack{
 	/** The Constant logger. */
-	private static final Logger logger = Logger.getLogger(GLFboStack.class.getName());
+	private static final ILogger logger = MTLoggerFactory.getLogger(GLFboStack.class.getName());
 	static{
-//		logger.setLevel(Level.ERROR);
-		SimpleLayout l = new SimpleLayout();
-		ConsoleAppender ca = new ConsoleAppender(l);
-		logger.addAppender(ca);
+		logger.setLevel(ILogger.ERROR);
 	}
 	
 	/** The gl. */

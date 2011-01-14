@@ -25,12 +25,10 @@ import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
-import org.apache.log4j.ConsoleAppender;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
-import org.apache.log4j.SimpleLayout;
 import org.mt4j.components.interfaces.IMTComponent3D;
 import org.mt4j.input.inputProcessors.componentProcessors.AbstractCursorProcessor;
+import org.mt4j.util.logging.ILogger;
+import org.mt4j.util.logging.MTLoggerFactory;
 import org.mt4j.util.math.Vector3D;
 
 
@@ -42,14 +40,11 @@ import org.mt4j.util.math.Vector3D;
  * @author Christopher Ruff
  */
 public class InputCursor{
-	private static final Logger logger = Logger.getLogger(InputCursor.class.getName());
+	private static final ILogger logger = MTLoggerFactory.getLogger(InputCursor.class.getName());
 
 	private static final int EVENT_HISTORY_DEPTH = 99;
 	static{
-		logger.setLevel(Level.ERROR);
-		SimpleLayout l = new SimpleLayout();
-		ConsoleAppender ca = new ConsoleAppender(l);
-		logger.addAppender(ca);
+		logger.setLevel(ILogger.ERROR);
 	}
 	
 	/** The events. */

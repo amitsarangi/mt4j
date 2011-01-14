@@ -19,10 +19,6 @@ package advanced.mtShell;
 
 import java.awt.event.KeyEvent;
 
-import org.apache.log4j.ConsoleAppender;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
-import org.apache.log4j.SimpleLayout;
 import org.mt4j.MTApplication;
 import org.mt4j.components.TransformSpace;
 import org.mt4j.components.visibleComponents.font.FontManager;
@@ -45,6 +41,8 @@ import org.mt4j.sceneManagement.Iscene;
 import org.mt4j.sceneManagement.transition.BlendTransition;
 import org.mt4j.sceneManagement.transition.FadeTransition;
 import org.mt4j.util.MTColor;
+import org.mt4j.util.logging.ILogger;
+import org.mt4j.util.logging.MTLoggerFactory;
 import org.mt4j.util.math.Vector3D;
 import org.mt4j.util.math.Vertex;
 import org.mt4j.util.opengl.GLFBO;
@@ -71,14 +69,11 @@ import advanced.touchTail.TouchTailScene;
  */
 public class MTShellScene extends AbstractScene {
 	/** The Constant logger. */
-	private static final Logger logger = Logger.getLogger(MTShellScene.class.getName());
+	private static final ILogger logger = MTLoggerFactory.getLogger(MTShellScene.class.getName());
 	static{
-//		logger.setLevel(Level.WARN);
-//		logger.setLevel(Level.DEBUG);
-		logger.setLevel(Level.INFO);
-		SimpleLayout l = new SimpleLayout();
-		ConsoleAppender ca = new ConsoleAppender(l);
-		logger.addAppender(ca);
+//		logger.setLevel(ILogger.WARN);
+//		logger.setLevel(ILogger.DEBUG);
+		logger.setLevel(ILogger.INFO);
 	}
 	
 	/** The app. */

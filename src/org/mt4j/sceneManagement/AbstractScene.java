@@ -23,10 +23,6 @@ import java.util.Iterator;
 
 import javax.media.opengl.GL;
 
-import org.apache.log4j.ConsoleAppender;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
-import org.apache.log4j.SimpleLayout;
 import org.mt4j.MTApplication;
 import org.mt4j.components.MTCanvas;
 import org.mt4j.input.inputProcessors.globalProcessors.AbstractGlobalInputProcessor;
@@ -36,6 +32,8 @@ import org.mt4j.util.MT4jSettings;
 import org.mt4j.util.MTColor;
 import org.mt4j.util.camera.Icamera;
 import org.mt4j.util.camera.MTCamera;
+import org.mt4j.util.logging.ILogger;
+import org.mt4j.util.logging.MTLoggerFactory;
 import org.mt4j.util.math.Tools3D;
 
 import processing.core.PGraphics;
@@ -48,15 +46,12 @@ import processing.core.PGraphics;
  */
 public abstract class AbstractScene implements Iscene {
 	/** The Constant logger. */
-	private static final Logger logger = Logger.getLogger(AbstractScene.class.getName());
+	private static final ILogger logger = MTLoggerFactory.getLogger(AbstractScene.class.getName());
 	static{
-//		logger.setLevel(Level.ERROR);
-//		logger.setLevel(Level.WARN);
-//		logger.setLevel(Level.DEBUG);
-		logger.setLevel(Level.INFO);
-		SimpleLayout l = new SimpleLayout();
-		ConsoleAppender ca = new ConsoleAppender(l);
-		logger.addAppender(ca);
+//		logger.setLevel(ILogger.ERROR);
+//		logger.setLevel(ILogger.WARN);
+//		logger.setLevel(ILogger.DEBUG);
+		logger.setLevel(ILogger.INFO);
 	}
 	
 	/** The scene cam. */

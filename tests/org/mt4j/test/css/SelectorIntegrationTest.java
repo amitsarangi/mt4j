@@ -1,34 +1,24 @@
 package org.mt4j.test.css;
 
-import java.util.HashMap;
 import java.util.List;
 
-import junit.framework.TestCase;
-
-import org.apache.log4j.ConsoleAppender;
-import org.apache.log4j.Logger;
-import org.apache.log4j.SimpleLayout;
-import org.junit.Before;
 import org.junit.Test;
 import org.mt4j.MTApplication;
+import org.mt4j.components.MTCanvas;
+import org.mt4j.components.MTComponent;
+import org.mt4j.components.TransformSpace;
+import org.mt4j.components.css.parser.CSSParserConnection;
+import org.mt4j.components.css.style.CSSStyle;
+import org.mt4j.components.visibleComponents.shapes.MTEllipse;
+import org.mt4j.components.visibleComponents.shapes.MTLine;
+import org.mt4j.components.visibleComponents.shapes.MTRectangle;
+import org.mt4j.components.visibleComponents.widgets.MTTextArea;
 import org.mt4j.sceneManagement.Iscene;
 import org.mt4j.test.AbstractWindowTestcase;
 import org.mt4j.test.testUtil.DummyScene;
 import org.mt4j.test.testUtil.TestRunnable;
 import org.mt4j.util.MTColor;
 import org.mt4j.util.math.Vector3D;
-import org.mt4j.components.MTCanvas;
-import org.mt4j.components.MTComponent;
-import org.mt4j.components.TransformSpace;
-import org.mt4j.components.css.parser.CSSParserConnection;
-import org.mt4j.components.css.style.CSSStyle;
-import org.mt4j.components.visibleComponents.font.FontManager;
-import org.mt4j.components.visibleComponents.font.IFont;
-import org.mt4j.components.visibleComponents.font.IFontCharacter;
-import org.mt4j.components.visibleComponents.shapes.MTEllipse;
-import org.mt4j.components.visibleComponents.shapes.MTLine;
-import org.mt4j.components.visibleComponents.shapes.MTRectangle;
-import org.mt4j.components.visibleComponents.widgets.MTTextArea;
 
 
 
@@ -36,9 +26,6 @@ public class SelectorIntegrationTest extends AbstractWindowTestcase {
 	private MTComponent parent;
 	private MTApplication app;
 	private Iscene scene;
-	Logger logger = Logger.getLogger("MT4J Extensions");
-	SimpleLayout l = new SimpleLayout();
-	ConsoleAppender ca = new ConsoleAppender(l);
 	CSSParserConnection pc;
 	List<CSSStyle> styles;
 	MTColor w = new MTColor(255,255,255,255);
@@ -54,9 +41,6 @@ public class SelectorIntegrationTest extends AbstractWindowTestcase {
 		parent = new MTComponent(app);
 		getCanvas().addChild(parent);
 		
-		logger.addAppender(ca);
-		
-
 		app.getCssStyleManager().loadStyles("junit/integrationtest.css");
 		app.getCssStyleManager().setGloballyEnabled(true);
 	}
@@ -73,9 +57,6 @@ public class SelectorIntegrationTest extends AbstractWindowTestcase {
 		//r.enableCSS();
 		getCanvas().addChild(r);
 		assertTrue(r.getFillColor().equals(MTColor.GREEN));
-		
-		
-		
 	}
 	
 	@Test

@@ -103,10 +103,6 @@ import org.apache.batik.parser.PathParser;
 import org.apache.batik.parser.TransformListParser;
 import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.XMLResourceDescriptor;
-import org.apache.log4j.ConsoleAppender;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
-import org.apache.log4j.SimpleLayout;
 import org.mt4j.MTApplication;
 import org.mt4j.components.MTComponent;
 import org.mt4j.components.TransformSpace;
@@ -138,6 +134,8 @@ import org.mt4j.util.HelperMethods;
 import org.mt4j.util.MT4jSettings;
 import org.mt4j.util.MTColor;
 import org.mt4j.util.SwingTextureRenderer;
+import org.mt4j.util.logging.ILogger;
+import org.mt4j.util.logging.MTLoggerFactory;
 import org.mt4j.util.math.ConvexityUtil;
 import org.mt4j.util.math.Matrix;
 import org.mt4j.util.math.ToolsGeometry;
@@ -173,12 +171,9 @@ import processing.opengl.PGraphicsOpenGL;
  * @author Christopher Ruff
  */
 public class SVGLoader implements SVGConstants{
-	private static final Logger logger = Logger.getLogger(SVGLoader.class.getName());
+	private static final ILogger logger = MTLoggerFactory.getLogger(SVGLoader.class.getName());
 	static{
-		logger.setLevel(Level.ERROR);
-		SimpleLayout l = new SimpleLayout();
-		ConsoleAppender ca = new ConsoleAppender(l);
-		logger.addAppender(ca);
+		logger.setLevel(ILogger.ERROR);
 	}
 	
 	/** The svg doc. */

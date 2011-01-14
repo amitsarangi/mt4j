@@ -29,6 +29,8 @@ import org.mt4j.components.visibleComponents.font.fontFactories.SvgFontFactory;
 import org.mt4j.components.visibleComponents.font.fontFactories.TTFontFactory;
 import org.mt4j.util.MT4jSettings;
 import org.mt4j.util.MTColor;
+import org.mt4j.util.logging.ILogger;
+import org.mt4j.util.logging.MTLoggerFactory;
 
 import processing.core.PApplet;
 
@@ -38,6 +40,10 @@ import processing.core.PApplet;
  * @author Christopher Ruff
  */
 public class FontManager {
+	private static final ILogger logger = MTLoggerFactory.getLogger(FontManager.class.getName());
+	static{
+		logger.setLevel(ILogger.INFO);
+	}
 	
 	/** The font manager. */
 	private static FontManager fontManager;
@@ -212,7 +218,7 @@ public class FontManager {
 
 			//Create the font if we have a factory
 			if (factoryToUse != null){
-				System.out.println("Loading new font \"" + fontFileName + "\" with factory: " + factoryToUse.getClass().getName());
+				logger.info("Loading new font \"" + fontFileName + "\" with factory: " + factoryToUse.getClass().getName());
 //				loadedFont = factoryToUse.createFont(pa, fontAbsoultePath, fontSize, fillColor, strokeColor);
 //				loadedFont = factoryToUse.createFont(pa, fontAbsoultePath, fontSize, fillColor, strokeColor, antiAliased);
 				loadedFont = factoryToUse.createFont(pa, fontAbsoultePath, fontSize, fillColor, antiAliased);
@@ -224,18 +230,13 @@ public class FontManager {
 					}
 				}
 			}else{
-				System.err.println("Couldnt find a appropriate font factory for: " + fontFileName + " Suffix: " + suffix);
+				logger.error("Couldnt find a appropriate font factory for: " + fontFileName + " Suffix: " + suffix);
 //				loadedFont = new VectorFont(new VectorFontCharacter[0]);
 			}
 		}catch (Exception e) {
-			System.err.println("Error while trying to create the font: " + fontFileName);
+			logger.error("Error while trying to create the font: " + fontFileName);
 			e.printStackTrace();
 		}
-//		}
-//		else{
-//			System.err.println("Couldnt find font: " + fontAbsoultePath);
-//			loadedFont = new VectorFont(new VectorFontCharacter[0]);
-//		}
 		return (loadedFont);
 	}
 	

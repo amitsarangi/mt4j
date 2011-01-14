@@ -34,10 +34,6 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
-import org.apache.log4j.ConsoleAppender;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
-import org.apache.log4j.SimpleLayout;
 import org.mt4j.MTApplication;
 import org.mt4j.input.inputProcessors.globalProcessors.AbstractGlobalInputProcessor;
 import org.mt4j.input.inputSources.AbstractInputSource;
@@ -49,6 +45,8 @@ import org.mt4j.input.inputSources.TuioInputSource;
 import org.mt4j.input.inputSources.Win7NativeTouchSource;
 import org.mt4j.sceneManagement.Iscene;
 import org.mt4j.util.MT4jSettings;
+import org.mt4j.util.logging.ILogger;
+import org.mt4j.util.logging.MTLoggerFactory;
 
 
 
@@ -60,14 +58,11 @@ import org.mt4j.util.MT4jSettings;
  */
 public class InputManager {
 	/** The Constant logger. */
-	private static final Logger logger = Logger.getLogger(InputManager.class.getName());
+	private static final ILogger logger = MTLoggerFactory.getLogger(InputManager.class.getName());
 	static{
-//		logger.setLevel(Level.ERROR);
-//		logger.setLevel(Level.DEBUG);
-		logger.setLevel(Level.INFO);
-		SimpleLayout l = new SimpleLayout();
-		ConsoleAppender ca = new ConsoleAppender(l);
-		logger.addAppender(ca);
+//		logger.setLevel(ILogger.ERROR);
+//		logger.setLevel(ILogger.DEBUG);
+		logger.setLevel(ILogger.INFO);
 	}
 	
 	/** The registered input sources. */

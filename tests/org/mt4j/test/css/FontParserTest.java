@@ -5,9 +5,6 @@ import java.util.List;
 
 import junit.framework.TestCase;
 
-import org.apache.log4j.ConsoleAppender;
-import org.apache.log4j.Logger;
-import org.apache.log4j.SimpleLayout;
 import org.junit.Before;
 import org.junit.Test;
 import org.mt4j.components.css.parser.CSSParserConnection;
@@ -21,23 +18,13 @@ import org.mt4j.util.MTColor;
 
 
 public class FontParserTest extends TestCase{
-	Logger logger = Logger.getLogger("MT4J Extensions");
-	SimpleLayout l = new SimpleLayout();
-	ConsoleAppender ca = new ConsoleAppender(l);
-
-	Logger fileLogger = Logger.getLogger("FileLogger");
-
-
-	StartTestApp app = new StartTestApp();
-	CSSParserConnection pc;
-	List<CSSStyle> styles;
-	MTColor w = new MTColor(255,255,255,255);
-	HashMap<CSSSelector, IFont> hm = new HashMap<CSSSelector, IFont>();
+	private StartTestApp app = new StartTestApp();
+	private CSSParserConnection pc;
+	private List<CSSStyle> styles;
+	private MTColor w = new MTColor(255,255,255,255);
+	private HashMap<CSSSelector, IFont> hm = new HashMap<CSSSelector, IFont>();
 
 	public FontParserTest() {
-		logger.addAppender(ca);
-
-
 		pc = new CSSParserConnection("junit/fonttest.css", app);
 		styles= pc.getCssh().getStyles();
 		hm.clear();

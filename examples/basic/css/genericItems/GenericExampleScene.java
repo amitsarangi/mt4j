@@ -3,9 +3,6 @@ package basic.css.genericItems;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.log4j.ConsoleAppender;
-import org.apache.log4j.Logger;
-import org.apache.log4j.SimpleLayout;
 import org.mt4j.MTApplication;
 import org.mt4j.components.css.style.CSSSelector;
 import org.mt4j.components.css.util.CSSKeywords.CSSSelectorType;
@@ -20,12 +17,7 @@ import org.mt4jx.components.visibleComponents.widgets.OptionGroup;
 
 
 public class GenericExampleScene  extends AbstractScene{
-	
 	private MTApplication app;
-	private Logger logger = Logger.getLogger("MT4J Extensions");
-	private SimpleLayout l = new SimpleLayout();
-	private ConsoleAppender ca = new ConsoleAppender(l);
-	
 	
 	public GenericExampleScene(MTApplication mtApplication, String name) {
 		super(mtApplication, name);
@@ -35,8 +27,6 @@ public class GenericExampleScene  extends AbstractScene{
 			app.getCssStyleManager().setGloballyEnabled(true);
 			app.getCssStyleManager().loadStylesAndOverrideSelector(CSSTemplates.MATRIXSTYLE, new CSSSelector("Group A", CSSSelectorType.ID));
 			app.getCssStyleManager().loadStylesAndOverrideSelector(CSSTemplates.BLUESTYLE, new CSSSelector("Group B", CSSSelectorType.ID));
-			
-			logger.addAppender(ca);
 			
 			//Group A
 			//Set CSSID of all elements

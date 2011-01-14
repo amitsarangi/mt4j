@@ -19,11 +19,9 @@ package org.mt4j.util;
 
 import java.util.ArrayList;
 
-import org.apache.log4j.ConsoleAppender;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
-import org.apache.log4j.SimpleLayout;
 import org.mt4j.components.visibleComponents.shapes.GeometryInfo;
+import org.mt4j.util.logging.ILogger;
+import org.mt4j.util.logging.MTLoggerFactory;
 import org.mt4j.util.math.ToolsGeometry;
 import org.mt4j.util.math.ToolsMath;
 import org.mt4j.util.math.Vector3D;
@@ -44,12 +42,9 @@ import processing.core.PApplet;
 public class TriangleNormalGenerator {
 	
 	/** The Constant logger. */
-	private static final Logger logger = Logger.getLogger(TriangleNormalGenerator.class.getName());
+	private static final ILogger logger = MTLoggerFactory.getLogger(TriangleNormalGenerator.class.getName());
 	static{
-		logger.setLevel(Level.ERROR);
-		SimpleLayout l = new SimpleLayout();
-		ConsoleAppender ca = new ConsoleAppender(l);
-		logger.addAppender(ca);
+		logger.setLevel(ILogger.ERROR);
 	}
 	
 	/** The null vect. */
@@ -966,9 +961,9 @@ public class TriangleNormalGenerator {
 	 */
 	public void setDebug(boolean debug) {
 		if (debug)
-			logger.setLevel(Level.DEBUG);
+			logger.setLevel(ILogger.DEBUG);
 		else
-			logger.setLevel(Level.ERROR);
+			logger.setLevel(ILogger.ERROR);
 	}
 	
 	/**

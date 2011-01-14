@@ -17,10 +17,6 @@
  ***********************************************************************/
 package org.mt4j.components.visibleComponents.widgets;
 
-import org.apache.log4j.ConsoleAppender;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
-import org.apache.log4j.SimpleLayout;
 import org.mt4j.MTApplication;
 import org.mt4j.components.MTCanvas;
 import org.mt4j.components.MTComponent;
@@ -36,11 +32,13 @@ import org.mt4j.input.inputProcessors.componentProcessors.scaleProcessor.ScalePr
 import org.mt4j.sceneManagement.Iscene;
 import org.mt4j.util.MT4jSettings;
 import org.mt4j.util.MTColor;
+import org.mt4j.util.logging.ILogger;
+import org.mt4j.util.logging.MTLoggerFactory;
 import org.mt4j.util.math.Tools3D;
 import org.mt4j.util.math.Vector3D;
-import org.mt4j.util.opengl.GLTextureSettings;
 import org.mt4j.util.opengl.GLTexture;
 import org.mt4j.util.opengl.GLTexture.WRAP_MODE;
+import org.mt4j.util.opengl.GLTextureSettings;
 
 import processing.core.PApplet;
 import processing.core.PImage;
@@ -52,15 +50,12 @@ import processing.core.PImage;
  */
 public class MTSceneMenu extends MTRectangle{
 	/** The Constant logger. */
-	private static final Logger logger = Logger.getLogger(MTSceneMenu.class.getName());
+	private static final ILogger logger = MTLoggerFactory.getLogger(MTSceneMenu.class.getName());
 	static{
-//		logger.setLevel(Level.ERROR);
-//		logger.setLevel(Level.WARN);
-//		logger.setLevel(Level.DEBUG);
-		logger.setLevel(Level.INFO);
-		SimpleLayout l = new SimpleLayout();
-		ConsoleAppender ca = new ConsoleAppender(l);
-		logger.addAppender(ca);
+//		logger.setLevel(ILogger.ERROR);
+//		logger.setLevel(ILogger.WARN);
+//		logger.setLevel(ILogger.DEBUG);
+		logger.setLevel(ILogger.INFO);
 	}
 	
 	/** The app. */

@@ -37,10 +37,6 @@ import java.util.Properties;
 import javax.media.opengl.GL;
 import javax.swing.ImageIcon;
 
-import org.apache.log4j.ConsoleAppender;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
-import org.apache.log4j.SimpleLayout;
 import org.mt4j.components.css.util.CSSStyleManager;
 import org.mt4j.input.InputManager;
 import org.mt4j.input.inputData.AbstractCursorInputEvt;
@@ -56,6 +52,9 @@ import org.mt4j.util.MT4jSettings;
 import org.mt4j.util.SettingsMenu;
 import org.mt4j.util.animation.AnimationManager;
 import org.mt4j.util.animation.ani.AniAnimation;
+import org.mt4j.util.logging.ILogger;
+import org.mt4j.util.logging.Log4jLogger;
+import org.mt4j.util.logging.MTLoggerFactory;
 import org.mt4j.util.math.Tools3D;
 import org.mt4j.util.opengl.GLFBO;
 
@@ -80,18 +79,17 @@ import processing.core.PApplet;
  * @author Christopher Ruff
  */
 public abstract class MTApplication extends PApplet {
-	
 	/** The Constant logger. */
-	private static final Logger logger = Logger.getLogger(MTApplication.class.getName());
+	private static final ILogger logger;
+	
 	static{
-//		logger.setLevel(Level.ERROR);
-//		logger.setLevel(Level.WARN);
-//		logger.setLevel(Level.DEBUG);
-		logger.setLevel(Level.INFO);
-		SimpleLayout l = new SimpleLayout();
-		ConsoleAppender ca = new ConsoleAppender(l);
-		logger.addAppender(ca);
+		//Initialize Loggin facilities  - IMPORTANT TO DO THIS ASAP!
+		MTLoggerFactory.setLoggerProvider(new Log4jLogger()); //FIXME TEST
+//		MTLoggerFactory.setLoggerProvider(new JavaLogger()); //FIXME TEST
+		logger = MTLoggerFactory.getLogger(MTApplication.class.getName());
+		logger.setLevel(ILogger.INFO);
 	}
+	
 	
 	public static String CUSTOM_OPENGL_GRAPHICS = "org.mt4j.util.opengl.CustomPGraphicsOpenGL"; //PApplet.OPENGL
 	

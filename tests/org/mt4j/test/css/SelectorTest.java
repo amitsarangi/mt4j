@@ -1,20 +1,12 @@
 package org.mt4j.test.css;
 
-import static org.junit.Assert.*;
-
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 
 import junit.framework.TestCase;
 
-import org.apache.log4j.ConsoleAppender;
-import org.apache.log4j.FileAppender;
-import org.apache.log4j.Logger;
-import org.apache.log4j.SimpleLayout;
 import org.junit.Before;
 import org.junit.Test;
-import org.mt4j.MTApplication;
 import org.mt4j.components.css.parser.CSSParserConnection;
 import org.mt4j.components.css.style.CSSSelector;
 import org.mt4j.components.css.style.CSSStyle;
@@ -23,11 +15,6 @@ import org.mt4j.util.MTColor;
 
 
 public class SelectorTest extends TestCase {
-	Logger logger = Logger.getLogger("MT4J Extensions");
-	SimpleLayout l = new SimpleLayout();
-	ConsoleAppender ca = new ConsoleAppender(l);
-	
-		
 	StartTestApp app = new StartTestApp();
 	CSSParserConnection pc;
 	List<CSSStyle> styles;
@@ -35,8 +22,6 @@ public class SelectorTest extends TestCase {
 	
 	@Before
 	public void setUp() {
-		logger.addAppender(ca);
-		
 		pc = new CSSParserConnection("junit/selectortest.css", app);
 		styles= pc.getCssh().getStyles();
 
@@ -76,13 +61,10 @@ public class SelectorTest extends TestCase {
 		MTColor black = new MTColor(0,0,0,255);
 		MTColor purple = new MTColor(128,0,128,255);
 		MTColor silver = new MTColor(192,192,192,255);
-		int exists = 0;
 		
 		assertTrue(hm.get(h2).equals(black));
 		assertTrue(hm.get(id3).equals(purple));
 		assertTrue(hm.get(c4).equals(silver));
-		
-	
 	}
 	
 	@Test

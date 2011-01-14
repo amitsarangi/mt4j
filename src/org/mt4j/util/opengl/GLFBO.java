@@ -23,11 +23,9 @@ import java.util.List;
 
 import javax.media.opengl.GL;
 
-import org.apache.log4j.ConsoleAppender;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
-import org.apache.log4j.SimpleLayout;
 import org.mt4j.MTApplication;
+import org.mt4j.util.logging.ILogger;
+import org.mt4j.util.logging.MTLoggerFactory;
 import org.mt4j.util.math.Tools3D;
 import org.mt4j.util.math.ToolsBuffers;
 import org.mt4j.util.math.ToolsMath;
@@ -48,15 +46,12 @@ import processing.opengl.PGraphicsOpenGL;
  */
 public class GLFBO {
 	/** The Constant logger. */
-	private static final Logger logger = Logger.getLogger(GLFBO.class.getName());
+	private static final ILogger logger = MTLoggerFactory.getLogger(GLFBO.class.getName());
 	static{
-//		logger.setLevel(Level.ERROR);
-//		logger.setLevel(Level.WARN);
-//		logger.setLevel(Level.DEBUG);
-		logger.setLevel(Level.INFO);
-		SimpleLayout l = new SimpleLayout();
-		ConsoleAppender ca = new ConsoleAppender(l);
-		logger.addAppender(ca);
+//		logger.setLevel(ILogger.ERROR);
+//		logger.setLevel(ILogger.WARN);
+//		logger.setLevel(ILogger.DEBUG);
+		logger.setLevel(ILogger.INFO);
 	}
 	
 	private GL gl;

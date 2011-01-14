@@ -20,29 +20,24 @@ package org.mt4j.input.inputProcessors.componentProcessors;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.log4j.ConsoleAppender;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
-import org.apache.log4j.SimpleLayout;
 import org.mt4j.input.IMTInputEventListener;
 import org.mt4j.input.inputData.MTInputEvent;
 import org.mt4j.input.inputProcessors.IGestureEventListener;
 import org.mt4j.input.inputProcessors.IInputProcessor;
 import org.mt4j.input.inputProcessors.MTGestureEvent;
+import org.mt4j.util.logging.ILogger;
+import org.mt4j.util.logging.MTLoggerFactory;
 
 /**
  * The Class AbstractComponentProcessor.
  * @author Christopher Ruff
  */
 public abstract class AbstractComponentProcessor implements IMTInputEventListener, IInputProcessor,  Comparable<AbstractComponentProcessor> {
-	protected static final Logger logger = Logger.getLogger(AbstractComponentProcessor.class.getName());
+	protected static final ILogger logger = MTLoggerFactory.getLogger(AbstractComponentProcessor.class.getName());
 	static{
-		logger.setLevel(Level.ERROR);
-//		logger.setLevel(Level.WARN);
-//		logger.setLevel(Level.DEBUG);
-		SimpleLayout l = new SimpleLayout();
-		ConsoleAppender ca = new ConsoleAppender(l);
-		logger.addAppender(ca);
+		logger.setLevel(ILogger.ERROR);
+//		logger.setLevel(ILogger.WARN);
+//		logger.setLevel(ILogger.DEBUG);
 	}
 
 	

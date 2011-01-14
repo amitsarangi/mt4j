@@ -29,16 +29,14 @@ import org.apache.batik.svggen.font.Glyph;
 import org.apache.batik.svggen.font.Point;
 import org.apache.batik.svggen.font.table.CmapFormat;
 import org.apache.batik.svggen.font.table.Table;
-import org.apache.log4j.ConsoleAppender;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
-import org.apache.log4j.SimpleLayout;
 import org.mt4j.components.visibleComponents.font.IFont;
 import org.mt4j.components.visibleComponents.font.VectorFont;
 import org.mt4j.components.visibleComponents.font.VectorFontCharacter;
 import org.mt4j.util.MT4jSettings;
 import org.mt4j.util.MTColor;
 import org.mt4j.util.UnitTranslator;
+import org.mt4j.util.logging.ILogger;
+import org.mt4j.util.logging.MTLoggerFactory;
 import org.mt4j.util.math.Vector3D;
 import org.mt4j.util.math.Vertex;
 import org.mt4j.util.xml.svg.CustomPathHandler;
@@ -51,14 +49,11 @@ import processing.core.PApplet;
  */
 public class TTFontFactory implements IFontFactory{
 	/** The Constant logger. */
-	private static final Logger logger = Logger.getLogger(TTFontFactory.class.getName());
+	private static final ILogger logger = MTLoggerFactory.getLogger(TTFontFactory.class.getName());
 	static{
-//		logger.setLevel(Level.ERROR);
-		logger.setLevel(Level.WARN);
-//		logger.setLevel(Level.DEBUG);
-		SimpleLayout l = new SimpleLayout();
-		ConsoleAppender ca = new ConsoleAppender(l);
-		logger.addAppender(ca);
+//		logger.setLevel(ILogger.ERROR);
+		logger.setLevel(ILogger.WARN);
+//		logger.setLevel(ILogger.DEBUG);
 	}
 	
 	public static String defaultCharacters = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ¡¿…»ÕÃ”“abcdefghijklmnopqrstuvwxyz·‡ÈËÌÏÛÚ<>|,;.:-_#'+*!\"ß$%&/()=?¥{[]}\\@";

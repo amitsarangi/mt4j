@@ -21,10 +21,6 @@ package org.mt4j.input.inputProcessors.globalProcessors;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.log4j.ConsoleAppender;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
-import org.apache.log4j.SimpleLayout;
 import org.mt4j.components.interfaces.IMTComponent3D;
 import org.mt4j.input.IMTInputEventListener;
 import org.mt4j.input.inputData.InputCursor;
@@ -32,6 +28,8 @@ import org.mt4j.input.inputData.MTInputEvent;
 import org.mt4j.input.inputProcessors.GestureUtils;
 import org.mt4j.input.inputProcessors.IInputProcessor;
 import org.mt4j.input.inputSources.IinputSourceListener;
+import org.mt4j.util.logging.ILogger;
+import org.mt4j.util.logging.MTLoggerFactory;
 import org.mt4j.util.math.Vector3D;
 
 import processing.core.PApplet;
@@ -43,12 +41,9 @@ import processing.core.PApplet;
  * @author Christopher Ruff
  */
 public abstract class AbstractGlobalInputProcessor implements IinputSourceListener, IInputProcessor {
-	protected static final Logger logger = Logger.getLogger(AbstractGlobalInputProcessor.class.getName());
+	protected static final ILogger logger = MTLoggerFactory.getLogger(AbstractGlobalInputProcessor.class.getName());
 	static{
-		logger.setLevel(Level.ERROR);
-		SimpleLayout l = new SimpleLayout();
-		ConsoleAppender ca = new ConsoleAppender(l);
-		logger.addAppender(ca);
+		logger.setLevel(ILogger.ERROR);
 	}
 	
 	/** if disabled. */

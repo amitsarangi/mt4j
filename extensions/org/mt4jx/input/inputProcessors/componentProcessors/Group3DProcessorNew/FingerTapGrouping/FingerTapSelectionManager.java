@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
 import org.mt4j.components.MTCanvas;
 import org.mt4j.components.MTComponent;
 import org.mt4j.components.PickResult;
@@ -20,6 +18,8 @@ import org.mt4j.input.inputData.InputCursor;
 import org.mt4j.input.inputData.MTInputEvent;
 import org.mt4j.input.inputProcessors.componentProcessors.lassoProcessor.IdragClusterable;
 import org.mt4j.input.inputProcessors.globalProcessors.AbstractGlobalInputProcessor;
+import org.mt4j.util.logging.ILogger;
+import org.mt4j.util.logging.MTLoggerFactory;
 import org.mt4j.util.math.Vector3D;
 import org.mt4jx.input.inputProcessors.componentProcessors.Group3DProcessorNew.Cluster;
 import org.mt4jx.input.inputProcessors.componentProcessors.Group3DProcessorNew.ClusterDataManager;
@@ -30,7 +30,7 @@ import org.mt4jx.util.extension3D.ComponentHelper;
 
 public class FingerTapSelectionManager extends AbstractGlobalInputProcessor implements ISelectionManager {
 
-	protected static final Logger logger = Logger.getLogger(FingerTapSelectionManager.class.getName());
+	protected static final ILogger logger = MTLoggerFactory.getLogger(FingerTapSelectionManager.class.getName());
 	
 	private FingerTapSelection selection;
 	
@@ -58,7 +58,7 @@ public class FingerTapSelectionManager extends AbstractGlobalInputProcessor impl
 		this.selectionListeners = new ArrayList<ISelectionListener>();
 		this.selection = new FingerTapSelection(clusterDataManager,canvas,this);
 		this.canvas = canvas;
-		logger.setLevel(Level.ERROR);
+		logger.setLevel(ILogger.ERROR);
 	}
 	
 	
@@ -128,8 +128,8 @@ public class FingerTapSelectionManager extends AbstractGlobalInputProcessor impl
 			if(comp instanceof Cluster)
 			{
 				
-				Cluster cl = (Cluster)comp;
-				Vector3D currentPos = new Vector3D(cursorEvt.getPosX(),cursorEvt.getPosY(),0.0f);				
+				//Cluster cl = (Cluster)comp;
+				Vector3D currentPos = new Vector3D(cursorEvt.getX(),cursorEvt.getY(),0.0f);				
 				//PickResult prCanvas = canvas.pick2(currentPos.getX(), currentPos.getY(), true);//ADDTOMT4J
 				PickResult prCanvas = ComponentHelper.pick(canvas,currentPos.getX(), currentPos.getY(), true);//ADDTOMT4J
                 List<PickEntry> plCanvas = prCanvas.getPickList();

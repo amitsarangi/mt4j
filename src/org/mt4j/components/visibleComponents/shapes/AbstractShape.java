@@ -19,10 +19,6 @@ package org.mt4j.components.visibleComponents.shapes;
 
 import javax.media.opengl.GL;
 
-import org.apache.log4j.ConsoleAppender;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
-import org.apache.log4j.SimpleLayout;
 import org.mt4j.components.MTComponent;
 import org.mt4j.components.TransformSpace;
 import org.mt4j.components.bounds.IBoundingShape;
@@ -43,6 +39,8 @@ import org.mt4j.util.animation.IAnimation;
 import org.mt4j.util.animation.IAnimationListener;
 import org.mt4j.util.animation.MultiPurposeInterpolator;
 import org.mt4j.util.animation.ani.AniAnimation;
+import org.mt4j.util.logging.ILogger;
+import org.mt4j.util.logging.MTLoggerFactory;
 import org.mt4j.util.math.Matrix;
 import org.mt4j.util.math.Ray;
 import org.mt4j.util.math.Tools3D;
@@ -65,12 +63,16 @@ import processing.core.PImage;
  * @author Christopher Ruff
  */
 public abstract class AbstractShape extends AbstractVisibleComponent{
-	private static final Logger logger = Logger.getLogger(AbstractShape.class.getName());
+//	private static final Logger logger = Logger.getLogger(AbstractShape.class.getName());
+//	static{
+//		logger.setLevel(Level.ERROR);
+//		SimpleLayout l = new SimpleLayout();
+//		ConsoleAppender ca = new ConsoleAppender(l);
+//		logger.addAppender(ca);
+//	}
+	private static final ILogger logger = MTLoggerFactory.getLogger(AbstractShape.class.getName());
 	static{
-		logger.setLevel(Level.ERROR);
-		SimpleLayout l = new SimpleLayout();
-		ConsoleAppender ca = new ConsoleAppender(l);
-		logger.addAppender(ca);
+		logger.setLevel(ILogger.ERROR);
 	}
 	
 //	/** Default gesture actions. */
@@ -549,7 +551,7 @@ public abstract class AbstractShape extends AbstractVisibleComponent{
 				this.setTexture(this.getTexture());
 			}
 		}else{
-			logger.error(this.getName() + " - Cant use direct GL mode if not in opengl mode! Object: " + this.getName());
+			logger.error(this.getName() + " - Cant use direct GL mode if not in opengl mode! Object: " + this);
 			this.drawDirectGL = false;
 		}
 	}
@@ -578,7 +580,7 @@ public abstract class AbstractShape extends AbstractVisibleComponent{
 			}
 			this.useVBOs = useVBOs;
 		}else{
-			logger.error(this.getName() + " - Cant use VBOs if not in opengl mode and setDrawDirectGL has to be set to true! Object: " + this.getName());
+			logger.error(this.getName() + " - Cant use VBOs if not in opengl mode and setDrawDirectGL has to be set to true! Object: " + this);
 			this.useVBOs = false;
 		}
 	}
@@ -611,12 +613,14 @@ public abstract class AbstractShape extends AbstractVisibleComponent{
 			if (MT4jSettings.getInstance().isOpenGlMode() && this.isUseDirectGL()){
 				this.useDisplayList = useDisplayList;
 				if (this.getGeometryInfo().getDisplayListIDs()[0] == -1 
-					&& this.getGeometryInfo().getDisplayListIDs()[1] == -1	){
-					logger.warn(this.getName() + " - Warning, no displaylists created yet on component: " + this.getName());
+					&& this.getGeometryInfo().getDisplayListIDs()[1] == -1	
+					&& useDisplayList
+				){
+					logger.warn(this.getName() + " - Warning, no displaylists created yet on component: " + this);
 				}
 			}else{
 				if (useDisplayList)
-					logger.warn(this.getName() + " - Cant set display lists if not in opengl mode and setDrawDirectGL has to be set to true! Object: " + this.getName());
+					logger.warn(this.getName() + " - Cant set display lists if not in opengl mode and setDrawDirectGL has to be set to true! Object: " + this);
 				this.useDisplayList = false;
 			}
 	}

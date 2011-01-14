@@ -94,6 +94,8 @@ public class Rotate3DAction implements IGestureEventListener,ICollisionAction {
 				break;
 			case MTGestureEvent.GESTURE_ENDED:
 				break;
+			case MTGestureEvent.GESTURE_CANCELED:
+				break;
 			default:
 				break;
 			}

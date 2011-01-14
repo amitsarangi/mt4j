@@ -1,13 +1,9 @@
 package org.mt4j.test.css;
 
-import java.util.HashMap;
 import java.util.List;
 
 import junit.framework.TestCase;
 
-import org.apache.log4j.ConsoleAppender;
-import org.apache.log4j.Logger;
-import org.apache.log4j.SimpleLayout;
 import org.junit.Before;
 import org.junit.Test;
 import org.mt4j.components.css.parser.CSSParserConnection;
@@ -19,25 +15,14 @@ import org.mt4j.util.MTColor;
 
 
 public class BorderTest extends TestCase {
+	private StartTestApp app = new StartTestApp();
+	private CSSParserConnection pc;
+	private List<CSSStyle> styles;
 
-	Logger logger = Logger.getLogger("MT4J Extensions");
-	SimpleLayout l = new SimpleLayout();
-	ConsoleAppender ca = new ConsoleAppender(l);
-	
-		
-	StartTestApp app = new StartTestApp();
-	CSSParserConnection pc;
-	List<CSSStyle> styles;
-
-	
 	@Before
 	public void setUp() {
-		logger.addAppender(ca);
-		
 		pc = new CSSParserConnection("junit/bordertest.css", app);
 		styles= pc.getCssh().getStyles();
-
-		
 	}
 	
 	

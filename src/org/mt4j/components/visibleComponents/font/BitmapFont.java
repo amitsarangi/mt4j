@@ -21,14 +21,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import org.apache.log4j.ConsoleAppender;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
-import org.apache.log4j.SimpleLayout;
 import org.mt4j.components.MTComponent;
 import org.mt4j.components.visibleComponents.font.fontFactories.BitmapFontFactory;
 import org.mt4j.components.visibleComponents.font.fontFactories.IFontFactory;
 import org.mt4j.util.MTColor;
+import org.mt4j.util.logging.ILogger;
+import org.mt4j.util.logging.MTLoggerFactory;
 
 import processing.core.PApplet;
 
@@ -38,14 +36,11 @@ import processing.core.PApplet;
  */
 public class BitmapFont implements IFont {
 	/** The Constant logger. */
-	private static final Logger logger = Logger.getLogger(BitmapFont.class.getName());
+	private static final ILogger logger = MTLoggerFactory.getLogger(BitmapFont.class.getName());
 	static{
-//		logger.setLevel(Level.ERROR);
-//		logger.setLevel(Level.WARN);
-		logger.setLevel(Level.DEBUG);
-		SimpleLayout l = new SimpleLayout();
-		ConsoleAppender ca = new ConsoleAppender(l);
-		logger.addAppender(ca);
+//		logger.setLevel(ILogger.ERROR);
+//		logger.setLevel(ILogger.WARN);
+		logger.setLevel(ILogger.DEBUG);
 	}
 	
 	/** The characters. */

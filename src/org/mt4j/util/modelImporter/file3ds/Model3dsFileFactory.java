@@ -35,24 +35,22 @@ import mri.v3ds.TexCoord3ds;
 import mri.v3ds.TextDecode3ds;
 import mri.v3ds.Vertex3ds;
 
-import org.apache.log4j.ConsoleAppender;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
-import org.apache.log4j.SimpleLayout;
 import org.mt4j.MTApplication;
 import org.mt4j.components.visibleComponents.shapes.GeometryInfo;
 import org.mt4j.components.visibleComponents.shapes.mesh.MTTriangleMesh;
 import org.mt4j.util.MT4jSettings;
 import org.mt4j.util.TriangleNormalGenerator;
+import org.mt4j.util.logging.ILogger;
+import org.mt4j.util.logging.MTLoggerFactory;
 import org.mt4j.util.math.Tools3D;
 import org.mt4j.util.math.Vertex;
 import org.mt4j.util.modelImporter.ModelImporterFactory;
 import org.mt4j.util.opengl.GLTexture;
-import org.mt4j.util.opengl.GLTextureSettings;
 import org.mt4j.util.opengl.GLTexture.EXPANSION_FILTER;
 import org.mt4j.util.opengl.GLTexture.SHRINKAGE_FILTER;
 import org.mt4j.util.opengl.GLTexture.TEXTURE_TARGET;
 import org.mt4j.util.opengl.GLTexture.WRAP_MODE;
+import org.mt4j.util.opengl.GLTextureSettings;
 
 import processing.core.PApplet;
 import processing.core.PImage;
@@ -62,12 +60,9 @@ import processing.core.PImage;
  * @author Christopher Ruff
  */
 public class Model3dsFileFactory extends ModelImporterFactory{
-	private static final Logger logger = Logger.getLogger(Model3dsFileFactory.class.getName());
+	private static final ILogger logger = MTLoggerFactory.getLogger(Model3dsFileFactory.class.getName());
 	static{
-		logger.setLevel(Level.ERROR);
-		SimpleLayout l = new SimpleLayout();
-		ConsoleAppender ca = new ConsoleAppender(l);
-		logger.addAppender(ca);
+		logger.setLevel(ILogger.ERROR);
 	}
 	
 	private PApplet pa;
@@ -456,9 +451,9 @@ public class Model3dsFileFactory extends ModelImporterFactory{
 	public void setDebug(boolean debug) {
 		this.debug = debug;
 		if (debug)
-			logger.setLevel(Level.DEBUG);
+			logger.setLevel(ILogger.DEBUG);
 		else
-			logger.setLevel(Level.ERROR);
+			logger.setLevel(ILogger.ERROR);
 	}
 	
 	public void setFlipY(boolean flipY){

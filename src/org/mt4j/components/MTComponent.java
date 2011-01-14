@@ -24,10 +24,6 @@ import java.util.Map;
 
 import javax.media.opengl.GL;
 
-import org.apache.log4j.ConsoleAppender;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
-import org.apache.log4j.SimpleLayout;
 import org.mt4j.components.PickResult.PickEntry;
 import org.mt4j.components.bounds.IBoundingShape;
 import org.mt4j.components.clipping.Clip;
@@ -46,6 +42,8 @@ import org.mt4j.input.inputProcessors.componentProcessors.AbstractComponentProce
 import org.mt4j.util.MT4jSettings;
 import org.mt4j.util.camera.IFrustum;
 import org.mt4j.util.camera.Icamera;
+import org.mt4j.util.logging.ILogger;
+import org.mt4j.util.logging.MTLoggerFactory;
 import org.mt4j.util.math.Matrix;
 import org.mt4j.util.math.Ray;
 import org.mt4j.util.math.Tools3D;
@@ -69,14 +67,11 @@ import processing.opengl.PGraphicsOpenGL;
  */
 public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGestureEventListener{ 
 	/** The Constant logger. */
-	private static final Logger logger = Logger.getLogger(MTComponent.class.getName());
+	private static final ILogger logger = MTLoggerFactory.getLogger(MTComponent.class.getName());
 	static{
-//		logger.setLevel(Level.ERROR);
-		logger.setLevel(Level.WARN);
-//		logger.setLevel(Level.DEBUG);
-		SimpleLayout l = new SimpleLayout();
-		ConsoleAppender ca = new ConsoleAppender(l);
-		logger.addAppender(ca);
+//		logger.setLevel(ILogger.ERROR);
+		logger.setLevel(ILogger.WARN);
+//		logger.setLevel(ILogger.DEBUG);
 	}
 	
 	//CSS Enhancements

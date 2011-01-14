@@ -3,9 +3,6 @@ package basic.css.menus;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.log4j.ConsoleAppender;
-import org.apache.log4j.Logger;
-import org.apache.log4j.SimpleLayout;
 import org.mt4j.MTApplication;
 import org.mt4j.components.css.style.CSSSelector;
 import org.mt4j.components.css.util.CSSKeywords.CSSSelectorType;
@@ -25,10 +22,6 @@ import processing.core.PImage;
 
 public class MenuExampleScene  extends AbstractScene{
 	private MTApplication app;
-	private Logger logger = Logger.getLogger("MT4J Extensions");
-	private SimpleLayout l = new SimpleLayout();
-	private ConsoleAppender ca = new ConsoleAppender(l);
-	
 	
 	public MenuExampleScene(MTApplication mtApplication, String name) {
 		super(mtApplication, name);
@@ -42,8 +35,6 @@ public class MenuExampleScene  extends AbstractScene{
 			app.getCssStyleManager().loadStylesAndOverrideSelector(CSSTemplates.MATRIXSTYLE, new CSSSelector("MTHUD", CSSSelectorType.CLASS));
 			app.getCssStyleManager().loadStylesAndOverrideSelector(CSSTemplates.BLUESTYLE, new CSSSelector("MTHexagonMenu", CSSSelectorType.CLASS));
 			app.getCssStyleManager().loadStylesAndOverrideSelector(CSSTemplates.REDSTYLE, new CSSSelector("MTSquareMenu", CSSSelectorType.CLASS));
-			
-			logger.addAppender(ca);
 			
 			PImage p1 = app.loadImage("basic/css/data/p1.jpg");
 			PImage p2 = app.loadImage("basic/css/data/p2.jpg");
