@@ -15,8 +15,12 @@ public class MTLoggerFactory {
 //	}
 	
 	
-	public static ILogger getLogger(String name){
-		return logger.createNew(name);
+	public static ILogger getLogger(String name) {
+		if (logger != null){
+			return logger.createNew(name);
+		}else{
+			throw new NoLoggerProvidedException();
+		}
 	}
 	
 	

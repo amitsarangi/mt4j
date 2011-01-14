@@ -80,16 +80,7 @@ import processing.core.PApplet;
  */
 public abstract class MTApplication extends PApplet {
 	/** The Constant logger. */
-	private static final ILogger logger;
-	
-	static{
-		//Initialize Loggin facilities  - IMPORTANT TO DO THIS ASAP!
-		MTLoggerFactory.setLoggerProvider(new Log4jLogger()); //FIXME TEST
-//		MTLoggerFactory.setLoggerProvider(new JavaLogger()); //FIXME TEST
-		logger = MTLoggerFactory.getLogger(MTApplication.class.getName());
-		logger.setLevel(ILogger.INFO);
-	}
-	
+	private static ILogger logger;
 	
 	public static String CUSTOM_OPENGL_GRAPHICS = "org.mt4j.util.opengl.CustomPGraphicsOpenGL"; //PApplet.OPENGL
 	
@@ -282,6 +273,12 @@ public abstract class MTApplication extends PApplet {
 	 * @param showSettingsMenu show settings menu
 	 */
 	public static void initialize(String classToInstantiate, boolean showSettingsMenu){
+		//Initialize Loggin facilities  - IMPORTANT TO DO THIS ASAP!
+		MTLoggerFactory.setLoggerProvider(new Log4jLogger()); //FIXME TEST
+//		MTLoggerFactory.setLoggerProvider(new JavaLogger()); //FIXME TEST
+		logger = MTLoggerFactory.getLogger(MTApplication.class.getName());
+		logger.setLevel(ILogger.INFO);
+		
 		logger.debug(classToInstantiate + " is the class instatiated by PApplet class.");
 		 
 		//FIXME TEST
