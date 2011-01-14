@@ -278,7 +278,6 @@ public abstract class MTApplication extends PApplet {
 //		MTLoggerFactory.setLoggerProvider(new JavaLogger()); //FIXME TEST
 		logger = MTLoggerFactory.getLogger(MTApplication.class.getName());
 		logger.setLevel(ILogger.INFO);
-		
 		logger.debug(classToInstantiate + " is the class instatiated by PApplet class.");
 		 
 		//FIXME TEST

@@ -63,27 +63,10 @@ import processing.core.PImage;
  * @author Christopher Ruff
  */
 public abstract class AbstractShape extends AbstractVisibleComponent{
-//	private static final Logger logger = Logger.getLogger(AbstractShape.class.getName());
-//	static{
-//		logger.setLevel(Level.ERROR);
-//		SimpleLayout l = new SimpleLayout();
-//		ConsoleAppender ca = new ConsoleAppender(l);
-//		logger.addAppender(ca);
-//	}
 	private static final ILogger logger = MTLoggerFactory.getLogger(AbstractShape.class.getName());
 	static{
 		logger.setLevel(ILogger.ERROR);
 	}
-	
-//	/** Default gesture actions. */
-//	private static final IGestureEventListener defaultScaleAction 	= new DefaultScaleAction();
-//	
-//	/** Default gesture actions*. */
-//	private static final IGestureEventListener defaultRotateAction = new DefaultRotateAction();
-//	
-//	/** Default gesture actions*. */
-//	private static final IGestureEventListener defaultDragAction	= new DefaultDragAction();
-	
 	
 	//Texture Stuff
 	/** The texture enabled. */
