@@ -19,6 +19,7 @@ package org.mt4j.input.inputProcessors.componentProcessors.tapAndHoldProcessor;
 
 import java.util.List;
 
+import org.mt4j.MTApplication;
 import org.mt4j.components.MTCanvas;
 import org.mt4j.components.interfaces.IMTComponent3D;
 import org.mt4j.input.inputData.InputCursor;
@@ -27,6 +28,7 @@ import org.mt4j.input.inputProcessors.IInputProcessor;
 import org.mt4j.input.inputProcessors.MTGestureEvent;
 import org.mt4j.input.inputProcessors.componentProcessors.AbstractComponentProcessor;
 import org.mt4j.input.inputProcessors.componentProcessors.AbstractCursorProcessor;
+import org.mt4j.sceneManagement.IPreDrawAction;
 import org.mt4j.util.math.Vector3D;
 
 import processing.core.PApplet;
@@ -40,10 +42,10 @@ import processing.core.PApplet;
  * 
  * @author Christopher Ruff
  */
-public class TapAndHoldProcessor extends AbstractCursorProcessor {
+public class TapAndHoldProcessor extends AbstractCursorProcessor implements IPreDrawAction{
 	
 	/** The applet. */
-	private PApplet applet;
+	private MTApplication app;
 	
 	/** The max finger up dist. */
 	private float maxFingerUpDist;
@@ -65,11 +67,11 @@ public class TapAndHoldProcessor extends AbstractCursorProcessor {
 	 * Instantiates a new tap processor.
 	 * @param pa the pa
 	 */
-	public TapAndHoldProcessor(PApplet pa) {
+	public TapAndHoldProcessor(MTApplication pa) {
 		this(pa, 1800, false);
 	}
 	
-	public TapAndHoldProcessor(PApplet pa, int duration){
+	public TapAndHoldProcessor(MTApplication pa, int duration){
 		this(pa, duration, false);
 	}
 	
@@ -79,9 +81,9 @@ public class TapAndHoldProcessor extends AbstractCursorProcessor {
 	 * @param duration the duration
 	 * @param stopPropatation 
 	 */
-	public TapAndHoldProcessor(PApplet pa, int duration, boolean stopPropatation) {
+	public TapAndHoldProcessor(MTApplication pa, int duration, boolean stopPropatation) {
 		super(stopPropatation);
-		this.applet = pa;
+		this.app = pa;
 		
 		this.maxFingerUpDist = 17.0f;
 		this.holdTime = duration;
@@ -109,7 +111,8 @@ public class TapAndHoldProcessor extends AbstractCursorProcessor {
 					tapStartTime = System.currentTimeMillis();
 					this.fireGestureEvent(new TapAndHoldEvent(this, MTGestureEvent.GESTURE_STARTED, positionEvent.getCurrentTarget(), c, false, c.getPosition(), this.holdTime, 0, 0));
 					try {
-						applet.registerPre(this);
+//						applet.registerPre(this);
+						app.registerPreDrawAction(this);
 					} catch (Exception e) {
 						System.err.println(e.getMessage());
 					}
@@ -140,7 +143,7 @@ public class TapAndHoldProcessor extends AbstractCursorProcessor {
 			if (elapsedTime >= holdTime){
 				normalized = 1;
 				logger.debug("TIME PASSED!");
-				Vector3D intersection = getIntersection(applet, comp, c);
+				Vector3D intersection = getIntersection(app, comp, c);
 				//logger.debug("Distance between buttondownScreenPos: " + buttonDownScreenPos + " and upScrPos: " + buttonUpScreenPos +  " is: " + Vector3D.distance(buttonDownScreenPos, buttonUpScreenPos));
 				if ( (intersection != null || comp instanceof MTCanvas) //hack - at canvas no intersection..
 						&& 
@@ -153,7 +156,8 @@ public class TapAndHoldProcessor extends AbstractCursorProcessor {
 				}
 				this.unLock(c); 
 				try {
-					applet.unregisterPre(this);
+//					app.unregisterPre(this);
+					app.unregisterPreDrawAction(this);
 				} catch (Exception e) {
 					System.err.println(e.getMessage());
 				}
@@ -180,7 +184,8 @@ public class TapAndHoldProcessor extends AbstractCursorProcessor {
 				logger.debug("DISTANCE TOO FAR OR NO INTERSECTION");
 				this.unLock(c); 
 				try {
-					applet.unregisterPre(this);
+//					app.unregisterPre(this);
+					app.unregisterPreDrawAction(this);
 				} catch (Exception e) {
 					System.err.println(e.getMessage());
 				}
@@ -215,7 +220,8 @@ public class TapAndHoldProcessor extends AbstractCursorProcessor {
 					//Other cursor has higher prior -> end this gesture
 					this.fireGestureEvent(new TapAndHoldEvent(this, MTGestureEvent.GESTURE_ENDED, positionEvent.getCurrentTarget(), c, false,  c.getPosition(), this.holdTime, elapsedTime, normalized));
 					try {
-						applet.unregisterPre(this);
+//						app.unregisterPre(this);
+						app.unregisterPreDrawAction(this);
 					} catch (Exception e) {
 						System.err.println(e.getMessage());
 					}
@@ -224,7 +230,8 @@ public class TapAndHoldProcessor extends AbstractCursorProcessor {
 				//We have no other cursor to continue gesture -> end
 				this.fireGestureEvent(new TapAndHoldEvent(this, MTGestureEvent.GESTURE_ENDED, positionEvent.getCurrentTarget(), c, false,  c.getPosition(), this.holdTime, elapsedTime, normalized));
 				try {
-					applet.unregisterPre(this);
+//					app.unregisterPre(this);
+					app.unregisterPreDrawAction(this);
 				} catch (Exception e) {
 					System.err.println(e.getMessage());
 				}
@@ -250,7 +257,8 @@ public class TapAndHoldProcessor extends AbstractCursorProcessor {
 		this.fireGestureEvent(new TapAndHoldEvent(this, MTGestureEvent.GESTURE_ENDED, c.getCurrentEvent().getCurrentTarget(), c, false, c.getPosition(), this.holdTime, elapsedTime, normalized));
 
 		try {
-			applet.unregisterPre(this);
+//			app.unregisterPre(this);
+			app.unregisterPreDrawAction(this);
 		} catch (Exception e) {
 			System.err.println(e.getMessage());
 		}
@@ -321,6 +329,14 @@ public class TapAndHoldProcessor extends AbstractCursorProcessor {
 	@Override
 	public String getName() {
 		return "tap and hold processor";
+	}
+
+	public boolean isLoop() {
+		return true;
+	}
+
+	public void processAction() {
+		pre();
 	}
 
 }

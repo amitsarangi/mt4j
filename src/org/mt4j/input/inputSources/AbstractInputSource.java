@@ -26,6 +26,7 @@ import java.util.NoSuchElementException;
 
 import org.mt4j.MTApplication;
 import org.mt4j.input.inputData.MTInputEvent;
+import org.mt4j.sceneManagement.IPreDrawAction;
 
 
 /**
@@ -34,7 +35,7 @@ import org.mt4j.input.inputData.MTInputEvent;
  * 
  * @author Christopher Ruff
  */
-public abstract class AbstractInputSource {
+public abstract class AbstractInputSource implements IPreDrawAction {
 	
 	/** The input listeners. */
 	private List<IinputSourceListener> inputListeners;
@@ -66,7 +67,8 @@ public abstract class AbstractInputSource {
 	 * This method should not be invoked directly!
 	 */
 	public void onRegistered(){
-		app.registerPre(this); //Make processing call this class' pre() method at the beginning of each frame
+//		app.registerPre(this); //Make processing call this class' pre() method at the beginning of each frame
+		app.registerPreDrawAction(this);
 	}
 	
 	/**
@@ -74,7 +76,23 @@ public abstract class AbstractInputSource {
 	 * This method should not be invoked directly!
 	 */
 	public void onUnregistered(){
-		app.unregisterPre(this);
+//		app.unregisterPre(this);
+		app.unregisterPreDrawAction(this);
+	}
+	
+	
+	/* (non-Javadoc)
+	 * @see org.mt4j.sceneManagement.IPreDrawAction#processAction()
+	 */
+	public void processAction() {
+		pre();
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.mt4j.sceneManagement.IPreDrawAction#isLoop()
+	 */
+	public boolean isLoop() {
+		return true;
 	}
 	
 //	/**

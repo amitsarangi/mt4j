@@ -31,6 +31,7 @@ import java.io.InputStream;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Deque;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
 
@@ -44,6 +45,7 @@ import org.mt4j.input.inputData.ActiveCursorPool;
 import org.mt4j.input.inputData.InputCursor;
 import org.mt4j.input.inputProcessors.globalProcessors.AbstractGlobalInputProcessor;
 import org.mt4j.input.inputSources.AbstractInputSource;
+import org.mt4j.sceneManagement.IPreDrawAction;
 import org.mt4j.sceneManagement.ISceneChangeListener;
 import org.mt4j.sceneManagement.Iscene;
 import org.mt4j.sceneManagement.SceneChangeEvent;
@@ -129,6 +131,8 @@ public abstract class MTApplication extends PApplet {
 	private ImageIcon mt4jIcon;
 
 	private CSSStyleManager cssStyleManager;
+
+	private ArrayDeque<IPreDrawAction> preDrawActions;
 	
 //	private static boolean fullscreen;
 	/*
@@ -240,6 +244,9 @@ public abstract class MTApplication extends PApplet {
 		
 		sceneChangeLocked = false;
 		cssStyleManager = new CSSStyleManager(this);
+		
+		preDrawActions = new ArrayDeque<IPreDrawAction>();
+		
 	}
 	
 	/**
@@ -662,6 +669,43 @@ public abstract class MTApplication extends PApplet {
 	
 	
 	/**
+	 * Registers an action to be processed before the next frame
+	 * in the main drawing thread.
+	 * 
+	 * @param action the action
+	 */
+	public void registerPreDrawAction(final IPreDrawAction action){
+		synchronized (preDrawActions) {
+//			this.preDrawActions.addLast(action);
+			invokeLater(new Runnable() {
+				public void run() {
+					preDrawActions.addLast(action);
+				}
+			});
+		}
+	}
+
+	
+	/**
+	 * Unregisters an PreDrawAction.
+	 * 
+	 * @param action the action
+	 */
+	public void unregisterPreDrawAction(final IPreDrawAction action){
+		synchronized (preDrawActions) {
+			if (preDrawActions.contains(action)){
+//				this.preDrawActions.remove(action);
+				invokeLater(new Runnable() {
+					public void run() {
+						preDrawActions.remove(action);
+					}
+				});
+			}
+		}
+	}
+	
+	
+	/**
 	 * Main run loop.
 	 * <li>Updates the time passed since the last time drawn.
 	 * <li>Updates any animations with the new time delta.
@@ -669,7 +713,17 @@ public abstract class MTApplication extends PApplet {
 	 * <li>Updates and draws the current scene transitions.
 	 */
 	private void runApplication(){ 
-//		/*
+		//Process preDrawActions
+		synchronized (preDrawActions) {
+			for (Iterator<IPreDrawAction> iter = preDrawActions.iterator(); iter.hasNext();) {
+				IPreDrawAction action = iter.next();
+				action.processAction();
+				if (!action.isLoop()){
+					iter.remove(); 
+				}
+			}
+		}
+
 		//Use nanoTime
 		if (!alreadyRun){
 			alreadyRun = true;
@@ -678,7 +732,6 @@ public abstract class MTApplication extends PApplet {
 		long nanos = System.nanoTime();
 		long timeDelta = (nanos - timeLastFrame) / 1000000L;
 		timeLastFrame = nanos;
-//		*/
 		
 		/*
 		//Use currentTimeMillis

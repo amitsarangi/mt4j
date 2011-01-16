@@ -1,9 +1,8 @@
 package org.mt4j.util.animation.ani;
 
+import org.mt4j.MTApplication;
 import org.mt4j.util.animation.AbstractAnimation;
 import org.mt4j.util.animation.AnimationEvent;
-
-import processing.core.PApplet;
 
 import de.looksgood.ani.Ani;
 import de.looksgood.ani.AniConstants;
@@ -73,7 +72,7 @@ public class AniAnimation extends AbstractAnimation /*implements AniConstants*/{
 	}
 	
 	
-	public static void init(PApplet pApplet){
+	public static void init(MTApplication pApplet){
 		Ani.init(pApplet);
 	}
 	

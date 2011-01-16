@@ -1327,7 +1327,7 @@ public class ToolsGeometry {
 	public static float angleBetween(Vector3D v1, Vector3D v2) {
 		return v1.angleBetween(v2);
 	}
-
+	
 
 	/**
 	 * Goes through a list of vector arrays and gets the minimum and maximum
@@ -1337,7 +1337,7 @@ public class ToolsGeometry {
 	 * 
 	 * @return a float[4] {minX, minY, maxX, maxY};
 	 */
-	public static float[] getMinXYMaxXY(ArrayList<Vector3D[]> Vector3DLists) {
+	public static float[] getMinXYMaxXY(ArrayList<? extends Vector3D[]> Vector3DLists) {
 		float minX = Float.MAX_VALUE;
 		float minY = Float.MAX_VALUE;
 		float maxX = Float.MIN_VALUE;
