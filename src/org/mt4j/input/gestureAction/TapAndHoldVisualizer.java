@@ -113,6 +113,7 @@ public class TapAndHoldVisualizer implements IGestureEventListener {
 		
 		switch (t.getId()) {
 		case TapAndHoldEvent.GESTURE_STARTED:
+		case TapAndHoldEvent.GESTURE_RESUMED:
 			parent.addChild(e);
 			e.setDegrees(0);
 			e.recreate(false);
@@ -136,10 +137,10 @@ public class TapAndHoldVisualizer implements IGestureEventListener {
 			e.setStrokeColor(new MTColor(stroke.getR(), stroke.getG(), stroke.getB(), a));
 			}
 			break;
+		case MTGestureEvent.GESTURE_CANCELED:
 		case TapAndHoldEvent.GESTURE_ENDED:
 			e.setVisible(false);
 			parent.removeChild(e);
-			
 			break;
 		default:
 			break;

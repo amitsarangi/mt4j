@@ -66,100 +66,54 @@ public class DefaultButtonClickAction implements IGestureEventListener  {
 	 * @see org.mt4j.input.inputProcessors.IGestureEventListener#processGestureEvent(org.mt4j.input.inputProcessors.MTGestureEvent)
 	 */
 	public boolean processGestureEvent(MTGestureEvent g) {
-//		width = polyButton.getWidthLocal();//
-		
 		if (g instanceof TapEvent){
 			TapEvent clickEvent = (TapEvent)g;
-			
-			
 			if (g.getTarget() instanceof MTComponent){ 
 				MTComponent comp = (MTComponent)g.getTarget();
-				
 				//Hack for keeping up with the buttons current width if it was changed
 				//due to .scale or something sometime
 				if (comp instanceof IclickableButton) {
 					IclickableButton button = (IclickableButton) comp;
 					if (!button.isSelected()){
-//						this.width = ((AbstractShape)button).getWidthLocal();
 						this.width = getCurrentUnscaledWidth();
-						
-//						this.getReferenceComp().getWidthVectObjSpace();
-//						//TODO aktuelle width holen zu comptoscale relative
-//						this.width = this.getReferenceComp().getWidthLocal();
 					}
 				}
-				
 				switch (clickEvent.getId()) {
+				case MTGestureEvent.GESTURE_RESUMED:
 				case MTGestureEvent.GESTURE_STARTED:
-//					if (comp.isGestureAllowed(TapAnalyzer.class) 
-//						&& comp.isVisible()
-//					){
-						comp.sendToFront();
-//						if ( ((TapEvent)g).getId() == TapEvent.BUTTON_DOWN){
-						if ( ((TapEvent)g).getTapID() == TapEvent.TAP_DOWN){
-							
-							//Resize button
-//							getCompToResize().setSizeLocal(width-5, width-5);
-//							Vector3D centerPoint = this.getRefCompCenterLocal();
-//							this.getCompToResize().scale(1/this.getReferenceComp().getWidthLocal(), 1/this.getReferenceComp().getHeightLocal(), 1, centerPoint);
-//							this.getCompToResize().scale(width-5, width-5, 1, centerPoint);
-							
-//							this.resize(width-5, width-5);
-							
-//							this.shrink(width-shrinkValue, width-shrinkValue);
-							this.shrink(width-sizeChangeValue, height-sizeChangeValue);
-							
-							if (comp instanceof IclickableButton){
-								IclickableButton polyButton = (IclickableButton)g.getTarget();
-								polyButton.fireActionPerformed((TapEvent)g);
-								polyButton.setSelected(true);
-							}
+					comp.sendToFront();
+					if ( clickEvent.getTapID() == TapEvent.TAP_DOWN){
+						//Resize button
+						this.shrink(width-sizeChangeValue, height-sizeChangeValue);
+						if (comp instanceof IclickableButton){
+							IclickableButton polyButton = (IclickableButton)g.getTarget();
+							polyButton.fireActionPerformed(clickEvent);
+							polyButton.setSelected(true);
 						}
-//					}
+					}
 					break;
 				case MTGestureEvent.GESTURE_UPDATED:
 					//NOTE: usually click gesture analyzers dont send gesture update events
-//					if (comp.isGestureAllowed(TapAnalyzer.class) 
-//							&& comp.isVisible()
-//						){
-//						if ( ((TapEvent)g).getId() == TapEvent.BUTTON_DOWN){
-					if ( ((TapEvent)g).getTapID() == TapEvent.TAP_DOWN){
-							if (comp instanceof IclickableButton){
-								IclickableButton polyButton = (IclickableButton)g.getTarget();
-								polyButton.fireActionPerformed((TapEvent)g);
-							}
+					if ( clickEvent.getTapID() == TapEvent.TAP_DOWN){
+						if (comp instanceof IclickableButton){
+							IclickableButton polyButton = (IclickableButton)g.getTarget();
+							polyButton.fireActionPerformed(clickEvent);
 						}
-//					}
+					}
 					break;
+				case MTGestureEvent.GESTURE_CANCELED:
 				case MTGestureEvent.GESTURE_ENDED:
-					
-//					if (comp.isGestureAllowed(TapAnalyzer.class) 
-//							&& comp.isVisible()
-//						){
-//						if ( ((TapEvent)g).getId() == TapEvent.BUTTON_CLICKED
-//							|| ((TapEvent)g).getId() == TapEvent.BUTTON_UP
-//						){
-						if ( ((TapEvent)g).getTapID() == TapEvent.TAPPED
-								|| ((TapEvent)g).getTapID() == TapEvent.TAP_UP
-							){
-							//Resize button
-//							polyButton.setSizeLocal(width, width);
-//							this.resize(width, width);
-							
-//							this.enlarge(width, width);
-							this.enlarge(width, height);
-							
-//							Vector3D centerPoint = this.getRefCompCenterLocal();
-//							this.getCompToResize().scale(1/this.getReferenceComp().getWidthLocal(), 1/this.getReferenceComp().getHeightLocal(), 1, centerPoint);
-//							this.getCompToResize().scale(width, width, 1, centerPoint);
-							
-							if (comp instanceof IclickableButton){
-								IclickableButton polyButton = (IclickableButton)g.getTarget();
-								polyButton.fireActionPerformed((TapEvent)g);
-								polyButton.setSelected(false);
-							}
+					if (clickEvent.getTapID() == TapEvent.TAPPED
+						|| clickEvent.getTapID() == TapEvent.TAP_UP
+					){
+						//Resize button
+						this.enlarge(width, height);
+						if (comp instanceof IclickableButton){
+							IclickableButton polyButton = (IclickableButton)g.getTarget();
+							polyButton.fireActionPerformed(clickEvent);
+							polyButton.setSelected(false);
 						}
-//					}
+					}
 					break;
 				default:
 					break;
@@ -212,18 +166,6 @@ public class DefaultButtonClickAction implements IGestureEventListener  {
 			centerPoint.transform(this.getReferenceComp().getLocalMatrix());
 		}
 		return centerPoint;
-		
-		//TODO wieder auf localobj space center umstellen?
-//		Vector3D centerPoint;
-//		if (this.getReferenceComp().isBoundingShapeSet()){
-//			centerPoint = this.getReferenceComp().getBoundingShape().getCenterPointObjSpace();
-////			centerPoint.transform(this.getReferenceComp().getLocalBasisMatrix()); //macht den punkt in self space
-//		}else{
-//			centerPoint = this.getReferenceComp().getCenterPointGlobal();
-//			centerPoint.transform(this.getReferenceComp().getAbsoluteWorldToLocalMatrix());
-////			centerPoint.transform(this.getReferenceComp().getLocalBasisMatrix());
-//		}
-//		return centerPoint;
 	}
 	
 	
@@ -244,7 +186,6 @@ public class DefaultButtonClickAction implements IGestureEventListener  {
 	 * @param height the height
 	 */
 	protected void enlarge(float width, float height){
-//		this.resize(width, width);
 		this.resize(width, height);
 	}
 	
@@ -257,13 +198,8 @@ public class DefaultButtonClickAction implements IGestureEventListener  {
 	 */
 	protected void resize(float width, float height){
 		Vector3D centerPoint = this.getRefCompCenterLocal();
-		this.getCompToResize().scale(1/this.getReferenceComp().getWidthXY(TransformSpace.RELATIVE_TO_PARENT), 1/this.getReferenceComp().getWidthXY(TransformSpace.RELATIVE_TO_PARENT), 1, centerPoint);
-		this.getCompToResize().scale(width, width, 1, centerPoint);
-		
-		//this uses the obj space - better?
-//		Vector3D centerPoint = this.getRefCompCenterLocal();
-//		this.getCompToResize().scale(1/this.getReferenceComp().getWidthXY(TransformSpace.RELATIVE_TO_PARENT), 1/this.getReferenceComp().getWidthXY(TransformSpace.RELATIVE_TO_PARENT), 1, centerPoint, TransformSpace.RELATIVE_TO_SELF);
-//		this.getCompToResize().scale(width, width, 1, centerPoint, TransformSpace.RELATIVE_TO_SELF);
+		this.getCompToResize().scale(width* (1/this.getReferenceComp().getWidthXY(TransformSpace.RELATIVE_TO_PARENT)), width* (1/this.getReferenceComp().getWidthXY(TransformSpace.RELATIVE_TO_PARENT)), 1, centerPoint);
+//		this.getCompToResize().scale(width, width, 1, centerPoint);
 	}
 
 	/**

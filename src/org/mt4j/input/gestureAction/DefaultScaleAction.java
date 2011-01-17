@@ -181,6 +181,7 @@ public class DefaultScaleAction implements IGestureEventListener,ICollisionActio
 					}
 				}
 				break;
+			case MTGestureEvent.GESTURE_CANCELED:
 			case MTGestureEvent.GESTURE_ENDED:
 				break;
 			default:

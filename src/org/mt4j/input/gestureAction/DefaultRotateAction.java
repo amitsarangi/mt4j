@@ -74,6 +74,7 @@ public class DefaultRotateAction implements IGestureEventListener,ICollisionActi
 			
 			switch (rotateEvent.getId()) {
 			case MTGestureEvent.GESTURE_STARTED:
+			case MTGestureEvent.GESTURE_RESUMED:
 				if (target instanceof MTComponent){
 					((MTComponent)target).sendToFront();
 					/*
@@ -93,6 +94,7 @@ public class DefaultRotateAction implements IGestureEventListener,ICollisionActi
 						target.translateGlobal(rotateEvent.getTranslationVector());
 				}
 				break;
+			case MTGestureEvent.GESTURE_CANCELED:
 			case MTGestureEvent.GESTURE_ENDED:
 				break;
 			default:

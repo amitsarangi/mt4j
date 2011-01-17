@@ -28,9 +28,8 @@ import org.mt4j.input.inputProcessors.componentProcessors.panProcessor.PanEvent;
  * @author Christopher Ruff
  */
 public class DefaultPanAction implements IGestureEventListener {
-
 	/* (non-Javadoc)
-	 * @see com.jMT.input.gestureAction.IGestureAction#processGesture(com.jMT.input.inputAnalyzers.GestureEvent)
+	 * @see org.mt4j.input.inputProcessors.IGestureEventListener#processGestureEvent(org.mt4j.input.inputProcessors.MTGestureEvent)
 	 */
 	public boolean processGestureEvent(MTGestureEvent g) {
 		if (g instanceof PanEvent){

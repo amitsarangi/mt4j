@@ -66,12 +66,13 @@ public class DefaultLassoAction implements IGestureEventListener {
 	}
 
 	/* (non-Javadoc)
-	 * @see com.jMT.input.gestureAction.IGestureAction#processGesture(com.jMT.input.inputAnalyzers.GestureEvent)
+	 * @see org.mt4j.input.inputProcessors.IGestureEventListener#processGestureEvent(org.mt4j.input.inputProcessors.MTGestureEvent)
 	 */
 	public boolean processGestureEvent(MTGestureEvent g) {
 		if (g instanceof LassoEvent){
 			LassoEvent dse = (LassoEvent)g;
 			switch (dse.getId()) {
+			case MTGestureEvent.GESTURE_RESUMED:
 			case MTGestureEvent.GESTURE_STARTED:
 				//System.out.println("dse detected");
 				canvas.addChild(dse.getSelectionPoly());
@@ -79,6 +80,7 @@ public class DefaultLassoAction implements IGestureEventListener {
 			case MTGestureEvent.GESTURE_UPDATED:
 				//System.out.println("dse updated");
 				break;
+			case MTGestureEvent.GESTURE_CANCELED: 
 			case MTGestureEvent.GESTURE_ENDED: 
 				//TODO make method addSelection and do the stuff here
 				//so it can be called from the outside too /addNewSelection(comps[])

@@ -56,7 +56,6 @@ public class DefaultArcballAction implements IGestureEventListener {
 	/* (non-Javadoc)
 	 * @see org.mt4j.input.inputProcessors.IGestureEventListener#processGestureEvent(org.mt4j.input.inputProcessors.MTGestureEvent)
 	 */
-	//@Override
 	public boolean processGestureEvent(MTGestureEvent g) {
 		ArcBallGestureEvent aEvt =  (ArcBallGestureEvent)g;
 		
