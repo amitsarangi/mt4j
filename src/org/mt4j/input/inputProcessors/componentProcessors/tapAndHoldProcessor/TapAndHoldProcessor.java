@@ -31,8 +31,6 @@ import org.mt4j.input.inputProcessors.componentProcessors.AbstractCursorProcesso
 import org.mt4j.sceneManagement.IPreDrawAction;
 import org.mt4j.util.math.Vector3D;
 
-import processing.core.PApplet;
-
 /**
  * The Class TapAndHoldProcessor. Multi-Touch gesture which is triggered
  * after touching and resting the finger on the same spot for some time.
@@ -58,6 +56,8 @@ public class TapAndHoldProcessor extends AbstractCursorProcessor implements IPre
 	
 	/** The tap time. */
 	private int holdTime;
+	
+	private IMTComponent3D lastCurrentTarget;
 	
 	//TODO atm this only allows 1 tap on 1 component
 	//if we want more we have to do different (save each cursor to each start time etc, dont relock other cursors)
@@ -109,6 +109,8 @@ public class TapAndHoldProcessor extends AbstractCursorProcessor implements IPre
 					logger.debug(this.getName() + " successfully locked cursor (id:" + c.getId() + ")");
 					buttonDownScreenPos = c.getPosition();
 					tapStartTime = System.currentTimeMillis();
+					//Save the last used currenttarget so we can use that during the updates in pre() 
+					this.lastCurrentTarget = positionEvent.getCurrentTarget();
 					this.fireGestureEvent(new TapAndHoldEvent(this, MTGestureEvent.GESTURE_STARTED, positionEvent.getCurrentTarget(), c, false, c.getPosition(), this.holdTime, 0, 0));
 					try {
 //						applet.registerPre(this);
@@ -133,7 +135,8 @@ public class TapAndHoldProcessor extends AbstractCursorProcessor implements IPre
 		if (locked.size() == 1){
 			InputCursor c = locked.get(0);
 			IMTComponent3D comp = c.getTarget();
-			IMTComponent3D currentTarget = c.getCurrentEvent().getCurrentTarget(); //FIXME this will probably return the wrong target since we are not in a processInputEvent() method!
+//			IMTComponent3D currentTarget = c.getCurrentEvent().getCurrentTarget(); //FIXME this will often return the wrong target since we are not in a processInputEvent() method!
+			IMTComponent3D currentTarget = lastCurrentTarget;
 			
 			long nowTime = System.currentTimeMillis();
 			long elapsedTime = nowTime - this.tapStartTime;
