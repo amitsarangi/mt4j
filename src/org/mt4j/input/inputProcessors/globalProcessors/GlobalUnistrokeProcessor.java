@@ -66,7 +66,7 @@ public class GlobalUnistrokeProcessor extends AbstractGlobalInputProcessor {
 					context.update(inputCursor);
 					context.update(inputCursor);
 					
-					this.fireInputEvent(new UnistrokeEvent(this, MTGestureEvent.GESTURE_STARTED, canvas, context.getVisualizer(), UnistrokeGesture.NOGESTURE));
+					this.fireInputEvent(new UnistrokeEvent(this, MTGestureEvent.GESTURE_STARTED, canvas, context.getVisualizer(), UnistrokeGesture.NOGESTURE, inputCursor));
 				}
 				
 			}break;
@@ -74,7 +74,7 @@ public class GlobalUnistrokeProcessor extends AbstractGlobalInputProcessor {
 				UnistrokeContext context = cursorToContext.get(inputCursor);
 				if (context != null){
 					context.update(inputCursor);
-					this.fireInputEvent(new UnistrokeEvent(this, MTGestureEvent.GESTURE_UPDATED, canvas, context.getVisualizer(), UnistrokeGesture.NOGESTURE));
+					this.fireInputEvent(new UnistrokeEvent(this, MTGestureEvent.GESTURE_UPDATED, canvas, context.getVisualizer(), UnistrokeGesture.NOGESTURE, inputCursor));
 				}
 				
 			}break;
@@ -82,7 +82,7 @@ public class GlobalUnistrokeProcessor extends AbstractGlobalInputProcessor {
 				UnistrokeContext context = cursorToContext.remove(inputCursor);
 				if (context != null){
 					context.update(inputCursor);
-					this.fireInputEvent(new UnistrokeEvent(this, MTGestureEvent.GESTURE_ENDED, canvas, context.getVisualizer(), context.recognizeGesture()));
+					this.fireInputEvent(new UnistrokeEvent(this, MTGestureEvent.GESTURE_ENDED, canvas, context.getVisualizer(), context.recognizeGesture(), inputCursor));
 					context.getVisualizer().destroy();
 				}
 			}break;

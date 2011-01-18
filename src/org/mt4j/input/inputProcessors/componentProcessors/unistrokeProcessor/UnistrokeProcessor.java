@@ -13,7 +13,6 @@ import org.mt4j.util.math.Vector3D;
 
 import processing.core.PApplet;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class UnistrokeProcessor. A component input processor to recognize pre-recorded gestures.
  */
@@ -80,7 +79,7 @@ public class UnistrokeProcessor extends AbstractCursorProcessor {
 				context.update(inputCursor);
 				context.update(inputCursor);
 				
-				this.fireGestureEvent(new UnistrokeEvent(this, MTGestureEvent.GESTURE_STARTED, inputCursor.getCurrentTarget(), context.getVisualizer(), UnistrokeGesture.NOGESTURE));
+				this.fireGestureEvent(new UnistrokeEvent(this, MTGestureEvent.GESTURE_STARTED, inputCursor.getCurrentTarget(), context.getVisualizer(), UnistrokeGesture.NOGESTURE, inputCursor));
 			}
 		}
 
@@ -96,7 +95,7 @@ public class UnistrokeProcessor extends AbstractCursorProcessor {
 		if (getLockedCursors().contains(inputCursor) && context != null) {
 			if (!context.gestureAborted) {
 				context.update(inputCursor);
-				this.fireGestureEvent(new UnistrokeEvent(this, MTGestureEvent.GESTURE_UPDATED, inputCursor.getCurrentTarget(), context.getVisualizer(), UnistrokeGesture.NOGESTURE));
+				this.fireGestureEvent(new UnistrokeEvent(this, MTGestureEvent.GESTURE_UPDATED, inputCursor.getCurrentTarget(), context.getVisualizer(), UnistrokeGesture.NOGESTURE, inputCursor));
 			}
 		}
 
@@ -109,7 +108,7 @@ public class UnistrokeProcessor extends AbstractCursorProcessor {
 	@Override
 	public void cursorEnded(InputCursor inputCursor, MTFingerInputEvt currentEvent) {
 		if (getLockedCursors().contains(inputCursor) && context != null) {
-			this.fireGestureEvent(new UnistrokeEvent(this, MTGestureEvent.GESTURE_ENDED, inputCursor.getCurrentTarget(), context.getVisualizer(), context.recognizeGesture()));
+			this.fireGestureEvent(new UnistrokeEvent(this, MTGestureEvent.GESTURE_ENDED, inputCursor.getCurrentTarget(), context.getVisualizer(), context.recognizeGesture(), inputCursor));
 			
 			context.getVisualizer().destroy();
 			this.unLock(inputCursor);
@@ -123,18 +122,18 @@ public class UnistrokeProcessor extends AbstractCursorProcessor {
 	 * @see org.mt4j.input.inputProcessors.componentProcessors.AbstractCursorProcessor#cursorLocked(org.mt4j.input.inputData.InputCursor, org.mt4j.input.inputProcessors.IInputProcessor)
 	 */
 	@Override
-	public void cursorLocked(InputCursor cursor, IInputProcessor lockingprocessor) {
-		if (getLockedCursors().contains(cursor) && context != null) {
-			this.fireGestureEvent(new UnistrokeEvent(this, MTGestureEvent.GESTURE_ENDED, cursor.getCurrentTarget(), context.getVisualizer(), UnistrokeGesture.NOGESTURE));
+	public void cursorLocked(InputCursor inputCursor, IInputProcessor lockingprocessor) {
+		if (getLockedCursors().contains(inputCursor) && context != null) {
+			this.fireGestureEvent(new UnistrokeEvent(this, MTGestureEvent.GESTURE_ENDED, inputCursor.getCurrentTarget(), context.getVisualizer(), UnistrokeGesture.NOGESTURE, inputCursor));
 		}
-
+		//If not resumable we can fire GESTURE_ENDED, if resumable its better to fire GESTURE_CANCELED
 	}
 
 	/* (non-Javadoc)
 	 * @see org.mt4j.input.inputProcessors.componentProcessors.AbstractCursorProcessor#cursorUnlocked(org.mt4j.input.inputData.InputCursor)
 	 */
 	@Override
-	public void cursorUnlocked(InputCursor cursor) {
+	public void cursorUnlocked(InputCursor inputCursor) {
 
 	}
 
