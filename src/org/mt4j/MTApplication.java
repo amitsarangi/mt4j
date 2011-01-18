@@ -58,9 +58,18 @@ import org.mt4j.util.logging.ILogger;
 import org.mt4j.util.logging.Log4jLogger;
 import org.mt4j.util.logging.MTLoggerFactory;
 import org.mt4j.util.math.Tools3D;
+import org.mt4j.util.opengl.GL10;
+import org.mt4j.util.opengl.GL11;
+import org.mt4j.util.opengl.GL20;
+import org.mt4j.util.opengl.GLCommon;
 import org.mt4j.util.opengl.GLFBO;
+import org.mt4j.util.opengl.JoglGL10;
+import org.mt4j.util.opengl.JoglGL11;
+import org.mt4j.util.opengl.JoglGL20;
 
 import processing.core.PApplet;
+import processing.core.PGraphics;
+import processing.opengl.PGraphicsOpenGL;
 
 
 
@@ -80,7 +89,7 @@ import processing.core.PApplet;
  * 
  * @author Christopher Ruff
  */
-public abstract class MTApplication extends PApplet {
+public abstract class MTApplication extends PApplet implements IPAppletBoth, IMTApplication{
 	/** The Constant logger. */
 	private static ILogger logger;
 	
@@ -133,6 +142,16 @@ public abstract class MTApplication extends PApplet {
 	private CSSStyleManager cssStyleManager;
 
 	private ArrayDeque<IPreDrawAction> preDrawActions;
+
+	protected GLCommon glCommon;
+	protected GL10 gl10;
+	protected GL11 gl11;
+	protected GL20 gl20;
+
+	private boolean gl20Supported;
+
+	private boolean gl11Supported;
+
 	
 //	private static boolean fullscreen;
 	/*
@@ -246,6 +265,8 @@ public abstract class MTApplication extends PApplet {
 		cssStyleManager = new CSSStyleManager(this);
 		
 		preDrawActions = new ArrayDeque<IPreDrawAction>();
+		
+		
 		
 	}
 	
@@ -617,6 +638,31 @@ public abstract class MTApplication extends PApplet {
 	    // - or disable mutisample before drawing with line_smooth!
 		//TOOD dont use lines to smooth some objects then (fonts, etc)
 	    if (MT4jSettings.getInstance().isOpenGlMode() ){
+	    	
+	    	//////////////////////////////
+	    	//FIXME TEST!!
+			String version = ((PGraphicsOpenGL)g).gl.glGetString(GL.GL_VERSION);
+	        int major = Integer.parseInt("" + version.charAt(0));
+	        int minor = Integer.parseInt("" + version.charAt(2));
+	        
+	        this.gl11Supported = false;
+	        this.gl20Supported = false;
+	        if (major >= 2) {
+	                gl20 = new JoglGL20(((PGraphicsOpenGL)g).gl);
+	                glCommon = gl20;
+	                this.gl20Supported = true;
+	        } else {
+	                if (major == 1 && minor < 5) {
+	                        gl10 = new JoglGL10(((PGraphicsOpenGL)g).gl);
+	                } else {
+	                        gl11 = new JoglGL11(((PGraphicsOpenGL)g).gl);
+	                        gl10 = gl11;
+	                        this.gl11Supported = true;
+	                }
+	                glCommon = gl10;
+	        }
+	        //////////////////////////
+	        
 	    	GL gl = Tools3D.getGL(this);
 	    	
 	    	logger.info("OpenGL Version: \"" + gl.glGetString(GL.GL_VERSION) + "\"" + " - Vendor: \"" + gl.glGetString(GL.GL_VENDOR) + "\"" + " - Renderer: \"" + gl.glGetString(GL.GL_RENDERER) + "\"");
@@ -668,11 +714,8 @@ public abstract class MTApplication extends PApplet {
 	public abstract void startUp();
 	
 	
-	/**
-	 * Registers an action to be processed before the next frame
-	 * in the main drawing thread.
-	 * 
-	 * @param action the action
+	/* (non-Javadoc)
+	 * @see org.mt4j.IMTApplication#registerPreDrawAction(org.mt4j.sceneManagement.IPreDrawAction)
 	 */
 	public void registerPreDrawAction(final IPreDrawAction action){
 		synchronized (preDrawActions) {
@@ -686,10 +729,8 @@ public abstract class MTApplication extends PApplet {
 	}
 
 	
-	/**
-	 * Unregisters an PreDrawAction.
-	 * 
-	 * @param action the action
+	/* (non-Javadoc)
+	 * @see org.mt4j.IMTApplication#unregisterPreDrawAction(org.mt4j.sceneManagement.IPreDrawAction)
 	 */
 	public void unregisterPreDrawAction(final IPreDrawAction action){
 		synchronized (preDrawActions) {
@@ -785,22 +826,16 @@ public abstract class MTApplication extends PApplet {
 	}
 
 	
-	/**
-	 * Checks if is render thread is current.
-	 *
-	 * @return true, if is render thread current
+	/* (non-Javadoc)
+	 * @see org.mt4j.IMTApplication#isRenderThreadCurrent()
 	 */
 	public boolean isRenderThreadCurrent(){
 		return Thread.currentThread().equals(renderThread);
 	}
 	
 	
-	/**
-	 * Invokes the specified runnable at the beginning the next rendering loop in the rendering thread.
-	 * This is especially useful for executing opengl commands from another thread - which would lead to errors
-	 * if not synchronized with the rendering thread.
-	 * 
-	 * @param runnable the runnable
+	/* (non-Javadoc)
+	 * @see org.mt4j.IMTApplication#invokeLater(java.lang.Runnable)
 	 */
 	public void invokeLater(Runnable runnable){
 		synchronized (invokeLaterActions) {
@@ -809,22 +844,19 @@ public abstract class MTApplication extends PApplet {
 	}
 	
 	
-	/**
-	 * Checks which scene is on top of the scene stack at the moment.
-	 * If no scene has been pushed on the stack, null is returned.
-	 * 
-	 * @return the iscene
+	/* (non-Javadoc)
+	 * @see org.mt4j.IMTApplication#peekScene()
 	 */
 	public Iscene peekScene(){
 		return sceneStack.peek();
 	}
 	
-	public int getSceneStackCount(){
+	protected int getSceneStackCount(){
 		return sceneStack.size();
 	}
 	
-	/**
-	 * Pushes the current scene on the scene stack.
+	/* (non-Javadoc)
+	 * @see org.mt4j.IMTApplication#pushScene()
 	 */
 	public void pushScene(){
 		if (getCurrentScene() == null){
@@ -836,9 +868,8 @@ public abstract class MTApplication extends PApplet {
 	}
 	
 	
-	/**
-	 * Pops the scene thats currently ontop of the scene stack and changes back to it. 
-	 * If the stack is empty no error is thrown and no scene change will happen.
+	/* (non-Javadoc)
+	 * @see org.mt4j.IMTApplication#popScene()
 	 */
 	public boolean popScene(){
 //		Iscene stackScene = sceneStack.pollFirst();
@@ -992,16 +1023,8 @@ public abstract class MTApplication extends PApplet {
 
 	
 	
-	/**
-	 * Changes the scene to the specified scene.
-	 * <p>NOTE: This is not threadsafe while using OpenGL mode. If in openGL mode make,
-	 * sure to call this only from the same thread. If running in a different thread,
-	 * execute the scene change using the <code>invokeLater(Runnable runnable)</code> method 
-	 * of the MTApplication instance!
-	 * <p>NOTE: If the scene is not already added to the application by invoking <code>addScene()</code>, the scene
-	 * is automatically added to the mtapplication.
-	 * 
-	 * @param newScene the new scene
+	/* (non-Javadoc)
+	 * @see org.mt4j.IMTApplication#changeScene(org.mt4j.sceneManagement.Iscene)
 	 */
 	public synchronized boolean changeScene(Iscene newScene){
 		if (!this.sceneList.contains(newScene)){
@@ -1100,10 +1123,8 @@ public abstract class MTApplication extends PApplet {
         }
 	}
 	
-	/**
-	 * Gets the currently active scene.
-	 * 
-	 * @return the current scene
+	/* (non-Javadoc)
+	 * @see org.mt4j.IMTApplication#getCurrentScene()
 	 */
 	public Iscene getCurrentScene(){
 		return currentScene;
@@ -1118,11 +1139,8 @@ public abstract class MTApplication extends PApplet {
 	}
 	*/
 
-	/**
-	 * Adds the scene to the list of scenes. 
-	 * Also changes to that scene if it is the first one to be added.
-	 * 
-	 * @param scene the scene
+	/* (non-Javadoc)
+	 * @see org.mt4j.IMTApplication#addScene(org.mt4j.sceneManagement.Iscene)
 	 */
 	public void addScene(Iscene scene){
 		if (this.getSceneCount() == 0){
@@ -1136,10 +1154,8 @@ public abstract class MTApplication extends PApplet {
 	}
 	
 	
-	/**
-	 * Adds all scenes.
-	 * 
-	 * @param scenes the scenes
+	/* (non-Javadoc)
+	 * @see org.mt4j.IMTApplication#addAll(org.mt4j.sceneManagement.Iscene[])
 	 */
 	public void addAll(Iscene[] scenes){
 //		if (this.getSceneCount() == 0 && scenes[0] != null){
@@ -1151,12 +1167,8 @@ public abstract class MTApplication extends PApplet {
         }
 	}
 	
-	/**
-	 * Removes the scene from the list of scenes. Fails if the scene is the currently active scene.
-	 * If the scene isnt going to be used anymore, calling the scene's destroy() method is the better choice
-	 * than the removeScene method alone.
-	 * 
-	 * @param scene the scene
+	/* (non-Javadoc)
+	 * @see org.mt4j.IMTApplication#removeScene(org.mt4j.sceneManagement.Iscene)
 	 */
 	public boolean removeScene(Iscene scene){
 		if (sceneList.contains(scene)){
@@ -1175,13 +1187,8 @@ public abstract class MTApplication extends PApplet {
 //		return true;
 	}
 	
-	/**
-	 * Destroy scene after transition. Workaround so that if a scene's destroy() method is called
-	 * but the scene is in a transition (cant be removed then) we call destroy on the scene after
-	 * the transition.
-	 * Only has an impact if there is a pending transition with the specified scene as the last scene.
-	 * 
-	 * @param scene the scene
+	/* (non-Javadoc)
+	 * @see org.mt4j.IMTApplication#destroySceneAfterTransition(org.mt4j.sceneManagement.Iscene)
 	 */
 	public void destroySceneAfterTransition(Iscene scene){
 		if (pendingTransition != null && pendingTransition.lastScene.equals(scene)){
@@ -1189,21 +1196,15 @@ public abstract class MTApplication extends PApplet {
 		}
 	}
 	
-	/**
-	 * Gets the registered scenes.
-	 * 
-	 * @return the scenes
+	/* (non-Javadoc)
+	 * @see org.mt4j.IMTApplication#getScenes()
 	 */
 	public Iscene[] getScenes(){
 		return sceneList.toArray(new Iscene[sceneList.size()]);
 	}
 	
-	/**
-	 * Gets the scene by name.
-	 * 
-	 * @param name the name
-	 * 
-	 * @return the scene
+	/* (non-Javadoc)
+	 * @see org.mt4j.IMTApplication#getScene(java.lang.String)
 	 */
 	public Iscene getScene(String name){
 		Iscene returnScene = null;
@@ -1215,33 +1216,93 @@ public abstract class MTApplication extends PApplet {
 	}
 	
 	
-	/**
-	 * Gets the scene count.
-	 * 
-	 * @return the scene count
+	/* (non-Javadoc)
+	 * @see org.mt4j.IMTApplication#getSceneCount()
 	 */
 	public int getSceneCount(){
 		return sceneList.size();
 	}
 	
 
-	/**
-	 * Gets the input manager.
-	 * 
-	 * @return the input manager
+	/* (non-Javadoc)
+	 * @see org.mt4j.IMTApplication#getInputManager()
 	 */
 	public InputManager getInputManager() {
 		return inputManager;
 	}
 
-	/**
-	 * Sets the input manager.
-	 * 
-	 * @param inputManager the new input manager
+	/* (non-Javadoc)
+	 * @see org.mt4j.IMTApplication#setInputManager(org.mt4j.input.InputManager)
 	 */
 	public void setInputManager(InputManager inputManager) {
 		this.inputManager = inputManager;
 	}
+	
+	
+	/* (non-Javadoc)
+	 * @see org.mt4j.IMTApplication#getPGraphics()
+	 */
+	public PGraphics getPGraphics(){
+		return this.g;
+	}
+	
+	 /**
+     * Returns whether OpenGL ES 1.1 is available. If it is you can get an instance of {@link GL11} via {@link #getGL11()} to
+     * access OpenGL ES 1.1 functionality. This also implies that {@link #getGL10()} will return an instance.
+     * 
+     * @return whether OpenGL ES 1.1 is available
+     */
+    public boolean isGL11Available (){
+    	return this.gl11Supported;
+    }
+
+    /**
+     * Returns whether OpenGL ES 2.0 is available. If it is you can get an instance of {@link GL20} via {@link #getGL20()} to
+     * access OpenGL ES 2.0 functionality. Note that this functionality will only be available if you instructed the
+     * {@link Application} instance to use OpenGL ES 2.0!
+     * 
+     * @return whether OpenGL ES 2.0 is available
+     */
+    public boolean isGL20Available (){
+    	return this.gl20Supported;
+    }
+    
+    /**
+     * @return a {@link GLCommon} instance
+     */
+    public GLCommon getGLCommon (){
+    	return this.glCommon;
+    }
+
+    /**
+     * @return the {@link GL10} instance or null if not supported
+     */
+    public GL10 getGL10 (){
+    	return this.gl10;
+    }
+
+    /**
+     * @return the {@link GL11} instance or null if not supported
+     */
+    public GL11 getGL11 (){
+    	return this.gl11;
+    }
+    
+    /**
+     * @return the {@link GL20} instance or null if not supported
+     */
+    public GL20 getGL20 (){
+    	return this.gl20;
+    }
+    
+    public GLCommon beginGL() {
+		((PGraphicsOpenGL)this.g).beginGL();
+		return this.glCommon;
+	}
+    
+    public void endGL(){
+    	((PGraphicsOpenGL)this.g).endGL();
+    }
 	
 
 /////////////////////////	
@@ -1256,10 +1317,8 @@ public abstract class MTApplication extends PApplet {
 		}
 	}
 
-	/**
-	 * Adds a scene change listener.
-	 * 
-	 * @param listener the listener
+	/* (non-Javadoc)
+	 * @see org.mt4j.IMTApplication#addSceneChangeListener(org.mt4j.sceneManagement.ISceneChangeListener)
 	 */
 	public synchronized void addSceneChangeListener(ISceneChangeListener listener){
 		if (!this.sceneChangedListeners.contains(listener)){
@@ -1268,10 +1327,8 @@ public abstract class MTApplication extends PApplet {
 		
 	}
 	
-	/**
-	 * Removes the scene change listener.
-	 * 
-	 * @param listener the listener
+	/* (non-Javadoc)
+	 * @see org.mt4j.IMTApplication#removeSceneChangeListener(org.mt4j.sceneManagement.ISceneChangeListener)
 	 */
 	public synchronized void removeSceneChangeListener(ISceneChangeListener listener){
 		if (sceneChangedListeners.contains(listener)){
@@ -1279,10 +1336,8 @@ public abstract class MTApplication extends PApplet {
 		}
 	}
 	
-	/**
-	 * Gets the scene change listeners.
-	 * 
-	 * @return the scene change listeners
+	/* (non-Javadoc)
+	 * @see org.mt4j.IMTApplication#getSceneChangeListener()
 	 */
 	public synchronized ISceneChangeListener[] getSceneChangeListener(){
 		return sceneChangedListeners.toArray(new ISceneChangeListener[this.sceneChangedListeners.size()]);
@@ -1307,6 +1362,9 @@ public abstract class MTApplication extends PApplet {
 	}
 
 
+	/* (non-Javadoc)
+	 * @see org.mt4j.IMTApplication#getCssStyleManager()
+	 */
 	public CSSStyleManager getCssStyleManager() {
 		return this.cssStyleManager;
 	}
