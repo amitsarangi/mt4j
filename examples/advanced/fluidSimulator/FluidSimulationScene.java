@@ -235,7 +235,7 @@ public class FluidSimulationScene extends AbstractScene{
 	        
 //	        app.image(imgFluid, 0, 0, app.width, app.height); //FIXME this messes up blend transition!
 	        
-	        app.textureMode(PConstants.NORMALIZED);
+	        app.textureMode(PConstants.NORMAL);
 //	        app.textureMode(app.IMAGE);
 	        app.beginShape(MTApplication.QUADS);
 	        app.texture(imgFluid);

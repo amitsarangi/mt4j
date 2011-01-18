@@ -1,10 +1,10 @@
 package advanced.simpleParticles;
 
 import org.mt4j.util.MTColor;
-import org.mt4j.util.math.Tools3D;
 import org.mt4j.util.math.ToolsMath;
 
 import processing.core.PApplet;
+import processing.core.PConstants;
 import processing.core.PGraphics;
 import processing.core.PImage;
 import processing.core.PVector;
@@ -42,7 +42,7 @@ public class ImageParticle extends Particle {
 //		float widthHalf = texture.width;
 //		float heightHalf = texture.height;
 		
-		g.textureMode(g.NORMALIZED);
+		g.textureMode(PConstants.NORMAL);
 		g.beginShape();
 		g.texture(this.texture);
 		

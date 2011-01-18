@@ -145,7 +145,7 @@ public abstract class AbstractShape extends AbstractVisibleComponent{
 		this.drawDirectGL = MT4jSettings.getInstance().isOpenGlMode();
 		this.useVBOs 			= false;
 		this.useDisplayList 	= false;
-		this.textureMode = PConstants.NORMALIZED;
+		this.textureMode = PConstants.NORMAL;
 		this.setFillDrawMode(GL.GL_TRIANGLE_FAN);
 //		this.boundsGlobalVerticesDirty = true;
 		this.boundsAutoCompute = true;
@@ -712,7 +712,7 @@ public abstract class AbstractShape extends AbstractVisibleComponent{
 		//-> updateTextureBuffer still needed if custom tex coords wanted 
 		//-> use before setTexture()!
 		
-		//TODO make sure that NORMALIZED texture coords are supplied and BEFORE setting the texture!
+		//TODO make sure that NORMAL texture coords are supplied and BEFORE setting the texture!
 		
 		//TODO Note that if we want to change the tex coords mannually, do it normalized, then for precaution update the buffer and then set the texture
 		//if the tex coords have to be un/normalized the updating is done twice but else we might miss updating it when we update from POT to POT.. 
@@ -742,7 +742,7 @@ public abstract class AbstractShape extends AbstractVisibleComponent{
 					}
 				}else{
 					//GLTexture is POT -> normalize tex coords if neccessary
-					this.setTextureMode(PConstants.NORMALIZED);
+					this.setTextureMode(PConstants.NORMAL);
 					
 					if (this.getGeometryInfo().isTextureCoordsNormalized()){
 						//0..1 -> 0..1
@@ -777,7 +777,7 @@ public abstract class AbstractShape extends AbstractVisibleComponent{
 					this.lastTextureDimension.setXYZ(newTexImage.width, newTexImage.height, 0);
 				}else{
 					ts.target = TEXTURE_TARGET.TEXTURE_2D;
-					this.setTextureMode(PConstants.NORMALIZED);
+					this.setTextureMode(PConstants.NORMAL);
 					
 					//We are in OpenGL mode, new texture is a PImage, is POT -> create POT GLTexture and un-normalize tex coords if neccessary
 					if (this.getGeometryInfo().isTextureCoordsNormalized()){
@@ -850,8 +850,8 @@ public abstract class AbstractShape extends AbstractVisibleComponent{
 	/**
 	 * Sets the way texture coordinates are handled in processing. This setting
 	 * is not considered if using OpenGL mode!
-	 * Allowed values are: <code>PApplet.NORMALIZED</code> and <code>PApplet.IMAGE</code>
-	 * <br>Default is <code>PApplet.NORMALIZED</code>.
+	 * Allowed values are: <code>PApplet.NORMAL</code> and <code>PApplet.IMAGE</code>
+	 * <br>Default is <code>PApplet.NORMAL</code>.
 	 * Which indicates that the texture coordinates should be in normalized
 	 * range from 0.0 to 1.0!
 	 * In image mode they have to range from 0..imageDimensions.

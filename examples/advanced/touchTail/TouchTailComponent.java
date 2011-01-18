@@ -124,7 +124,7 @@ public class TouchTailComponent extends AbstractVisibleComponent {
 		}
 		
 		if (useTexture){
-			g.textureMode(PConstants.NORMALIZED);
+			g.textureMode(PConstants.NORMAL);
 		}
 		
 		/*

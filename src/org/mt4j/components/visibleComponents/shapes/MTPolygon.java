@@ -80,7 +80,7 @@ public class MTPolygon extends MTCSSStylableShape{
 //		this.hasVertexColor = false;//Dont set here, gets set to false after being true in super constructor
 		
 		this.setTextureEnabled(false);
-		this.setTextureMode(PApplet.NORMALIZED);
+		this.setTextureMode(PApplet.NORMAL);
 		
 		this.setEnabled(true);
 		this.setVisible(true);
