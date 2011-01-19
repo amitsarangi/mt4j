@@ -5,10 +5,12 @@ import org.mt4j.input.InputManager;
 import org.mt4j.sceneManagement.IPreDrawAction;
 import org.mt4j.sceneManagement.ISceneChangeListener;
 import org.mt4j.sceneManagement.Iscene;
+import org.mt4j.util.opengl.GL10;
+import org.mt4j.util.opengl.GL11;
+import org.mt4j.util.opengl.GL20;
+import org.mt4j.util.opengl.GLCommon;
 
-import processing.core.PGraphics;
-
-public interface IMTApplication {
+public interface IMTApplication extends IPAppletBoth{
 	
 
 
@@ -153,7 +155,6 @@ public interface IMTApplication {
 	 */
 	public void setInputManager(InputManager inputManager);
 
-	public PGraphics getPGraphics();
 
 	/**
 	 * Adds a scene change listener.
@@ -179,5 +180,53 @@ public interface IMTApplication {
 	/////////////////////////////////	
 
 	public CSSStyleManager getCssStyleManager();
+	
+	
+//	public PGraphics getPGraphics();
+//	
+//	public PMatrix3D getModelView();
+//	
+//	public PMatrix3D getModelViewInv();
+	
+	 /**
+     * Returns whether OpenGL ES 1.1 is available. If it is you can get an instance of {@link GL11} via {@link #getGL11()} to
+     * access OpenGL ES 1.1 functionality. This also implies that {@link #getGL10()} will return an instance.
+     * 
+     * @return whether OpenGL ES 1.1 is available
+     */
+    public boolean isGL11Available ();
+
+    /**
+     * Returns whether OpenGL ES 2.0 is available. If it is you can get an instance of {@link GL20} via {@link #getGL20()} to
+     * access OpenGL ES 2.0 functionality. Note that this functionality will only be available if you instructed the
+     * {@link Application} instance to use OpenGL ES 2.0!
+     * 
+     * @return whether OpenGL ES 2.0 is available
+     */
+    public boolean isGL20Available ();
+    
+    /**
+     * @return a {@link GLCommon} instance
+     */
+    public GLCommon getGLCommon ();
+
+    /**
+     * @return the {@link GL10} instance or null if not supported
+     */
+    public GL10 getGL10 ();
+
+    /**
+     * @return the {@link GL11} instance or null if not supported
+     */
+    public GL11 getGL11 ();
+    
+    /**
+     * @return the {@link GL20} instance or null if not supported
+     */
+    public GL20 getGL20 ();
+    
+    public GLCommon beginGL() ;
+    
+    public void endGL();
 
 }

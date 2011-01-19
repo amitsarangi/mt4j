@@ -10,19 +10,21 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 
-import muito.motion.MotionEvent;
+import org.mt4j.util.opengl.GLCommon;
 
 //import org.mt4j.PShape3D;
 
 import processing.core.PApplet;
 import processing.core.PFont;
 import processing.core.PGraphics;
+import processing.core.PGraphics3D;
 import processing.core.PImage;
 import processing.core.PMatrix;
 import processing.core.PMatrix2D;
 import processing.core.PMatrix3D;
 import processing.core.PShape;
 import processing.core.PStyle;
+import processing.opengl.PGraphicsOpenGL;
 
 public interface IPAppletBoth {
 	/////////////////////////////Android
@@ -4287,7 +4289,17 @@ public void blend(PImage src, int sx, int sy, int sw, int sh, int dx, int dy,
 
 	//TODO getGL(), beginGL(), endGL()
 
-	//// ADDED MYSELF ////////////////////////
+//// ADDED MYSELF ////////////////////////
+
+	public PGraphics getPGraphics();
+	
+	public PMatrix3D getModelView();
+	
+	public PMatrix3D getModelViewInv();
+
+	public GLCommon beginGL();
+    
+    public void endGL();
 
 
 }

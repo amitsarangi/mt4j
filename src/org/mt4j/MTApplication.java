@@ -50,6 +50,8 @@ import org.mt4j.sceneManagement.ISceneChangeListener;
 import org.mt4j.sceneManagement.Iscene;
 import org.mt4j.sceneManagement.SceneChangeEvent;
 import org.mt4j.sceneManagement.transition.ITransition;
+import org.mt4j.util.DesktopGraphicsUtil;
+import org.mt4j.util.GraphicsUtil;
 import org.mt4j.util.MT4jSettings;
 import org.mt4j.util.SettingsMenu;
 import org.mt4j.util.animation.AnimationManager;
@@ -69,6 +71,9 @@ import org.mt4j.util.opengl.JoglGL20;
 
 import processing.core.PApplet;
 import processing.core.PGraphics;
+import processing.core.PGraphics3D;
+import processing.core.PGraphicsAndroid3D;
+import processing.core.PMatrix3D;
 import processing.opengl.PGraphicsOpenGL;
 
 
@@ -89,7 +94,7 @@ import processing.opengl.PGraphicsOpenGL;
  * 
  * @author Christopher Ruff
  */
-public abstract class MTApplication extends PApplet implements IPAppletBoth, IMTApplication{
+public abstract class MTApplication extends PApplet implements IMTApplication{
 	/** The Constant logger. */
 	private static ILogger logger;
 	
@@ -144,9 +149,9 @@ public abstract class MTApplication extends PApplet implements IPAppletBoth, IMT
 	private ArrayDeque<IPreDrawAction> preDrawActions;
 
 	protected GLCommon glCommon;
-	protected GL10 gl10;
-	protected GL11 gl11;
-	protected GL20 gl20;
+	protected GL10 iGL10;
+	protected GL11 iGL11;
+	protected GL20 iGL20;
 
 	private boolean gl20Supported;
 
@@ -289,7 +294,7 @@ public abstract class MTApplication extends PApplet implements IPAppletBoth, IMT
 	
 	
 	/**
-	 * Initializes the processings settings.
+	 * Initializes the processing's settings.
 	 * Call this method in your main method prior to anything else!
 	 * We have to provide the fully qualified name to the class that
 	 * we are calling this from. (Should be our MTAplication extended class)
@@ -301,11 +306,13 @@ public abstract class MTApplication extends PApplet implements IPAppletBoth, IMT
 	 * @param showSettingsMenu show settings menu
 	 */
 	public static void initialize(String classToInstantiate, boolean showSettingsMenu){
-		//Initialize Loggin facilities  - IMPORTANT TO DO THIS ASAP!
+		//Initialize Loggin facilities  - IMPORTANT TO DO THIS ASAP!//////
 		MTLoggerFactory.setLoggerProvider(new Log4jLogger()); //FIXME TEST
 //		MTLoggerFactory.setLoggerProvider(new JavaLogger()); //FIXME TEST
 		logger = MTLoggerFactory.getLogger(MTApplication.class.getName());
 		logger.setLevel(ILogger.INFO);
+		/////////////////////////////////////////////////////////////////
+		
 		logger.debug(classToInstantiate + " is the class instatiated by PApplet class.");
 		 
 		//FIXME TEST
@@ -522,6 +529,10 @@ public abstract class MTApplication extends PApplet implements IPAppletBoth, IMT
 		//this.frame.setAlwaysOnTop(true);
 	
 		logger.debug("-> setup called");
+		
+		/////////////////////// //FIXME TEST
+		GraphicsUtil.setGraphicsUtilProvider(new DesktopGraphicsUtil(this));
+		///////////////////////
 
 		//Check if OS 32/64 Bit
 		String bit = System.getProperty("sun.arch.data.model");
@@ -648,18 +659,18 @@ public abstract class MTApplication extends PApplet implements IPAppletBoth, IMT
 	        this.gl11Supported = false;
 	        this.gl20Supported = false;
 	        if (major >= 2) {
-	                gl20 = new JoglGL20(((PGraphicsOpenGL)g).gl);
-	                glCommon = gl20;
+	                iGL20 = new JoglGL20(((PGraphicsOpenGL)g).gl);
+	                glCommon = iGL20;
 	                this.gl20Supported = true;
 	        } else {
 	                if (major == 1 && minor < 5) {
-	                        gl10 = new JoglGL10(((PGraphicsOpenGL)g).gl);
+	                        iGL10 = new JoglGL10(((PGraphicsOpenGL)g).gl);
 	                } else {
-	                        gl11 = new JoglGL11(((PGraphicsOpenGL)g).gl);
-	                        gl10 = gl11;
+	                        iGL11 = new JoglGL11(((PGraphicsOpenGL)g).gl);
+	                        iGL10 = iGL11;
 	                        this.gl11Supported = true;
 	                }
-	                glCommon = gl10;
+	                glCommon = iGL10;
 	        }
 	        //////////////////////////
 	        
@@ -1239,12 +1250,48 @@ public abstract class MTApplication extends PApplet implements IPAppletBoth, IMT
 	}
 	
 	
-	/* (non-Javadoc)
-	 * @see org.mt4j.IMTApplication#getPGraphics()
-	 */
 	public PGraphics getPGraphics(){
 		return this.g;
 	}
+	
+	/*
+	public PMatrix3D getModelView() {
+		return ((PGraphics3D)this.g).modelview;
+	}
+	
+	public PMatrix3D getModelViewInv() {
+		return ((PGraphics3D)this.g).modelviewInv;
+	}
+	
+	
+	public GL10 beginGL() {
+		((PGraphicsOpenGL)this.g).beginGL();
+		return this.iGL10;
+	}
+    
+    public void endGL(){
+    	((PGraphicsOpenGL)this.g).endGL();
+    }
+	*/
+	
+//	/*
+	public PMatrix3D getModelView() {
+		return ((PGraphicsAndroid3D)this.g).modelview;
+	}
+	
+	public PMatrix3D getModelViewInv() {
+		return ((PGraphicsAndroid3D)this.g).modelviewInv;
+	}
+	
+	public GL10 beginGL() {
+		((PGraphicsAndroid3D)this.g).beginGL();
+		return this.iGL10;
+	}
+    
+    public void endGL(){
+    	((PGraphicsAndroid3D)this.g).endGL();
+    }
+//    */
 	
 	 /**
      * Returns whether OpenGL ES 1.1 is available. If it is you can get an instance of {@link GL11} via {@link #getGL11()} to
@@ -1278,31 +1325,24 @@ public abstract class MTApplication extends PApplet implements IPAppletBoth, IMT
      * @return the {@link GL10} instance or null if not supported
      */
     public GL10 getGL10 (){
-    	return this.gl10;
+    	return this.iGL10;
     }
 
     /**
      * @return the {@link GL11} instance or null if not supported
      */
     public GL11 getGL11 (){
-    	return this.gl11;
+    	return this.iGL11;
     }
     
     /**
      * @return the {@link GL20} instance or null if not supported
      */
     public GL20 getGL20 (){
-    	return this.gl20;
+    	return this.iGL20;
     }
     
-    public GLCommon beginGL() {
-		((PGraphicsOpenGL)this.g).beginGL();
-		return this.glCommon;
-	}
     
-    public void endGL(){
-    	((PGraphicsOpenGL)this.g).endGL();
-    }
 	
 
 /////////////////////////	
