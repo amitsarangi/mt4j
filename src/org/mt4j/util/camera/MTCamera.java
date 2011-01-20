@@ -18,11 +18,11 @@
 package org.mt4j.util.camera;
 
 
+import org.mt4j.util.GraphicsUtil;
 import org.mt4j.util.math.Matrix;
 import org.mt4j.util.math.Vector3D;
 
 import processing.core.PApplet;
-import processing.core.PGraphics3D;
 import processing.core.PMatrix3D;
 
 /**
@@ -61,8 +61,14 @@ public class MTCamera implements Icamera{
 	
 	private Matrix cameraMatrix;
 	private Matrix cameraInvMatrix;
+
+	private PMatrix3D modelViewP5;
+
+	private PMatrix3D modelViewInvP5;
+
+	private PMatrix3D camP5;
 	
-	private PGraphics3D p3d;
+//	private PGraphics3D p3d;
 
 	/**
 	 * Instantiates a new mT camera.
@@ -106,7 +112,11 @@ public class MTCamera implements Icamera{
 		this.frustum = new Frustum(pa);
 		this.frustum.setCamDef(this.getPosition(), this.getViewCenterPos(),  xAxisUp, -yAxisUp, zAxisUp); //new Vector3D(xAxisUp, -yAxisUp, zAxisUp));
 		
-		this.p3d = ((PGraphics3D)pa.g);
+//		this.p3d = ((PGraphics3D)pa.g);
+		this.modelViewP5 = GraphicsUtil.getModelView();
+		this.modelViewInvP5 = GraphicsUtil.getModelViewInv();
+		this.camP5 = GraphicsUtil.getCamera();
+		
 		this.dirty = true;
 		this.cameraMat 			= new PMatrix3D();
 		this.cameraInvMat 		= new PMatrix3D();
@@ -160,7 +170,12 @@ public class MTCamera implements Icamera{
 				mi.m30, mi.m31, mi.m32, mi.m33);
 		
 		//cant also set cameraInv..not visible
-		p3d.camera.set(
+//		p3d.camera.set(
+//				m.m00, m.m01, m.m02, m.m03,
+//				m.m10, m.m11, m.m12, m.m13,
+//				m.m20, m.m21, m.m22, m.m23,
+//				m.m30, m.m31, m.m32, m.m33);
+		camP5.set(
 				m.m00, m.m01, m.m02, m.m03,
 				m.m10, m.m11, m.m12, m.m13,
 				m.m20, m.m21, m.m22, m.m23,
@@ -168,8 +183,11 @@ public class MTCamera implements Icamera{
 		
 		//FIXME cannot set p5 cameraInv because its not visible..problem?
 		
-		p3d.modelview.set(cameraMat);
-		p3d.modelviewInv.set(cameraInvMat);
+//		p3d.modelview.set(cameraMat);
+//		p3d.modelviewInv.set(cameraInvMat);
+		
+		modelViewP5.set(cameraMat);
+		modelViewInvP5.set(cameraInvMat);
 	}
 	
 	
@@ -269,7 +287,7 @@ public class MTCamera implements Icamera{
 					viewCenterPos.getX(), viewCenterPos.getY(), viewCenterPos.getZ(), //view center
 					xAxisUp, yAxisUp, zAxisUp); 						//which axis points up?
 			
-			
+			/*
 			this.cameraMatrix.set(new float[]{
 					p3d.modelview.m00, p3d.modelview.m01, p3d.modelview.m02, p3d.modelview.m03,
 					p3d.modelview.m10, p3d.modelview.m11, p3d.modelview.m12, p3d.modelview.m13,
@@ -285,7 +303,23 @@ public class MTCamera implements Icamera{
 					p3d.modelviewInv.m20, p3d.modelviewInv.m21, p3d.modelviewInv.m22, p3d.modelviewInv.m23,
 					p3d.modelviewInv.m30, p3d.modelviewInv.m31, p3d.modelviewInv.m32, p3d.modelviewInv.m33	
 			});
+			 */
+			
+			this.cameraMatrix.set(new float[]{
+					modelViewP5.m00, modelViewP5.m01, modelViewP5.m02, modelViewP5.m03,
+					modelViewP5.m10, modelViewP5.m11, modelViewP5.m12, modelViewP5.m13,
+					modelViewP5.m20, modelViewP5.m21, modelViewP5.m22, modelViewP5.m23,
+					modelViewP5.m30, modelViewP5.m31, modelViewP5.m32, modelViewP5.m33	
+			});
+			
+//			System.out.println("p5 camMatrix: " + this.cameraMatrix);
 
+			this.cameraInvMatrix.set(new float[]{
+					modelViewInvP5.m00, modelViewInvP5.m01, modelViewInvP5.m02, modelViewInvP5.m03,
+					modelViewInvP5.m10, modelViewInvP5.m11, modelViewInvP5.m12, modelViewInvP5.m13,
+					modelViewInvP5.m20, modelViewInvP5.m21, modelViewInvP5.m22, modelViewInvP5.m23,
+					modelViewInvP5.m30, modelViewInvP5.m31, modelViewInvP5.m32, modelViewInvP5.m33	
+			});
 
 			this.dirty = false;
 

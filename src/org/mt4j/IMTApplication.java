@@ -1,6 +1,7 @@
 package org.mt4j;
 
 import org.mt4j.components.css.util.CSSStyleManager;
+import org.mt4j.input.IKeyListener;
 import org.mt4j.input.InputManager;
 import org.mt4j.sceneManagement.IPreDrawAction;
 import org.mt4j.sceneManagement.ISceneChangeListener;
@@ -228,5 +229,12 @@ public interface IMTApplication extends IPAppletBoth{
     public GLCommon beginGL() ;
     
     public void endGL();
+    
+    
+    public void addKeyListener(IKeyListener listener);
+	
+	public void removeKeyListener(IKeyListener listener);
+	
+	public IKeyListener[] getKeyListener();
 
 }

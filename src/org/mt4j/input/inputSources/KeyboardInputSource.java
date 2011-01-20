@@ -70,7 +70,24 @@ public class KeyboardInputSource extends AbstractInputSource {
 		this.applet = pa;
 		applet.registerKeyEvent(this);
 		
+		
 //		applet.registerDraw(this);
+		
+//		//TODO
+//		pa.addKeyListener(new IKeyListener() {
+//			
+//			@Override
+//			public void keyRleased(char key, int keyCode) {
+//				// TODO Auto-generated method stub
+//				
+//			}
+//			
+//			@Override
+//			public void keyPressed(char key, int keyCode) {
+//				// TODO Auto-generated method stub
+//				
+//			}
+//		});
 		
 		this.locationX = 0;
 		this.locationY = 0;

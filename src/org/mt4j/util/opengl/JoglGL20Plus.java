@@ -21,18 +21,21 @@ import java.nio.IntBuffer;
 
 import javax.media.opengl.GL;
 
+/*
+ * This class combines OpenGL 20 functionality and old OpenGL 1.1 functionality for Jogl Desktop Usage!
+ */
 
 /**
- * An implementation of the {@link GL20} interface based on Jogl. Note that Jogl shaders and OpenGL ES shaders will not be 100%
+ * An implementation of the {@link GL20} and {@link GL11} interface based on Jogl. Note that Jogl shaders and OpenGL ES shaders will not be 100%
  * compatible. Some glGetXXX methods are not implemented.
  * 
  * @author mzechner
  * 
  */
-public final class JoglGL20 implements GL20 {
+public final class JoglGL20Plus implements GL20, GL11 {
 	private final GL gl;
 
-	public JoglGL20 (GL gl) {
+	public JoglGL20Plus (GL gl) {
 		this.gl = gl;
 	}
 	
@@ -649,5 +652,351 @@ public final class JoglGL20 implements GL20 {
 	@Override public void glVertexAttribPointer (int indx, int size, int type, boolean normalized, int stride, int ptr) {
 		gl.glVertexAttribPointer(indx, size, type, normalized, stride, ptr);
 	}
+	
+	//FIXME
+	//gl10 stuff
+	@Override public final void glAlphaFunc (int func, float ref) {
+		gl.glAlphaFunc(func, ref);
+	}
+
+
+	@Override public final void glClientActiveTexture (int texture) {
+		try {
+			gl.glClientActiveTexture(texture);
+		} catch (Throwable ex) {
+			// FIXME this is for my lousy netbook...
+		}
+	}
+
+	@Override public final void glColor4f (float red, float green, float blue, float alpha) {
+		gl.glColor4f(red, green, blue, alpha);
+	}
+
+
+	@Override public final void glColorPointer (int size, int type, int stride, Buffer pointer) {
+		gl.glColorPointer(size, type, stride, pointer);
+	}
+
+
+	@Override public final void glDisableClientState (int array) {
+		gl.glDisableClientState(array);
+	}
+
+
+	@Override public final void glEnableClientState (int array) {
+		gl.glEnableClientState(array);
+	}
+
+
+	@Override public final void glFogf (int pname, float param) {
+		gl.glFogf(pname, param);
+	}
+
+	@Override public final void glFogfv (int pname, FloatBuffer params) {
+		gl.glFogfv(pname, params);
+	}
+
+
+	@Override public final void glFrustumf (float left, float right, float bottom, float top, float zNear, float zFar) {
+		gl.glFrustum(left, right, bottom, top, zNear, zFar);
+	}
+
+
+	@Override public final void glLightModelf (int pname, float param) {
+		gl.glLightModelf(pname, param);
+	}
+
+	@Override public final void glLightModelfv (int pname, FloatBuffer params) {
+		gl.glLightModelfv(pname, params);
+	}
+
+	@Override public final void glLightf (int light, int pname, float param) {
+		gl.glLightf(light, pname, param);
+	}
+
+	@Override public final void glLightfv (int light, int pname, FloatBuffer params) {
+		gl.glLightfv(light, pname, params);
+	}
+
+
+	@Override public final void glLoadIdentity () {
+		gl.glLoadIdentity();
+	}
+
+	@Override public final void glLoadMatrixf (FloatBuffer m) {
+		gl.glLoadMatrixf(m);
+	}
+
+	@Override public final void glLogicOp (int opcode) {
+		gl.glLogicOp(opcode);
+	}
+
+	@Override public final void glMaterialf (int face, int pname, float param) {
+		gl.glMaterialf(face, pname, param);
+	}
+
+	@Override public final void glMaterialfv (int face, int pname, FloatBuffer params) {
+		gl.glMaterialfv(face, pname, params);
+	}
+
+	@Override public final void glMatrixMode (int mode) {
+		gl.glMatrixMode(mode);
+	}
+
+	@Override public final void glMultMatrixf (FloatBuffer m) {
+		gl.glMultMatrixf(m);
+	}
+
+	@Override public final void glMultiTexCoord4f (int target, float s, float t, float r, float q) {
+		gl.glMultiTexCoord4f(target, s, t, r, q);
+	}
+
+	@Override public final void glNormal3f (float nx, float ny, float nz) {
+		gl.glNormal3f(nx, ny, nz);
+	}
+
+	@Override public final void glNormalPointer (int type, int stride, Buffer pointer) {
+		gl.glNormalPointer(type, stride, pointer);
+	}
+
+	@Override public final void glOrthof (float left, float right, float bottom, float top, float zNear, float zFar) {
+		gl.glOrtho(left, right, bottom, top, zNear, zFar);
+	}
+
+
+	@Override public final void glPointSize (float size) {
+		gl.glPointSize(size);
+	}
+
+
+	@Override public final void glPopMatrix () {
+		gl.glPopMatrix();
+	}
+
+	@Override public final void glPushMatrix () {
+		gl.glPushMatrix();
+	}
+
+
+	@Override public final void glRotatef (float angle, float x, float y, float z) {
+		gl.glRotatef(angle, x, y, z);
+	}
+
+
+	@Override public final void glScalef (float x, float y, float z) {
+		gl.glScalef(x, y, z);
+	}
+
+
+	@Override public final void glShadeModel (int mode) {
+		gl.glShadeModel(mode);
+	}
+
+
+
+	@Override public final void glTexCoordPointer (int size, int type, int stride, Buffer pointer) {
+		gl.glTexCoordPointer(size, type, stride, pointer);
+	}
+
+	@Override public final void glTexEnvf (int target, int pname, float param) {
+		gl.glTexEnvf(target, pname, param);
+	}
+
+	@Override public final void glTexEnvfv (int target, int pname, FloatBuffer params) {
+		gl.glTexEnvfv(target, pname, params);
+	}
+
+
+	@Override public final void glTranslatef (float x, float y, float z) {
+		gl.glTranslatef(x, y, z);
+	}
+
+	@Override public final void glVertexPointer (int size, int type, int stride, Buffer pointer) {
+		gl.glVertexPointer(size, GL10.GL_FLOAT, stride, pointer);
+	}
+
+
+	@Override public final void glDeleteTextures (int n, int[] textures, int offset) {
+		gl.glDeleteTextures(n, textures, offset);
+	}
+
+	@Override public final void glFogfv (int pname, float[] params, int offset) {
+		gl.glFogfv(pname, params, offset);
+	}
+
+	@Override public final void glGenTextures (int n, int[] textures, int offset) {
+		gl.glGenTextures(n, textures, offset);
+	}
+
+	@Override public final void glGetIntegerv (int pname, int[] params, int offset) {
+		gl.glGetIntegerv(pname, params, offset);
+	}
+
+	@Override public final void glLightModelfv (int pname, float[] params, int offset) {
+		gl.glLightModelfv(pname, params, offset);
+	}
+
+	@Override public final void glLightfv (int light, int pname, float[] params, int offset) {
+		gl.glLightfv(light, pname, params, offset);
+	}
+
+	@Override public final void glLoadMatrixf (float[] m, int offset) {
+		gl.glLoadMatrixf(m, offset);
+	}
+
+	@Override public final void glMaterialfv (int face, int pname, float[] params, int offset) {
+		gl.glMaterialfv(face, pname, params, offset);
+	}
+
+	@Override public final void glMultMatrixf (float[] m, int offset) {
+		gl.glMultMatrixf(m, offset);
+	}
+
+	@Override public final void glTexEnvfv (int target, int pname, float[] params, int offset) {
+		gl.glTexEnvfv(target, pname, params, offset);
+	}
+
+	@Override public void glPolygonMode (int face, int mode) {
+		gl.glPolygonMode(face, mode);
+	}
+	//FIXME
+	//GL11 stuff
+	@Override public void glClipPlanef (int plane, float[] equation, int offset) {
+		throw new UnsupportedOperationException("not implemented");
+	}
+
+	@Override public void glClipPlanef (int plane, FloatBuffer equation) {
+		throw new UnsupportedOperationException("not implemented");
+	}
+
+	@Override public void glColor4ub (byte red, byte green, byte blue, byte alpha) {
+		throw new UnsupportedOperationException("not implemented");
+	}
+
+	@Override public void glDeleteBuffers (int n, int[] buffers, int offset) {
+		gl.glDeleteBuffers(n, buffers, offset);
+	}
+
+	@Override public void glGenBuffers (int n, int[] buffers, int offset) {
+		gl.glGenBuffers(n, buffers, offset);
+	}
+
+	@Override public void glGetBooleanv (int pname, boolean[] params, int offset) {
+		throw new UnsupportedOperationException("not implemented");
+	}
+
+	@Override public void glGetBooleanv (int pname, IntBuffer params) {
+		throw new UnsupportedOperationException("not implemented");
+	}
+
+	@Override public void glGetBufferParameteriv (int target, int pname, int[] params, int offset) {
+		gl.glGetBufferParameteriv(target, pname, params, offset);
+	}
+
+
+	@Override public void glGetClipPlanef (int pname, float[] eqn, int offset) {
+		throw new UnsupportedOperationException("not implemented");
+	}
+
+	@Override public void glGetClipPlanef (int pname, FloatBuffer eqn) {
+		throw new UnsupportedOperationException("not implemented");
+	}
+
+	@Override public void glGetFloatv (int pname, float[] params, int offset) {
+		gl.glGetFloatv(pname, params, offset);
+	}
+
+	@Override public void glGetLightfv (int light, int pname, float[] params, int offset) {
+		gl.glGetLightfv(light, pname, params, offset);
+	}
+
+	@Override public void glGetLightfv (int light, int pname, FloatBuffer params) {
+		gl.glGetLightfv(light, pname, params);
+	}
+
+	@Override public void glGetMaterialfv (int face, int pname, float[] params, int offset) {
+		gl.glGetMaterialfv(face, pname, params, offset);
+	}
+
+	@Override public void glGetMaterialfv (int face, int pname, FloatBuffer params) {
+		gl.glGetMaterialfv(face, pname, params);
+	}
+
+	@Override public void glGetPointerv (int pname, Buffer[] params) {
+		throw new UnsupportedOperationException("not implemented");
+	}
+
+	@Override public void glGetTexEnviv (int env, int pname, int[] params, int offset) {
+		gl.glGetTexEnviv(env, pname, params, offset);
+	}
+
+	@Override public void glGetTexEnviv (int env, int pname, IntBuffer params) {
+		gl.glGetTexEnviv(env, pname, params);
+	}
+
+	@Override public void glGetTexParameterfv (int target, int pname, float[] params, int offset) {
+		gl.glGetTexParameterfv(target, pname, params, offset);
+	}
+
+
+	@Override public void glGetTexParameteriv (int target, int pname, int[] params, int offset) {
+		gl.glGetTexParameteriv(target, pname, params, offset);
+	}
+
+
+	@Override public void glPointParameterf (int pname, float param) {
+		gl.glPointParameterf(pname, param);
+	}
+
+	@Override public void glPointParameterfv (int pname, float[] params, int offset) {
+		gl.glPointParameterfv(pname, params, offset);
+	}
+
+	@Override public void glPointParameterfv (int pname, FloatBuffer params) {
+		gl.glPointParameterfv(pname, params);
+	}
+
+	@Override public void glPointSizePointerOES (int type, int stride, Buffer pointer) {
+		throw new UnsupportedOperationException("not implemented");
+	}
+
+	@Override public void glTexEnvi (int target, int pname, int param) {
+		gl.glTexEnvi(target, pname, param);
+	}
+
+	@Override public void glTexEnviv (int target, int pname, int[] params, int offset) {
+		gl.glTexEnviv(target, pname, params, offset);
+	}
+
+	@Override public void glTexEnviv (int target, int pname, IntBuffer params) {
+		gl.glTexEnviv(target, pname, params);
+	}
+
+	@Override public void glTexParameterfv (int target, int pname, float[] params, int offset) {
+		gl.glTexParameterfv(target, pname, params, offset);
+	}
+
+	@Override public void glTexParameteriv (int target, int pname, int[] params, int offset) {
+		gl.glTexParameteriv(target, pname, params, offset);
+	}
+
+
+	@Override public void glColorPointer (int size, int type, int stride, int pointer) {
+		gl.glColorPointer(size, type, stride, pointer);
+	}
+
+	@Override public void glNormalPointer (int type, int stride, int pointer) {
+		gl.glNormalPointer(type, stride, pointer);
+	}
+
+	@Override public void glTexCoordPointer (int size, int type, int stride, int pointer) {
+		gl.glTexCoordPointer(size, type, stride, pointer);
+	}
+
+	@Override public void glVertexPointer (int size, int type, int stride, int pointer) {
+		gl.glVertexPointer(size, type, stride, pointer);
+	}
+
+	
 
 }

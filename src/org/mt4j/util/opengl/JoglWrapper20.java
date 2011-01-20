@@ -14,7 +14,21 @@ public class JoglWrapper20 /*extends JoglWrapper11*/ implements GL20{
     public JoglWrapper20 (GL gl) {
         this.gl = gl;
     }
+    
+/////////
+	public void glCallList(int id) {
+		gl.glCallList(id);
+	}
 
+	public void glCallLists(int arg0, int arg1, Buffer arg2) {
+		gl.glCallLists(arg0, arg1, arg2);
+	}
+
+	public int glGenLists(int id) {
+		return gl.glGenLists(id);
+	}
+/////////////////
+	
     @Override public void glActiveTexture (int texture) {
             gl.glActiveTexture(texture);
     }

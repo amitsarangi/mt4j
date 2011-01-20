@@ -33,12 +33,13 @@ import org.mt4j.input.inputProcessors.componentProcessors.dragProcessor.DragProc
 import org.mt4j.input.inputProcessors.componentProcessors.rotateProcessor.RotateProcessor;
 import org.mt4j.input.inputProcessors.componentProcessors.scaleProcessor.ScaleProcessor;
 import org.mt4j.input.inputProcessors.componentProcessors.tapProcessor.TapProcessor;
+import org.mt4j.util.GraphicsUtil;
 import org.mt4j.util.camera.Icamera;
 import org.mt4j.util.math.Matrix;
 
 import processing.core.PApplet;
 import processing.core.PGraphics;
-import processing.core.PGraphics3D;
+import processing.core.PMatrix3D;
 
 /**
  * MTCanvas is the root node of the component hierarchy of a MT4j scene.
@@ -77,6 +78,8 @@ public class MTCanvas extends MTComponent implements IHitTestInfoProvider{
 	private int culledObjects = 0;
 
 	private long lastUpdateTime;
+
+	private PMatrix3D modelViewP5;
 
 	
 	
@@ -133,6 +136,8 @@ public class MTCanvas extends MTComponent implements IHitTestInfoProvider{
 		
 		//Frustum culling default
 		frustumCulling = false;
+		
+		this.modelViewP5 = GraphicsUtil.getModelView();
 	}
 	
 	@Override
@@ -336,8 +341,9 @@ public class MTCanvas extends MTComponent implements IHitTestInfoProvider{
 					//Applies all transforms up to this components parent
 					//because the new camera wiped out all previous transforms
 					Matrix m = currentcomp.getParent().getGlobalMatrix();
-					PGraphics3D pgraphics3D = (PGraphics3D)graphics;
-					pgraphics3D.modelview.apply(
+//					PGraphics3D pgraphics3D = (PGraphics3D)graphics;
+//					pgraphics3D.modelview.apply(
+					modelViewP5.apply(
 							m.m00, m.m01, m.m02,  m.m03,
 							m.m10, m.m11, m.m12,  m.m13,
 							m.m20, m.m21, m.m22,  m.m23,

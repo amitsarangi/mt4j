@@ -26,6 +26,19 @@ public class AndroidGL20 implements GL20 {
 		init();
 	}
 	*/
+/////////
+	public void glCallList(int id) {
+		throw new UnsupportedOperationException("not implemented");
+	}
+
+	public void glCallLists(int arg0, int arg1, Buffer arg2) {
+		throw new UnsupportedOperationException("not implemented");
+	}
+
+	public int glGenLists(int id) {
+		throw new UnsupportedOperationException("not implemented");
+	}
+/////////////////
 
 	private static native void init ();
 

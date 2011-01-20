@@ -19,7 +19,7 @@ package org.mt4j.components.visibleComponents.widgets;
 
 import java.util.HashMap;
 
-import javax.media.opengl.GL;
+//import javax.media.opengl.GL;
 
 import org.mt4j.MTApplication;
 import org.mt4j.components.visibleComponents.shapes.MTRectangle;
@@ -29,19 +29,22 @@ import org.mt4j.input.inputData.MTInputEvent;
 import org.mt4j.input.inputProcessors.globalProcessors.AbstractGlobalInputProcessor;
 import org.mt4j.input.inputProcessors.globalProcessors.CursorTracer;
 import org.mt4j.sceneManagement.Iscene;
+import org.mt4j.util.GraphicsUtil;
 import org.mt4j.util.MT4jSettings;
 import org.mt4j.util.camera.Icamera;
 import org.mt4j.util.math.Plane;
 import org.mt4j.util.math.Tools3D;
 import org.mt4j.util.math.Vector3D;
 import org.mt4j.util.math.Vertex;
+import org.mt4j.util.opengl.GL10;
+import org.mt4j.util.opengl.GL11;
+import org.mt4j.util.opengl.GL20;
 import org.mt4j.util.opengl.GLFboStack;
 import org.mt4j.util.opengl.GLFBO;
 import org.mt4j.util.opengl.GLStencilUtil;
 import org.mt4j.util.opengl.GLTexture;
 
 import processing.core.PGraphics;
-import processing.opengl.PGraphicsOpenGL;
 
 /**
  * The Class MTSceneTexture. This class allows to display a scene from within another scene.
@@ -152,8 +155,9 @@ public class MTSceneTexture extends MTRectangle {
 
 	@Override
 	public void drawComponent(PGraphics g){
-		PGraphicsOpenGL pgl = (PGraphicsOpenGL)g; 
-		GL gl = pgl.gl;
+//		PGraphicsOpenGL pgl = (PGraphicsOpenGL)g; 
+//		GL gl = pgl.gl;
+		GL20 gl = GraphicsUtil.getGL20();
 
 //		boolean b = false;
 //		if (GLStencilUtil.getInstance().isClipActive()){
@@ -164,17 +168,17 @@ public class MTSceneTexture extends MTRectangle {
 			
 		fbo.startRenderToTexture();
 			//Change blending mode to avoid artifacts from alpha blending at antialiasing for example
-//			gl.glBlendFuncSeparate(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA, GL.GL_ZERO, GL.GL_ONE);
-			gl.glBlendFuncSeparate(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA, GL.GL_ONE, GL.GL_ONE_MINUS_SRC_ALPHA);
+//			gl.glBlendFuncSeparate(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA, GL10.GL_ZERO, GL10.GL_ONE);
+			gl.glBlendFuncSeparate(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA, GL10.GL_ONE, GL10.GL_ONE_MINUS_SRC_ALPHA);
 			
 //			/*
 			boolean clipping = false;
 			if (GLStencilUtil.getInstance().isClipActive()){
 				clipping = true;
-				gl.glPushAttrib(GL.GL_STENCIL_BUFFER_BIT);
+				gl.glPushAttrib(GL10.GL_STENCIL_BUFFER_BIT);
 				gl.glClearStencil(GLStencilUtil.stencilValueStack.peek());
-				gl.glClear(GL.GL_STENCIL_BUFFER_BIT);
-				//			gl.glDisable(GL.GL_STENCIL_TEST);
+				gl.glClear(GL10.GL_STENCIL_BUFFER_BIT);
+				//			gl.glDisable(GL10.GL_STENCIL_TEST);
 			}
 //			*/
 			
@@ -182,7 +186,7 @@ public class MTSceneTexture extends MTRectangle {
 //			gl.glAlphaFunc(gl.GL_GREATER, 0.0f);
 //			gl.glDisable(gl.GL_ALPHA_TEST);
 			//Draw scene to texture
-			scene.drawAndUpdate(pgl, this.lastUpdateTime);
+			scene.drawAndUpdate(g, this.lastUpdateTime);
 			
 //			/*
 			if (clipping){
@@ -193,7 +197,7 @@ public class MTSceneTexture extends MTRectangle {
 		fbo.stopRenderToTexture();
 			
 		if (GLFboStack.getInstance().peekFBO() == 0)
-			gl.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA); //Restore default blend mode //FIXME TEST -> neccessary?
+			gl.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA); //Restore default blend mode //FIXME TEST -> neccessary?
 		
 		//FIXME NOT NEEDED!? sufficient to call glGenerateMipmapEXT at texture creation!? 
 		//TODO I actually think its necessary to call each time after rendering to the texture! But only for POT dimensions!?

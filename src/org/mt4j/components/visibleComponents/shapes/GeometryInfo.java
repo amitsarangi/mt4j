@@ -24,12 +24,14 @@ import javax.media.opengl.GL;
 
 import org.mt4j.MTApplication;
 import org.mt4j.components.visibleComponents.StyleInfo;
+import org.mt4j.util.GraphicsUtil;
 import org.mt4j.util.MT4jSettings;
 import org.mt4j.util.math.Tools3D;
 import org.mt4j.util.math.ToolsBuffers;
 import org.mt4j.util.math.ToolsVBO;
 import org.mt4j.util.math.Vector3D;
 import org.mt4j.util.math.Vertex;
+import org.mt4j.util.opengl.GL10;
 
 import processing.core.PApplet;
 

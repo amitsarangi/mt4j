@@ -8,6 +8,7 @@ import processing.core.PGraphics;
 import processing.core.PMatrix3D;
 
 public class GraphicsUtil {
+	//TODO dont make static? maybe we have different swing windows with different gl contexts?
 	
 	private static IGraphicsUtil graphicsUtil;
 
@@ -21,6 +22,26 @@ public class GraphicsUtil {
 
 	public static PMatrix3D getModelViewInv() {
 		return graphicsUtil.getModelViewInv();
+	}
+	
+	public static PMatrix3D getCamera() {
+		return graphicsUtil.getCamera();
+	}
+	
+	public static float getCameraFOV() {
+		return graphicsUtil.getCameraFOV();
+	}
+
+	public static float getCameraAspect() {
+		return graphicsUtil.getCameraAspect();
+	}
+
+	public static float getCameraNear() {
+		return graphicsUtil.getCameraNear();
+	}
+
+	public static float getCameraFar() {
+		return graphicsUtil.getCameraFar();
 	}
 	
 	public static GL10 getGL(){
@@ -47,5 +68,14 @@ public class GraphicsUtil {
 		graphicsUtil = graphicsUtilitiy;
 	}
 	
+	public static boolean isDesktop(){
+		return graphicsUtil.getPlatform() == IGraphicsUtil.DESKTOP;
+	}
+	
+	public static boolean isAndroid(){
+		return graphicsUtil.getPlatform() == IGraphicsUtil.ANDROID;
+	}
+
+
 
 }

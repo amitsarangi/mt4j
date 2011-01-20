@@ -23,6 +23,18 @@ public class JoglGL10 implements GL10 {
     public JoglGL10 (javax.media.opengl.GL gl) {
             this.gl = gl;
     }
+    
+	public void glCallList(int id) {
+		gl.glCallList(id);
+	}
+
+	public void glCallLists(int arg0, int arg1, Buffer arg2) {
+		gl.glCallLists(arg0, arg1, arg2);
+	}
+
+	public int glGenLists(int id) {
+		return gl.glGenLists(id);
+	}
 
     @Override public final void glActiveTexture (int texture) {
             gl.glActiveTexture(texture);

@@ -27,13 +27,11 @@ import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.io.File;
 import java.io.FileInputStream;
-import java.nio.DoubleBuffer;
+import java.nio.FloatBuffer;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
-
-import javax.media.opengl.GL;
 
 import org.mt4j.MTApplication;
 import org.mt4j.components.MTComponent;
@@ -67,6 +65,7 @@ import org.mt4j.input.inputProcessors.componentProcessors.tapProcessor.TapProces
 import org.mt4j.input.inputProcessors.globalProcessors.CursorTracer;
 import org.mt4j.sceneManagement.AbstractScene;
 import org.mt4j.sceneManagement.IPreDrawAction;
+import org.mt4j.util.GraphicsUtil;
 import org.mt4j.util.MT4jSettings;
 import org.mt4j.util.MTColor;
 import org.mt4j.util.animation.AnimationEvent;
@@ -77,9 +76,9 @@ import org.mt4j.util.animation.ani.AniAnimation;
 import org.mt4j.util.camera.MTCamera;
 import org.mt4j.util.math.Matrix;
 import org.mt4j.util.math.Vector3D;
+import org.mt4j.util.opengl.GL11;
 
 import processing.core.PImage;
-import processing.opengl.PGraphicsOpenGL;
 import advanced.flickrMT.FlickrLoader;
 
 import com.aetrion.flickr.Flickr;
@@ -467,7 +466,8 @@ public class MapsScene extends AbstractScene implements MouseWheelListener, Mous
 	
 	//TODO CLEANUP
 	/** The model. */
-	private DoubleBuffer model = DoubleBuffer.allocate(16);
+//	private DoubleBuffer model = DoubleBuffer.allocate(16);
+	private FloatBuffer model = FloatBuffer.allocate(16);
 	/** The mgl. */
 	private Matrix mgl = new Matrix();
 	
@@ -477,16 +477,18 @@ public class MapsScene extends AbstractScene implements MouseWheelListener, Mous
 	 */
 	private void updateTagContainerScale(){
 		model.clear();
-		PGraphicsOpenGL pgl = ((PGraphicsOpenGL)p.g);
+//		PGraphicsOpenGL pgl = ((PGraphicsOpenGL)p.g);
 //		GL gl = pgl.beginGL();
-		GL gl = pgl.gl;
+//		GL gl = pgl.gl;
+		GL11 gl = GraphicsUtil.getGL11();
 		
 		gl.glPushMatrix();
 		gl.glScalef(1, -1, 1);
 		gl.glTranslatef(p.width/2, p.height/2, 0);
 		gl.glScalef((float)map.sc, (float)map.sc, 1);
 		gl.glTranslatef((float)map.tx, (float)map.ty, 0);
-		gl.glGetDoublev(GL.GL_MODELVIEW_MATRIX, model);
+//		gl.glGetDoublev(GL.GL_MODELVIEW_MATRIX, model);
+		gl.glGetFloatv(GL11.GL_MODELVIEW_MATRIX, model);
 		gl.glPopMatrix();
 //		pgl.endGL();
 		

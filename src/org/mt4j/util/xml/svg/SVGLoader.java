@@ -130,6 +130,7 @@ import org.mt4j.input.inputProcessors.IGestureEventListener;
 import org.mt4j.input.inputProcessors.componentProcessors.dragProcessor.DragProcessor;
 import org.mt4j.input.inputProcessors.componentProcessors.rotateProcessor.RotateProcessor;
 import org.mt4j.input.inputProcessors.componentProcessors.scaleProcessor.ScaleProcessor;
+import org.mt4j.util.GraphicsUtil;
 import org.mt4j.util.HelperMethods;
 import org.mt4j.util.MT4jSettings;
 import org.mt4j.util.MTColor;
@@ -141,6 +142,7 @@ import org.mt4j.util.math.Matrix;
 import org.mt4j.util.math.ToolsGeometry;
 import org.mt4j.util.math.Vector3D;
 import org.mt4j.util.math.Vertex;
+import org.mt4j.util.opengl.GL10;
 import org.mt4j.util.opengl.GLTexture;
 import org.mt4j.util.opengl.GluTrianglulator;
 import org.w3c.dom.Document;
@@ -162,7 +164,6 @@ import org.w3c.dom.svg.SVGPointList;
 import org.w3c.dom.svg.SVGSVGElement;
 
 import processing.core.PApplet;
-import processing.opengl.PGraphicsOpenGL;
 
 
 /**
@@ -1549,7 +1550,8 @@ public class SVGLoader implements SVGConstants{
 					shape.addChild(rectanglePaintedComp);
         		 */
         	}
-        	FillPaint gradStencil = new FillPaint(((PGraphicsOpenGL)pa.g).gl, rectangle);
+//        	FillPaint gradStencil = new FillPaint(((PGraphicsOpenGL)pa.g).gl, rectangle);
+        	FillPaint gradStencil = new FillPaint(GraphicsUtil.getGL(), rectangle);
         	return gradStencil;
 //      	return null;
         }
@@ -1754,7 +1756,8 @@ public class SVGLoader implements SVGConstants{
 	
 
 	private FillPaint setUpRotatedGradientUserSpace(AbstractShape testShape, float angle, List<Stop> stops, Point2D p1, Point2D p2){
-		GL gl = ((PGraphicsOpenGL)pa.g).gl;
+//		GL gl = ((PGraphicsOpenGL)pa.g).gl;
+		GL10 gl = GraphicsUtil.getGL();
 		float gradAngle = angle;
 		
 		float invAngle = angle*-1;
@@ -1894,7 +1897,8 @@ public class SVGLoader implements SVGConstants{
 
 	
 	private FillPaint setUpRotatedGradientBBox(AbstractShape testShape, float angle, List<Stop> stops){
-			GL gl = ((PGraphicsOpenGL)pa.g).gl;
+//			GL gl = ((PGraphicsOpenGL)pa.g).gl;
+			GL10 gl = GraphicsUtil.getGL();
 			float gradAngle = angle;
 			
 			//Get copy of shapes vertices

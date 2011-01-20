@@ -24,8 +24,6 @@ import org.mt4j.util.math.Matrix;
 import org.mt4j.util.math.Tools3D;
 
 import processing.core.PApplet;
-import processing.core.PGraphics3D;
-import processing.opengl.PGraphicsOpenGL;
 
 /**
  * The Class HelperMethods.
@@ -259,10 +257,10 @@ public class HelperMethods {
      * @param pgraphics3D the pgraphics3 d
      * @param m the m
      */
-    public static void applyMatrix(PApplet renderer, PGraphics3D pgraphics3D, Matrix m) {
+    public static void applyMatrix(PApplet renderer, Matrix m) {
 		switch (RENDERER_STATE) {
 		case PROCESSING_MATRIX_MODE:
-			pgraphics3D.modelview.apply(
+			GraphicsUtil.getModelView().apply(
 					m.m00, m.m01, m.m02,  m.m03,
 					m.m10, m.m11, m.m12,  m.m13,
 					m.m20, m.m21, m.m22,  m.m23,

@@ -17,15 +17,14 @@
  ***********************************************************************/
 package org.mt4j.components.visibleComponents.widgets;
 
-import javax.media.opengl.GL;
-
 import org.mt4j.components.clipping.Clip;
 import org.mt4j.components.visibleComponents.shapes.MTRectangle;
 import org.mt4j.components.visibleComponents.shapes.MTRoundRectangle;
+import org.mt4j.util.GraphicsUtil;
 import org.mt4j.util.MT4jSettings;
+import org.mt4j.util.opengl.GL10;
 
 import processing.core.PApplet;
-import processing.opengl.PGraphicsOpenGL;
 
 /**
  * The Class MTClipRoundRect.A round rectangle whos children are clipped at the borders
@@ -56,7 +55,8 @@ public class MTClipRoundRect extends MTRoundRectangle {
 	        clipRect.setNoStroke(true);
 	        clipRect.setBoundsBehaviour(MTRectangle.BOUNDS_ONLY_CHECK);
 	        
-	        GL gl = ((PGraphicsOpenGL)applet.g).gl;
+//	        GL gl = ((PGraphicsOpenGL)applet.g).gl;
+	        GL10 gl = GraphicsUtil.getGL();
 	        Clip clipMask = new Clip(gl, clipRect);
 	        this.setChildClip(clipMask);
 		}

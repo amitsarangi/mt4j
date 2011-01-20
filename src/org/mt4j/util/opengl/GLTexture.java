@@ -23,6 +23,7 @@ import javax.media.opengl.GL;
 import javax.media.opengl.glu.GLU;
 
 import org.mt4j.MTApplication;
+import org.mt4j.util.GraphicsUtil;
 import org.mt4j.util.math.Tools3D;
 import org.mt4j.util.math.ToolsMath;
 
@@ -215,9 +216,11 @@ public class GLTexture extends PImage {
 	
 	private PApplet app;
 	
-	private PGraphicsOpenGL pgl;
+//	private PGraphicsOpenGL pgl;
 	
-	private GL gl;
+//	private GL gl;
+	
+	private GL10 gl;
 	
 	protected boolean fboSupported;
 	
@@ -271,8 +274,9 @@ public class GLTexture extends PImage {
 
     	this.app = parent;
     	this.parent = parent;
-    	pgl = (PGraphicsOpenGL)parent.g;
-    	gl = pgl.gl;
+//    	pgl = (PGraphicsOpenGL)parent.g;
+//    	gl = pgl.gl;
+    	gl = GraphicsUtil.getGL();
 	}
 
 	/**
@@ -314,8 +318,9 @@ public class GLTexture extends PImage {
 
     	this.app = parent;
     	this.parent = parent;
-    	pgl = (PGraphicsOpenGL)parent.g;
-    	gl = pgl.gl;
+//    	pgl = (PGraphicsOpenGL)parent.g;
+//    	gl = pgl.gl;
+    	gl = GraphicsUtil.getGL();
 
 //    	 		setTextureParams(params);
 
@@ -359,8 +364,9 @@ public class GLTexture extends PImage {
 
     	this.app = parent;
     	this.parent = parent;
-    	pgl = (PGraphicsOpenGL)app.g;
-    	gl = pgl.gl;
+//    	pgl = (PGraphicsOpenGL)app.g;
+//    	gl = pgl.gl;
+    	gl = GraphicsUtil.getGL();
     	this.glTextureSettings = settings;
     	this.loadTexture(fileName, this.glTextureSettings);
     } 
@@ -520,12 +526,23 @@ public class GLTexture extends PImage {
 		gl.glGenTextures(1, glTextureID, 0);
 		//Bind the texture
 		gl.glBindTexture(textureTarget, glTextureID[0]);
-		//SET texture mag/min FILTER mode
-		gl.glTexParameteri(textureTarget, GL.GL_TEXTURE_MIN_FILTER, minFilter);
-		gl.glTexParameteri(textureTarget, GL.GL_TEXTURE_MAG_FILTER, magFilter);
-		//Set texture wrapping mode
-		gl.glTexParameteri(textureTarget, GL.GL_TEXTURE_WRAP_S, wrap_s);
-		gl.glTexParameteri(textureTarget, GL.GL_TEXTURE_WRAP_T, wrap_t);
+		
+		if (GraphicsUtil.getGL11() != null){
+			GL11 gl11 = GraphicsUtil.getGL11();
+			//SET texture mag/min FILTER mode
+			gl11.glTexParameteri(textureTarget, GL.GL_TEXTURE_MIN_FILTER, minFilter);
+			gl11.glTexParameteri(textureTarget, GL.GL_TEXTURE_MAG_FILTER, magFilter);
+			//Set texture wrapping mode
+			gl11.glTexParameteri(textureTarget, GL.GL_TEXTURE_WRAP_S, wrap_s);
+			gl11.glTexParameteri(textureTarget, GL.GL_TEXTURE_WRAP_T, wrap_t);
+		}
+		
+//		//SET texture mag/min FILTER mode
+//		gl.glTexParameteri(textureTarget, GL.GL_TEXTURE_MIN_FILTER, minFilter);
+//		gl.glTexParameteri(textureTarget, GL.GL_TEXTURE_MAG_FILTER, magFilter);
+//		//Set texture wrapping mode
+//		gl.glTexParameteri(textureTarget, GL.GL_TEXTURE_WRAP_S, wrap_s);
+//		gl.glTexParameteri(textureTarget, GL.GL_TEXTURE_WRAP_T, wrap_t);
 
 		switch (glTextureSettings.target) {
 		case TEXTURE_1D:
@@ -543,9 +560,9 @@ public class GLTexture extends PImage {
 	
 	
 	/**
-     * Loads the image from the specifed file and the specified settings.
+     * Loads the image from the specified file and the specified settings.
      * Then this PImage AND an OpenGL texture object are set up with the image data.
-     * Re-initializes this texture if the old dimensions dont match the new image.
+     * Re-initializes this texture if the old dimensions don't match the new image.
      *
      * @param filename the filename
      * @param settings the settings
@@ -716,14 +733,22 @@ public class GLTexture extends PImage {
 					GLU glu = ((PGraphicsOpenGL)this.parent.g).glu;
 					glu.gluBuild2DMipmaps(textureTarget, internalFormat, this.width, this.height, glFormat, type, buffer);
 				}else{
-					if (this.fboSupported){ //Naive check if glGenerateMipmapEXT command is supported
+					if (this.fboSupported && GraphicsUtil.getGL20() != null){ //Naive check if glGenerateMipmapEXT command is supported
 						gl.glTexSubImage2D(textureTarget, 0, 0, 0, this.width, this.height, glFormat, type, buffer);
-						gl.glGenerateMipmapEXT(textureTarget);  //newer OpenGL 3.x method of creating mip maps //TODO problems on ATI? use gl.glEnable(textureTarget) first? 
+						GraphicsUtil.getGL20().glGenerateMipmap(textureTarget);  //newer OpenGL 3.x method of creating mip maps //TODO problems on ATI? use gl.glEnable(textureTarget) first? 
 					}else{
 						//Old school software method, will resize a NPOT texture to a POT texture
 						GLU glu = ((PGraphicsOpenGL)this.parent.g).glu;
 						glu.gluBuild2DMipmaps(textureTarget, internalFormat, this.width, this.height, glFormat, type, buffer);
 					}
+//					if (this.fboSupported){ //Naive check if glGenerateMipmapEXT command is supported
+//						gl.glTexSubImage2D(textureTarget, 0, 0, 0, this.width, this.height, glFormat, type, buffer);
+//						gl.glGenerateMipmapEXT(textureTarget);  //newer OpenGL 3.x method of creating mip maps //TODO problems on ATI? use gl.glEnable(textureTarget) first? 
+//					}else{
+//						//Old school software method, will resize a NPOT texture to a POT texture
+//						GLU glu = ((PGraphicsOpenGL)this.parent.g).glu;
+//						glu.gluBuild2DMipmaps(textureTarget, internalFormat, this.width, this.height, glFormat, type, buffer);
+//					}
 				}
 			}
 			else{
@@ -790,10 +815,17 @@ public class GLTexture extends PImage {
 		this.glTextureSettings.wrappingVertical = wrappingVertical;
 		
 		if (this.isGLTexObjectInitialized()){
-			gl.glBindTexture(this.getTextureTarget(), this.getTextureID());
-			gl.glTexParameteri(this.getTextureTarget(), GL.GL_TEXTURE_WRAP_S, this.glTextureSettings.wrappingHorizontal.getGLConstant());
-			gl.glTexParameteri(this.getTextureTarget(), GL.GL_TEXTURE_WRAP_T, this.glTextureSettings.wrappingVertical.getGLConstant());
-			gl.glBindTexture(this.getTextureTarget(), 0);
+			if (GraphicsUtil.getGL11() != null){
+				GL11 gl11 = GraphicsUtil.getGL11();
+				gl11.glBindTexture(this.getTextureTarget(), this.getTextureID());
+				gl11.glTexParameteri(this.getTextureTarget(), GL.GL_TEXTURE_WRAP_S, this.glTextureSettings.wrappingHorizontal.getGLConstant());
+				gl11.glTexParameteri(this.getTextureTarget(), GL.GL_TEXTURE_WRAP_T, this.glTextureSettings.wrappingVertical.getGLConstant());
+				gl11.glBindTexture(this.getTextureTarget(), 0);
+			}
+//			gl.glBindTexture(this.getTextureTarget(), this.getTextureID());
+//			gl.glTexParameteri(this.getTextureTarget(), GL.GL_TEXTURE_WRAP_S, this.glTextureSettings.wrappingHorizontal.getGLConstant());
+//			gl.glTexParameteri(this.getTextureTarget(), GL.GL_TEXTURE_WRAP_T, this.glTextureSettings.wrappingVertical.getGLConstant());
+//			gl.glBindTexture(this.getTextureTarget(), 0);
 		}
 	}
 	
@@ -823,10 +855,17 @@ public class GLTexture extends PImage {
 		this.glTextureSettings.expansionFilter = magFilter;
 		
 		if (this.isGLTexObjectInitialized()){
-			gl.glBindTexture(this.getTextureTarget(), this.getTextureID());
-			 gl.glTexParameteri(this.getTextureTarget(), GL.GL_TEXTURE_MIN_FILTER, this.glTextureSettings.shrinkFilter.getGLConstant());
-			 gl.glTexParameteri(this.getTextureTarget(), GL.GL_TEXTURE_MAG_FILTER, this.glTextureSettings.expansionFilter.getGLConstant());
-			gl.glBindTexture(this.getTextureTarget(), 0);
+			if (GraphicsUtil.getGL11() != null){
+				GL11 gl11 = GraphicsUtil.getGL11();
+				gl11.glBindTexture(this.getTextureTarget(), this.getTextureID());
+				gl11.glTexParameteri(this.getTextureTarget(), GL.GL_TEXTURE_MIN_FILTER, this.glTextureSettings.shrinkFilter.getGLConstant());
+				gl11.glTexParameteri(this.getTextureTarget(), GL.GL_TEXTURE_MAG_FILTER, this.glTextureSettings.expansionFilter.getGLConstant());
+				gl11.glBindTexture(this.getTextureTarget(), 0);	
+			}
+//			gl.glBindTexture(this.getTextureTarget(), this.getTextureID());
+//			 gl.glTexParameteri(this.getTextureTarget(), GL.GL_TEXTURE_MIN_FILTER, this.glTextureSettings.shrinkFilter.getGLConstant());
+//			 gl.glTexParameteri(this.getTextureTarget(), GL.GL_TEXTURE_MAG_FILTER, this.glTextureSettings.expansionFilter.getGLConstant());
+//			gl.glBindTexture(this.getTextureTarget(), 0);
 		}
 		
 		//FIXME pixels may be empty/not current - just create mipmaps with gl code ourselves!!

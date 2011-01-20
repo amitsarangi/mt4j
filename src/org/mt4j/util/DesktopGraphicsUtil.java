@@ -28,6 +28,31 @@ public class DesktopGraphicsUtil implements IGraphicsUtil {
 	public PMatrix3D getModelViewInv() {
 		return ((PGraphics3D)app.getPGraphics()).modelviewInv;
 	}
+	
+	@Override
+	public PMatrix3D getCamera() {
+		return ((PGraphics3D)app.getPGraphics()).camera;
+	}
+	
+	@Override
+	public float getCameraFOV() {
+		return ((PGraphics3D)app.getPGraphics()).cameraFOV;
+	}
+
+	@Override
+	public float getCameraAspect() {
+		return ((PGraphics3D)app.getPGraphics()).cameraAspect;
+	}
+
+	@Override
+	public float getCameraNear() {
+		return ((PGraphics3D)app.getPGraphics()).cameraNear;
+	}
+
+	@Override
+	public float getCameraFar() {
+		return ((PGraphics3D)app.getPGraphics()).cameraFar;
+	}
 
 //	public GL10 getGL() {
 //		return ((PGraphicsOpenGL)app.getPGraphics()).gl;
@@ -66,5 +91,13 @@ public class DesktopGraphicsUtil implements IGraphicsUtil {
 //    	((PGraphicsOpenGL)app.getPGraphics()).endGL();
     	app.endGL();
     }
+    
+    
+    @Override
+	public int getPlatform() {
+		return IGraphicsUtil.DESKTOP;
+	}
+
+	
 
 }

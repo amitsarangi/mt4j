@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import org.mt4j.IMTApplication;
 import org.mt4j.components.TransformSpace;
 import org.mt4j.components.bounds.BoundsArbitraryPlanarPolygon;
 import org.mt4j.components.interfaces.IMTComponent3D;
@@ -33,6 +34,7 @@ import org.mt4j.components.visibleComponents.font.VectorFontCharacter;
 import org.mt4j.components.visibleComponents.shapes.AbstractShape;
 import org.mt4j.components.visibleComponents.shapes.MTRoundRectangle;
 import org.mt4j.components.visibleComponents.widgets.buttons.MTSvgButton;
+import org.mt4j.input.IKeyListener;
 import org.mt4j.input.gestureAction.DefaultDragAction;
 import org.mt4j.input.gestureAction.DefaultRotateAction;
 import org.mt4j.input.gestureAction.DefaultScaleAction;
@@ -61,7 +63,7 @@ import processing.core.PApplet;
  * 
  * @author Christopher Ruff
  */
-public class MTKeyboard extends MTRoundRectangle {
+public class MTKeyboard extends MTRoundRectangle implements IKeyListener {
 	
 	/** The pa. */
 	private PApplet pa;
@@ -799,11 +801,16 @@ public class MTKeyboard extends MTRoundRectangle {
 	
 	public void setHardwareInputEnabled(boolean hardwareInput){
 		try {
-			PApplet app = getRenderer();
+			IMTApplication app = (IMTApplication) getRenderer();
+//			if (hardwareInput) {
+//				app.registerKeyEvent(this);
+//			}else{
+//				app.unregisterKeyEvent(this);
+//			}
 			if (hardwareInput) {
-				app.registerKeyEvent(this);
+				app.addKeyListener(this);
 			}else{
-				app.unregisterKeyEvent(this);
+				app.removeKeyListener(this);
 			}
 		} catch (Exception e) {
 			System.err.println(e.getMessage());
@@ -811,16 +818,41 @@ public class MTKeyboard extends MTRoundRectangle {
 		this.hardwareInput = hardwareInput;
 	}
 	
+	
 	public boolean isHardwareInputEnabled(){
 		return this.hardwareInput;
 	}
+
+	@Override
+	public void keyPressed(char key, int keyCode) {
+		//TODO
+//		//System.out.println("Key input: " + keyCode);
+//		ITextInputListener[] listeners = this.getTextInputListeners();
+//		for (ITextInputListener textInputListener : listeners) {
+//			if (e.getKeyCode() == KeyEvent.VK_BACK_SPACE) {
+//				textInputListener.removeLastCharacter();
+//			} else if (e.getKeyCode() == KeyEvent.VK_SHIFT
+//					|| e.getKeyCode() == KeyEvent.VK_ALT
+//					|| e.getKeyCode() == KeyEvent.VK_ALT_GRAPH
+//					|| e.getKeyCode() == KeyEvent.VK_CONTROL
+//			) {
+//				//do nothing
+//			} else {
+//				textInputListener.appendCharByUnicode(keyCode);
+//			}
+//		}
+	}
+	
+	@Override
+	public void keyRleased(char key , int keyCode) {	}
+
 
 
 	public void keyEvent(KeyEvent e){
 		if (this.isEnabled()){
 			if (e.getID()!= KeyEvent.KEY_PRESSED) return;
 
-			String keyCode = String.valueOf(e.getKeyChar());
+			String keyCharString = String.valueOf(e.getKeyChar());
 			//System.out.println("Key input: " + keyCode);
 			ITextInputListener[] listeners = this.getTextInputListeners();
             for (ITextInputListener textInputListener : listeners) {
@@ -833,7 +865,7 @@ public class MTKeyboard extends MTRoundRectangle {
                         ) {
                     //do nothing
                 } else {
-                    textInputListener.appendCharByUnicode(keyCode);
+                    textInputListener.appendCharByUnicode(keyCharString);
                 }
             }
 		}
@@ -850,6 +882,7 @@ public class MTKeyboard extends MTRoundRectangle {
 		
 		if (this.isHardwareInputEnabled()){
 			try {
+				((IMTApplication) getRenderer()).removeKeyListener(this);
 				getRenderer().unregisterKeyEvent(this);
 			} catch (Exception e) {
 				System.err.println(e.getMessage());

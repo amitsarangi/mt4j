@@ -19,8 +19,12 @@ package org.mt4j.components;
 
 import javax.media.opengl.GL;
 
+import org.mt4j.util.GraphicsUtil;
 import org.mt4j.util.math.ToolsLight;
 import org.mt4j.util.math.Vector3D;
+import org.mt4j.util.opengl.GL10;
+import org.mt4j.util.opengl.GL11;
+import org.mt4j.util.opengl.GL20;
 
 import processing.core.PApplet;
 import processing.opengl.PGraphicsOpenGL;
@@ -35,7 +39,8 @@ public class MTLight {
 	private int lightId;
 	
 	/** The gl. */
-	private GL gl;
+//	private GL gl;
+	private GL10 gl;
 	
 	
 	/** The light ambient. */
@@ -67,7 +72,8 @@ public class MTLight {
 	 * @param ambientA the ambient a
 	 */
 	public static void enableLightningAndAmbient(PApplet pa, float ambientR, float ambientG, float anbientB, float ambientA){
-	    	GL gl = ((PGraphicsOpenGL)pa.g).gl;
+//	    	GL gl = ((PGraphicsOpenGL)pa.g).gl;
+			GL10 gl = GraphicsUtil.getGL();
 	    	
 	    	//ENABLE LIGHTNING
 	    	gl.glEnable(GL.GL_LIGHTING);
@@ -105,7 +111,8 @@ public class MTLight {
 	public MTLight(PApplet pa, int lightId, Vector3D position) {
 		super();
 		this.lightId = lightId;
-		this.gl = ((PGraphicsOpenGL)pa.g).gl;
+//		this.gl = ((PGraphicsOpenGL)pa.g).gl;
+		this.gl = GraphicsUtil.getGL();
 		
 		this.lightAmbient  = new float[]{ .2f, .2f, .2f, 1f }; // scattered light
 		this.lightDiffuse  = new float[]{ 1.0f, 1.0f, 1.0f, 1f }; // direct light

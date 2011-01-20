@@ -11,17 +11,18 @@ import org.mt4j.input.inputProcessors.IGestureEventListener;
 import org.mt4j.input.inputProcessors.MTGestureEvent;
 import org.mt4j.input.inputProcessors.componentProcessors.dragProcessor.DragEvent;
 import org.mt4j.input.inputProcessors.componentProcessors.dragProcessor.MultipleDragProcessor;
+import org.mt4j.util.GraphicsUtil;
 import org.mt4j.util.MT4jSettings;
 import org.mt4j.util.MTColor;
 import org.mt4j.util.math.Plane;
 import org.mt4j.util.math.Ray;
 import org.mt4j.util.math.Vector3D;
+import org.mt4j.util.opengl.GL10;
 
 import processing.core.PApplet;
 import processing.core.PConstants;
 import processing.core.PGraphics;
 import processing.core.PImage;
-import processing.opengl.PGraphicsOpenGL;
 
 /**
  * The Class TouchTailComponent.
@@ -113,7 +114,8 @@ public class TouchTailComponent extends AbstractVisibleComponent {
 	public void drawComponent(PGraphics g) {
 		//FIXME TEST
 		if (MT4jSettings.getInstance().isOpenGlMode()){
-			GL gl = ((PGraphicsOpenGL)g).gl;
+//			GL gl = ((PGraphicsOpenGL)g).gl;
+			GL10 gl = GraphicsUtil.getGL();
 			if (useTexture){
 //				gl.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA);
 //				gl.glBlendFunc(GL.GL_ONE, GL.GL_ONE);

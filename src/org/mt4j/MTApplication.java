@@ -24,6 +24,7 @@ import java.awt.DisplayMode;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.Toolkit;
+import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -39,6 +40,8 @@ import javax.media.opengl.GL;
 import javax.swing.ImageIcon;
 
 import org.mt4j.components.css.util.CSSStyleManager;
+import org.mt4j.input.DesktopInputManager;
+import org.mt4j.input.IKeyListener;
 import org.mt4j.input.InputManager;
 import org.mt4j.input.inputData.AbstractCursorInputEvt;
 import org.mt4j.input.inputData.ActiveCursorPool;
@@ -67,14 +70,13 @@ import org.mt4j.util.opengl.GLCommon;
 import org.mt4j.util.opengl.GLFBO;
 import org.mt4j.util.opengl.JoglGL10;
 import org.mt4j.util.opengl.JoglGL11;
-import org.mt4j.util.opengl.JoglGL20;
+import org.mt4j.util.opengl.JoglGL20Plus;
 
 import processing.core.PApplet;
 import processing.core.PGraphics;
-import processing.core.PGraphics3D;
 import processing.core.PGraphicsAndroid3D;
 import processing.core.PMatrix3D;
-import processing.opengl.PGraphicsOpenGL;
+import android.app.Application;
 
 
 
@@ -608,7 +610,9 @@ public abstract class MTApplication extends PApplet implements IMTApplication{
 		this.applyOpenGLStartSettings();
 		
 		//Create a new inputsourcePool
-		this.setInputManager(new InputManager(this));
+		if (getInputManager() == null){ //only set the default inputManager if none is set yet
+			this.setInputManager(new DesktopInputManager(this, true));
+		}
 		
 		AniAnimation.init(this); //Initialize Ani animation library
 		
@@ -653,13 +657,19 @@ public abstract class MTApplication extends PApplet implements IMTApplication{
 	    	//////////////////////////////
 	    	//FIXME TEST!!
 			String version = ((PGraphicsOpenGL)g).gl.glGetString(GL.GL_VERSION);
+			logger.info("OpenGL Version: " + version);
 	        int major = Integer.parseInt("" + version.charAt(0));
 	        int minor = Integer.parseInt("" + version.charAt(2));
 	        
 	        this.gl11Supported = false;
 	        this.gl20Supported = false;
 	        if (major >= 2) {
-	                iGL20 = new JoglGL20(((PGraphicsOpenGL)g).gl);
+//	                JoglGL20 jogl20 = new JoglGL20(((PGraphicsOpenGL)g).gl);
+	        		JoglGL20Plus jogl20 = new JoglGL20Plus(((PGraphicsOpenGL)g).gl);
+	                iGL20 = jogl20;
+	                //FIXME ADDED
+	                iGL10  = jogl20;
+	                iGL11 = jogl20;
 	                glCommon = iGL20;
 	                this.gl20Supported = true;
 	        } else {
@@ -674,7 +684,8 @@ public abstract class MTApplication extends PApplet implements IMTApplication{
 	        }
 	        //////////////////////////
 	        
-	    	GL gl = Tools3D.getGL(this);
+//	    	GL gl = Tools3D.getGL(this);
+	        GLCommon gl = getGLCommon();
 	    	
 	    	logger.info("OpenGL Version: \"" + gl.glGetString(GL.GL_VERSION) + "\"" + " - Vendor: \"" + gl.glGetString(GL.GL_VENDOR) + "\"" + " - Renderer: \"" + gl.glGetString(GL.GL_RENDERER) + "\"");
 //	    	logger.info("Shading language version: \"" +  gl.glGetString(GL.GL_SHADING_LANGUAGE_VERSION) + "\"");
@@ -1408,6 +1419,56 @@ public abstract class MTApplication extends PApplet implements IMTApplication{
 	public CSSStyleManager getCssStyleManager() {
 		return this.cssStyleManager;
 	}
+	
+	
+	
+	
+	
+	//////////////////////////////////// Key Listener 
+	/*
+	 * Key checking example:
+	 * Android: if (key == CODED && keyCode == KeyEvent.KEYCODE_BACK) check if key== CODED for special keys, esc, return etc
+	 * Desktop: key == KeyEvent.VK_ESCAPE
+	 */
+	@Override
+	public void keyPressed() {
+		this.fireKeyPressed(this.key, this.keyCode);
+	}
+	
+	@Override
+	public void keyReleased() {
+		this.fireKeyReleased(this.key, this.keyCode);
+	}
+	
+	
+	private ArrayList<IKeyListener> keyListeners;
+	protected void fireKeyPressed(char key, int keyCode) {
+		for (IKeyListener listener : keyListeners){
+			listener.keyPressed(key, keyCode);
+		}
+	}
+	
+	protected void fireKeyReleased(char key, int keyCode) {
+		for (IKeyListener listener : keyListeners){
+			listener.keyRleased(key, keyCode);
+		}
+	}
 
+	public synchronized void addKeyListener(IKeyListener listener){
+		if (!this.keyListeners.contains(listener)){
+			keyListeners.add(listener);
+		}
+	}
+	
+	public synchronized void removeKeyListener(IKeyListener listener){
+		if (keyListeners.contains(listener)){
+			keyListeners.remove(listener);
+		}
+	}
+	
+	public synchronized IKeyListener[] getKeyListener(){
+		return keyListeners.toArray(new IKeyListener[this.keyListeners.size()]);
+	}
+	//////////////////////////////// KeyListener
 
 }

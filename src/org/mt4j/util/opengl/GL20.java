@@ -326,6 +326,15 @@ public interface GL20 extends GLCommon {
 	public static final int GL_RENDERBUFFER_BINDING = 0x8CA7;
 	public static final int GL_MAX_RENDERBUFFER_SIZE = 0x84E8;
 	public static final int GL_INVALID_FRAMEBUFFER_OPERATION = 0x0506;
+	
+	
+/////////
+	public void glCallList(int id);
+
+	public void glCallLists(int arg0, int arg1, Buffer arg2);
+
+	public int glGenLists(int id);
+/////////////////
 
 	public void glAttachShader (int program, int shader);
 
@@ -537,4 +546,6 @@ public interface GL20 extends GLCommon {
 	public void glVertexAttribPointer (int indx, int size, int type, boolean normalized, int stride, Buffer ptr);
 
 	public void glVertexAttribPointer (int indx, int size, int type, boolean normalized, int stride, int ptr);
+	
+
 }

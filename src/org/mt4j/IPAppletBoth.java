@@ -12,22 +12,20 @@ import java.io.PrintWriter;
 
 import org.mt4j.util.opengl.GLCommon;
 
-//import org.mt4j.PShape3D;
-
 import processing.core.PApplet;
 import processing.core.PFont;
 import processing.core.PGraphics;
-import processing.core.PGraphics3D;
 import processing.core.PImage;
 import processing.core.PMatrix;
 import processing.core.PMatrix2D;
 import processing.core.PMatrix3D;
 import processing.core.PShape;
 import processing.core.PStyle;
-import processing.opengl.PGraphicsOpenGL;
 
 public interface IPAppletBoth {
-	/////////////////////////////Android
+	
+	
+	/////////////////////////////Android //TODO
 	
 //
 ////  /** Called with the activity is first created. */
@@ -1227,7 +1225,7 @@ public interface IPAppletBoth {
 	//////////////////////////// ANDROID
 	
   
-  ////////////////////////////// DESKTOP
+  ////////////////////////////// DESKTOP //TODO
   
 
 //public void init();
@@ -1472,110 +1470,110 @@ public void noLoop();
 
 //public void addListeners();
 
-/**
- * If you override this or any function that takes a "MouseEvent e"
- * without calling its super.mouseXxxx() then mouseX, mouseY,
- * mousePressed, and mouseEvent will no longer be set.
- */
-public void mousePressed(MouseEvent e);
+///**
+// * If you override this or any function that takes a "MouseEvent e"
+// * without calling its super.mouseXxxx() then mouseX, mouseY,
+// * mousePressed, and mouseEvent will no longer be set.
+// */
+//public void mousePressed(MouseEvent e);
+//
+//public void mouseReleased(MouseEvent e);
+//
+//public void mouseClicked(MouseEvent e);
+//
+//public void mouseEntered(MouseEvent e);
+//
+//public void mouseExited(MouseEvent e);
+//
+//public void mouseDragged(MouseEvent e);
+//
+//public void mouseMoved(MouseEvent e);
+//
+///**
+// * The <b>mousePressed()</b> function is called once after every time a mouse button is pressed. The <b>mouseButton</b> variable (see the related reference entry) can be used to determine which button has been pressed.
+// * =advanced
+// *
+// * If you must, use
+// * int button = mouseEvent.getButton();
+// * to figure out which button was clicked. It will be one of:
+// * MouseEvent.BUTTON1, MouseEvent.BUTTON2, MouseEvent.BUTTON3
+// * Note, however, that this is completely inconsistent across
+// * platforms.
+// * @webref input:mouse
+// * @see PApplet#mouseX
+// * @see PApplet#mouseY
+// * @see PApplet#mousePressed
+// * @see PApplet#mouseReleased()
+// * @see PApplet#mouseMoved()
+// * @see PApplet#mouseDragged()
+// */
+//public void mousePressed();
+//
+///**
+// * The <b>mouseReleased()</b> function is called every time a mouse button is released.
+// * @webref input:mouse
+// * @see PApplet#mouseX
+// * @see PApplet#mouseY
+// * @see PApplet#mousePressed
+// * @see PApplet#mousePressed()
+// * @see PApplet#mouseMoved()
+// * @see PApplet#mouseDragged()
+// */
+//public void mouseReleased();
+//
+///**
+// * The <b>mouseClicked()</b> function is called once after a mouse button has been pressed and then released.
+// * =advanced
+// * When the mouse is clicked, mousePressed() will be called,
+// * then mouseReleased(), then mouseClicked(). Note that
+// * mousePressed is already false inside of mouseClicked().
+// * @webref input:mouse
+// * @see PApplet#mouseX
+// * @see PApplet#mouseY
+// * @see PApplet#mouseButton
+// * @see PApplet#mousePressed()
+// * @see PApplet#mouseReleased()
+// * @see PApplet#mouseMoved()
+// * @see PApplet#mouseDragged()
+// */
+//public void mouseClicked();
+//
+///**
+// * The <b>mouseDragged()</b> function is called once every time the mouse moves and a mouse button is pressed.
+// * @webref input:mouse
+// * @see PApplet#mouseX
+// * @see PApplet#mouseY
+// * @see PApplet#mousePressed
+// * @see PApplet#mousePressed()
+// * @see PApplet#mouseReleased()
+// * @see PApplet#mouseMoved()
+// */
+//public void mouseDragged();
+//
+///**
+// * The <b>mouseMoved()</b> function is called every time the mouse moves and a mouse button is not pressed.
+// * @webref input:mouse
+// * @see PApplet#mouseX
+// * @see PApplet#mouseY
+// * @see PApplet#mousePressed
+// * @see PApplet#mousePressed()
+// * @see PApplet#mouseReleased()
+// * @see PApplet#mouseDragged()
+// */
+//public void mouseMoved();
 
-public void mouseReleased(MouseEvent e);
-
-public void mouseClicked(MouseEvent e);
-
-public void mouseEntered(MouseEvent e);
-
-public void mouseExited(MouseEvent e);
-
-public void mouseDragged(MouseEvent e);
-
-public void mouseMoved(MouseEvent e);
-
-/**
- * The <b>mousePressed()</b> function is called once after every time a mouse button is pressed. The <b>mouseButton</b> variable (see the related reference entry) can be used to determine which button has been pressed.
- * =advanced
- *
- * If you must, use
- * int button = mouseEvent.getButton();
- * to figure out which button was clicked. It will be one of:
- * MouseEvent.BUTTON1, MouseEvent.BUTTON2, MouseEvent.BUTTON3
- * Note, however, that this is completely inconsistent across
- * platforms.
- * @webref input:mouse
- * @see PApplet#mouseX
- * @see PApplet#mouseY
- * @see PApplet#mousePressed
- * @see PApplet#mouseReleased()
- * @see PApplet#mouseMoved()
- * @see PApplet#mouseDragged()
- */
-public void mousePressed();
-
-/**
- * The <b>mouseReleased()</b> function is called every time a mouse button is released.
- * @webref input:mouse
- * @see PApplet#mouseX
- * @see PApplet#mouseY
- * @see PApplet#mousePressed
- * @see PApplet#mousePressed()
- * @see PApplet#mouseMoved()
- * @see PApplet#mouseDragged()
- */
-public void mouseReleased();
-
-/**
- * The <b>mouseClicked()</b> function is called once after a mouse button has been pressed and then released.
- * =advanced
- * When the mouse is clicked, mousePressed() will be called,
- * then mouseReleased(), then mouseClicked(). Note that
- * mousePressed is already false inside of mouseClicked().
- * @webref input:mouse
- * @see PApplet#mouseX
- * @see PApplet#mouseY
- * @see PApplet#mouseButton
- * @see PApplet#mousePressed()
- * @see PApplet#mouseReleased()
- * @see PApplet#mouseMoved()
- * @see PApplet#mouseDragged()
- */
-public void mouseClicked();
-
-/**
- * The <b>mouseDragged()</b> function is called once every time the mouse moves and a mouse button is pressed.
- * @webref input:mouse
- * @see PApplet#mouseX
- * @see PApplet#mouseY
- * @see PApplet#mousePressed
- * @see PApplet#mousePressed()
- * @see PApplet#mouseReleased()
- * @see PApplet#mouseMoved()
- */
-public void mouseDragged();
-
-/**
- * The <b>mouseMoved()</b> function is called every time the mouse moves and a mouse button is not pressed.
- * @webref input:mouse
- * @see PApplet#mouseX
- * @see PApplet#mouseY
- * @see PApplet#mousePressed
- * @see PApplet#mousePressed()
- * @see PApplet#mouseReleased()
- * @see PApplet#mouseDragged()
- */
-public void mouseMoved();
-
-/**
- * Overriding keyXxxxx(KeyEvent e) functions will cause the 'key',
- * 'keyCode', and 'keyEvent' variables to no longer work;
- * key events will no longer be queued until the end of draw();
- * and the keyPressed(), keyReleased() and keyTyped() methods
- * will no longer be called.
- */
-public void keyPressed(KeyEvent e);
-
-public void keyReleased(KeyEvent e);
-
-public void keyTyped(KeyEvent e);
+///**
+// * Overriding keyXxxxx(KeyEvent e) functions will cause the 'key',
+// * 'keyCode', and 'keyEvent' variables to no longer work;
+// * key events will no longer be queued until the end of draw();
+// * and the keyPressed(), keyReleased() and keyTyped() methods
+// * will no longer be called.
+// */
+//public void keyPressed(KeyEvent e);
+//
+//public void keyReleased(KeyEvent e);
+//
+//public void keyTyped(KeyEvent e);
 
 /**
  *
@@ -1826,55 +1824,55 @@ public void saveFrame();
  */
 public void saveFrame(String what);
 
-/**
- * Set the cursor type
- * @param cursorType either ARROW, CROSS, HAND, MOVE, TEXT, WAIT
- */
-public void cursor(int cursorType);
-
-/**
- * Replace the cursor with the specified PImage. The x- and y-
- * coordinate of the center will be the center of the image.
- */
-public void cursor(PImage image);
-
-/**
- * Sets the cursor to a predefined symbol, an image, or turns it on if already hidden.
- * If you are trying to set an image as the cursor, it is recommended to make the size 16x16 or 32x32 pixels.
- * It is not possible to load an image as the cursor if you are exporting your program for the Web.
- * The values for parameters <b>x</b> and <b>y</b> must be less than the dimensions of the image.
- * =advanced
- * Set a custom cursor to an image with a specific hotspot.
- * Only works with JDK 1.2 and later.
- * Currently seems to be broken on Java 1.4 for Mac OS X
- * <P>
- * Based on code contributed by Amit Pitaru, plus additional
- * code to handle Java versions via reflection by Jonathan Feinberg.
- * Reflection removed for release 0128 and later.
- * @webref environment
- * @see       PApplet#noCursor()
- * @param image       any variable of type PImage
- * @param hotspotX    the horizonal active spot of the cursor
- * @param hotspotY    the vertical active spot of the cursor
- */
-public void cursor(PImage image, int hotspotX, int hotspotY);
-
-/**
- * Show the cursor after noCursor() was called.
- * Notice that the program remembers the last set cursor type
- */
-public void cursor();
-
-/**
- * Hides the cursor from view. Will not work when running the program in a web browser.
- * =advanced
- * Hide the cursor by creating a transparent image
- * and using it as a custom cursor.
- * @webref environment
- * @see PApplet#cursor()
- * @usage Application
- */
-public void noCursor();
+///**
+// * Set the cursor type
+// * @param cursorType either ARROW, CROSS, HAND, MOVE, TEXT, WAIT
+// */
+//public void cursor(int cursorType);
+//
+///**
+// * Replace the cursor with the specified PImage. The x- and y-
+// * coordinate of the center will be the center of the image.
+// */
+//public void cursor(PImage image);
+//
+///**
+// * Sets the cursor to a predefined symbol, an image, or turns it on if already hidden.
+// * If you are trying to set an image as the cursor, it is recommended to make the size 16x16 or 32x32 pixels.
+// * It is not possible to load an image as the cursor if you are exporting your program for the Web.
+// * The values for parameters <b>x</b> and <b>y</b> must be less than the dimensions of the image.
+// * =advanced
+// * Set a custom cursor to an image with a specific hotspot.
+// * Only works with JDK 1.2 and later.
+// * Currently seems to be broken on Java 1.4 for Mac OS X
+// * <P>
+// * Based on code contributed by Amit Pitaru, plus additional
+// * code to handle Java versions via reflection by Jonathan Feinberg.
+// * Reflection removed for release 0128 and later.
+// * @webref environment
+// * @see       PApplet#noCursor()
+// * @param image       any variable of type PImage
+// * @param hotspotX    the horizonal active spot of the cursor
+// * @param hotspotY    the vertical active spot of the cursor
+// */
+//public void cursor(PImage image, int hotspotX, int hotspotY);
+//
+///**
+// * Show the cursor after noCursor() was called.
+// * Notice that the program remembers the last set cursor type
+// */
+//public void cursor();
+//
+///**
+// * Hides the cursor from view. Will not work when running the program in a web browser.
+// * =advanced
+// * Hide the cursor by creating a transparent image
+// * and using it as a custom cursor.
+// * @webref environment
+// * @see PApplet#cursor()
+// * @usage Application
+// */
+//public void noCursor();
 
 /**
  * Return a random number in the range [0, howbig).
@@ -2062,59 +2060,59 @@ public PFont createFont(String name, float size, boolean smooth);
 public PFont createFont(String name, float size, boolean smooth,
                         char charset[]);
 
-/**
- * Open a platform-specific file chooser dialog to select a file for input.
- * @return full path to the selected file, or null if no selection.
- */
-public String selectInput();
-
-/**
- * Opens a platform-specific file chooser dialog to select a file for input. This function returns the full path to the selected file as a <b>String</b>, or <b>null</b> if no selection.
- *
- * @webref input:files
- * @param prompt message you want the user to see in the file chooser
- * @return full path to the selected file, or null if canceled.
- *
- * @see processing.core.PApplet#selectOutput(String)
- * @see processing.core.PApplet#selectFolder(String)
- */
-public String selectInput(String prompt);
-
-/**
- * Open a platform-specific file save dialog to select a file for output.
- * @return full path to the file entered, or null if canceled.
- */
-public String selectOutput();
-
-/**
- * Open a platform-specific file save dialog to create of select a file for output.
- * This function returns the full path to the selected file as a <b>String</b>, or <b>null</b> if no selection.
- * If you select an existing file, that file will be replaced.
- * Alternatively, you can navigate to a folder and create a new file to write to.
- *
- * @param prompt message you want the user to see in the file chooser
- * @return full path to the file entered, or null if canceled.
- *
- * @webref input:files
- * @see processing.core.PApplet#selectInput(String)
- * @see processing.core.PApplet#selectFolder(String)
- */
-public String selectOutput(String prompt);
-
-public String selectFolder();
-
-/**
- * Opens a platform-specific file chooser dialog to select a folder for input.
- * This function returns the full path to the selected folder as a <b>String</b>, or <b>null</b> if no selection.
- *
- * @webref input:files
- * @param prompt message you want the user to see in the file chooser
- * @return full path to the selected folder, or null if no selection.
- *
- * @see processing.core.PApplet#selectOutput(String)
- * @see processing.core.PApplet#selectInput(String)
- */
-public String selectFolder(final String prompt);
+///**
+// * Open a platform-specific file chooser dialog to select a file for input.
+// * @return full path to the selected file, or null if no selection.
+// */
+//public String selectInput();
+//
+///**
+// * Opens a platform-specific file chooser dialog to select a file for input. This function returns the full path to the selected file as a <b>String</b>, or <b>null</b> if no selection.
+// *
+// * @webref input:files
+// * @param prompt message you want the user to see in the file chooser
+// * @return full path to the selected file, or null if canceled.
+// *
+// * @see processing.core.PApplet#selectOutput(String)
+// * @see processing.core.PApplet#selectFolder(String)
+// */
+//public String selectInput(String prompt);
+//
+///**
+// * Open a platform-specific file save dialog to select a file for output.
+// * @return full path to the file entered, or null if canceled.
+// */
+//public String selectOutput();
+//
+///**
+// * Open a platform-specific file save dialog to create of select a file for output.
+// * This function returns the full path to the selected file as a <b>String</b>, or <b>null</b> if no selection.
+// * If you select an existing file, that file will be replaced.
+// * Alternatively, you can navigate to a folder and create a new file to write to.
+// *
+// * @param prompt message you want the user to see in the file chooser
+// * @return full path to the file entered, or null if canceled.
+// *
+// * @webref input:files
+// * @see processing.core.PApplet#selectInput(String)
+// * @see processing.core.PApplet#selectFolder(String)
+// */
+//public String selectOutput(String prompt);
+//
+//public String selectFolder();
+//
+///**
+// * Opens a platform-specific file chooser dialog to select a folder for input.
+// * This function returns the full path to the selected folder as a <b>String</b>, or <b>null</b> if no selection.
+// *
+// * @webref input:files
+// * @param prompt message you want the user to see in the file chooser
+// * @return full path to the selected folder, or null if no selection.
+// *
+// * @see processing.core.PApplet#selectOutput(String)
+// * @see processing.core.PApplet#selectInput(String)
+// */
+//public String selectFolder(final String prompt);
 
 /**
  * I want to read lines from a file. I have RSI from typing these

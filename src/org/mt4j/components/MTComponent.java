@@ -39,6 +39,7 @@ import org.mt4j.input.inputProcessors.IGestureEventListener;
 import org.mt4j.input.inputProcessors.IInputProcessor;
 import org.mt4j.input.inputProcessors.MTGestureEvent;
 import org.mt4j.input.inputProcessors.componentProcessors.AbstractComponentProcessor;
+import org.mt4j.util.GraphicsUtil;
 import org.mt4j.util.MT4jSettings;
 import org.mt4j.util.camera.IFrustum;
 import org.mt4j.util.camera.Icamera;
@@ -48,11 +49,11 @@ import org.mt4j.util.math.Matrix;
 import org.mt4j.util.math.Ray;
 import org.mt4j.util.math.Tools3D;
 import org.mt4j.util.math.Vector3D;
+import org.mt4j.util.opengl.GL10;
+import org.mt4j.util.opengl.GLCommon;
 
 import processing.core.PApplet;
 import processing.core.PGraphics;
-import processing.core.PGraphics3D;
-import processing.opengl.PGraphicsOpenGL;
 
 /**
  * This is the base class for all MT4j scene graph nodes. It provides basic methods
@@ -148,8 +149,8 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 	/** The Global to local matrix dirty. */
 	private boolean globalInverseMatrixDirty;
 	
-	/** The pgraphics3 d. */
-	private PGraphics3D pgraphics3D;
+//	/** The pgraphics3 d. */
+//	private PGraphics3D pgraphics3D;
 	
 	/** The controller. */
 	private IMTController controller;
@@ -274,8 +275,8 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 		this.globalMatrixDirty = true;
 		this.globalInverseMatrixDirty = true;
 
-		//This class should only be used with a renderer derived from pgraphics3D!
-		this.pgraphics3D = (PGraphics3D)pApplet.g;
+//		//This class should only be used with a renderer derived from pgraphics3D!
+//		this.pgraphics3D = (PGraphics3D)pApplet.g;
 
 		//FIXME EXPERIMENTAL
 		light = null;
@@ -639,12 +640,21 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 //				m.m10, m.m11, m.m12,  m.m13,
 //				m.m20, m.m21, m.m22,  m.m23,
 //				m.m30, m.m31, m.m32,  m.m33);
-		pgraphics3D.modelview.apply(
+		
+//		pgraphics3D.modelview.apply(
+//				m.m00, m.m01, m.m02,  m.m03,
+//				m.m10, m.m11, m.m12,  m.m13,
+//				m.m20, m.m21, m.m22,  m.m23,
+//				m.m30, m.m31, m.m32,  m.m33
+//		);
+		
+		GraphicsUtil.getModelView().apply(
 				m.m00, m.m01, m.m02,  m.m03,
 				m.m10, m.m11, m.m12,  m.m13,
 				m.m20, m.m21, m.m22,  m.m23,
 				m.m30, m.m31, m.m32,  m.m33
 		);
+		
 		/*
 		Matrix mInv = localInverseMatrix;
 		pgraphics3D.modelviewInv.preApply(
@@ -1657,7 +1667,8 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 
 		MTLight aLight = this.getLight();
 		if (aLight != null){
-			GL gl = ((PGraphicsOpenGL)g).gl;
+//			GL gl = ((PGraphicsOpenGL)g).gl;
+			GL10 gl = GraphicsUtil.getGL();
 			gl.glEnable(GL.GL_LIGHTING); //this is expensive
 			aLight.enable();
 		}
@@ -1720,7 +1731,8 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 		MTLight aLight = this.getLight();
 		if (aLight != null){
 			aLight.disable();
-			GL gl = ((PGraphicsOpenGL)g).gl;
+//			GL gl = ((PGraphicsOpenGL)g).gl;
+			GL10 gl = GraphicsUtil.getGL();
 			gl.glDisable(GL.GL_LIGHTING);
 		}
 	}

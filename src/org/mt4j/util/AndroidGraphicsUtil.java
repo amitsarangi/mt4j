@@ -27,6 +27,26 @@ public class AndroidGraphicsUtil implements IGraphicsUtil {
 	public PMatrix3D getModelViewInv() {
 		return ((PGraphicsAndroid3D)app.getPGraphics()).modelviewInv;
 	}
+	
+	@Override
+	public float getCameraFOV() {
+		return ((PGraphicsAndroid3D)app.getPGraphics()).cameraFOV;
+	}
+
+	@Override
+	public float getCameraAspect() {
+		return ((PGraphicsAndroid3D)app.getPGraphics()).cameraAspect;
+	}
+
+	@Override
+	public float getCameraNear() {
+		return ((PGraphicsAndroid3D)app.getPGraphics()).cameraNear;
+	}
+
+	@Override
+	public float getCameraFar() {
+		return ((PGraphicsAndroid3D)app.getPGraphics()).cameraFar;
+	}
 
 	public GL10 getGL() {
 		return app.getGL10(); 
@@ -52,6 +72,16 @@ public class AndroidGraphicsUtil implements IGraphicsUtil {
 //    	((PGraphicsAndroid3D)app.getPGraphics()).endGL();
     	app.endGL();
     }
+
+	@Override
+	public int getPlatform() {
+		return IGraphicsUtil.ANDROID;
+	}
+
+	@Override
+	public PMatrix3D getCamera() {
+		return ((PGraphicsAndroid3D)app.getPGraphics()).camera;
+	}
 
 	
 }

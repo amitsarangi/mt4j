@@ -264,6 +264,14 @@ public interface GL10 extends GLCommon {
 	public static final int GL_POINT = 0x1B00;
 	public static final int GL_LINE = 0x1B01;
 	public static final int GL_FILL = 0x1B02;
+	
+/////////
+	public void glCallList(int id);
+
+	public void glCallLists(int arg0, int arg1, Buffer arg2) ;
+
+	public int glGenLists(int id) ;
+/////////////////
 
 	public void glAlphaFunc (int func, float ref);
 

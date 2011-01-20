@@ -2,7 +2,7 @@ package org.mt4j;
 
 import javax.media.opengl.GL;
 
-import processing.opengl.PGraphicsOpenGL;
+//import processing.opengl.PGraphicsOpenGL;
 
 public abstract class MTDesktopApplication extends MTApplication {
 	

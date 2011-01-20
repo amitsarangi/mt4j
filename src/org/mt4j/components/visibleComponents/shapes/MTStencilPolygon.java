@@ -23,9 +23,11 @@ import java.util.List;
 
 import javax.media.opengl.GL;
 
+import org.mt4j.util.GraphicsUtil;
 import org.mt4j.util.math.Tools3D;
 import org.mt4j.util.math.ToolsGeometry;
 import org.mt4j.util.math.Vertex;
+import org.mt4j.util.opengl.GL10;
 import org.mt4j.util.opengl.GLStencilUtil;
 
 import processing.core.PApplet;
@@ -258,7 +260,7 @@ public class MTStencilPolygon extends MTPolygon {
 	 * 
 	 * @param gl the gl
 	 */
-	public void drawComponent(GL gl) {
+	public void drawComponent(GL10 gl) {
 		if (isUseDirectGL()){
 			if (isUseDisplayList()){
 				int[] displayListIDs = this.getGeometryInfo().getDisplayListIDs();
@@ -275,9 +277,11 @@ public class MTStencilPolygon extends MTPolygon {
 	@Override
 	public void drawComponent(PGraphics g) {
 		if (isUseDirectGL()){
-			GL gl=((PGraphicsOpenGL)this.getRenderer().g).beginGL();
+//			GL gl=((PGraphicsOpenGL)this.getRenderer().g).beginGL();
+			GL10 gl = GraphicsUtil.beginGL();
 			drawComponent(gl);
-			((PGraphicsOpenGL)this.getRenderer().g).endGL();
+//			((PGraphicsOpenGL)this.getRenderer().g).endGL();
+			GraphicsUtil.endGL();
 		}
 	}
 	
@@ -286,7 +290,7 @@ public class MTStencilPolygon extends MTPolygon {
 	 * 
 	 * @param gl the gl
 	 */
-	private void drawPureGL(GL gl){
+	private void drawPureGL(GL10 gl){
 		FloatBuffer vertBuff = this.getGeometryInfo().getVertBuff();
 		FloatBuffer colorBuff = this.getGeometryInfo().getColorBuff();
 		FloatBuffer strokeColBuff = this.getGeometryInfo().getStrokeColBuff();

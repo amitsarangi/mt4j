@@ -28,6 +28,20 @@ class AndroidGL10 implements GL10 {
 	public AndroidGL10 (javax.microedition.khronos.opengles.GL10 gl) {
 		this.gl = gl;
 	}
+	
+/////////
+	public void glCallList(int id) {
+		throw new UnsupportedOperationException("not implemented");
+	}
+
+	public void glCallLists(int arg0, int arg1, Buffer arg2) {
+		throw new UnsupportedOperationException("not implemented");
+	}
+
+	public int glGenLists(int id) {
+		throw new UnsupportedOperationException("not implemented");
+	}
+/////////////////
 
 	@Override public final void glActiveTexture (int texture) {
 		gl.glActiveTexture(texture);

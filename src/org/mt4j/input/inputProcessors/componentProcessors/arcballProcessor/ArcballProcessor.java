@@ -19,8 +19,6 @@ package org.mt4j.input.inputProcessors.componentProcessors.arcballProcessor;
 
 import java.util.List;
 
-import javax.media.opengl.GL;
-
 import org.mt4j.components.MTComponent;
 import org.mt4j.components.bounds.BoundingSphere;
 import org.mt4j.components.visibleComponents.shapes.AbstractShape;
@@ -37,7 +35,6 @@ import org.mt4j.util.math.ToolsMath;
 import org.mt4j.util.math.Vector3D;
 
 import processing.core.PApplet;
-import processing.opengl.PGraphicsOpenGL;
 
 /**
  * The Class ArcballProcessor. Fires ArcBallGestureEvent events.
@@ -354,164 +351,164 @@ public class ArcballProcessor extends AbstractCursorProcessor {
 	
 	
 	
-	private class ArcBallContext  implements IArcball{
-		 private static final float Epsilon = 1.0e-5f;
-
-		 Quaternion q;
-		 Vector3D StVec;          //Saved click vector
-		    Vector3D EnVec;          //Saved drag vector
-		    float adjustWidth;       //Mouse bounds width
-		    float adjustHeight;      //Mouse bounds height
-
-		    public ArcBallContext(float NewWidth, float NewHeight) {
-		        StVec = new Vector3D();
-		        EnVec = new Vector3D();
-		        setBounds(NewWidth, NewHeight);
-		        q = new Quaternion();
-		    }
-
-		    public void mapToSphere(Vector3D point, Vector3D outVector) {
-		        //Copy paramter into temp point
-		        Vector3D tempPoint = new Vector3D(point.x, point.y, point.z);
-
-		        //Adjust point coords and scale down to range of [-1 ... 1]
-		        tempPoint.x = (tempPoint.x * this.adjustWidth) - 1.0f;
-		        tempPoint.y = 1.0f - (tempPoint.y * this.adjustHeight);
-
-		        //Compute the square of the length of the vector to the point from the center
-		        float length = (tempPoint.x * tempPoint.x) + (tempPoint.y * tempPoint.y);
-
-		        //If the point is mapped outside of the sphere... (length > radius squared)
-		        if (length > 1.0f) {
-		            //Compute a normalizing factor (radius / sqrt(length))
-		            float norm = (float) (1.0 / Math.sqrt(length));
-
-		            //Return the "normalized" vector, a point on the sphere
-		            outVector.x = tempPoint.x * norm;
-		            outVector.y = tempPoint.y * norm;
-		            outVector.z = 0.0f;
-		        } else  {   //Else it's on the inside
-		            //Return a vector to a point mapped inside the sphere sqrt(radius squared - length)
-		            outVector.x = tempPoint.x;
-		            outVector.y = tempPoint.y;
-		            outVector.z = (float) Math.sqrt(1.0f - length);
-		        }
-		    }
-
-		    
-		    public void setBounds(float NewWidth, float NewHeight) {
-		        assert((NewWidth > 1.0f) && (NewHeight > 1.0f));//TODO REMOVE
-
-		        //Set adjustment factor for width/height
-		        adjustWidth = 1.0f / ((NewWidth - 1.0f) * 0.5f);
-		        adjustHeight = 1.0f / ((NewHeight - 1.0f) * 0.5f);
-		    }
-
-		    //Mouse down
-		    public void click(Vector3D NewPt) {
-		        mapToSphere(NewPt, this.StVec);
-		    }
-		    
-		  //Mouse down
-		    public void click(InputCursor m){
-//		    	Icamera cam = shape.getAncestor().getGlobalCam();
-//		    	Vector3D rayStartPoint = cam.getPosition();
-//		    	Vector3D pointInRayDir = Tools3D.unprojectScreenCoords(applet, m.getLastEvent().getPositionX(), m.getLastEvent().getPositionY());
-//		    	Ray orgRay = new Ray(rayStartPoint, pointInRayDir);
-//		    	Ray realRayForThisObj = Tools3D.toComponentCameraPickRay(applet, shape, orgRay);
-				
-		    	Ray realRayForThisObj = Tools3D.getCameraPickRay(applet, shape, m.getCurrentEvent().getX(), m.getCurrentEvent().getY());
-		    	
-				//TRIAL
-				Ray invertedRay = Ray.getTransformedRay(realRayForThisObj, shape.getGlobalInverseMatrix());
-		    	
-		    	Vector3D NewPt = bSphere.getIntersectionLocal(invertedRay);
-		    	
-		    	
-		    	if (NewPt != null){
-		    		PGraphicsOpenGL pgl = ((PGraphicsOpenGL)applet.g); 
-					GL gl 	= pgl.beginGL();  
-						gl.glPushMatrix();
-							gl.glMultMatrixf(shape.getGlobalMatrix().toFloatBuffer());
-							NewPt = Tools3D.projectGL(gl, pgl.glu, NewPt, NewPt);
-						gl.glPopMatrix();
-			    	pgl.endGL();
-			    	
-		    		this.mapToSphere(NewPt, this.StVec);
-		    	}else{
-		    		logger.error(getName() + " Didnt hit sphere!");
-		    	}
-		    }
-		    
-		    public Matrix getNewRotation(InputCursor m){
-//		    	Icamera cam = shape.getAncestor().getGlobalCam();
-//		    	Vector3D rayStartPoint = cam.getPosition();
-//		    	Vector3D pointInRayDir = Tools3D.unprojectScreenCoords(applet, m.getLastEvent().getPositionX(), m.getLastEvent().getPositionY());
-//		    	Ray orgRay = new Ray(rayStartPoint, pointInRayDir);
-//		    	Ray realRayForThisObj = Tools3D.toComponentCameraPickRay(applet, shape, orgRay);
-				
-		    	Ray realRayForThisObj = Tools3D.getCameraPickRay(applet, shape, m.getCurrentEvent().getX(), m.getCurrentEvent().getY());
-		    	
-				//TRIAL
-				Ray invertedRay = Ray.getTransformedRay(realRayForThisObj, shape.getGlobalInverseMatrix());
-		    	
-		    	Vector3D NewPt = bSphere.getIntersectionLocal(invertedRay);
-		    	
-		    	if (NewPt != null){
-		    		PGraphicsOpenGL pgl = ((PGraphicsOpenGL)applet.g); 
-					GL gl 	= pgl.beginGL();  
-						gl.glPushMatrix();
-							gl.glMultMatrixf(shape.getGlobalMatrix().toFloatBuffer());
-							NewPt = Tools3D.projectGL(gl, pgl.glu, NewPt, NewPt);
-						gl.glPopMatrix();
-			    	pgl.endGL();
-			    	
-		    		logger.debug(NewPt);
-		    		this.drag(NewPt, q);
-		    	}else{
-		    		return Matrix.get4x4Identity();
-		    	}
-		    	
-		    	return q.toRotationMatrix();
-		    }
-
-		    //Mouse drag, calculate rotation
-		    public void drag(Vector3D NewPt, Quaternion NewRot) {
-//		    	this.EnVec.setValues(NewPt);
-		    	
-		        //Map the point to the sphere
-		        this.mapToSphere(NewPt, EnVec);
-
-		        //Return the quaternion equivalent to the ration
-		        if (NewRot != null) {
-//		            Vector3D Perp = new Vector3D();
-
-		            //Compute the vector perpendicular to the begin and end vectors
-//		            Vector3D.cross(Perp, StVec, EnVec);
-		            Vector3D Perp = StVec.getCross(EnVec);
-
-		            //Compute the length of the perpendicular vector
-		            if (Perp.length() > Epsilon){    //if its non-zero
-		                //We're ok, so return the perpendicular vector as the transform after all
-		                NewRot.x = Perp.x;
-		                NewRot.y = Perp.y;
-		                NewRot.z = Perp.z;
-		                //In the quaternion values, w is cosine (theta / 2), where theta is rotation angle
-//		                NewRot.w = Vector3D.dot(StVec, EnVec);
-		                NewRot.w = StVec.dot(EnVec);
-		            } else  {                                  //if its zero
-		                //The begin and end vectors coincide, so return an identity transform
-		                NewRot.x = NewRot.y = NewRot.z = NewRot.w = 0.0f;
-		            }
-		        }
-		    }
-
-
-		
-		
-	}
-	
-	
+//	private class ArcBallContext  implements IArcball{
+//		 private static final float Epsilon = 1.0e-5f;
+//
+//		 Quaternion q;
+//		 Vector3D StVec;          //Saved click vector
+//		    Vector3D EnVec;          //Saved drag vector
+//		    float adjustWidth;       //Mouse bounds width
+//		    float adjustHeight;      //Mouse bounds height
+//
+//		    public ArcBallContext(float NewWidth, float NewHeight) {
+//		        StVec = new Vector3D();
+//		        EnVec = new Vector3D();
+//		        setBounds(NewWidth, NewHeight);
+//		        q = new Quaternion();
+//		    }
+//
+//		    public void mapToSphere(Vector3D point, Vector3D outVector) {
+//		        //Copy paramter into temp point
+//		        Vector3D tempPoint = new Vector3D(point.x, point.y, point.z);
+//
+//		        //Adjust point coords and scale down to range of [-1 ... 1]
+//		        tempPoint.x = (tempPoint.x * this.adjustWidth) - 1.0f;
+//		        tempPoint.y = 1.0f - (tempPoint.y * this.adjustHeight);
+//
+//		        //Compute the square of the length of the vector to the point from the center
+//		        float length = (tempPoint.x * tempPoint.x) + (tempPoint.y * tempPoint.y);
+//
+//		        //If the point is mapped outside of the sphere... (length > radius squared)
+//		        if (length > 1.0f) {
+//		            //Compute a normalizing factor (radius / sqrt(length))
+//		            float norm = (float) (1.0 / Math.sqrt(length));
+//
+//		            //Return the "normalized" vector, a point on the sphere
+//		            outVector.x = tempPoint.x * norm;
+//		            outVector.y = tempPoint.y * norm;
+//		            outVector.z = 0.0f;
+//		        } else  {   //Else it's on the inside
+//		            //Return a vector to a point mapped inside the sphere sqrt(radius squared - length)
+//		            outVector.x = tempPoint.x;
+//		            outVector.y = tempPoint.y;
+//		            outVector.z = (float) Math.sqrt(1.0f - length);
+//		        }
+//		    }
+//
+//		    
+//		    public void setBounds(float NewWidth, float NewHeight) {
+//		        assert((NewWidth > 1.0f) && (NewHeight > 1.0f));//TODO REMOVE
+//
+//		        //Set adjustment factor for width/height
+//		        adjustWidth = 1.0f / ((NewWidth - 1.0f) * 0.5f);
+//		        adjustHeight = 1.0f / ((NewHeight - 1.0f) * 0.5f);
+//		    }
+//
+//		    //Mouse down
+//		    public void click(Vector3D NewPt) {
+//		        mapToSphere(NewPt, this.StVec);
+//		    }
+//		    
+//		  //Mouse down
+//		    public void click(InputCursor m){
+////		    	Icamera cam = shape.getAncestor().getGlobalCam();
+////		    	Vector3D rayStartPoint = cam.getPosition();
+////		    	Vector3D pointInRayDir = Tools3D.unprojectScreenCoords(applet, m.getLastEvent().getPositionX(), m.getLastEvent().getPositionY());
+////		    	Ray orgRay = new Ray(rayStartPoint, pointInRayDir);
+////		    	Ray realRayForThisObj = Tools3D.toComponentCameraPickRay(applet, shape, orgRay);
+//				
+//		    	Ray realRayForThisObj = Tools3D.getCameraPickRay(applet, shape, m.getCurrentEvent().getX(), m.getCurrentEvent().getY());
+//		    	
+//				//TRIAL
+//				Ray invertedRay = Ray.getTransformedRay(realRayForThisObj, shape.getGlobalInverseMatrix());
+//		    	
+//		    	Vector3D NewPt = bSphere.getIntersectionLocal(invertedRay);
+//		    	
+//		    	
+//		    	if (NewPt != null){
+//		    		PGraphicsOpenGL pgl = ((PGraphicsOpenGL)applet.g); 
+//					GL gl 	= pgl.beginGL();  
+//						gl.glPushMatrix();
+//							gl.glMultMatrixf(shape.getGlobalMatrix().toFloatBuffer());
+//							NewPt = Tools3D.projectGL(gl, pgl.glu, NewPt, NewPt);
+//						gl.glPopMatrix();
+//			    	pgl.endGL();
+//			    	
+//		    		this.mapToSphere(NewPt, this.StVec);
+//		    	}else{
+//		    		logger.error(getName() + " Didnt hit sphere!");
+//		    	}
+//		    }
+//		    
+//		    public Matrix getNewRotation(InputCursor m){
+////		    	Icamera cam = shape.getAncestor().getGlobalCam();
+////		    	Vector3D rayStartPoint = cam.getPosition();
+////		    	Vector3D pointInRayDir = Tools3D.unprojectScreenCoords(applet, m.getLastEvent().getPositionX(), m.getLastEvent().getPositionY());
+////		    	Ray orgRay = new Ray(rayStartPoint, pointInRayDir);
+////		    	Ray realRayForThisObj = Tools3D.toComponentCameraPickRay(applet, shape, orgRay);
+//				
+//		    	Ray realRayForThisObj = Tools3D.getCameraPickRay(applet, shape, m.getCurrentEvent().getX(), m.getCurrentEvent().getY());
+//		    	
+//				//TRIAL
+//				Ray invertedRay = Ray.getTransformedRay(realRayForThisObj, shape.getGlobalInverseMatrix());
+//		    	
+//		    	Vector3D NewPt = bSphere.getIntersectionLocal(invertedRay);
+//		    	
+//		    	if (NewPt != null){
+//		    		PGraphicsOpenGL pgl = ((PGraphicsOpenGL)applet.g); 
+//					GL gl 	= pgl.beginGL();  
+//						gl.glPushMatrix();
+//							gl.glMultMatrixf(shape.getGlobalMatrix().toFloatBuffer());
+//							NewPt = Tools3D.projectGL(gl, pgl.glu, NewPt, NewPt);
+//						gl.glPopMatrix();
+//			    	pgl.endGL();
+//			    	
+//		    		logger.debug(NewPt);
+//		    		this.drag(NewPt, q);
+//		    	}else{
+//		    		return Matrix.get4x4Identity();
+//		    	}
+//		    	
+//		    	return q.toRotationMatrix();
+//		    }
+//
+//		    //Mouse drag, calculate rotation
+//		    public void drag(Vector3D NewPt, Quaternion NewRot) {
+////		    	this.EnVec.setValues(NewPt);
+//		    	
+//		        //Map the point to the sphere
+//		        this.mapToSphere(NewPt, EnVec);
+//
+//		        //Return the quaternion equivalent to the ration
+//		        if (NewRot != null) {
+////		            Vector3D Perp = new Vector3D();
+//
+//		            //Compute the vector perpendicular to the begin and end vectors
+////		            Vector3D.cross(Perp, StVec, EnVec);
+//		            Vector3D Perp = StVec.getCross(EnVec);
+//
+//		            //Compute the length of the perpendicular vector
+//		            if (Perp.length() > Epsilon){    //if its non-zero
+//		                //We're ok, so return the perpendicular vector as the transform after all
+//		                NewRot.x = Perp.x;
+//		                NewRot.y = Perp.y;
+//		                NewRot.z = Perp.z;
+//		                //In the quaternion values, w is cosine (theta / 2), where theta is rotation angle
+////		                NewRot.w = Vector3D.dot(StVec, EnVec);
+//		                NewRot.w = StVec.dot(EnVec);
+//		            } else  {                                  //if its zero
+//		                //The begin and end vectors coincide, so return an identity transform
+//		                NewRot.x = NewRot.y = NewRot.z = NewRot.w = 0.0f;
+//		            }
+//		        }
+//		    }
+//
+//
+//		
+//		
+//	}
+//	
+//	
 	
 	
 //	private class ArcBall {
