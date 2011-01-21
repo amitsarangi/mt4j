@@ -98,7 +98,7 @@ import android.app.Application;
  */
 public abstract class MTApplication extends PApplet implements IMTApplication{
 	/** The Constant logger. */
-	private static ILogger logger;
+	protected static ILogger logger;
 	
 	public static String CUSTOM_OPENGL_GRAPHICS = "org.mt4j.util.opengl.CustomPGraphicsOpenGL"; //PApplet.OPENGL
 	
@@ -155,9 +155,9 @@ public abstract class MTApplication extends PApplet implements IMTApplication{
 	protected GL11 iGL11;
 	protected GL20 iGL20;
 
-	private boolean gl20Supported;
+	protected boolean gl20Supported;
 
-	private boolean gl11Supported;
+	protected boolean gl11Supported;
 
 	
 //	private static boolean fullscreen;
@@ -635,6 +635,36 @@ public abstract class MTApplication extends PApplet implements IMTApplication{
 		this.startUp();
 	}
 	
+	protected void loadGL(){
+		//FIXME TEST!!
+		String version = ((PGraphicsOpenGL)g).gl.glGetString(GL.GL_VERSION);
+		logger.info("OpenGL Version: " + version);
+        int major = Integer.parseInt("" + version.charAt(0));
+        int minor = Integer.parseInt("" + version.charAt(2));
+        
+        this.gl11Supported = false;
+        this.gl20Supported = false;
+        if (major >= 2) {
+//                JoglGL20 jogl20 = new JoglGL20(((PGraphicsOpenGL)g).gl);
+        		JoglGL20Plus jogl20 = new JoglGL20Plus(((PGraphicsOpenGL)g).gl);
+                iGL20 = jogl20;
+                //FIXME ADDED
+                iGL10  = jogl20;
+                iGL11 = jogl20;
+                glCommon = iGL20;
+                this.gl20Supported = true;
+        } else {
+                if (major == 1 && minor < 5) {
+                        iGL10 = new JoglGL10(((PGraphicsOpenGL)g).gl);
+                } else {
+                        iGL11 = new JoglGL11(((PGraphicsOpenGL)g).gl);
+                        iGL10 = iGL11;
+                        this.gl11Supported = true;
+                }
+                glCommon = iGL10;
+        }
+	}
+	
 	/**
 	 * Apply open gl start settings.
 	 */
@@ -655,33 +685,7 @@ public abstract class MTApplication extends PApplet implements IMTApplication{
 	    if (MT4jSettings.getInstance().isOpenGlMode() ){
 	    	
 	    	//////////////////////////////
-	    	//FIXME TEST!!
-			String version = ((PGraphicsOpenGL)g).gl.glGetString(GL.GL_VERSION);
-			logger.info("OpenGL Version: " + version);
-	        int major = Integer.parseInt("" + version.charAt(0));
-	        int minor = Integer.parseInt("" + version.charAt(2));
-	        
-	        this.gl11Supported = false;
-	        this.gl20Supported = false;
-	        if (major >= 2) {
-//	                JoglGL20 jogl20 = new JoglGL20(((PGraphicsOpenGL)g).gl);
-	        		JoglGL20Plus jogl20 = new JoglGL20Plus(((PGraphicsOpenGL)g).gl);
-	                iGL20 = jogl20;
-	                //FIXME ADDED
-	                iGL10  = jogl20;
-	                iGL11 = jogl20;
-	                glCommon = iGL20;
-	                this.gl20Supported = true;
-	        } else {
-	                if (major == 1 && minor < 5) {
-	                        iGL10 = new JoglGL10(((PGraphicsOpenGL)g).gl);
-	                } else {
-	                        iGL11 = new JoglGL11(((PGraphicsOpenGL)g).gl);
-	                        iGL10 = iGL11;
-	                        this.gl11Supported = true;
-	                }
-	                glCommon = iGL10;
-	        }
+	    	this.loadGL();
 	        //////////////////////////
 	        
 //	    	GL gl = Tools3D.getGL(this);

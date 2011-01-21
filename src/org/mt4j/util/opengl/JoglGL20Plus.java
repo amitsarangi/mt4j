@@ -39,6 +39,7 @@ public final class JoglGL20Plus implements GL20, GL11 {
 		this.gl = gl;
 	}
 	
+	//Added for backwards compatibility
 	public void glCallList(int id) {
 		gl.glCallList(id);
 	}
@@ -50,7 +51,32 @@ public final class JoglGL20Plus implements GL20, GL11 {
 	public int glGenLists(int id) {
 		return gl.glGenLists(id);
 	}
+	
+	public void glPushAttrib(int att){
+		gl.glPushAttrib(att);
+	}
+	
+	public void glPopAttrib(){
+		gl.glPopAttrib();
+	}
+	
+	public void glLineStipple(int t, short stipple){
+		gl.glLineStipple(t, stipple);
+	}
+	
+	public void glTexImage1D(){
+		gl.glTexImage1D(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7);
+	}
+	
+	public void glTexSubImage1D(){
+		gl.glTexSubImage1D(arg0, arg1, arg2, arg3, arg4, arg5, arg6);
+	}
+	
+	//TODO dont check in drawMethods if glDrawBuffer supported
+	//-> just cast -> but check at setUseVBOs() and setUseDisplaylists() if correct gl version
+	
 
+	//FIXME GL20 stuff
 	@Override public void glActiveTexture (int texture) {
 		gl.glActiveTexture(texture);
 	}
@@ -653,6 +679,8 @@ public final class JoglGL20Plus implements GL20, GL11 {
 		gl.glVertexAttribPointer(indx, size, type, normalized, stride, ptr);
 	}
 	
+	
+	
 	//FIXME
 	//gl10 stuff
 	@Override public final void glAlphaFunc (int func, float ref) {
@@ -859,6 +887,8 @@ public final class JoglGL20Plus implements GL20, GL11 {
 	@Override public void glPolygonMode (int face, int mode) {
 		gl.glPolygonMode(face, mode);
 	}
+	
+	
 	//FIXME
 	//GL11 stuff
 	@Override public void glClipPlanef (int plane, float[] equation, int offset) {
