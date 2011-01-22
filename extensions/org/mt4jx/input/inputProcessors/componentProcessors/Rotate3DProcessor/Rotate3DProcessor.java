@@ -10,8 +10,8 @@ import org.mt4j.components.MTComponent;
 import org.mt4j.components.PickResult;
 import org.mt4j.components.PickResult.PickEntry;
 import org.mt4j.components.interfaces.IMTComponent3D;
+import org.mt4j.input.inputData.AbstractCursorInputEvt;
 import org.mt4j.input.inputData.InputCursor;
-import org.mt4j.input.inputData.MTFingerInputEvt;
 import org.mt4j.input.inputProcessors.IInputProcessor;
 import org.mt4j.input.inputProcessors.MTGestureEvent;
 import org.mt4j.input.inputProcessors.componentProcessors.AbstractComponentProcessor;
@@ -60,7 +60,7 @@ public class Rotate3DProcessor extends AbstractCursorProcessor {
 	
 	
 	@Override
-	public void cursorEnded(InputCursor inputCursor, MTFingerInputEvt currentEvent) {
+	public void cursorEnded(InputCursor inputCursor, AbstractCursorInputEvt currentEvent) {
 		IMTComponent3D comp = currentEvent.getTarget();
 		logger.debug(this.getName() + " INPUT_ENDED RECIEVED - MOTION: " + inputCursor.getId());
 		
@@ -158,7 +158,7 @@ public class Rotate3DProcessor extends AbstractCursorProcessor {
 
 	@Override
 	public void cursorStarted(InputCursor inputCursor,
-			MTFingerInputEvt currentEvent) {
+			AbstractCursorInputEvt currentEvent) {
 		IMTComponent3D comp = currentEvent.getTarget();
 		if (lockedCursors.size() >= 3){ //gesture with 3 fingers already in progress
 			unUsedCursors.add(inputCursor);
@@ -279,7 +279,7 @@ public class Rotate3DProcessor extends AbstractCursorProcessor {
 	}
 	
 	public void cursorUpdated(InputCursor inputCursor,
-			MTFingerInputEvt currentEvent) {
+			AbstractCursorInputEvt currentEvent) {
 		IMTComponent3D comp = currentEvent.getTarget();
 		if (lockedCursors.size() == 3 && lockedCursors.contains(inputCursor)){
 			rc.updateAndGetRotationAngle(inputCursor);

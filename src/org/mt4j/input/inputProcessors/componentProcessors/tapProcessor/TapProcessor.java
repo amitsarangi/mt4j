@@ -20,6 +20,7 @@ package org.mt4j.input.inputProcessors.componentProcessors.tapProcessor;
 import java.util.List;
 
 import org.mt4j.components.MTCanvas;
+import org.mt4j.input.inputData.AbstractCursorInputEvt;
 import org.mt4j.input.inputData.InputCursor;
 import org.mt4j.input.inputData.MTFingerInputEvt;
 import org.mt4j.input.inputProcessors.IInputProcessor;
@@ -125,7 +126,7 @@ public class TapProcessor extends AbstractCursorProcessor {
 	 * @see org.mt4j.input.inputProcessors.componentProcessors.AbstractCursorProcessor#cursorStarted(org.mt4j.input.inputData.InputCursor, org.mt4j.input.inputData.MTFingerInputEvt)
 	 */
 	@Override
-	public void cursorStarted(InputCursor m, MTFingerInputEvt positionEvent) {
+	public void cursorStarted(InputCursor m, AbstractCursorInputEvt positionEvent) {
 		InputCursor[] theLockedCursors = getLockedCursorsArray();
 		//if gesture isnt started and no other cursor on comp is locked by higher priority gesture -> start gesture
 		if (theLockedCursors.length == 0 && this.canLock(getCurrentComponentCursorsArray())){ 
@@ -143,7 +144,7 @@ public class TapProcessor extends AbstractCursorProcessor {
 	 * @see org.mt4j.input.inputProcessors.componentProcessors.AbstractCursorProcessor#cursorUpdated(org.mt4j.input.inputData.InputCursor, org.mt4j.input.inputData.MTFingerInputEvt)
 	 */
 	@Override
-	public void cursorUpdated(InputCursor c, MTFingerInputEvt positionEvent) {
+	public void cursorUpdated(InputCursor c, AbstractCursorInputEvt positionEvent) {
 		if (getLockedCursors().contains(c)){
 			Vector3D screenPos = c.getPosition();
 			//logger.debug("Distance between buttondownScreenPos: " + buttonDownScreenPos + " and upScrPos: " + buttonUpScreenPos +  " is: " + Vector3D.distance(buttonDownScreenPos, buttonUpScreenPos));
@@ -160,7 +161,7 @@ public class TapProcessor extends AbstractCursorProcessor {
 	 * @see org.mt4j.input.inputProcessors.componentProcessors.AbstractCursorProcessor#cursorEnded(org.mt4j.input.inputData.InputCursor, org.mt4j.input.inputData.MTFingerInputEvt)
 	 */
 	@Override
-	public void cursorEnded(InputCursor m, MTFingerInputEvt positionEvent) {
+	public void cursorEnded(InputCursor m, AbstractCursorInputEvt positionEvent) {
 		logger.debug(this.getName() + " INPUT_ENDED RECIEVED - CURSOR: " + m.getId());
 		List<InputCursor> locked = this.getLockedCursors();
 		if (locked.contains(m)){
@@ -181,7 +182,7 @@ public class TapProcessor extends AbstractCursorProcessor {
 	 * @param m the m
 	 * @param positionEvent the position event
 	 */
-	private void endGesture(InputCursor m, MTFingerInputEvt positionEvent){
+	private void endGesture(InputCursor m, AbstractCursorInputEvt positionEvent){
 		//Default where for the event if no intersections are found
 		Vector3D buttonUpScreenPos = m.getPosition();
 		

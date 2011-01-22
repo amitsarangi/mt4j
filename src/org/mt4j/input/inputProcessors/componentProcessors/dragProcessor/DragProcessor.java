@@ -18,8 +18,8 @@
 package org.mt4j.input.inputProcessors.componentProcessors.dragProcessor;
 
 import org.mt4j.components.interfaces.IMTComponent3D;
+import org.mt4j.input.inputData.AbstractCursorInputEvt;
 import org.mt4j.input.inputData.InputCursor;
-import org.mt4j.input.inputData.MTFingerInputEvt;
 import org.mt4j.input.inputProcessors.IInputProcessor;
 import org.mt4j.input.inputProcessors.MTGestureEvent;
 import org.mt4j.input.inputProcessors.componentProcessors.AbstractComponentProcessor;
@@ -63,7 +63,7 @@ public class DragProcessor extends AbstractCursorProcessor {
 	 * @see org.mt4j.input.inputProcessors.componentProcessors.AbstractCursorProcessor#cursorStarted(org.mt4j.input.inputData.InputCursor, org.mt4j.input.inputData.MTFingerInputEvt)
 	 */
 	@Override
-	public void cursorStarted(InputCursor cursor, MTFingerInputEvt fe) {
+	public void cursorStarted(InputCursor cursor, AbstractCursorInputEvt fe) {
 		IMTComponent3D comp = fe.getTarget();
 		InputCursor[] theLockedCursors = getLockedCursorsArray();
 		//if gesture isnt started and no other cursor on comp is locked by higher priority gesture -> start gesture
@@ -85,7 +85,7 @@ public class DragProcessor extends AbstractCursorProcessor {
 	 * @see org.mt4j.input.inputProcessors.componentProcessors.AbstractCursorProcessor#cursorUpdated(org.mt4j.input.inputData.InputCursor, org.mt4j.input.inputData.MTFingerInputEvt)
 	 */
 	@Override
-	public void cursorUpdated(InputCursor c, MTFingerInputEvt fe) {
+	public void cursorUpdated(InputCursor c, AbstractCursorInputEvt fe) {
 		if (getLockedCursors().contains(c) && dc.getCursor().equals(c)){
 			dc.updateDragPosition();
 			this.fireGestureEvent(new DragEvent(this, MTGestureEvent.GESTURE_UPDATED, fe.getCurrentTarget(), dc.getCursor(), dc.getLastPosition(), dc.getNewPosition()));
@@ -97,7 +97,7 @@ public class DragProcessor extends AbstractCursorProcessor {
 	 * @see org.mt4j.input.inputProcessors.componentProcessors.AbstractCursorProcessor#cursorEnded(org.mt4j.input.inputData.InputCursor, org.mt4j.input.inputData.MTFingerInputEvt)
 	 */
 	@Override
-	public void cursorEnded(InputCursor c, MTFingerInputEvt fe) {
+	public void cursorEnded(InputCursor c, AbstractCursorInputEvt fe) {
 		IMTComponent3D comp = fe.getTarget();
 		logger.debug(this.getName() + " INPUT_ENDED RECIEVED - CURSOR: " + c.getId());
 		if (getLockedCursors().contains(c)){ //cursors was a actual gesture cursors

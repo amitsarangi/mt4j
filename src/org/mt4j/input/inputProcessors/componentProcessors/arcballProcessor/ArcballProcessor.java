@@ -24,8 +24,8 @@ import javax.media.opengl.GL;
 import org.mt4j.components.MTComponent;
 import org.mt4j.components.bounds.BoundingSphere;
 import org.mt4j.components.visibleComponents.shapes.AbstractShape;
+import org.mt4j.input.inputData.AbstractCursorInputEvt;
 import org.mt4j.input.inputData.InputCursor;
-import org.mt4j.input.inputData.MTFingerInputEvt;
 import org.mt4j.input.inputProcessors.IInputProcessor;
 import org.mt4j.input.inputProcessors.componentProcessors.AbstractComponentProcessor;
 import org.mt4j.input.inputProcessors.componentProcessors.AbstractCursorProcessor;
@@ -87,7 +87,7 @@ public class ArcballProcessor extends AbstractCursorProcessor {
 	
 	
 	@Override
-	public void cursorStarted(InputCursor m, MTFingerInputEvt positionEvent) {
+	public void cursorStarted(InputCursor m, AbstractCursorInputEvt positionEvent) {
 		InputCursor[] theLockedCursors = getLockedCursorsArray();
 		//if gesture isnt started and no other cursor on comp is locked by higher priority gesture -> start gesture
 		if (theLockedCursors.length == 0 && this.canLock(getCurrentComponentCursorsArray())){ 
@@ -102,7 +102,7 @@ public class ArcballProcessor extends AbstractCursorProcessor {
 
 
 	@Override
-	public void cursorUpdated(InputCursor m, MTFingerInputEvt positionEvent) {
+	public void cursorUpdated(InputCursor m, AbstractCursorInputEvt positionEvent) {
 		if (getLockedCursors().contains(m)){
 			Matrix mat = ac.getNewRotation(m);
 			this.fireGestureEvent(new ArcBallGestureEvent(this, ArcBallGestureEvent.GESTURE_UPDATED, positionEvent.getCurrentTarget(), mat));
@@ -111,7 +111,7 @@ public class ArcballProcessor extends AbstractCursorProcessor {
 	
 	
 	@Override
-	public void cursorEnded(InputCursor c, MTFingerInputEvt positionEvent) {
+	public void cursorEnded(InputCursor c, AbstractCursorInputEvt positionEvent) {
 		logger.debug(this.getName() + " INPUT_ENDED RECIEVED - cursor: " + c.getId());
 		if (getLockedCursors().contains(c)){ //cursors was a actual gesture cursors
 			//Check if we can resume the gesture with another cursor

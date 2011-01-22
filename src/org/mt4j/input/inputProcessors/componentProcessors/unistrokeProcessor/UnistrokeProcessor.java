@@ -1,8 +1,8 @@
 package org.mt4j.input.inputProcessors.componentProcessors.unistrokeProcessor;
 
 
+import org.mt4j.input.inputData.AbstractCursorInputEvt;
 import org.mt4j.input.inputData.InputCursor;
-import org.mt4j.input.inputData.MTFingerInputEvt;
 import org.mt4j.input.inputProcessors.IInputProcessor;
 import org.mt4j.input.inputProcessors.MTGestureEvent;
 import org.mt4j.input.inputProcessors.componentProcessors.AbstractCursorProcessor;
@@ -67,7 +67,7 @@ public class UnistrokeProcessor extends AbstractCursorProcessor {
 	 * @see org.mt4j.input.inputProcessors.componentProcessors.AbstractCursorProcessor#cursorStarted(org.mt4j.input.inputData.InputCursor, org.mt4j.input.inputData.MTFingerInputEvt)
 	 */
 	@Override
-	public void cursorStarted(InputCursor inputCursor, MTFingerInputEvt currentEvent) {
+	public void cursorStarted(InputCursor inputCursor, AbstractCursorInputEvt currentEvent) {
 		if (this.canLock(inputCursor)) {
 			context = new UnistrokeContext(pa, planeNormal, pointInPlane, inputCursor, recognizer, du, inputCursor.getTarget());
 			if (!context.gestureAborted) {
@@ -91,7 +91,7 @@ public class UnistrokeProcessor extends AbstractCursorProcessor {
 	 * @see org.mt4j.input.inputProcessors.componentProcessors.AbstractCursorProcessor#cursorUpdated(org.mt4j.input.inputData.InputCursor, org.mt4j.input.inputData.MTFingerInputEvt)
 	 */
 	@Override
-	public void cursorUpdated(InputCursor inputCursor, MTFingerInputEvt currentEvent) {
+	public void cursorUpdated(InputCursor inputCursor, AbstractCursorInputEvt currentEvent) {
 		if (getLockedCursors().contains(inputCursor) && context != null) {
 			if (!context.gestureAborted) {
 				context.update(inputCursor);
@@ -106,7 +106,7 @@ public class UnistrokeProcessor extends AbstractCursorProcessor {
 	 * @see org.mt4j.input.inputProcessors.componentProcessors.AbstractCursorProcessor#cursorEnded(org.mt4j.input.inputData.InputCursor, org.mt4j.input.inputData.MTFingerInputEvt)
 	 */
 	@Override
-	public void cursorEnded(InputCursor inputCursor, MTFingerInputEvt currentEvent) {
+	public void cursorEnded(InputCursor inputCursor, AbstractCursorInputEvt currentEvent) {
 		if (getLockedCursors().contains(inputCursor) && context != null) {
 			this.fireGestureEvent(new UnistrokeEvent(this, MTGestureEvent.GESTURE_ENDED, inputCursor.getCurrentTarget(), context.getVisualizer(), context.recognizeGesture(), inputCursor));
 			

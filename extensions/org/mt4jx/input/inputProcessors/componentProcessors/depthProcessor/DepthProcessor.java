@@ -10,8 +10,8 @@ import org.mt4j.components.MTCanvas;
 import org.mt4j.components.MTComponent;
 import org.mt4j.components.interfaces.IMTComponent3D;
 import org.mt4j.components.visibleComponents.shapes.MTRectangle;
+import org.mt4j.input.inputData.AbstractCursorInputEvt;
 import org.mt4j.input.inputData.InputCursor;
-import org.mt4j.input.inputData.MTFingerInputEvt;
 import org.mt4j.input.inputProcessors.IInputProcessor;
 import org.mt4j.input.inputProcessors.MTGestureEvent;
 import org.mt4j.input.inputProcessors.componentProcessors.AbstractComponentProcessor;
@@ -64,7 +64,7 @@ public class DepthProcessor extends AbstractCursorProcessor {
 
 	@Override
 	public void cursorEnded(InputCursor inputCursor,
-			MTFingerInputEvt positionEvent) {
+			AbstractCursorInputEvt positionEvent) {
 
 		IMTComponent3D comp = positionEvent.getTarget();
 				
@@ -159,7 +159,7 @@ public class DepthProcessor extends AbstractCursorProcessor {
 
 	@Override
 	public void cursorStarted(InputCursor inputCursor,
-			MTFingerInputEvt positionEvent) {
+			AbstractCursorInputEvt positionEvent) {
 		IMTComponent3D comp = positionEvent.getTarget();
 		
 		if (lockedCursors.size() == 0) { 
@@ -220,7 +220,7 @@ public class DepthProcessor extends AbstractCursorProcessor {
 	}
 
 	public void cursorUpdated(InputCursor inputCursor,
-			MTFingerInputEvt positionEvent) {
+			AbstractCursorInputEvt positionEvent) {
 		IMTComponent3D comp = positionEvent.getTarget();
 		
 		

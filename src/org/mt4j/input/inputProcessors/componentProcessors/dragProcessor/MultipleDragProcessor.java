@@ -20,8 +20,8 @@ package org.mt4j.input.inputProcessors.componentProcessors.dragProcessor;
 import java.util.HashMap;
 
 import org.mt4j.components.interfaces.IMTComponent3D;
+import org.mt4j.input.inputData.AbstractCursorInputEvt;
 import org.mt4j.input.inputData.InputCursor;
-import org.mt4j.input.inputData.MTFingerInputEvt;
 import org.mt4j.input.inputProcessors.IInputProcessor;
 import org.mt4j.input.inputProcessors.MTGestureEvent;
 import org.mt4j.input.inputProcessors.componentProcessors.AbstractCursorProcessor;
@@ -61,7 +61,7 @@ public class MultipleDragProcessor extends AbstractCursorProcessor {
 	 * @see org.mt4j.input.inputProcessors.componentProcessors.AbstractCursorProcessor#cursorStarted(org.mt4j.input.inputData.InputCursor, org.mt4j.input.inputData.MTFingerInputEvt)
 	 */
 	@Override
-	public void cursorStarted(InputCursor inputCursor,	MTFingerInputEvt positionEvent) {
+	public void cursorStarted(InputCursor inputCursor,	AbstractCursorInputEvt positionEvent) {
 		DragContext dc = new DragContext(inputCursor);
 		IMTComponent3D comp = positionEvent.getTarget();
 		if (!dc.gestureAborted){
@@ -74,7 +74,7 @@ public class MultipleDragProcessor extends AbstractCursorProcessor {
 	 * @see org.mt4j.input.inputProcessors.componentProcessors.AbstractCursorProcessor#cursorUpdated(org.mt4j.input.inputData.InputCursor, org.mt4j.input.inputData.MTFingerInputEvt)
 	 */
 	@Override
-	public void cursorUpdated(InputCursor inputCursor, MTFingerInputEvt positionEvent) {
+	public void cursorUpdated(InputCursor inputCursor, AbstractCursorInputEvt positionEvent) {
 		IMTComponent3D comp = positionEvent.getTarget();
 		DragContext dc = motionToDragContext.get(inputCursor);
 		if (dc != null && dc.dragObject.getViewingCamera() != null){
@@ -87,7 +87,7 @@ public class MultipleDragProcessor extends AbstractCursorProcessor {
 	 * @see org.mt4j.input.inputProcessors.componentProcessors.AbstractCursorProcessor#cursorEnded(org.mt4j.input.inputData.InputCursor, org.mt4j.input.inputData.MTFingerInputEvt)
 	 */
 	@Override
-	public void cursorEnded(InputCursor inputCursor, MTFingerInputEvt positionEvent) {
+	public void cursorEnded(InputCursor inputCursor, AbstractCursorInputEvt positionEvent) {
 		IMTComponent3D comp = positionEvent.getTarget();
 		DragContext dc = motionToDragContext.get(inputCursor);
 		if (dc != null){
