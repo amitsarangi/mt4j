@@ -22,8 +22,8 @@ import java.util.List;
 import org.mt4j.MTApplication;
 import org.mt4j.components.MTCanvas;
 import org.mt4j.components.interfaces.IMTComponent3D;
+import org.mt4j.input.inputData.AbstractCursorInputEvt;
 import org.mt4j.input.inputData.InputCursor;
-import org.mt4j.input.inputData.MTFingerInputEvt;
 import org.mt4j.input.inputProcessors.IInputProcessor;
 import org.mt4j.input.inputProcessors.MTGestureEvent;
 import org.mt4j.input.inputProcessors.componentProcessors.AbstractComponentProcessor;
@@ -98,7 +98,7 @@ public class TapAndHoldProcessor extends AbstractCursorProcessor implements IPre
 	 * @see org.mt4j.input.inputProcessors.componentProcessors.AbstractCursorProcessor#cursorStarted(org.mt4j.input.inputData.InputCursor, org.mt4j.input.inputData.AbstractCursorInputEvt)
 	 */
 	@Override
-	public void cursorStarted(InputCursor c, MTFingerInputEvt positionEvent) {
+	public void cursorStarted(InputCursor c, AbstractCursorInputEvt positionEvent) {
 		List<InputCursor> locked = getLockedCursors();
 		
 		if (locked.size() >=1){
@@ -174,7 +174,7 @@ public class TapAndHoldProcessor extends AbstractCursorProcessor implements IPre
 	 * @see org.mt4j.input.inputProcessors.componentProcessors.AbstractCursorProcessor#cursorUpdated(org.mt4j.input.inputData.InputCursor, org.mt4j.input.inputData.AbstractCursorInputEvt)
 	 */
 	@Override
-	public void cursorUpdated(InputCursor c, MTFingerInputEvt positionEvent) {
+	public void cursorUpdated(InputCursor c, AbstractCursorInputEvt positionEvent) {
 		List<InputCursor> locked = getLockedCursors();
 		if (locked.contains(c)){
 			long nowTime = System.currentTimeMillis();
@@ -201,7 +201,7 @@ public class TapAndHoldProcessor extends AbstractCursorProcessor implements IPre
 	 * @see org.mt4j.input.inputProcessors.componentProcessors.AbstractCursorProcessor#cursorEnded(org.mt4j.input.inputData.InputCursor, org.mt4j.input.inputData.AbstractCursorInputEvt)
 	 */
 	@Override
-	public void cursorEnded(InputCursor c, MTFingerInputEvt positionEvent) {
+	public void cursorEnded(InputCursor c, AbstractCursorInputEvt positionEvent) {
 		logger.debug(this.getName() + " INPUT_ENDED RECIEVED - MOTION: " + c.getId());
 		
 		List<InputCursor> locked = getLockedCursors();

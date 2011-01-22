@@ -29,8 +29,8 @@ import org.mt4j.components.StateChangeListener;
 import org.mt4j.components.visibleComponents.shapes.AbstractShape;
 import org.mt4j.components.visibleComponents.shapes.MTPolygon;
 import org.mt4j.components.visibleComponents.shapes.MTStencilPolygon;
+import org.mt4j.input.inputData.AbstractCursorInputEvt;
 import org.mt4j.input.inputData.InputCursor;
-import org.mt4j.input.inputData.MTFingerInputEvt;
 import org.mt4j.input.inputProcessors.IInputProcessor;
 import org.mt4j.input.inputProcessors.MTGestureEvent;
 import org.mt4j.input.inputProcessors.componentProcessors.AbstractComponentProcessor;
@@ -106,7 +106,7 @@ public class LassoProcessor extends AbstractCursorProcessor {
 	 * @see org.mt4j.input.inputProcessors.componentProcessors.AbstractCursorProcessor#cursorStarted(org.mt4j.input.inputData.InputCursor, org.mt4j.input.inputData.AbstractCursorInputEvt)
 	 */
 	@Override
-	public void cursorStarted(InputCursor c, MTFingerInputEvt positionEvent) {
+	public void cursorStarted(InputCursor c, AbstractCursorInputEvt positionEvent) {
 		if (this.getLock(c)){
 			ClusteringContext context = new ClusteringContext(c);
 			if (!context.gestureAborted){
@@ -125,7 +125,7 @@ public class LassoProcessor extends AbstractCursorProcessor {
 	 * @see org.mt4j.input.inputProcessors.componentProcessors.AbstractCursorProcessor#cursorUpdated(org.mt4j.input.inputData.InputCursor, org.mt4j.input.inputData.AbstractCursorInputEvt)
 	 */
 	@Override
-	public void cursorUpdated(InputCursor c, MTFingerInputEvt positionEvent) {
+	public void cursorUpdated(InputCursor c, AbstractCursorInputEvt positionEvent) {
 		ClusteringContext context = cursorToContext.get(c);
 		if (context != null){ //cursor was used here
 			if (!context.gestureAborted){
@@ -142,7 +142,7 @@ public class LassoProcessor extends AbstractCursorProcessor {
 	 * @see org.mt4j.input.inputProcessors.componentProcessors.AbstractCursorProcessor#cursorEnded(org.mt4j.input.inputData.InputCursor, org.mt4j.input.inputData.AbstractCursorInputEvt)
 	 */
 	@Override
-	public void cursorEnded(InputCursor c, MTFingerInputEvt positionEvent) {
+	public void cursorEnded(InputCursor c, AbstractCursorInputEvt positionEvent) {
 		logger.debug(this.getName() + " INPUT_ENDED RECIEVED - cursor: " + c.getId());
 		ClusteringContext context = cursorToContext.get(c);
 		if (context != null){ //cursor was used here

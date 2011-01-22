@@ -20,8 +20,8 @@ package org.mt4j.input.inputProcessors.componentProcessors.zoomProcessor;
 import java.util.List;
 
 import org.mt4j.components.interfaces.IMTComponent3D;
+import org.mt4j.input.inputData.AbstractCursorInputEvt;
 import org.mt4j.input.inputData.InputCursor;
-import org.mt4j.input.inputData.MTFingerInputEvt;
 import org.mt4j.input.inputProcessors.IInputProcessor;
 import org.mt4j.input.inputProcessors.MTGestureEvent;
 import org.mt4j.input.inputProcessors.componentProcessors.AbstractComponentProcessor;
@@ -68,7 +68,7 @@ public class ZoomProcessor extends AbstractCursorProcessor {
 
 	
 	@Override
-	public void cursorStarted(InputCursor c, MTFingerInputEvt positionEvent) {
+	public void cursorStarted(InputCursor c, AbstractCursorInputEvt positionEvent) {
 		InputCursor[] locked = getLockedCursorsArray();
 		if (locked.length >= 2){ //gesture with 2 fingers already in progress
 			logger.debug(this.getName() + " has already enough cursors for this gesture - adding to unused ID:" + c.getId());
@@ -98,7 +98,7 @@ public class ZoomProcessor extends AbstractCursorProcessor {
 	}
 
 	@Override
-	public void cursorUpdated(InputCursor c, MTFingerInputEvt positionEvent) {
+	public void cursorUpdated(InputCursor c, AbstractCursorInputEvt positionEvent) {
 		List<InputCursor> locked = getLockedCursors();
 		if (locked.contains(c)){ //in progress with this cursors
 			InputCursor firstCursor = locked.get(0);
@@ -115,7 +115,7 @@ public class ZoomProcessor extends AbstractCursorProcessor {
 	}
 
 	@Override
-	public void cursorEnded(InputCursor c,	MTFingerInputEvt positionEvent) {
+	public void cursorEnded(InputCursor c,	AbstractCursorInputEvt positionEvent) {
 		logger.debug(this.getName() + " INPUT_ENDED RECIEVED - cursor: " + c.getId());
 		List<InputCursor> locked = getLockedCursors();
 		if (locked.contains(c)){

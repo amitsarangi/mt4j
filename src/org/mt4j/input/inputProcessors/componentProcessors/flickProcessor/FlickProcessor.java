@@ -1,7 +1,7 @@
 package org.mt4j.input.inputProcessors.componentProcessors.flickProcessor;
 
+import org.mt4j.input.inputData.AbstractCursorInputEvt;
 import org.mt4j.input.inputData.InputCursor;
-import org.mt4j.input.inputData.MTFingerInputEvt;
 import org.mt4j.input.inputProcessors.IInputProcessor;
 import org.mt4j.input.inputProcessors.MTGestureEvent;
 import org.mt4j.input.inputProcessors.componentProcessors.AbstractCursorProcessor;
@@ -78,7 +78,7 @@ public class FlickProcessor extends AbstractCursorProcessor {
 	 * @see org.mt4j.input.inputProcessors.componentProcessors.AbstractCursorProcessor#cursorStarted(org.mt4j.input.inputData.InputCursor, org.mt4j.input.inputData.MTFingerInputEvt)
 	 */
 	@Override
-	public void cursorStarted(InputCursor cursor, MTFingerInputEvt currentEvent) {
+	public void cursorStarted(InputCursor cursor, AbstractCursorInputEvt currentEvent) {
 		InputCursor[] theLockedCursors = getLockedCursorsArray();
 		//if gesture isnt started and no other cursor on comp is locked by higher priority gesture -> start gesture
 		if (theLockedCursors.length == 0 && this.canLock(getCurrentComponentCursorsArray())){ 
@@ -96,7 +96,7 @@ public class FlickProcessor extends AbstractCursorProcessor {
 	 * @see org.mt4j.input.inputProcessors.componentProcessors.AbstractCursorProcessor#cursorUpdated(org.mt4j.input.inputData.InputCursor, org.mt4j.input.inputData.MTFingerInputEvt)
 	 */
 	@Override
-	public void cursorUpdated(InputCursor cursor, MTFingerInputEvt currentEvent) {
+	public void cursorUpdated(InputCursor cursor, AbstractCursorInputEvt currentEvent) {
 		if (getLockedCursors().contains(cursor)){
 			/*
 			long nowTime = currentEvent.getTimeStamp();
@@ -122,7 +122,7 @@ public class FlickProcessor extends AbstractCursorProcessor {
 	 * @see org.mt4j.input.inputProcessors.componentProcessors.AbstractCursorProcessor#cursorEnded(org.mt4j.input.inputData.InputCursor, org.mt4j.input.inputData.MTFingerInputEvt)
 	 */
 	@Override
-	public void cursorEnded(InputCursor cursor, MTFingerInputEvt currentEvent) {
+	public void cursorEnded(InputCursor cursor, AbstractCursorInputEvt currentEvent) {
 //		logger.debug(this.getName() + " INPUT_ENDED RECIEVED - CURSOR: " + c.getId());
 		if (getLockedCursors().contains(cursor)){ //Cursors was a actual gesture cursors
 			//Check if we can resume the gesture with another cursor

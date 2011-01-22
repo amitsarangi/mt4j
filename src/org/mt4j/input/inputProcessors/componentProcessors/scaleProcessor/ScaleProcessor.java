@@ -20,8 +20,8 @@ package org.mt4j.input.inputProcessors.componentProcessors.scaleProcessor;
 import java.util.List;
 
 import org.mt4j.components.interfaces.IMTComponent3D;
+import org.mt4j.input.inputData.AbstractCursorInputEvt;
 import org.mt4j.input.inputData.InputCursor;
-import org.mt4j.input.inputData.MTFingerInputEvt;
 import org.mt4j.input.inputProcessors.IInputProcessor;
 import org.mt4j.input.inputProcessors.MTGestureEvent;
 import org.mt4j.input.inputProcessors.componentProcessors.AbstractComponentProcessor;
@@ -61,7 +61,7 @@ public class ScaleProcessor extends AbstractCursorProcessor {
 	
 
 	@Override
-	public void cursorStarted(InputCursor newCursor, MTFingerInputEvt fEvt) {
+	public void cursorStarted(InputCursor newCursor, AbstractCursorInputEvt fEvt) {
 		IMTComponent3D comp = fEvt.getTarget();
 		logger.debug(this.getName() + " INPUT_STARTED, Cursor: " + newCursor.getId());
 		
@@ -113,7 +113,7 @@ public class ScaleProcessor extends AbstractCursorProcessor {
 
 
 	@Override
-	public void cursorUpdated(InputCursor m, MTFingerInputEvt fEvt) {
+	public void cursorUpdated(InputCursor m, AbstractCursorInputEvt fEvt) {
 		List<InputCursor> alreadyLockedCursors = getLockedCursors();
 		if (sc != null && alreadyLockedCursors.size() == 2 && alreadyLockedCursors.contains(m)){
 			float newFactor = sc.getUpdatedScaleFactor(m);
@@ -128,7 +128,7 @@ public class ScaleProcessor extends AbstractCursorProcessor {
 	
 	
 	@Override
-	public void cursorEnded(InputCursor c, MTFingerInputEvt fEvt) {
+	public void cursorEnded(InputCursor c, AbstractCursorInputEvt fEvt) {
 		IMTComponent3D comp = fEvt.getTarget();
 		logger.debug(this.getName() + " INPUT_ENDED -> Active cursors: " + getCurrentComponentCursors().size() + " Available cursors: " + getFreeComponentCursors().size() +  " Locked cursors: " + getLockedCursors().size());
 		if (getLockedCursors().contains(c)){
@@ -156,7 +156,7 @@ public class ScaleProcessor extends AbstractCursorProcessor {
 		}
 	}
 
-	private void endGesture(InputCursor leftOverCursor, MTFingerInputEvt fEvt, InputCursor firstCursor, InputCursor secondCursor){
+	private void endGesture(InputCursor leftOverCursor, AbstractCursorInputEvt fEvt, InputCursor firstCursor, InputCursor secondCursor){
 		this.unLock(leftOverCursor);
 		this.fireGestureEvent(new ScaleEvent(this, MTGestureEvent.GESTURE_ENDED, fEvt.getCurrentTarget(), firstCursor, secondCursor, 1, 1, 1, sc.getFirstFingerNewPos()));
 		this.sc = null;

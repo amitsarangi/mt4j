@@ -28,7 +28,6 @@ import org.mt4j.components.interfaces.IMTComponent3D;
 import org.mt4j.input.inputData.AbstractCursorInputEvt;
 import org.mt4j.input.inputData.ActiveCursorPool;
 import org.mt4j.input.inputData.InputCursor;
-import org.mt4j.input.inputData.MTFingerInputEvt;
 import org.mt4j.input.inputData.MTInputEvent;
 import org.mt4j.input.inputProcessors.GestureUtils;
 import org.mt4j.input.inputProcessors.IInputProcessor;
@@ -63,25 +62,25 @@ public abstract class AbstractCursorProcessor extends AbstractComponentProcessor
 
 	@Override
 	public boolean isInterestedIn(MTInputEvent inputEvt) {
-//		return inputEvt instanceof AbstractCursorInputEvt;
-		return inputEvt instanceof MTFingerInputEvt 
-			&& inputEvt.hasTarget();
+		return inputEvt instanceof AbstractCursorInputEvt && inputEvt.hasTarget();
+//		return inputEvt instanceof MTFingerInputEvt 
+//			&& inputEvt.hasTarget();
 	}
 
 
 	@Override
 	public void preProcessImpl(MTInputEvent inputEvent) {
-		MTFingerInputEvt posEvt = (MTFingerInputEvt)inputEvent;
+		AbstractCursorInputEvt posEvt = (AbstractCursorInputEvt)inputEvent;
 		InputCursor c = posEvt.getCursor();
 		switch (posEvt.getId()) {
-		case MTFingerInputEvt.INPUT_STARTED:
+		case AbstractCursorInputEvt.INPUT_STARTED:
 			activeCursors.add(c);
 			activeCursorsWithEndedOnes.add(c);
 			c.registerForLocking(this);
 			break;
-		case MTFingerInputEvt.INPUT_UPDATED:
+		case AbstractCursorInputEvt.INPUT_UPDATED:
 			break;
-		case MTFingerInputEvt.INPUT_ENDED:
+		case AbstractCursorInputEvt.INPUT_ENDED:
 			activeCursors.remove(c);
 			c.unregisterForLocking(this);
 			break;
@@ -93,8 +92,8 @@ public abstract class AbstractCursorProcessor extends AbstractComponentProcessor
 
 	@Override
 	protected void processInputEvtImpl(MTInputEvent inputEvent) {
-//		AbstractCursorInputEvt posEvt = (AbstractCursorInputEvt)inputEvent;
-		MTFingerInputEvt posEvt = (MTFingerInputEvt)inputEvent;
+		AbstractCursorInputEvt posEvt = (AbstractCursorInputEvt)inputEvent;
+//		MTFingerInputEvt posEvt = (MTFingerInputEvt)inputEvent;
 		InputCursor c = posEvt.getCursor();
 		
 		//FIXME TEST/////////////////// TODO CLEAN UP / DO MORE ELEGANTLY
@@ -135,14 +134,14 @@ public abstract class AbstractCursorProcessor extends AbstractComponentProcessor
 		////////////////////////////
 		
 		switch (posEvt.getId()) {
-		case MTFingerInputEvt.INPUT_STARTED:
+		case AbstractCursorInputEvt.INPUT_STARTED:
 //			activeCursors.add(c);
 			cursorStarted(c, posEvt);
 			break;
-		case MTFingerInputEvt.INPUT_UPDATED:
+		case AbstractCursorInputEvt.INPUT_UPDATED:
 			cursorUpdated(c, posEvt);
 			break;
-		case MTFingerInputEvt.INPUT_ENDED:
+		case AbstractCursorInputEvt.INPUT_ENDED:
 //			activeCursors.remove(c);
 			cursorEnded(c, posEvt);
 //			if (c.isLockedBy(this)){
@@ -651,21 +650,21 @@ public abstract class AbstractCursorProcessor extends AbstractComponentProcessor
 	 * @param inputCursor
 	 * @param currentEvent
 	 */
-	abstract public void cursorStarted(InputCursor inputCursor, MTFingerInputEvt currentEvent);
+	abstract public void cursorStarted(InputCursor inputCursor, AbstractCursorInputEvt currentEvent);
 	
 	/**
 	 * Called when a cursor has been updated with a new input event.
 	 * @param inputCursor
 	 * @param currentEvent
 	 */
-	abstract public void cursorUpdated(InputCursor inputCursor, MTFingerInputEvt currentEvent);
+	abstract public void cursorUpdated(InputCursor inputCursor, AbstractCursorInputEvt currentEvent);
 	
 	/**
 	 * Called when a cursor has been removed.
 	 * @param inputCursor
 	 * @param currentEvent
 	 */
-	abstract public void cursorEnded(InputCursor inputCursor, MTFingerInputEvt currentEvent);
+	abstract public void cursorEnded(InputCursor inputCursor, AbstractCursorInputEvt currentEvent);
 	
 
 }

@@ -20,8 +20,8 @@ package org.mt4j.input.inputProcessors.componentProcessors.rotateProcessor;
 import java.util.List;
 
 import org.mt4j.components.interfaces.IMTComponent3D;
+import org.mt4j.input.inputData.AbstractCursorInputEvt;
 import org.mt4j.input.inputData.InputCursor;
-import org.mt4j.input.inputData.MTFingerInputEvt;
 import org.mt4j.input.inputProcessors.IInputProcessor;
 import org.mt4j.input.inputProcessors.MTGestureEvent;
 import org.mt4j.input.inputProcessors.componentProcessors.AbstractComponentProcessor;
@@ -66,7 +66,7 @@ public class RotateProcessor extends AbstractCursorProcessor {
 	
 	
 	@Override
-	public void cursorStarted(InputCursor newCursor, MTFingerInputEvt positionEvent) {
+	public void cursorStarted(InputCursor newCursor, AbstractCursorInputEvt positionEvent) {
 		IMTComponent3D comp = positionEvent.getTarget();
 		logger.debug(this.getName() + " INPUT_STARTED, Cursor: " + newCursor.getId());
 		
@@ -118,7 +118,7 @@ public class RotateProcessor extends AbstractCursorProcessor {
 
 
 	@Override
-	public void cursorUpdated(InputCursor m, MTFingerInputEvt positionEvent) {
+	public void cursorUpdated(InputCursor m, AbstractCursorInputEvt positionEvent) {
 		List<InputCursor> alreadyLockedCursors = getLockedCursors();
 		if (rc != null && alreadyLockedCursors.size() == 2 && alreadyLockedCursors.contains(m)){
 			float rotationAngleDegrees = rc.updateAndGetRotationAngle(m);
@@ -128,7 +128,7 @@ public class RotateProcessor extends AbstractCursorProcessor {
 
 	
 	@Override
-	public void cursorEnded(InputCursor c, MTFingerInputEvt positionEvent) {
+	public void cursorEnded(InputCursor c, AbstractCursorInputEvt positionEvent) {
 		IMTComponent3D comp = positionEvent.getTarget();
 		logger.debug(this.getName() + " INPUT_ENDED RECIEVED - CURSOR: " + c.getId());
 		logger.debug("Rotate ended -> Active cursors: " + getCurrentComponentCursors().size() + " Available cursors: " + getFreeComponentCursors().size() +  " Locked cursors: " + getLockedCursors().size());
@@ -155,7 +155,7 @@ public class RotateProcessor extends AbstractCursorProcessor {
 		}
 	}
 	
-	private void endGesture(InputCursor leftOverCursor, MTFingerInputEvt positionEvent, InputCursor firstCursor, InputCursor secondCursor){
+	private void endGesture(InputCursor leftOverCursor, AbstractCursorInputEvt positionEvent, InputCursor firstCursor, InputCursor secondCursor){
 		this.unLock(leftOverCursor);
 		this.fireGestureEvent(new RotateEvent(this, MTGestureEvent.GESTURE_ENDED, positionEvent.getCurrentTarget(), firstCursor, secondCursor, Vector3D.ZERO_VECTOR, rc.getRotationPoint(), 0));
 		this.rc = null;
