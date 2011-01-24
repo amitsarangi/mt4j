@@ -33,9 +33,12 @@ import org.mt4j.components.interfaces.IMTComponent3D;
 import org.mt4j.components.visibleComponents.StyleInfo;
 import org.mt4j.components.visibleComponents.shapes.GeometryInfo;
 import org.mt4j.input.inputData.InputCursor;
+import org.mt4j.util.GraphicsUtil;
 import org.mt4j.util.MT4jSettings;
 import org.mt4j.util.camera.IFrustum;
 import org.mt4j.util.camera.Icamera;
+import org.mt4j.util.opengl.GL10;
+import org.mt4j.util.opengl.GL11Plus;
 import org.mt4j.util.opengl.GLTexture;
 
 import processing.core.PApplet;
@@ -695,19 +698,19 @@ public class Tools3D {
 	}
 
 
-	public static void setLineSmoothEnabled(GL gl, boolean enable){
+	public static void setLineSmoothEnabled(GL10 gl, boolean enable){
 	//    	/*
 	    	//DO this if we use multisampling and enable line_smooth from the beginning 
 	    	//and use multisampling -> we turn off multisampling then before using line_smooth for best restult
 	    	if (enable){
 	    		if (MT4jSettings.getInstance().isMultiSampling()){
-					gl.glDisable(GL.GL_MULTISAMPLE);
+					gl.glDisable(GL10.GL_MULTISAMPLE);
 				}
 	    		//TODO Eventually even dont do that since enabled form the beginning!
-	    		gl.glEnable(GL.GL_LINE_SMOOTH); 
+	    		gl.glEnable(GL10.GL_LINE_SMOOTH); 
 	    	}else{
 	    		if (MT4jSettings.getInstance().isMultiSampling()){
-					gl.glEnable(GL.GL_MULTISAMPLE);
+					gl.glEnable(GL10.GL_MULTISAMPLE);
 				}
 	//    		gl.glDisable(GL.GL_LINE_SMOOTH); //Actually never disable line smooth
 	    	}
@@ -775,7 +778,9 @@ public class Tools3D {
 			boolean useGradient
 		)
 	{
-		GL gl=((PGraphicsOpenGL)pa.g).beginGL();
+//		GL gl=((PGraphicsOpenGL)pa.g).beginGL();
+		GL10 gl = GraphicsUtil.getGL();
+		GL11Plus gl11Plus = GraphicsUtil.getGL11Plus();
 		
 		/*
 		//Unbind any VBOs first
@@ -785,14 +790,14 @@ public class Tools3D {
 		
 		//Generate new list IDs
 		int[] returnVal = new int[2];
-		int listIDFill = gl.glGenLists(1);
+		int listIDFill = gl11Plus.glGenLists(1);
 		if (listIDFill == 0){
 			System.err.println("Failed to create display list");
 			returnVal[0] = -1;
 			returnVal[1] = -1;
 			return returnVal;
 		}
-		int listIDOutline = gl.glGenLists(1);
+		int listIDOutline = gl11Plus.glGenLists(1);
 		if (listIDOutline == 0){
 			System.err.println("Failed to create display list");
 			returnVal[0] = -1;
@@ -806,7 +811,7 @@ public class Tools3D {
 	    float maxX = minMax[2]+10;
 	    float maxY = minMax[3]+10;
 	    
-	    gl.glColor4d (0.0, 0.0, 0.0, 1.0);
+	    gl.glColor4f (0.0f, 0.0f, 0.0f, 1.0f);
 	    
 	    gl.glEnableClientState(GL.GL_VERTEX_ARRAY);
 		gl.glEnableClientState(GL.GL_COLOR_ARRAY);
@@ -817,7 +822,7 @@ public class Tools3D {
 		//Using the strokecolor buffer strokecolor AND fill!
 		
 		//Generate List
-		gl.glNewList(listIDFill, GL.GL_COMPILE);
+		gl11Plus.glNewList(listIDFill, GL.GL_COMPILE);
 			/////////////////////////////////////
 			// Clear stencil and disable color //
 		    // Draw with STENCIL			   //
@@ -852,7 +857,7 @@ public class Tools3D {
 		    //TODO notice, "stencilOP" zum wert in stencilbuffer reinschreiben
 		    //"stencilfunc" vergleicht framebuffer mit stencilbuffer und macht stencilOP wenn bedingung stimmt
 		    
-		    gl.glColor4d (colorBuff.get(0), colorBuff.get(1), colorBuff.get(2), colorBuff.get(3));
+		    gl.glColor4f (colorBuff.get(0), colorBuff.get(1), colorBuff.get(2), colorBuff.get(3));
 		    
 			//DRAW //FIXME why does this not work?
 			if (indexBuff == null){
@@ -911,7 +916,7 @@ public class Tools3D {
 		    ////////////////////////////////////
 //		    gl.glDepthMask(true); //Disabled to avoid too many state switches, 
 		    gl.glDisable (GL.GL_STENCIL_TEST);	 //Disabled to avoid too many state switches
-		gl.glEndList();
+		    gl11Plus.glEndList();
 		returnVal[0] = listIDFill;
 		    
 		//////////////////////////////
@@ -919,7 +924,7 @@ public class Tools3D {
 		//////////////////////////////
 		gl.glColorPointer(4, GL.GL_FLOAT, 0, strokeColBuff);
 		
-		gl.glNewList(listIDOutline, GL.GL_COMPILE);
+		gl11Plus.glNewList(listIDOutline, GL.GL_COMPILE);
 //		  	gl.glEnable(GL.GL_STENCIL_TEST); 
 		  	
 		  	
@@ -948,7 +953,7 @@ public class Tools3D {
 //			gl.glDrawArrays(GL.GL_LINE_STRIP, 0, vertexArr.length);
 		    
 		    /////TEST/// //TODO make vertex pointer arrays?
-		    gl.glColor4d (strokeColBuff.get(0), strokeColBuff.get(1), strokeColBuff.get(2), strokeColBuff.get(3));
+		    gl.glColor4f (strokeColBuff.get(0), strokeColBuff.get(1), strokeColBuff.get(2), strokeColBuff.get(3));
 		    for (Vertex[] outline : outLines){
 				 gl.glBegin (GL.GL_LINE_STRIP);
 				 	for (Vertex vertex : outline){
@@ -965,7 +970,7 @@ public class Tools3D {
 //			gl.glDisable (GL.GL_STENCIL_TEST);	
 			
 //		    gl.glDepthMask(true);
-		gl.glEndList();
+			gl11Plus.glEndList();
 		
 		returnVal[1] = listIDOutline;
 		
@@ -1047,19 +1052,19 @@ public class Tools3D {
 		FloatBuffer strokeColBuff 	= geometryInfo.getStrokeColBuff();
 		IntBuffer indexBuff 		= geometryInfo.getIndexBuff(); //null if not indexed
 		
-		GL gl;
-		gl =((PGraphicsOpenGL)pa.g).gl;
+		GL10 gl = GraphicsUtil.getGL();
+		GL11Plus gl11Plus = GraphicsUtil.getGL11Plus();
 		
 		//Generate new list IDs
 		int[] returnVal = new int[2];
-		int listIDFill = gl.glGenLists(1);
+		int listIDFill = gl11Plus.glGenLists(1);
 		if (listIDFill == 0){
 			System.err.println("Failed to create fill display list");
 			returnVal[0] = -1;
 			returnVal[1] = -1;
 			return returnVal;
 		}
-		int listIDOutline = gl.glGenLists(1);
+		int listIDOutline = gl11Plus.glGenLists(1);
 		if (listIDOutline == 0){
 			System.err.println("Failed to create stroke display list");
 			returnVal[0] = -1;
@@ -1108,7 +1113,7 @@ public class Tools3D {
 		gl.glColorPointer(4, GL.GL_FLOAT, 0, colorBuff);
 		
 		// START recording display list and DRAW////////////////////
-		gl.glNewList(listIDFill, GL.GL_COMPILE);
+		gl11Plus.glNewList(listIDFill, GL.GL_COMPILE);
 			if (textureDrawn){
 				gl.glEnable(textureTarget); //muss texture in der liste gebinded werden? anscheinend JA!
 				gl.glBindTexture(textureTarget, usedTextureID);
@@ -1125,7 +1130,7 @@ public class Tools3D {
 				gl.glBindTexture(textureTarget, 0);
 				gl.glDisable(textureTarget); 
 			}
-		gl.glEndList();
+		gl11Plus.glEndList();
 		//// STOP recording display list and DRAW////////////////////
 		
 		if (geometryInfo.isContainsNormals()){
@@ -1140,7 +1145,7 @@ public class Tools3D {
 		/////// DO OUTLINE LIST////////////////////////////
 		gl.glColorPointer(4, GL.GL_FLOAT, 0, strokeColBuff);
 		//Start recording display list
-		gl.glNewList(listIDOutline, GL.GL_COMPILE);
+		gl11Plus.glNewList(listIDOutline, GL.GL_COMPILE);
 		
 //			if (drawSmooth)
 //				gl.glEnable(GL.GL_LINE_SMOOTH);
@@ -1162,7 +1167,7 @@ public class Tools3D {
 			//FIXME TEST
 			Tools3D.setLineSmoothEnabled(gl, false);
 			
-		gl.glEndList();
+		gl11Plus.glEndList();
 		returnVal[1] = listIDOutline;
 		////////////////////////////////////////////////////
 		
@@ -1190,12 +1195,13 @@ public class Tools3D {
 	 */
 	public static int generateOutLineDisplayList(PApplet pa, FloatBuffer vertBuff, FloatBuffer strokeColBuff, IntBuffer indexBuff, 
 												boolean drawSmooth, float strokeWeight, short lineStipple){
-		GL gl;
-		gl = beginGL(pa.g);
+//		GL gl = beginGL(pa.g);
+		GL10 gl = GraphicsUtil.getGL();
+		GL11Plus gl11Plus = GraphicsUtil.getGL11Plus();
 		
 		//Generate new list IDs
 		int returnVal = -1;
-		int listIDOutline = gl.glGenLists(1);
+		int listIDOutline = gl11Plus.glGenLists(1);
 		if (listIDOutline == 0){
 			System.err.println("Failed to create display list");
 			return returnVal;
@@ -1206,7 +1212,7 @@ public class Tools3D {
 		gl.glColorPointer(4, GL.GL_FLOAT, 0, strokeColBuff);
 		
 		//Start recording display list
-		gl.glNewList(listIDOutline, GL.GL_COMPILE);
+		gl11Plus.glNewList(listIDOutline, GL.GL_COMPILE);
 //			if (drawSmooth)
 //				gl.glEnable(GL.GL_LINE_SMOOTH);
 			//FIXME TEST for multisample
@@ -1215,7 +1221,7 @@ public class Tools3D {
 			if (strokeWeight > 0)
 				gl.glLineWidth(strokeWeight);
 			if (lineStipple != 0){
-				gl.glLineStipple(1, lineStipple);
+				gl11Plus.glLineStipple(1, lineStipple);
 				gl.glEnable(GL.GL_LINE_STIPPLE);
 			}
 			
@@ -1234,7 +1240,7 @@ public class Tools3D {
 			//FIXME TEST for multisample
 			Tools3D.setLineSmoothEnabled(gl, false);
 			
-		gl.glEndList();
+		gl11Plus.glEndList();
 		returnVal = listIDOutline;
 		
 		//Disable client states

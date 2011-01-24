@@ -81,7 +81,11 @@ public class GLStencilUtil {
 	 */
 	public void beginDrawClipShape(GL10 gl){ //begin draw clip shape
 //		gl.glPushAttrib(GL10.GL_STENCIL_BUFFER_BIT | GL10.GL_STENCIL_TEST); //FIXME do only at initialization??
-		gl.glPushAttrib(GL10.GL_STENCIL_BUFFER_BIT); //FIXME do only at initialization??
+//		gl.glPushAttrib(GL10.GL_STENCIL_BUFFER_BIT); //FIXME do only at initialization??
+		if (gl instanceof GL11Plus) {
+			GL11Plus gl11Plus = (GL11Plus) gl;
+			gl11Plus.glPushAttrib(GL10.GL_STENCIL_BUFFER_BIT);
+		}
 		
 		if (!initialized){
 //			gl.glPushAttrib(GL10.GL_STENCIL_BUFFER_BIT | GL10.GL_STENCIL_TEST);
@@ -241,7 +245,11 @@ public class GLStencilUtil {
 		}
 		
 		//Restore stencil attributes, disables stencil test and restores stencil buffer bit
-		gl.glPopAttrib(); //FIXME do this only when stack is emtpied?
+//		gl.glPopAttrib(); //FIXME do this only when stack is emtpied?
+		if (gl instanceof GL11Plus) {
+			GL11Plus gl11Plus = (GL11Plus) gl;
+			gl11Plus.glPopAttrib();
+		}
 	}
 	
 

@@ -65,6 +65,7 @@ import org.mt4j.util.logging.MTLoggerFactory;
 import org.mt4j.util.math.Tools3D;
 import org.mt4j.util.opengl.GL10;
 import org.mt4j.util.opengl.GL11;
+import org.mt4j.util.opengl.GL11Plus;
 import org.mt4j.util.opengl.GL20;
 import org.mt4j.util.opengl.GLCommon;
 import org.mt4j.util.opengl.GLFBO;
@@ -154,10 +155,13 @@ public abstract class MTApplication extends PApplet implements IMTApplication{
 	protected GL10 iGL10;
 	protected GL11 iGL11;
 	protected GL20 iGL20;
-
+	protected GL11Plus iGL11Plus;
+	
 	protected boolean gl20Supported;
 
 	protected boolean gl11Supported;
+
+	protected boolean gl11PlusSupported;
 
 	
 //	private static boolean fullscreen;
@@ -651,8 +655,11 @@ public abstract class MTApplication extends PApplet implements IMTApplication{
                 //FIXME ADDED
                 iGL10  = jogl20;
                 iGL11 = jogl20;
+                iGL11Plus = jogl20;
                 glCommon = iGL20;
                 this.gl20Supported = true;
+                this.gl11Supported = true;
+                this.gl11PlusSupported = true;
         } else {
                 if (major == 1 && minor < 5) {
                         iGL10 = new JoglGL10(((PGraphicsOpenGL)g).gl);
@@ -920,6 +927,7 @@ public abstract class MTApplication extends PApplet implements IMTApplication{
 	
 	private boolean inDoSceneChange = false;
 	private TransitionInfo pendingTransition;
+
 	
 	/**
 	 * The Class TransitionInfo. Holding info about a scene change transition.
@@ -1317,6 +1325,10 @@ public abstract class MTApplication extends PApplet implements IMTApplication{
     public boolean isGL11Available (){
     	return this.gl11Supported;
     }
+    
+    public boolean isGL11PlusAvailable() {
+    	return this.gl11PlusSupported;
+	}
 
     /**
      * Returns whether OpenGL ES 2.0 is available. If it is you can get an instance of {@link GL20} via {@link #getGL20()} to
@@ -1357,7 +1369,9 @@ public abstract class MTApplication extends PApplet implements IMTApplication{
     	return this.iGL20;
     }
     
-    
+    public GL11Plus getGL11Plus (){
+    	return this.iGL11Plus;
+    }
 	
 
 /////////////////////////	
@@ -1474,5 +1488,7 @@ public abstract class MTApplication extends PApplet implements IMTApplication{
 		return keyListeners.toArray(new IKeyListener[this.keyListeners.size()]);
 	}
 	//////////////////////////////// KeyListener
+
+	
 
 }

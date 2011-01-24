@@ -32,7 +32,7 @@ import javax.media.opengl.GL;
  * @author mzechner
  * 
  */
-public final class JoglGL20Plus implements GL20, GL11 {
+public final class JoglGL20Plus implements GL20, GL11, GL11Plus {
 	private final GL gl;
 
 	public JoglGL20Plus (GL gl) {
@@ -40,38 +40,95 @@ public final class JoglGL20Plus implements GL20, GL11 {
 	}
 	
 	//Added for backwards compatibility
+	@Override
 	public void glCallList(int id) {
 		gl.glCallList(id);
 	}
 
+	@Override
 	public void glCallLists(int arg0, int arg1, Buffer arg2) {
 		gl.glCallLists(arg0, arg1, arg2);
 	}
 
+	@Override
 	public int glGenLists(int id) {
 		return gl.glGenLists(id);
 	}
 	
+	@Override
 	public void glPushAttrib(int att){
 		gl.glPushAttrib(att);
 	}
 	
+	@Override
 	public void glPopAttrib(){
 		gl.glPopAttrib();
 	}
 	
+	@Override
 	public void glLineStipple(int t, short stipple){
 		gl.glLineStipple(t, stipple);
 	}
-	
-	public void glTexImage1D(){
-		gl.glTexImage1D(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7);
+
+	@Override
+	public void glTexImage1D(
+			int target, 
+			int level, 
+			int internalFormat, 
+			int width, 
+			int border, 
+			int format, 
+			int type, 
+			Buffer data)
+	{
+		gl.glTexImage1D(target, level, internalFormat, width, border, format, type, data);
+	}
+
+	@Override
+	public void glTexSubImage1D(
+			int target, 
+			int level, 
+			int xoffset,
+			int width, 
+			int format, 
+			int type, 
+			Buffer pixels)
+	{
+		gl.glTexSubImage1D(target,level,xoffset,width,format,type, pixels);
 	}
 	
-	public void glTexSubImage1D(){
-		gl.glTexSubImage1D(arg0, arg1, arg2, arg3, arg4, arg5, arg6);
+	@Override
+	public void glGetTexImage(
+			int  	target, 
+			int  	level, 
+			int  	format, 
+			int  	type, 
+			Buffer	img)
+	{
+		gl.glGetTexImage(target, level, format, type, img);
 	}
 	
+	@Override
+	public void glColorMaterial(int face, int mode){
+		gl.glColorMaterial(face, mode);
+	}
+	
+	
+	@Override
+	public void glNewList(int id, int mode) {
+		gl.glNewList(id, mode);
+	}
+	
+	@Override
+	public void glEndList(){
+		gl.glEndList();
+	}
+	
+	@Override
+	public void glDeleteLists(int list, int range){
+		gl.glDeleteLists(list, range);
+	}
+
 	//TODO dont check in drawMethods if glDrawBuffer supported
 	//-> just cast -> but check at setUseVBOs() and setUseDisplaylists() if correct gl version
 	

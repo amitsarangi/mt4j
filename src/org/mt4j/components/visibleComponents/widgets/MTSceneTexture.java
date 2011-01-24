@@ -19,8 +19,6 @@ package org.mt4j.components.visibleComponents.widgets;
 
 import java.util.HashMap;
 
-//import javax.media.opengl.GL;
-
 import org.mt4j.MTApplication;
 import org.mt4j.components.visibleComponents.shapes.MTRectangle;
 import org.mt4j.input.inputData.AbstractCursorInputEvt;
@@ -38,9 +36,10 @@ import org.mt4j.util.math.Vector3D;
 import org.mt4j.util.math.Vertex;
 import org.mt4j.util.opengl.GL10;
 import org.mt4j.util.opengl.GL11;
+import org.mt4j.util.opengl.GL11Plus;
 import org.mt4j.util.opengl.GL20;
-import org.mt4j.util.opengl.GLFboStack;
 import org.mt4j.util.opengl.GLFBO;
+import org.mt4j.util.opengl.GLFboStack;
 import org.mt4j.util.opengl.GLStencilUtil;
 import org.mt4j.util.opengl.GLTexture;
 
@@ -157,7 +156,8 @@ public class MTSceneTexture extends MTRectangle {
 	public void drawComponent(PGraphics g){
 //		PGraphicsOpenGL pgl = (PGraphicsOpenGL)g; 
 //		GL gl = pgl.gl;
-		GL20 gl = GraphicsUtil.getGL20();
+		GL11 gl = GraphicsUtil.getGL11();
+		GL20 gl20 = GraphicsUtil.getGL20();
 
 //		boolean b = false;
 //		if (GLStencilUtil.getInstance().isClipActive()){
@@ -169,13 +169,18 @@ public class MTSceneTexture extends MTRectangle {
 		fbo.startRenderToTexture();
 			//Change blending mode to avoid artifacts from alpha blending at antialiasing for example
 //			gl.glBlendFuncSeparate(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA, GL10.GL_ZERO, GL10.GL_ONE);
-			gl.glBlendFuncSeparate(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA, GL10.GL_ONE, GL10.GL_ONE_MINUS_SRC_ALPHA);
+			if (gl20 != null)
+				gl20.glBlendFuncSeparate(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA, GL10.GL_ONE, GL10.GL_ONE_MINUS_SRC_ALPHA);
 			
 //			/*
 			boolean clipping = false;
 			if (GLStencilUtil.getInstance().isClipActive()){
 				clipping = true;
-				gl.glPushAttrib(GL10.GL_STENCIL_BUFFER_BIT);
+				if (gl instanceof GL11Plus) {
+					GL11Plus gl11Plus = (GL11Plus) gl;
+					gl11Plus.glPushAttrib(GL10.GL_STENCIL_BUFFER_BIT);
+				}
+//				gl.glPushAttrib(GL10.GL_STENCIL_BUFFER_BIT);
 				gl.glClearStencil(GLStencilUtil.stencilValueStack.peek());
 				gl.glClear(GL10.GL_STENCIL_BUFFER_BIT);
 				//			gl.glDisable(GL10.GL_STENCIL_TEST);
@@ -190,7 +195,11 @@ public class MTSceneTexture extends MTRectangle {
 			
 //			/*
 			if (clipping){
-				gl.glPopAttrib();
+//				gl.glPopAttrib();
+				if (gl instanceof GL11Plus) {
+					GL11Plus gl11Plus = (GL11Plus) gl;
+					gl11Plus.glPopAttrib();
+				}
 			}
 //			 */
 //			GLStencilUtil.getInstance().endClipping(gl, this);

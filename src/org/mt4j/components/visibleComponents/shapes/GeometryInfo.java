@@ -26,12 +26,12 @@ import org.mt4j.MTApplication;
 import org.mt4j.components.visibleComponents.StyleInfo;
 import org.mt4j.util.GraphicsUtil;
 import org.mt4j.util.MT4jSettings;
-import org.mt4j.util.math.Tools3D;
 import org.mt4j.util.math.ToolsBuffers;
 import org.mt4j.util.math.ToolsVBO;
 import org.mt4j.util.math.Vector3D;
 import org.mt4j.util.math.Vertex;
-import org.mt4j.util.opengl.GL10;
+import org.mt4j.util.opengl.GL11;
+import org.mt4j.util.opengl.GL11Plus;
 
 import processing.core.PApplet;
 
@@ -709,25 +709,26 @@ public class GeometryInfo {
 	 */
 	public void deleteAllVBOs(){
 		if (MT4jSettings.getInstance().isOpenGlMode()){
-			GL gl = Tools3D.getGL(r);
+//			GL gl = Tools3D.getGL(r);
+			GL11 gl = GraphicsUtil.getGL11();
 			if (this.getVBOVerticesName() != -1){
-				gl.glDeleteBuffersARB(1, new int[]{this.getVBOVerticesName()},0);
+				gl.glDeleteBuffers(1, new int[]{this.getVBOVerticesName()},0);
 				this.vboVerticesID = -1;
 			}
 			if (this.getVBOColorName() != -1){
-				gl.glDeleteBuffersARB(1, new int[]{this.getVBOColorName()},0);
+				gl.glDeleteBuffers(1, new int[]{this.getVBOColorName()},0);
 				this.vboColorID = -1;
 			}
 			if (this.getVBOStrokeColorName() != -1){
-				gl.glDeleteBuffersARB(1, new int[]{this.getVBOStrokeColorName()},0);
+				gl.glDeleteBuffers(1, new int[]{this.getVBOStrokeColorName()},0);
 				this.vboStrokeColID = -1;
 			}
 			if (this.getVBOTextureName() != -1){
-				gl.glDeleteBuffersARB(1, new int[]{this.getVBOTextureName()},0);
+				gl.glDeleteBuffers(1, new int[]{this.getVBOTextureName()},0);
 				this.vboTextureID = -1;
 			}
 			if (this.getVBONormalsName() != -1){
-				gl.glDeleteBuffersARB(1, new int[]{this.getVBONormalsName()},0);
+				gl.glDeleteBuffers(1, new int[]{this.getVBONormalsName()},0);
 				this.vboNormalsID = -1;
 			}
 		}
@@ -815,7 +816,8 @@ public class GeometryInfo {
 		int[] displayListIDs = new int[]{-1,-1};
 
 		//Create a new empty displaylist
-		GL gl = Tools3D.getGL(getRenderer());
+//		GL gl = Tools3D.getGL(getRenderer());
+		GL11Plus gl = GraphicsUtil.getGL11Plus();
 		int listIDFill = gl.glGenLists(1);
 		if (listIDFill == 0){
 			System.err.println("Failed to create fill display list");
@@ -872,10 +874,11 @@ public class GeometryInfo {
 	 */
 	public void deleteDisplayLists(){
 		if (MT4jSettings.getInstance().isOpenGlMode()){
-			GL gl = Tools3D.getGL(this.r);
+//			GL gl = Tools3D.getGL(this.r);
+			GL11Plus gl11Plus = GraphicsUtil.getGL11Plus();
 			for (int id : this.displayListIDs){
 				if (id != -1){
-					gl.glDeleteLists(id, 1);
+					gl11Plus.glDeleteLists(id, 1);
 				}
 			}
 			this.displayListIDs[0] = -1;

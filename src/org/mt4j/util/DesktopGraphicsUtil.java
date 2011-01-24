@@ -3,12 +3,12 @@ package org.mt4j.util;
 import org.mt4j.IMTApplication;
 import org.mt4j.util.opengl.GL10;
 import org.mt4j.util.opengl.GL11;
+import org.mt4j.util.opengl.GL11Plus;
 import org.mt4j.util.opengl.GL20;
 
 import processing.core.PGraphics;
 import processing.core.PGraphics3D;
 import processing.core.PMatrix3D;
-import processing.opengl.PGraphicsOpenGL;
 
 public class DesktopGraphicsUtil implements IGraphicsUtil {
 	private final IMTApplication app;
@@ -96,6 +96,11 @@ public class DesktopGraphicsUtil implements IGraphicsUtil {
     @Override
 	public int getPlatform() {
 		return IGraphicsUtil.DESKTOP;
+	}
+
+	@Override
+	public GL11Plus getGL11Plus() {
+		return app.getGL11Plus();
 	}
 
 	

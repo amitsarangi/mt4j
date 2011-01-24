@@ -26,9 +26,13 @@ import javax.media.opengl.GL;
 import org.mt4j.components.bounds.IBoundingShape;
 import org.mt4j.components.visibleComponents.shapes.GeometryInfo;
 import org.mt4j.components.visibleComponents.shapes.mesh.MTTriangleMesh;
+import org.mt4j.util.GraphicsUtil;
 import org.mt4j.util.math.Tools3D;
 import org.mt4j.util.math.ToolsGeometry;
 import org.mt4j.util.math.Vertex;
+import org.mt4j.util.opengl.GL10;
+import org.mt4j.util.opengl.GL11;
+import org.mt4j.util.opengl.GL11Plus;
 import org.mt4j.util.opengl.GLTexture;
 import org.mt4j.util.opengl.GluTrianglulator;
 
@@ -115,7 +119,9 @@ public class VectorFontCharacter extends
 
 
 	@Override
-	protected void drawPureGl(GL gl) {
+	protected void drawPureGl(GL10 gl) {
+		GL11 gl11 = GraphicsUtil.getGL11();
+		
 //		super.drawPureGl(gl);
 		//Get display array/buffer pointers
 		FloatBuffer tbuff 			= this.getGeometryInfo().getTexBuff();
@@ -126,8 +132,10 @@ public class VectorFontCharacter extends
 		gl.glEnableClientState(GL.GL_VERTEX_ARRAY);
 		
 		if (this.isUseVBOs()){//Vertices
-			gl.glBindBuffer(GL.GL_ARRAY_BUFFER, this.getGeometryInfo().getVBOVerticesName());
-			gl.glVertexPointer(3, GL.GL_FLOAT, 0, 0);
+//			gl.glBindBuffer(GL.GL_ARRAY_BUFFER, this.getGeometryInfo().getVBOVerticesName());
+//			gl.glVertexPointer(3, GL.GL_FLOAT, 0, 0);
+			gl11.glBindBuffer(GL.GL_ARRAY_BUFFER, this.getGeometryInfo().getVBOVerticesName());
+			gl.glVertexPointer(3, GL.GL_FLOAT, 0, null);
 		}else{
 			gl.glVertexPointer(3, GL.GL_FLOAT, 0, vertBuff);
 		}
@@ -152,8 +160,10 @@ public class VectorFontCharacter extends
 				gl.glEnableClientState(GL.GL_TEXTURE_COORD_ARRAY);
 				
 				if (this.isUseVBOs()){//Texture
-					gl.glBindBuffer(GL.GL_ARRAY_BUFFER, this.getGeometryInfo().getVBOTextureName());
-					gl.glTexCoordPointer(2, GL.GL_FLOAT, 0, 0);
+//					gl.glBindBuffer(GL.GL_ARRAY_BUFFER, this.getGeometryInfo().getVBOTextureName());
+//					gl.glTexCoordPointer(2, GL.GL_FLOAT, 0, 0);
+					gl11.glBindBuffer(GL.GL_ARRAY_BUFFER, this.getGeometryInfo().getVBOTextureName());
+					gl.glTexCoordPointer(2, GL.GL_FLOAT, 0, null);
 				}else{
 					gl.glTexCoordPointer(2, GL.GL_FLOAT, 0, tbuff);
 				}
@@ -164,8 +174,10 @@ public class VectorFontCharacter extends
 			if (this.getGeometryInfo().isContainsNormals()){
 				gl.glEnableClientState(GL.GL_NORMAL_ARRAY);
 				if (this.isUseVBOs()){
-					gl.glBindBuffer(GL.GL_ARRAY_BUFFER, this.getGeometryInfo().getVBONormalsName());
-					gl.glNormalPointer(GL.GL_FLOAT, 0, 0); 
+//					gl.glBindBuffer(GL.GL_ARRAY_BUFFER, this.getGeometryInfo().getVBONormalsName());
+//					gl.glNormalPointer(GL.GL_FLOAT, 0, 0); 
+					gl11.glBindBuffer(GL.GL_ARRAY_BUFFER, this.getGeometryInfo().getVBONormalsName());
+					gl.glNormalPointer(GL.GL_FLOAT, 0, null); 
 				}else{
 					gl.glNormalPointer(GL.GL_FLOAT, 0, this.getGeometryInfo().getNormalsBuff());
 				}
@@ -198,7 +210,9 @@ public class VectorFontCharacter extends
 			//SET LINE STIPPLE
 			short lineStipple = this.getLineStipple();
 			if (lineStipple != 0){
-				gl.glLineStipple(1, lineStipple);
+//				gl.glLineStipple(1, lineStipple);
+				GL11Plus gl11Plus = (GL11Plus)gl;
+				gl11Plus.glLineStipple(1, lineStipple);
 				gl.glEnable(GL.GL_LINE_STIPPLE);
 			}
 			
@@ -225,8 +239,10 @@ public class VectorFontCharacter extends
 		gl.glDisableClientState(GL.GL_VERTEX_ARRAY);
 		
 		if (this.isUseVBOs()){
-			gl.glBindBuffer(GL.GL_ARRAY_BUFFER, 0);
-			gl.glBindBuffer(GL.GL_ELEMENT_ARRAY_BUFFER, 0);
+//			gl.glBindBuffer(GL.GL_ARRAY_BUFFER, 0);
+//			gl.glBindBuffer(GL.GL_ELEMENT_ARRAY_BUFFER, 0);
+			gl11.glBindBuffer(GL.GL_ARRAY_BUFFER, 0);
+			gl11.glBindBuffer(GL.GL_ELEMENT_ARRAY_BUFFER, 0);
 		}
 	}
 	

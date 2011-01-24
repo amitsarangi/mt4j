@@ -28,10 +28,12 @@ import org.mt4j.components.visibleComponents.shapes.AbstractShape;
 import org.mt4j.components.visibleComponents.shapes.GeometryInfo;
 import org.mt4j.components.visibleComponents.shapes.MTPolygon;
 import org.mt4j.components.visibleComponents.shapes.mesh.MTTriangleMesh;
+import org.mt4j.util.GraphicsUtil;
 import org.mt4j.util.MT4jSettings;
 import org.mt4j.util.MTColor;
-import org.mt4j.util.math.Tools3D;
 import org.mt4j.util.math.Vertex;
+import org.mt4j.util.opengl.GL10;
+import org.mt4j.util.opengl.GL11Plus;
 
 import processing.core.PApplet;
 import processing.core.PGraphics;
@@ -240,13 +242,17 @@ public class MTKey extends
 	public void drawComponent(PGraphics g) {
 		if (this.isUseDirectGL()){
 			if (this.isUseDisplayList()){
-				GL gl = Tools3D.beginGL(g);
+//				GL gl = Tools3D.beginGL(g);
+				GL10 gl = GraphicsUtil.getGL();
+				GL11Plus gl11Plus = GraphicsUtil.getGL11Plus();
 				int[] pds = buttonBackGround.getGeometryInfo().getDisplayListIDs();
 				//Draw only filling of background polygon, without outer stroke
-				gl.glCallList(pds[0]);
+//				gl.glCallList(pds[0]);
+				gl11Plus.glCallList(pds[0]);
 				gl.glColor4f(this.getFillColor().getR(), this.getFillColor().getG(), this.getFillColor().getB(), this.getFillColor().getAlpha()); //needed when we use the displaylist of the key font, which be default doesent set its own fillcolor
 				super.drawComponent(gl); 
-				Tools3D.endGL(g);
+//				Tools3D.endGL(g);
+				GraphicsUtil.endGL();
 			}else{
 				buttonBackGround.drawComponent(g);
 				super.drawComponent(g); 

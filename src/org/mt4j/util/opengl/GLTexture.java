@@ -546,7 +546,11 @@ public class GLTexture extends PImage {
 
 		switch (glTextureSettings.target) {
 		case TEXTURE_1D:
-			gl.glTexImage1D(textureTarget, 0, internalFormat, width, 0, GL.GL_RGBA, GL.GL_UNSIGNED_BYTE, null); 
+			if (gl instanceof GL11Plus) {
+				GL11Plus gl11Plus = (GL11Plus) gl;
+				gl11Plus.glTexImage1D(textureTarget, 0, internalFormat, width, 0, GL.GL_RGBA, GL.GL_UNSIGNED_BYTE, null); 
+			}
+//			gl.glTexImage1D(textureTarget, 0, internalFormat, width, 0, GL.GL_RGBA, GL.GL_UNSIGNED_BYTE, null); 
 			break;
 		default:
 			gl.glTexImage2D(textureTarget, 0, internalFormat, width, height, 0, GL.GL_RGBA, GL.GL_UNSIGNED_BYTE, null); //FIXME always use GL_RGBA as glformat??
@@ -717,7 +721,11 @@ public class GLTexture extends PImage {
 			if (glFormat == GL.GL_BGRA){ 
 				glFormat = GL.GL_RGBA;
 			}
-			gl.glTexSubImage1D(textureTarget, 0, 0, this.width, glFormat, type, buffer);
+			if (gl instanceof GL11Plus) {
+				GL11Plus gl11Plus = (GL11Plus) gl;
+				gl11Plus.glTexSubImage1D(textureTarget, 0, 0, this.width, glFormat, type, buffer);
+			}
+//			gl.glTexSubImage1D(textureTarget, 0, 0, this.width, glFormat, type, buffer);
 			break;
 		case TEXTURE_2D:
 		case RECTANGULAR:
@@ -781,12 +789,21 @@ public class GLTexture extends PImage {
      *
      */
     public void updatePImageFromGLTexture(){
-        IntBuffer buff = BufferUtil.newIntBuffer(this.width * this.height);
-        int textureTarget = this.glTextureSettings.target.getGLConstant();
-        gl.glBindTexture(textureTarget, this.glTextureID[0]);
-        gl.glGetTexImage(textureTarget, 0, GL.GL_BGRA, GL.GL_UNSIGNED_BYTE, buff);
-        gl.glBindTexture(textureTarget, 0);
-        buff.get(pixels);
+    	if (gl instanceof GL11Plus) {
+			GL11Plus gl11Plus = (GL11Plus) gl;
+			IntBuffer buff = BufferUtil.newIntBuffer(this.width * this.height);
+	        int textureTarget = this.glTextureSettings.target.getGLConstant();
+	        gl11Plus.glBindTexture(textureTarget, this.glTextureID[0]);
+	        gl11Plus.glGetTexImage(textureTarget, 0, GL.GL_BGRA, GL.GL_UNSIGNED_BYTE, buff);
+	        gl11Plus.glBindTexture(textureTarget, 0);
+	        buff.get(pixels);
+		}
+//    	IntBuffer buff = BufferUtil.newIntBuffer(this.width * this.height);
+//        int textureTarget = this.glTextureSettings.target.getGLConstant();
+//        gl.glBindTexture(textureTarget, this.glTextureID[0]);
+//        gl.glGetTexImage(textureTarget, 0, GL.GL_BGRA, GL.GL_UNSIGNED_BYTE, buff);
+//        gl.glBindTexture(textureTarget, 0);
+//        buff.get(pixels);
     }
     
     

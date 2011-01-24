@@ -25,6 +25,7 @@ import java.nio.IntBuffer;
 
 import org.mt4j.util.GraphicsUtil;
 import org.mt4j.util.opengl.GL10;
+import org.mt4j.util.opengl.GL11Plus;
 
 import processing.core.PApplet;
 
@@ -56,7 +57,11 @@ public class ToolsLight {
     	
     	//This means that glMaterial will control the polygon's specular and emission colours
     	//and the ambient and diffuse will both be set using glColor. 
-    	gl.glColorMaterial(GL10.GL_FRONT, GL10.GL_AMBIENT_AND_DIFFUSE);
+    	if (gl instanceof GL11Plus) {
+			GL11Plus gl11Plus = (GL11Plus) gl;
+			gl11Plus.glColorMaterial(GL10.GL_FRONT, GL10.GL_AMBIENT_AND_DIFFUSE);
+		}
+//    	gl.glColorMaterial(GL10.GL_FRONT, GL10.GL_AMBIENT_AND_DIFFUSE);
 //    	gl.glColorMaterial(GL10.GL_FRONT, GL10.GL_DIFFUSE);
     	
     	//Enable color material

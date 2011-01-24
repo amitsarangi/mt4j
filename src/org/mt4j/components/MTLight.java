@@ -23,11 +23,9 @@ import org.mt4j.util.GraphicsUtil;
 import org.mt4j.util.math.ToolsLight;
 import org.mt4j.util.math.Vector3D;
 import org.mt4j.util.opengl.GL10;
-import org.mt4j.util.opengl.GL11;
-import org.mt4j.util.opengl.GL20;
+import org.mt4j.util.opengl.GL11Plus;
 
 import processing.core.PApplet;
-import processing.opengl.PGraphicsOpenGL;
 
 /**
  * The Class MTLight. Abstracts the opengl lightning.
@@ -84,8 +82,11 @@ public class MTLight {
 	    	//This means that glMaterial will control the polygon's specular and emission colours
 	    	//and the ambient and diffuse will both be set using glColor. 
 //	    	gl.glColorMaterial(GL.GL_FRONT, GL.GL_AMBIENT_AND_DIFFUSE);
-	    	gl.glColorMaterial(GL.GL_FRONT_AND_BACK, GL.GL_AMBIENT_AND_DIFFUSE);
-//	    	gl.glColorMaterial(GL.GL_FRONT, GL.GL_DIFFUSE);
+//	    	gl.glColorMaterial(GL.GL_FRONT_AND_BACK, GL.GL_AMBIENT_AND_DIFFUSE);
+	    	if (gl instanceof GL11Plus) {
+				GL11Plus gl11Plus = (GL11Plus) gl;
+				gl11Plus.glColorMaterial(GL.GL_FRONT_AND_BACK, GL.GL_AMBIENT_AND_DIFFUSE);
+	    	}
 	    	
 	    	//Enable color material
 	    	gl.glEnable(GL.GL_COLOR_MATERIAL);

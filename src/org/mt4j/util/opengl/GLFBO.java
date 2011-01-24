@@ -351,7 +351,11 @@ public class GLFBO {
         setReadBuffer(GL.GL_NONE);
 		*/
 		
-		gl.glPushAttrib(GL.GL_VIEWPORT_BIT);
+		if (gl instanceof GL11Plus) {
+			GL11Plus gl11Plus = (GL11Plus) gl;
+			gl11Plus.glPushAttrib(GL.GL_VIEWPORT_BIT);
+		}
+		
 //		gl.glDrawBuffer(GL.GL_NONE);
 //		gl.glViewport(0, 0, width, height);
 //		gl.glViewport(-50,-50, pa.width+100, pa.height+100);
@@ -369,7 +373,11 @@ public class GLFBO {
 	 * 
 	 */
 	public void stopRenderToTexture(){
-		gl.glPopAttrib();
+//		gl.glPopAttrib();
+		if (gl instanceof GL11Plus) {
+			GL11Plus gl11Plus = (GL11Plus) gl;
+			gl11Plus.glPopAttrib();
+		}
 
 		//FIXME FBO STACK TEST
 //		this.unBind();

@@ -2,6 +2,7 @@ package org.mt4j.util;
 
 import org.mt4j.util.opengl.GL10;
 import org.mt4j.util.opengl.GL11;
+import org.mt4j.util.opengl.GL11Plus;
 import org.mt4j.util.opengl.GL20;
 
 import processing.core.PGraphics;
@@ -74,6 +75,11 @@ public class GraphicsUtil {
 	
 	public static boolean isAndroid(){
 		return graphicsUtil.getPlatform() == IGraphicsUtil.ANDROID;
+	}
+
+		
+	public static GL11Plus getGL11Plus() {
+		return graphicsUtil.getGL11Plus();
 	}
 
 

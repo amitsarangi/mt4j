@@ -8,6 +8,7 @@ import org.mt4j.sceneManagement.ISceneChangeListener;
 import org.mt4j.sceneManagement.Iscene;
 import org.mt4j.util.opengl.GL10;
 import org.mt4j.util.opengl.GL11;
+import org.mt4j.util.opengl.GL11Plus;
 import org.mt4j.util.opengl.GL20;
 import org.mt4j.util.opengl.GLCommon;
 
@@ -236,5 +237,7 @@ public interface IMTApplication extends IPAppletBoth{
 	public void removeKeyListener(IKeyListener listener);
 	
 	public IKeyListener[] getKeyListener();
+
+	public GL11Plus getGL11Plus();
 
 }

@@ -19,6 +19,7 @@ package org.mt4j.components.visibleComponents.shapes;
 
 import javax.media.opengl.GL;
 
+import org.mt4j.MTApplication;
 import org.mt4j.components.MTComponent;
 import org.mt4j.components.TransformSpace;
 import org.mt4j.components.bounds.IBoundingShape;
@@ -46,6 +47,7 @@ import org.mt4j.util.math.Ray;
 import org.mt4j.util.math.Tools3D;
 import org.mt4j.util.math.Vector3D;
 import org.mt4j.util.math.Vertex;
+import org.mt4j.util.opengl.GL10;
 import org.mt4j.util.opengl.GLTexture;
 import org.mt4j.util.opengl.GLTexture.EXPANSION_FILTER;
 import org.mt4j.util.opengl.GLTexture.SHRINKAGE_FILTER;
@@ -391,7 +393,7 @@ public abstract class AbstractShape extends AbstractVisibleComponent{
 		this.globalVerticesDirty = true;
 	}
 	
-	abstract protected void drawPureGl(GL gl);
+	abstract protected void drawPureGl(GL10 gl);
 	
 	/**
 	 * Gets the geometry info. The geometryinfo contains the 
@@ -561,7 +563,15 @@ public abstract class AbstractShape extends AbstractVisibleComponent{
 			if (!this.isUseVBOs()){
 				this.getGeometryInfo().generateOrUpdateAllVBOs();
 			}
-			this.useVBOs = useVBOs;
+			
+			//If we want to enable VBOs check if OpenGL 2.0 is supported
+			if (!useVBOs){
+				this.useVBOs = useVBOs;
+			}else{
+				if (this.getRenderer() instanceof MTApplication && ((MTApplication) this.getRenderer()).isGL20Available()) {
+					this.useVBOs = useVBOs;
+				}
+			}
 		}else{
 			logger.error(this.getName() + " - Cant use VBOs if not in opengl mode and setDrawDirectGL has to be set to true! Object: " + this);
 			this.useVBOs = false;

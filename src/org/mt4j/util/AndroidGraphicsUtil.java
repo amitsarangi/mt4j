@@ -3,6 +3,7 @@ package org.mt4j.util;
 import org.mt4j.IMTApplication;
 import org.mt4j.util.opengl.GL10;
 import org.mt4j.util.opengl.GL11;
+import org.mt4j.util.opengl.GL11Plus;
 import org.mt4j.util.opengl.GL20;
 
 import processing.core.PGraphics;
@@ -81,6 +82,11 @@ public class AndroidGraphicsUtil implements IGraphicsUtil {
 	@Override
 	public PMatrix3D getCamera() {
 		return ((PGraphicsAndroid3D)app.getPGraphics()).camera;
+	}
+
+	@Override
+	public GL11Plus getGL11Plus() {
+		return app.getGL11Plus();
 	}
 
 	

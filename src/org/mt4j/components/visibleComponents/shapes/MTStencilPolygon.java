@@ -30,12 +30,12 @@ import org.mt4j.util.math.ToolsGeometry;
 import org.mt4j.util.math.Vertex;
 import org.mt4j.util.opengl.GL10;
 import org.mt4j.util.opengl.GL11;
+import org.mt4j.util.opengl.GL11Plus;
 import org.mt4j.util.opengl.GLStencilUtil;
 import org.mt4j.util.opengl.JoglGL20Plus;
 
 import processing.core.PApplet;
 import processing.core.PGraphics;
-import processing.opengl.PGraphicsOpenGL;
 
 /**
  * This class can only be used with OpenGL!
@@ -237,9 +237,11 @@ public class MTStencilPolygon extends MTPolygon {
 			if (isUseDisplayList()){
 				int[] displayListIDs = this.getGeometryInfo().getDisplayListIDs();
 				if (!this.isNoFill() && displayListIDs[0] != -1)
-					gl.glCallList(displayListIDs[0]); //Draw fill
+//					gl.glCallList(displayListIDs[0]); //Draw fill
+					((GL11Plus)gl).glCallList(displayListIDs[0]); //Draw fill
 				if (!this.isNoStroke()  && displayListIDs[1] != -1)
-					gl.glCallList(displayListIDs[1]); //Draw outline
+//					gl.glCallList(displayListIDs[1]); //Draw outline
+					((GL11Plus)gl).glCallList(displayListIDs[1]); //Draw outline
 			}else{
 				drawPureGL(gl);
 			}
@@ -358,9 +360,9 @@ public class MTStencilPolygon extends MTPolygon {
 		    ///////////////////////
 //	    	GLStencilUtil.getInstance().beginDrawClipShape(gl);
 	    	
-	    	if (GLStencilUtil.getInstance().isClipActive() && GraphicsUtil.getGL20() instanceof JoglGL20Plus){
+	    	if (GLStencilUtil.getInstance().isClipActive() && GraphicsUtil.getGL11Plus() != null){
 //	    		gl.glPushAttrib(GL.GL_STENCIL_BUFFER_BIT);
-	    		((JoglGL20Plus)gl).glPushAttrib(GL.GL_STENCIL_BUFFER_BIT);
+	    		((GraphicsUtil.getGL11Plus())).glPushAttrib(GL.GL_STENCIL_BUFFER_BIT);
 	    	}else{
 	    		//Enable stencilbuffer
 				gl.glEnable(GL.GL_STENCIL_TEST);
@@ -421,9 +423,9 @@ public class MTStencilPolygon extends MTPolygon {
 				gl.glVertexPointer(3, GL.GL_FLOAT, 0, stencilQuad);
 		    	gl.glDrawArrays(GL.GL_TRIANGLE_FAN, 0, stencilQuad.capacity()/3); 
 
-		    if (GLStencilUtil.getInstance().isClipActive()  && GraphicsUtil.getGL20() instanceof JoglGL20Plus){
+		    if (GLStencilUtil.getInstance().isClipActive()  && GraphicsUtil.getGL11Plus() != null){
 //			    gl.glPopAttrib();
-		    	((JoglGL20Plus)gl).glPopAttrib();
+		    	GraphicsUtil.getGL11Plus().glPopAttrib();
 	    	}else{
 	    		 gl.glDisable (GL.GL_STENCIL_TEST);
 	    	}

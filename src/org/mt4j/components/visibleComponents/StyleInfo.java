@@ -391,7 +391,7 @@ public class StyleInfo {
 	
 	/**
 	 * Sets a line stipple pattern for drawing outlines.
-	 * <br>Only supported under opengl!
+	 * <br>Only supported under OpenGL, not avaiable in OpenGL ES!
 	 * <br>Example: shape.setLineStipple((short)0xDDDD);
 	 * <br>Default value is '0'. No stipple should be used then.
 	 * 

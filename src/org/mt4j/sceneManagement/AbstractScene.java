@@ -28,13 +28,14 @@ import org.mt4j.components.MTCanvas;
 import org.mt4j.input.inputProcessors.globalProcessors.AbstractGlobalInputProcessor;
 import org.mt4j.input.inputProcessors.globalProcessors.InputRetargeter;
 import org.mt4j.sceneManagement.transition.ITransition;
+import org.mt4j.util.GraphicsUtil;
 import org.mt4j.util.MT4jSettings;
 import org.mt4j.util.MTColor;
 import org.mt4j.util.camera.Icamera;
 import org.mt4j.util.camera.MTCamera;
 import org.mt4j.util.logging.ILogger;
 import org.mt4j.util.logging.MTLoggerFactory;
-import org.mt4j.util.math.Tools3D;
+import org.mt4j.util.opengl.GL10;
 
 import processing.core.PGraphics;
 
@@ -176,7 +177,8 @@ public abstract class AbstractScene implements Iscene {
 
 	protected void clear(PGraphics graphics){
 		if (MT4jSettings.getInstance().isOpenGlMode()){
-			GL gl = Tools3D.getGL(mtApplication);
+//			GL gl = Tools3D.getGL(mtApplication);
+			GL10 gl = GraphicsUtil.getGL();
 			gl.glClearColor(this.glClearColor.getR(), this.glClearColor.getG(), this.glClearColor.getB(), this.glClearColor.getAlpha());
 			gl.glClear(
 					GL.GL_COLOR_BUFFER_BIT 

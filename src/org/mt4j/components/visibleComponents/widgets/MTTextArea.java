@@ -21,7 +21,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.media.opengl.GL;
-import javax.media.opengl.glu.GLU;
 
 import org.mt4j.MTApplication;
 import org.mt4j.components.TransformSpace;
@@ -37,12 +36,14 @@ import org.mt4j.components.visibleComponents.shapes.MTRectangle;
 import org.mt4j.components.visibleComponents.widgets.keyboard.ITextInputListener;
 import org.mt4j.components.visibleComponents.widgets.keyboard.MTKeyboard;
 import org.mt4j.input.inputProcessors.componentProcessors.lassoProcessor.IdragClusterable;
+import org.mt4j.util.GraphicsUtil;
 import org.mt4j.util.MT4jSettings;
 import org.mt4j.util.MTColor;
 import org.mt4j.util.math.Matrix;
-import org.mt4j.util.math.Tools3D;
 import org.mt4j.util.math.Vector3D;
 import org.mt4j.util.math.Vertex;
+import org.mt4j.util.opengl.GL10;
+import org.mt4j.util.opengl.GL11Plus;
 
 import processing.core.PApplet;
 import processing.core.PGraphics;
@@ -401,14 +402,17 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
 		if (enableCaret)
 			return -1;
 		
-		GL gl = GLU.getCurrentGL();
+//		GL gl = GLU.getCurrentGL();
+		GL10 gl = GraphicsUtil.getGL();
+		GL11Plus gl11Plus = GraphicsUtil.getGL11Plus();
+		
 		//Delete old one
 		if (this.displayListID != 0){
-			gl.glDeleteLists(this.displayListID, 1);
+			gl11Plus.glDeleteLists(this.displayListID, 1);
 		}
 		
 		//Create new list
-		int listIDFill = gl.glGenLists(1);
+		int listIDFill = gl11Plus.glGenLists(1);
 		if (listIDFill == 0){
 			System.err.println("Failed to create fill display list");
 		}
@@ -421,9 +425,9 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
 		}
 		
 		//Record list
-		gl.glNewList(listIDFill, GL.GL_COMPILE);
+		gl11Plus.glNewList(listIDFill, GL.GL_COMPILE);
 			drawCharactersGL(gl, characterList, characterList.size(), lastXAdvancement, thisLineTotalXAdvancement);
-		gl.glEndList();
+			gl11Plus.glEndList();
 		
 		if (listIDFill != 0){
 			useDisplayList = true;
@@ -438,9 +442,9 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
 	@Override
 		protected void destroyComponent() {
 			super.destroyComponent();
-			
 			if (MT4jSettings.getInstance().isOpenGlMode() && this.displayListID != 0){
-				GL gl = GLU.getCurrentGL();
+//				GL gl = GLU.getCurrentGL();
+				GL11Plus gl = GraphicsUtil.getGL11Plus();
 				//Delete old one
 				if (gl != null){
 					gl.glDeleteLists(this.displayListID, 1);
@@ -515,7 +519,9 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
 //		*/
 		
 		if (this.isUseDirectGL()){
-			GL gl = Tools3D.beginGL(pa);
+//			GL gl = Tools3D.beginGL(pa);
+			GL10 gl = GraphicsUtil.beginGL();
+			GL11Plus gl11Plus = GraphicsUtil.getGL11Plus();
 			if (totalScrollTextX != 0.0f || totalScrollTextY != 0.0f){
 				gl.glTranslatef(totalScrollTextX, totalScrollTextY + font.getFontMaxAscent(), 0);
 			}else{
@@ -535,12 +541,13 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
 			//enable textures, enable vertex arrays and color only once!
 			
 			if(!enableCaret && useDisplayList && this.displayListID != 0){
-				gl.glCallList(this.displayListID);
+				gl11Plus.glCallList(this.displayListID);
 			}else{
 				drawCharactersGL(gl, characterList, charListSize, lastXAdvancement, thisLineTotalXAdvancement);
 			}
 			
-			Tools3D.endGL(pa);
+//			Tools3D.endGL(pa);
+			GraphicsUtil.endGL();
 		}
 		else{ //P3D rendering
 			g.pushMatrix(); //FIXME TEST text scrolling - but IMHO better done with parent list/scroll container
@@ -617,7 +624,7 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
 		this.getFont().setFillColor(fontColor);
 	}
 	
-	private void drawCharactersGL(GL gl, List<IFontCharacter> characterList, int charListSize, int lastXAdv, int lineTotalAdv){
+	private void drawCharactersGL(GL10 gl, List<IFontCharacter> characterList, int charListSize, int lastXAdv, int lineTotalAdv){
 		int lastXAdvancement = lastXAdv;
 		int thisLineTotalXAdvancement = lineTotalAdv;
 		
@@ -1298,7 +1305,7 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
 	 */
 	protected class ArtificalLineBreak implements IFontCharacter{
 		public void drawComponent(PGraphics g) {}
-		public void drawComponent(GL gl) {	}
+		public void drawComponent(GL10 gl) {	}
 		public void destroy() {	}
 		public int getHorizontalDist() {
 			return 0;
