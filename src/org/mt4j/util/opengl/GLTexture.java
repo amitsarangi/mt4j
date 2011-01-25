@@ -794,7 +794,7 @@ public class GLTexture extends PImage {
 			IntBuffer buff = BufferUtil.newIntBuffer(this.width * this.height);
 	        int textureTarget = this.glTextureSettings.target.getGLConstant();
 	        gl11Plus.glBindTexture(textureTarget, this.glTextureID[0]);
-	        gl11Plus.glGetTexImage(textureTarget, 0, GL10.GL_BGRA, GL10.GL_UNSIGNED_BYTE, buff);
+	        gl11Plus.glGetTexImage(textureTarget, 0, GL.GL_BGRA, GL10.GL_UNSIGNED_BYTE, buff);
 	        gl11Plus.glBindTexture(textureTarget, 0);
 	        buff.get(pixels);
 		}
