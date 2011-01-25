@@ -55,6 +55,6 @@
 	<classpathentry kind="var" path="android_sdk_dir"/>
 	<classpathentry kind="lib" path="mt4jLibs/jogl/opengl.jar"/>
 	<classpathentry kind="lib" path="mt4jLibs/jogl/jogl.jar"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/android-core"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/processing-core"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
