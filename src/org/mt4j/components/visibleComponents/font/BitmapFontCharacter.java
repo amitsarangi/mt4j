@@ -19,8 +19,6 @@ package org.mt4j.components.visibleComponents.font;
 
 import java.nio.FloatBuffer;
 
-import javax.media.opengl.GL;
-
 import org.mt4j.components.bounds.IBoundingShape;
 import org.mt4j.components.visibleComponents.shapes.MTRectangle;
 import org.mt4j.util.GraphicsUtil;
@@ -29,7 +27,6 @@ import org.mt4j.util.math.Vertex;
 import org.mt4j.util.opengl.GL10;
 import org.mt4j.util.opengl.GL11;
 import org.mt4j.util.opengl.GL11Plus;
-import org.mt4j.util.opengl.GL20;
 import org.mt4j.util.opengl.GLTexture;
 import org.mt4j.util.opengl.GLTexture.EXPANSION_FILTER;
 import org.mt4j.util.opengl.GLTexture.SHRINKAGE_FILTER;
@@ -148,18 +145,18 @@ public class BitmapFontCharacter extends MTRectangle implements IFontCharacter {
 		FloatBuffer vertBuff 		= this.getGeometryInfo().getVertBuff();
 		
 		//Enable Pointers, set vertex array pointer
-		gl.glEnableClientState(GL.GL_VERTEX_ARRAY);
+		gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
 		if (this.isUseVBOs()){//Vertices
 //			gl.glBindBuffer(GL.GL_ARRAY_BUFFER, this.getGeometryInfo().getVBOVerticesName());
 //			gl.glVertexPointer(3, GL.GL_FLOAT, 0, 0);
-			gl11.glBindBuffer(GL.GL_ARRAY_BUFFER, this.getGeometryInfo().getVBOVerticesName());
-			gl.glVertexPointer(3, GL.GL_FLOAT, 0, null);
+			gl11.glBindBuffer(GL11.GL_ARRAY_BUFFER, this.getGeometryInfo().getVBOVerticesName());
+			gl11.glVertexPointer(3, GL10.GL_FLOAT, 0, 0);
 		}else{
-			gl.glVertexPointer(3, GL.GL_FLOAT, 0, vertBuff);
+			gl.glVertexPointer(3, GL10.GL_FLOAT, 0, vertBuff);
 		}
 		
 		//Default texture target
-		int textureTarget = GL.GL_TEXTURE_2D;
+		int textureTarget = GL10.GL_TEXTURE_2D;
 		
 		/////// DRAW SHAPE ///////
 		if (!this.isNoFill()){ 
@@ -176,52 +173,51 @@ public class BitmapFontCharacter extends MTRectangle implements IFontCharacter {
 				gl.glEnable(textureTarget);
 				gl.glBindTexture(textureTarget, tex.getTextureID());
 				
-				gl.glEnableClientState(GL.GL_TEXTURE_COORD_ARRAY);
+				gl.glEnableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
 				
 				if (this.isUseVBOs()){//Texture
 //					gl.glBindBuffer(GL.GL_ARRAY_BUFFER, this.getGeometryInfo().getVBOTextureName());
 //					gl.glTexCoordPointer(2, GL.GL_FLOAT, 0, 0);
-					gl11.glBindBuffer(GL.GL_ARRAY_BUFFER, this.getGeometryInfo().getVBOTextureName());
-					gl.glTexCoordPointer(2, GL.GL_FLOAT, 0, null);
+					gl11.glBindBuffer(GL11.GL_ARRAY_BUFFER, this.getGeometryInfo().getVBOTextureName());
+					gl11.glTexCoordPointer(2, GL10.GL_FLOAT, 0, 0);
 				}else
-					gl.glTexCoordPointer(2, GL.GL_FLOAT, 0, tbuff);
+					gl.glTexCoordPointer(2, GL10.GL_FLOAT, 0, tbuff);
 				
 				textureDrawn = true;
 			}
 			
 			//Normals
 			if (this.getGeometryInfo().isContainsNormals()){
-				gl.glEnableClientState(GL.GL_NORMAL_ARRAY);
+				gl.glEnableClientState(GL10.GL_NORMAL_ARRAY);
 				if (this.isUseVBOs()){
 //					gl.glBindBuffer(GL.GL_ARRAY_BUFFER, this.getGeometryInfo().getVBONormalsName());
 //					gl.glNormalPointer(GL.GL_FLOAT, 0, 0); 
-					GL20 gl20 = (GL20)gl;
-					gl20.glBindBuffer(GL.GL_ARRAY_BUFFER, this.getGeometryInfo().getVBONormalsName());
-					gl.glNormalPointer(GL.GL_FLOAT, 0, null); 
+					gl11.glBindBuffer(GL11.GL_ARRAY_BUFFER, this.getGeometryInfo().getVBONormalsName());
+					gl11.glNormalPointer(GL10.GL_FLOAT, 0, 0); 
 				}else{
-					gl.glNormalPointer(GL.GL_FLOAT, 0, this.getGeometryInfo().getNormalsBuff());
+					gl.glNormalPointer(GL10.GL_FLOAT, 0, this.getGeometryInfo().getNormalsBuff());
 				}
 			}
 			
 			gl.glDrawArrays(this.getFillDrawMode(), 0, vertBuff.capacity()/3);
 			
 			if (this.getGeometryInfo().isContainsNormals()){
-				gl.glDisableClientState(GL.GL_NORMAL_ARRAY);
+				gl.glDisableClientState(GL10.GL_NORMAL_ARRAY);
 			}
 			
 			if (textureDrawn){
 				gl.glBindTexture(textureTarget, 0);//Unbind texture
-				gl.glDisableClientState(GL.GL_TEXTURE_COORD_ARRAY);
+				gl.glDisableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
 				gl.glDisable(textureTarget); //weiter nach unten?
 			}
 		}
-		gl.glDisableClientState(GL.GL_VERTEX_ARRAY);
+		gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
 		//TEST
 		if (this.isUseVBOs()){
 //			gl.glBindBuffer(GL.GL_ARRAY_BUFFER, 0);
 //			gl.glBindBuffer(GL.GL_ELEMENT_ARRAY_BUFFER, 0);
-			gl11.glBindBuffer(GL.GL_ARRAY_BUFFER, 0);
-			gl11.glBindBuffer(GL.GL_ELEMENT_ARRAY_BUFFER, 0);
+			gl11.glBindBuffer(GL11.GL_ARRAY_BUFFER, 0);
+			gl11.glBindBuffer(GL11.GL_ELEMENT_ARRAY_BUFFER, 0);
 		}
 //		*/
 	}

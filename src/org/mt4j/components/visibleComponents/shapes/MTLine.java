@@ -19,8 +19,6 @@ package org.mt4j.components.visibleComponents.shapes;
 
 import java.nio.FloatBuffer;
 
-import javax.media.opengl.GL;
-
 import org.mt4j.components.bounds.BoundsArbitraryPlanarPolygon;
 import org.mt4j.components.bounds.IBoundingShape;
 import org.mt4j.components.css.style.CSSStyle;
@@ -35,7 +33,6 @@ import org.mt4j.util.math.Vertex;
 import org.mt4j.util.opengl.GL10;
 import org.mt4j.util.opengl.GL11;
 import org.mt4j.util.opengl.GL11Plus;
-import org.mt4j.util.opengl.GL20;
 
 import processing.core.PApplet;
 import processing.core.PGraphics;
@@ -210,7 +207,7 @@ public class MTLine extends MTCSSStylableShape{
 		if (MT4jSettings.getInstance().isOpenGlMode()   
 		    && this.isUseDirectGL()){
 //				GL gl = Tools3D.beginGL(g);
-				GL10 gl = GraphicsUtil.getGL();
+				GL10 gl = GraphicsUtil.beginGL();
 			
 				//Draw with PURE opengl
 				if (this.isUseDisplayList()){
@@ -252,26 +249,26 @@ public class MTLine extends MTCSSStylableShape{
 	 */
 	protected void drawPureGl(GL10 gl){
 		GL11 gl11 = GraphicsUtil.getGL11();
+		GL11Plus gl11Plus = GraphicsUtil.getGL11Plus();
 		
 		FloatBuffer strokeColBuff 	= this.getGeometryInfo().getStrokeColBuff();
 		FloatBuffer vertBuff 		= this.getGeometryInfo().getVertBuff();
 		//Enable Pointers, set vertex array pointer
-		gl.glEnableClientState(GL.GL_VERTEX_ARRAY);
-		gl.glEnableClientState(GL.GL_COLOR_ARRAY);
+		gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
+		gl.glEnableClientState(GL10.GL_COLOR_ARRAY);
 		
 		if (this.isUseVBOs()){
-			gl11.glBindBuffer(GL.GL_ARRAY_BUFFER, this.getGeometryInfo().getVBOVerticesName());
-			gl.glVertexPointer(3, GL.GL_FLOAT, 0, null);
+			gl11.glBindBuffer(GL11.GL_ARRAY_BUFFER, this.getGeometryInfo().getVBOVerticesName());
+			gl11.glVertexPointer(3, GL10.GL_FLOAT, 0, 0);
 		}else{
-			gl.glVertexPointer(3, GL.GL_FLOAT, 0, vertBuff);
+			gl.glVertexPointer(3, GL10.GL_FLOAT, 0, vertBuff);
 		}
 		//TODO combine if switch with above
 		if (this.isUseVBOs()){
-			GL20 gl20 = (GL20)gl;
-			gl20.glBindBuffer(GL.GL_ARRAY_BUFFER, this.getGeometryInfo().getVBOStrokeColorName());
-			gl.glColorPointer(4, GL.GL_FLOAT, 0, null);
+			gl11.glBindBuffer(GL11.GL_ARRAY_BUFFER, this.getGeometryInfo().getVBOStrokeColorName());
+			gl11.glColorPointer(4, GL10.GL_FLOAT, 0, 0);
 		}else{
-			gl.glColorPointer(4, GL.GL_FLOAT, 0, strokeColBuff);
+			gl.glColorPointer(4, GL10.GL_FLOAT, 0, strokeColBuff);
 		}
 		
 //		//Turn on smooth outlines
@@ -283,18 +280,17 @@ public class MTLine extends MTCSSStylableShape{
 		//SET LINE STIPPLE
 		short lineStipple = this.getLineStipple();
 		if (lineStipple != 0){
-			GL11Plus gl11Plus = (GL11Plus)gl;
 			gl11Plus.glLineStipple(1, lineStipple);
-			gl.glEnable(GL.GL_LINE_STIPPLE);
+			gl.glEnable(GL11Plus.GL_LINE_STIPPLE);
 		}
 		
 		if (this.getStrokeWeight() > 0)
 			gl.glLineWidth(this.getStrokeWeight());
 		
-		gl.glDrawArrays(GL.GL_LINE_STRIP, 0, vertBuff.capacity()/3);
+		gl.glDrawArrays(GL10.GL_LINE_STRIP, 0, vertBuff.capacity()/3);
 		//RESET LINE STIPPLE
 		if (lineStipple != 0){
-			gl.glDisable(GL.GL_LINE_STIPPLE); 
+			gl.glDisable(GL11Plus.GL_LINE_STIPPLE); 
 		}
 		
 //	    if (this.isDrawSmooth())
@@ -302,11 +298,11 @@ public class MTLine extends MTCSSStylableShape{
 		//FIXME TEST
 		Tools3D.setLineSmoothEnabled(gl, false);
 		
-		gl.glDisableClientState(GL.GL_VERTEX_ARRAY);
-		gl.glDisableClientState(GL.GL_COLOR_ARRAY);
+		gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
+		gl.glDisableClientState(GL10.GL_COLOR_ARRAY);
 		if (this.isUseVBOs()){
-			gl11.glBindBuffer(GL.GL_ARRAY_BUFFER, 0);
-			gl11.glBindBuffer(GL.GL_ELEMENT_ARRAY_BUFFER, 0); //FIXME ??? remove? not used anyway
+			gl11.glBindBuffer(GL11.GL_ARRAY_BUFFER, 0);
+			gl11.glBindBuffer(GL11.GL_ELEMENT_ARRAY_BUFFER, 0); //FIXME ??? remove? not used anyway
 		}
 	}
 

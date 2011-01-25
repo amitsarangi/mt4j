@@ -24,7 +24,6 @@ import java.awt.DisplayMode;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.Toolkit;
-import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -75,8 +74,9 @@ import org.mt4j.util.opengl.JoglGL20Plus;
 
 import processing.core.PApplet;
 import processing.core.PGraphics;
-import processing.core.PGraphicsAndroid3D;
+//import processing.core.PGraphics3D;
 import processing.core.PMatrix3D;
+import processing.opengl.PGraphicsOpenGL;
 import android.app.Application;
 
 
@@ -163,6 +163,23 @@ public abstract class MTApplication extends PApplet implements IMTApplication{
 
 	protected boolean gl11PlusSupported;
 
+	public String sketchRenderer() {
+		// TODO Auto-generated method stub
+		return super.sketchRenderer();
+	}
+	
+	@Override
+	public void rect(float a, float b, float c, float d, float hr, float vr) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void rect(float a, float b, float c, float d, float tl, float tr,
+			float bl, float br) {
+		// TODO Auto-generated method stub
+		
+	}
 	
 //	private static boolean fullscreen;
 	/*
@@ -277,8 +294,7 @@ public abstract class MTApplication extends PApplet implements IMTApplication{
 		
 		preDrawActions = new ArrayDeque<IPreDrawAction>();
 		
-		
-		
+		keyListeners = new ArrayList<IKeyListener>();
 	}
 	
 	/**
@@ -313,13 +329,13 @@ public abstract class MTApplication extends PApplet implements IMTApplication{
 	 */
 	public static void initialize(String classToInstantiate, boolean showSettingsMenu){
 		//Initialize Loggin facilities  - IMPORTANT TO DO THIS ASAP!//////
-		MTLoggerFactory.setLoggerProvider(new Log4jLogger()); //FIXME TEST
-//		MTLoggerFactory.setLoggerProvider(new JavaLogger()); //FIXME TEST
-		logger = MTLoggerFactory.getLogger(MTApplication.class.getName());
-		logger.setLevel(ILogger.INFO);
+//		MTLoggerFactory.setLoggerProvider(new Log4jLogger()); //FIXME TEST
+////		MTLoggerFactory.setLoggerProvider(new JavaLogger()); //FIXME TEST
+//		logger = MTLoggerFactory.getLogger(MTApplication.class.getName());
+//		logger.setLevel(ILogger.INFO);
 		/////////////////////////////////////////////////////////////////
 		
-		logger.debug(classToInstantiate + " is the class instatiated by PApplet class.");
+//		logger.debug(classToInstantiate + " is the class instatiated by PApplet class.");
 		 
 		//FIXME TEST
 		if (showSettingsMenu){
@@ -523,6 +539,8 @@ public abstract class MTApplication extends PApplet implements IMTApplication{
 		}
 	}
 
+	
+	
 	/**
 	 * ***********************************************************
 	 * Processings setup. this is called once when the applet is started
@@ -531,20 +549,6 @@ public abstract class MTApplication extends PApplet implements IMTApplication{
 	 */
 	@Override
 	public void setup(){
-		//TOGGLES ALWAYS ON TOP MODE
-		//this.frame.setAlwaysOnTop(true);
-	
-		logger.debug("-> setup called");
-		
-		/////////////////////// //FIXME TEST
-		GraphicsUtil.setGraphicsUtilProvider(new DesktopGraphicsUtil(this));
-		///////////////////////
-
-		//Check if OS 32/64 Bit
-		String bit = System.getProperty("sun.arch.data.model");
-		logger.info("Platform: \"" + System.getProperty("os.name") + "\" -> Version: \"" + System.getProperty("os.version") +  "\" -> JVM Bit: \"" + bit + "\""); 
-		MT4jSettings.getInstance().architecture = bit.contains("64")? MT4jSettings.ARCHITECTURE_64_BIT : MT4jSettings.ARCHITECTURE_32_BIT;
-
 		if (!settingsLoadedFromFile){
 			getSettingsFromFile();
 		}
@@ -554,6 +558,26 @@ public abstract class MTApplication extends PApplet implements IMTApplication{
 			this.size(MT4jSettings.getInstance().getWindowWidth(), MT4jSettings.getInstance().getWindowHeight(), MTApplication.CUSTOM_OPENGL_GRAPHICS);
 		else if (MT4jSettings.getInstance().getRendererMode() == MT4jSettings.P3D_MODE)
 			this.size(MT4jSettings.getInstance().getWindowWidth(), MT4jSettings.getInstance().getWindowHeight(), PApplet.P3D);
+		
+		//TOGGLES ALWAYS ON TOP MODE
+		//this.frame.setAlwaysOnTop(true);
+		
+		//INIT LOGGING
+		MTLoggerFactory.setLoggerProvider(new Log4jLogger()); //FIXME TEST
+//		MTLoggerFactory.setLoggerProvider(new JavaLogger()); //FIXME TEST
+		logger = MTLoggerFactory.getLogger(MTApplication.class.getName());
+		logger.setLevel(ILogger.INFO);
+		logger.debug("-> setup called");
+		
+		/////////////////////// //FIXME TEST
+		GraphicsUtil.setGraphicsUtilProvider(new DesktopGraphicsUtil(this));
+		///////////////////////
+		
+		
+		//Check if OS 32/64 Bit
+		String bit = System.getProperty("sun.arch.data.model");
+		logger.info("Platform: \"" + System.getProperty("os.name") + "\" -> Version: \"" + System.getProperty("os.version") +  "\" -> JVM Bit: \"" + bit + "\""); 
+		MT4jSettings.getInstance().architecture = bit.contains("64")? MT4jSettings.ARCHITECTURE_64_BIT : MT4jSettings.ARCHITECTURE_32_BIT;
 		
 		//Switch to different resolution in fullscreen exclusive mode if neccessary
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
@@ -1277,7 +1301,7 @@ public abstract class MTApplication extends PApplet implements IMTApplication{
 		return this.g;
 	}
 	
-	/*
+//	/*
 	public PMatrix3D getModelView() {
 		return ((PGraphics3D)this.g).modelview;
 	}
@@ -1295,9 +1319,9 @@ public abstract class MTApplication extends PApplet implements IMTApplication{
     public void endGL(){
     	((PGraphicsOpenGL)this.g).endGL();
     }
-	*/
+//	*/
 	
-//	/*
+	/*
 	public PMatrix3D getModelView() {
 		return ((PGraphicsAndroid3D)this.g).modelview;
 	}
@@ -1314,7 +1338,7 @@ public abstract class MTApplication extends PApplet implements IMTApplication{
     public void endGL(){
     	((PGraphicsAndroid3D)this.g).endGL();
     }
-//    */
+    */
 	
 	 /**
      * Returns whether OpenGL ES 1.1 is available. If it is you can get an instance of {@link GL11} via {@link #getGL11()} to

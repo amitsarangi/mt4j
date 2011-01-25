@@ -41,8 +41,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
 
-import javax.media.opengl.GL;
-import javax.media.opengl.glu.GLU;
 import javax.swing.JPanel;
 
 import org.apache.batik.bridge.AbstractSVGGradientElementBridge;
@@ -143,6 +141,7 @@ import org.mt4j.util.math.ToolsGeometry;
 import org.mt4j.util.math.Vector3D;
 import org.mt4j.util.math.Vertex;
 import org.mt4j.util.opengl.GL10;
+import org.mt4j.util.opengl.GL11Plus;
 import org.mt4j.util.opengl.GLTexture;
 import org.mt4j.util.opengl.GluTrianglulator;
 import org.w3c.dom.Document;
@@ -870,7 +869,7 @@ public class SVGLoader implements SVGConstants{
 		  boolean noStroke 		= false;
 		  float strokeOpacity 	= 1;
 		  float fillOpacity   	= 1;
-		  int windingRule 		= GLU.GLU_TESS_WINDING_NONZERO;
+		  int windingRule 		= GluTrianglulator.WINDING_RULE_NONZERO;
 		  // SVG Defaults \\
 		  
 		  
@@ -885,11 +884,11 @@ public class SVGLoader implements SVGConstants{
 		  Value fillRuleValue = CSSUtilities.getComputedStyle(gfxElem, SVGCSSEngine.FILL_RULE_INDEX);
 		  String fillRule = fillRuleValue.getStringValue();
 		  if (fillRule.equalsIgnoreCase("nonzero")){
-			  windingRule = GLU.GLU_TESS_WINDING_NONZERO;
+			  windingRule = GluTrianglulator.WINDING_RULE_NONZERO;
 		  }else if (fillRule.equalsIgnoreCase("evenodd")){
-			  windingRule = GLU.GLU_TESS_WINDING_ODD;
+			  windingRule = GluTrianglulator.WINDING_RULE_ODD;
 		  }else{
-			  windingRule = GLU.GLU_TESS_WINDING_NONZERO;
+			  windingRule = GluTrianglulator.WINDING_RULE_NONZERO;
 		  }
 		  //logger.debug("fillRule: " + fillRule);
 		  
@@ -1494,7 +1493,7 @@ public class SVGLoader implements SVGConstants{
         		rectangle.setTexture(swingTex.getTextureToRenderTo());
         		rectangle.setNoStroke(true);
         		rectangle.setPickable(false);
-        		rectangle.setFillDrawMode(GL.GL_QUADS);
+        		rectangle.setFillDrawMode(GL11Plus.GL_QUADS);
 
         		//Use displaylist by default for gradientshape
         		if (MT4jSettings.getInstance().isOpenGlMode()){
@@ -1887,7 +1886,7 @@ public class SVGLoader implements SVGConstants{
         p.setNoStroke(true);
         p.setPickable(false);
         p.setStrokeWeight(testShape.getStrokeWeight());
-        p.setFillDrawMode(GL.GL_QUADS);
+        p.setFillDrawMode(GL11Plus.GL_QUADS);
         //Use displaylist by default for gradientshape
         p.generateAndUseDisplayLists();
         
@@ -1952,7 +1951,7 @@ public class SVGLoader implements SVGConstants{
 			MTPolygon p = new MTPolygon(pa, newBounds);
 	        p.setNoStroke(true);
 	        p.setPickable(false);
-	        p.setFillDrawMode(GL.GL_QUADS);
+	        p.setFillDrawMode(GL11Plus.GL_QUADS);
 	        p.setStrokeWeight(testShape.getStrokeWeight());
 	        //Use displaylist by default for gradientshape
 	        p.generateAndUseDisplayLists();

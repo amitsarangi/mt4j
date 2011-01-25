@@ -57,7 +57,7 @@ public class InputManager {
 	private Map<AbstractGlobalInputProcessor, Iscene> inputProcessorsToScene;
 	
 	/** The pa. */
-	private MTApplication app;
+	protected MTApplication app;
 	
 	
 	/**

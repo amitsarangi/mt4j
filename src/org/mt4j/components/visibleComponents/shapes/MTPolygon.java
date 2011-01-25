@@ -36,7 +36,6 @@ import org.mt4j.util.math.Vertex;
 import org.mt4j.util.opengl.GL10;
 import org.mt4j.util.opengl.GL11;
 import org.mt4j.util.opengl.GL11Plus;
-import org.mt4j.util.opengl.GL20;
 import org.mt4j.util.opengl.GLTexture;
 
 import processing.core.PApplet;
@@ -180,7 +179,7 @@ public class MTPolygon extends MTCSSStylableShape{
 		if (MT4jSettings.getInstance().isOpenGlMode()   
 		   && this.isUseDirectGL()){
 //			GL gl = Tools3D.beginGL(renderer);
-			GL10 gl = GraphicsUtil.getGL();
+			GL10 gl = GraphicsUtil.beginGL();
 			
 			//Draw with PURE opengl
 			if (this.isUseDisplayList() /*&& this.getDisplayListIDs() != null && this.getDisplayListIDs()[0] != -1 && this.getDisplayListIDs()[1] != -1*/){
@@ -327,8 +326,8 @@ public class MTPolygon extends MTCSSStylableShape{
 		gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
 		gl.glEnableClientState(GL10.GL_COLOR_ARRAY);
 		if (this.isUseVBOs()){//Vertices
-			gl11.glBindBuffer(GL20.GL_ARRAY_BUFFER, this.getGeometryInfo().getVBOVerticesName());
-			gl.glVertexPointer(3, GL10.GL_FLOAT, 0, null);
+			gl11.glBindBuffer(GL11.GL_ARRAY_BUFFER, this.getGeometryInfo().getVBOVerticesName());
+			gl11.glVertexPointer(3, GL10.GL_FLOAT, 0, 0);
 		}else{
 			gl.glVertexPointer(3, GL10.GL_FLOAT, 0, vertBuff);
 		}
@@ -354,8 +353,8 @@ public class MTPolygon extends MTCSSStylableShape{
 				gl.glEnableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
 				
 				if (this.isUseVBOs()){//Texture
-					gl11.glBindBuffer(GL20.GL_ARRAY_BUFFER, this.getGeometryInfo().getVBOTextureName());
-					gl.glTexCoordPointer(2, GL10.GL_FLOAT, 0, null);
+					gl11.glBindBuffer(GL11.GL_ARRAY_BUFFER, this.getGeometryInfo().getVBOTextureName());
+					gl11.glTexCoordPointer(2, GL10.GL_FLOAT, 0, 0);
 				}else
 					gl.glTexCoordPointer(2, GL10.GL_FLOAT, 0, tbuff);
 				
@@ -363,8 +362,8 @@ public class MTPolygon extends MTCSSStylableShape{
 			}
 			
 			if (this.isUseVBOs()){//Color
-				gl11.glBindBuffer(GL20.GL_ARRAY_BUFFER, this.getGeometryInfo().getVBOColorName());
-				gl.glColorPointer(4, GL10.GL_FLOAT, 0, null);
+				gl11.glBindBuffer(GL11.GL_ARRAY_BUFFER, this.getGeometryInfo().getVBOColorName());
+				gl11.glColorPointer(4, GL10.GL_FLOAT, 0, 0);
 			}else{
 				gl.glColorPointer(4, GL10.GL_FLOAT, 0, colorBuff);
 			}
@@ -373,8 +372,8 @@ public class MTPolygon extends MTCSSStylableShape{
 			if (this.getGeometryInfo().isContainsNormals()){
 				gl.glEnableClientState(GL10.GL_NORMAL_ARRAY);
 				if (this.isUseVBOs()){
-					gl11.glBindBuffer(GL20.GL_ARRAY_BUFFER, this.getGeometryInfo().getVBONormalsName());
-					gl.glNormalPointer(GL10.GL_FLOAT, 0, null); 
+					gl11.glBindBuffer(GL11.GL_ARRAY_BUFFER, this.getGeometryInfo().getVBONormalsName());
+					gl11.glNormalPointer(GL10.GL_FLOAT, 0, 0); 
 				}else{
 					gl.glNormalPointer(GL10.GL_FLOAT, 0, this.getGeometryInfo().getNormalsBuff());
 				}
@@ -402,8 +401,8 @@ public class MTPolygon extends MTCSSStylableShape{
 		////////// DRAW OUTLINE ////////
 		if (!this.isNoStroke()){ 
 			if (this.isUseVBOs()){
-				gl11.glBindBuffer(GL20.GL_ARRAY_BUFFER, this.getGeometryInfo().getVBOStrokeColorName());
-				gl.glColorPointer(4, GL10.GL_FLOAT, 0, null);
+				gl11.glBindBuffer(GL11.GL_ARRAY_BUFFER, this.getGeometryInfo().getVBOStrokeColorName());
+				gl11.glColorPointer(4, GL10.GL_FLOAT, 0, 0);
 			}else{
 				gl.glColorPointer(4, GL10.GL_FLOAT, 0, strokeColBuff);
 			}
@@ -455,8 +454,8 @@ public class MTPolygon extends MTCSSStylableShape{
 		
 		//TEST
 		if (this.isUseVBOs()){
-			gl11.glBindBuffer(GL20.GL_ARRAY_BUFFER, 0);
-			gl11.glBindBuffer(GL20.GL_ELEMENT_ARRAY_BUFFER, 0);
+			gl11.glBindBuffer(GL11.GL_ARRAY_BUFFER, 0);
+			gl11.glBindBuffer(GL11.GL_ELEMENT_ARRAY_BUFFER, 0);
 		}
 //		*/
 	}

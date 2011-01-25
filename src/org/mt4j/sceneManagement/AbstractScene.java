@@ -21,8 +21,6 @@ import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.Iterator;
 
-import javax.media.opengl.GL;
-
 import org.mt4j.MTApplication;
 import org.mt4j.components.MTCanvas;
 import org.mt4j.input.inputProcessors.globalProcessors.AbstractGlobalInputProcessor;
@@ -181,9 +179,9 @@ public abstract class AbstractScene implements Iscene {
 			GL10 gl = GraphicsUtil.getGL();
 			gl.glClearColor(this.glClearColor.getR(), this.glClearColor.getG(), this.glClearColor.getB(), this.glClearColor.getAlpha());
 			gl.glClear(
-					GL.GL_COLOR_BUFFER_BIT 
+					GL10.GL_COLOR_BUFFER_BIT 
 					| 
-					GL.GL_DEPTH_BUFFER_BIT
+					GL10.GL_DEPTH_BUFFER_BIT
 					);
 //			gl.glDepthMask(false);
 //			gl.glDisable(GL.GL_DEPTH_TEST);

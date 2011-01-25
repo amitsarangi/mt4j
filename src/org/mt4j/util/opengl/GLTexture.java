@@ -45,9 +45,9 @@ import com.sun.opengl.util.BufferUtil;
 public class GLTexture extends PImage {
 	
 	public enum WRAP_MODE{
-		REPEAT(GL.GL_REPEAT),
+		REPEAT(GL10.GL_REPEAT),
 		CLAMP(GL.GL_CLAMP),
-		CLAMP_TO_EDGE(GL.GL_CLAMP_TO_EDGE),
+		CLAMP_TO_EDGE(GL10.GL_CLAMP_TO_EDGE),
 		CLAMP_TO_BORDER(GL.GL_CLAMP_TO_BORDER);
 		
 		private int glConstant;
@@ -66,7 +66,7 @@ public class GLTexture extends PImage {
          * center for the pixel color. While fast, this results in aliasing and
          * shimmering during minification. (GL equivalent: GL_NEAREST)
          */
-        NearestNeighborNoMipMaps(GL.GL_NEAREST, false),
+        NearestNeighborNoMipMaps(GL10.GL_NEAREST, false),
 
         /**
          * In this method the four nearest texels to the pixel center are
@@ -75,7 +75,7 @@ public class GLTexture extends PImage {
          * same aliasing and shimmering problems as nearest
          * NearestNeighborNoMipMaps. (GL equivalent: GL_LINEAR)
          */
-        BilinearNoMipMaps(GL.GL_LINEAR, false),
+        BilinearNoMipMaps(GL10.GL_LINEAR, false),
 
         /**
          * Same as NearestNeighborNoMipMaps except that instead of using samples
@@ -83,7 +83,7 @@ public class GLTexture extends PImage {
          * distance. This reduces the aliasing and shimmering significantly, but
          * does not help with blockiness. (GL equivalent: GL_NEAREST_MIPMAP_NEAREST)
          */
-        NearestNeighborNearestMipMap(GL.GL_NEAREST_MIPMAP_NEAREST, true),
+        NearestNeighborNearestMipMap(GL10.GL_NEAREST_MIPMAP_NEAREST, true),
 
         
         /**
@@ -92,7 +92,7 @@ public class GLTexture extends PImage {
          * distance. By using mipmapping we avoid the aliasing and shimmering
          * problems of BilinearNoMipMaps. (GL equivalent: GL_LINEAR_MIPMAP_NEAREST)
          */
-        BilinearNearestMipMap(GL.GL_LINEAR_MIPMAP_NEAREST, true),
+        BilinearNearestMipMap(GL10.GL_LINEAR_MIPMAP_NEAREST, true),
 
         /**
          * Similar to NearestNeighborNoMipMaps except that instead of using
@@ -100,7 +100,7 @@ public class GLTexture extends PImage {
          * closest (by distance) two mipmap levels. A weighted average of these
          * two samples is returned. (GL equivalent: GL_NEAREST_MIPMAP_LINEAR)
          */
-        NearestNeighborLinearMipMap(GL.GL_NEAREST_MIPMAP_LINEAR, true),
+        NearestNeighborLinearMipMap(GL10.GL_NEAREST_MIPMAP_LINEAR, true),
 
         /**
          * Trilinear filtering is a remedy to a common artifact seen in
@@ -115,7 +115,7 @@ public class GLTexture extends PImage {
          * one mipmap level available, and the algorithm reverts to bilinear
          * filtering (GL equivalent: GL_LINEAR_MIPMAP_LINEAR)
          */
-        Trilinear(GL.GL_LINEAR_MIPMAP_LINEAR, true);
+        Trilinear(GL10.GL_LINEAR_MIPMAP_LINEAR, true);
 
         private boolean usesMipMapLevels;
 
@@ -140,7 +140,7 @@ public class GLTexture extends PImage {
          * center for the pixel color. While fast, this results in texture
          * 'blockiness' during magnification. (GL equivalent: GL_NEAREST)
          */
-        NearestNeighbor(GL.GL_NEAREST),
+        NearestNeighbor(GL10.GL_NEAREST),
 
         /**
          * In this mode the four nearest texels to the pixel center are sampled
@@ -150,7 +150,7 @@ public class GLTexture extends PImage {
          * change from one texel to the next, instead of an abrupt jump as the
          * pixel center crosses the texel boundary. (GL equivalent: GL_LINEAR)
          */
-        Bilinear(GL.GL_LINEAR);
+        Bilinear(GL10.GL_LINEAR);
         
         private int glConstant;
         private EXPANSION_FILTER(int glConstant) {
@@ -164,7 +164,7 @@ public class GLTexture extends PImage {
 	public enum TEXTURE_TARGET{
 		TEXTURE_1D(GL.GL_TEXTURE_1D),
 		
-		TEXTURE_2D(GL.GL_TEXTURE_2D),
+		TEXTURE_2D(GL10.GL_TEXTURE_2D),
 		
 		RECTANGULAR(GL.GL_TEXTURE_RECTANGLE_ARB);
 		
@@ -512,13 +512,13 @@ public class GLTexture extends PImage {
 		// Texture internal format
 		switch (this.format) {
 		case PConstants.RGB:
-			this.internalFormat = GL.GL_RGB;
+			this.internalFormat = GL10.GL_RGB;
 			break;
 		case PConstants.ARGB:
-			this.internalFormat = GL.GL_RGBA;
+			this.internalFormat = GL10.GL_RGBA;
 			break;
 		default:
-			this.internalFormat = GL.GL_RGBA;
+			this.internalFormat = GL10.GL_RGBA;
 			break;
 		}
 
@@ -530,11 +530,11 @@ public class GLTexture extends PImage {
 		if (GraphicsUtil.getGL11() != null){
 			GL11 gl11 = GraphicsUtil.getGL11();
 			//SET texture mag/min FILTER mode
-			gl11.glTexParameteri(textureTarget, GL.GL_TEXTURE_MIN_FILTER, minFilter);
-			gl11.glTexParameteri(textureTarget, GL.GL_TEXTURE_MAG_FILTER, magFilter);
+			gl11.glTexParameteri(textureTarget, GL10.GL_TEXTURE_MIN_FILTER, minFilter);
+			gl11.glTexParameteri(textureTarget, GL10.GL_TEXTURE_MAG_FILTER, magFilter);
 			//Set texture wrapping mode
-			gl11.glTexParameteri(textureTarget, GL.GL_TEXTURE_WRAP_S, wrap_s);
-			gl11.glTexParameteri(textureTarget, GL.GL_TEXTURE_WRAP_T, wrap_t);
+			gl11.glTexParameteri(textureTarget, GL10.GL_TEXTURE_WRAP_S, wrap_s);
+			gl11.glTexParameteri(textureTarget, GL10.GL_TEXTURE_WRAP_T, wrap_t);
 		}
 		
 //		//SET texture mag/min FILTER mode
@@ -548,12 +548,12 @@ public class GLTexture extends PImage {
 		case TEXTURE_1D:
 			if (gl instanceof GL11Plus) {
 				GL11Plus gl11Plus = (GL11Plus) gl;
-				gl11Plus.glTexImage1D(textureTarget, 0, internalFormat, width, 0, GL.GL_RGBA, GL.GL_UNSIGNED_BYTE, null); 
+				gl11Plus.glTexImage1D(textureTarget, 0, internalFormat, width, 0, GL10.GL_RGBA, GL10.GL_UNSIGNED_BYTE, null); 
 			}
 //			gl.glTexImage1D(textureTarget, 0, internalFormat, width, 0, GL.GL_RGBA, GL.GL_UNSIGNED_BYTE, null); 
 			break;
 		default:
-			gl.glTexImage2D(textureTarget, 0, internalFormat, width, height, 0, GL.GL_RGBA, GL.GL_UNSIGNED_BYTE, null); //FIXME always use GL_RGBA as glformat??
+			gl.glTexImage2D(textureTarget, 0, internalFormat, width, height, 0, GL10.GL_RGBA, GL10.GL_UNSIGNED_BYTE, null); //FIXME always use GL_RGBA as glformat??
 //			gl.glTexImage2D(textureTarget, 0, internalFormat, width, height, 0, GL.GL_BGRA, GL.GL_UNSIGNED_BYTE, null);//ORIGINAL
 			break;
 		}
@@ -684,7 +684,7 @@ public class GLTexture extends PImage {
 		//      int glFormat = glTextureSettings.glType.getGLConstant();
 		
 		int glFormat 	= GL.GL_BGRA; 				//FIXME DONT HARDCODE!?
-		int type 		= GL.GL_UNSIGNED_BYTE; 		//FIXME DONT HARDCODE!?
+		int type 		= GL10.GL_UNSIGNED_BYTE; 		//FIXME DONT HARDCODE!?
 
 		int textureTarget = glTextureSettings.target.getGLConstant();
 		// int internalFormat = glTextureSettings.textureInternalFormat.getGLConstant();
@@ -704,13 +704,13 @@ public class GLTexture extends PImage {
 		
 		switch (this.format) {
 		case PConstants.RGB:
-			this.internalFormat = GL.GL_RGB;
+			this.internalFormat = GL10.GL_RGB;
 			break;
 		case PConstants.ARGB:
-			this.internalFormat = GL.GL_RGBA;
+			this.internalFormat = GL10.GL_RGBA;
 			break;
 		default:
-			this.internalFormat = GL.GL_RGBA;
+			this.internalFormat = GL10.GL_RGBA;
 			break;
 		}
 
@@ -719,7 +719,7 @@ public class GLTexture extends PImage {
 		switch (glTextureSettings.target) {
 		case TEXTURE_1D:
 			if (glFormat == GL.GL_BGRA){ 
-				glFormat = GL.GL_RGBA;
+				glFormat = GL10.GL_RGBA;
 			}
 			if (gl instanceof GL11Plus) {
 				GL11Plus gl11Plus = (GL11Plus) gl;
@@ -794,7 +794,7 @@ public class GLTexture extends PImage {
 			IntBuffer buff = BufferUtil.newIntBuffer(this.width * this.height);
 	        int textureTarget = this.glTextureSettings.target.getGLConstant();
 	        gl11Plus.glBindTexture(textureTarget, this.glTextureID[0]);
-	        gl11Plus.glGetTexImage(textureTarget, 0, GL.GL_BGRA, GL.GL_UNSIGNED_BYTE, buff);
+	        gl11Plus.glGetTexImage(textureTarget, 0, GL10.GL_BGRA, GL10.GL_UNSIGNED_BYTE, buff);
 	        gl11Plus.glBindTexture(textureTarget, 0);
 	        buff.get(pixels);
 		}
@@ -835,8 +835,8 @@ public class GLTexture extends PImage {
 			if (GraphicsUtil.getGL11() != null){
 				GL11 gl11 = GraphicsUtil.getGL11();
 				gl11.glBindTexture(this.getTextureTarget(), this.getTextureID());
-				gl11.glTexParameteri(this.getTextureTarget(), GL.GL_TEXTURE_WRAP_S, this.glTextureSettings.wrappingHorizontal.getGLConstant());
-				gl11.glTexParameteri(this.getTextureTarget(), GL.GL_TEXTURE_WRAP_T, this.glTextureSettings.wrappingVertical.getGLConstant());
+				gl11.glTexParameteri(this.getTextureTarget(), GL10.GL_TEXTURE_WRAP_S, this.glTextureSettings.wrappingHorizontal.getGLConstant());
+				gl11.glTexParameteri(this.getTextureTarget(), GL10.GL_TEXTURE_WRAP_T, this.glTextureSettings.wrappingVertical.getGLConstant());
 				gl11.glBindTexture(this.getTextureTarget(), 0);
 			}
 //			gl.glBindTexture(this.getTextureTarget(), this.getTextureID());
@@ -875,8 +875,8 @@ public class GLTexture extends PImage {
 			if (GraphicsUtil.getGL11() != null){
 				GL11 gl11 = GraphicsUtil.getGL11();
 				gl11.glBindTexture(this.getTextureTarget(), this.getTextureID());
-				gl11.glTexParameteri(this.getTextureTarget(), GL.GL_TEXTURE_MIN_FILTER, this.glTextureSettings.shrinkFilter.getGLConstant());
-				gl11.glTexParameteri(this.getTextureTarget(), GL.GL_TEXTURE_MAG_FILTER, this.glTextureSettings.expansionFilter.getGLConstant());
+				gl11.glTexParameteri(this.getTextureTarget(), GL10.GL_TEXTURE_MIN_FILTER, this.glTextureSettings.shrinkFilter.getGLConstant());
+				gl11.glTexParameteri(this.getTextureTarget(), GL10.GL_TEXTURE_MAG_FILTER, this.glTextureSettings.expansionFilter.getGLConstant());
 				gl11.glBindTexture(this.getTextureTarget(), 0);	
 			}
 //			gl.glBindTexture(this.getTextureTarget(), this.getTextureID());

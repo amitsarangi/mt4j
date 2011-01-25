@@ -20,8 +20,6 @@ package org.mt4j.components.visibleComponents.widgets;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.media.opengl.GL;
-
 import org.mt4j.MTApplication;
 import org.mt4j.components.TransformSpace;
 import org.mt4j.components.clipping.Clip;
@@ -425,7 +423,7 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
 		}
 		
 		//Record list
-		gl11Plus.glNewList(listIDFill, GL.GL_COMPILE);
+		gl11Plus.glNewList(listIDFill, GL11Plus.GL_COMPILE);
 			drawCharactersGL(gl, characterList, characterList.size(), lastXAdvancement, thisLineTotalXAdvancement);
 			gl11Plus.glEndList();
 		

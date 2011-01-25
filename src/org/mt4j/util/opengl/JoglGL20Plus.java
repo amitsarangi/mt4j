@@ -39,6 +39,17 @@ public final class JoglGL20Plus implements GL20, GL11, GL11Plus {
 		this.gl = gl;
 	}
 	
+
+	@Override
+	public void setSwapInterval(int interval) {
+		gl.setSwapInterval(interval);
+	}
+	
+	@Override
+	public boolean isExtensionAvailable(String name) {
+		return gl.isExtensionAvailable(name);
+	}
+	
 	//Added for backwards compatibility
 	@Override
 	public void glCallList(int id) {
@@ -1083,6 +1094,8 @@ public final class JoglGL20Plus implements GL20, GL11, GL11Plus {
 	@Override public void glVertexPointer (int size, int type, int stride, int pointer) {
 		gl.glVertexPointer(size, type, stride, pointer);
 	}
+
+
 
 	
 

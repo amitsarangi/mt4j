@@ -321,8 +321,8 @@ public class MTKeyboard extends MTRoundRectangle implements IKeyListener {
 		keyInfos.add(new KeyInfo("I", "i", "I", new Vector3D(startX+8*advanceMent,lineY),  KeyInfo.NORMAL_KEY));
 		keyInfos.add(new KeyInfo("O", "o", "O", new Vector3D(startX+9*advanceMent,lineY),  KeyInfo.NORMAL_KEY));
 		keyInfos.add(new KeyInfo("P", "p", "P", new Vector3D(startX+10*advanceMent,lineY), KeyInfo.NORMAL_KEY));
-		//Ãœ
-		keyInfos.add(new KeyInfo("111", "Ã¼", "Ãœ", new Vector3D(startX+11*advanceMent,lineY), KeyInfo.NORMAL_KEY));
+		//Ü
+		keyInfos.add(new KeyInfo("111", "ü", "Ü", new Vector3D(startX+11*advanceMent,lineY), KeyInfo.NORMAL_KEY));
 		
 		keyInfos.add(new KeyInfo("+", "+", "+", new Vector3D(startX+12*advanceMent,lineY), KeyInfo.KEY_ONLY_VISIBLE_WHEN_SHIFT_NOTPRESSED));
 		keyInfos.add(new KeyInfo("*", "*", "*", new Vector3D(startX+12*advanceMent,lineY), KeyInfo.KEY_ONLY_VISIBLE_WHEN_SHIFT_PRESSED));
@@ -338,10 +338,10 @@ public class MTKeyboard extends MTRoundRectangle implements IKeyListener {
 		keyInfos.add(new KeyInfo("J", "j", "J", new Vector3D(startX+6*advanceMent,lineY),  KeyInfo.NORMAL_KEY));
 		keyInfos.add(new KeyInfo("K", "k", "K", new Vector3D(startX+7*advanceMent,lineY),  KeyInfo.NORMAL_KEY));
 		keyInfos.add(new KeyInfo("L", "l", "L", new Vector3D(startX+8*advanceMent,lineY),  KeyInfo.NORMAL_KEY));
-		//Ã–
-		keyInfos.add(new KeyInfo("1111", "Ã¶", "Ã–", new Vector3D(startX+9*advanceMent,lineY),  KeyInfo.NORMAL_KEY));
-		//Ã„
-        keyInfos.add(new KeyInfo("11", "Ã¤", "Ã„", new Vector3D(startX+10*advanceMent,lineY),  KeyInfo.NORMAL_KEY));
+		//Ö
+		keyInfos.add(new KeyInfo("1111", "ö", "Ö", new Vector3D(startX+9*advanceMent,lineY),  KeyInfo.NORMAL_KEY));
+		//Ä
+        keyInfos.add(new KeyInfo("11", "ä", "Ä", new Vector3D(startX+10*advanceMent,lineY),  KeyInfo.NORMAL_KEY));
 		
 		////////////////////
 		lineY = 161;

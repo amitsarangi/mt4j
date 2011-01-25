@@ -20,8 +20,6 @@ package org.mt4j.components.visibleComponents.shapes;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 
-import javax.media.opengl.GL;
-
 import org.mt4j.MTApplication;
 import org.mt4j.components.visibleComponents.StyleInfo;
 import org.mt4j.util.GraphicsUtil;
@@ -837,7 +835,7 @@ public class GeometryInfo {
 		
 		if (genFillList){
 			//Start recording display list
-			gl.glNewList(listIDFill, GL.GL_COMPILE);
+			gl.glNewList(listIDFill, GL11Plus.GL_COMPILE);
 			shape.setNoFill(false);
 			shape.setNoStroke(true);
 			shape.drawPureGl(gl);
@@ -850,7 +848,7 @@ public class GeometryInfo {
 		
 		if (genStrokeList){
 		//Start recording display list
-		gl.glNewList(listIDOutline, GL.GL_COMPILE);
+		gl.glNewList(listIDOutline, GL11Plus.GL_COMPILE);
 		shape.setNoFill(true);
 		shape.setNoStroke(false);
 		shape.drawPureGl(gl);

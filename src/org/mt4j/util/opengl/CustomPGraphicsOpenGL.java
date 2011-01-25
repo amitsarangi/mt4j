@@ -22,6 +22,8 @@ import javax.media.opengl.GLDrawableFactory;
 
 import org.mt4j.util.MT4jSettings;
 
+import processing.opengl.PGraphicsOpenGL;
+
 //import processing.opengl.PGraphicsOpenGL;
 
 /**

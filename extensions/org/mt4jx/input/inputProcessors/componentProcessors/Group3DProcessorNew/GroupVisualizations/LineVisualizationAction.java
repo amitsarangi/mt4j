@@ -2,22 +2,16 @@ package org.mt4jx.input.inputProcessors.componentProcessors.Group3DProcessorNew.
 
 import java.util.ArrayList;
 
-import javax.media.opengl.GL;
-
 import org.mt4j.components.MTComponent;
 import org.mt4j.components.visibleComponents.shapes.MTLine;
 import org.mt4j.input.IMTEventListener;
 import org.mt4j.input.MTEvent;
 import org.mt4j.input.inputProcessors.componentProcessors.dragProcessor.DragProcessor;
-import org.mt4j.input.inputProcessors.componentProcessors.lassoProcessor.IdragClusterable;
-import org.mt4j.input.inputProcessors.componentProcessors.tapProcessor.TapProcessor;
-import org.mt4j.util.math.Tools3D;
 import org.mt4j.util.math.Vector3D;
 import org.mt4jx.input.inputProcessors.componentProcessors.Group3DProcessorNew.Cluster;
 import org.mt4jx.input.inputProcessors.componentProcessors.Group3DProcessorNew.IVisualizeMethodProvider;
 import org.mt4jx.input.inputProcessors.componentProcessors.Group3DProcessorNew.MTClusterEvent;
 import org.mt4jx.util.extension3D.ComponentHelper;
-import org.mt4jx.util.extension3D.MergeHelper;
 
 import processing.core.PApplet;
 
@@ -54,9 +48,26 @@ public class LineVisualizationAction implements IMTEventListener,IVisualizeMetho
 	public void visualize(Cluster cluster)
 	{
 		
-		GL gl = Tools3D.getGL(pApplet);
-		Tools3D.beginGL(pApplet);
-		gl.glBegin(gl.GL_LINES);
+//		GL gl = Tools3D.getGL(pApplet);
+//		Tools3D.beginGL(pApplet);
+//		gl.glBegin(gl.GL_LINES);
+//		MTLine[] lines = getVisualizationLines(cluster.getChildren());
+//		MTComponent linesGroup = new MTComponent(pApplet);
+//		for(MTLine line : lines)
+//		{
+//			linesGroup.addChild(line);
+//		}
+//		cluster.setVisualComponentGroup(linesGroup);
+//		
+//		for(MTLine line : lines)
+//		{
+//			gl.glVertex3f(line.getVerticesLocal()[0].x,line.getVerticesLocal()[0].y,line.getVerticesLocal()[0].z);
+//			gl.glVertex3f(line.getVerticesLocal()[1].x,line.getVerticesLocal()[1].y,line.getVerticesLocal()[1].z);
+//		}
+//		gl.glEnd();
+//		Tools3D.endGL(pApplet);
+		
+		pApplet.beginShape(PApplet.LINES);
 		MTLine[] lines = getVisualizationLines(cluster.getChildren());
 		MTComponent linesGroup = new MTComponent(pApplet);
 		for(MTLine line : lines)
@@ -67,11 +78,10 @@ public class LineVisualizationAction implements IMTEventListener,IVisualizeMetho
 		
 		for(MTLine line : lines)
 		{
-			gl.glVertex3f(line.getVerticesLocal()[0].x,line.getVerticesLocal()[0].y,line.getVerticesLocal()[0].z);
-			gl.glVertex3f(line.getVerticesLocal()[1].x,line.getVerticesLocal()[1].y,line.getVerticesLocal()[1].z);
+			pApplet.vertex(line.getVerticesLocal()[0].x,line.getVerticesLocal()[0].y,line.getVerticesLocal()[0].z);
+			pApplet.vertex(line.getVerticesLocal()[1].x,line.getVerticesLocal()[1].y,line.getVerticesLocal()[1].z);
 		}
-		gl.glEnd();
-		Tools3D.endGL(pApplet);
+		pApplet.endShape();
 	}
 	
 	private MTLine[] getVisualizationLines(MTComponent[] selectedComps)

@@ -19,7 +19,6 @@ import org.mt4j.input.inputSources.Win7NativeTouchSource;
 import org.mt4j.util.MT4jSettings;
 
 public class DesktopInputManager extends InputManager{
-	private MTApplication app;
 	
 	public DesktopInputManager(MTApplication app) {
 		this(app, true);
@@ -27,7 +26,6 @@ public class DesktopInputManager extends InputManager{
 	
 	public DesktopInputManager(MTApplication app, boolean registerDefaultSources) {
 		super(app, registerDefaultSources);
-		this.app = app;
 	}
 
 	@Override

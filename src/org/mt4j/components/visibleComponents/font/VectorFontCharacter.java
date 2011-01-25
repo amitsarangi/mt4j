@@ -21,8 +21,6 @@ import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.List;
 
-import javax.media.opengl.GL;
-
 import org.mt4j.components.bounds.IBoundingShape;
 import org.mt4j.components.visibleComponents.shapes.GeometryInfo;
 import org.mt4j.components.visibleComponents.shapes.mesh.MTTriangleMesh;
@@ -129,19 +127,19 @@ public class VectorFontCharacter extends
 		IntBuffer indexBuff 		= this.getGeometryInfo().getIndexBuff(); //null if not indexed
 		
 		//Enable Pointers, set vertex array pointer
-		gl.glEnableClientState(GL.GL_VERTEX_ARRAY);
+		gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
 		
 		if (this.isUseVBOs()){//Vertices
 //			gl.glBindBuffer(GL.GL_ARRAY_BUFFER, this.getGeometryInfo().getVBOVerticesName());
 //			gl.glVertexPointer(3, GL.GL_FLOAT, 0, 0);
-			gl11.glBindBuffer(GL.GL_ARRAY_BUFFER, this.getGeometryInfo().getVBOVerticesName());
-			gl.glVertexPointer(3, GL.GL_FLOAT, 0, null);
+			gl11.glBindBuffer(GL11.GL_ARRAY_BUFFER, this.getGeometryInfo().getVBOVerticesName());
+			gl11.glVertexPointer(3, GL10.GL_FLOAT, 0, 0);
 		}else{
-			gl.glVertexPointer(3, GL.GL_FLOAT, 0, vertBuff);
+			gl.glVertexPointer(3, GL10.GL_FLOAT, 0, vertBuff);
 		}
 		
 		//Default texture target
-		int textureTarget = GL.GL_TEXTURE_2D;
+		int textureTarget = GL10.GL_TEXTURE_2D;
 		
 		/////// DRAW SHAPE ///////
 		if (!this.isNoFill()){ 
@@ -157,46 +155,46 @@ public class VectorFontCharacter extends
 				//the first parameter is eigher GL.GL_TEXTURE_2D or ..1D
 				gl.glEnable(textureTarget);
 				gl.glBindTexture(textureTarget, tex.getTextureID());
-				gl.glEnableClientState(GL.GL_TEXTURE_COORD_ARRAY);
+				gl.glEnableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
 				
 				if (this.isUseVBOs()){//Texture
 //					gl.glBindBuffer(GL.GL_ARRAY_BUFFER, this.getGeometryInfo().getVBOTextureName());
 //					gl.glTexCoordPointer(2, GL.GL_FLOAT, 0, 0);
-					gl11.glBindBuffer(GL.GL_ARRAY_BUFFER, this.getGeometryInfo().getVBOTextureName());
-					gl.glTexCoordPointer(2, GL.GL_FLOAT, 0, null);
+					gl11.glBindBuffer(GL11.GL_ARRAY_BUFFER, this.getGeometryInfo().getVBOTextureName());
+					gl11.glTexCoordPointer(2, GL10.GL_FLOAT, 0, 0);
 				}else{
-					gl.glTexCoordPointer(2, GL.GL_FLOAT, 0, tbuff);
+					gl.glTexCoordPointer(2, GL10.GL_FLOAT, 0, tbuff);
 				}
 				textureDrawn = true;
 			}
 			
 			// Normals
 			if (this.getGeometryInfo().isContainsNormals()){
-				gl.glEnableClientState(GL.GL_NORMAL_ARRAY);
+				gl.glEnableClientState(GL10.GL_NORMAL_ARRAY);
 				if (this.isUseVBOs()){
 //					gl.glBindBuffer(GL.GL_ARRAY_BUFFER, this.getGeometryInfo().getVBONormalsName());
 //					gl.glNormalPointer(GL.GL_FLOAT, 0, 0); 
-					gl11.glBindBuffer(GL.GL_ARRAY_BUFFER, this.getGeometryInfo().getVBONormalsName());
-					gl.glNormalPointer(GL.GL_FLOAT, 0, null); 
+					gl11.glBindBuffer(GL11.GL_ARRAY_BUFFER, this.getGeometryInfo().getVBONormalsName());
+					gl11.glNormalPointer(GL10.GL_FLOAT, 0, 0); 
 				}else{
-					gl.glNormalPointer(GL.GL_FLOAT, 0, this.getGeometryInfo().getNormalsBuff());
+					gl.glNormalPointer(GL10.GL_FLOAT, 0, this.getGeometryInfo().getNormalsBuff());
 				}
 			}
 			
 			//DRAW with drawElements if geometry is indexed, else draw with drawArrays!
 			if (this.getGeometryInfo().isIndexed()){
-				gl.glDrawElements(this.getFillDrawMode(), indexBuff.capacity(), GL.GL_UNSIGNED_INT, indexBuff); //limit() oder capacity()??
+				gl.glDrawElements(this.getFillDrawMode(), indexBuff.capacity(), GL10.GL_UNSIGNED_SHORT, indexBuff); //limit() oder capacity()??
 			}else{
 				gl.glDrawArrays(this.getFillDrawMode(), 0, vertBuff.capacity()/3);
 			}
 			
 			if (this.getGeometryInfo().isContainsNormals()){
-				gl.glDisableClientState(GL.GL_NORMAL_ARRAY);
+				gl.glDisableClientState(GL10.GL_NORMAL_ARRAY);
 			}
 
 			if (textureDrawn){
 				gl.glBindTexture(textureTarget, 0);//Unbind texture
-				gl.glDisableClientState(GL.GL_TEXTURE_COORD_ARRAY);
+				gl.glDisableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
 				gl.glDisable(textureTarget); //weiter nach unten?
 			}
 		}
@@ -213,7 +211,7 @@ public class VectorFontCharacter extends
 //				gl.glLineStipple(1, lineStipple);
 				GL11Plus gl11Plus = (GL11Plus)gl;
 				gl11Plus.glLineStipple(1, lineStipple);
-				gl.glEnable(GL.GL_LINE_STIPPLE);
+				gl.glEnable(GL11Plus.GL_LINE_STIPPLE);
 			}
 			
 			if (this.getStrokeWeight() > 0)
@@ -225,24 +223,24 @@ public class VectorFontCharacter extends
 			
 			//Always use just buffes and drawarrays instead of vbos..too complicated for a simple outline..
 			for(FloatBuffer outlineBuffer : this.outlineBuffers){ //FIXME EXPERIMENTAL
-				gl.glVertexPointer(3, GL.GL_FLOAT, 0, outlineBuffer); 
-				gl.glDrawArrays(GL.GL_LINE_STRIP, 0, outlineBuffer.capacity()/3);
+				gl.glVertexPointer(3, GL10.GL_FLOAT, 0, outlineBuffer); 
+				gl.glDrawArrays(GL10.GL_LINE_STRIP, 0, outlineBuffer.capacity()/3);
 			}
 			
 			//RESET LINE STIPPLE
 			if (lineStipple != 0){
-				gl.glDisable(GL.GL_LINE_STIPPLE);
+				gl.glDisable(GL11Plus.GL_LINE_STIPPLE);
 			}
 			Tools3D.setLineSmoothEnabled(gl, false);
 		}
 		
-		gl.glDisableClientState(GL.GL_VERTEX_ARRAY);
+		gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
 		
 		if (this.isUseVBOs()){
 //			gl.glBindBuffer(GL.GL_ARRAY_BUFFER, 0);
 //			gl.glBindBuffer(GL.GL_ELEMENT_ARRAY_BUFFER, 0);
-			gl11.glBindBuffer(GL.GL_ARRAY_BUFFER, 0);
-			gl11.glBindBuffer(GL.GL_ELEMENT_ARRAY_BUFFER, 0);
+			gl11.glBindBuffer(GL11.GL_ARRAY_BUFFER, 0);
+			gl11.glBindBuffer(GL11.GL_ELEMENT_ARRAY_BUFFER, 0);
 		}
 	}
 	

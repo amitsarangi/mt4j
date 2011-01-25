@@ -14,7 +14,6 @@ import org.mt4j.input.inputProcessors.componentProcessors.dragProcessor.DragProc
 import org.mt4j.input.inputProcessors.componentProcessors.rotateProcessor.RotateProcessor;
 import org.mt4j.input.inputProcessors.componentProcessors.scaleProcessor.ScaleProcessor;
 import org.mt4j.util.MTColor;
-import org.mt4j.util.camera.MTCamera;
 import org.mt4j.util.math.ConvexQuickHull2D;
 import org.mt4j.util.math.Matrix;
 import org.mt4j.util.math.Tools3D;

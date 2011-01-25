@@ -6,10 +6,12 @@ import org.mt4j.util.opengl.JoglGL10;
 import org.mt4j.util.opengl.JoglGL11;
 import org.mt4j.util.opengl.JoglGL20Plus;
 
-//import processing.opengl.PGraphicsOpenGL;
+import processing.opengl.PGraphicsOpenGL;
+
 
 public abstract class MTDesktopApplication extends MTApplication {
-	
+	private static final long serialVersionUID = 1L;
+
 	protected void loadGL(){
 		//FIXME TEST!!
 		String version = ((PGraphicsOpenGL)g).gl.glGetString(GL.GL_VERSION);

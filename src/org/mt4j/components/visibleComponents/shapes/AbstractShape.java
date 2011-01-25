@@ -17,8 +17,6 @@
  ***********************************************************************/
 package org.mt4j.components.visibleComponents.shapes;
 
-import javax.media.opengl.GL;
-
 import org.mt4j.MTApplication;
 import org.mt4j.components.MTComponent;
 import org.mt4j.components.TransformSpace;
@@ -148,7 +146,7 @@ public abstract class AbstractShape extends AbstractVisibleComponent{
 		this.useVBOs 			= false;
 		this.useDisplayList 	= false;
 		this.textureMode = PConstants.NORMAL;
-		this.setFillDrawMode(GL.GL_TRIANGLE_FAN);
+		this.setFillDrawMode(GL10.GL_TRIANGLE_FAN);
 //		this.boundsGlobalVerticesDirty = true;
 		this.boundsAutoCompute = true;
 		

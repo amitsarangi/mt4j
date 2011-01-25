@@ -36,7 +36,7 @@ import org.mt4j.util.math.Vector3D;
 public class StartSwingExample extends JFrame {
 	private static final long serialVersionUID = 1L;
 
-
+	//TODO init logging
 
 	public static void main(String[] args) {
 		try {

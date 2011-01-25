@@ -2,8 +2,6 @@ package org.mt4j;
 
 import java.awt.Graphics;
 import java.awt.event.FocusEvent;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseEvent;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.InputStream;
@@ -1230,11 +1228,11 @@ public interface IPAppletBoth {
 
 //public void init();
 
-public int sketchWidth();
-
-public int sketchHeight();
-
-public String sketchRenderer();
+//public int sketchWidth();
+//
+//public int sketchHeight();
+//
+//public String sketchRenderer();
 
 /**
  * Called by the browser or applet viewer to inform this applet that it
@@ -1782,14 +1780,14 @@ public void die(String what, Exception e);
  */
 public void exit();
 
-/**
- * Called to dispose of resources and shut down the sketch.
- * Destroys the thread, dispose the renderer,and notify listeners.
- * <p>
- * Not to be called or overriden by users. If called multiple times,
- * will only notify listeners once. Register a dispose listener instead.
- */
-public void dispose();
+///**
+// * Called to dispose of resources and shut down the sketch.
+// * Destroys the thread, dispose the renderer,and notify listeners.
+// * <p>
+// * Not to be called or overriden by users. If called multiple times,
+// * will only notify listeners once. Register a dispose listener instead.
+// */
+//public void dispose();
 
 public void method(String name);
 
@@ -2261,7 +2259,7 @@ public boolean saveStream(String targetFilename, String sourceLocation);
  */
 public boolean saveStream(File targetFile, String sourceLocation);
 
-public boolean saveStream(String targetFilename, InputStream sourceStream);
+//public boolean saveStream(String targetFilename, InputStream sourceStream);
 
 /**
  * Saves bytes to a file to inside the sketch folder.
@@ -3441,15 +3439,15 @@ public void scale(float sx, float sy);
  */
 public void scale(float x, float y, float z);
 
-/**
- * Shear along X axis
- */
-public void shearX(float angle);
-
-/**
- * Shear along Y axis
- */
-public void shearY(float angle);
+///**
+// * Shear along X axis
+// */
+//public void shearX(float angle);
+//
+///**
+// * Shear along Y axis
+// */
+//public void shearY(float angle);
 
 /**
  * Set the current transformation matrix to identity.

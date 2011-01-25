@@ -77,17 +77,26 @@ public class LineVisualizationWithOutlinesAction implements IMTEventListener,IVi
 				}
 			}
 		}
-		GL gl = Tools3D.getGL(pApplet);
-		Tools3D.beginGL(pApplet);
-		gl.glBegin(gl.GL_LINES);
+//		GL gl = Tools3D.getGL(pApplet);
+//		Tools3D.beginGL(pApplet);
+//		gl.glBegin(gl.GL_LINES);
+//		MTLine[] lines = getVisualizationLines(cluster.getChildren());
+//		for(MTLine line : lines)
+//		{
+//			gl.glVertex3f(line.getVerticesLocal()[0].x,line.getVerticesLocal()[0].y,line.getVerticesLocal()[0].z);
+//			gl.glVertex3f(line.getVerticesLocal()[1].x,line.getVerticesLocal()[1].y,line.getVerticesLocal()[1].z);
+//		}
+//		gl.glEnd();
+//		Tools3D.endGL(pApplet);
+		
+		pApplet.beginShape(PApplet.LINES);
 		MTLine[] lines = getVisualizationLines(cluster.getChildren());
 		for(MTLine line : lines)
 		{
-			gl.glVertex3f(line.getVerticesLocal()[0].x,line.getVerticesLocal()[0].y,line.getVerticesLocal()[0].z);
-			gl.glVertex3f(line.getVerticesLocal()[1].x,line.getVerticesLocal()[1].y,line.getVerticesLocal()[1].z);
+			pApplet.vertex(line.getVerticesLocal()[0].x,line.getVerticesLocal()[0].y,line.getVerticesLocal()[0].z);
+			pApplet.vertex(line.getVerticesLocal()[1].x,line.getVerticesLocal()[1].y,line.getVerticesLocal()[1].z);
 		}
-		gl.glEnd();
-		Tools3D.endGL(pApplet);
+		pApplet.endShape();
 		
 	}
 	

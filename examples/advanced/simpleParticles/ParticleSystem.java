@@ -4,8 +4,8 @@ import java.util.ArrayList;
 
 import javax.media.opengl.GL;
 
-import org.mt4j.util.math.Tools3D;
-
+import org.mt4j.util.GraphicsUtil;
+import org.mt4j.util.opengl.GL10;
 
 import processing.core.PApplet;
 import processing.core.PGraphics;
@@ -30,7 +30,8 @@ public class ParticleSystem {
 	}
 
 	public void run(PGraphics g) {
-		GL gl = Tools3D.getGL(g);
+//		GL gl = Tools3D.getGL(g);
+		GL10 gl = GraphicsUtil.getGL();
 		gl.glDisable(GL.GL_DEPTH_TEST);
 //		gl.glDepthMask(false);//depth testing - makes depth buffer read-only
 //		gl.glBlendFunc(GL.GL_SRC_ALPHA,GL.GL_ONE);//define blending as alpha blending

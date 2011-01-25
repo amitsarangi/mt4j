@@ -103,7 +103,7 @@ public class GLFBO {
 		super();
 		this.pa = pa;
 //		this.gl = ((PGraphicsOpenGL)pa.g).gl;
-		
+		this.gl = GraphicsUtil.getGL20();
 		
 		this.stencilBufferAttached = attachStencilBuffer;
 		

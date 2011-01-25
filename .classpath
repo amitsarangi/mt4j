@@ -52,9 +52,9 @@
 	<classpathentry kind="lib" path="extensions/lib/jbullet/stack-alloc.jar"/>
 	<classpathentry kind="lib" path="extensions/lib/jbullet/vecmath.jar"/>
 	<classpathentry kind="lib" path="mt4jLibs/whirlylib/log4j-1.2.8.jar"/>
-	<classpathentry kind="lib" path="mt4jLibs/jogl/jogl.jar"/>
 	<classpathentry kind="var" path="android_sdk_dir"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/processing-core"/>
 	<classpathentry kind="lib" path="mt4jLibs/jogl/opengl.jar"/>
+	<classpathentry kind="lib" path="mt4jLibs/jogl/jogl.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/android-core"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
