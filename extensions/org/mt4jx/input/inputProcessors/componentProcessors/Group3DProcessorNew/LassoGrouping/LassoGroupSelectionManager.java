@@ -1,19 +1,20 @@
 package org.mt4jx.input.inputProcessors.componentProcessors.Group3DProcessorNew.LassoGrouping;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
 import org.mt4j.components.MTCanvas;
 import org.mt4j.components.MTComponent;
 import org.mt4j.components.StateChange;
 import org.mt4j.components.StateChangeEvent;
 import org.mt4j.components.StateChangeListener;
-import org.mt4j.components.visibleComponents.shapes.MTPolygon;
 import org.mt4j.input.MTEvent;
+import org.mt4j.input.inputData.AbstractCursorInputEvt;
 import org.mt4j.input.inputData.InputCursor;
-import org.mt4j.input.inputData.MTFingerInputEvt;
 import org.mt4j.input.inputProcessors.IInputProcessor;
-import org.mt4j.input.inputProcessors.MTGestureEvent;
 import org.mt4j.input.inputProcessors.componentProcessors.AbstractComponentProcessor;
 import org.mt4j.input.inputProcessors.componentProcessors.AbstractCursorProcessor;
-import org.mt4j.input.inputProcessors.componentProcessors.lassoProcessor.IdragClusterable;
 import org.mt4jx.input.inputProcessors.componentProcessors.Group3DProcessorNew.Cluster;
 import org.mt4jx.input.inputProcessors.componentProcessors.Group3DProcessorNew.ClusterDataManager;
 import org.mt4jx.input.inputProcessors.componentProcessors.Group3DProcessorNew.ISelection;
@@ -21,9 +22,6 @@ import org.mt4jx.input.inputProcessors.componentProcessors.Group3DProcessorNew.I
 import org.mt4jx.input.inputProcessors.componentProcessors.Group3DProcessorNew.ISelectionManager;
 import org.mt4jx.input.inputProcessors.componentProcessors.Group3DProcessorNew.MTLassoSelectionEvent;
 import org.mt4jx.input.inputProcessors.componentProcessors.Group3DProcessorNew.MTSelectionEvent;
-import org.mt4jx.util.extension3D.MergeHelper;
-
-import java.util.*;
 
 public class LassoGroupSelectionManager extends AbstractCursorProcessor implements ISelectionManager {
 
@@ -96,7 +94,7 @@ public class LassoGroupSelectionManager extends AbstractCursorProcessor implemen
 	
 	@Override
 	public void cursorEnded(InputCursor inputCursor,
-			MTFingerInputEvt currentEvent) {
+			AbstractCursorInputEvt currentEvent) {
 		logger.debug(this.getName() + " INPUT_ENDED RECIEVED - MOTION: " + inputCursor.getId());
 		
 		LassoSelection sel = (LassoSelection)this.getSelection(inputCursor);
@@ -158,7 +156,7 @@ public class LassoGroupSelectionManager extends AbstractCursorProcessor implemen
 
 	@Override
 	public void cursorStarted(InputCursor inputCursor,
-			MTFingerInputEvt currentEvent) {		
+			AbstractCursorInputEvt currentEvent) {		
 		if (this.canLock(inputCursor)){
 			newInputCursor(inputCursor);
 			
@@ -179,7 +177,7 @@ public class LassoGroupSelectionManager extends AbstractCursorProcessor implemen
 
 	@Override
 	public void cursorUpdated(InputCursor inputCursor,
-			MTFingerInputEvt currentEvent) {
+			AbstractCursorInputEvt currentEvent) {
 		LassoSelection sel = (LassoSelection)getSelection(inputCursor);
 		sel.updateCursorInput(inputCursor);		
 	}
