@@ -74,10 +74,7 @@ import org.mt4j.util.opengl.JoglGL20Plus;
 
 import processing.core.PApplet;
 import processing.core.PGraphics;
-//import processing.core.PGraphics3D;
-import processing.core.PMatrix3D;
 import processing.opengl.PGraphicsOpenGL;
-import android.app.Application;
 
 
 
@@ -1302,13 +1299,13 @@ public abstract class MTApplication extends PApplet implements IMTApplication{
 	}
 	
 //	/*
-	public PMatrix3D getModelView() {
-		return ((PGraphics3D)this.g).modelview;
-	}
-	
-	public PMatrix3D getModelViewInv() {
-		return ((PGraphics3D)this.g).modelviewInv;
-	}
+//	public PMatrix3D getModelView() {
+//		return ((PGraphics3D)this.g).modelview;
+//	}
+//	
+//	public PMatrix3D getModelViewInv() {
+//		return ((PGraphics3D)this.g).modelviewInv;
+//	}
 	
 	
 	public GL10 beginGL() {

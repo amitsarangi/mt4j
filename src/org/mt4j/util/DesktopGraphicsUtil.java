@@ -29,27 +29,22 @@ public class DesktopGraphicsUtil implements IGraphicsUtil {
 		return ((PGraphics3D)app.getPGraphics()).modelviewInv;
 	}
 	
-	@Override
 	public PMatrix3D getCamera() {
 		return ((PGraphics3D)app.getPGraphics()).camera;
 	}
 	
-	@Override
 	public float getCameraFOV() {
 		return ((PGraphics3D)app.getPGraphics()).cameraFOV;
 	}
 
-	@Override
 	public float getCameraAspect() {
 		return ((PGraphics3D)app.getPGraphics()).cameraAspect;
 	}
 
-	@Override
 	public float getCameraNear() {
 		return ((PGraphics3D)app.getPGraphics()).cameraNear;
 	}
 
-	@Override
 	public float getCameraFar() {
 		return ((PGraphics3D)app.getPGraphics()).cameraFar;
 	}
@@ -71,12 +66,10 @@ public class DesktopGraphicsUtil implements IGraphicsUtil {
 		return app.getGL10(); //FIXME DOES THE CAST TO kronos.GL10 work!??
 	}
 	
-	@Override
 	public GL11 getGL11() {
 		return app.getGL11(); 
 	}
 
-	@Override
 	public GL20 getGL20() {
 		return app.getGL20(); 
 	}
@@ -93,12 +86,10 @@ public class DesktopGraphicsUtil implements IGraphicsUtil {
     }
     
     
-    @Override
-	public int getPlatform() {
+    public int getPlatform() {
 		return IGraphicsUtil.DESKTOP;
 	}
 
-	@Override
 	public GL11Plus getGL11Plus() {
 		return app.getGL11Plus();
 	}
