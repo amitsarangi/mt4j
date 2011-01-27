@@ -43,7 +43,6 @@ import processing.core.PGraphics;
 import processing.core.PGraphics3D;
 import processing.core.PImage;
 import processing.core.PMatrix3D;
-import android.opengl.GLU;
 
 
 /**
