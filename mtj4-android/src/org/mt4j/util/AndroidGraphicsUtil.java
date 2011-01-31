@@ -1,10 +1,12 @@
 package org.mt4j.util;
 
 import org.mt4j.IMTApplication;
+import org.mt4j.util.opengl.AndroidGLU;
 import org.mt4j.util.opengl.GL10;
 import org.mt4j.util.opengl.GL11;
 import org.mt4j.util.opengl.GL11Plus;
 import org.mt4j.util.opengl.GL20;
+import org.mt4j.util.opengl.IGLU;
 
 import processing.core.PGraphics;
 import processing.core.PGraphicsAndroid3D;
@@ -12,9 +14,11 @@ import processing.core.PMatrix3D;
 
 public class AndroidGraphicsUtil implements IGraphicsUtil {
 	private final IMTApplication app;
+	private AndroidGLU androidGLU;
 
 	public AndroidGraphicsUtil(IMTApplication app){
 		this.app = app;
+		this.androidGLU = new AndroidGLU();
 	}
 
 	public PGraphics getPGraphics(){
@@ -58,14 +62,14 @@ public class AndroidGraphicsUtil implements IGraphicsUtil {
 	}
 
 	public GL10 beginGL() {
-//		((PGraphicsAndroid3D)app.getPGraphics()).beginGL();
-		app.beginGL();
+		((PGraphicsAndroid3D)app.getPGraphics()).beginGL();
+//		app.beginGL();
 		return app.getGL10();
 	}
     
     public void endGL(){
-//    	((PGraphicsAndroid3D)app.getPGraphics()).endGL();
-    	app.endGL();
+    	((PGraphicsAndroid3D)app.getPGraphics()).endGL();
+//    	app.endGL();
     }
 
 	public int getPlatform() {
@@ -78,6 +82,11 @@ public class AndroidGraphicsUtil implements IGraphicsUtil {
 
 	public GL11Plus getGL11Plus() {
 		return app.getGL11Plus();
+	}
+
+	@Override
+	public IGLU getGLU() {
+		return androidGLU;
 	}
 
 	
