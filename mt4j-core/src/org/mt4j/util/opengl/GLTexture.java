@@ -20,7 +20,6 @@ package org.mt4j.util.opengl;
 import java.nio.IntBuffer;
 
 import javax.media.opengl.GL;
-import javax.media.opengl.glu.GLU;
 
 import org.mt4j.MTApplication;
 import org.mt4j.util.GraphicsUtil;
@@ -30,7 +29,6 @@ import org.mt4j.util.math.ToolsMath;
 import processing.core.PApplet;
 import processing.core.PConstants;
 import processing.core.PImage;
-import processing.opengl.PGraphicsOpenGL;
 
 import com.sun.opengl.util.BufferUtil;
 
@@ -738,7 +736,8 @@ public class GLTexture extends PImage {
 //				gl.glTexParameteri( textureTarget, GL.GL_GENERATE_MIPMAP, GL.GL_TRUE ); 
 				if (this.forcedRectMipMaps){
 					//Resizes NPOT textures to POT
-					GLU glu = ((PGraphicsOpenGL)this.parent.g).glu;
+//					GLU glu = ((PGraphicsOpenGL)this.parent.g).glu;
+					IGLU glu = GraphicsUtil.getGLU();
 					glu.gluBuild2DMipmaps(textureTarget, internalFormat, this.width, this.height, glFormat, type, buffer);
 				}else{
 					if (this.fboSupported && GraphicsUtil.getGL20() != null){ //Naive check if glGenerateMipmapEXT command is supported
@@ -746,7 +745,8 @@ public class GLTexture extends PImage {
 						GraphicsUtil.getGL20().glGenerateMipmap(textureTarget);  //newer OpenGL 3.x method of creating mip maps //TODO problems on ATI? use gl.glEnable(textureTarget) first? 
 					}else{
 						//Old school software method, will resize a NPOT texture to a POT texture
-						GLU glu = ((PGraphicsOpenGL)this.parent.g).glu;
+//						GLU glu = ((PGraphicsOpenGL)this.parent.g).glu;
+						IGLU glu = GraphicsUtil.getGLU();
 						glu.gluBuild2DMipmaps(textureTarget, internalFormat, this.width, this.height, glFormat, type, buffer);
 					}
 //					if (this.fboSupported){ //Naive check if glGenerateMipmapEXT command is supported

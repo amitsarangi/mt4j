@@ -87,12 +87,7 @@ public class DefaultRotateAction implements IGestureEventListener,ICollisionActi
 				}
 				break;
 			case MTGestureEvent.GESTURE_UPDATED:
-				if(!gestureAborted())
-				{
-					target.rotateZGlobal(rotateEvent.getRotationPoint(), rotateEvent.getRotationDegrees());
-					if (target.isGestureAllowed(DragProcessor.class))
-						target.translateGlobal(rotateEvent.getTranslationVector());
-				}
+				doAction(target, rotateEvent);
 				break;
 			case MTGestureEvent.GESTURE_CANCELED:
 			case MTGestureEvent.GESTURE_ENDED:
@@ -102,6 +97,15 @@ public class DefaultRotateAction implements IGestureEventListener,ICollisionActi
 			}
 		}
 		return false;
+	}
+	
+	protected void doAction(IMTComponent3D comp, RotateEvent re){
+		if(!gestureAborted())
+		{
+			comp.rotateZGlobal(re.getRotationPoint(), re.getRotationDegrees());
+			if (comp.isGestureAllowed(DragProcessor.class))
+				comp.translateGlobal(re.getTranslationVector());
+		}
 	}
 
 	/* (non-Javadoc)

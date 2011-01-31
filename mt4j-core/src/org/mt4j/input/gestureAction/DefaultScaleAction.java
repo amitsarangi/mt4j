@@ -127,6 +127,7 @@ public class DefaultScaleAction implements IGestureEventListener,ICollisionActio
 			
 			switch (scaleEvent.getId()) {
 			case MTGestureEvent.GESTURE_STARTED:
+			case MTGestureEvent.GESTURE_RESUMED:
 				if (target instanceof MTComponent){
 					((MTComponent)target).sendToFront();
 					/*
@@ -139,47 +140,7 @@ public class DefaultScaleAction implements IGestureEventListener,ICollisionActio
 				}
 				break;
 			case MTGestureEvent.GESTURE_UPDATED:
-				if(!gestureAborted)
-				{
-					if (this.hasScaleLimit){
-						if (target instanceof MTComponent) {
-							MTComponent comp = (MTComponent) target;
-							
-							//FIXME actually we should use globalmatrix but performance is better for localMatrix..
-							Vector3D currentScale = comp.getLocalMatrix().getScale(); 
-							
-	//						if (currentScale.x != currentScale.y){
-	//							System.out.println("non uniform scale!");
-	//						}
-							
-							//We only check X because only uniform scales (x=y factor) should be used!
-							if (currentScale.x * scaleEvent.getScaleFactorX() > this.maxScale){
-	//							System.out.println("Scale MAX Limit Hit!");
-								//We should set to min scale, but we choose performance over accuracy
-								//float factor = (1f/currentScale.x) * maxScale;
-								//target.scaleGlobal(factor, factor, scaleEvent.getScaleFactorZ(), scaleEvent.getScalingPoint());
-							}else if (currentScale.x * scaleEvent.getScaleFactorX() < this.minScale){
-	//							System.out.println("Scale MIN Limit Hit!");
-								//We should set to min scale, but we choose performance over accuracy
-								//float factor = (1f/currentScale.x) * minScale;
-								//target.scaleGlobal(factor, factor, scaleEvent.getScaleFactorZ(), scaleEvent.getScalingPoint());
-							}else{
-								target.scaleGlobal(
-										scaleEvent.getScaleFactorX(), 
-										scaleEvent.getScaleFactorY(), 
-										scaleEvent.getScaleFactorZ(), 
-										scaleEvent.getScalingPoint());
-							}
-							
-						}
-					}else{
-						target.scaleGlobal(
-								scaleEvent.getScaleFactorX(), 
-								scaleEvent.getScaleFactorY(), 
-								scaleEvent.getScaleFactorZ(), 
-								scaleEvent.getScalingPoint());
-					}
-				}
+				doAction(target, scaleEvent);
 				break;
 			case MTGestureEvent.GESTURE_CANCELED:
 			case MTGestureEvent.GESTURE_ENDED:
@@ -190,7 +151,53 @@ public class DefaultScaleAction implements IGestureEventListener,ICollisionActio
 		}
 		return false;
 	}
-	
+
+
+	protected void doAction(IMTComponent3D target, ScaleEvent se) {
+		if(!gestureAborted)
+		{
+			if (this.hasScaleLimit){
+				if (target instanceof MTComponent) {
+					MTComponent comp = (MTComponent) target;
+
+					//FIXME actually we should use globalmatrix but performance is better for localMatrix..
+					Vector3D currentScale = comp.getLocalMatrix().getScale(); 
+
+					//						if (currentScale.x != currentScale.y){
+					//							System.out.println("non uniform scale!");
+					//						}
+
+					//We only check X because only uniform scales (x=y factor) should be used!
+					if (currentScale.x * se.getScaleFactorX() > this.maxScale){
+						//							System.out.println("Scale MAX Limit Hit!");
+						//We should set to min scale, but we choose performance over accuracy
+						//float factor = (1f/currentScale.x) * maxScale;
+						//target.scaleGlobal(factor, factor, scaleEvent.getScaleFactorZ(), scaleEvent.getScalingPoint());
+					}else if (currentScale.x * se.getScaleFactorX() < this.minScale){
+						//							System.out.println("Scale MIN Limit Hit!");
+						//We should set to min scale, but we choose performance over accuracy
+						//float factor = (1f/currentScale.x) * minScale;
+						//target.scaleGlobal(factor, factor, scaleEvent.getScaleFactorZ(), scaleEvent.getScalingPoint());
+					}else{
+						target.scaleGlobal(
+								se.getScaleFactorX(), 
+								se.getScaleFactorY(), 
+								se.getScaleFactorZ(), 
+								se.getScalingPoint());
+					}
+				}else{
+
+				}
+			}else{
+				target.scaleGlobal(
+						se.getScaleFactorX(), 
+						se.getScaleFactorY(), 
+						se.getScaleFactorZ(), 
+						se.getScalingPoint());
+			}
+		}
+	}
+
 	/* (non-Javadoc)
 	 * @see org.mt4j.input.inputProcessors.ICollisionAction#gestureAborted()
 	 */

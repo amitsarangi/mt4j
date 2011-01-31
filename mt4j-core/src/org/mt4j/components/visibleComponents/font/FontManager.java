@@ -23,10 +23,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Set;
 
-import org.mt4j.components.visibleComponents.font.fontFactories.BitmapFontFactory;
 import org.mt4j.components.visibleComponents.font.fontFactories.IFontFactory;
-import org.mt4j.components.visibleComponents.font.fontFactories.SvgFontFactory;
-import org.mt4j.components.visibleComponents.font.fontFactories.TTFontFactory;
 import org.mt4j.util.MT4jSettings;
 import org.mt4j.util.MTColor;
 import org.mt4j.util.logging.ILogger;
@@ -74,21 +71,6 @@ public class FontManager {
 	private FontManager(){
 		fonts = new ArrayList<IFont>();
 		suffixToFactory = new HashMap<String, IFontFactory>();
-		
-		//Register default font factories
-		this.registerFontFactory(".ttf", new TTFontFactory());
-		this.registerFontFactory(".svg", new SvgFontFactory());
-	    
-		BitmapFontFactory bitmapFontFactory = new BitmapFontFactory();
-//		this.registerFontFactory(".ttf", bitmapFontFactory); // TEST
-	    this.registerFontFactory("", bitmapFontFactory);
-	    this.registerFontFactory(".vlw", bitmapFontFactory);
-	    this.registerFontFactory(".otf", bitmapFontFactory);
-	    
-	    this.registerFontFactory(".bold", bitmapFontFactory);
-	    this.registerFontFactory(".bolditalic", bitmapFontFactory);
-	    this.registerFontFactory(".italic", bitmapFontFactory);
-	    this.registerFontFactory(".plain", bitmapFontFactory);
 	}
 	
 	/**

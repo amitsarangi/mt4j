@@ -17,7 +17,7 @@ import org.mt4j.components.css.style.CSSStyleHierarchy;
 import org.mt4j.components.css.util.CSSKeywords.Position;
 import org.mt4j.components.visibleComponents.shapes.MTCSSStylableShape;
 import org.mt4j.components.visibleComponents.shapes.MTPolygon;
-import org.mt4j.components.visibleComponents.widgets.MTImage;
+import org.mt4j.components.visibleComponents.shapes.MTRectangle;
 import org.mt4j.util.MT4jSettings;
 import org.mt4j.util.MTColor;
 import org.mt4j.util.math.Tools3D;
@@ -316,7 +316,7 @@ public class CSSHelper {
 		}
 		} else {
 			if (virtualStyleSheet.getBackgroundPosition() != null) {
-			MTImage img = new MTImage(app,bgImage);
+			MTRectangle img = new MTRectangle(app,bgImage);
 			p.addChild(img);
 			img.setPickable(false);
 			
