@@ -1,9 +1,9 @@
-package advanced.mtShell;
+package advanced.touchTail;
 
 import org.mt4j.MTDesktopApplication;
 
 
-public class StartMTShell extends MTDesktopApplication {
+public class StartTailExample extends MTDesktopApplication{
 	private static final long serialVersionUID = 1L;
 
 	public static void main(String args[]){
@@ -12,7 +12,6 @@ public class StartMTShell extends MTDesktopApplication {
 	
 	@Override
 	public void startUp(){
-		this.addScene(new MTShellScene(this, "Multi-Touch Shell Scene"));
+		this.addScene(new TouchTailScene(this, "Touch Tail Scene"));
 	}
-	
 }

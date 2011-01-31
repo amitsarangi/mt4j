@@ -1,10 +1,10 @@
 package advanced.physics;
 
-import org.mt4j.MTApplication;
+import org.mt4j.MTDesktopApplication;
 
 import advanced.physics.scenes.AirHockeyScene;
 
-public class StartAirHockey extends MTApplication {
+public class StartAirHockey extends MTDesktopApplication {
 	private static final long serialVersionUID = 1L;
 
 	public static void main(String[] args) {

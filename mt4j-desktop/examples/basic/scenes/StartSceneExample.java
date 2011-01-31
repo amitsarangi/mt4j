@@ -1,8 +1,8 @@
 package basic.scenes;
 
-import org.mt4j.MTApplication;
+import org.mt4j.MTDesktopApplication;
 
-public class StartSceneExample extends MTApplication {
+public class StartSceneExample extends MTDesktopApplication {
 	/**
 	 * 
 	 */

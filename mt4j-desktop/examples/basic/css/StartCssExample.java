@@ -1,9 +1,9 @@
 package basic.css;
 
-import org.mt4j.MTApplication;
+import org.mt4j.MTDesktopApplication;
 
 
-public class StartCssExample extends MTApplication {
+public class StartCssExample extends MTDesktopApplication {
 	private static final long serialVersionUID = 1L;
 
 

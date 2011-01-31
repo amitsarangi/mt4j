@@ -1,20 +1,27 @@
 package org.mt4j.util;
 
+import javax.media.opengl.glu.GLU;
+
 import org.mt4j.IMTApplication;
 import org.mt4j.util.opengl.GL10;
 import org.mt4j.util.opengl.GL11;
 import org.mt4j.util.opengl.GL11Plus;
 import org.mt4j.util.opengl.GL20;
+import org.mt4j.util.opengl.IGLU;
+import org.mt4j.util.opengl.JoglGLU;
 
 import processing.core.PGraphics;
 import processing.core.PGraphics3D;
 import processing.core.PMatrix3D;
+import processing.opengl.PGraphicsOpenGL;
 
 public class DesktopGraphicsUtil implements IGraphicsUtil {
 	private final IMTApplication app;
+	private final JoglGLU joglGLU;
 
 	public DesktopGraphicsUtil(IMTApplication app){
 		this.app = app;
+		this.joglGLU = new JoglGLU(new GLU());
 	}
 
 	public PGraphics getPGraphics(){
@@ -75,14 +82,14 @@ public class DesktopGraphicsUtil implements IGraphicsUtil {
 	}
 
 	public GL10 beginGL() {
-//		((PGraphicsOpenGL)app.getPGraphics()).beginGL();
-		app.beginGL();
+		((PGraphicsOpenGL)app.getPGraphics()).beginGL();
+//		app.beginGL();
 		return app.getGL10();
 	}
     
     public void endGL(){
-//    	((PGraphicsOpenGL)app.getPGraphics()).endGL();
-    	app.endGL();
+    	((PGraphicsOpenGL)app.getPGraphics()).endGL();
+//    	app.endGL();
     }
     
     
@@ -92,6 +99,11 @@ public class DesktopGraphicsUtil implements IGraphicsUtil {
 
 	public GL11Plus getGL11Plus() {
 		return app.getGL11Plus();
+	}
+
+	@Override
+	public IGLU getGLU() {
+		return this.joglGLU;
 	}
 
 	

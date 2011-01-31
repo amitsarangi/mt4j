@@ -12,7 +12,6 @@
 	<classpathentry kind="lib" path="lib/batik/batik-anim.jar"/>
 	<classpathentry kind="lib" path="lib/batik/batik-awt-util.jar"/>
 	<classpathentry kind="lib" path="lib/batik/batik-bridge.jar"/>
-	<classpathentry kind="lib" path="lib/batik/batik-css.jar"/>
 	<classpathentry kind="lib" path="lib/batik/batik-dom.jar"/>
 	<classpathentry kind="lib" path="lib/batik/batik-ext.jar"/>
 	<classpathentry kind="lib" path="lib/batik/batik-extension.jar"/>
@@ -26,7 +25,6 @@
 	<classpathentry kind="lib" path="lib/batik/batik-xml.jar"/>
 	<classpathentry kind="lib" path="lib/batik/js.jar"/>
 	<classpathentry kind="lib" path="lib/batik/pdf-transcoder.jar"/>
-	<classpathentry kind="lib" path="lib/batik/xml-apis-ext.jar"/>
 	<classpathentry kind="lib" path="lib/batik/xml-apis.jar"/>
 	<classpathentry kind="lib" path="lib/jogl/opengl.jar"/>
 	<classpathentry kind="lib" path="lib/tuio/libTUIO.jar"/>
@@ -40,8 +38,15 @@
 	<classpathentry kind="lib" path="examples/advanced/modestMapsMT/lib/modestMaps.jar"/>
 	<classpathentry kind="lib" path="examples/advanced/physics/lib/jbox2d.jar"/>
 	<classpathentry kind="lib" path="examples/advanced/water/lib/waterScene.jar"/>
-	<classpathentry kind="lib" path="/mt4j-core/lib/jogl.jar"/>
+	<classpathentry kind="lib" path="/mt4j-core/lib/jogl.jar">
+		<attributes>
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="mt4j-desktop"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry combineaccessrules="false" kind="src" path="/mt4j-core"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="/mt4j-core/lib/batik-css.jar"/>
+	<classpathentry kind="lib" path="/mt4j-core/lib/xml-apis-ext.jar"/>
+	<classpathentry kind="lib" path="lib/jogl/gluegen-rt.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

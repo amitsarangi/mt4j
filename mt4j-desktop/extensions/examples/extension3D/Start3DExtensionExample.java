@@ -1,12 +1,10 @@
 package examples.extension3D;
 
-import org.mt4j.MTApplication;
+import org.mt4j.MTDesktopApplication;
 import org.mt4j.sceneManagement.Iscene;
 
-import examples.extension3D.Extension3DScene;
 
-
-public class Start3DExtensionExample extends MTApplication{
+public class Start3DExtensionExample extends MTDesktopApplication{
 	/**
 	 * 
 	 */

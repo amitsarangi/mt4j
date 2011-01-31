@@ -1,9 +1,9 @@
 package basic.css.genericItems;
 
-import org.mt4j.MTApplication;
+import org.mt4j.MTDesktopApplication;
 
 
-public class StartGenericExample extends MTApplication {
+public class StartGenericExample extends MTDesktopApplication {
 	/**
 	 * 
 	 */

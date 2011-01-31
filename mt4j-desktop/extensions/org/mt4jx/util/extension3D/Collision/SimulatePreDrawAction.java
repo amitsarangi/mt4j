@@ -3,7 +3,6 @@ package org.mt4jx.util.extension3D.Collision;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Map.Entry;
 
 import javax.vecmath.Matrix4f;
 import javax.vecmath.Vector3f;
@@ -11,7 +10,6 @@ import javax.vecmath.Vector3f;
 import org.mt4j.MTApplication;
 import org.mt4j.components.MTCanvas;
 import org.mt4j.components.MTComponent;
-import org.mt4j.components.visibleComponents.shapes.mesh.MTCube;
 import org.mt4j.components.visibleComponents.shapes.mesh.MTTriangleMesh;
 import org.mt4j.components.visibleComponents.widgets.MTOverlayContainer;
 import org.mt4j.input.gestureAction.DefaultDragAction;
@@ -35,7 +33,6 @@ import org.mt4jx.input.inputProcessors.componentProcessors.Group3DProcessorNew.C
 import org.mt4jx.input.inputProcessors.componentProcessors.Rotate3DProcessor.Rotate3DEvent;
 import org.mt4jx.input.inputProcessors.componentProcessors.depthProcessor.DepthGestureEvent;
 import org.mt4jx.util.extension3D.ComponentHelper;
-
 
 import com.bulletphysics.collision.dispatch.CollisionObject;
 import com.bulletphysics.collision.dispatch.CollisionWorld;

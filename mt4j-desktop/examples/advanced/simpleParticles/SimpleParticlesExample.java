@@ -1,6 +1,7 @@
 package advanced.simpleParticles;
 
 import org.mt4j.MTApplication;
+import org.mt4j.MTDesktopApplication;
 import org.mt4j.input.IMTInputEventListener;
 import org.mt4j.input.inputData.AbstractCursorInputEvt;
 import org.mt4j.input.inputData.MTInputEvent;
@@ -11,7 +12,7 @@ import org.mt4j.util.camera.MTCamera;
 import processing.core.PImage;
 import processing.core.PVector;
 
-public class SimpleParticlesExample extends MTApplication {
+public class SimpleParticlesExample extends MTDesktopApplication {
 	private static final long serialVersionUID = 1L;
 
 	public static void main(String[] args) {

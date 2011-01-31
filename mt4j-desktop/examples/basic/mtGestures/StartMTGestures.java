@@ -1,8 +1,8 @@
 package basic.mtGestures;
 
-import org.mt4j.MTApplication;
+import org.mt4j.MTDesktopApplication;
 
-public class StartMTGestures extends MTApplication {
+public class StartMTGestures extends MTDesktopApplication {
 	private static final long serialVersionUID = 1L;
 	
 	public static void main(String[] args) {
