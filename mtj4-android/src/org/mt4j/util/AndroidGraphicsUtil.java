@@ -10,6 +10,7 @@ import org.mt4j.util.opengl.IGLU;
 
 import processing.core.PGraphics;
 import processing.core.PGraphicsAndroid3D;
+import processing.core.PMatrix;
 import processing.core.PMatrix3D;
 
 public class AndroidGraphicsUtil implements IGraphicsUtil {
@@ -87,6 +88,11 @@ public class AndroidGraphicsUtil implements IGraphicsUtil {
 	@Override
 	public IGLU getGLU() {
 		return androidGLU;
+	}
+
+	@Override
+	public PMatrix getProjection() {
+		return ((PGraphicsAndroid3D)app).projection;
 	}
 
 	

@@ -5,27 +5,36 @@ import org.mt4j.util.AndroidGraphicsUtil;
 import org.mt4j.util.GraphicsUtil;
 import org.mt4j.util.MT4jSettings;
 import org.mt4j.util.animation.ani.AniAnimation;
+import org.mt4j.util.logging.AndroidDefaultLogger;
 import org.mt4j.util.logging.ILogger;
 import org.mt4j.util.logging.MTLoggerFactory;
+import org.mt4j.util.opengl.AndroidGL10;
+import org.mt4j.util.opengl.AndroidGL11;
+import org.mt4j.util.opengl.GL10;
+
+import processing.core.PGraphicsAndroid3D;
 
 
 
 public abstract class MTAndroidApplication extends MTApplication{
 	static{
-		//Initialize Loggin facilities  - IMPORTANT TO DO THIS ASAP!//////
-//		MTLoggerFactory.setLoggerProvider(new Log4jLogger()); //FIXME TEST
-		//TODO android logger
-//		MTLoggerFactory.setLoggerProvider(new JavaLogger()); //FIXME TEST
-		logger = MTLoggerFactory.getLogger(MTApplication.class.getName());
-		logger.setLevel(ILogger.INFO);
+//		//Initialize Loggin facilities  - IMPORTANT TO DO THIS ASAP!//////
+//		MTLoggerFactory.setLoggerProvider(new AndroidDefaultLogger()); 
+//		logger = MTLoggerFactory.getLogger(MTApplication.class.getName());
+//		logger.setLevel(ILogger.INFO);
 	}
 	
 	
 	@Override
 	public void setup() {
+		//Initialize Loggin facilities  - IMPORTANT TO DO THIS ASAP!//////
+		MTLoggerFactory.setLoggerProvider(new AndroidDefaultLogger()); 
+		logger = MTLoggerFactory.getLogger(MTApplication.class.getName());
+		logger.setLevel(ILogger.INFO);
+		
 		//TODO
 		// Applet size - size() must be the first command in setup() method
-		this.size(MT4jSettings.getInstance().getWindowWidth(), MT4jSettings.getInstance().getWindowHeight(), A3D);
+//		this.size(MT4jSettings.getInstance().getWindowWidth(), MT4jSettings.getInstance().getWindowHeight(), A3D);
 		
 		//TOGGLES ALWAYS ON TOP MODE
 		//this.frame.setAlwaysOnTop(true);
@@ -46,12 +55,6 @@ public abstract class MTAndroidApplication extends MTApplication{
 		GraphicsUtil.setGraphicsUtilProvider(new AndroidGraphicsUtil(this));
 		///////////////////////
 		
-		
-		//Check if OS 32/64 Bit
-		String bit = System.getProperty("sun.arch.data.model");
-		logger.info("Platform: \"" + System.getProperty("os.name") + "\" -> Version: \"" + System.getProperty("os.version") +  "\" -> JVM Bit: \"" + bit + "\""); 
-		MT4jSettings.getInstance().architecture = bit.contains("64")? MT4jSettings.ARCHITECTURE_64_BIT : MT4jSettings.ARCHITECTURE_32_BIT;
-		
 		// Save this applets rendering thread for reference
 		this.renderThread = Thread.currentThread();
 		
@@ -68,7 +71,8 @@ public abstract class MTAndroidApplication extends MTApplication{
 	    hint(MTApplication.DISABLE_OPENGL_ERROR_REPORT);
 		
 		MT4jSettings.getInstance().programStartTime = System.currentTimeMillis();
-
+		
+		this.loadGL();
 		
 		//Create a new inputsourcePool
 		if (getInputManager() == null){ //only set the default inputManager if none is set yet
@@ -77,39 +81,60 @@ public abstract class MTAndroidApplication extends MTApplication{
 		
 		AniAnimation.init(this); //Initialize Ani animation library
 		
-		/*
-		* Resizable Window test
-		* Problems:
-		* - all textures, shaders etc get destroyed because a new gl context is created
-		* - cursor coordiantes are calculated wrong? we prolly have to update Papplet width/height 
-		frame.setResizable(true);
-		frame.addComponentListener(new ComponentAdapter() {
-			public void componentResized(ComponentEvent e) {
-				if(e.getSource() == frame) { 
-					frame.setSize(frame.getWidth(), minHeight); 
-				}
-			}
-		} );
-		*/ 
-		
 		//Call startup at the end of setup(). Should be overridden in extending classes
 		this.startUp();
 	}
+
 	
-	@Override
+	protected int sketchWidth = 200;
+	protected int sketchHeight = 300;
+	
+	
 	public int sketchWidth() {
-		// TODO Auto-generated method stub
-		return super.sketchWidth();
+//		return screenWidth;
+		return screenWidth;
 	}
-	
-	@Override
+
 	public int sketchHeight() {
-		// TODO Auto-generated method stub
-		return super.sketchHeight();
+//		return sketchHeight;
+		return screenHeight;
+	}
+
+	public String sketchRenderer() {
+		return A3D; 
 	}
 	
+	
+
 	protected void loadGL(){
-		//TODO
+		String version = ((PGraphicsAndroid3D)g).gl.glGetString(GL10.GL_VERSION);
+		logger.info("OpenGL Version: " + version);
+        int major = Integer.parseInt("" + version.charAt(0));
+        int minor = Integer.parseInt("" + version.charAt(2));
+        
+        this.gl11Supported = false;
+        this.gl20Supported = false;
+//        if (major >= 2) {
+//        		AndroidGL20 agl20 = new AndroidGL20(((PGraphicsAndroid3D)g).gl);
+//                iGL20 = agl20;
+//                //FIXME ADDED
+////                iGL10  = jogl20;
+////                iGL11 = jogl20;
+////                iGL11Plus = jogl20;
+//                glCommon = agl20;
+//                this.gl20Supported = true;
+////                this.gl11Supported = true;
+////                this.gl11PlusSupported = true;
+//        } else {
+                if (major == 1 && minor < 5) {
+                        iGL10 = new AndroidGL10(((PGraphicsAndroid3D)g).gl);
+                } else {
+                        iGL11 = new AndroidGL11(((PGraphicsAndroid3D)g).gl);
+                        iGL10 = iGL11;
+                        this.gl11Supported = true;
+                }
+                glCommon = iGL10;
+//        }
 	}
 
 

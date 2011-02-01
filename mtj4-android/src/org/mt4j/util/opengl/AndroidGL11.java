@@ -26,7 +26,7 @@ import javax.microedition.khronos.opengles.GL10;
  * @author mzechner
  * 
  */
-final class AndroidGL11 extends AndroidGL10 implements GL11 {
+public class AndroidGL11 extends AndroidGL10 implements GL11 {
 	private final javax.microedition.khronos.opengles.GL11 gl;
 
 	public AndroidGL11 (GL10 gl) {
