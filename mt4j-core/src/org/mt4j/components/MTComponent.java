@@ -645,12 +645,22 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 //				m.m30, m.m31, m.m32,  m.m33
 //		);
 		
-		GraphicsUtil.getModelView().apply(
-				m.m00, m.m01, m.m02,  m.m03,
-				m.m10, m.m11, m.m12,  m.m13,
-				m.m20, m.m21, m.m22,  m.m23,
-				m.m30, m.m31, m.m32,  m.m33
-		);
+
+		if (GraphicsUtil.isAndroid()){
+			getRenderer().g.applyMatrix(
+					m.m00, m.m01, m.m02,  m.m03,
+					m.m10, m.m11, m.m12,  m.m13,
+					m.m20, m.m21, m.m22,  m.m23,
+					m.m30, m.m31, m.m32,  m.m33);
+		}else{
+			GraphicsUtil.getModelView().apply(
+					m.m00, m.m01, m.m02,  m.m03,
+					m.m10, m.m11, m.m12,  m.m13,
+					m.m20, m.m21, m.m22,  m.m23,
+					m.m30, m.m31, m.m32,  m.m33
+			);
+		}
+
 		
 		/*
 		Matrix mInv = localInverseMatrix;
@@ -1722,7 +1732,7 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 			this.getChildClip().disableClip(g);
 		}
 			
-		renderer.popMatrix();
+		g.popMatrix();
 
 		//FIXME TRIAL
 		MTLight aLight = this.getLight();

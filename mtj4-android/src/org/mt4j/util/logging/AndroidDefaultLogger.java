@@ -13,6 +13,16 @@ public class AndroidDefaultLogger implements ILogger {
 	}
 	
 	public void setLevel(int level) {
+		//TODO
+		/*
+		 You can change the default level by setting a system property: 'setprop log.tag.<YOUR_LOG_TAG> <LEVEL>' 
+		 Where level is either VERBOSE, DEBUG, INFO, WARN, ERROR, ASSERT, or SUPPRESS. 
+		 SUPPRESS will turn off all logging for your tag. 
+		 You can also create a local.prop file that with the following in it: 'log.tag.<YOUR_LOG_TAG>=<LEVEL>' 
+		 and place that in /data/local.prop.
+		 'setprop log.tag.<YOUR_LOG_TAG> <LEVEL>'
+		 */
+		
 //		switch (level) {
 //		case OFF:
 //			this.logger.setLevel(Level.OFF); 

@@ -1,20 +1,5 @@
 package org.mt4j;
 
-import java.awt.event.KeyEvent;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.PrintWriter;
-
-import processing.core.PFont;
-import processing.core.PGraphics;
-import processing.core.PImage;
-import processing.core.PMatrix;
-import processing.core.PMatrix2D;
-import processing.core.PMatrix3D;
-import processing.core.PShape;
-import processing.core.PStyle;
 
 public interface IPAppletAndroid {
 //

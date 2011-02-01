@@ -9,10 +9,9 @@ import org.mt4j.util.logging.AndroidDefaultLogger;
 import org.mt4j.util.logging.ILogger;
 import org.mt4j.util.logging.MTLoggerFactory;
 import org.mt4j.util.opengl.AndroidGL10;
-import org.mt4j.util.opengl.AndroidGL11;
-import org.mt4j.util.opengl.GL10;
 
 import processing.core.PGraphicsAndroid3D;
+import android.util.Log;
 
 
 
@@ -20,16 +19,23 @@ public abstract class MTAndroidApplication extends MTApplication{
 	static{
 //		//Initialize Loggin facilities  - IMPORTANT TO DO THIS ASAP!//////
 //		MTLoggerFactory.setLoggerProvider(new AndroidDefaultLogger()); 
-//		logger = MTLoggerFactory.getLogger(MTApplication.class.getName());
+//		logger = MTLoggerFactory.getLogger(MTAndroidApplication.class.getName());
 //		logger.setLevel(ILogger.INFO);
+	}
+	
+	public MTAndroidApplication(){
+		super();
+		Log.i(this.getClass().getSimpleName(), "MTAndroidApplication() constructor CALLED");
 	}
 	
 	
 	@Override
 	public void setup() {
+		Log.i(this.getClass().getSimpleName(), "SETUP CALLED");
+		
 		//Initialize Loggin facilities  - IMPORTANT TO DO THIS ASAP!//////
 		MTLoggerFactory.setLoggerProvider(new AndroidDefaultLogger()); 
-		logger = MTLoggerFactory.getLogger(MTApplication.class.getName());
+		logger = MTLoggerFactory.getLogger(MTAndroidApplication.class.getName());
 		logger.setLevel(ILogger.INFO);
 		
 		//TODO
@@ -67,8 +73,8 @@ public abstract class MTAndroidApplication extends MTApplication{
 	    frameRate(MT4jSettings.getInstance().getMaxFrameRate());
 	    logger.info("Maximum framerate: \"" + MT4jSettings.getInstance().getMaxFrameRate() + "\"");
 	    
-	    //FIXME TODO add in settings.txt?
-	    hint(MTApplication.DISABLE_OPENGL_ERROR_REPORT);
+//	    //FIXME TODO add in settings.txt?
+//	    hint(MTApplication.DISABLE_OPENGL_ERROR_REPORT);
 		
 		MT4jSettings.getInstance().programStartTime = System.currentTimeMillis();
 		
@@ -106,12 +112,17 @@ public abstract class MTAndroidApplication extends MTApplication{
 	
 	
 
+	
+	//TODO get gl version and create correct androidGL
+	
 	protected void loadGL(){
+		/*
 		String version = ((PGraphicsAndroid3D)g).gl.glGetString(GL10.GL_VERSION);
 		logger.info("OpenGL Version: " + version);
         int major = Integer.parseInt("" + version.charAt(0));
         int minor = Integer.parseInt("" + version.charAt(2));
-        
+        */
+		
         this.gl11Supported = false;
         this.gl20Supported = false;
 //        if (major >= 2) {
@@ -126,13 +137,13 @@ public abstract class MTAndroidApplication extends MTApplication{
 ////                this.gl11Supported = true;
 ////                this.gl11PlusSupported = true;
 //        } else {
-                if (major == 1 && minor < 5) {
+//                if (major == 1 && minor < 5) {
                         iGL10 = new AndroidGL10(((PGraphicsAndroid3D)g).gl);
-                } else {
-                        iGL11 = new AndroidGL11(((PGraphicsAndroid3D)g).gl);
-                        iGL10 = iGL11;
-                        this.gl11Supported = true;
-                }
+//                } else {
+//                        iGL11 = new AndroidGL11(((PGraphicsAndroid3D)g).gl);
+//                        iGL10 = iGL11;
+//                        this.gl11Supported = true;
+//                }
                 glCommon = iGL10;
 //        }
 	}
