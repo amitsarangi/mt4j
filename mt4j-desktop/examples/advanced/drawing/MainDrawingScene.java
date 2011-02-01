@@ -1,7 +1,5 @@
 package advanced.drawing;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
@@ -19,6 +17,7 @@ import org.mt4j.input.inputProcessors.IGestureEventListener;
 import org.mt4j.input.inputProcessors.MTGestureEvent;
 import org.mt4j.input.inputProcessors.componentProcessors.dragProcessor.DragProcessor;
 import org.mt4j.input.inputProcessors.componentProcessors.tapProcessor.TapEvent;
+import org.mt4j.input.inputProcessors.componentProcessors.tapProcessor.TapProcessor;
 import org.mt4j.input.inputProcessors.globalProcessors.CursorTracer;
 import org.mt4j.sceneManagement.AbstractScene;
 import org.mt4j.sceneManagement.IPreDrawAction;
@@ -90,20 +89,18 @@ public class MainDrawingScene extends AbstractScene {
         MTImageButton b = new MTImageButton(pa, eraser);
         b.setNoStroke(true);
         b.translate(new Vector3D(-50,0,0));
-        b.addActionListener(new ActionListener(){
-			public void actionPerformed(ActionEvent ae) {
-				switch (ae.getID()) {
-				case TapEvent.TAPPED:{
+        b.addGestureListener(TapProcessor.class, new IGestureEventListener() {
+			public boolean processGestureEvent(MTGestureEvent ge) {
+				TapEvent te = (TapEvent)ge;
+				if (te.isTapped()){
 //					//As we are messing with opengl here, we make sure it happens in the rendering thread
 					pa.invokeLater(new Runnable() {
 						public void run() {
 							sceneTexture.getFbo().clear(true, 255, 255, 255, 0, true);						
 						}
 					});
-				}break;
-				default:
-					break;
 				}
+				return true;
 			}
         });
         frame.addChild(b);
@@ -122,31 +119,27 @@ public class MainDrawingScene extends AbstractScene {
         frame.addChild(brushButton);
         brushButton.translate(new Vector3D(-50f, 130,0));
         brushButton.setStrokeColor(new MTColor(0,0,0));
-        brushButton.addActionListener(new ActionListener(){
-			public void actionPerformed(ActionEvent ae) {
-				switch (ae.getID()) {
-				case TapEvent.TAPPED:{
+        brushButton.addGestureListener(TapProcessor.class, new IGestureEventListener() {
+			public boolean processGestureEvent(MTGestureEvent ge) {
+				TapEvent te = (TapEvent)ge;
+				if (te.isTapped()){
 					drawingScene.setBrush(textureBrush);
 					brushButton.setNoStroke(false);
 					penButton.setNoStroke(true);
-				}break;
-				default:
-					break;
 				}
+				return true;
 			}
         });
         
-        penButton.addActionListener(new ActionListener(){
-			public void actionPerformed(ActionEvent ae) {
-				switch (ae.getID()) {
-				case TapEvent.TAPPED:{
+        penButton.addGestureListener(TapProcessor.class, new IGestureEventListener() {
+			public boolean processGestureEvent(MTGestureEvent ge) {
+				TapEvent te = (TapEvent)ge;
+				if (te.isTapped()){
 					drawingScene.setBrush(pencilBrush);
 					penButton.setNoStroke(false);
 					brushButton.setNoStroke(true);
-				}break;
-				default:
-					break;
 				}
+				return true;
 			}
         });
         
@@ -156,10 +149,10 @@ public class MainDrawingScene extends AbstractScene {
         frame.addChild(floppyButton);
         floppyButton.translate(new Vector3D(-50f, 260,0));
         floppyButton.setNoStroke(true);
-        floppyButton.addActionListener(new ActionListener(){
-			public void actionPerformed(ActionEvent ae) {
-				switch (ae.getID()) {
-				case TapEvent.TAPPED:{
+        floppyButton.addGestureListener(TapProcessor.class, new IGestureEventListener() {
+			public boolean processGestureEvent(MTGestureEvent ge) {
+				TapEvent te = (TapEvent)ge;
+				if (te.isTapped()){
 //					pa.invokeLater(new Runnable() {
 //						public void run() {
 //							drawingScene.getCanvas().drawAndUpdateCanvas(pa.g, 0);
@@ -176,10 +169,8 @@ public class MainDrawingScene extends AbstractScene {
 							return false;
 						}
 					});
-				}break;
-				default:
-					break;
 				}
+				return true;
 			}
         });
         
@@ -210,20 +201,18 @@ public class MainDrawingScene extends AbstractScene {
         frame.addChild(colPickButton);
         colPickButton.translate(new Vector3D(-50f, 195,0));
         colPickButton.setNoStroke(true);
-        colPickButton.addActionListener(new ActionListener(){
-			public void actionPerformed(ActionEvent ae) {
-				switch (ae.getID()) {
-				case TapEvent.TAPPED:{
+        colPickButton.addGestureListener(TapProcessor.class, new IGestureEventListener() {
+			public boolean processGestureEvent(MTGestureEvent ge) {
+				TapEvent te = (TapEvent)ge;
+				if (te.isTapped()){
 					if (colorWidget.isVisible()){
 						colorWidget.setVisible(false);
 					}else{
 						colorWidget.setVisible(true);
 						colorWidget.sendToFront();
 					}				
-				}break;
-				default:
-					break;
 				}
+				return true;
 			}
         });
         

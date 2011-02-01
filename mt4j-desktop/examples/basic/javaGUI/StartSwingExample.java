@@ -21,6 +21,7 @@ import javax.swing.JPopupMenu;
 import javax.swing.UIManager;
 
 import org.mt4j.MTApplication;
+import org.mt4j.MTDesktopApplication;
 import org.mt4j.components.MTComponent;
 import org.mt4j.components.visibleComponents.shapes.MTEllipse;
 import org.mt4j.components.visibleComponents.shapes.MTRectangle;
@@ -190,7 +191,7 @@ public class StartSwingExample extends JFrame {
 	}
 	
 	
-	private class TestMTApplication extends MTApplication{
+	private class TestMTApplication extends MTDesktopApplication{
 		private static final long serialVersionUID = 1L;
 
 		@Override

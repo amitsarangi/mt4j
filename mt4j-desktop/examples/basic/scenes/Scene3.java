@@ -1,8 +1,5 @@
 package basic.scenes;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
 import org.mt4j.MTApplication;
 import org.mt4j.components.TransformSpace;
 import org.mt4j.components.visibleComponents.font.FontManager;
@@ -13,6 +10,7 @@ import org.mt4j.input.inputProcessors.MTGestureEvent;
 import org.mt4j.input.inputProcessors.componentProcessors.flickProcessor.FlickEvent;
 import org.mt4j.input.inputProcessors.componentProcessors.flickProcessor.FlickProcessor;
 import org.mt4j.input.inputProcessors.componentProcessors.tapProcessor.TapEvent;
+import org.mt4j.input.inputProcessors.componentProcessors.tapProcessor.TapProcessor;
 import org.mt4j.input.inputProcessors.globalProcessors.CursorTracer;
 import org.mt4j.sceneManagement.AbstractScene;
 import org.mt4j.sceneManagement.transition.FadeTransition;
@@ -55,15 +53,13 @@ public class Scene3 extends AbstractScene {
 		previousSceneButton.setNoStroke(true);
 		if (MT4jSettings.getInstance().isOpenGlMode())
 			previousSceneButton.setUseDirectGL(true);
-		previousSceneButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent ae) {
-				switch (ae.getID()) {
-				case TapEvent.TAPPED:
+		previousSceneButton.addGestureListener(TapProcessor.class, new IGestureEventListener() {
+			public boolean processGestureEvent(MTGestureEvent ge) {
+				TapEvent te = (TapEvent)ge;
+				if (te.isTapped()){
 					mtApp.popScene();
-					break;
-				default:
-					break;
 				}
+				return true;
 			}
 		});
 		getCanvas().addChild(previousSceneButton);

@@ -18,8 +18,6 @@
 package advanced.modestMapsMT;
 
 import java.awt.Point;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -207,10 +205,10 @@ public class MapsScene extends AbstractScene implements MouseWheelListener, Mous
 		fotoButton.setDepthBufferDisabled(true); //Draw on top of everything
 //		fotoButton.translate(new Vector3D(MT4jSettings.getInstance().getScreenWidth() - fotoButton.getWidthXY(TransformSpace.RELATIVE_TO_PARENT) -5, MT4jSettings.getInstance().getScreenHeight()- fotoButton.getHeightXY(TransformSpace.RELATIVE_TO_PARENT) -5, 0));
 		fotoButton.translate(new Vector3D(0, MT4jSettings.getInstance().getWindowHeight()- fotoButton.getHeightXY(TransformSpace.RELATIVE_TO_PARENT) , 0));
-		fotoButton.addActionListener(new ActionListener(){
-			public void actionPerformed(ActionEvent ae) {
-				switch (ae.getID()) {
-				case TapEvent.TAPPED:
+		fotoButton.addGestureListener(TapProcessor.class, new IGestureEventListener() {
+			public boolean processGestureEvent(MTGestureEvent ge) {
+				TapEvent te = (TapEvent)ge;
+				if (te.isTapped()){
 					Point[] p = getScreenPoints();
                     for (Point point : p) {
                         Location loc = map.pointLocation(point.x, point.y);
@@ -218,6 +216,7 @@ public class MapsScene extends AbstractScene implements MouseWheelListener, Mous
                     }
 					getPictures(map.getCenter(), getAccuracyForZoom(map), false);
 				}
+				return true;
 			}
 		});
 		fotoButton.setTextureEnabled(true);

@@ -17,9 +17,6 @@
  ***********************************************************************/
 package org.mt4j.components.visibleComponents.widgets;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
 import org.mt4j.MTApplication;
 import org.mt4j.components.StateChange;
 import org.mt4j.components.StateChangeEvent;
@@ -27,7 +24,10 @@ import org.mt4j.components.StateChangeListener;
 import org.mt4j.components.TransformSpace;
 import org.mt4j.components.visibleComponents.shapes.MTRoundRectangle;
 import org.mt4j.components.visibleComponents.widgets.buttons.MTImageButton;
+import org.mt4j.input.inputProcessors.IGestureEventListener;
+import org.mt4j.input.inputProcessors.MTGestureEvent;
 import org.mt4j.input.inputProcessors.componentProcessors.tapProcessor.TapEvent;
+import org.mt4j.input.inputProcessors.componentProcessors.tapProcessor.TapProcessor;
 import org.mt4j.sceneManagement.Iscene;
 import org.mt4j.util.MT4jSettings;
 import org.mt4j.util.MTColor;
@@ -151,16 +151,13 @@ extends MTRoundRectangle {
 			);
 		}
 		MTImageButton closeButton = new MTImageButton(applet, closeButtonImage);
-		closeButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent r) {
-				switch (r.getID()) {
-				case TapEvent.TAPPED:
+		closeButton.addGestureListener(TapProcessor.class, new IGestureEventListener() {
+			public boolean processGestureEvent(MTGestureEvent ge) {
+				TapEvent te = (TapEvent)ge;
+				if (te.isTapped()){
 					close();
-//					destroy();
-					break;
-				default:
-					break;
 				}
+				return true;
 			}
 		});
 		this.addChild(closeButton);
@@ -178,15 +175,13 @@ extends MTRoundRectangle {
 			);
 		}
 		MTImageButton maximizeButton = new MTImageButton(applet, maximizeButtonImage);
-		maximizeButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent r) {
-				switch (r.getID()) {
-				case TapEvent.TAPPED:
+		maximizeButton.addGestureListener(TapProcessor.class, new IGestureEventListener() {
+			public boolean processGestureEvent(MTGestureEvent ge) {
+				TapEvent te = (TapEvent)ge;
+				if (te.isTapped()){
 					maximize();
-					break;
-				default:
-					break;
 				}
+				return true;
 			}
 		});
 		this.addChild(maximizeButton);

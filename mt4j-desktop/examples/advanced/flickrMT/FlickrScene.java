@@ -25,10 +25,13 @@ import org.mt4j.input.gestureAction.DefaultLassoAction;
 import org.mt4j.input.gestureAction.DefaultPanAction;
 import org.mt4j.input.gestureAction.DefaultZoomAction;
 import org.mt4j.input.gestureAction.InertiaDragAction;
+import org.mt4j.input.inputProcessors.IGestureEventListener;
+import org.mt4j.input.inputProcessors.MTGestureEvent;
 import org.mt4j.input.inputProcessors.componentProcessors.dragProcessor.DragProcessor;
 import org.mt4j.input.inputProcessors.componentProcessors.lassoProcessor.LassoProcessor;
 import org.mt4j.input.inputProcessors.componentProcessors.panProcessor.PanProcessorTwoFingers;
 import org.mt4j.input.inputProcessors.componentProcessors.tapProcessor.TapEvent;
+import org.mt4j.input.inputProcessors.componentProcessors.tapProcessor.TapProcessor;
 import org.mt4j.input.inputProcessors.componentProcessors.zoomProcessor.ZoomProcessor;
 import org.mt4j.input.inputProcessors.globalProcessors.CursorTracer;
 import org.mt4j.sceneManagement.AbstractScene;
@@ -98,9 +101,11 @@ public class FlickrScene extends AbstractScene {
 		progressBar.setVisible(false);
 		topLayer.addChild(progressBar);
 		
-		keyboardButton.addActionListener(new ActionListener(){
-			public void actionPerformed(ActionEvent ae) {
-				switch (ae.getID()) {
+		keyboardButton.addGestureListener(TapProcessor.class, new IGestureEventListener() {
+			@Override
+			public boolean processGestureEvent(MTGestureEvent ge) {
+				TapEvent te = (TapEvent)ge;
+				switch (te.getTapID()) {
 				case TapEvent.TAPPED:
 					//Flickr Keyboard
 			        MTKeyboard keyb = new MTKeyboard(app);
@@ -232,6 +237,7 @@ public class FlickrScene extends AbstractScene {
 				default:
 					break;
 				}
+				return true;
 			}
 		});
 		

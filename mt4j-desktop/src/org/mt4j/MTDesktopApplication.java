@@ -58,7 +58,7 @@ public abstract class MTDesktopApplication extends MTApplication {
 	
 	
 	public MTDesktopApplication(){
-		
+		super();
 	}
 	
 	
@@ -208,7 +208,7 @@ public abstract class MTDesktopApplication extends MTApplication {
 	 */
 	@Override
 	public void setup(){
-		if (!settingsLoadedFromFile){
+		if (!settingsLoadedFromFile){ //because initialize() method isnt called in the swing integration/example
 			getSettingsFromFile();
 		}
 		
@@ -274,7 +274,6 @@ public abstract class MTDesktopApplication extends MTApplication {
 	    }
 	    */
 	    
-//	    pContext.hint( PApplet.ENABLE_OPENGL_4X_SMOOTH );  // ENABLES OPENGL EXTRA SMOOTHING -> DOESENT GET CONSISTENT RESULTS ON ALL MACHINES! DISABLE WHEN PROBLEMS OCCUR!
 		//hint(ENABLE_DEPTH_SORT); // Enable primitive z-sorting of triangles and lines in P3D and OPENGL. This can slow performance considerably, and the algorithm is not yet perfect.
 		//hint(DISABLE_ERROR_REPORT); // Speeds up the OPENGL renderer setting by not checking for errors while running.
 		//hint(ENABLE_ACCURATE_TEXTURES); //Enables better texture accuracy for the P3D renderer. This option will do a better job of dealing with textures in perspective.  
@@ -287,8 +286,6 @@ public abstract class MTDesktopApplication extends MTApplication {
 		try {
 			//Set the window frame's title
 			frame.setTitle(MT4jSettings.getInstance().getFrameTitle()); 
-//			this.mt4jIcon = new ImageIcon(MT4jSettings.getInstance().getDefaultImagesPath() + 
-//					"MT4j.gif");
 			this.mt4jIcon = new ImageIcon(Thread.currentThread().getContextClassLoader().getResource(MT4jSettings.getInstance().getDefaultImagesPath() + 
 			"MT4j.gif"));
 			this.frame.setIconImage(mt4jIcon.getImage()); 
