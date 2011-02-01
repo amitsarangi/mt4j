@@ -7,6 +7,7 @@ import org.mt4j.util.opengl.GL20;
 import org.mt4j.util.opengl.IGLU;
 
 import processing.core.PGraphics;
+import processing.core.PMatrix;
 import processing.core.PMatrix3D;
 
 public class GraphicsUtil {
@@ -85,6 +86,10 @@ public class GraphicsUtil {
 	
 	public static IGLU getGLU(){
 		return graphicsUtil.getGLU();
+	}
+
+	public static PMatrix getProjection() {
+		return graphicsUtil.getProjection();
 	}
 
 

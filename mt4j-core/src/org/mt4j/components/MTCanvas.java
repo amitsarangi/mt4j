@@ -17,12 +17,7 @@
  ***********************************************************************/
 package org.mt4j.components;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.HashMap;
 import java.util.List;
-
-import javax.swing.Timer;
 
 import org.mt4j.components.clusters.Cluster;
 import org.mt4j.components.clusters.ClusterManager;
@@ -54,23 +49,23 @@ public class MTCanvas extends MTComponent implements IHitTestInfoProvider{
 	/** The cluster manager. */
 	private ClusterManager clusterManager;
 	
-	/** The last time hit test. */
-	private long lastTimeHitTest;
-	
-	/** The cache time delta. */
-	private long cacheTimeDelta;
-	
-	/** The cache clear time. */
-	private int cacheClearTime;
-	
-	/** The position to component. */
-	private HashMap<Position, IMTComponent3D> positionToComponent;
-	
-	/** The timer. */
-	private Timer timer;
-	
-	/** The use hit test cache. */
-	private boolean useHitTestCache;
+//	/** The last time hit test. */
+//	private long lastTimeHitTest;
+//	
+//	/** The cache time delta. */
+//	private long cacheTimeDelta;
+//	
+//	/** The cache clear time. */
+//	private int cacheClearTime;
+//	
+//	/** The position to component. */
+//	private HashMap<Position, IMTComponent3D> positionToComponent;
+//	
+//	/** The timer. */
+//	private Timer timer;
+//	
+//	/** The use hit test cache. */
+//	private boolean useHitTestCache;
 	
 	/** The frustum culling switch. */
 	private boolean frustumCulling;
@@ -102,28 +97,28 @@ public class MTCanvas extends MTComponent implements IHitTestInfoProvider{
 	 */
 	public MTCanvas(PApplet pApplet, String name, Icamera attachedCamera) {
 		super(pApplet, name, attachedCamera);
-		//Cache settings
-		lastTimeHitTest = 0;
-		cacheTimeDelta = 100;
-		cacheClearTime = 20000;
-		useHitTestCache = true;
+//		//Cache settings
+//		lastTimeHitTest = 0;
+//		cacheTimeDelta = 100;
+//		cacheClearTime = 20000;
+//		useHitTestCache = true;
 		
 		lastUpdateTime = 0;
 		
 		clusterManager = new ClusterManager(this);
 		
-		positionToComponent = new HashMap<Position, IMTComponent3D>();
-		
-		//Schedule a Timer task to clear the object cache so it wont 
-		//get filled infinitely
-		timer = new Timer(cacheClearTime, new ActionListener(){
-			public void actionPerformed(ActionEvent arg0) {
-//				System.out.println("Hit test chache entries: " + positionToComponent.size() + " ... cleared!");
-				positionToComponent.clear();
-			}
-		});
-//		timer.start(); //FIXME TEST 
-		this.useHitTestCache = false; //FIXME TEST DISABLE HIT CACHE
+//		positionToComponent = new HashMap<Position, IMTComponent3D>();
+//		
+//		//Schedule a Timer task to clear the object cache so it wont 
+//		//get filled infinitely
+//		timer = new Timer(cacheClearTime, new ActionListener(){
+//			public void actionPerformed(ActionEvent arg0) {
+////				System.out.println("Hit test chache entries: " + positionToComponent.size() + " ... cleared!");
+//				positionToComponent.clear();
+//			}
+//		});
+////		timer.start(); //FIXME TEST 
+//		this.useHitTestCache = false; //FIXME TEST DISABLE HIT CACHE
 		
 //		this.setCollidable(false);
 		
@@ -143,14 +138,14 @@ public class MTCanvas extends MTComponent implements IHitTestInfoProvider{
 	@Override
 	protected void destroyComponent() {
 		super.destroyComponent();
-		
-		if (this.timer != null && timer.isRunning()){
-			timer.stop();
-		}
-		
-		if (positionToComponent != null){
-			positionToComponent.clear();
-		}
+//		
+//		if (this.timer != null && timer.isRunning()){
+//			timer.stop();
+//		}
+//		
+//		if (positionToComponent != null){
+//			positionToComponent.clear();
+//		}
 	}
 	
 
@@ -174,46 +169,46 @@ public class MTCanvas extends MTComponent implements IHitTestInfoProvider{
 	public IMTComponent3D getComponentAt(float x, float y) { 
 		IMTComponent3D closest3DComp = null;
 		try{
-			long now = System.currentTimeMillis();
-			if (useHitTestCache){
-				if (now - lastTimeHitTest > cacheTimeDelta){ //If the time since last check surpassed => do new hit-test!
-					//Benchmark the picking
-//					long a = System.nanoTime();
-					closest3DComp = this.pick(x, y).getNearestPickResult();
-					//Benchmark the picking
-//					long b = System.nanoTime();
-//					System.out.println("Time for picking the scene: " + (b-a));
-					/*
-					for (MTBaseComponent c : pickResult.getPickList())
-						System.out.println(c.getName());
-					if (closest3DComp != null)
-						System.out.println("Using: " + closest3DComp.getName());
-					*/
-					if (closest3DComp == null){
-						closest3DComp = this;
-					}
-					positionToComponent.put(new Position(x,y), closest3DComp);
-				}else{
-					//Check whats in the cache
-					IMTComponent3D cachedComp = positionToComponent.get(new Position(x,y));
-					if (cachedComp != null){ //Use cached obj
-						closest3DComp = cachedComp;
-						positionToComponent.put(new Position(x,y), closest3DComp);
-					}else{
-						closest3DComp = this.pick(x, y).getNearestPickResult();
-						if (closest3DComp == null){
-							closest3DComp = this;
-						}
-						positionToComponent.put(new Position(x,y), closest3DComp);
-					}
-				}
-			}else{//IF no hittest cache is being used
+//			long now = System.currentTimeMillis();
+//			if (useHitTestCache){
+//				if (now - lastTimeHitTest > cacheTimeDelta){ //If the time since last check surpassed => do new hit-test!
+//					//Benchmark the picking
+////					long a = System.nanoTime();
+//					closest3DComp = this.pick(x, y).getNearestPickResult();
+//					//Benchmark the picking
+////					long b = System.nanoTime();
+////					System.out.println("Time for picking the scene: " + (b-a));
+//					/*
+//					for (MTBaseComponent c : pickResult.getPickList())
+//						System.out.println(c.getName());
+//					if (closest3DComp != null)
+//						System.out.println("Using: " + closest3DComp.getName());
+//					*/
+//					if (closest3DComp == null){
+//						closest3DComp = this;
+//					}
+//					positionToComponent.put(new Position(x,y), closest3DComp);
+//				}else{
+//					//Check whats in the cache
+//					IMTComponent3D cachedComp = positionToComponent.get(new Position(x,y));
+//					if (cachedComp != null){ //Use cached obj
+//						closest3DComp = cachedComp;
+//						positionToComponent.put(new Position(x,y), closest3DComp);
+//					}else{
+//						closest3DComp = this.pick(x, y).getNearestPickResult();
+//						if (closest3DComp == null){
+//							closest3DComp = this;
+//						}
+//						positionToComponent.put(new Position(x,y), closest3DComp);
+//					}
+//				}
+//			}else{//IF no hittest cache is being used
 				closest3DComp = this.pick(x, y).getNearestPickResult();
 				if (closest3DComp == null){
 					closest3DComp = this;
 				}
-			}
-			lastTimeHitTest = now;
+//			}
+//			lastTimeHitTest = now;
 			
 	//		/*//TODO anders machen..z.b. geclusterte comps einfach als kinder von
 			//�bergeordnetem clusterpoly machen? aber mit clusterPoly.setComposite(TRUE);
@@ -470,80 +465,80 @@ public class MTCanvas extends MTComponent implements IHitTestInfoProvider{
 	}
 
 
-	/**
-	 * Gets the cache time delta.
-	 * 
-	 * @return the cache time delta
-	 */
-	public long getCacheTimeDelta() {
-		return cacheTimeDelta;
-	}
-
-	/**
-	 * If repeated calls to getObjectAt(float x, float y) in MTCanvas class
-	 * are called during the provided cacheTimeDelta, the Canvas looks into his
-	 * cache instead of querying all objects again
-	 * Default value is: 80.
-	 * 
-	 * @param cacheTimeDelta the cache time delta
-	 */
-	public void setCacheTimeDelta(long cacheTimeDelta) {
-		this.cacheTimeDelta = cacheTimeDelta;
-	}
-
-	/**
-	 * Checks if is use hit test cache.
-	 * 
-	 * @return true, if is use hit test cache
-	 */
-	public boolean isUseHitTestCache() {
-		return useHitTestCache;
-	}
-
-	
-	/**
-	 * The canvas can be set to look into a hit test cache if
-	 * repeated calls to getComponentAt() with the same coordinates
-	 * during a short period of time are made.
-	 * This period of time can be set with
-	 * <code>setCacheTimeDelta(long cacheTimeDelta)</code>
-	 * <p>
-	 * This is useful for example when a click is made many gestureanalyzers
-	 * call getObjectAt() almost concurrently.
-	 * 
-	 * @param useHitTestCache the use hit test cache
-	 */
-	public void setUseHitTestCache(boolean useHitTestCache) {
-		if (useHitTestCache && !timer.isRunning())
-			timer.start();
-		else if (!useHitTestCache && timer.isRunning())
-			timer.stop();
-		
-		this.useHitTestCache = useHitTestCache;
-	}
-
-
-	/**
-	 * Gets the cache clear time.
-	 * 
-	 * @return the cache clear time
-	 */
-	public int getCacheClearTime() {
-		return cacheClearTime;
-	}
-
-	/**
-	 * Sets the time intervals in ms in which the canvas clears its hit test cache
-	 * Default value is: 20000 ms
-	 * <p>
-	 * This is important to prevent the hit test cache from growing indefinitely.
-	 * 
-	 * @param cacheClearTime the cache clear time
-	 */
-	public void setCacheClearTime(int cacheClearTime) {
-		timer.setDelay(cacheClearTime);
-		this.cacheClearTime = cacheClearTime;
-	}
+//	/**
+//	 * Gets the cache time delta.
+//	 * 
+//	 * @return the cache time delta
+//	 */
+//	public long getCacheTimeDelta() {
+//		return cacheTimeDelta;
+//	}
+//
+//	/**
+//	 * If repeated calls to getObjectAt(float x, float y) in MTCanvas class
+//	 * are called during the provided cacheTimeDelta, the Canvas looks into his
+//	 * cache instead of querying all objects again
+//	 * Default value is: 80.
+//	 * 
+//	 * @param cacheTimeDelta the cache time delta
+//	 */
+//	public void setCacheTimeDelta(long cacheTimeDelta) {
+//		this.cacheTimeDelta = cacheTimeDelta;
+//	}
+//
+//	/**
+//	 * Checks if is use hit test cache.
+//	 * 
+//	 * @return true, if is use hit test cache
+//	 */
+//	public boolean isUseHitTestCache() {
+//		return useHitTestCache;
+//	}
+//
+//	
+//	/**
+//	 * The canvas can be set to look into a hit test cache if
+//	 * repeated calls to getComponentAt() with the same coordinates
+//	 * during a short period of time are made.
+//	 * This period of time can be set with
+//	 * <code>setCacheTimeDelta(long cacheTimeDelta)</code>
+//	 * <p>
+//	 * This is useful for example when a click is made many gestureanalyzers
+//	 * call getObjectAt() almost concurrently.
+//	 * 
+//	 * @param useHitTestCache the use hit test cache
+//	 */
+//	public void setUseHitTestCache(boolean useHitTestCache) {
+//		if (useHitTestCache && !timer.isRunning())
+//			timer.start();
+//		else if (!useHitTestCache && timer.isRunning())
+//			timer.stop();
+//		
+//		this.useHitTestCache = useHitTestCache;
+//	}
+//
+//
+//	/**
+//	 * Gets the cache clear time.
+//	 * 
+//	 * @return the cache clear time
+//	 */
+//	public int getCacheClearTime() {
+//		return cacheClearTime;
+//	}
+//
+//	/**
+//	 * Sets the time intervals in ms in which the canvas clears its hit test cache
+//	 * Default value is: 20000 ms
+//	 * <p>
+//	 * This is important to prevent the hit test cache from growing indefinitely.
+//	 * 
+//	 * @param cacheClearTime the cache clear time
+//	 */
+//	public void setCacheClearTime(int cacheClearTime) {
+//		timer.setDelay(cacheClearTime);
+//		this.cacheClearTime = cacheClearTime;
+//	}
 
 
 	public boolean isFrustumCulling() {
@@ -559,52 +554,52 @@ public class MTCanvas extends MTComponent implements IHitTestInfoProvider{
 
 	
 	
-	/**
-	 * Class used for the pickobject cache.
-	 */
-	private class Position{
-		/** The y. */
-		float x,y;
-		
-		/**
-		 * Instantiates a new position.
-		 * 
-		 * @param x the x
-		 * @param y the y
-		 */
-		public Position(float x, float y){
-			this.x = x;
-			this.y = y;
-		}
-		
-		/**
-		 * Gets the x.
-		 * 
-		 * @return the x
-		 */
-		public float getX() {return x;}
-		
-		/**
-		 * Gets the y.
-		 * 
-		 * @return the y
-		 */
-		public float getY() {return y;}
-		
-		/* (non-Javadoc)
-		 * @see java.lang.Object#equals(java.lang.Object)
-		 */
-		@Override
-		public boolean equals(Object arg0) {
-			return (arg0 instanceof Position && ((Position)arg0).getX() == this.getX() && ((Position)arg0).getY() == this.getY());
-		}
-		
-		/* (non-Javadoc)
-		 * @see java.lang.Object#hashCode()
-		 */
-		@Override
-		public int hashCode() {
-			return ((int)x+(int)y);
-		}
-	}
+//	/**
+//	 * Class used for the pickobject cache.
+//	 */
+//	private class Position{
+//		/** The y. */
+//		float x,y;
+//		
+//		/**
+//		 * Instantiates a new position.
+//		 * 
+//		 * @param x the x
+//		 * @param y the y
+//		 */
+//		public Position(float x, float y){
+//			this.x = x;
+//			this.y = y;
+//		}
+//		
+//		/**
+//		 * Gets the x.
+//		 * 
+//		 * @return the x
+//		 */
+//		public float getX() {return x;}
+//		
+//		/**
+//		 * Gets the y.
+//		 * 
+//		 * @return the y
+//		 */
+//		public float getY() {return y;}
+//		
+//		/* (non-Javadoc)
+//		 * @see java.lang.Object#equals(java.lang.Object)
+//		 */
+//		@Override
+//		public boolean equals(Object arg0) {
+//			return (arg0 instanceof Position && ((Position)arg0).getX() == this.getX() && ((Position)arg0).getY() == this.getY());
+//		}
+//		
+//		/* (non-Javadoc)
+//		 * @see java.lang.Object#hashCode()
+//		 */
+//		@Override
+//		public int hashCode() {
+//			return ((int)x+(int)y);
+//		}
+//	}
 }

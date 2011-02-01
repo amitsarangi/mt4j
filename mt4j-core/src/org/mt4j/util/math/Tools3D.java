@@ -34,13 +34,11 @@ import org.mt4j.util.MT4jSettings;
 import org.mt4j.util.camera.IFrustum;
 import org.mt4j.util.camera.Icamera;
 import org.mt4j.util.opengl.GL10;
-import org.mt4j.util.opengl.GL11;
 import org.mt4j.util.opengl.GL11Plus;
 import org.mt4j.util.opengl.GLTexture;
 
 import processing.core.PApplet;
 import processing.core.PGraphics;
-import processing.core.PGraphics3D;
 import processing.core.PImage;
 import processing.core.PMatrix3D;
 
@@ -201,7 +199,9 @@ public class Tools3D {
 //				PMatrix inv = projectionM.invert();
 				
 				PMatrix3D modelView 	= new PMatrix3D(applet.g.getMatrix());
-				PMatrix3D projectionM 	= new PMatrix3D(((PGraphics3D)applet.g).projection);
+//				PMatrix3D projectionM 	= new PMatrix3D(((PGraphics3D)applet.g).projection);
+				PMatrix3D projectionM 	= new PMatrix3D(GraphicsUtil.getProjection());
+				
 				
 				projectionM.apply(modelView);
 				projectionM.invert();
@@ -448,9 +448,10 @@ public class Tools3D {
 			pa.camera(); 
 			break;
 		case MT4jSettings.P3D_MODE:
-			for(int i=0;i<((PGraphics3D)pa.g).zbuffer.length;i++){
-			  ((PGraphics3D)pa.g).zbuffer[i]=Float.MAX_VALUE;
-			}
+			//FIXME how to handle platform independent?
+//			for(int i=0;i<((PGraphics3D)pa.g).zbuffer.length;i++){
+//			  ((PGraphics3D)pa.g).zbuffer[i]=Float.MAX_VALUE;
+//			}
 			pa.camera();
 			break;
 		default:
@@ -502,14 +503,10 @@ public class Tools3D {
 			gl.glDepthFunc(javax.media.opengl.GL.GL_ALWAYS); //turn off Z buffering
 			break;
 		case MT4jSettings.P3D_MODE:
-//			/*
-//			for(int i=0;i<((PGraphics3D)pa.g).zbuffer.length;i++){
-//			  ((PGraphics3D)pa.g).zbuffer[i]=Float.MAX_VALUE;
-//			}
-			for(int i=0;i<((PGraphics3D)g).zbuffer.length;i++){
-				  ((PGraphics3D)g).zbuffer[i]=Float.MAX_VALUE;
-				}
-//			*/ 
+			//FIXME how to handle platform independent?
+//			for(int i=0;i<((PGraphics3D)g).zbuffer.length;i++){
+//				  ((PGraphics3D)g).zbuffer[i]=Float.MAX_VALUE;
+//				}
 			break;
 		default:
 			break;

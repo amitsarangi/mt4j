@@ -1,7 +1,5 @@
 package org.mt4j;
 
-import java.awt.Graphics;
-import java.awt.event.FocusEvent;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.InputStream;
@@ -1418,13 +1416,13 @@ public void size(final int iwidth, final int iheight, String irenderer,
  */
 public PGraphics createGraphics(int iwidth, int iheight, String irenderer);
 
-/**
- * Create an offscreen graphics surface for drawing, in this case
- * for a renderer that writes to a file (such as PDF or DXF).
- * @param ipath the name of the file (can be an absolute or relative path)
- */
-public PGraphics createGraphics(int iwidth, int iheight, String irenderer,
-                                String ipath);
+///**
+// * Create an offscreen graphics surface for drawing, in this case
+// * for a renderer that writes to a file (such as PDF or DXF).
+// * @param ipath the name of the file (can be an absolute or relative path)
+// */
+//public PGraphics createGraphics(int iwidth, int iheight, String irenderer,
+//                                String ipath);
 
 /**
  * Creates a new PImage (the datatype for storing images). This provides a fresh buffer of pixels to play with. Set the size of the buffer with the <b>width</b> and <b>height</b> parameters. The <b>format</b> parameter defines how the pixels are stored. See the PImage reference for more information.
@@ -1448,7 +1446,7 @@ public PImage createImage(int wide, int high, int format);
 //public void update(Graphics screen);
 
 //synchronized public void paint(Graphics screen) {  // shutting off for 0146
-public void paint(Graphics screen);
+//public void paint(Graphics screen);
 
 /**
  * Main method for the primary animation thread.
@@ -1653,13 +1651,13 @@ public void keyReleased();
  */
 public void keyTyped();
 
-public void focusGained();
-
-public void focusGained(FocusEvent e);
-
-public void focusLost();
-
-public void focusLost(FocusEvent e);
+//public void focusGained();
+//
+//public void focusGained(FocusEvent e);
+//
+//public void focusLost();
+//
+//public void focusLost(FocusEvent e);
 
 /**
  * Returns the number of milliseconds (thousandths of a second) since starting an applet. This information is often used for timing animation sequences.
@@ -1713,33 +1711,33 @@ public void delay(int napTime);
  */
 public void frameRate(float newRateTarget);
 
-/**
- * Reads the value of a param.
- * Values are always read as a String so if you want them to be an integer or other datatype they must be converted.
- * The <b>param()</b> function will only work in a web browser.
- * The function should be called inside <b>setup()</b>,
- * otherwise the applet may not yet be initialized and connected to its parent web browser.
- *
- * @webref input:web
- * @usage Web
- *
- * @param what name of the param to read
- */
-public String param(String what);
+///**
+// * Reads the value of a param.
+// * Values are always read as a String so if you want them to be an integer or other datatype they must be converted.
+// * The <b>param()</b> function will only work in a web browser.
+// * The function should be called inside <b>setup()</b>,
+// * otherwise the applet may not yet be initialized and connected to its parent web browser.
+// *
+// * @webref input:web
+// * @usage Web
+// *
+// * @param what name of the param to read
+// */
+//public String param(String what);
 
-/**
- * Displays message in the browser's status area. This is the text area in the lower left corner of the browser.
- * The <b>status()</b> function will only work when the Processing program is running in a web browser.
- * =advanced
- * Show status in the status bar of a web browser, or in the
- * System.out console. Eventually this might show status in the
- * p5 environment itself, rather than relying on the console.
- *
- * @webref input:web
- * @usage Web
- * @param what any valid String
- */
-public void status(String what);
+///**
+// * Displays message in the browser's status area. This is the text area in the lower left corner of the browser.
+// * The <b>status()</b> function will only work when the Processing program is running in a web browser.
+// * =advanced
+// * Show status in the status bar of a web browser, or in the
+// * System.out console. Eventually this might show status in the
+// * p5 environment itself, rather than relying on the console.
+// *
+// * @webref input:web
+// * @usage Web
+// * @param what any valid String
+// */
+//public void status(String what);
 
 public void link(String here);
 
@@ -1971,45 +1969,45 @@ public void noiseSeed(long what);
  */
 public PImage loadImage(String filename);
 
-/**
- * Loads an image into a variable of type <b>PImage</b>. Four types of images ( <b>.gif</b>, <b>.jpg</b>, <b>.tga</b>, <b>.png</b>) images may be loaded. To load correctly, images must be located in the data directory of the current sketch. In most cases, load all images in <b>setup()</b> to preload them at the start of the program. Loading images inside <b>draw()</b> will reduce the speed of a program.
- * <br><br>The <b>filename</b> parameter can also be a URL to a file found online. For security reasons, a Processing sketch found online can only download files from the same server from which it came. Getting around this restriction requires a <a href="http://processing.org/hacks/doku.php?id=hacks:signapplet">signed applet</a>.
- * <br><br>The <b>extension</b> parameter is used to determine the image type in cases where the image filename does not end with a proper extension. Specify the extension as the second parameter to <b>loadImage()</b>, as shown in the third example on this page.
- * <br><br>If an image is not loaded successfully, the <b>null</b> value is returned and an error message will be printed to the console. The error message does not halt the program, however the null value may cause a NullPointerException if your code does not check whether the value returned from <b>loadImage()</b> is null.<br><br>Depending on the type of error, a <b>PImage</b> object may still be returned, but the width and height of the image will be set to -1. This happens if bad image data is returned or cannot be decoded properly. Sometimes this happens with image URLs that produce a 403 error or that redirect to a password prompt, because <b>loadImage()</b> will attempt to interpret the HTML as image data.
- *
- * =advanced
- * Identical to loadImage, but allows you to specify the type of
- * image by its extension. Especially useful when downloading from
- * CGI scripts.
- * <br/> <br/>
- * Use 'unknown' as the extension to pass off to the default
- * image loader that handles gif, jpg, and png.
- *
- * @webref image:loading_displaying
- * @param filename name of file to load, can be .gif, .jpg, .tga, or a handful of other image types depending on your platform.
- * @param extension the type of image to load, for example "png", "gif", "jpg"
- *
- * @see processing.core.PImage
- * @see processing.core.PApplet#image(PImage, float, float, float, float)
- * @see processing.core.PApplet#imageMode(int)
- * @see processing.core.PApplet#background(float, float, float)
- */
-public PImage loadImage(String filename, String extension);
+///**
+// * Loads an image into a variable of type <b>PImage</b>. Four types of images ( <b>.gif</b>, <b>.jpg</b>, <b>.tga</b>, <b>.png</b>) images may be loaded. To load correctly, images must be located in the data directory of the current sketch. In most cases, load all images in <b>setup()</b> to preload them at the start of the program. Loading images inside <b>draw()</b> will reduce the speed of a program.
+// * <br><br>The <b>filename</b> parameter can also be a URL to a file found online. For security reasons, a Processing sketch found online can only download files from the same server from which it came. Getting around this restriction requires a <a href="http://processing.org/hacks/doku.php?id=hacks:signapplet">signed applet</a>.
+// * <br><br>The <b>extension</b> parameter is used to determine the image type in cases where the image filename does not end with a proper extension. Specify the extension as the second parameter to <b>loadImage()</b>, as shown in the third example on this page.
+// * <br><br>If an image is not loaded successfully, the <b>null</b> value is returned and an error message will be printed to the console. The error message does not halt the program, however the null value may cause a NullPointerException if your code does not check whether the value returned from <b>loadImage()</b> is null.<br><br>Depending on the type of error, a <b>PImage</b> object may still be returned, but the width and height of the image will be set to -1. This happens if bad image data is returned or cannot be decoded properly. Sometimes this happens with image URLs that produce a 403 error or that redirect to a password prompt, because <b>loadImage()</b> will attempt to interpret the HTML as image data.
+// *
+// * =advanced
+// * Identical to loadImage, but allows you to specify the type of
+// * image by its extension. Especially useful when downloading from
+// * CGI scripts.
+// * <br/> <br/>
+// * Use 'unknown' as the extension to pass off to the default
+// * image loader that handles gif, jpg, and png.
+// *
+// * @webref image:loading_displaying
+// * @param filename name of file to load, can be .gif, .jpg, .tga, or a handful of other image types depending on your platform.
+// * @param extension the type of image to load, for example "png", "gif", "jpg"
+// *
+// * @see processing.core.PImage
+// * @see processing.core.PApplet#image(PImage, float, float, float, float)
+// * @see processing.core.PApplet#imageMode(int)
+// * @see processing.core.PApplet#background(float, float, float)
+// */
+//public PImage loadImage(String filename, String extension);
 
 public PImage requestImage(String filename);
 
-/**
- * This function load images on a separate thread so that your sketch does not freeze while images load during <b>setup()</b>. While the image is loading, its width and height will be 0. If an error occurs while loading the image, its width and height will be set to -1. You'll know when the image has loaded properly because its width and height will be greater than 0. Asynchronous image loading (particularly when downloading from a server) can dramatically improve performance.<br><br>
- * The <b>extension</b> parameter is used to determine the image type in cases where the image filename does not end with a proper extension. Specify the extension as the second parameter to <b>requestImage()</b>.
- *
- * @webref image:loading_displaying
- * @param filename name of file to load, can be .gif, .jpg, .tga, or a handful of other image types depending on your platform
- * @param extension the type of image to load, for example "png", "gif", "jpg"
- *
- * @see processing.core.PApplet#loadImage(String, String)
- * @see processing.core.PImage
- */
-public PImage requestImage(String filename, String extension);
+///**
+// * This function load images on a separate thread so that your sketch does not freeze while images load during <b>setup()</b>. While the image is loading, its width and height will be 0. If an error occurs while loading the image, its width and height will be set to -1. You'll know when the image has loaded properly because its width and height will be greater than 0. Asynchronous image loading (particularly when downloading from a server) can dramatically improve performance.<br><br>
+// * The <b>extension</b> parameter is used to determine the image type in cases where the image filename does not end with a proper extension. Specify the extension as the second parameter to <b>requestImage()</b>.
+// *
+// * @webref image:loading_displaying
+// * @param filename name of file to load, can be .gif, .jpg, .tga, or a handful of other image types depending on your platform
+// * @param extension the type of image to load, for example "png", "gif", "jpg"
+// *
+// * @see processing.core.PApplet#loadImage(String, String)
+// * @see processing.core.PImage
+// */
+//public PImage requestImage(String filename, String extension);
 
 /**
  * Loads vector shapes into a variable of type <b>PShape</b>. Currently, only SVG files may be loaded.
@@ -2123,10 +2121,10 @@ public BufferedReader createReader(String filename);
  */
 public PrintWriter createWriter(String filename);
 
-/**
- * @deprecated As of release 0136, use createInput() instead.
- */
-public InputStream openStream(String filename);
+///**
+// * @deprecated As of release 0136, use createInput() instead.
+// */
+//public InputStream openStream(String filename);
 
 /**
  * This is a method for advanced programmers to open a Java InputStream. The method is useful if you want to use the facilities provided by PApplet to easily open files from the data folder or from a URL, but want an InputStream object so that you can use other Java methods to take more control of how the stream is read.
@@ -2363,20 +2361,20 @@ public int color(int x, int y, int z, int a);
  */
 public int color(float x, float y, float z, float a);
 
-/**
- * Set this sketch to communicate its state back to the PDE.
- * <p/>
- * This uses the stderr stream to write positions of the window
- * (so that it will be saved by the PDE for the next run) and
- * notify on quit. See more notes in the Worker class.
- */
-public void setupExternalMessages();
+///**
+// * Set this sketch to communicate its state back to the PDE.
+// * <p/>
+// * This uses the stderr stream to write positions of the window
+// * (so that it will be saved by the PDE for the next run) and
+// * notify on quit. See more notes in the Worker class.
+// */
+//public void setupExternalMessages();
 
-/**
- * Set up a listener that will fire proper component resize events
- * in cases where frame.setResizable(true) is called.
- */
-public void setupFrameResizeListener();
+///**
+// * Set up a listener that will fire proper component resize events
+// * in cases where frame.setResizable(true) is called.
+// */
+//public void setupFrameResizeListener();
 
 ///**
 // * Begin recording to a new renderer of the specified type, using the width
@@ -3319,13 +3317,13 @@ public void text(String str);
  */
 public void text(String str, float x, float y);
 
-/**
- * Method to draw text from an array of chars. This method will usually be
- * more efficient than drawing from a String object, because the String will
- * not be converted to a char array before drawing.
- */
-public void text(char[] chars, int start, int stop, float x, float y);
-
+///**
+// * Method to draw text from an array of chars. This method will usually be
+// * more efficient than drawing from a String object, because the String will
+// * not be converted to a char array before drawing.
+// */
+//public void text(char[] chars, int start, int stop, float x, float y);
+//
 ///**
 // * Same as above but with a z coordinate.
 // */

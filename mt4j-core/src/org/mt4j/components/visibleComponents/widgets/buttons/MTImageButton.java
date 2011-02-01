@@ -17,8 +17,8 @@
  ***********************************************************************/
 package org.mt4j.components.visibleComponents.widgets.buttons;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+//import java.awt.event.ActionEvent;
+//import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
 import org.mt4j.components.bounds.BoundsZPlaneRectangle;
@@ -47,8 +47,8 @@ public class MTImageButton extends MTRectangle implements IclickableButton {
 	/** The selected. */
 	private boolean selected;
 	
-	/** The registered action listeners. */
-	private ArrayList<ActionListener> registeredActionListeners;
+//	/** The registered action listeners. */
+//	private ArrayList<ActionListener> registeredActionListeners;
 	
 	/**
 	 * Instantiates a new mT image button.
@@ -68,7 +68,7 @@ public class MTImageButton extends MTRectangle implements IclickableButton {
 	 */
 	public MTImageButton(PApplet pApplet, PImage texture) {
 		super(pApplet, texture);
-		this.registeredActionListeners = new ArrayList<ActionListener>();
+//		this.registeredActionListeners = new ArrayList<ActionListener>();
 		
 		this.setName("Unnamed image button");
 		
@@ -104,57 +104,57 @@ public class MTImageButton extends MTRectangle implements IclickableButton {
 	}
 	
 
-	/**
-	 * Adds the action listener.
-	 * 
-	 * @param listener the listener
-	 */
-	public synchronized void addActionListener(ActionListener listener){
-		if (!registeredActionListeners.contains(listener)){
-			registeredActionListeners.add(listener);
-		}
-	}
-	
-	/**
-	 * Removes the action listener.
-	 * 
-	 * @param listener the listener
-	 */
-	public synchronized void removeActionListener(ActionListener listener){
-		if (registeredActionListeners.contains(listener)){
-			registeredActionListeners.remove(listener);
-		}
-	}
-	
-	/**
-	 * Gets the action listeners.
-	 * 
-	 * @return the action listeners
-	 */
-	public synchronized ActionListener[] getActionListeners(){
-		return registeredActionListeners.toArray(new ActionListener[this.registeredActionListeners.size()]);
-	}
-	
-	/**
-	 * Fire action performed.
-	 */
-	protected synchronized void fireActionPerformed() {
-		ActionListener[] listeners = this.getActionListeners();
-        for (ActionListener listener : listeners) {
-            listener.actionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, "action performed on tangible button"));
-        }
-	}
-	
+//	/**
+//	 * Adds the action listener.
+//	 * 
+//	 * @param listener the listener
+//	 */
+//	public synchronized void addActionListener(ActionListener listener){
+//		if (!registeredActionListeners.contains(listener)){
+//			registeredActionListeners.add(listener);
+//		}
+//	}
+//	
+//	/**
+//	 * Removes the action listener.
+//	 * 
+//	 * @param listener the listener
+//	 */
+//	public synchronized void removeActionListener(ActionListener listener){
+//		if (registeredActionListeners.contains(listener)){
+//			registeredActionListeners.remove(listener);
+//		}
+//	}
+//	
+//	/**
+//	 * Gets the action listeners.
+//	 * 
+//	 * @return the action listeners
+//	 */
+//	public synchronized ActionListener[] getActionListeners(){
+//		return registeredActionListeners.toArray(new ActionListener[this.registeredActionListeners.size()]);
+//	}
+//	
+//	/**
+//	 * Fire action performed.
+//	 */
+//	protected synchronized void fireActionPerformed() {
+//		ActionListener[] listeners = this.getActionListeners();
+//        for (ActionListener listener : listeners) {
+//            listener.actionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, "action performed on tangible button"));
+//        }
+//	}
+//	
 	/**
 	 * fires an action event with a ClickEvent Id as its ID.
 	 * 
 	 * @param ce the ce
 	 */
-	public synchronized void fireActionPerformed(TapEvent ce) {
-		ActionListener[] listeners = this.getActionListeners();
-        for (ActionListener listener : listeners) {
-            listener.actionPerformed(new ActionEvent(this, ce.getTapID(), "action performed on tangible button"));
-        }
+	public synchronized void fireActionPerformed(TapEvent ce) { //TODO REMOVE?
+//		ActionListener[] listeners = this.getActionListeners();
+//        for (ActionListener listener : listeners) {
+//            listener.actionPerformed(new ActionEvent(this, ce.getTapID(), "action performed on tangible button"));
+//        }
 	}
 
 	public boolean isSelected() {
