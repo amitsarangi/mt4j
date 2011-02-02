@@ -109,7 +109,7 @@ public class DesktopGraphicsUtil implements IGraphicsUtil {
 
 	@Override
 	public PMatrix getProjection() {
-		return ((PGraphicsOpenGL)app).projection;
+		return ((PGraphicsOpenGL)app.getPGraphics()).projection;
 	}
 
 	

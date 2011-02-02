@@ -92,7 +92,7 @@ public class AndroidGraphicsUtil implements IGraphicsUtil {
 
 	@Override
 	public PMatrix getProjection() {
-		return ((PGraphicsAndroid3D)app).projection;
+		return ((PGraphicsAndroid3D)app.getPGraphics()).projection;
 	}
 
 	
