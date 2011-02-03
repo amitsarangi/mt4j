@@ -95,5 +95,10 @@ public class AndroidGraphicsUtil implements IGraphicsUtil {
 		return ((PGraphicsAndroid3D)app.getPGraphics()).projection;
 	}
 
+	@Override
+	public boolean isBigEndian() {
+		return PGraphicsAndroid3D.BIG_ENDIAN;
+	}
+
 	
 }
