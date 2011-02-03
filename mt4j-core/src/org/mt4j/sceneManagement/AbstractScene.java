@@ -17,8 +17,6 @@
  ***********************************************************************/
 package org.mt4j.sceneManagement;
 
-import java.util.ArrayDeque;
-import java.util.Deque;
 import java.util.Iterator;
 
 import org.mt4j.MTApplication;
@@ -26,6 +24,7 @@ import org.mt4j.components.MTCanvas;
 import org.mt4j.input.inputProcessors.globalProcessors.AbstractGlobalInputProcessor;
 import org.mt4j.input.inputProcessors.globalProcessors.InputRetargeter;
 import org.mt4j.sceneManagement.transition.ITransition;
+import org.mt4j.util.ArrayDeque;
 import org.mt4j.util.GraphicsUtil;
 import org.mt4j.util.MT4jSettings;
 import org.mt4j.util.MTColor;
@@ -66,7 +65,7 @@ public abstract class AbstractScene implements Iscene {
 	private String name;
 
 	/** The pre draw actions. */
-	private final Deque<IPreDrawAction> preDrawActions;
+	private final ArrayDeque<IPreDrawAction> preDrawActions;
 	
 	/** The clear color. */
 	private MTColor clearColor;

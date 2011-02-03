@@ -4,6 +4,7 @@ import java.lang.reflect.Method;
 
 import org.mt4j.input.AndroidInputManager;
 import org.mt4j.input.ISurfaceTouchListener;
+import org.mt4j.sceneManagement.IPreDrawAction;
 import org.mt4j.util.AndroidGraphicsUtil;
 import org.mt4j.util.GraphicsUtil;
 import org.mt4j.util.MT4jSettings;
@@ -164,67 +165,67 @@ public abstract class MTAndroidApplication extends MTApplication{
 //	}
 	
 	
-	public static final boolean multiTouchSupported;
-	private static Method m_getPointerCount;
-	private static Method m_getPointerId;
-	private static Method m_getPressure;
-	private static Method m_getHistoricalX;
-	private static Method m_getHistoricalY;
-	private static Method m_getHistoricalPressure;
-	private static Method m_getX;
-	private static Method m_getY;
-	private static int ACTION_POINTER_UP = 6;
-	private static int ACTION_POINTER_INDEX_SHIFT = 8;
-
-	static {
-		boolean succeeded = false;
-		try {
-			// Android 2.0.1 stuff:
-			m_getPointerCount = MotionEvent.class.getMethod("getPointerCount");
-			m_getPointerId = MotionEvent.class.getMethod("getPointerId", Integer.TYPE);
-			m_getPressure = MotionEvent.class.getMethod("getPressure", Integer.TYPE);
-			m_getHistoricalX = MotionEvent.class.getMethod("getHistoricalX", Integer.TYPE, Integer.TYPE);
-			m_getHistoricalY = MotionEvent.class.getMethod("getHistoricalY", Integer.TYPE, Integer.TYPE);
-			m_getHistoricalPressure = MotionEvent.class.getMethod("getHistoricalPressure", Integer.TYPE, Integer.TYPE);
-			m_getX = MotionEvent.class.getMethod("getX", Integer.TYPE);
-			m_getY = MotionEvent.class.getMethod("getY", Integer.TYPE);
-			succeeded = true;
-		} catch (Exception e) {
-			Log.e("MultiTouchController", "static initializer failed", e);
-		}
-		multiTouchSupported = succeeded;
-		if (multiTouchSupported) {
-			// Android 2.2+ stuff (the original Android 2.2 consts are declared above,
-			// and these actions aren't used previous to Android 2.2):
-			try {
-				ACTION_POINTER_UP = MotionEvent.class.getField("ACTION_POINTER_UP").getInt(null);
-				ACTION_POINTER_INDEX_SHIFT = MotionEvent.class.getField("ACTION_POINTER_INDEX_SHIFT").getInt(null);
-			} catch (Exception e) {
-			}
-		}
-	}
-
-	// ------------------------------------------------------------------------------------
-	/**
-	 * Time in ms required after a change in event status (e.g. putting down or lifting off the second finger) before events actually do anything --
-	 * helps eliminate noisy jumps that happen on change of status
-	 */
-	private static final long EVENT_SETTLE_TIME_INTERVAL = 20;
-
-	/**
-	 * The biggest possible abs val of the change in x or y between multitouch events (larger dx/dy events are ignored) -- helps eliminate jumps in
-	 * pointer position on finger 2 up/down.
-	 */
-	private static final float MAX_MULTITOUCH_POS_JUMP_SIZE = 30.0f;
-
-	/**
-	 * The biggest possible abs val of the change in multitouchWidth or multitouchHeight between multitouch events (larger-jump events are ignored) --
-	 * helps eliminate jumps in pointer position on finger 2 up/down.
-	 */
-	private static final float MAX_MULTITOUCH_DIM_JUMP_SIZE = 40.0f;
-
-	/** The smallest possible distance between multitouch points (used to avoid div-by-zero errors and display glitches) */
-	private static final float MIN_MULTITOUCH_SEPARATION = 30.0f;
+//	public static final boolean multiTouchSupported;
+//	private static Method m_getPointerCount;
+//	private static Method m_getPointerId;
+//	private static Method m_getPressure;
+//	private static Method m_getHistoricalX;
+//	private static Method m_getHistoricalY;
+//	private static Method m_getHistoricalPressure;
+//	private static Method m_getX;
+//	private static Method m_getY;
+//	private static int ACTION_POINTER_UP = 6;
+//	private static int ACTION_POINTER_INDEX_SHIFT = 8;
+//
+//	static {
+//		boolean succeeded = false;
+//		try {
+//			// Android 2.0.1 stuff:
+//			m_getPointerCount = MotionEvent.class.getMethod("getPointerCount");
+//			m_getPointerId = MotionEvent.class.getMethod("getPointerId", Integer.TYPE);
+//			m_getPressure = MotionEvent.class.getMethod("getPressure", Integer.TYPE);
+//			m_getHistoricalX = MotionEvent.class.getMethod("getHistoricalX", Integer.TYPE, Integer.TYPE);
+//			m_getHistoricalY = MotionEvent.class.getMethod("getHistoricalY", Integer.TYPE, Integer.TYPE);
+//			m_getHistoricalPressure = MotionEvent.class.getMethod("getHistoricalPressure", Integer.TYPE, Integer.TYPE);
+//			m_getX = MotionEvent.class.getMethod("getX", Integer.TYPE);
+//			m_getY = MotionEvent.class.getMethod("getY", Integer.TYPE);
+//			succeeded = true;
+//		} catch (Exception e) {
+//			Log.e("MultiTouchController", "static initializer failed", e);
+//		}
+//		multiTouchSupported = succeeded;
+//		if (multiTouchSupported) {
+//			// Android 2.2+ stuff (the original Android 2.2 consts are declared above,
+//			// and these actions aren't used previous to Android 2.2):
+//			try {
+//				ACTION_POINTER_UP = MotionEvent.class.getField("ACTION_POINTER_UP").getInt(null);
+//				ACTION_POINTER_INDEX_SHIFT = MotionEvent.class.getField("ACTION_POINTER_INDEX_SHIFT").getInt(null);
+//			} catch (Exception e) {
+//			}
+//		}
+//	}
+//
+//	// ------------------------------------------------------------------------------------
+//	/**
+//	 * Time in ms required after a change in event status (e.g. putting down or lifting off the second finger) before events actually do anything --
+//	 * helps eliminate noisy jumps that happen on change of status
+//	 */
+//	private static final long EVENT_SETTLE_TIME_INTERVAL = 20;
+//
+//	/**
+//	 * The biggest possible abs val of the change in x or y between multitouch events (larger dx/dy events are ignored) -- helps eliminate jumps in
+//	 * pointer position on finger 2 up/down.
+//	 */
+//	private static final float MAX_MULTITOUCH_POS_JUMP_SIZE = 30.0f;
+//
+//	/**
+//	 * The biggest possible abs val of the change in multitouchWidth or multitouchHeight between multitouch events (larger-jump events are ignored) --
+//	 * helps eliminate jumps in pointer position on finger 2 up/down.
+//	 */
+//	private static final float MAX_MULTITOUCH_DIM_JUMP_SIZE = 40.0f;
+//
+//	/** The smallest possible distance between multitouch points (used to avoid div-by-zero errors and display glitches) */
+//	private static final float MIN_MULTITOUCH_SEPARATION = 30.0f;
 
 	/** The max number of touch points that can be present on the screen at once */
 	public static final int MAX_TOUCH_POINTS = 20;
@@ -287,13 +288,10 @@ public abstract class MTAndroidApplication extends MTApplication{
 	public boolean surfaceTouchEvent(MotionEvent event) {
 		super.surfaceTouchEvent(event);
 		
-		if (this.touchListener != null){
-			return this.touchListener.onTouchEvent(event);
+		final MotionEvent mEvent = event;
+		if (touchListener != null){
+					touchListener.onTouchEvent(mEvent);
 		}
-		
-		
-		
-		
 		
 		
 //		switch (action & MotionEvent.ACTION_MASK) {

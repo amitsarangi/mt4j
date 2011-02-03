@@ -3,6 +3,6 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/mt4j-core"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/android-core"/>
-	<classpathentry kind="var" path="android_sdk_dir"/>
+	<classpathentry kind="var" path="android_sdk_dir_8"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

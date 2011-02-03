@@ -18,9 +18,7 @@
 
 package org.mt4j;
 
-import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.Deque;
 import java.util.Iterator;
 import java.util.List;
 
@@ -37,6 +35,7 @@ import org.mt4j.sceneManagement.ISceneChangeListener;
 import org.mt4j.sceneManagement.Iscene;
 import org.mt4j.sceneManagement.SceneChangeEvent;
 import org.mt4j.sceneManagement.transition.ITransition;
+import org.mt4j.util.ArrayDeque;
 import org.mt4j.util.GraphicsUtil;
 import org.mt4j.util.animation.AnimationManager;
 import org.mt4j.util.logging.ILogger;
@@ -49,6 +48,7 @@ import org.mt4j.util.opengl.GLCommon;
 import processing.core.PApplet;
 import processing.core.PGraphics;
 import processing.core.PMatrix3D;
+import android.app.Application;
 
 
 
@@ -102,7 +102,7 @@ public abstract class MTApplication extends PApplet implements IMTApplication{
 	private List<ISceneChangeListener> sceneChangedListeners;
 	
 	/** The invoke later actions. */
-	private Deque<Runnable> invokeLaterActions;
+	private ArrayDeque<Runnable> invokeLaterActions;
 	
 	/** The scene stack. */
 	private ArrayDeque<Iscene> sceneStack;
