@@ -48,4 +48,6 @@ public PGraphics getPGraphics();
 
 	public PMatrix getProjection();
 
+	public boolean isBigEndian();
+
 }

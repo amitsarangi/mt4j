@@ -210,11 +210,23 @@ public class BoundsZPlaneRectangle implements IBoundingShape {
 		Vector3D[] verts = this.boundingPointsLocal;
 //		rectNormal= this.getNormalObjSpace();
 		//Normal should actually always be (0,0,1)!
-		Vector3D testPoint = ToolsGeometry.getRayPlaneIntersection(ray, rectNormal, verts[0]);
+		final Vector3D testPoint = ToolsGeometry.getRayPlaneIntersection(ray, rectNormal, verts[0]);
 		
 		if (testPoint == null){
 			return null;
 		}
+		
+		/*
+		if (this.peerComponent != null){ //FIXME REMOVE DEBUG HELP to show where the point is
+			((MTApplication)peerComponent.getRenderer()).invokeLater(new Runnable() {
+				@Override
+				public void run() {
+					peerComponent.getRoot().addChild(new MTRectangle(peerComponent.getRenderer(), testPoint.x, testPoint.y, 10,10));
+				}
+			});
+		}
+		*/
+		
 		return (this.containsPointLocal(testPoint) ? testPoint : null);
 	}
 	

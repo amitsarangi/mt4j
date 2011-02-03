@@ -202,15 +202,51 @@ public class Tools3D {
 //				PMatrix3D projectionM 	= new PMatrix3D(((PGraphics3D)applet.g).projection);
 				PMatrix3D projectionM 	= new PMatrix3D(GraphicsUtil.getProjection());
 				
+				//FIXME TEST why neccessary? 
+				//-> in dekstop version glScale(1,-1,1) is done every frame because in (Desktop) opengl
+				// 0,0 is on the down left corner instead of upper left
+				//TODO test with P3D
+				if (GraphicsUtil.isAndroid()){
+					modelView.scale(1, -1, 1);
+				}
+				
+				//FIXME REMOVE
+				/*
+				PMatrix3D m = modelView;
+				Matrix cam = new Matrix(
+						m.m00, m.m01, m.m02,  m.m03,
+						m.m10, m.m11, m.m12,  m.m13,
+						m.m20, m.m21, m.m22,  m.m23,
+						m.m30, m.m31, m.m32,  m.m33
+				);
+				
+				modelView.scale(1, -1, 1);
+				
+				System.out.println("modelView: " + cam);
+				
+				m = projectionM;
+				cam = new Matrix(
+						m.m00, m.m01, m.m02,  m.m03,
+						m.m10, m.m11, m.m12,  m.m13,
+						m.m20, m.m21, m.m22,  m.m23,
+						m.m30, m.m31, m.m32,  m.m33
+				);
+				System.out.println("projectionM: " + cam);
+				*/
 				
 				projectionM.apply(modelView);
 				projectionM.invert();
 				
 				float[] result = new float[4];
-				float[] factor = new float[]{  ((2 * testpoint.getX())  / applet.width)  -1,
-											   ((2 * testpoint.getY())  / applet.height) -1, //screenH - y?
-												(2 * testpoint.getZ()) -1 ,
-												 1,};
+//				float[] factor = new float[]{  ((2 * testpoint.getX())  / applet.width)  -1,
+//											   ((2 * testpoint.getY())  / applet.height) -1, //screenH - y?
+//												(2 * testpoint.getZ()) -1 ,
+//												 1,};
+				float[] factor = new float[]{  
+						((2 * testpoint.getX())  / MT4jSettings.getInstance().getWindowWidth())  -1,
+						((2 * testpoint.getY())  / MT4jSettings.getInstance().getWindowHeight()) -1, //screenH - y?
+						 (2 * testpoint.getZ()) -1 ,
+							 1,};
 				//Matrix mit Vector multiplizieren
 				projectionM.mult(factor, result);
 				
@@ -231,7 +267,7 @@ public class Tools3D {
 //		default:
 //			break;
 //		} 
-//		System.out.println(returnVect);
+//		System.out.println("unprojected: " + returnVect);
 		return returnVect;
 	} 
 	
@@ -679,11 +715,16 @@ public class Tools3D {
 		
 //		GL gl =((PGraphicsOpenGL)pa.g).gl;
 		GL11Plus gl = GraphicsUtil.getGL11Plus();
-		boolean avail = gl.isExtensionAvailable(extensionName);
-		/*
-		String ext = gl.glGetString(GL.GL_EXTENSIONS);
-		*/
-		return(avail);
+		if (gl != null){
+			boolean avail = gl.isExtensionAvailable(extensionName);
+			/*
+			String ext = gl.glGetString(GL.GL_EXTENSIONS);
+			*/
+			return(avail);
+		}else{
+			System.err.println("GL profile doesent support 'isExtensionAvailable' command.");
+			return false;
+		}
 	}
 	
 	/**

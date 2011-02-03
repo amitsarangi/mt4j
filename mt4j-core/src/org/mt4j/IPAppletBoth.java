@@ -2676,10 +2676,10 @@ public void rectMode(int mode);
  */
 public void rect(float a, float b, float c, float d);
 
-public void rect(float a, float b, float c, float d, float hr, float vr);
-
-public void rect(float a, float b, float c, float d, float tl, float tr,
-                 float bl, float br);
+//public void rect(float a, float b, float c, float d, float hr, float vr);
+//
+//public void rect(float a, float b, float c, float d, float tl, float tr,
+//                 float bl, float br);
 
 /**
  * The origin of the ellipse is modified by the <b>ellipseMode()</b>
@@ -4049,30 +4049,30 @@ public int lerpColor(int c1, int c2, float amt);
  */
 public boolean displayable();
 
-/**
- * Store data of some kind for a renderer that requires extra metadata of
- * some kind. Usually this is a renderer-specific representation of the
- * image data, for instance a BufferedImage with tint() settings applied for
- * PGraphicsJava2D, or resized image data and OpenGL texture indices for
- * PGraphicsOpenGL.
- */
-public void setCache(Object parent, Object storage);
-
-/**
- * Get cache storage data for the specified renderer. Because each renderer
- * will cache data in different formats, it's necessary to store cache data
- * keyed by the renderer object. Otherwise, attempting to draw the same
- * image to both a PGraphicsJava2D and a PGraphicsOpenGL will cause errors.
- * @param parent The PGraphics object (or any object, really) associated
- * @return data stored for the specified parent
- */
-public Object getCache(Object parent);
-
-/**
- * Remove information associated with this renderer from the cache, if any.
- * @param parent The PGraphics object whose cache data should be removed
- */
-public void removeCache(Object parent);
+///**
+// * Store data of some kind for a renderer that requires extra metadata of
+// * some kind. Usually this is a renderer-specific representation of the
+// * image data, for instance a BufferedImage with tint() settings applied for
+// * PGraphicsJava2D, or resized image data and OpenGL texture indices for
+// * PGraphicsOpenGL.
+// */
+//public void setCache(Object parent, Object storage);
+//
+///**
+// * Get cache storage data for the specified renderer. Because each renderer
+// * will cache data in different formats, it's necessary to store cache data
+// * keyed by the renderer object. Otherwise, attempting to draw the same
+// * image to both a PGraphicsJava2D and a PGraphicsOpenGL will cause errors.
+// * @param parent The PGraphics object (or any object, really) associated
+// * @return data stored for the specified parent
+// */
+//public Object getCache(Object parent);
+//
+///**
+// * Remove information associated with this renderer from the cache, if any.
+// * @param parent The PGraphics object whose cache data should be removed
+// */
+//public void removeCache(Object parent);
 
 /**
  * Returns an ARGB "color" type (a packed 32 bit int with the color.

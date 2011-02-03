@@ -130,23 +130,6 @@ public abstract class MTApplication extends PApplet implements IMTApplication{
 
 	protected boolean gl11PlusSupported;
 
-	public String sketchRenderer() {
-		// TODO Auto-generated method stub
-		return super.sketchRenderer();
-	}
-	
-	@Override
-	public void rect(float a, float b, float c, float d, float hr, float vr) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void rect(float a, float b, float c, float d, float tl, float tr,
-			float bl, float br) {
-		// TODO Auto-generated method stub
-		
-	}
 	
 //	private static boolean fullscreen;
 	/*

@@ -662,7 +662,20 @@ public class GLTexture extends PImage {
 	 * @param intArray the int array
 	 */
 	public void updateGLTexture(int[] intArray){ 
-		this.updateGLTexture(IntBuffer.wrap(intArray));
+//		this.updateGLTexture(IntBuffer.wrap(intArray)); //FIXME original
+		IntBuffer pixelBuffer = IntBuffer.allocate(intArray.length);
+//		pixelBuffer.rewind(); //obsolete?
+		
+		if (GraphicsUtil.isAndroid()){
+			int[] rgbaPixels = new int[width * height];
+		    convertToRGBA(intArray, rgbaPixels, format, width, height);
+			pixelBuffer.put(rgbaPixels);
+			pixelBuffer.rewind();
+		}else{
+			pixelBuffer.put(intArray);
+			pixelBuffer.rewind();
+		}
+		this.updateGLTexture(pixelBuffer);
 	}
 
 
@@ -682,6 +695,10 @@ public class GLTexture extends PImage {
 		//      int glFormat = glTextureSettings.glType.getGLConstant();
 		
 		int glFormat 	= GL.GL_BGRA; 				//FIXME DONT HARDCODE!?
+		if (GraphicsUtil.isAndroid()){ 				//FIXME TEST -> opengl es /android doesent support BGRA!?
+			glFormat = GL10.GL_RGBA;
+		}
+		
 		int type 		= GL10.GL_UNSIGNED_BYTE; 		//FIXME DONT HARDCODE!?
 
 		int textureTarget = glTextureSettings.target.getGLConstant();
@@ -693,7 +710,7 @@ public class GLTexture extends PImage {
     		this.forcedRectMipMaps = true;
     	}
 		
-		//NPOT texture targets dont support mipmaps!
+		//NPOT texture targets don't support mipmaps!
 		if (glTextureSettings.target == TEXTURE_TARGET.RECTANGULAR){
 			if (glTextureSettings.shrinkFilter.usesMipMapLevels()){
 				this.glTextureSettings.shrinkFilter = SHRINKAGE_FILTER.BilinearNoMipMaps;
@@ -711,7 +728,7 @@ public class GLTexture extends PImage {
 			this.internalFormat = GL10.GL_RGBA;
 			break;
 		}
-
+		
 		gl.glBindTexture(textureTarget, this.glTextureID[0]);
 
 		switch (glTextureSettings.target) {
@@ -761,7 +778,9 @@ public class GLTexture extends PImage {
 			}
 			else{
 				gl.glTexSubImage2D(textureTarget, 0, 0, 0, width, height, glFormat, type, buffer); //ORG
+//				gl.glTexSubImage2D(textureTarget, 0, 0, 0, width, height, GL10.GL_RGBA, GL10.GL_UNSIGNED_BYTE, buffer);
 //				gl.glTexSubImage2D(textureTarget, 0, 0, 0, width, height, GL.GL_RGB, type, buffer);
+				Tools3D.getGLError(gl); //FIXME REMOVE
 			}
 			break;
 		}
@@ -921,90 +940,155 @@ public class GLTexture extends PImage {
 	}
 	
 
-/*
-	private int[] toRGBA(int[] intArray, int arrayFormat) {
-		int t = 0;
-		int p = 0;
-		int twidth = width;
-		
-		int[] tIntArray = new int[width * height];
-		if (PGraphicsOpenGL.BIG_ENDIAN) {
-			switch (arrayFormat) {
-			case ALPHA:
+///*
+	/**
+	   * Reorders a pixel array in the given format into the order required by OpenGL (RGBA).
+	   * Both arrays are assumed to be of the same length. The width and height parameters
+	   * are used in the YUV420 to RBGBA conversion.
+	   * @param intArray int[]
+	   * @param tIntArray int[]
+	   * @param arrayFormat int  
+	   * @param w int
+	   * @param h int
+	   */
+	  protected void convertToRGBA(int[] intArray, int[] tIntArray, int arrayFormat, int w, int h)  {
+	    if (GraphicsUtil.isBigEndian())  {
+	      switch (arrayFormat) {
+	      case ALPHA:
+	                  
+	        // Converting from xxxA into RGBA. RGB is set to white 
+	        // (0xFFFFFF, i.e.: (255, 255, 255))
+	        for (int i = 0; i< intArray.length; i++) {
+	          tIntArray[i] = 0xFFFFFF00 | intArray[i];
+	        }
+	        break;
 
-				for (int y = 0; y < height; y++) {
-					for (int x = 0; x < width; x++) {
-						tIntArray[t++] = 0xFFFFFF00 | intArray[p++];
-					}
-					t += twidth - width;
-				}
-				break;
-			case RGB:
-				for (int y = 0; y < height; y++) {
-					for (int x = 0; x < width; x++) {
-						int pixel = intArray[p++];
-						tIntArray[t++] = (pixel << 8) | 0xff;
-					}
-					t += twidth - width;
-				}
-				break;
-			case ARGB:
-				for (int y = 0; y < height; y++) {
-					for (int x = 0; x < width; x++) {
-						int pixel = intArray[p++];
-						tIntArray[t++] = (pixel << 8) | ((pixel >>4) & 0xff);
-					}
-					t += twidth - width;
-				}
-				break;
-			}
-		} else {
-			// LITTLE_ENDIAN
-			// ARGB native, and RGBA opengl means ABGR on windows
-			// for the most part just need to swap two components here
-			// the sun.cpu.endian here might be "false", oddly enough..
-			// (that's why just using an "else", rather than check for "little")
-			switch (arrayFormat) {
-			case ALPHA:
-				for (int y = 0; y < height; y++) {
-					for (int x = 0; x < width; x++) {
-						tIntArray[t++] = (intArray[p++] <<4) | 0x00FFFFFF;
-					}
-					t += twidth - width;
-				}
-				break;
-			case RGB:
-				for (int y = 0; y < height; y++) {
-					for (int x = 0; x < width; x++) {
-						int pixel = intArray[p++];
-						// needs to be ABGR, stored in memory xRGB
-						// so R and B must be swapped, and the x just made FF
-						tIntArray[t++] = 0xff000000
-						| // force opacity for good measure
-						((pixel & 0xFF) <<6) | ((pixel & 0xFF0000) >>6)
-						| (pixel & 0x0000FF00);
-					}
-					t += twidth - width;
-				}
-				break;
-			case ARGB:
-				for (int y = 0; y < height; y++) {
-					for (int x = 0; x < width; x++) {
-						int pixel = intArray[p++];
-						// needs to be ABGR stored in memory ARGB
-						// so R and B must be swapped, A and G just brought back in
-						tIntArray[t++] = ((pixel & 0xFF) <<6)
-						| ((pixel & 0xFF0000) >>6) | (pixel & 0xFF00FF00);
-					}
-					t += twidth - width;
-				}
-				break;
-			}
-		}
-		return tIntArray;
-	}
+	      case RGB:
+	                  
+	        // Converting xRGB into RGBA. A is set to 0xFF (255, full opacity).
+	        for (int i = 0; i< intArray.length; i++) {
+	          int pixel = intArray[i];
+	          tIntArray[i] = (pixel << 8) | 0xFF;
+	        }
+	        break;
 
-	
+	      case ARGB:
+	               
+	        // Converting ARGB into RGBA. Shifting RGB to 8 bits to the left,
+	        // and bringing A to the first byte.
+	        for (int i = 0; i< intArray.length; i++) {
+	          int pixel = intArray[i];
+	          tIntArray[i] = (pixel << 8) | ((pixel >> 24) & 0xFF);
+	        }
+	        break;
+	                 
+	      case YUV420:
+	        
+	        // YUV420 to RGBA conversion.
+	        int frameSize = w * h;
+	        for (int j = 0, yp = 0; j < h; j++) {       
+	          int uvp = frameSize + (j >> 1) * w, u = 0, v = 0;
+	          for (int i = 0; i < w; i++, yp++) {
+	            int y = (0xFF & ((int) intArray[yp])) - 16;
+	            if (y < 0) y = 0;
+	            if ((i & 1) == 0) {
+	              v = (0xFF & intArray[uvp++]) - 128;
+	              u = (0xFF & intArray[uvp++]) - 128;
+	            }
+
+	            int y1192 = 1192 * y;
+	            int r = (y1192 + 1634 * v);
+	            int g = (y1192 - 833 * v - 400 * u);
+	            int b = (y1192 + 2066 * u);
+
+	            if (r < 0) r = 0; else if (r > 262143) r = 262143;
+	            if (g < 0) g = 0; else if (g > 262143) g = 262143;
+	            if (b < 0) b = 0; else if (b > 262143) b = 262143;
+
+	            // Output is RGBA:
+	            tIntArray[yp] = ((r << 6) & 0xFF000000) | ((g >> 2) & 0xFF0000) | ((b >> 10) & 0xFF00) | 0xFF;
+	          }
+	        }        
+	        
+	        break;        
+	      }
+	      
+	    } else {  
+	      // LITTLE_ENDIAN
+	      // ARGB native, and RGBA opengl means ABGR on windows
+	      // for the most part just need to swap two components here
+	      // the sun.cpu.endian here might be "false", oddly enough..
+	      // (that's why just using an "else", rather than check for "little")
+	        
+	      switch (arrayFormat)  {    
+	      case ALPHA:
+	              
+	        // Converting xxxA into ARGB, with RGB set to white.
+	        for (int i = 0; i< intArray.length; i++) {
+	          tIntArray[i] = (intArray[i] << 24) | 0x00FFFFFF;
+	        }
+	        break;
+
+	      case RGB:
+	              
+	        // We need to convert xRGB into ABGR,
+	        // so R and B must be swapped, and the x just made 0xFF.
+	        for (int i = 0; i< intArray.length; i++) {
+	          int pixel = intArray[i];  
+	          tIntArray[i] = 0xFF000000 |
+	                         ((pixel & 0xFF) << 16) |
+	                         ((pixel & 0xFF0000) >> 16) |
+	                         (pixel & 0x0000FF00);
+	        }
+	        break;
+
+	      case ARGB:
+	                      
+	        // We need to convert ARGB into ABGR,
+	        // so R and B must be swapped, A and G just brought back in.        
+	        for (int i = 0; i < intArray.length; i++) {
+	          int pixel = intArray[i];
+	          tIntArray[i] = ((pixel & 0xFF) << 16) |
+	                         ((pixel & 0xFF0000) >> 16) |
+	                         (pixel & 0xFF00FF00);
+	        }
+	        break;
+	        
+	      case YUV420:
+	        
+	        // YUV420 to ABGR conversion.
+	        int frameSize = w * h;
+	        for (int j = 0, yp = 0; j < h; j++) {       
+	          int uvp = frameSize + (j >> 1) * w, u = 0, v = 0;
+	          for (int i = 0; i < w; i++, yp++) {
+	            int y = (0xFF & ((int) intArray[yp])) - 16;
+	            if (y < 0) y = 0;
+	            if ((i & 1) == 0) {
+	              v = (0xFF & intArray[uvp++]) - 128;
+	              u = (0xFF & intArray[uvp++]) - 128;
+	            }
+
+	            int y1192 = 1192 * y;
+	            int r = (y1192 + 1634 * v);
+	            int g = (y1192 - 833 * v - 400 * u);
+	            int b = (y1192 + 2066 * u);
+
+	            if (r < 0) r = 0; else if (r > 262143) r = 262143;
+	            if (g < 0) g = 0; else if (g > 262143) g = 262143;
+	            if (b < 0) b = 0; else if (b > 262143) b = 262143;
+
+	            // Output is ABGR:
+	            tIntArray[yp] = 0xFF000000 | ((b << 6) & 0xFF0000) | ((g >> 2) & 0xFF00) | ((r >> 10) & 0xFF);
+	          }
+	        }        
+	        
+	        break;
+	      }
+	        
+	    }
+	  }
+
+	/*
 	private int[] toARGB(int[] intArray) {
 		int t = 0;
 		int p = 0;

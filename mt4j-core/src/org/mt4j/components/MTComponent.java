@@ -22,12 +22,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.mt4j.MTApplication;
 import org.mt4j.components.PickResult.PickEntry;
 import org.mt4j.components.bounds.IBoundingShape;
 import org.mt4j.components.clipping.Clip;
 import org.mt4j.components.css.util.CSSStylableComponent;
 import org.mt4j.components.interfaces.IMTComponent3D;
 import org.mt4j.components.interfaces.IMTController;
+import org.mt4j.components.visibleComponents.shapes.MTLine;
 import org.mt4j.input.ComponentInputProcessorSupport;
 import org.mt4j.input.GestureEventSupport;
 import org.mt4j.input.IMTInputEventListener;
@@ -39,6 +41,7 @@ import org.mt4j.input.inputProcessors.MTGestureEvent;
 import org.mt4j.input.inputProcessors.componentProcessors.AbstractComponentProcessor;
 import org.mt4j.util.GraphicsUtil;
 import org.mt4j.util.MT4jSettings;
+import org.mt4j.util.MTColor;
 import org.mt4j.util.camera.IFrustum;
 import org.mt4j.util.camera.Icamera;
 import org.mt4j.util.logging.ILogger;
@@ -47,6 +50,7 @@ import org.mt4j.util.math.Matrix;
 import org.mt4j.util.math.Ray;
 import org.mt4j.util.math.Tools3D;
 import org.mt4j.util.math.Vector3D;
+import org.mt4j.util.math.Vertex;
 import org.mt4j.util.opengl.GL10;
 
 import processing.core.PApplet;
@@ -2604,14 +2608,21 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 			
 			Ray invertedRay = this.getGlobalInverseMatrix().isIdentity()? currentRay : this.globalToLocal(currentRay);
 			
+			
 			/*
 			//DEBUG HELP!!!!! 
 			//This adds lines indicating the world ray and the local object ray used for ray-test
-			MTLine l1 = new MTLine(this.getRenderer(), new Vertex(currentRay.getRayStartPoint()), new Vertex(currentRay.getPointInRayDirection()));
-			this.getAncestor().addChild(l1);
-			MTLine l2 = new MTLine(this.getRenderer(), new Vertex(invertedRay.getRayStartPoint()), new Vertex(invertedRay.getPointInRayDirection()));
-			l2.setStrokeColor(255, 10, 10, 255);
-			this.getAncestor().addChild(l2);
+//			System.out.println("Ray start: " +  pickInfo.getPickRay().getRayStartPoint() + " ray end: " + pickInfo.getPickRay().getPointInRayDirection());
+			final MTLine l1 = new MTLine(this.getRenderer(), new Vertex(currentRay.getRayStartPoint()), new Vertex(currentRay.getPointInRayDirection()));
+			final MTLine l2 = new MTLine(this.getRenderer(), new Vertex(invertedRay.getRayStartPoint()), new Vertex(invertedRay.getPointInRayDirection()));
+			l2.setStrokeColor(new MTColor(255, 10, 10, 255));
+			((MTApplication)this.getRenderer()).invokeLater(new Runnable() {
+				@Override
+				public void run() {
+					getRoot().addChild(l1);
+					getRoot().addChild(l2);
+				}
+			});
 			*/
 			
 			//Check if component is clipped and only proceed if the ray intersects the clip shape

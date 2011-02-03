@@ -91,6 +91,10 @@ public class GraphicsUtil {
 	public static PMatrix getProjection() {
 		return graphicsUtil.getProjection();
 	}
+	
+	public static boolean isBigEndian(){
+		return graphicsUtil.isBigEndian();
+	}
 
 
 

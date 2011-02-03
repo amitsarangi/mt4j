@@ -153,7 +153,7 @@ public class MTCamera implements Icamera{
 	}
 	
 	
-	private void setCachedCamMatrices(){
+	protected void setCachedCamMatrices(){
 		Matrix m = this.cameraMatrix;
 		Matrix mi = this.cameraInvMatrix;
 		
@@ -188,10 +188,12 @@ public class MTCamera implements Icamera{
 		
 		modelViewP5.set(cameraMat);
 		modelViewInvP5.set(cameraInvMat);
+		
+		
 	}
 	
 	
-	private void calcCameraMatrix(float eyeX, 	float eyeY, 	float eyeZ,
+	protected void calcCameraMatrix(float eyeX, 	float eyeY, 	float eyeZ,
 							float centerX, 	float centerY, 	float centerZ,
 							float upX, 		float upY, 		float upZ
 	) {
