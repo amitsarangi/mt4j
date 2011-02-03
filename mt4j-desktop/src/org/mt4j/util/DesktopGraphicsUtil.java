@@ -112,6 +112,11 @@ public class DesktopGraphicsUtil implements IGraphicsUtil {
 		return ((PGraphicsOpenGL)app.getPGraphics()).projection;
 	}
 
+	@Override
+	public boolean isBigEndian() {
+		return PGraphicsOpenGL.BIG_ENDIAN;
+	}
+
 	
 
 }

@@ -26,7 +26,6 @@
 	<classpathentry kind="lib" path="lib/batik/js.jar"/>
 	<classpathentry kind="lib" path="lib/batik/pdf-transcoder.jar"/>
 	<classpathentry kind="lib" path="lib/batik/xml-apis.jar"/>
-	<classpathentry kind="lib" path="lib/jogl/opengl.jar"/>
 	<classpathentry kind="lib" path="lib/tuio/libTUIO.jar"/>
 	<classpathentry kind="lib" path="lib/whirlylib/log4j-1.2.8.jar"/>
 	<classpathentry kind="lib" path="lib/whirlylib/whirlycache-1.0.1.jar"/>
@@ -48,5 +47,7 @@
 	<classpathentry kind="lib" path="/mt4j-core/lib/batik-css.jar"/>
 	<classpathentry kind="lib" path="/mt4j-core/lib/xml-apis-ext.jar"/>
 	<classpathentry kind="lib" path="lib/jogl/gluegen-rt.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/processing-core"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/processing-opengl"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
