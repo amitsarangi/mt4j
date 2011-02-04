@@ -6,7 +6,7 @@ import org.mt4j.components.MTCanvas;
 import org.mt4j.components.MTComponent;
 import org.mt4j.input.inputData.InputCursor;
 import org.mt4j.input.inputProcessors.componentProcessors.lassoProcessor.IdragClusterable;
-import org.mt4jx.input.inputProcessors.componentProcessors.Group3DProcessorNew.Cluster;
+import org.mt4j.input.inputProcessors.componentProcessors.rotate3DProcessor.Cluster3DExt;
 import org.mt4jx.input.inputProcessors.componentProcessors.Group3DProcessorNew.ClusterDataManager;
 import org.mt4jx.input.inputProcessors.componentProcessors.Group3DProcessorNew.ISelection;
 
@@ -28,7 +28,7 @@ public class FingerTapSelection implements ISelection {
 	
 	private MTCanvas canvas;
 	
-	private Cluster currentlySelectedCluster;
+	private Cluster3DExt currentlySelectedCluster;
 	
 	public FingerTapSelection(ClusterDataManager clusterDataManager,MTCanvas canvas,FingerTapSelectionManager selectionManager)
 	{
@@ -139,10 +139,10 @@ public class FingerTapSelection implements ISelection {
 		clusterDataManager.createCluster(components, true);
 	}
 	
-	public void setCurrentlySelectedCluster(Cluster currentlySelectedCluster) {
+	public void setCurrentlySelectedCluster(Cluster3DExt currentlySelectedCluster) {
 		this.currentlySelectedCluster = currentlySelectedCluster;
 	}
-	public Cluster getCurrentlySelectedCluster() {
+	public Cluster3DExt getCurrentlySelectedCluster() {
 		return currentlySelectedCluster;
 	}
 	public void setSelectionManager(FingerTapSelectionManager selectionManager) {

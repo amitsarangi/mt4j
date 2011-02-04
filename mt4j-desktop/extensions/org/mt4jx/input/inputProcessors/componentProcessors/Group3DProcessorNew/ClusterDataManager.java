@@ -9,14 +9,15 @@ import org.mt4j.input.MTEvent;
 import org.mt4j.input.gestureAction.DefaultDragAction;
 import org.mt4j.input.gestureAction.DefaultRotateAction;
 import org.mt4j.input.gestureAction.DefaultScaleAction;
+import org.mt4j.input.gestureAction.Rotate3DAction;
 import org.mt4j.input.inputProcessors.componentProcessors.dragProcessor.DragProcessor;
+import org.mt4j.input.inputProcessors.componentProcessors.rotate3DProcessor.Cluster3DExt;
+import org.mt4j.input.inputProcessors.componentProcessors.rotate3DProcessor.Rotate3DProcessor;
 import org.mt4j.input.inputProcessors.componentProcessors.rotateProcessor.RotateProcessor;
 import org.mt4j.input.inputProcessors.componentProcessors.scaleProcessor.ScaleProcessor;
 import org.mt4j.input.inputProcessors.componentProcessors.tapProcessor.TapProcessor;
 import org.mt4jx.input.gestureAction.CreateDragHelperAction;
-import org.mt4jx.input.gestureAction.Rotate3DAction;
-import org.mt4jx.input.inputProcessors.componentProcessors.Rotate3DProcessor.Rotate3DProcessor;
-import org.mt4jx.util.extension3D.Collision.CollisionManager;
+import org.mt4jx.util.extension3D.collision.CollisionManager;
 
 import processing.core.PApplet;
 
@@ -27,7 +28,7 @@ public class ClusterDataManager implements ISelectionListener {
 	CollisionManager collisionManager;
 	
 	/** The cluster objects. */
-	private ArrayList<Cluster> clusters;
+	private ArrayList<Cluster3DExt> clusters;
 	
 	private PApplet pApplet;
 	
@@ -38,7 +39,7 @@ public class ClusterDataManager implements ISelectionListener {
 		this.canvas = canvas;
 		this.listeners = new ArrayList<IClusterEventListener>();
 		this.collisionManager = collisionManager;
-		setClusters(new ArrayList<Cluster>());
+		setClusters(new ArrayList<Cluster3DExt>());
 	}
 	
 	public void addClusterEventListener(IClusterEventListener listener)
@@ -57,7 +58,7 @@ public class ClusterDataManager implements ISelectionListener {
 		}
 	}
 	
-	public Cluster createCluster(ArrayList<MTComponent> elementsToCluster,boolean fireEvent)
+	public Cluster3DExt createCluster(ArrayList<MTComponent> elementsToCluster,boolean fireEvent)
 	{
 		
 		for(MTComponent comp : elementsToCluster)
@@ -66,7 +67,7 @@ public class ClusterDataManager implements ISelectionListener {
 			canvas.removeChild(comp);			
 		}	
 		
-		Cluster cl = new Cluster(pApplet,elementsToCluster);
+		Cluster3DExt cl = new Cluster3DExt(pApplet,elementsToCluster);
 		cl.registerInputProcessor(new DragProcessor(pApplet));
 		cl.addGestureListener(DragProcessor.class, new DefaultDragAction());
 		
@@ -98,7 +99,7 @@ public class ClusterDataManager implements ISelectionListener {
 		return cl;		
 	}
 	
-	public void deleteCluster(Cluster cluster)
+	public void deleteCluster(Cluster3DExt cluster)
 	{
 		if(this.containsCluster(cluster))
 		{
@@ -136,7 +137,7 @@ public class ClusterDataManager implements ISelectionListener {
 		
 	}
 	
-	public void removeComponentFromCluster(MTComponent component,Cluster cluster)
+	public void removeComponentFromCluster(MTComponent component,Cluster3DExt cluster)
 	{
 		if(cluster.containsChild(component))
 		{
@@ -152,7 +153,7 @@ public class ClusterDataManager implements ISelectionListener {
 		
 	}
 	
-	public void addComponentToCluster(MTComponent component,Cluster cluster)
+	public void addComponentToCluster(MTComponent component,Cluster3DExt cluster)
 	{
 		if(!(cluster.containsChild(component)))
 		{
@@ -162,9 +163,9 @@ public class ClusterDataManager implements ISelectionListener {
 		}
 	}
 	
-	public Cluster getClusterForComponent(MTComponent component)
+	public Cluster3DExt getClusterForComponent(MTComponent component)
 	{
-		for(Cluster cluster : clusters)
+		for(Cluster3DExt cluster : clusters)
 		{
 			if(cluster.containsChild(component))
 			{
@@ -181,7 +182,7 @@ public class ClusterDataManager implements ISelectionListener {
 	 * 
 	 * @return true, if successful
 	 */
-	public boolean containsCluster(Cluster selection){
+	public boolean containsCluster(Cluster3DExt selection){
 		return (clusters.contains(selection));
 	}
 	
@@ -193,11 +194,11 @@ public class ClusterDataManager implements ISelectionListener {
 		}
 	}
 
-	public void setClusters(ArrayList<Cluster> clusters) {
+	public void setClusters(ArrayList<Cluster3DExt> clusters) {
 		this.clusters = clusters;
 	}
 
-	public ArrayList<Cluster> getClusters() {
+	public ArrayList<Cluster3DExt> getClusters() {
 		return clusters;
 	}
 	

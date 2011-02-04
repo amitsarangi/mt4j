@@ -1,7 +1,7 @@
-package org.mt4jx.input.inputProcessors.componentProcessors.Rotate3DProcessor;
+package org.mt4j.input.inputProcessors.componentProcessors.rotate3DProcessor;
 
+import org.mt4j.input.gestureAction.Rotate3DAction;
 import org.mt4j.sceneManagement.IPreDrawAction;
-import org.mt4jx.input.gestureAction.Rotate3DAction;
 
 public class RotationPreDraw implements IPreDrawAction {
 
@@ -13,12 +13,11 @@ public class RotationPreDraw implements IPreDrawAction {
 	}
 	
 	public boolean isLoop() {
-		// TODO Auto-generated method stub
 		return true;
 	}
 
 	public void processAction() {
-		System.out.println("process predraw aciton");
+		//System.out.println("process predraw aciton");
 		action.draw();
 	}
 

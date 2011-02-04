@@ -5,20 +5,21 @@ import java.util.ArrayList;
 import org.mt4j.components.MTComponent;
 import org.mt4j.components.visibleComponents.shapes.MTPolygon;
 import org.mt4j.input.inputProcessors.componentProcessors.lassoProcessor.IdragClusterable;
+import org.mt4j.input.inputProcessors.componentProcessors.rotate3DProcessor.Cluster3DExt;
 
 public class MTLassoSelectionEvent extends MTSelectionEvent {
 	
 	/** The selection poly. */
 	private MTPolygon selectionPoly;
 	
-	private Cluster cluster;
+	private Cluster3DExt cluster;
 	
 	public MTLassoSelectionEvent(Object source) {
 		super(source);		
 	}
 	
 	public MTLassoSelectionEvent(Object source,		
-			int id, ArrayList<MTComponent> selectedComps,MTPolygon selectionPoly,Cluster cluster)
+			int id, ArrayList<MTComponent> selectedComps,MTPolygon selectionPoly,Cluster3DExt cluster)
 	{
 		super(source,id,selectedComps);
 		this.selectionPoly = selectionPoly;
@@ -34,11 +35,11 @@ public class MTLassoSelectionEvent extends MTSelectionEvent {
 		return selectionPoly;
 	}
 
-	public void setCluster(Cluster cluster) {
+	public void setCluster(Cluster3DExt cluster) {
 		this.cluster = cluster;
 	}
 
-	public Cluster getCluster() {
+	public Cluster3DExt getCluster() {
 		return cluster;
 	}
 

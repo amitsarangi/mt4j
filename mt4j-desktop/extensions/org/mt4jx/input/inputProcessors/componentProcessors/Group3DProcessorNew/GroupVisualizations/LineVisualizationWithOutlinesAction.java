@@ -11,12 +11,12 @@ import org.mt4j.input.IMTEventListener;
 import org.mt4j.input.MTEvent;
 import org.mt4j.input.inputProcessors.componentProcessors.dragProcessor.DragProcessor;
 import org.mt4j.input.inputProcessors.componentProcessors.lassoProcessor.IdragClusterable;
+import org.mt4j.input.inputProcessors.componentProcessors.rotate3DProcessor.Cluster3DExt;
+import org.mt4j.input.inputProcessors.componentProcessors.rotate3DProcessor.IVisualizeMethodProvider;
 import org.mt4j.input.inputProcessors.componentProcessors.tapProcessor.TapProcessor;
 import org.mt4j.util.MTColor;
 import org.mt4j.util.math.Tools3D;
 import org.mt4j.util.math.Vector3D;
-import org.mt4jx.input.inputProcessors.componentProcessors.Group3DProcessorNew.Cluster;
-import org.mt4jx.input.inputProcessors.componentProcessors.Group3DProcessorNew.IVisualizeMethodProvider;
 import org.mt4jx.input.inputProcessors.componentProcessors.Group3DProcessorNew.MTClusterEvent;
 import org.mt4jx.util.extension3D.ComponentHelper;
 import org.mt4jx.util.extension3D.MergeHelper;
@@ -57,7 +57,7 @@ public class LineVisualizationWithOutlinesAction implements IMTEventListener,IVi
 
 	}
 	
-	public void visualize(Cluster cluster)
+	public void visualize(Cluster3DExt cluster)
 	{
 		
 		for(MTComponent groups : cluster.getChildren())

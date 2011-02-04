@@ -17,9 +17,11 @@
  ***********************************************************************/
 package org.mt4j.components.bounds;
 
+import org.mt4j.MTApplication;
 import org.mt4j.components.MTComponent;
 import org.mt4j.components.TransformSpace;
 import org.mt4j.components.visibleComponents.shapes.AbstractShape;
+import org.mt4j.components.visibleComponents.shapes.MTRectangle;
 import org.mt4j.util.camera.IFrustum;
 import org.mt4j.util.math.Matrix;
 import org.mt4j.util.math.Ray;

@@ -1,4 +1,4 @@
-package org.mt4jx.input.inputProcessors.componentProcessors.Rotate3DProcessor;
+package org.mt4j.input.inputProcessors.componentProcessors.rotate3DProcessor;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -19,8 +19,6 @@ import org.mt4j.input.inputProcessors.componentProcessors.AbstractCursorProcesso
 import org.mt4j.util.camera.IFrustum;
 import org.mt4j.util.math.Tools3D;
 import org.mt4j.util.math.Vector3D;
-import org.mt4jx.input.inputProcessors.componentProcessors.Group3DProcessorNew.Cluster;
-import org.mt4jx.util.extension3D.ComponentHelper;
 
 import processing.core.PApplet;
 
@@ -165,10 +163,10 @@ public class Rotate3DProcessor extends AbstractCursorProcessor {
 			logger.debug(this.getName() + " has already enough cursors for this gesture - adding to unused ID:" + inputCursor.getId());
 		}else{ //no gesture in progress yet
 			
-			//save current selected Object inside of Cluster for correct rotation
-			if(currentEvent.getTarget() instanceof Cluster)
+			//save current selected Object inside of Cluster3DExt for correct rotation
+			if(currentEvent.getTarget() instanceof Cluster3DExt)
 			{
-				Cluster cluster = (Cluster)currentEvent.getTarget();
+				Cluster3DExt cluster = (Cluster3DExt)currentEvent.getTarget();
 				MTComponent sourceComponent = (MTComponent) currentEvent.getTarget();
 				Vector3D currentPos = new Vector3D(currentEvent.getPosX(),currentEvent.getPosY(),0.0f);				
 				MTCanvas parentCanvas = this.getParentCanvas(sourceComponent);
@@ -429,14 +427,14 @@ public class Rotate3DProcessor extends AbstractCursorProcessor {
 			MTComponent comp = (MTComponent)object;
 			
 			//get center point 			
-			if(!(comp instanceof Cluster))
+			if(!(comp instanceof Cluster3DExt))
 			{
-				rotationPoint = ComponentHelper.getCenterPointGlobal(comp);
+				rotationPoint = getCenterPointGlobal(comp);
 				
 			}else
 			{
-				Cluster cl = (Cluster)comp;				
-				rotationPoint = ComponentHelper.getCenterPointGlobal(cl.getCurrentlySelectedChildren());
+				Cluster3DExt cl = (Cluster3DExt)comp;				
+				rotationPoint = getCenterPointGlobal(cl.getCurrentlySelectedChildren());
 			}
 			
 			
@@ -861,5 +859,37 @@ public class Rotate3DProcessor extends AbstractCursorProcessor {
 		return "Rotate3DProcessor";
 	}
 
+	
+public static Vector3D getCenterPointGlobal(MTComponent comp) {
+		
+		MTComponent[] children = comp.getChildren();
+		if(children.length==0)
+		{
+			if(comp.hasBounds())
+			{
+				return comp.getBounds().getCenterPointGlobal();
+			}else
+			{
+				return null;
+			}
+		}else
+		{
+			//float massSum = 0.0f;
+			Vector3D vecSum = new Vector3D();
+			for(MTComponent compChild : children)
+			{	
+				if(getCenterPointGlobal(compChild)!=null)
+				{
+					Vector3D vec = getCenterPointGlobal(compChild);					
+					vecSum.addLocal(vec);
+					
+					//massSum += compChild.getMass();
+					
+				}
+			}			
+			
+			return vecSum.getScaled(1.f/children.length);
+		}	
+	}
 }
 

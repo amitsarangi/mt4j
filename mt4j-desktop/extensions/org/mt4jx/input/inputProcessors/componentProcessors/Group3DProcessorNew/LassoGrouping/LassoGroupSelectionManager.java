@@ -15,7 +15,7 @@ import org.mt4j.input.inputData.InputCursor;
 import org.mt4j.input.inputProcessors.IInputProcessor;
 import org.mt4j.input.inputProcessors.componentProcessors.AbstractComponentProcessor;
 import org.mt4j.input.inputProcessors.componentProcessors.AbstractCursorProcessor;
-import org.mt4jx.input.inputProcessors.componentProcessors.Group3DProcessorNew.Cluster;
+import org.mt4j.input.inputProcessors.componentProcessors.rotate3DProcessor.Cluster3DExt;
 import org.mt4jx.input.inputProcessors.componentProcessors.Group3DProcessorNew.ClusterDataManager;
 import org.mt4jx.input.inputProcessors.componentProcessors.Group3DProcessorNew.ISelection;
 import org.mt4jx.input.inputProcessors.componentProcessors.Group3DProcessorNew.ISelectionListener;
@@ -106,7 +106,7 @@ public class LassoGroupSelectionManager extends AbstractCursorProcessor implemen
 			{
 				
 					MTComponent comp = (MTComponent)elem;
-					Cluster formerCluster = null;
+					Cluster3DExt formerCluster = null;
 					if((formerCluster=clusterManager.getClusterForComponent(comp))!=null)
 					{
 						clusterManager.removeComponentFromCluster(comp, formerCluster);
@@ -121,13 +121,13 @@ public class LassoGroupSelectionManager extends AbstractCursorProcessor implemen
 					components.add(comp);
 				
 			}		
-			Cluster cluster = clusterManager.createCluster(components,true);
+			Cluster3DExt cluster = clusterManager.createCluster(components,true);
 			this.canvas.removeChild(sel.getPolygon());			
 			this.fireEvent(new MTLassoSelectionEvent(this,MTLassoSelectionEvent.SELECTION_ENDED,sel.getSelectedComponents(),sel.getPolygon(),cluster));			
 		}else if(sel.getSelectedComponents().size()==1)
 		{
 			
-			Cluster formerCluster = null;
+			Cluster3DExt formerCluster = null;
 			if((formerCluster=clusterManager.getClusterForComponent((MTComponent)sel.getSelectedComponents().get(0)))!=null)
 			{
 				clusterManager.removeComponentFromCluster((MTComponent)sel.getSelectedComponents().get(0), formerCluster);

@@ -11,6 +11,7 @@ import org.mt4j.components.visibleComponents.shapes.MTPolygon;
 import org.mt4j.input.IMTEventListener;
 import org.mt4j.input.MTEvent;
 import org.mt4j.input.inputProcessors.componentProcessors.dragProcessor.DragProcessor;
+import org.mt4j.input.inputProcessors.componentProcessors.rotate3DProcessor.Cluster3DExt;
 import org.mt4j.input.inputProcessors.componentProcessors.rotateProcessor.RotateProcessor;
 import org.mt4j.input.inputProcessors.componentProcessors.scaleProcessor.ScaleProcessor;
 import org.mt4j.util.MTColor;
@@ -19,7 +20,6 @@ import org.mt4j.util.math.Matrix;
 import org.mt4j.util.math.Tools3D;
 import org.mt4j.util.math.Vector3D;
 import org.mt4j.util.math.Vertex;
-import org.mt4jx.input.inputProcessors.componentProcessors.Group3DProcessorNew.Cluster;
 import org.mt4jx.input.inputProcessors.componentProcessors.Group3DProcessorNew.MTClusterEvent;
 import org.mt4jx.input.inputProcessors.componentProcessors.Group3DProcessorNew.MTLassoSelectionEvent;
 
@@ -96,7 +96,7 @@ public class LassoVisualizationAction implements IMTEventListener {
 		
 	}
 	
-	private MTPolygon createNewPolygon(Cluster cluster)
+	private MTPolygon createNewPolygon(Cluster3DExt cluster)
 	{
 		MTPolygon polygon = new MTPolygon(pApplet, new Vertex[0]);
 		polygon.setFillColor(new MTColor(100,150,250,50));
@@ -121,7 +121,7 @@ public class LassoVisualizationAction implements IMTEventListener {
 	 * Then changes the cluster-polygon to represent that convex hull
 	 * and adds it as a child.
 	 */
-	private void packClusterPolygon(MTPolygon polygon,Cluster cluster){
+	private void packClusterPolygon(MTPolygon polygon,Cluster3DExt cluster){
 		ArrayList<Vector3D> allClusteredVerts = new ArrayList<Vector3D>();
 				
 		MTComponent[] children = cluster.getChildren();
@@ -168,7 +168,7 @@ public class LassoVisualizationAction implements IMTEventListener {
 		
 	}
 	
-	private ArrayList<Vector3D> getAllClusteredVerts(MTComponent comp,MTPolygon polygon,Cluster cluster)
+	private ArrayList<Vector3D> getAllClusteredVerts(MTComponent comp,MTPolygon polygon,Cluster3DExt cluster)
 	{		
 		ArrayList<Vector3D> allClusteredVerts = new ArrayList<Vector3D>();
 				

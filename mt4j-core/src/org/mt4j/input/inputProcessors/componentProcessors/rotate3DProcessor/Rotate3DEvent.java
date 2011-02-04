@@ -1,4 +1,4 @@
-package org.mt4jx.input.inputProcessors.componentProcessors.Rotate3DProcessor;
+package org.mt4j.input.inputProcessors.componentProcessors.rotate3DProcessor;
 
 import org.mt4j.components.interfaces.IMTComponent3D;
 import org.mt4j.input.inputData.InputCursor;

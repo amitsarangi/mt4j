@@ -4,17 +4,17 @@ import org.mt4j.components.MTComponent;
 import org.mt4j.components.visibleComponents.shapes.mesh.MTTriangleMesh;
 import org.mt4j.input.inputProcessors.IGestureEventListener;
 import org.mt4j.input.inputProcessors.MTGestureEvent;
+import org.mt4j.input.inputProcessors.componentProcessors.rotate3DProcessor.Cluster3DExt;
+import org.mt4j.input.inputProcessors.componentProcessors.rotate3DProcessor.IVisualizeMethodProvider;
 import org.mt4j.input.inputProcessors.componentProcessors.tapProcessor.TapEvent;
-import org.mt4jx.input.inputProcessors.componentProcessors.Group3DProcessorNew.Cluster;
-import org.mt4jx.input.inputProcessors.componentProcessors.Group3DProcessorNew.IVisualizeMethodProvider;
 
 public class BlinkingEmissionActivateVisualizationAction implements IGestureEventListener {
 
-	private Cluster cluster;
+	private Cluster3DExt cluster;
 	
 	private IVisualizeMethodProvider methodProvider;
 	
-	public BlinkingEmissionActivateVisualizationAction(Cluster cluster,IVisualizeMethodProvider methodProvider)
+	public BlinkingEmissionActivateVisualizationAction(Cluster3DExt cluster,IVisualizeMethodProvider methodProvider)
 	{
 		this.cluster = cluster;
 		this.methodProvider = methodProvider;

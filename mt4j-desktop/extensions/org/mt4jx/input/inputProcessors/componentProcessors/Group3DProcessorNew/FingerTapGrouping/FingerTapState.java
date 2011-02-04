@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 import org.mt4j.components.MTComponent;
 import org.mt4j.input.inputData.InputCursor;
-import org.mt4jx.input.inputProcessors.componentProcessors.Group3DProcessorNew.Cluster;
+import org.mt4j.input.inputProcessors.componentProcessors.rotate3DProcessor.Cluster3DExt;
 import org.mt4jx.input.inputProcessors.componentProcessors.Group3DProcessorNew.MTClusterEvent;
 
 public enum FingerTapState implements FingerTapTransitions,FingerTapStateMethods {
@@ -164,7 +164,7 @@ public enum FingerTapState implements FingerTapTransitions,FingerTapStateMethods
 
 		public synchronized void tapRelease(FingerTapSelection sel,InputCursor cursor,MTComponent comp) {
 			//System.out.println("Cluster selected Tap Release");
-			Cluster cluster = sel.getClusterDataManager().getClusterForComponent(comp);
+			Cluster3DExt cluster = sel.getClusterDataManager().getClusterForComponent(comp);
 			//if you have selected one cluster and tap on a second cluster
 			//then all children of the second cluster will be
 			//added to the first selected cluster

@@ -1,9 +1,11 @@
 package org.mt4j.input.inputSources;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.mt4j.MTAndroidApplication;
 import org.mt4j.input.ISurfaceTouchListener;
+import org.mt4j.input.inputData.AbstractCursorInputEvt;
 import org.mt4j.input.inputData.ActiveCursorPool;
 import org.mt4j.input.inputData.InputCursor;
 import org.mt4j.input.inputData.MTFingerInputEvt;
@@ -44,17 +46,28 @@ public class AndroidMTInputSource extends AbstractInputSource implements ISurfac
 	}
 
 	
+	private ArrayList<InputCursor> cursors = new ArrayList<InputCursor>();
+	
+	private InputCursor getCursor(float x, float y){
+		for (InputCursor cursor : cursors) {
+			AbstractCursorInputEvt curr = cursor.getCurrentEvent();
+			float currX = curr.getX();
+			float currY = curr.getY();
+		}
+		return null; //TODO..
+	}
+	
+	
+	
+	
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
 //		logger.info("recieved touch event: " + event);
 		
 		int MAX_TOUCHPOINTS = 30;
-
 		
 		
-		
-		
-		int action = event.getAction() & MotionEvent.ACTION_MASK;
+		final int action = event.getAction() & MotionEvent.ACTION_MASK;
 		int pointerIndex = (event.getAction() & MotionEvent.ACTION_POINTER_ID_MASK) >> MotionEvent.ACTION_POINTER_ID_SHIFT;
 		int pointerCount = event.getPointerCount();
 		int actionId = event.getPointerId(pointerIndex);
@@ -69,7 +82,98 @@ public class AndroidMTInputSource extends AbstractInputSource implements ISurfac
 //			lastActions[actionId] = action;
 //		}
               
-//
+		logger.info("Fingers: " + event.getPointerCount());
+		
+		
+		switch (action) {
+		case MotionEvent.ACTION_DOWN: 
+		{
+			x = event.getX();
+			y = event.getY();
+			
+			logger.info("ACTION_DOWN, ID:" + id + " pointerIndex: " + pointerIndex + " x:" + x + " y:" + y + " action index: " + event.getActionIndex());
+			InputCursor c = new InputCursor();
+			MTFingerInputEvt touchEvt = new MTFingerInputEvt(this, x, y, MTFingerInputEvt.INPUT_STARTED, c);
+			long cursorID = c.getId();
+			ActiveCursorPool.getInstance().putActiveCursor(cursorID, c);
+			idToCursorID.put((long) id, cursorID);
+			this.cursors.add(c);
+			this.enqueueInputEvent(touchEvt);
+//			continue;
+		break;
+		}
+		case MotionEvent.ACTION_POINTER_DOWN:
+		{
+			int actionIndex = event.getActionIndex();
+			id = event.getPointerId(actionIndex);
+			x = event.getX(id);
+			y = event.getY(id);
+			
+			logger.info("ACTION_POINTER_DOWN, ID:" + id + " pointerIndex: " + pointerIndex + " x:" + x + " y:" + y + " action index: " + event.getActionIndex());
+			InputCursor c = new InputCursor();
+			MTFingerInputEvt touchEvt = new MTFingerInputEvt(this, x, y, MTFingerInputEvt.INPUT_STARTED, c);
+			long cursorID = c.getId();
+			ActiveCursorPool.getInstance().putActiveCursor(cursorID, c);
+			idToCursorID.put((long) id, cursorID);
+			this.cursors.add(c);
+			this.enqueueInputEvent(touchEvt);
+		break;
+		}
+		case MotionEvent.ACTION_UP:
+		{
+			x = event.getX();
+			y = event.getY();
+			
+			logger.info("ACTION_UP, ID:" + id + " pointerIndex: " + pointerIndex + " x:" + x + " y:" + y + " action index: " + event.getActionIndex());
+
+			Long lCursorID = idToCursorID.get((long)id);
+			if (lCursorID != null){
+				idToCursorID.remove((long)id);
+				long cursorID = lCursorID;
+				InputCursor c = ActiveCursorPool.getInstance().getActiveCursorByID(cursorID);
+				if (c != null){
+					MTFingerInputEvt te = new MTFingerInputEvt(this, x, y, MTFingerInputEvt.INPUT_ENDED, c);
+					ActiveCursorPool.getInstance().removeCursor(cursorID);
+					this.enqueueInputEvent(te);
+				}else{
+					logger.info("ERROR WHEN REMOVING FINGER - ID: " + id + " - Cursor not in active cursor pool!");
+				}
+			}else{
+				logger.info("ERROR WHEN REMOVING FINGER - ID: " + id + " - Cursor not in idToCursorID map! - probably removed before an update event got fired!");
+			}
+			break;
+		}
+		case MotionEvent.ACTION_CANCEL: 
+		case MotionEvent.ACTION_POINTER_UP: 
+		{
+			int actionIndex = event.getActionIndex();
+			id = event.getPointerId(actionIndex);
+			x = event.getX(id);
+			y = event.getY(id);
+			
+			logger.info("ACTION_POINTER_UP, ID:" + id + " pointerIndex: " + pointerIndex + " x:" + x + " y:" + y + " action index: " + event.getActionIndex());
+
+			Long lCursorID = idToCursorID.get((long)id);
+			if (lCursorID != null){
+				idToCursorID.remove((long)id);
+				long cursorID = lCursorID;
+				InputCursor c = ActiveCursorPool.getInstance().getActiveCursorByID(cursorID);
+				if (c != null){
+					MTFingerInputEvt te = new MTFingerInputEvt(this, x, y, MTFingerInputEvt.INPUT_ENDED, c);
+					ActiveCursorPool.getInstance().removeCursor(cursorID);
+					this.enqueueInputEvent(te);
+				}else{
+					logger.info("ERROR WHEN REMOVING FINGER - ID: " + id + " - Cursor not in active cursor pool!");
+				}
+			}else{
+				logger.info("ERROR WHEN REMOVING FINGER - ID: " + id + " - Cursor not in idToCursorID map! - probably removed before an update event got fired!");
+			}
+			break;
+		}
+		}
+		
+		
+		if (action == MotionEvent.ACTION_MOVE) //TEST!
 		for (int i = 0; i < pointerCount; i++) {
 			int pointerId = event.getPointerId(i);
 			if (pointerId < MAX_POINTERS) {
@@ -78,49 +182,52 @@ public class AndroidMTInputSource extends AbstractInputSource implements ISurfac
 //					lastActions[pointerId] = action;
 //				}
 				
-				int index = event.findPointerIndex(id);
-
-//				id = i;
+				int index = event.findPointerIndex(event.getPointerId(i));
+				
+////				id = i;
+				id = event.getPointerId(i);
+//				id = event.getPointerId(index);
+//				
+////				touchPoints.add(new PointF(event.getX(pointerIndex),event.getY(pointerIndex)));
+//				
+//				x = event.getX(id);
+//				y = event.getY(id);
+				
 				id = event.getPointerId(index);
-				
-//				touchPoints.add(new PointF(event.getX(pointerIndex),event.getY(pointerIndex)));
-				
 				x = event.getX(index);
 				y = event.getY(index);
 				
 				
 				MotionEvent ev = event;
-//				final int action = ev.getAction();
-//				final int action = event.getAction()& MotionEvent.ACTION_MASK;
-				switch (action & MotionEvent.ACTION_MASK) {
-				case MotionEvent.ACTION_DOWN: 
-				{
-//					logger.info("ACTION_POINTER_DOWN, ID:" + id + " pointerIndex: " + pointerIndex + " x:" + x + " y:" + y);
-					InputCursor c = new InputCursor();
-					MTFingerInputEvt touchEvt = new MTFingerInputEvt(this, x, y, MTFingerInputEvt.INPUT_STARTED, c);
-					long cursorID = c.getId();
-					ActiveCursorPool.getInstance().putActiveCursor(cursorID, c);
-					idToCursorID.put((long) id, cursorID);
-					this.enqueueInputEvent(touchEvt);
-					continue;
+				switch (action) {
+//				case MotionEvent.ACTION_DOWN: 
+//				{
+//					logger.info("ACTION_DOWN, ID:" + id + " pointerIndex: " + pointerIndex + " x:" + x + " y:" + y + " action index: " + event.getActionIndex());
+//					InputCursor c = new InputCursor();
+//					MTFingerInputEvt touchEvt = new MTFingerInputEvt(this, x, y, MTFingerInputEvt.INPUT_STARTED, c);
+//					long cursorID = c.getId();
+//					ActiveCursorPool.getInstance().putActiveCursor(cursorID, c);
+//					idToCursorID.put((long) id, cursorID);
+//					this.enqueueInputEvent(touchEvt);
+////					continue;
 //				break;
-				}
-				case MotionEvent.ACTION_POINTER_DOWN:
-				{
-//					logger.info("ACTION_POINTER_DOWN, ID:" + id + " pointerIndex: " + pointerIndex + " x:" + x + " y:" + y);
-					InputCursor c = new InputCursor();
-					MTFingerInputEvt touchEvt = new MTFingerInputEvt(this, x, y, MTFingerInputEvt.INPUT_STARTED, c);
-					long cursorID = c.getId();
-					ActiveCursorPool.getInstance().putActiveCursor(cursorID, c);
-					idToCursorID.put((long) id, cursorID);
-					this.enqueueInputEvent(touchEvt);
-					continue;
+//				}
+//				case MotionEvent.ACTION_POINTER_DOWN:
+//				{
+//					logger.info("ACTION_POINTER_DOWN, ID:" + id + " pointerIndex: " + pointerIndex + " x:" + x + " y:" + y + " action index: " + event.getActionIndex());
+//					InputCursor c = new InputCursor();
+//					MTFingerInputEvt touchEvt = new MTFingerInputEvt(this, x, y, MTFingerInputEvt.INPUT_STARTED, c);
+//					long cursorID = c.getId();
+//					ActiveCursorPool.getInstance().putActiveCursor(cursorID, c);
+//					idToCursorID.put((long) id, cursorID);
+//					this.enqueueInputEvent(touchEvt);
+////					continue;
 //				break;
-				}
+//				}
 		//
 				case MotionEvent.ACTION_MOVE: 
 				{
-//					logger.info("ACTION_MOVE, ID:" + id + " pointerIndex: " + pointerIndex + " x:" + x + " y:" + y);
+					logger.info("ACTION_MOVE, ID:" + id + " pointerIndex: " + pointerIndex + " x:" + x + " y:" + y + " action index: " + event.getActionIndex());
 					Long cursorID = idToCursorID.get((long)id);
 					if (cursorID != null ){
 						InputCursor c = ActiveCursorPool.getInstance().getActiveCursorByID(cursorID);
@@ -135,51 +242,51 @@ public class AndroidMTInputSource extends AbstractInputSource implements ISurfac
 					}
 					break;
 				}
-				case MotionEvent.ACTION_UP:
-				{
-					//logger.info("ACTION_POINTER_UP, ID:" + id + " pointerIndex: " + pointerIndex + " x:" + x + " y:" + y);
-
-					Long lCursorID = idToCursorID.get((long)id);
-					if (lCursorID != null){
-						idToCursorID.remove((long)id);
-						long cursorID = lCursorID;
-						InputCursor c = ActiveCursorPool.getInstance().getActiveCursorByID(cursorID);
-						if (c != null){
-							MTFingerInputEvt te = new MTFingerInputEvt(this, x, y, MTFingerInputEvt.INPUT_ENDED, c);
-							ActiveCursorPool.getInstance().removeCursor(cursorID);
-							this.enqueueInputEvent(te);
-						}else{
-							logger.info("ERROR WHEN REMOVING FINGER - ID: " + id + " - Cursor not in active cursor pool!");
-						}
-					}else{
-						logger.info("ERROR WHEN REMOVING FINGER - ID: " + id + " - Cursor not in idToCursorID map! - probably removed before an update event got fired!");
-					}
-					continue;
+//				case MotionEvent.ACTION_UP:
+//				{
+//					logger.info("ACTION_UP, ID:" + id + " pointerIndex: " + pointerIndex + " x:" + x + " y:" + y + " action index: " + event.getActionIndex());
+//
+//					Long lCursorID = idToCursorID.get((long)id);
+//					if (lCursorID != null){
+//						idToCursorID.remove((long)id);
+//						long cursorID = lCursorID;
+//						InputCursor c = ActiveCursorPool.getInstance().getActiveCursorByID(cursorID);
+//						if (c != null){
+//							MTFingerInputEvt te = new MTFingerInputEvt(this, x, y, MTFingerInputEvt.INPUT_ENDED, c);
+//							ActiveCursorPool.getInstance().removeCursor(cursorID);
+//							this.enqueueInputEvent(te);
+//						}else{
+//							logger.info("ERROR WHEN REMOVING FINGER - ID: " + id + " - Cursor not in active cursor pool!");
+//						}
+//					}else{
+//						logger.info("ERROR WHEN REMOVING FINGER - ID: " + id + " - Cursor not in idToCursorID map! - probably removed before an update event got fired!");
+//					}
+////					continue;
 //					break;
-				}
-				case MotionEvent.ACTION_CANCEL: 
-				case MotionEvent.ACTION_POINTER_UP: 
-				{
-					//logger.info("ACTION_POINTER_UP, ID:" + id + " pointerIndex: " + pointerIndex + " x:" + x + " y:" + y);
-
-					Long lCursorID = idToCursorID.get((long)id);
-					if (lCursorID != null){
-						idToCursorID.remove((long)id);
-						long cursorID = lCursorID;
-						InputCursor c = ActiveCursorPool.getInstance().getActiveCursorByID(cursorID);
-						if (c != null){
-							MTFingerInputEvt te = new MTFingerInputEvt(this, x, y, MTFingerInputEvt.INPUT_ENDED, c);
-							ActiveCursorPool.getInstance().removeCursor(cursorID);
-							this.enqueueInputEvent(te);
-						}else{
-							logger.info("ERROR WHEN REMOVING FINGER - ID: " + id + " - Cursor not in active cursor pool!");
-						}
-					}else{
-						logger.info("ERROR WHEN REMOVING FINGER - ID: " + id + " - Cursor not in idToCursorID map! - probably removed before an update event got fired!");
-					}
-					continue;
+//				}
+//				case MotionEvent.ACTION_CANCEL: 
+//				case MotionEvent.ACTION_POINTER_UP: 
+//				{
+//					logger.info("ACTION_POINTER_UP, ID:" + id + " pointerIndex: " + pointerIndex + " x:" + x + " y:" + y + " action index: " + event.getActionIndex());
+//
+//					Long lCursorID = idToCursorID.get((long)id);
+//					if (lCursorID != null){
+//						idToCursorID.remove((long)id);
+//						long cursorID = lCursorID;
+//						InputCursor c = ActiveCursorPool.getInstance().getActiveCursorByID(cursorID);
+//						if (c != null){
+//							MTFingerInputEvt te = new MTFingerInputEvt(this, x, y, MTFingerInputEvt.INPUT_ENDED, c);
+//							ActiveCursorPool.getInstance().removeCursor(cursorID);
+//							this.enqueueInputEvent(te);
+//						}else{
+//							logger.info("ERROR WHEN REMOVING FINGER - ID: " + id + " - Cursor not in active cursor pool!");
+//						}
+//					}else{
+//						logger.info("ERROR WHEN REMOVING FINGER - ID: " + id + " - Cursor not in idToCursorID map! - probably removed before an update event got fired!");
+//					}
+////					continue;
 //					break;
-				}
+//				}
 				}
 				
 			}

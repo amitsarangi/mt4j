@@ -1,13 +1,12 @@
-package org.mt4jx.input.gestureAction;
+package org.mt4j.input.gestureAction;
 
 import org.mt4j.components.MTComponent;
 import org.mt4j.components.interfaces.IMTComponent3D;
 import org.mt4j.components.visibleComponents.shapes.MTPolygon;
-import org.mt4j.input.gestureAction.ICollisionAction;
 import org.mt4j.input.inputProcessors.IGestureEventListener;
 import org.mt4j.input.inputProcessors.MTGestureEvent;
-import org.mt4jx.input.inputProcessors.componentProcessors.Group3DProcessorNew.Cluster;
-import org.mt4jx.input.inputProcessors.componentProcessors.Rotate3DProcessor.Rotate3DEvent;
+import org.mt4j.input.inputProcessors.componentProcessors.rotate3DProcessor.Cluster3DExt;
+import org.mt4j.input.inputProcessors.componentProcessors.rotate3DProcessor.Rotate3DEvent;
 
 import processing.core.PApplet;
 
@@ -44,14 +43,14 @@ public class Rotate3DAction implements IGestureEventListener,ICollisionAction {
 			case MTGestureEvent.GESTURE_STARTED:
 				if (target instanceof MTComponent){
 					((MTComponent)target).sendToFront();
-					if(!(target instanceof Cluster))
+					if(!(target instanceof Cluster3DExt))
 					{
 						target.rotateZGlobal(rotateEvent.getRotationPoint(), rotateEvent.getRotationDirection()*rotateEvent.getRotationDegreesZ());
 						target.rotateXGlobal(rotateEvent.getRotationPoint(),rotateEvent.getRotationDirection()*rotateEvent.getRotationDegreesX());
 						target.rotateYGlobal(rotateEvent.getRotationPoint(),rotateEvent.getRotationDirection()*rotateEvent.getRotationDegreesY());					
 					}else
 					{
-						Cluster clu = (Cluster)target;
+						Cluster3DExt clu = (Cluster3DExt)target;
 						
 						for(MTComponent comp : clu.getChildren())
 						{
@@ -69,7 +68,7 @@ public class Rotate3DAction implements IGestureEventListener,ICollisionAction {
 				}
 				break;
 			case MTGestureEvent.GESTURE_UPDATED:
-				if(!(target instanceof Cluster))
+				if(!(target instanceof Cluster3DExt))
 				{					
 //					System.out.println("Rotating: " + target + "\n RotationPoint: " + rotateEvent.getRotationPoint() + " ZrotDeg: " + rotateEvent.getRotationDegreesZ() + " XrotDeg: " + rotateEvent.getRotationDegreesX() + " YrotDeg: " + rotateEvent.getRotationDegreesY());
 					target.rotateZGlobal(rotateEvent.getRotationPoint(), rotateEvent.getRotationDirection()*rotateEvent.getRotationDegreesZ());
@@ -78,7 +77,7 @@ public class Rotate3DAction implements IGestureEventListener,ICollisionAction {
 					
 				}else
 				{
-					Cluster clu = (Cluster)target;
+					Cluster3DExt clu = (Cluster3DExt)target;
 					for(MTComponent comp : clu.getChildren())
 					{
 						//only move children, not cluster itself

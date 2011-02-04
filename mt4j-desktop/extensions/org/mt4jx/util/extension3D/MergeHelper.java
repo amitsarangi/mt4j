@@ -11,7 +11,7 @@ import org.mt4j.components.StateChangeListener;
 import org.mt4j.components.TransformSpace;
 import org.mt4j.components.bounds.IBoundingShape;
 import org.mt4j.components.bounds.IBoundingShapeMergable;
-import org.mt4jx.input.inputProcessors.componentProcessors.Group3DProcessorNew.Cluster;
+import org.mt4j.input.inputProcessors.componentProcessors.rotate3DProcessor.Cluster3DExt;
 
 public class MergeHelper implements StateChangeListener {
 

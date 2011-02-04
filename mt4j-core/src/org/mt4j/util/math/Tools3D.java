@@ -238,15 +238,15 @@ public class Tools3D {
 				projectionM.invert();
 				
 				float[] result = new float[4];
-//				float[] factor = new float[]{  ((2 * testpoint.getX())  / applet.width)  -1,
-//											   ((2 * testpoint.getY())  / applet.height) -1, //screenH - y?
-//												(2 * testpoint.getZ()) -1 ,
-//												 1,};
-				float[] factor = new float[]{  
-						((2 * testpoint.getX())  / MT4jSettings.getInstance().getWindowWidth())  -1,
-						((2 * testpoint.getY())  / MT4jSettings.getInstance().getWindowHeight()) -1, //screenH - y?
-						 (2 * testpoint.getZ()) -1 ,
-							 1,};
+				float[] factor = new float[]{  ((2 * testpoint.x)  / applet.width)  -1,
+											   ((2 * testpoint.y)  / applet.height) -1, //screenH - y?
+												(2 * testpoint.z) -1 ,
+												 1,};
+//				float[] factor = new float[]{  
+//						((2 * testpoint.getX())  / MT4jSettings.getInstance().getWindowWidth())  -1,
+//						((2 * testpoint.getY())  / MT4jSettings.getInstance().getWindowHeight()) -1, //screenH - y?
+//						 (2 * testpoint.getZ()) -1 ,
+//							 1,};
 				//Matrix mit Vector multiplizieren
 				projectionM.mult(factor, result);
 				

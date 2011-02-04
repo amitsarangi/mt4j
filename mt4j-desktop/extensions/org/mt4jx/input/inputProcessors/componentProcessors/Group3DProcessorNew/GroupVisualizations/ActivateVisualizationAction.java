@@ -3,17 +3,17 @@ package org.mt4jx.input.inputProcessors.componentProcessors.Group3DProcessorNew.
 import org.mt4j.input.inputProcessors.IGestureEventListener;
 import org.mt4j.input.inputProcessors.MTGestureEvent;
 import org.mt4j.input.inputProcessors.componentProcessors.dragProcessor.DragEvent;
+import org.mt4j.input.inputProcessors.componentProcessors.rotate3DProcessor.Cluster3DExt;
+import org.mt4j.input.inputProcessors.componentProcessors.rotate3DProcessor.IVisualizeMethodProvider;
 import org.mt4j.input.inputProcessors.componentProcessors.tapProcessor.TapEvent;
-import org.mt4jx.input.inputProcessors.componentProcessors.Group3DProcessorNew.Cluster;
-import org.mt4jx.input.inputProcessors.componentProcessors.Group3DProcessorNew.IVisualizeMethodProvider;
 
 public class ActivateVisualizationAction implements IGestureEventListener {
 
-	private Cluster cluster;
+	private Cluster3DExt cluster;
 	
 	private IVisualizeMethodProvider methodProvider;
 	
-	public ActivateVisualizationAction(Cluster cluster,IVisualizeMethodProvider methodProvider)
+	public ActivateVisualizationAction(Cluster3DExt cluster,IVisualizeMethodProvider methodProvider)
 	{		
 		this.cluster = cluster;
 		this.methodProvider = methodProvider;

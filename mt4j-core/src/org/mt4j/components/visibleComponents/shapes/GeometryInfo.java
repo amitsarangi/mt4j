@@ -707,27 +707,29 @@ public class GeometryInfo {
 	 */
 	public void deleteAllVBOs(){
 		if (MT4jSettings.getInstance().isOpenGlMode()){
-//			GL gl = Tools3D.getGL(r);
+			//			GL gl = Tools3D.getGL(r);
 			GL11 gl = GraphicsUtil.getGL11();
-			if (this.getVBOVerticesName() != -1){
-				gl.glDeleteBuffers(1, new int[]{this.getVBOVerticesName()},0);
-				this.vboVerticesID = -1;
-			}
-			if (this.getVBOColorName() != -1){
-				gl.glDeleteBuffers(1, new int[]{this.getVBOColorName()},0);
-				this.vboColorID = -1;
-			}
-			if (this.getVBOStrokeColorName() != -1){
-				gl.glDeleteBuffers(1, new int[]{this.getVBOStrokeColorName()},0);
-				this.vboStrokeColID = -1;
-			}
-			if (this.getVBOTextureName() != -1){
-				gl.glDeleteBuffers(1, new int[]{this.getVBOTextureName()},0);
-				this.vboTextureID = -1;
-			}
-			if (this.getVBONormalsName() != -1){
-				gl.glDeleteBuffers(1, new int[]{this.getVBONormalsName()},0);
-				this.vboNormalsID = -1;
+			if (gl != null){
+				if (this.getVBOVerticesName() != -1){
+					gl.glDeleteBuffers(1, new int[]{this.getVBOVerticesName()},0);
+					this.vboVerticesID = -1;
+				}
+				if (this.getVBOColorName() != -1){
+					gl.glDeleteBuffers(1, new int[]{this.getVBOColorName()},0);
+					this.vboColorID = -1;
+				}
+				if (this.getVBOStrokeColorName() != -1){
+					gl.glDeleteBuffers(1, new int[]{this.getVBOStrokeColorName()},0);
+					this.vboStrokeColID = -1;
+				}
+				if (this.getVBOTextureName() != -1){
+					gl.glDeleteBuffers(1, new int[]{this.getVBOTextureName()},0);
+					this.vboTextureID = -1;
+				}
+				if (this.getVBONormalsName() != -1){
+					gl.glDeleteBuffers(1, new int[]{this.getVBONormalsName()},0);
+					this.vboNormalsID = -1;
+				}
 			}
 		}
 	}
@@ -874,9 +876,11 @@ public class GeometryInfo {
 		if (MT4jSettings.getInstance().isOpenGlMode()){
 //			GL gl = Tools3D.getGL(this.r);
 			GL11Plus gl11Plus = GraphicsUtil.getGL11Plus();
-			for (int id : this.displayListIDs){
-				if (id != -1){
-					gl11Plus.glDeleteLists(id, 1);
+			if (gl11Plus != null) {
+				for (int id : this.displayListIDs){
+					if (id != -1){
+						gl11Plus.glDeleteLists(id, 1);
+					}
 				}
 			}
 			this.displayListIDs[0] = -1;

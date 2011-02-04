@@ -17,11 +17,11 @@ import org.mt4j.input.inputData.AbstractCursorInputEvt;
 import org.mt4j.input.inputData.InputCursor;
 import org.mt4j.input.inputData.MTInputEvent;
 import org.mt4j.input.inputProcessors.componentProcessors.lassoProcessor.IdragClusterable;
+import org.mt4j.input.inputProcessors.componentProcessors.rotate3DProcessor.Cluster3DExt;
 import org.mt4j.input.inputProcessors.globalProcessors.AbstractGlobalInputProcessor;
 import org.mt4j.util.logging.ILogger;
 import org.mt4j.util.logging.MTLoggerFactory;
 import org.mt4j.util.math.Vector3D;
-import org.mt4jx.input.inputProcessors.componentProcessors.Group3DProcessorNew.Cluster;
 import org.mt4jx.input.inputProcessors.componentProcessors.Group3DProcessorNew.ClusterDataManager;
 import org.mt4jx.input.inputProcessors.componentProcessors.Group3DProcessorNew.ISelectionListener;
 import org.mt4jx.input.inputProcessors.componentProcessors.Group3DProcessorNew.ISelectionManager;
@@ -125,7 +125,7 @@ public class FingerTapSelectionManager extends AbstractGlobalInputProcessor impl
 			//if component is a cluster
 			//get the children object of the cluster 
 			//which has been picked, by returing the most upper object on the canvas
-			if(comp instanceof Cluster)
+			if(comp instanceof Cluster3DExt)
 			{
 				
 				//Cluster cl = (Cluster)comp;
@@ -192,7 +192,7 @@ public class FingerTapSelectionManager extends AbstractGlobalInputProcessor impl
 					break;
 				}
 					
-			}else if(comp instanceof Cluster)
+			}else if(comp instanceof Cluster3DExt)
 			{	
 				//special behaviour in case of 3D Rotation
 				//when fingerinput ended with fingers not intersecting 

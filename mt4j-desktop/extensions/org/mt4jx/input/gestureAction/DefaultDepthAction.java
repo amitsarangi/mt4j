@@ -6,8 +6,8 @@ import org.mt4j.components.visibleComponents.shapes.MTPolygon;
 import org.mt4j.input.gestureAction.ICollisionAction;
 import org.mt4j.input.inputProcessors.IGestureEventListener;
 import org.mt4j.input.inputProcessors.MTGestureEvent;
+import org.mt4j.input.inputProcessors.componentProcessors.rotate3DProcessor.Cluster3DExt;
 import org.mt4j.util.math.Vector3D;
-import org.mt4jx.input.inputProcessors.componentProcessors.Group3DProcessorNew.Cluster;
 import org.mt4jx.input.inputProcessors.componentProcessors.depthProcessor.DepthGestureEvent;
 
 public class DefaultDepthAction implements IGestureEventListener,ICollisionAction {
@@ -45,14 +45,14 @@ public class DefaultDepthAction implements IGestureEventListener,ICollisionActio
 				}
 				Vector3D zVector = new Vector3D(0.0f,0.0f,depthEv.getTranslationVect().z);
 				
-				if(!(dragDepthTarget instanceof Cluster))
+				if(!(dragDepthTarget instanceof Cluster3DExt))
 				{
 					dragDepthTarget.translateGlobal(zVector);
 				}else
 				{
 					//only move children, not cluster itself
 					//cause it should stay on the floor
-					Cluster cl = (Cluster)dragDepthTarget;
+					Cluster3DExt cl = (Cluster3DExt)dragDepthTarget;
 					for(MTComponent comp : cl.getChildren())
 					{
 						if(!(comp instanceof MTPolygon))
@@ -67,14 +67,14 @@ public class DefaultDepthAction implements IGestureEventListener,ICollisionActio
 			{
 				Vector3D zVector = new Vector3D(0.0f,0.0f,depthEv.getTranslationVect().z);
 				
-				if(!(dragDepthTarget instanceof Cluster)&&!gestureAborted)
+				if(!(dragDepthTarget instanceof Cluster3DExt)&&!gestureAborted)
 				{
 					dragDepthTarget.translateGlobal(zVector);					
 				}else
 				{
 					//only move children, not cluster itself
 					//cause it should stay on the floor
-					Cluster cl = (Cluster)dragDepthTarget;
+					Cluster3DExt cl = (Cluster3DExt)dragDepthTarget;
 					//remove
 															
 					cl.translateGlobal(zVector);

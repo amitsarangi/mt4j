@@ -1,22 +1,15 @@
-package org.mt4jx.input.inputProcessors.componentProcessors.Group3DProcessorNew;
+package org.mt4j.input.inputProcessors.componentProcessors.rotate3DProcessor;
 
 import java.util.ArrayList;
 
-import javax.media.opengl.GL;
-
 import org.mt4j.components.MTComponent;
-import org.mt4j.components.visibleComponents.shapes.MTLine;
-import org.mt4j.input.inputProcessors.IGestureEventListener;
-import org.mt4j.input.inputProcessors.componentProcessors.lassoProcessor.IdragClusterable;
-import org.mt4j.input.inputProcessors.componentProcessors.tapProcessor.TapProcessor;
 import org.mt4j.util.math.Matrix;
-import org.mt4j.util.math.Tools3D;
 import org.mt4j.util.math.Vector3D;
 
 import processing.core.PApplet;
 import processing.core.PGraphics;
 
-public class Cluster extends MTComponent {
+public class Cluster3DExt extends MTComponent {
 
 	private MTComponent visualComponentGroup;
 	
@@ -25,12 +18,12 @@ public class Cluster extends MTComponent {
 	private IVisualizeMethodProvider visualizeProvider;
 	
 	private PApplet pApplet;
-	public Cluster(PApplet pApplet) {
+	public Cluster3DExt(PApplet pApplet) {
 		super(pApplet);		
 		this.pApplet = pApplet;		
 	}
 	
-	public Cluster(PApplet pApplet,ArrayList<MTComponent> components)
+	public Cluster3DExt(PApplet pApplet,ArrayList<MTComponent> components)
 	{
 		super(pApplet);
 		this.pApplet = pApplet;
