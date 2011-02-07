@@ -1788,6 +1788,19 @@ public class ToolsGeometry {
 		ArrayList<Vector3D> edgeList = ConvexQuickHull2D.getConvexHull2D(vers);
 		return (edgeList.toArray(new Vector3D[edgeList.size()]));
 	}
+	
+	/**
+	 * @param vects The Vector3D[] to be converted to a Vertex[]
+	 * @return a Vertex[] created from the given Vector3D[]
+	 */
+	public static Vertex[] toVertices(Vector3D[] vects){
+		Vertex[] result = new Vertex[vects.length];
+		int length = result.length;
+		for (int i = 0; i < length; i++) {
+			result[i] = new Vertex(vects[i]);
+		}
+		return result;
+	}
 
 }
 
