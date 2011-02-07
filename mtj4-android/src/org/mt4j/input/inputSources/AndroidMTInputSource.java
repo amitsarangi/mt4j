@@ -58,7 +58,6 @@ public class AndroidMTInputSource extends AbstractInputSource implements ISurfac
 	
 	
 	
-	
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
 //		logger.info("recieved touch event: " + event);
