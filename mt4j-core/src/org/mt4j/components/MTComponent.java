@@ -22,14 +22,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.mt4j.MTApplication;
 import org.mt4j.components.PickResult.PickEntry;
 import org.mt4j.components.bounds.IBoundingShape;
 import org.mt4j.components.clipping.Clip;
 import org.mt4j.components.css.util.CSSStylableComponent;
 import org.mt4j.components.interfaces.IMTComponent3D;
 import org.mt4j.components.interfaces.IMTController;
-import org.mt4j.components.visibleComponents.shapes.MTLine;
 import org.mt4j.input.ComponentInputProcessorSupport;
 import org.mt4j.input.GestureEventSupport;
 import org.mt4j.input.IMTInputEventListener;
@@ -41,7 +39,6 @@ import org.mt4j.input.inputProcessors.MTGestureEvent;
 import org.mt4j.input.inputProcessors.componentProcessors.AbstractComponentProcessor;
 import org.mt4j.util.GraphicsUtil;
 import org.mt4j.util.MT4jSettings;
-import org.mt4j.util.MTColor;
 import org.mt4j.util.camera.IFrustum;
 import org.mt4j.util.camera.Icamera;
 import org.mt4j.util.logging.ILogger;
@@ -50,7 +47,6 @@ import org.mt4j.util.math.Matrix;
 import org.mt4j.util.math.Ray;
 import org.mt4j.util.math.Tools3D;
 import org.mt4j.util.math.Vector3D;
-import org.mt4j.util.math.Vertex;
 import org.mt4j.util.opengl.GL10;
 
 import processing.core.PApplet;
@@ -120,7 +116,7 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 	private MTComponent parent;
 	
 	/** The child components. */
-	private List<MTComponent> childComponents;
+	private ArrayList<MTComponent> childComponents;
 	
 //	/** The custom view port. */
 //	private ViewportSetting customViewPort;
@@ -210,6 +206,9 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 	private int orthogonalityErrors;
 	protected static final int invPrecisionThreshold = 1000;
 	protected static final int reOrthogonalizeThreshold = 1500;
+	
+	private boolean isAndroid;
+	
 	
 	/**
 	 * Creates a new component. The component has no initial visual representation.
@@ -310,6 +309,8 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 
 		this.inversePrecisionErrors = 0;
 		this.orthogonalityErrors  = 0;
+		
+		this.isAndroid = GraphicsUtil.isAndroid();
 	}
 
 	
@@ -650,7 +651,7 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 //		);
 		
 
-		if (GraphicsUtil.isAndroid()){
+		if (isAndroid){
 			getRenderer().g.applyMatrix(
 					m.m00, m.m01, m.m02,  m.m03,
 					m.m10, m.m11, m.m12,  m.m13,
@@ -2953,7 +2954,6 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 
 	
 	
-	//TODO bubble events up and down hierarchy?
 	//@Override
 	/* (non-Javadoc)
 	 * @see org.mt4j.components.interfaces.IMTComponent#processInputEvent(org.mt4j.input.inputData.MTInputEvent)
@@ -2972,12 +2972,6 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 			}else{
 				//Fire the same input event to all of this components' input listeners
 				this.dispatchInputEvent(inEvt);
-				
-				//TODO if (inEvt.getTarget().equals(this) && inEvt.bubbles() && !inEvt.isConsumed()){
-				// inEvt.setPhase(MTInputEvent.PHASE_BUBBLING);
-				//if (this.getParent() != null){
-				//	this.getParent().processInputEvent(inEvt);
-				//}
 			}
 		}
 		

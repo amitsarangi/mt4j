@@ -19,7 +19,6 @@ package org.mt4j.input;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 
 import org.mt4j.components.MTComponent;
 import org.mt4j.input.inputData.MTInputEvent;
@@ -36,7 +35,7 @@ import processing.core.PApplet;
 public class ComponentInputProcessorSupport implements IMTInputEventListener /*, IGestureEventListener*/ {
 	
 	/** The registered processors. */
-	private List<AbstractComponentProcessor> registeredProcessors;
+	private ArrayList<AbstractComponentProcessor> registeredProcessors;
 	
 	/** The associated component. */
 	private MTComponent associatedComponent;
@@ -48,8 +47,6 @@ public class ComponentInputProcessorSupport implements IMTInputEventListener /*,
 	 * @param associatedComponent the associated component
 	 */
 	public ComponentInputProcessorSupport(PApplet graphicsContext, MTComponent associatedComponent) {
-		super();
-				
 		this.associatedComponent = associatedComponent;
 		this.registeredProcessors = new ArrayList<AbstractComponentProcessor>(5);
 	}
@@ -59,27 +56,27 @@ public class ComponentInputProcessorSupport implements IMTInputEventListener /*,
 	 * @see org.mt4j.input.IMTInputEventListener#processInputEvent(org.mt4j.input.inputData.MTInputEvent)
 	 */
 	public boolean processInputEvent(MTInputEvent inEvt){
-//		/*
 		boolean handled = false;
+		int pCount = registeredProcessors.size();
+		int i = 0;
 		
-		//Call preProcess on _all_ processors before calling processInputEvent on each of them
+		//Call preProcess() on _all_ processors before calling processInputEvent on each of them
 		//to allow each processor to take part in the locking mechanism before anyone actually locks something
-		for (AbstractComponentProcessor p : registeredProcessors) {
-			if (p.isInterestedIn(inEvt) && this.associatedComponent.isGestureAllowed(p.getClass())){
-				p.preProcess(inEvt);
+		for (i = 0; i < pCount; i++) {
+			AbstractComponentProcessor inputProcessor = registeredProcessors.get(i);
+			if (inputProcessor.isInterestedIn(inEvt) && this.associatedComponent.isGestureAllowed(inputProcessor.getClass())){
+				inputProcessor.preProcess(inEvt);
 			}
 		}
 		
-		for (int i = 0; i < registeredProcessors.size(); i++) {
+		for (i = 0; i < pCount; i++) {
 			AbstractComponentProcessor inputProcessor = registeredProcessors.get(i);
-			//Send events
 			if (inputProcessor.isInterestedIn(inEvt) && this.associatedComponent.isGestureAllowed(inputProcessor.getClass())){
 				handled = true;
-				inputProcessor.processInputEvent(inEvt);
+				inputProcessor.processInputEvent(inEvt); //process events
 			}
 		}
 		return handled;
-//		*/
 	}
 	
 	

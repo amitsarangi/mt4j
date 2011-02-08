@@ -26,7 +26,7 @@ import org.mt4j.util.math.Vector3D;
  * This event class is used for
  * input events that have position data associated with them. This applies
  * for mouse input, finger or fiducial input for example. Also associated
- * with this event is a InputMotion object, which contains information about the
+ * with this event is a InputCursor object, which contains information about the
  * input over time and is a container for all input events during this time.
  * 
  * @author Christopher Ruff
@@ -211,7 +211,7 @@ public abstract class AbstractCursorInputEvt extends MTInputEvent {
 	
 	
 	/*
-	abstract public Inputcursor<? extends MTConcretePositionEvt> getcursor();
+	abstract public Inputcursor<? extends AbstractCursorInputEvt> getcursor();
 
 	
 	abstract public float getPositionX();

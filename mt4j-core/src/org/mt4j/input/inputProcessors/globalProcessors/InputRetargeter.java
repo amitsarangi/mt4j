@@ -18,7 +18,6 @@
 package org.mt4j.input.inputProcessors.globalProcessors;
 
 import java.util.HashMap;
-import java.util.Map;
 
 import org.mt4j.components.interfaces.IMTComponent3D;
 import org.mt4j.input.IHitTestInfoProvider;
@@ -29,21 +28,20 @@ import org.mt4j.input.inputData.MTInputEvent;
 /**
  * The Class InputRetargeter. This global input analyzer is automatically created with each new scene and listens
  * to all InputSources for AbstractCursorInputEvt events (Input events with a discrete position attached).
- * <br>This global input analyzer uses MTPositionEvents to check which object in the current scene was hit.
- * Then the targetComponent is added to the event and the event is delivered to the scenes canvas where the 
- * targeted event is delivered to the targetComponent. No new event is created for performance reasons.
- * So the event is merely retargeted and redirected.
+ * <br>This global input processor uses AbstractCursorInputEvt's to check which object in the current scene was hit.
+ * Then the target is set at the event and the event is delivered to the scenes canvas where the 
+ * targeted event is delivered to the target. No new event is created for performance reasons.
+ * So the event is merely re-targeted and redirected.
  * 
  * @author Christopher Ruff
  */
 public class InputRetargeter extends AbstractGlobalInputProcessor {
-	private Map<InputCursor, IMTComponent3D> cursorToObjectMap;
+	private HashMap<InputCursor, IMTComponent3D> cursorToObjectMap;
 	
 	/** The app info provider. */
 	private IHitTestInfoProvider appInfoProvider;
 
 	public InputRetargeter(IHitTestInfoProvider appInfoProvider) {
-		super();
 		this.appInfoProvider = appInfoProvider;
 		this.cursorToObjectMap = new HashMap<InputCursor, IMTComponent3D>();
 	}
@@ -52,16 +50,15 @@ public class InputRetargeter extends AbstractGlobalInputProcessor {
 	public void processInputEvtImpl(MTInputEvent inputEvent) {
 		if (inputEvent instanceof AbstractCursorInputEvt) {
 			AbstractCursorInputEvt posEvt = (AbstractCursorInputEvt) inputEvent;
-			InputCursor m = posEvt.getCursor();
+			InputCursor c = posEvt.getCursor();
 			
 			switch (posEvt.getId()) {
 			case AbstractCursorInputEvt.INPUT_STARTED:{
 //				logger.debug("Finger DOWN-> " + " ID:" + posEvt.getId() + "; X:" + posEvt.getPosX() + " Y:" + posEvt.getPosY() + "; Source: " + posEvt.getSource());
-//				System.out.println("Finger DOWN-> " + " ID:" + posEvt.getId() + "; X:" + posEvt.getPosX() + " Y:" + posEvt.getPosY() + "; Source: " + posEvt.getSource()+  " CursorID: " + m.getId() + " appInfoProv: " + appInfoProvider);
 				//Check if there is an object under the cursor and save it to a hashtable with the event if so
 				IMTComponent3D obj = appInfoProvider.getComponentAt(posEvt.getX(), posEvt.getY());
 				if (obj != null){
-					cursorToObjectMap.put(m, obj);
+					cursorToObjectMap.put(c, obj);
 					posEvt.setTarget(obj);
 //					posEvt.setCurrentTarget(obj.getRoot()); //Enable this if using event CAPTURING PHASE
 					posEvt.setCurrentTarget(obj);
@@ -72,7 +69,7 @@ public class InputRetargeter extends AbstractGlobalInputProcessor {
 			break;
 			case AbstractCursorInputEvt.INPUT_UPDATED:{
 //				logger.debug("Finger UPDATE-> " + " ID:" + posEvt.getId() + "; X:" + posEvt.getPositionX() + " Y:" + posEvt.getPositionY() + "; Source: " + posEvt.getSource());
-				IMTComponent3D associatedObj = cursorToObjectMap.get(m);
+				IMTComponent3D associatedObj = cursorToObjectMap.get(c);
 				if (associatedObj != null){
 					posEvt.setTarget(associatedObj);
 //					posEvt.setCurrentTarget(associatedObj.getRoot());//Enable this if using event CAPTURING PHASE
@@ -85,7 +82,7 @@ public class InputRetargeter extends AbstractGlobalInputProcessor {
 			case AbstractCursorInputEvt.INPUT_ENDED:{
 //				logger.debug("Finger UP-> " + " ID:" + posEvt.getId() + "; X:" + posEvt.getPositionX() + " Y:" + posEvt.getPositionY() + "; Source: " + posEvt.getSource());
 //				IMTComponent3D associatedObj = motionToObjectMap.get(m);
-				IMTComponent3D associatedObj = cursorToObjectMap.remove(m);
+				IMTComponent3D associatedObj = cursorToObjectMap.remove(c);
 				if (associatedObj != null){
 					posEvt.setTarget(associatedObj);
 //					posEvt.setCurrentTarget(associatedObj.getRoot());//Enable this if using event CAPTURING PHASE
