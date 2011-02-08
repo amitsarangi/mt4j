@@ -182,7 +182,7 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 	private GestureEventSupport gestureEvtSupport;
 	
 	/** The allowed gestures. */
-	private List<Class<? extends IInputProcessor>> allowedGestures;
+	private ArrayList<Class<? extends IInputProcessor>> allowedGestures;
 	
 	/** The attached camera. */
 	private Icamera attachedCamera;
@@ -191,7 +191,7 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 	private Icamera viewingCamera;
 	
 	/** The input listeners. */
-	private List<IMTInputEventListener> inputListeners;
+	private ArrayList<IMTInputEventListener> inputListeners;
 	
 	/** The user data. */
 	private Map<Object, Object> userData;
@@ -2598,8 +2598,8 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 		
 //		System.out.println("At: " + this.getName() + " Current Distance: " + currObjDist);
 		
-		if (this.isVisible() && 
-			( (onlyPickables && this.isPickable()) || !onlyPickables) 
+		if (visible && 
+			( (onlyPickables && pickable) || !onlyPickables) 
 		){
 			//Get the real ray for this obj, takes the viewing camera and viewport of this obj into account
 			//-> changes rayStartPoint and point in ray direction
@@ -2627,7 +2627,6 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 			*/
 			
 			//Check if component is clipped and only proceed if the ray intersects the clip shape
-			Clip clip = this.getClip();
 			if (clip == null || (clip != null && clip.getClipShapeIntersectionLocal(invertedRay) != null)){
 				interSP = this.getIntersectionLocal(invertedRay);
 				if (interSP != null){
@@ -2650,14 +2649,13 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 			}
 			
 			//Check for child clipping shape intersection, if not intersecting -> dont try to pick children
-			Clip childClip = this.getChildClip();
 			if (childClip != null && childClip.getClipShapeIntersectionLocal(invertedRay) == null){
 				return currObjDist;
 			}
-		}else if (this.isVisible() && this.getChildClip() != null){
+		}else if (visible && childClip != null){
 			//Check for child clipping shape intersection, if not intersecting -> dont try to pick children
 			Ray invertedRay = this.getGlobalInverseMatrix().isIdentity()? currentRay : this.globalToLocal(currentRay);
-			if (this.getChildClip().getClipShapeIntersectionLocal(invertedRay) == null){
+			if (childClip.getClipShapeIntersectionLocal(invertedRay) == null){
 				return currObjDist;
 			}
 		}
@@ -2668,7 +2666,8 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
                 if (composite) {
                     //Start a new picking with a new Pickresult obj from here
                     PickResult compositePickRes = new PickResult();
-                    float compDistance = child.pickRecursive(pickInfo, compositePickRes, Float.MAX_VALUE, currentRay, onlyPickables);
+//                    float compDistance = 
+                    	child.pickRecursive(pickInfo, compositePickRes, Float.MAX_VALUE, currentRay, onlyPickables);
 
                     //Add the composites picks to the overall picks
                     if (compositePickRes.getNearestPickResult() != null) {

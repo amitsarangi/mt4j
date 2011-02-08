@@ -259,6 +259,10 @@ public class Tools3D {
 				
 				//aus Result Vector3D machen
 				returnVect = new Vector3D(result[0],result[1],result[2]);
+				
+				if (GraphicsUtil.isAndroid()){
+					modelView.scale(1, -1, 1);
+				}
 			}catch(Exception e){
 				e.printStackTrace();
 			}
