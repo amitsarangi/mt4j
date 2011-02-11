@@ -280,6 +280,30 @@ public class ToolsBuffers {
     }
     
     /**
+     * Generates a Vertex array from the given FloatBuffers.
+     * 
+     * @param buff the FloatBuffer to read from
+     * 
+     * @return a newly generated array of Vertex objects
+     */
+    public static Vertex[] getVertexArray(FloatBuffer buff, FloatBuffer colBuff) {
+        buff.clear(); //this doesent delete its contents!
+        colBuff.clear();
+//        if (colBuff.limit() != buff.limit() + buff.limit()* 1f/3f){ //Check
+//        	System.err.println("Warning: Vertex Buffer limit doesent match with colorbuffer!");
+//        }
+        
+        Vertex[] verts = new Vertex[buff.limit() / 3];
+        for (int x = 0; x < verts.length; x++) {
+        	Vertex v = new Vertex(buff.get(), buff.get(), buff.get(), colBuff.get(), colBuff.get(), colBuff.get(), colBuff.get());
+            verts[x] = v;
+        }
+        buff.clear(); //Reset position to 0 again
+        colBuff.clear();
+        return verts;
+    }
+    
+    /**
      * Generates a Vector3D array from the given FloatBuffer.
      * 
      * @param buff the FloatBuffer to read from
