@@ -21,6 +21,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import org.mt4j.components.MTComponent;
+import org.mt4j.components.StateChange;
+import org.mt4j.components.StateChangeEvent;
+import org.mt4j.components.StateChangeListener;
 import org.mt4j.components.TransformSpace;
 import org.mt4j.components.visibleComponents.shapes.AbstractShape;
 import org.mt4j.components.visibleComponents.shapes.MTPolygon;
@@ -54,6 +57,8 @@ public class MTImage extends MTRectangle implements IdragClusterable{
 
 	
 	private MTRectangle image;
+	
+	private MTComponent closeButton;
 	
 	/**
 	 * Instantiates a new framed image.
@@ -105,27 +110,37 @@ public class MTImage extends MTRectangle implements IdragClusterable{
 	 * @param dispClose the new display close button
 	 */
 	public void setDisplayCloseButton(boolean dispClose){
-		if (dispClose){
-			MTSvgButton keybCloseSvg = new MTSvgButton(this.getRenderer(), MT4jSettings.getInstance().getDefaultSVGPath()
-							+ "keybClose.svg");
-			//Transform
-			keybCloseSvg.scale(0.5f, 0.5f, 1, new Vector3D(0,0,0));
-			keybCloseSvg.translate(new Vector3D(this.getWidthXY(TransformSpace.RELATIVE_TO_PARENT) - 45, 2,0));
-			keybCloseSvg.setBoundsPickingBehaviour(AbstractShape.BOUNDS_ONLY_CHECK);
-			keybCloseSvg.addActionListener(new CloseActionListener(new MTComponent[]{this, keybCloseSvg}) );
-//			pic.addChild(keybCloseSvg);
-			keybCloseSvg.setName("closeButton");
-			this.addChild(keybCloseSvg);
+		if (this.closeButton != null){
+			if (!dispClose){
+				//Remove svg button and destroy child display lists
+				MTComponent[] childs = this.getChildren();
+	            for (MTComponent component : childs) {
+	                if (component.getName().equals("closeButton")) {
+	                    MTSvgButton svgButton = (MTSvgButton) component;
+	                    svgButton.destroy();
+	                }
+	            }
+			}
 		}else{
-			//Remove svg button and destroy child display lists
-			MTComponent[] childs = this.getChildren();
-            for (MTComponent component : childs) {
-                if (component.getName().equals("closeButton")) {
-                    MTSvgButton svgButton = (MTSvgButton) component;
-                    svgButton.destroy();
-                }
-            }
+			if (dispClose){
+				MTSvgButton keybCloseSvg = new MTSvgButton(this.getRenderer(), MT4jSettings.getInstance().getDefaultSVGPath()
+						+ "keybClose.svg");
+				keybCloseSvg.scale(0.5f, 0.5f, 1, new Vector3D(0,0,0));
+				keybCloseSvg.translate(new Vector3D(this.getWidthXY(TransformSpace.RELATIVE_TO_PARENT) - 45, 2,0));
+				keybCloseSvg.setBoundsPickingBehaviour(AbstractShape.BOUNDS_ONLY_CHECK);
+				keybCloseSvg.addActionListener(new CloseActionListener(new MTComponent[]{this, keybCloseSvg}) );
+				keybCloseSvg.setName("closeButton");
+				this.addChild(keybCloseSvg);
+				this.closeButton = keybCloseSvg;
+				this.closeButton.addStateChangeListener(StateChange.COMPONENT_DESTROYED, new StateChangeListener() {
+					@Override
+					public void stateChanged(StateChangeEvent evt) {
+						closeButton = null;
+					}
+				});
+			}
 		}
+		
 	}
 	
 
