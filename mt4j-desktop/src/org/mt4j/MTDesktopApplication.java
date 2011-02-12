@@ -29,6 +29,9 @@ import org.mt4j.util.logging.ILogger;
 import org.mt4j.util.logging.Log4jLogger;
 import org.mt4j.util.logging.MTLoggerFactory;
 import org.mt4j.util.math.Tools3D;
+import org.mt4j.util.modelImporter.ModelImporterFactory;
+import org.mt4j.util.modelImporter.file3ds.Model3dsFileFactory;
+import org.mt4j.util.modelImporter.fileObj.ModelObjFileFactory;
 import org.mt4j.util.opengl.GLCommon;
 import org.mt4j.util.opengl.GLFBO;
 import org.mt4j.util.opengl.JoglGL10;
@@ -249,6 +252,12 @@ public abstract class MTDesktopApplication extends MTApplication {
 		/////////////////////// //FIXME TEST
 		GraphicsUtil.setGraphicsUtilProvider(new DesktopGraphicsUtil(this));
 		///////////////////////
+		
+		/////////////////////
+		//Add default 3D model factories for .3ds and for .obj files
+		ModelImporterFactory.registerModelImporterFactory(".3ds", Model3dsFileFactory.class);
+		ModelImporterFactory.registerModelImporterFactory(".obj", ModelObjFileFactory.class);
+		////////////////////
 		
 		
 		//Check if OS 32/64 Bit

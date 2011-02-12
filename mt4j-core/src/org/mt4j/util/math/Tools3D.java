@@ -187,75 +187,34 @@ public class Tools3D {
 //		case MT4jSettings.P3D_MODE:
 //			/*!
 			try{
-				Vector3D testpoint = new Vector3D(screenX, screenY, 1); //TEST! is 1 as winZ correct? -> or read from depth buffer at that pixel!
-				
-//				PMatrix modelView = new PMatrix(applet.g.getmodelview);
-//				PMatrix projectionM = new PMatrix(applet.g.projection);
-				
-				//projectionsmatrix mit modelview multiplizieren 
-//				projectionM.apply(modelView);
-				
-				//Ergebnis invertieren
-//				PMatrix inv = projectionM.invert();
+				float winZ = 1; //or read from depth buffer at that pixel! (but not available in Ogl ES)
 				
 				PMatrix3D modelView 	= new PMatrix3D(applet.g.getMatrix());
 //				PMatrix3D projectionM 	= new PMatrix3D(((PGraphics3D)applet.g).projection);
 				PMatrix3D projectionM 	= new PMatrix3D(GraphicsUtil.getProjection());
 				
-				//FIXME TEST why neccessary? 
 				//-> in dekstop version glScale(1,-1,1) is done every frame because in (Desktop) opengl
 				// 0,0 is on the down left corner instead of upper left
-				//TODO test with P3D
 				if (GraphicsUtil.isAndroid()){
-					modelView.scale(1, -1, 1);
+					screenY = applet.height - screenY;
 				}
-				
-				//FIXME REMOVE
-				/*
-				PMatrix3D m = modelView;
-				Matrix cam = new Matrix(
-						m.m00, m.m01, m.m02,  m.m03,
-						m.m10, m.m11, m.m12,  m.m13,
-						m.m20, m.m21, m.m22,  m.m23,
-						m.m30, m.m31, m.m32,  m.m33
-				);
-				
-				modelView.scale(1, -1, 1);
-				
-				System.out.println("modelView: " + cam);
-				
-				m = projectionM;
-				cam = new Matrix(
-						m.m00, m.m01, m.m02,  m.m03,
-						m.m10, m.m11, m.m12,  m.m13,
-						m.m20, m.m21, m.m22,  m.m23,
-						m.m30, m.m31, m.m32,  m.m33
-				);
-				System.out.println("projectionM: " + cam);
-				*/
 				
 				projectionM.apply(modelView);
 				projectionM.invert();
 				
 				float[] result = new float[4];
-				float[] factor = new float[]{  ((2 * testpoint.x)  / applet.width)  -1,
-											   ((2 * testpoint.y)  / applet.height) -1, //screenH - y?
-												(2 * testpoint.z) -1 ,
+				float[] factor = new float[]{  ((2 * screenX)  / applet.width)  -1,
+											   ((2 * screenY)  / applet.height) -1, //screenH - y?
+												(2 * winZ) -1 ,
 												 1,};
-//				float[] factor = new float[]{  
-//						((2 * testpoint.getX())  / MT4jSettings.getInstance().getWindowWidth())  -1,
-//						((2 * testpoint.getY())  / MT4jSettings.getInstance().getWindowHeight()) -1, //screenH - y?
-//						 (2 * testpoint.getZ()) -1 ,
-//							 1,};
 				//Matrix mit Vector multiplizieren
 				projectionM.mult(factor, result);
 				
 				//System.out.println("\nResult2: ");
-				for (int i = 0; i < result.length; i++) {
-					//W auf 1 machen!?
-					result[i] /= result[result.length-1]; //normalize so w(4th coord) is 1
-					//System.out.print(result[i] + " ");
-				}
+				result[0] /= result[3];
+				result[1] /= result[3];
+				result[2] /= result[3];
+				result[3] /= result[3];
 				
 				//aus Result Vector3D machen
 				returnVect = new Vector3D(result[0],result[1],result[2]);
@@ -274,8 +233,35 @@ public class Tools3D {
 //		System.out.println("unprojected: " + returnVect);
 		return returnVect;
 	} 
-	
-	
+
+
+	private static Vector3D unprojectScreenCoords(PApplet applet, float winX, float winY, float winZ){
+		PMatrix3D modelView 	= new PMatrix3D(applet.g.getMatrix());
+		PMatrix3D projectionM 	= new PMatrix3D(GraphicsUtil.getProjection());
+
+		if (GraphicsUtil.isAndroid()){
+			winY = applet.height - winY;
+		}
+
+		projectionM.apply(modelView);
+		projectionM.invert();
+
+		float[] result = new float[4];
+		float[] factor = new float[]{  ((2 * winX)  / applet.width)  -1,
+				((2 * winY)  / applet.height) -1, //screenH - y?
+				(2 * winZ) -1 ,
+				1,};
+		projectionM.mult(factor, result);
+
+		//System.out.println("\nResult2: ");
+		result[0] /= result[3];
+		result[1] /= result[3];
+		result[2] /= result[3];
+		result[3] /= result[3];
+		return new Vector3D(result[0],result[1],result[2]);
+	}
+
+
 	/**
 	 * Gets the ray to pick this component.
 	 *
@@ -321,8 +307,17 @@ public class Tools3D {
 		Vector3D rayStartPoint 		= camera.getPosition();
 		Vector3D newPointInRayDir 	=  Tools3D.unprojectScreenCoords(applet, camera, screenX, screenY);
 		return new Ray(rayStartPoint, newPointInRayDir);
+		/*
+//		Vector3D near = unprojectNew( applet,  screenX,  screenY,  0);
+//		Vector3D far = unprojectNew( applet,  screenX,  screenY,  1);
+//		System.out.println("Near: " + near);
+//		System.out.println("Far: " + far);
+//		return new Ray(near, far);
+		 */
 	}
 	
+	
+
 	
 	
 //	/**
@@ -641,66 +636,66 @@ public class Tools3D {
 		}
 
 
-//		/**
-//		 * Gets the openGL context.
-//		 * <br>NOTE: If you want to invoke any opengl drawing commands (or other commands influencing or depending on the current modelview matrix)
-//		 * you have to call GL <code>Tools3D.beginGL(PApplet pa)</code> instead!
-//		 * <br>NOTE: the openGL context is only valid and current when the rendering thread is the current thread.
-//		 * <br>
-//		 * This only gets the opengl context if started in opengl mode using the opengl renderer.
-//		 * 
-//		 * @param pa the pa
-//		 * 
-//		 * @return the gL
-//		 */
-//		public static GL getGL(PApplet pa){
-//			return ((PGraphicsOpenGL)pa.g).gl;
-//		}
-//		
-//		
-//		public static GL getGL(PGraphics g){
-//			return ((PGraphicsOpenGL)g).gl;
-//		}
-//
-//	
-//	/**
-//	 * Begin gl.
-//	 * 
-//	 * @param pa the pa
-//	 * @return the gL
-//	 */
-//	public static GL beginGL(PApplet pa){
-//		return ((PGraphicsOpenGL)pa.g).beginGL();
-//	}
-//	
-//	/**
-//	 * Begin gl.
-//	 *
-//	 * @param g the g
-//	 * @return the gL
-//	 */
-//	public static GL beginGL(PGraphics g){
-//		return ((PGraphicsOpenGL)g).beginGL();
-//	}
-//
-//	
-//	/**
-//	 * End gl.
-//	 * 
-//	 * @param pa the pa
-//	 */
-//	public static void endGL(PApplet pa){
-//		((PGraphicsOpenGL)pa.g).endGL();
-//	}
-//	
-//	/**
-//	 * End gl.
-//	 *
-//	 * @param g the g
-//	 */
-//	public static void endGL(PGraphics g){
-//		((PGraphicsOpenGL)g).endGL();
-//	}
+		/**
+		 * Gets the openGL context.
+		 * <br>NOTE: If you want to invoke any opengl drawing commands (or other commands influencing or depending on the current modelview matrix)
+		 * you have to call GL <code>Tools3D.beginGL(PApplet pa)</code> instead!
+		 * <br>NOTE: the openGL context is only valid and current when the rendering thread is the current thread.
+		 * <br>
+		 * This only gets the opengl context if started in opengl mode using the opengl renderer.
+		 * 
+		 * @param pa the pa
+		 * 
+		 * @return the gL
+		 */
+		public static GL10 getGL(PApplet pa){
+			return GraphicsUtil.getGL();
+		}
+		
+		
+		public static GL10 getGL(PGraphics g){
+			return GraphicsUtil.getGL();
+		}
+
+	
+	/**
+	 * Begin gl.
+	 * 
+	 * @param pa the pa
+	 * @return the gL
+	 */
+	public static GL10 beginGL(PApplet pa){
+		return GraphicsUtil.beginGL();
+	}
+	
+	/**
+	 * Begin gl.
+	 *
+	 * @param g the g
+	 * @return the gL
+	 */
+	public static GL10 beginGL(PGraphics g){
+		return GraphicsUtil.beginGL();
+	}
+
+	
+	/**
+	 * End gl.
+	 * 
+	 * @param pa the pa
+	 */
+	public static void endGL(PApplet pa){
+		GraphicsUtil.endGL();
+	}
+	
+	/**
+	 * End gl.
+	 *
+	 * @param g the g
+	 */
+	public static void endGL(PGraphics g){
+		GraphicsUtil.endGL();
+	}
 
 
 
