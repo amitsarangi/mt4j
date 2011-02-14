@@ -3,6 +3,10 @@ package org.mt4j.util.logging;
 
 import android.util.Log;
 
+/**
+ * A logger which uses androids default logging methods to do the logging.
+ * The get/setLevel() method isnt supported with this logger.
+ */
 public class AndroidDefaultLogger implements ILogger {
 	private String name;
 	

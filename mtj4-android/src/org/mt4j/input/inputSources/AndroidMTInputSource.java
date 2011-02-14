@@ -1,11 +1,9 @@
 package org.mt4j.input.inputSources;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.mt4j.MTAndroidApplication;
 import org.mt4j.input.ISurfaceTouchListener;
-import org.mt4j.input.inputData.AbstractCursorInputEvt;
 import org.mt4j.input.inputData.ActiveCursorPool;
 import org.mt4j.input.inputData.InputCursor;
 import org.mt4j.input.inputData.MTFingerInputEvt;
@@ -45,17 +43,6 @@ public class AndroidMTInputSource extends AbstractInputSource implements ISurfac
 		}
 	}
 
-	//FIXME REMOVE?
-	private ArrayList<InputCursor> cursors = new ArrayList<InputCursor>();
-	private InputCursor getCursor(float x, float y){
-		for (InputCursor cursor : cursors) {
-			AbstractCursorInputEvt curr = cursor.getCurrentEvent();
-			float currX = curr.getX();
-			float currY = curr.getY();
-		}
-		return null; //TODO..
-	}
-	
 	
 	
 	@Override
@@ -77,7 +64,6 @@ public class AndroidMTInputSource extends AbstractInputSource implements ISurfac
     			long cursorID = c.getId();
     			ActiveCursorPool.getInstance().putActiveCursor(cursorID, c);
     			idToCursorID.put((long) id, cursorID);
-    			this.cursors.add(c);
     			this.enqueueInputEvent(touchEvt);
                 break;
         }

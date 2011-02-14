@@ -17,6 +17,7 @@
  ***********************************************************************/
 package org.mt4j.util.math;
 
+import java.lang.reflect.Method;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
@@ -29,6 +30,12 @@ import java.nio.IntBuffer;
  * @author C.Ruff
  */
 public class ToolsBuffers {
+	public static final int SIZEOF_BYTE = 1;
+	public static final int SIZEOF_SHORT = 2;
+	public static final int SIZEOF_INT = 4;
+	public static final int SIZEOF_FLOAT = 4;
+	public static final int SIZEOF_LONG = 8;
+	public static final int SIZEOF_DOUBLE = 8;
 	
 	////////////////////////////////////////////////////////////
 	// Methods to build Buffers for use with vertex/texture/color arrays in opengl 
@@ -562,6 +569,70 @@ public class ToolsBuffers {
         buf.position(toPos);
         buf.put(data);
     }
+    
+    
+    // NOTE that this work must be done reflectively at the present time
+    // because this code must compile and run correctly on both CDC/FP and J2SE
+    private static boolean isCDCFP;
+    private static Class byteOrderClass;
+    private static Object nativeOrderObject;
+    private static Method orderMethod;
 
-	
+    public static ByteBuffer nativeOrder(ByteBuffer buf) {
+    	if (!isCDCFP) {
+    		try {
+    			if (byteOrderClass == null) {
+    				byteOrderClass = Class.forName("java.nio.ByteOrder");
+    				orderMethod = ByteBuffer.class.getMethod("order", new Class[] { byteOrderClass });
+    				Method nativeOrderMethod = byteOrderClass.getMethod("nativeOrder", null);
+    				nativeOrderObject = nativeOrderMethod.invoke(null, null);
+    			}
+    		} catch (Throwable t) {
+    			// Must be running on CDC / FP
+    			isCDCFP = true;
+    		}
+
+    		if (!isCDCFP) {
+    			try {
+    				orderMethod.invoke(buf, new Object[] { nativeOrderObject });
+    			} catch (Throwable t) {
+    			}
+    		}
+    	}
+    	return buf;
+    }
+
+    /** Allocates a new direct ByteBuffer with the specified number of
+        elements. The returned buffer will have its byte order set to
+    the host platform's native byte order. */
+    public static ByteBuffer newByteBuffer(int numElements) {
+    	ByteBuffer bb = ByteBuffer.allocateDirect(numElements);
+    	nativeOrder(bb);
+    	return bb;
+    }
+
+    /** Allocates a new direct IntBuffer with the specified number of
+          elements. The returned buffer will have its byte order set to
+          the host platform's native byte order. */
+    public static IntBuffer newIntBuffer(int numElements) {
+    	ByteBuffer bb = newByteBuffer(numElements * SIZEOF_INT);
+    	return bb.asIntBuffer();
+    }
+
+    public static IntBuffer newIntBuffer(int[] values, int offset, int len) {
+    	IntBuffer bb = newIntBuffer(len);
+    	bb.put(values, offset, len);
+    	bb.rewind();
+    	return bb;
+    }
+
+    public static IntBuffer newIntBuffer(int[] values, int offset) {
+    	return newIntBuffer(values, 0, values.length-offset);
+    }
+
+    public static IntBuffer newIntBuffer(int[] values) {
+    	return newIntBuffer(values, 0);
+    }
+
+
 }

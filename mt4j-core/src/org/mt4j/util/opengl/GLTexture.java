@@ -24,13 +24,12 @@ import javax.media.opengl.GL;
 import org.mt4j.MTApplication;
 import org.mt4j.util.GraphicsUtil;
 import org.mt4j.util.math.Tools3D;
+import org.mt4j.util.math.ToolsBuffers;
 import org.mt4j.util.math.ToolsMath;
 
 import processing.core.PApplet;
 import processing.core.PConstants;
 import processing.core.PImage;
-
-import com.sun.opengl.util.BufferUtil;
 
 /**
  * This class can only be used in combination with a OpenGL renderer.
@@ -810,7 +809,8 @@ public class GLTexture extends PImage {
     public void updatePImageFromGLTexture(){
     	if (gl instanceof GL11Plus) {
 			GL11Plus gl11Plus = (GL11Plus) gl;
-			IntBuffer buff = BufferUtil.newIntBuffer(this.width * this.height);
+//			IntBuffer buff = BufferUtil.newIntBuffer(this.width * this.height);
+			IntBuffer buff = ToolsBuffers.newIntBuffer(this.width * this.height);
 	        int textureTarget = this.glTextureSettings.target.getGLConstant();
 	        gl11Plus.glBindTexture(textureTarget, this.glTextureID[0]);
 	        gl11Plus.glGetTexImage(textureTarget, 0, GL.GL_BGRA, GL10.GL_UNSIGNED_BYTE, buff);

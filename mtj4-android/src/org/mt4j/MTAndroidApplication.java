@@ -32,6 +32,7 @@ public abstract class MTAndroidApplication extends MTApplication{
 		
 		//Initialize Loggin facilities  - IMPORTANT TO DO THIS ASAP!//////
 		MTLoggerFactory.setLoggerProvider(new AndroidDefaultLogger()); 
+//		MTLoggerFactory.setLoggerProvider(new AndroidDummyLogger());
 		logger = MTLoggerFactory.getLogger(MTAndroidApplication.class.getName());
 		logger.setLevel(ILogger.INFO);
 		
@@ -48,7 +49,7 @@ public abstract class MTAndroidApplication extends MTApplication{
 		
 		MT4jSettings.getInstance().windowHeight = this.sketchHeight();
 		MT4jSettings.getInstance().windowWidth = this.sketchWidth();
-		logger.info("MT4j window dimensions: \"" + MT4jSettings.getInstance().getWindowWidth() + " X " +  MT4jSettings.getInstance().getWindowHeight() + "\"");
+		logger.info("MT4j window dimensions: \"" + MT4jSettings.getInstance().getWindowWidth() + " x " +  MT4jSettings.getInstance().getWindowHeight() + "\"");
 		
 		//Set background color
 		background(150);
@@ -57,7 +58,6 @@ public abstract class MTAndroidApplication extends MTApplication{
 	    frameRate(MT4jSettings.getInstance().getMaxFrameRate());
 	    logger.info("Maximum framerate: \"" + MT4jSettings.getInstance().getMaxFrameRate() + "\"");
 	    
-//	    //FIXME TODO add in settings.txt?
 //	    hint(MTApplication.DISABLE_OPENGL_ERROR_REPORT);
 		
 		MT4jSettings.getInstance().programStartTime = System.currentTimeMillis();
@@ -98,8 +98,6 @@ public abstract class MTAndroidApplication extends MTApplication{
 	
 	
 	
-	//TODO get gl version and create correct androidGL
-	
 	protected void loadGL(){
 		/*
 		String version = ((PGraphicsAndroid3D)g).gl.glGetString(GL10.GL_VERSION);
@@ -118,9 +116,11 @@ public abstract class MTAndroidApplication extends MTApplication{
         	iGL10 = iGL11;
         	glCommon = iGL11;
         	gl11PlusSupported = true;
+        	logger.info("OpenGL profile 1.1 supported");
         }else{
         	iGL10 = new AndroidGL10(((PGraphicsAndroid3D)g).gl);
         	glCommon = iGL10;
+        	logger.info("OpenGL profile 1.0 supported");
         }
         
 //        if (major >= 2) {

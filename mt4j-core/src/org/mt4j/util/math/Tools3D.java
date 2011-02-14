@@ -106,6 +106,14 @@ public class Tools3D {
 		return ret;
 	}
 	
+	
+	
+	
+	private static float[] result = new float[4];
+	private static float[] factor = new float[4];
+	private static PMatrix3D modelViewTmp = new PMatrix3D();
+	private static PMatrix3D projectionTmp = new PMatrix3D();
+	
 	/**
 	 * Unprojects screen coordinates from 2D into 3D world space and returns a point that
 	 * can be used to construct a ray form the camera to that point and check
@@ -189,9 +197,9 @@ public class Tools3D {
 			try{
 				float winZ = 1; //or read from depth buffer at that pixel! (but not available in Ogl ES)
 				
-				PMatrix3D modelView 	= new PMatrix3D(applet.g.getMatrix());
+				modelViewTmp.set(applet.g.getMatrix());
 //				PMatrix3D projectionM 	= new PMatrix3D(((PGraphics3D)applet.g).projection);
-				PMatrix3D projectionM 	= new PMatrix3D(GraphicsUtil.getProjection());
+				projectionTmp.set(GraphicsUtil.getProjection());
 				
 				//-> in dekstop version glScale(1,-1,1) is done every frame because in (Desktop) opengl
 				// 0,0 is on the down left corner instead of upper left
@@ -199,16 +207,16 @@ public class Tools3D {
 					screenY = applet.height - screenY;
 				}
 				
-				projectionM.apply(modelView);
-				projectionM.invert();
+				projectionTmp.apply(modelViewTmp);
+				projectionTmp.invert(); //Expensive!
 				
-				float[] result = new float[4];
-				float[] factor = new float[]{  ((2 * screenX)  / applet.width)  -1,
-											   ((2 * screenY)  / applet.height) -1, //screenH - y?
-												(2 * winZ) -1 ,
-												 1,};
+				factor[0] = ((2 * screenX)  / applet.width)  -1;
+				factor[1] = ((2 * screenY)  / applet.height) -1;
+				factor[2] = (2 * winZ) -1;
+				factor[3] = 1;
+				
 				//Matrix mit Vector multiplizieren
-				projectionM.mult(factor, result);
+				projectionTmp.mult(factor, result);
 				
 				//System.out.println("\nResult2: ");
 				result[0] /= result[3];
@@ -218,10 +226,6 @@ public class Tools3D {
 				
 				//aus Result Vector3D machen
 				returnVect = new Vector3D(result[0],result[1],result[2]);
-				
-				if (GraphicsUtil.isAndroid()){
-					modelView.scale(1, -1, 1);
-				}
 			}catch(Exception e){
 				e.printStackTrace();
 			}
@@ -233,7 +237,8 @@ public class Tools3D {
 //		System.out.println("unprojected: " + returnVect);
 		return returnVect;
 	} 
-
+	
+	
 
 	private static Vector3D unprojectScreenCoords(PApplet applet, float winX, float winY, float winZ){
 		PMatrix3D modelView 	= new PMatrix3D(applet.g.getMatrix());
