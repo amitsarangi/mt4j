@@ -1677,19 +1677,17 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 		
 		g.pushMatrix();
 
-		MTLight aLight = this.getLight();
-		if (aLight != null){
-//			GL gl = ((PGraphicsOpenGL)g).gl;
+		if (light != null){
 			GL10 gl = GraphicsUtil.getGL();
 			gl.glEnable(GL10.GL_LIGHTING); //this is expensive
-			aLight.enable();
+			light.enable();
 		}
 
-		if (!this.getLocalMatrix().isIdentity())
+		if (!localMatrix.isIdentity())
 			this.applyLocalMatrix();
 
-		if (this.getClip() != null){
-			this.getClip().enableClip(g);
+		if (clip != null){
+			clip.enableClip(g);
 		}
 	}
 
@@ -1713,12 +1711,12 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 	 * @param g the g
 	 */
 	public void postDraw(PGraphics g) {
-		if (this.getClip() != null){
-			this.getClip().disableClip(g);
+		if (clip != null){
+			clip.disableClip(g);
 		}
 		
-		if (this.getChildClip() != null){
-			this.getChildClip().enableClip(g);
+		if (childClip != null){
+			childClip.enableClip(g);
 		}
 	}
 	
@@ -1733,17 +1731,15 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 			Tools3D.restoreDepthBuffer(g);
 		}
 		
-		if (this.getChildClip() != null){
-			this.getChildClip().disableClip(g);
+		if (childClip != null){
+			childClip.disableClip(g);
 		}
 			
 		g.popMatrix();
 
 		//FIXME TRIAL
-		MTLight aLight = this.getLight();
-		if (aLight != null){
-			aLight.disable();
-//			GL gl = ((PGraphicsOpenGL)g).gl;
+		if (light != null){
+			light.disable();
 			GL10 gl = GraphicsUtil.getGL();
 			gl.glDisable(GL10.GL_LIGHTING);
 		}
