@@ -202,10 +202,16 @@ public abstract class AbstractInputSource implements IPreDrawAction {
 	private void fireInputEvent(MTInputEvent inputEvt){
 		//Adds the events to the cursors one by one before firing
 		inputEvt.onFired();
+		
+		int length = inputProcessorsToFireTo.size();
+		for (int i = 0; i < length; i++) {
+			inputProcessorsToFireTo.get(i).processInputEvent(inputEvt);
+		}
 
-        for (IinputSourceListener anInputProcessorsToFireTo : inputProcessorsToFireTo) {
-            anInputProcessorsToFireTo.processInputEvent(inputEvt);
-        }
+//        for (IinputSourceListener anInputProcessorsToFireTo : inputProcessorsToFireTo) {
+//            anInputProcessorsToFireTo.processInputEvent(inputEvt);
+//        }
+		
 		/*
 		for (IinputSourceListener listener : inputListeners){
 		listener.processInputEvent(inputEvt);
