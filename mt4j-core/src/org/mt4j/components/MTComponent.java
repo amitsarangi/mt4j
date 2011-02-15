@@ -2474,7 +2474,7 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 	 * @see #globalToLocal
 	 */
 	public Vector3D getIntersectionLocal(Ray localRay) {
-//		return this.getBoundsIntersectionLocal(localRay);//FIXME TEST
+//		return this.getBoundsIntersectionLocal(localRay);
 		if (this.hasBounds()){
 			return this.getBounds().getIntersectionLocal(localRay);
 		}else{

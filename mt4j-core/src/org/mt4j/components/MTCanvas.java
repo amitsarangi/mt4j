@@ -226,12 +226,12 @@ public class MTCanvas extends MTComponent implements IHitTestInfoProvider{
 			System.err.println("Error while trying to pick an object: ");
 			e.printStackTrace();
 		}
-//		/*
+		/*
 		if (closest3DComp != null)
 			System.out.println("Picked: '" + closest3DComp.getName() + "' at pos (" + x + "," + y + ")");
 		else
 			System.out.println("Picked: '" + closest3DComp + "' at pos (" + x + "," + y + ")");
-//		*/
+		*/
 		return closest3DComp;
 	}
 	

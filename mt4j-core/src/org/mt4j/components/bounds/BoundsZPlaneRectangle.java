@@ -17,11 +17,9 @@
  ***********************************************************************/
 package org.mt4j.components.bounds;
 
-import org.mt4j.MTApplication;
 import org.mt4j.components.MTComponent;
 import org.mt4j.components.TransformSpace;
 import org.mt4j.components.visibleComponents.shapes.AbstractShape;
-import org.mt4j.components.visibleComponents.shapes.MTRectangle;
 import org.mt4j.util.camera.IFrustum;
 import org.mt4j.util.math.Matrix;
 import org.mt4j.util.math.Ray;
@@ -217,18 +215,6 @@ public class BoundsZPlaneRectangle implements IBoundingShape {
 		if (testPoint == null){
 			return null;
 		}
-		
-		/*
-		if (this.peerComponent != null){ //FIXME REMOVE DEBUG HELP to show where the point is
-			((MTApplication)peerComponent.getRenderer()).invokeLater(new Runnable() {
-				@Override
-				public void run() {
-					peerComponent.getRoot().addChild(new MTRectangle(peerComponent.getRenderer(), testPoint.x, testPoint.y, 10,10));
-				}
-			});
-		}
-		*/
-		
 		return (this.containsPointLocal(testPoint) ? testPoint : null);
 	}
 	
