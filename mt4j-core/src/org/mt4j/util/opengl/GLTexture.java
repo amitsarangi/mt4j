@@ -231,6 +231,10 @@ public class GLTexture extends PImage {
 	
 	private boolean forcedRectMipMaps = false;
 	
+	public int glWidth;
+	
+	public int glHeight;
+	
 //	private int width;
 //	private int height;
 	
@@ -308,10 +312,15 @@ public class GLTexture extends PImage {
 //    	this.pImageUpToDate = false;
     	this.glTextureSettings = settings;
 
-        //FIXME test - set target to RECTANGULAR_ARB if loaded image is NPOT
-        if ( !(ToolsMath.isPowerOfTwo(width) && ToolsMath.isPowerOfTwo(height)) ){
-       	 	this.glTextureSettings.target = TEXTURE_TARGET.RECTANGULAR;
-        }
+    	if (!isPImagePOT(width, height) && GraphicsUtil.isNPOTTextureSupported()){
+    		this.glTextureSettings.target = TEXTURE_TARGET.RECTANGULAR;
+    		this.glWidth = width;
+    		this.glHeight = height;
+    	}else{
+    		this.glTextureSettings.target = TEXTURE_TARGET.TEXTURE_2D;
+    		this.glWidth = nextPowerOfTwo(width);
+    		this.glHeight = nextPowerOfTwo(height);
+    	}
 
     	this.app = parent;
     	this.parent = parent;
@@ -400,6 +409,16 @@ public class GLTexture extends PImage {
     	this.width 	= pImage.width;
     	this.height = pImage.height;
     	
+    	if (!isPImagePOT(width, height) && GraphicsUtil.isNPOTTextureSupported()){
+    		this.glTextureSettings.target = TEXTURE_TARGET.RECTANGULAR;
+    		this.glWidth = width;
+    		this.glHeight = height;
+    	}else{
+    		this.glTextureSettings.target = TEXTURE_TARGET.TEXTURE_2D;
+    		this.glWidth = nextPowerOfTwo(width);
+    		this.glHeight = nextPowerOfTwo(height);
+    	}
+    	
     	//this.loadPixels(); //FIXME neccessary? if we assigned the pixel array it should be loaded already!
         updateGLTextureFromPImage(); //TODO invokelater if not gl thread
         updatePixels();
@@ -431,11 +450,14 @@ public class GLTexture extends PImage {
 
     	this.glTextureSettings = texSettings;
 
-    	boolean POT = (ToolsMath.isPowerOfTwo(width) && ToolsMath.isPowerOfTwo(height)) ;
-    	if (POT){
-    		this.glTextureSettings.target = TEXTURE_TARGET.TEXTURE_2D;
-    	}else{
+    	if (!isPImagePOT(width, height) && GraphicsUtil.isNPOTTextureSupported()){
     		this.glTextureSettings.target = TEXTURE_TARGET.RECTANGULAR;
+    		this.glWidth = width;
+    		this.glHeight = height;
+    	}else{
+    		this.glTextureSettings.target = TEXTURE_TARGET.TEXTURE_2D;
+    		this.glWidth = nextPowerOfTwo(width);
+    		this.glHeight = nextPowerOfTwo(height);
     	}
 
     	//FIXME TEST -> only init GL texture if in opengl thread!
@@ -464,8 +486,7 @@ public class GLTexture extends PImage {
     		destroy();
     	
     	//FIXME if check done here, we can remove the check elsewhere?
-    	boolean POT = (ToolsMath.isPowerOfTwo(width) && ToolsMath.isPowerOfTwo(height));
-    	if (this.glTextureSettings.target != TEXTURE_TARGET.RECTANGULAR && !POT){
+    	if (this.glTextureSettings.target != TEXTURE_TARGET.RECTANGULAR && !isPImagePOT(width, height) && GraphicsUtil.isNPOTTextureSupported()){
     		this.glTextureSettings.target = TEXTURE_TARGET.RECTANGULAR;
     	}
     	
@@ -484,7 +505,6 @@ public class GLTexture extends PImage {
 
 		//GL_REPEAT with a GL_RECTANGLE_ARB texture target are not supported! => use GL_CLAMP then.
 		if (glTextureSettings.target == TEXTURE_TARGET.RECTANGULAR){
-			//FIXME gluBuildmipmaps staucht NPOT texture auf pot zusammen?
 			//BEi clamp komischer wasser fbo error
 			if (glTextureSettings.wrappingHorizontal == WRAP_MODE.REPEAT){
 				glTextureSettings.wrappingHorizontal = WRAP_MODE.CLAMP_TO_EDGE; //        		this.wrap_s = GL.GL_CLAMP;
@@ -550,7 +570,8 @@ public class GLTexture extends PImage {
 //			gl.glTexImage1D(textureTarget, 0, internalFormat, width, 0, GL.GL_RGBA, GL.GL_UNSIGNED_BYTE, null); 
 			break;
 		default:
-			gl.glTexImage2D(textureTarget, 0, internalFormat, width, height, 0, GL10.GL_RGBA, GL10.GL_UNSIGNED_BYTE, null); //FIXME always use GL_RGBA as glformat??
+//			gl.glTexImage2D(textureTarget, 0, internalFormat, width, height, 0, GL10.GL_RGBA, GL10.GL_UNSIGNED_BYTE, null); //FIXME always use GL_RGBA as glformat??
+			gl.glTexImage2D(textureTarget, 0, internalFormat, glWidth, glHeight, 0, GL10.GL_RGBA, GL10.GL_UNSIGNED_BYTE, null); //FIXME always use GL_RGBA as glformat?? //FIXME TEST NPOT by enlarging ogl texture
 //			gl.glTexImage2D(textureTarget, 0, internalFormat, width, height, 0, GL.GL_BGRA, GL.GL_UNSIGNED_BYTE, null);//ORIGINAL
 			break;
 		}
@@ -571,13 +592,41 @@ public class GLTexture extends PImage {
     public void loadTexture(String filename, GLTextureSettings settings){ 
     	PImage img = app.loadImage(filename);
     	this.glTextureSettings = settings;
-        if (!(ToolsMath.isPowerOfTwo(img.width) && ToolsMath.isPowerOfTwo(img.height)) ){
-       	 	this.glTextureSettings.target = TEXTURE_TARGET.RECTANGULAR;
-        }
+    	
+    	if (!isPImagePOT(width, height) && GraphicsUtil.isNPOTTextureSupported()){
+    		this.glTextureSettings.target = TEXTURE_TARGET.RECTANGULAR;
+    		this.glWidth = width;
+    		this.glHeight = height;
+    	}else{
+    		this.glTextureSettings.target = TEXTURE_TARGET.TEXTURE_2D;
+    		this.glWidth = nextPowerOfTwo(width);
+    		this.glHeight = nextPowerOfTwo(height);
+    	}
     	this.loadTexture(img, this.glTextureSettings);
     }
 
     
+    private static boolean isPImagePOT(int width, int height){
+    	return ((width > 0) && (width & (width - 1)) == 0 ) && ((height > 0) && (height & (height - 1)) == 0 );
+    }
+    
+    
+    private static int nextPowerOfTwo(int n) {
+    	  	n--;
+    	    n |= n >> 1;
+    	    n |= n >> 2;
+    	    n |= n >> 4;
+    	    n |= n >> 8;
+    	    n |= n >> 16;
+    	    n++;
+    	    return n;
+//    	int v = 1;
+//    	while (v < n) {
+//    		v <<= 1;
+//    	}
+//    	return v;
+      } 
+
     
     /**
      * Sets this texture to the data of the specified PImage.
@@ -592,8 +641,14 @@ public class GLTexture extends PImage {
       img.loadPixels();
 
       this.glTextureSettings = settings;
-      if (!(ToolsMath.isPowerOfTwo(img.width) && ToolsMath.isPowerOfTwo(img.height)) ){
-     	 	this.glTextureSettings.target = TEXTURE_TARGET.RECTANGULAR;
+      if (!isPImagePOT(img.width, img.height) && GraphicsUtil.isNPOTTextureSupported()){
+    	  this.glTextureSettings.target = TEXTURE_TARGET.RECTANGULAR;
+    	  this.glWidth = img.width;
+    	  this.glHeight = img.height;
+      }else{
+    	  this.glTextureSettings.target = TEXTURE_TARGET.TEXTURE_2D;
+    	  this.glWidth = nextPowerOfTwo(img.width);
+    	  this.glHeight = nextPowerOfTwo(img.height);
       }
       
       if ((img.width != this.width) || (img.height != this.height) || glTextureID[0] == 0) {
@@ -606,7 +661,7 @@ public class GLTexture extends PImage {
       this.updatePixels();
     }
 
-    
+
     /**
      * Sets this texture to the data of the specified image.
      * Re-sets ONLY this texture's OpenGL texture object data! 
@@ -617,16 +672,22 @@ public class GLTexture extends PImage {
      * @param img the new gL texture
      */
     public void loadGLTexture(PImage img) {
-    	 if (!Tools3D.isPowerOfTwoDimension(img)){
-       	  this.glTextureSettings.target = TEXTURE_TARGET.RECTANGULAR;
-         }
-    	 
-      if ((img.width != width) || (img.height != height) ) {
-        init(img.width, img.height, this.glTextureSettings);
-      }
-      this.updateGLTexture(img.pixels); 
+    	if (!isPImagePOT(img.width, img.height) && GraphicsUtil.isNPOTTextureSupported()){
+    		this.glTextureSettings.target = TEXTURE_TARGET.RECTANGULAR;
+    		this.glWidth = img.width;
+    		this.glHeight = img.height;
+    	}else{
+    		this.glTextureSettings.target = TEXTURE_TARGET.TEXTURE_2D;
+    		this.glWidth = nextPowerOfTwo(img.width);
+    		this.glHeight = nextPowerOfTwo(img.height);
+    	}
+
+    	if ((img.width != width) || (img.height != height) ) {
+    		init(img.width, img.height, this.glTextureSettings);
+    	}
+    	this.updateGLTexture(img.pixels); 
     }
-    
+
     
     /**
      * Sets this texture's PImage pixel data to the data of the specified PImage.
@@ -663,17 +724,14 @@ public class GLTexture extends PImage {
 	public void updateGLTexture(int[] intArray){ 
 //		this.updateGLTexture(IntBuffer.wrap(intArray)); //FIXME original
 		IntBuffer pixelBuffer = IntBuffer.allocate(intArray.length);
-//		pixelBuffer.rewind(); //obsolete?
-		
-		if (GraphicsUtil.isAndroid()){
+		if (GraphicsUtil.isAndroid()){ //on android, most opengl implementations dont support BGRA
 			int[] rgbaPixels = new int[width * height];
 		    convertToRGBA(intArray, rgbaPixels, format, width, height);
 			pixelBuffer.put(rgbaPixels);
-			pixelBuffer.rewind();
 		}else{
 			pixelBuffer.put(intArray);
-			pixelBuffer.rewind();
 		}
+		pixelBuffer.rewind();
 		this.updateGLTexture(pixelBuffer);
 	}
 
@@ -779,7 +837,6 @@ public class GLTexture extends PImage {
 				gl.glTexSubImage2D(textureTarget, 0, 0, 0, width, height, glFormat, type, buffer); //ORG
 //				gl.glTexSubImage2D(textureTarget, 0, 0, 0, width, height, GL10.GL_RGBA, GL10.GL_UNSIGNED_BYTE, buffer);
 //				gl.glTexSubImage2D(textureTarget, 0, 0, 0, width, height, GL.GL_RGB, type, buffer);
-				Tools3D.getGLError(gl); //FIXME REMOVE
 			}
 			break;
 		}
@@ -810,7 +867,7 @@ public class GLTexture extends PImage {
     	if (gl instanceof GL11Plus) {
 			GL11Plus gl11Plus = (GL11Plus) gl;
 //			IntBuffer buff = BufferUtil.newIntBuffer(this.width * this.height);
-			IntBuffer buff = ToolsBuffers.newIntBuffer(this.width * this.height);
+			IntBuffer buff = ToolsBuffers.newIntBuffer(this.width * this.height); //FIXME WORKS WITH width != glWidth?? -> TEST!
 	        int textureTarget = this.glTextureSettings.target.getGLConstant();
 	        gl11Plus.glBindTexture(textureTarget, this.glTextureID[0]);
 	        gl11Plus.glGetTexImage(textureTarget, 0, GL.GL_BGRA, GL10.GL_UNSIGNED_BYTE, buff);

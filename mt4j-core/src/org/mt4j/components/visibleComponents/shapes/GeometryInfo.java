@@ -1054,10 +1054,22 @@ public class GeometryInfo {
 		return this.r;
 	}
 
+	/**
+	 * Checks if is texture coords are normalized.
+	 *
+	 * @return true, if is texture coords normalized
+	 */
 	public boolean isTextureCoordsNormalized() {
 		return this.textureCoordsNormalized;
 	}
 	
+	/**
+	 * Informs the geometryinfo that the texture coordinates are 
+	 * supplied normalized (0..1). This method doesent normalize the
+	 * tex coords itself.
+	 *
+	 * @param normalized the new texture coords normalized
+	 */
 	public void setTextureCoordsNormalized(boolean normalized){
 		this.textureCoordsNormalized = normalized;
 	}

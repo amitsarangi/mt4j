@@ -78,6 +78,10 @@ public class GraphicsUtil {
 	public static boolean isAndroid(){
 		return graphicsUtil.getPlatform() == IGraphicsUtil.ANDROID;
 	}
+	
+	public static boolean isNPOTTextureSupported(){
+		return graphicsUtil.isNPOTTextureSupported();
+	}
 
 		
 	public static GL11Plus getGL11Plus() {

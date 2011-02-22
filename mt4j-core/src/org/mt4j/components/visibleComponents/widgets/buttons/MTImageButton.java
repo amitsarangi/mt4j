@@ -145,17 +145,17 @@ public class MTImageButton extends MTRectangle implements IclickableButton {
 //        }
 //	}
 //	
-	/**
-	 * fires an action event with a ClickEvent Id as its ID.
-	 * 
-	 * @param ce the ce
-	 */
-	public synchronized void fireActionPerformed(TapEvent ce) { //TODO REMOVE?
-//		ActionListener[] listeners = this.getActionListeners();
-//        for (ActionListener listener : listeners) {
-//            listener.actionPerformed(new ActionEvent(this, ce.getTapID(), "action performed on tangible button"));
-//        }
-	}
+//	/**
+//	 * fires an action event with a ClickEvent Id as its ID.
+//	 * 
+//	 * @param ce the ce
+//	 */
+//	public synchronized void fireActionPerformed(TapEvent ce) { //TODO REMOVE?
+////		ActionListener[] listeners = this.getActionListeners();
+////        for (ActionListener listener : listeners) {
+////            listener.actionPerformed(new ActionEvent(this, ce.getTapID(), "action performed on tangible button"));
+////        }
+//	}
 
 	public boolean isSelected() {
 		return selected;

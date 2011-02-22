@@ -50,4 +50,6 @@ public PGraphics getPGraphics();
 
 	public boolean isBigEndian();
 
+	public boolean isNPOTTextureSupported();
+
 }

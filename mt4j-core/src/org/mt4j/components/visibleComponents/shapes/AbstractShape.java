@@ -765,10 +765,18 @@ public abstract class AbstractShape extends AbstractVisibleComponent{
 				this.lastTextureDimension.setXYZ(newTexImage.width, newTexImage.height, 0);
 			}else{
 				//We are in OpenGL mode but the new texture is not a GLTexture -> create new GLTexture from PImage
-				boolean isPOT = Tools3D.isPowerOfTwoDimension(newTexImage);
+//				boolean isPOT = Tools3D.isPowerOfTwoDimension(newTexImage);
 				GLTextureSettings ts = new GLTextureSettings();
-				if (!isPOT){
-					ts.target = TEXTURE_TARGET.RECTANGULAR;
+				//Create new GLTexture from PImage
+				ts.shrinkFilter 		= SHRINKAGE_FILTER.BilinearNoMipMaps;
+				ts.expansionFilter 		= EXPANSION_FILTER.Bilinear;
+				ts.wrappingHorizontal 	= WRAP_MODE.CLAMP_TO_EDGE;
+				ts.wrappingVertical 	= WRAP_MODE.CLAMP_TO_EDGE;
+				GLTexture newGLTexture = new GLTexture(this.getRenderer(), newTexImage, ts);
+				
+				this.textureImage = newGLTexture;
+				
+				if (newGLTexture.getTextureTargetEnum() == TEXTURE_TARGET.RECTANGULAR){
 					this.setTextureMode(PConstants.IMAGE);
 					
 					if (this.getGeometryInfo().isTextureCoordsNormalized()){
@@ -784,7 +792,6 @@ public abstract class AbstractShape extends AbstractVisibleComponent{
 					this.textureImage = newTexImage;
 					this.lastTextureDimension.setXYZ(newTexImage.width, newTexImage.height, 0);
 				}else{
-					ts.target = TEXTURE_TARGET.TEXTURE_2D;
 					this.setTextureMode(PConstants.NORMAL);
 					
 					//We are in OpenGL mode, new texture is a PImage, is POT -> create POT GLTexture and un-normalize tex coords if neccessary
@@ -797,14 +804,6 @@ public abstract class AbstractShape extends AbstractVisibleComponent{
 					}
 				}
 				
-				//Create new GLTexture from PImage
-				ts.shrinkFilter 		= SHRINKAGE_FILTER.BilinearNoMipMaps;
-				ts.expansionFilter 		= EXPANSION_FILTER.Bilinear;
-				ts.wrappingHorizontal 	= WRAP_MODE.CLAMP_TO_EDGE;
-				ts.wrappingVertical 	= WRAP_MODE.CLAMP_TO_EDGE;
-				GLTexture newGLTexture = new GLTexture(this.getRenderer(), newTexImage, ts);
-				
-				this.textureImage = newGLTexture;
 				this.lastTextureDimension.setXYZ(newTexImage.width, newTexImage.height, 0);
 			}
 		}else{

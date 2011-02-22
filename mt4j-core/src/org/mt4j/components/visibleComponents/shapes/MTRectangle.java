@@ -22,9 +22,12 @@ import org.mt4j.components.TransformSpace;
 import org.mt4j.components.bounds.BoundsZPlaneRectangle;
 import org.mt4j.components.bounds.IBoundingShape;
 import org.mt4j.components.css.style.CSSStyle;
+import org.mt4j.util.GraphicsUtil;
 import org.mt4j.util.MT4jSettings;
 import org.mt4j.util.math.Vector3D;
 import org.mt4j.util.math.Vertex;
+import org.mt4j.util.opengl.GLTexture;
+import org.mt4j.util.opengl.GLTexture.TEXTURE_TARGET;
 
 import processing.core.PApplet;
 import processing.core.PImage;
@@ -77,7 +80,9 @@ public class MTRectangle extends MTPolygon {
 	 * @param texture the texture
 	 */
 	public MTRectangle(PApplet applet, PImage texture) {
+//		this(applet ,0 ,0, 0, texture.width, texture.height);
 		this(applet ,0 ,0, 0, texture.width, texture.height);
+		
 		
 		//To avoid errors if this is created in non opengl thread so the gl texture wont be created correctly when setting setTexture
 		this.setUseDirectGL(false);
@@ -107,11 +112,56 @@ public class MTRectangle extends MTPolygon {
 			//Cant check if we are in renderthread -> dont use direct gl mode -> dont create Gl texture object
 			if (this.isUseDirectGL()){
 				this.setUseDirectGL(false);
+				adaptTexCoordsForNPOTUse();
 			}
 		}
 
 		this.setTexture(texture);
 		this.setTextureEnabled(true);
+	}
+	
+	@Override
+	public void setUseDirectGL(boolean drawPureGL) {
+		super.setUseDirectGL(drawPureGL);
+		adaptTexCoordsForNPOTUse();
+	}
+	
+	@Override
+	public void setTexture(PImage newTexImage) {
+		super.setTexture(newTexImage);
+		adaptTexCoordsForNPOTUse();
+	}
+	
+	//FIXME TEST -> adapt tex coords for non fitting, NPOT gl texture
+	private boolean adaptedCoords = false;
+	private void adaptTexCoordsForNPOTUse(){
+		PImage tex = this.getTexture();
+		if (tex instanceof GLTexture 
+				&& !adaptedCoords 
+				&& !GraphicsUtil.isNPOTTextureSupported() 
+				&& ((GLTexture) tex).getTextureTargetEnum() == TEXTURE_TARGET.TEXTURE_2D 
+				&& this.getGeometryInfo().isTextureCoordsNormalized()
+		) {
+			GLTexture glt = (GLTexture) tex;
+			
+			float maxU = (float)glt.width / (float)glt.glWidth;
+			float maxV = (float)glt.height / (float)glt.glHeight;
+			
+			Vertex[] verts = this.getVerticesLocal();
+//			verts[1].setTexCoordU(maxU);
+//			
+//			verts[2].setTexCoordU(maxU);
+//			verts[2].setTexCoordV(maxV);
+//			
+//			verts[3].setTexCoordV(maxV);
+			for (Vertex vertex : verts) {
+				vertex.setTexCoordU( vertex.getTexCoordU() * maxU);
+				vertex.setTexCoordV( vertex.getTexCoordV() * maxV);
+			}
+
+			this.getGeometryInfo().updateTextureBuffer(this.isUseVBOs());
+			adaptedCoords = true;
+		}
 	}
 	
 	
@@ -217,12 +267,29 @@ public class MTRectangle extends MTPolygon {
 	 * @param height the height
 	 */
 	public MTRectangle(PApplet pApplet, Vertex upperLeft, float width, float height) {
+//		super(pApplet,
+//				new Vertex[]{
+//				new Vertex(upperLeft.x,			upperLeft.y, 		upperLeft.z, 0, 0), 
+//				new Vertex(upperLeft.x+width, 	upperLeft.y, 		upperLeft.z, 1, 0), 
+//				new Vertex(upperLeft.x+width, 	upperLeft.y+height, upperLeft.z, 1, 1), 
+//				new Vertex(upperLeft.x,			upperLeft.y+height,	upperLeft.z, 0, 1), 
+//				new Vertex(upperLeft.x,			upperLeft.y,		upperLeft.z, 0, 0)});
+//		
+//		this.setName("unnamed rectangle");
+//		//
+//		this.setBoundsBehaviour(AbstractShape.BOUNDS_ONLY_CHECK);
+//		
+//		currentAnchor = PositionAnchor.CENTER;
+		this(pApplet, upperLeft, width, height, 1, 1);
+	}
+	
+	public MTRectangle(PApplet pApplet, Vertex upperLeft, float width, float height, int textureMaxX, int textureMaxY) {
 		super(pApplet,
 				new Vertex[]{
 				new Vertex(upperLeft.x,			upperLeft.y, 		upperLeft.z, 0, 0), 
-				new Vertex(upperLeft.x+width, 	upperLeft.y, 		upperLeft.z, 1, 0), 
-				new Vertex(upperLeft.x+width, 	upperLeft.y+height, upperLeft.z, 1, 1), 
-				new Vertex(upperLeft.x,			upperLeft.y+height,	upperLeft.z, 0, 1), 
+				new Vertex(upperLeft.x+width, 	upperLeft.y, 		upperLeft.z, textureMaxX, 0), 
+				new Vertex(upperLeft.x+width, 	upperLeft.y+height, upperLeft.z, textureMaxX, textureMaxY), 
+				new Vertex(upperLeft.x,			upperLeft.y+height,	upperLeft.z, 0, textureMaxY), 
 				new Vertex(upperLeft.x,			upperLeft.y,		upperLeft.z, 0, 0)});
 		
 		this.setName("unnamed rectangle");
