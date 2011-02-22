@@ -100,5 +100,10 @@ public class AndroidGraphicsUtil implements IGraphicsUtil {
 		return PGraphicsAndroid3D.BIG_ENDIAN;
 	}
 
+	@Override
+	public boolean isNPOTTextureSupported() {
+		return false;
+	}
+
 	
 }

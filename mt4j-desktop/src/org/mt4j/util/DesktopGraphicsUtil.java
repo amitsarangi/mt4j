@@ -2,7 +2,8 @@ package org.mt4j.util;
 
 import javax.media.opengl.glu.GLU;
 
-import org.mt4j.IMTApplication;
+import org.mt4j.MTApplication;
+import org.mt4j.util.math.Tools3D;
 import org.mt4j.util.opengl.GL10;
 import org.mt4j.util.opengl.GL11;
 import org.mt4j.util.opengl.GL11Plus;
@@ -17,10 +18,10 @@ import processing.core.PMatrix3D;
 import processing.opengl.PGraphicsOpenGL;
 
 public class DesktopGraphicsUtil implements IGraphicsUtil {
-	private final IMTApplication app;
+	private final MTApplication app;
 	private final JoglGLU joglGLU;
 
-	public DesktopGraphicsUtil(IMTApplication app){
+	public DesktopGraphicsUtil(MTApplication app){
 		this.app = app;
 		this.joglGLU = new JoglGLU(new GLU());
 	}
@@ -115,6 +116,11 @@ public class DesktopGraphicsUtil implements IGraphicsUtil {
 	@Override
 	public boolean isBigEndian() {
 		return PGraphicsOpenGL.BIG_ENDIAN;
+	}
+
+	@Override
+	public boolean isNPOTTextureSupported() {
+		return Tools3D.supportsNonPowerOfTwoTexture(app);
 	}
 
 	
