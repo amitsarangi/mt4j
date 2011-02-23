@@ -102,6 +102,8 @@ public class GeometryInfo {
 	
 	private boolean textureCoordsNormalized = true;
 	
+	private boolean adaptedCoordsNPOT = false;
+	
 	
 	/**
 	 * Creates a new GeometryInfo.
@@ -1072,6 +1074,26 @@ public class GeometryInfo {
 	 */
 	public void setTextureCoordsNormalized(boolean normalized){
 		this.textureCoordsNormalized = normalized;
+	}
+	
+	/**
+	 * Checks if is texture coords are adapted to npot.
+	 * (image data is actually smaller than the OpenGL texture object)
+	 * @return true, if is texture coords are adapted npot
+	 */
+	public boolean isTextureCoordsAdaptedNPOT() {
+		return this.adaptedCoordsNPOT;
+	}
+	
+	/**
+	 * Informs the geometryinfo that the texture coordinates are 
+	 * adapted to NPOT texture dimensions (image data is actually smaller than the OpenGL texture object). 
+	 * This method doesent adapt the tex coords itself!
+	 *
+	 * @param adaptedCoords adaptedCoords
+	 */
+	public void setTextureCoordsAdaptedNPOT(boolean adaptedCoords){
+		this.adaptedCoordsNPOT = adaptedCoords;
 	}
 	
 	

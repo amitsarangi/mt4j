@@ -23,6 +23,7 @@ import org.mt4j.components.bounds.IBoundingShape;
 import org.mt4j.components.css.style.CSSStyle;
 import org.mt4j.util.GraphicsUtil;
 import org.mt4j.util.MTColor;
+import org.mt4j.util.math.Tools3D;
 import org.mt4j.util.math.Vector3D;
 import org.mt4j.util.math.Vertex;
 import org.mt4j.util.opengl.GLTexture;
@@ -218,6 +219,14 @@ public class MTEllipse extends MTPolygon {
 	}
 	
 	
+	//FIXME TEST -> adapt tex coords for non fitting, NPOT gl texture
+	private void adaptTexCoordsForNPOTUse(){
+		PImage tex = this.getTexture();
+		if (tex instanceof GLTexture){
+			Tools3D.adaptTextureCoordsNPOT(this, (GLTexture)tex);
+		}
+	}
+	
 	@Override
 	public void setUseDirectGL(boolean drawPureGL) {
 		super.setUseDirectGL(drawPureGL);
@@ -228,41 +237,6 @@ public class MTEllipse extends MTPolygon {
 	public void setTexture(PImage newTexImage) {
 		super.setTexture(newTexImage);
 		adaptTexCoordsForNPOTUse();
-	}
-	
-	
-	private boolean adaptedCoords = false;
-	private void adaptTexCoordsForNPOTUse(){
-		PImage tex = this.getTexture();
-		if (tex instanceof GLTexture 
-				&& !adaptedCoords 
-				&& !GraphicsUtil.isNPOTTextureSupported() 
-				&& ((GLTexture) tex).getTextureTargetEnum() == TEXTURE_TARGET.TEXTURE_2D 
-				&& this.getGeometryInfo().isTextureCoordsNormalized()
-		) {
-			GLTexture glt = (GLTexture) tex;
-			
-			float maxU = (float)glt.width / (float)glt.glWidth;
-			float maxV = (float)glt.height / (float)glt.glHeight;
-			
-			Vertex[] verts = this.getVerticesLocal();
-			float width = radiusX*2;
-			float height = radiusY*2;
-			float upperLeftX = centerPoint.x-radiusX;
-			float upperLeftY = centerPoint.y-radiusY;
-	        for (Vertex vertex : verts) {
-//	            vertex.setTexCoordU((vertex.x - upperLeftX) / width);
-//	            vertex.setTexCoordV((vertex.y - upperLeftY) / height);
-//	            vertex.setTexCoordU( ( (vertex.x - upperLeftX) / width) * maxU);
-//	            vertex.setTexCoordV( ( (vertex.y - upperLeftY) / height) * maxV);
-	        	 vertex.setTexCoordU( vertex.getTexCoordU() * maxU);
-	        	 vertex.setTexCoordV( vertex.getTexCoordV() * maxV);
-				//System.out.println("TexU:" + vertex.getTexCoordU() + " TexV:" + vertex.getTexCoordV());
-	        }
-			
-			this.getGeometryInfo().updateTextureBuffer(this.isUseVBOs());
-			adaptedCoords = true;
-		}
 	}
 
 	

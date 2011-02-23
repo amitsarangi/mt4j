@@ -37,6 +37,7 @@ import org.mt4j.sceneManagement.SceneChangeEvent;
 import org.mt4j.sceneManagement.transition.ITransition;
 import org.mt4j.util.ArrayDeque;
 import org.mt4j.util.GraphicsUtil;
+import org.mt4j.util.MT4jSettings;
 import org.mt4j.util.animation.AnimationManager;
 import org.mt4j.util.logging.ILogger;
 import org.mt4j.util.opengl.GL10;
@@ -44,9 +45,11 @@ import org.mt4j.util.opengl.GL11;
 import org.mt4j.util.opengl.GL11Plus;
 import org.mt4j.util.opengl.GL20;
 import org.mt4j.util.opengl.GLCommon;
+import org.mt4j.util.opengl.GLTexture;
 
 import processing.core.PApplet;
 import processing.core.PGraphics;
+import processing.core.PImage;
 import processing.core.PMatrix3D;
 import android.app.Application;
 
@@ -1465,6 +1468,33 @@ public abstract class MTApplication extends PApplet implements IMTApplication{
 	}
 	//////////////////////////////// KeyListener
 
+	//////////////////////////
+	//FIXME TEST 
+	//-> to create gltexture automatically if using loadImage() in OpenGL mode
+	//-> prevents creating many opengl texture resources from the same PImage,
+	//e.g. if an PImage is loaded and then assigned to different shapes, 
+	//in which a separate GLTexture object is created each time
+	@Override
+	public PImage loadImage(String filename) {
+		if (MT4jSettings.getInstance().isOpenGlMode()){
+			PImage img = super.loadImage(filename);	
+			return new GLTexture(this, img);
+		}else{
+			return super.loadImage(filename);	
+		}
+	}
 	
-
+	@Override
+	public PImage loadImage(String filename, int sampling) {
+		if (MT4jSettings.getInstance().isOpenGlMode()){
+			PImage img = super.loadImage(filename, sampling);
+			return new GLTexture(this, img);
+		}else{
+			return super.loadImage(filename, sampling);
+		}
+	}
+	
+	//////////////////////////////////////////////////
+	
+	
 }

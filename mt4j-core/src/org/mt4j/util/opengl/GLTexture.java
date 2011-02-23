@@ -23,9 +23,7 @@ import javax.media.opengl.GL;
 
 import org.mt4j.MTApplication;
 import org.mt4j.util.GraphicsUtil;
-import org.mt4j.util.math.Tools3D;
 import org.mt4j.util.math.ToolsBuffers;
-import org.mt4j.util.math.ToolsMath;
 
 import processing.core.PApplet;
 import processing.core.PConstants;

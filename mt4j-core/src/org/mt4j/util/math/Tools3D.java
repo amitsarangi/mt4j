@@ -27,6 +27,7 @@ import java.util.StringTokenizer;
 import org.mt4j.MTApplication;
 import org.mt4j.components.interfaces.IMTComponent3D;
 import org.mt4j.components.visibleComponents.StyleInfo;
+import org.mt4j.components.visibleComponents.shapes.AbstractShape;
 import org.mt4j.components.visibleComponents.shapes.GeometryInfo;
 import org.mt4j.input.inputData.InputCursor;
 import org.mt4j.util.GraphicsUtil;
@@ -36,6 +37,7 @@ import org.mt4j.util.camera.Icamera;
 import org.mt4j.util.opengl.GL10;
 import org.mt4j.util.opengl.GL11Plus;
 import org.mt4j.util.opengl.GLTexture;
+import org.mt4j.util.opengl.GLTexture.TEXTURE_TARGET;
 
 import processing.core.PApplet;
 import processing.core.PGraphics;
@@ -1148,6 +1150,34 @@ public class Tools3D {
 		projectedPoint.z = z;
 		
 		return projectedPoint;
+	}
+	
+	
+			
+	
+	public static boolean adaptTextureCoordsNPOT(AbstractShape shape, GLTexture tex){
+		if(!GraphicsUtil.isNPOTTextureSupported() 
+			&& !shape.getGeometryInfo().isTextureCoordsAdaptedNPOT()
+			&& ((GLTexture) tex).getTextureTargetEnum() == TEXTURE_TARGET.TEXTURE_2D 
+			&& shape.getGeometryInfo().isTextureCoordsNormalized()
+		) {
+			GLTexture glt = (GLTexture) tex;
+			float maxU = (float)glt.width / (float)glt.glWidth;
+			float maxV = (float)glt.height / (float)glt.glHeight;
+			
+			Vertex[] verts = shape.getVerticesLocal();
+	        for (Vertex vertex : verts) {
+//	            vertex.setTexCoordU( ( (vertex.x - upperLeftX) / width) * maxU);
+//	            vertex.setTexCoordV( ( (vertex.y - upperLeftY) / height) * maxV);
+	        	 vertex.setTexCoordU( vertex.getTexCoordU() * maxU);
+	        	 vertex.setTexCoordV( vertex.getTexCoordV() * maxV);
+				System.out.println("TexU:" + vertex.getTexCoordU() + " TexV:" + vertex.getTexCoordV());
+	        }
+	        shape.getGeometryInfo().updateTextureBuffer(shape.isUseVBOs());
+	        shape.getGeometryInfo().setTextureCoordsAdaptedNPOT(true);
+			return true;
+		}
+		return false;
 	}
     
 

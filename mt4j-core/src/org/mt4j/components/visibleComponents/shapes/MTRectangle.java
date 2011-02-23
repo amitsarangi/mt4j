@@ -24,6 +24,7 @@ import org.mt4j.components.bounds.IBoundingShape;
 import org.mt4j.components.css.style.CSSStyle;
 import org.mt4j.util.GraphicsUtil;
 import org.mt4j.util.MT4jSettings;
+import org.mt4j.util.math.Tools3D;
 import org.mt4j.util.math.Vector3D;
 import org.mt4j.util.math.Vertex;
 import org.mt4j.util.opengl.GLTexture;
@@ -120,6 +121,14 @@ public class MTRectangle extends MTPolygon {
 		this.setTextureEnabled(true);
 	}
 	
+	//FIXME TEST -> adapt tex coords for non fitting, NPOT gl texture
+	private void adaptTexCoordsForNPOTUse(){
+		PImage tex = this.getTexture();
+		if (tex instanceof GLTexture){
+			Tools3D.adaptTextureCoordsNPOT(this, (GLTexture)tex);
+		}
+	}
+	
 	@Override
 	public void setUseDirectGL(boolean drawPureGL) {
 		super.setUseDirectGL(drawPureGL);
@@ -130,38 +139,6 @@ public class MTRectangle extends MTPolygon {
 	public void setTexture(PImage newTexImage) {
 		super.setTexture(newTexImage);
 		adaptTexCoordsForNPOTUse();
-	}
-	
-	//FIXME TEST -> adapt tex coords for non fitting, NPOT gl texture
-	private boolean adaptedCoords = false;
-	private void adaptTexCoordsForNPOTUse(){
-		PImage tex = this.getTexture();
-		if (tex instanceof GLTexture 
-				&& !adaptedCoords 
-				&& !GraphicsUtil.isNPOTTextureSupported() 
-				&& ((GLTexture) tex).getTextureTargetEnum() == TEXTURE_TARGET.TEXTURE_2D 
-				&& this.getGeometryInfo().isTextureCoordsNormalized()
-		) {
-			GLTexture glt = (GLTexture) tex;
-			
-			float maxU = (float)glt.width / (float)glt.glWidth;
-			float maxV = (float)glt.height / (float)glt.glHeight;
-			
-			Vertex[] verts = this.getVerticesLocal();
-//			verts[1].setTexCoordU(maxU);
-//			
-//			verts[2].setTexCoordU(maxU);
-//			verts[2].setTexCoordV(maxV);
-//			
-//			verts[3].setTexCoordV(maxV);
-			for (Vertex vertex : verts) {
-				vertex.setTexCoordU( vertex.getTexCoordU() * maxU);
-				vertex.setTexCoordV( vertex.getTexCoordV() * maxV);
-			}
-
-			this.getGeometryInfo().updateTextureBuffer(this.isUseVBOs());
-			adaptedCoords = true;
-		}
 	}
 	
 	

@@ -39,12 +39,15 @@ import org.mt4j.components.bounds.BoundingSphere;
 import org.mt4j.components.bounds.IBoundingShape;
 import org.mt4j.components.visibleComponents.shapes.AbstractShape;
 import org.mt4j.components.visibleComponents.shapes.GeometryInfo;
+import org.mt4j.util.math.Tools3D;
 import org.mt4j.util.math.ToolsMath;
 import org.mt4j.util.math.ToolsBuffers;
 import org.mt4j.util.math.Vector3D;
 import org.mt4j.util.math.Vertex;
+import org.mt4j.util.opengl.GLTexture;
 
 import processing.core.PApplet;
+import processing.core.PImage;
 
 /**
  * <code>Sphere</code> represents a 3D object with all points equidistance
@@ -860,6 +863,30 @@ public class MTSphere extends MTTriangleMesh {
 //        getIndexData();
     }
 
+    
+    @Override
+	public void setUseDirectGL(boolean drawPureGL) {
+		super.setUseDirectGL(drawPureGL);
+		adaptTexCoordsForNPOTUse();
+	}
+	
+	@Override
+	public void setTexture(PImage newTexImage) {
+		super.setTexture(newTexImage);
+		adaptTexCoordsForNPOTUse();
+	}
+	
+	//FIXME TEST -> adapt tex coords for non fitting, NPOT gl texture
+	private boolean adaptedCoords = false;
+	private void adaptTexCoordsForNPOTUse(){
+		PImage tex = this.getTexture();
+		if (tex instanceof GLTexture 
+			&& !adaptedCoords 
+		){
+			GLTexture glt = (GLTexture) tex;
+			adaptedCoords = Tools3D.adaptTextureCoordsNPOT(this, glt);
+		}
+	}
 
 }
 
