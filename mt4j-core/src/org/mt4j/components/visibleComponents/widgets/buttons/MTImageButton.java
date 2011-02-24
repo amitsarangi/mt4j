@@ -19,8 +19,6 @@ package org.mt4j.components.visibleComponents.widgets.buttons;
 
 //import java.awt.event.ActionEvent;
 //import java.awt.event.ActionListener;
-import java.util.ArrayList;
-
 import org.mt4j.components.bounds.BoundsZPlaneRectangle;
 import org.mt4j.components.bounds.IBoundingShape;
 import org.mt4j.components.interfaces.IclickableButton;
@@ -30,7 +28,6 @@ import org.mt4j.input.gestureAction.DefaultButtonClickAction;
 import org.mt4j.input.inputProcessors.componentProcessors.dragProcessor.DragProcessor;
 import org.mt4j.input.inputProcessors.componentProcessors.rotateProcessor.RotateProcessor;
 import org.mt4j.input.inputProcessors.componentProcessors.scaleProcessor.ScaleProcessor;
-import org.mt4j.input.inputProcessors.componentProcessors.tapProcessor.TapEvent;
 import org.mt4j.input.inputProcessors.componentProcessors.tapProcessor.TapProcessor;
 
 import processing.core.PApplet;

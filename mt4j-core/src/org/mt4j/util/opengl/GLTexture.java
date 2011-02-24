@@ -24,6 +24,7 @@ import javax.media.opengl.GL;
 import org.mt4j.MTApplication;
 import org.mt4j.util.GraphicsUtil;
 import org.mt4j.util.math.ToolsBuffers;
+import org.mt4j.util.math.ToolsMath;
 
 import processing.core.PApplet;
 import processing.core.PConstants;
@@ -316,8 +317,8 @@ public class GLTexture extends PImage {
     		this.glHeight = height;
     	}else{
     		this.glTextureSettings.target = TEXTURE_TARGET.TEXTURE_2D;
-    		this.glWidth = nextPowerOfTwo(width);
-    		this.glHeight = nextPowerOfTwo(height);
+    		this.glWidth = ToolsMath.nextPowerOfTwo(width);
+    		this.glHeight = ToolsMath.nextPowerOfTwo(height);
     	}
 
     	this.app = parent;
@@ -413,8 +414,8 @@ public class GLTexture extends PImage {
     		this.glHeight = height;
     	}else{
     		this.glTextureSettings.target = TEXTURE_TARGET.TEXTURE_2D;
-    		this.glWidth = nextPowerOfTwo(width);
-    		this.glHeight = nextPowerOfTwo(height);
+    		this.glWidth = ToolsMath.nextPowerOfTwo(width);
+    		this.glHeight = ToolsMath.nextPowerOfTwo(height);
     	}
     	
     	//this.loadPixels(); //FIXME neccessary? if we assigned the pixel array it should be loaded already!
@@ -454,8 +455,8 @@ public class GLTexture extends PImage {
     		this.glHeight = height;
     	}else{
     		this.glTextureSettings.target = TEXTURE_TARGET.TEXTURE_2D;
-    		this.glWidth = nextPowerOfTwo(width);
-    		this.glHeight = nextPowerOfTwo(height);
+    		this.glWidth = ToolsMath.nextPowerOfTwo(width);
+    		this.glHeight = ToolsMath.nextPowerOfTwo(height);
     	}
 
     	//FIXME TEST -> only init GL texture if in opengl thread!
@@ -482,6 +483,23 @@ public class GLTexture extends PImage {
     public void setupGLTexture(int width, int height){ //TODO make private/protected
     	if (this.glTextureID[0] != 0)
     		destroy();
+    	
+    	if (this.width == 0 && this.height == 0){
+    		this.width = width;
+    		this.height = height;
+    	}
+    	
+    	if (this.glWidth == 0 && this.glHeight == 0){
+    		if (!isPImagePOT(width, height) && GraphicsUtil.isNPOTTextureSupported()){
+        		this.glTextureSettings.target = TEXTURE_TARGET.RECTANGULAR;
+        		this.glWidth = width;
+        		this.glHeight = height;
+        	}else{
+        		this.glTextureSettings.target = TEXTURE_TARGET.TEXTURE_2D;
+        		this.glWidth = ToolsMath.nextPowerOfTwo(width);
+        		this.glHeight = ToolsMath.nextPowerOfTwo(height);
+        	}
+    	}
     	
     	//FIXME if check done here, we can remove the check elsewhere?
     	if (this.glTextureSettings.target != TEXTURE_TARGET.RECTANGULAR && !isPImagePOT(width, height) && GraphicsUtil.isNPOTTextureSupported()){
@@ -597,8 +615,8 @@ public class GLTexture extends PImage {
     		this.glHeight = height;
     	}else{
     		this.glTextureSettings.target = TEXTURE_TARGET.TEXTURE_2D;
-    		this.glWidth = nextPowerOfTwo(width);
-    		this.glHeight = nextPowerOfTwo(height);
+    		this.glWidth = ToolsMath.nextPowerOfTwo(width);
+    		this.glHeight = ToolsMath.nextPowerOfTwo(height);
     	}
     	this.loadTexture(img, this.glTextureSettings);
     }
@@ -609,22 +627,6 @@ public class GLTexture extends PImage {
     }
     
     
-    private static int nextPowerOfTwo(int n) {
-    	  	n--;
-    	    n |= n >> 1;
-    	    n |= n >> 2;
-    	    n |= n >> 4;
-    	    n |= n >> 8;
-    	    n |= n >> 16;
-    	    n++;
-    	    return n;
-//    	int v = 1;
-//    	while (v < n) {
-//    		v <<= 1;
-//    	}
-//    	return v;
-      } 
-
     
     /**
      * Sets this texture to the data of the specified PImage.
@@ -645,8 +647,8 @@ public class GLTexture extends PImage {
     	  this.glHeight = img.height;
       }else{
     	  this.glTextureSettings.target = TEXTURE_TARGET.TEXTURE_2D;
-    	  this.glWidth = nextPowerOfTwo(img.width);
-    	  this.glHeight = nextPowerOfTwo(img.height);
+    	  this.glWidth = ToolsMath.nextPowerOfTwo(img.width);
+    	  this.glHeight = ToolsMath.nextPowerOfTwo(img.height);
       }
       
       if ((img.width != this.width) || (img.height != this.height) || glTextureID[0] == 0) {
@@ -676,8 +678,8 @@ public class GLTexture extends PImage {
     		this.glHeight = img.height;
     	}else{
     		this.glTextureSettings.target = TEXTURE_TARGET.TEXTURE_2D;
-    		this.glWidth = nextPowerOfTwo(img.width);
-    		this.glHeight = nextPowerOfTwo(img.height);
+    		this.glWidth = ToolsMath.nextPowerOfTwo(img.width);
+    		this.glHeight = ToolsMath.nextPowerOfTwo(img.height);
     	}
 
     	if ((img.width != width) || (img.height != height) ) {
@@ -994,6 +996,8 @@ public class GLTexture extends PImage {
 		return this.glTextureInitialized;
 	}
 	
+	//FIXME this belongs in PConstants in the Processing desktop version also!
+	 static final int YUV420 = 6;  // Android video preview.
 
 ///*
 	/**

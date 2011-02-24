@@ -2,7 +2,7 @@ package org.mt4j.util.opengl;
 
 import java.nio.Buffer;
 
-public interface GL11Plus extends GL11 {
+public interface GL11Plus  extends GL11, GL20 {
 	//Added for backwards compatibility
 	public static final int GL_LINE_STIPPLE = 0x0B24;
 	public static final int GL_COMPILE = 0x1300;

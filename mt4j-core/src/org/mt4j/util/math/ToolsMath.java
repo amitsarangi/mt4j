@@ -748,6 +748,22 @@ final public class ToolsMath {
 	public static float getRandom(float floor, float ceiling){
 		return (floor + (float)Math.random()*(ceiling-floor));
 	}
+	
+	public static int nextPowerOfTwo(int n) {
+	  	n--;
+	    n |= n >> 1;
+	    n |= n >> 2;
+	    n |= n >> 4;
+	    n |= n >> 8;
+	    n |= n >> 16;
+	    n++;
+	    return n;
+//	int v = 1;
+//	while (v < n) {
+//		v <<= 1;
+//	}
+//	return v;
+  } 
 
 //	/**
 //	 * Checks if is power of two.

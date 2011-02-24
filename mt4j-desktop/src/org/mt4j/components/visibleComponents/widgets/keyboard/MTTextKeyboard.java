@@ -31,6 +31,7 @@ import org.mt4j.components.visibleComponents.widgets.MTTextArea;
 import org.mt4j.components.visibleComponents.widgets.MTTextArea.ExpandDirection;
 import org.mt4j.components.visibleComponents.widgets.buttons.MTSvgButton;
 import org.mt4j.input.gestureAction.DefaultDragAction;
+import org.mt4j.input.inputProcessors.IGestureEventListener;
 import org.mt4j.input.inputProcessors.MTGestureEvent;
 import org.mt4j.input.inputProcessors.componentProcessors.dragProcessor.DragEvent;
 import org.mt4j.input.inputProcessors.componentProcessors.dragProcessor.DragProcessor;
@@ -38,6 +39,7 @@ import org.mt4j.input.inputProcessors.componentProcessors.lassoProcessor.LassoPr
 import org.mt4j.input.inputProcessors.componentProcessors.rotateProcessor.RotateProcessor;
 import org.mt4j.input.inputProcessors.componentProcessors.scaleProcessor.ScaleProcessor;
 import org.mt4j.input.inputProcessors.componentProcessors.tapProcessor.TapEvent;
+import org.mt4j.input.inputProcessors.componentProcessors.tapProcessor.TapProcessor;
 import org.mt4j.util.MT4jSettings;
 import org.mt4j.util.MTColor;
 import org.mt4j.util.math.Matrix;
@@ -116,92 +118,88 @@ public class MTTextKeyboard extends MTKeyboard {
 		newTextFieldSvg.scale(0.8f, 0.8f, 1, new Vector3D(0,0,0));
 		newTextFieldSvg.translate(new Vector3D(10,5,0));
 
-		newTextFieldSvg.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent arg0) {
-					if (arg0.getSource() instanceof MTComponent){
-						MTComponent clickedComp = (MTComponent)arg0.getSource();
+		newTextFieldSvg.addGestureListener(TapProcessor.class, new IGestureEventListener() {
+			@Override
+			public boolean processGestureEvent(MTGestureEvent ge) {
+				TapEvent te = (TapEvent)ge;
+				MTComponent clickedComp = MTTextKeyboard.this;
+				if (te.isTapped()){
+					//should always be keyboard
+					MTComponent parent = clickedComp.getParent();
+					if (parent instanceof MTTextKeyboard){
+						MTTextKeyboard keyboard = (MTTextKeyboard)parent;
 
-						switch (arg0.getID()) {
-						case TapEvent.TAPPED:
-							//should always be keyboard
-							MTComponent parent = clickedComp.getParent();
-							if (parent instanceof MTTextKeyboard){
-								MTTextKeyboard keyboard = (MTTextKeyboard)parent;
+						//Remove old Textfield from keyboard if there is any
+						if (textInputListener != null){
+							
+							if (textInputListener instanceof MTTextArea){
+								MTTextArea ta = (MTTextArea)textInputListener;
+								ta.setGestureAllowance(DragProcessor.class, true);
+								ta.setGestureAllowance(RotateProcessor.class, true);
+								ta.setGestureAllowance(ScaleProcessor.class, true);
+								
+								ta.setEnableCaret(false);
+								
+								//Add to clusteranylyzer for clustering the tarea
+								if (getLassoProcessor() != null){
+									getLassoProcessor().addClusterable(ta);
+								}
 
-								//Remove old Textfield from keyboard if there is any
-								if (textInputListener != null){
-									
-									if (textInputListener instanceof MTTextArea){
-										MTTextArea ta = (MTTextArea)textInputListener;
-										ta.setGestureAllowance(DragProcessor.class, true);
-										ta.setGestureAllowance(RotateProcessor.class, true);
-										ta.setGestureAllowance(ScaleProcessor.class, true);
-										
-										ta.setEnableCaret(false);
-										
-										//Add to clusteranylyzer for clustering the tarea
-										if (getLassoProcessor() != null){
-											getLassoProcessor().addClusterable(ta);
-										}
+//								keyboard.setTextInputAcceptor(null);
+								removeTextInputListener(textInputListener);
+								textInputListener = null;
+								
+								ta.removeAllGestureEventListeners(DragProcessor.class);
+								ta.addGestureListener(DragProcessor.class, defaultDragAction);
+//								ta.unassignGestureClassAndAction(DragGestureAnalyzer.class);
+//								ta.assignGestureClassAndAction(DragGestureAnalyzer.class, defaultDragAction);
 
-//										keyboard.setTextInputAcceptor(null);
-										removeTextInputListener(textInputListener);
-										textInputListener = null;
-										
-										ta.removeAllGestureEventListeners(DragProcessor.class);
-										ta.addGestureListener(DragProcessor.class, defaultDragAction);
-//										ta.unassignGestureClassAndAction(DragGestureAnalyzer.class);
-//										ta.assignGestureClassAndAction(DragGestureAnalyzer.class, defaultDragAction);
+								//The direction, in which the textarea will float off 
+								Vector3D v = new Vector3D(0,-100, 0);
 
-										//The direction, in which the textarea will float off 
-										Vector3D v = new Vector3D(0,-100, 0);
+								//Add the textarea to the set parent
+								if (getParentToAddNewTextAreaTo() != null){
+									//Transform the textarea so it appears at the same world coords after its added to another parent
+									Matrix m = MTComponent.getTransformToDestinationParentSpace(ta, getParentToAddNewTextAreaTo());
+									ta.transform(m);
+									//Transform the direction vector for the translation animation 
+									//to preserve the direction from the old reference frame to the new parents one
+//									v.transformNormal(m);
+									v.transformDirectionVector(m);
 
-										//Add the textarea to the set parent
-										if (getParentToAddNewTextAreaTo() != null){
-											//Transform the textarea so it appears at the same world coords after its added to another parent
-											Matrix m = MTComponent.getTransformToDestinationParentSpace(ta, getParentToAddNewTextAreaTo());
-											ta.transform(m);
-											//Transform the direction vector for the translation animation 
-											//to preserve the direction from the old reference frame to the new parents one
-//											v.transformNormal(m);
-											v.transformDirectionVector(m);
+									ta.tweenTranslate(v, 500, 0.3f, 0.7f);
 
-											ta.tweenTranslate(v, 500, 0.3f, 0.7f);
+									getParentToAddNewTextAreaTo().addChild(ta);
+								}else{
+									//If that isnt set, try to add it to the keyboards parent
+									if (getParent() != null){
+										/////////////////////////
+										// Transform the textarea so it appears at the same place after its added to another parent
+										Matrix m = MTComponent.getTransformToDestinationParentSpace(ta, getParent());
+										ta.transform(m);
+										//Transform the direction vector to preserve the global direction
+										//from the old reference frame to the new parents one
+										//The translation part has to be removed from the matrix because we're transforming 
+										//a translation vector not a point vector
+										v.transformDirectionVector(m);
 
-											getParentToAddNewTextAreaTo().addChild(ta);
-										}else{
-											//If that isnt set, try to add it to the keyboards parent
-											if (getParent() != null){
-												/////////////////////////
-												// Transform the textarea so it appears at the same place after its added to another parent
-												Matrix m = MTComponent.getTransformToDestinationParentSpace(ta, getParent());
-												ta.transform(m);
-												//Transform the direction vector to preserve the global direction
-												//from the old reference frame to the new parents one
-												//The translation part has to be removed from the matrix because we're transforming 
-												//a translation vector not a point vector
-												v.transformDirectionVector(m);
-
-												ta.tweenTranslate(v, 500, 0.3f, 0.7f);
-												/////////////////////
-												getParent().addChild(ta);
-											}else{
-												//do nothing..?
-												throw new RuntimeException("Dont know where to add text area to!");
-											}
-										}
-									}//if (text instanceof MTTextArea){
-								}//if (keyboard.getTextInputAcceptor() != null){
-								//Create a new textarea
-								keyboard.createNewTextArea();
-							}//if (parent instanceof MTTextKeyboard){
-							break;
-						default:
-							break;
-						}
-					}
+										ta.tweenTranslate(v, 500, 0.3f, 0.7f);
+										/////////////////////
+										getParent().addChild(ta);
+									}else{
+										//do nothing..?
+										throw new RuntimeException("Dont know where to add text area to!");
+									}
+								}
+							}//if (text instanceof MTTextArea){
+						}//if (keyboard.getTextInputAcceptor() != null){
+						//Create a new textarea
+						keyboard.createNewTextArea();
+					}//if (parent instanceof MTTextKeyboard){
 				}
-			});
+				return false;
+			}
+		});
 		this.addChild(newTextFieldSvg);
 	}
 	

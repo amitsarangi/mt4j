@@ -131,10 +131,14 @@ public class MTKeyboard extends MTRoundRectangle implements IKeyListener {
 		keybCloseSvg.scale(0.8f, 0.8f, 1, new Vector3D(0,0,0));
 		keybCloseSvg.translate(new Vector3D(640,5,0));
 		keybCloseSvg.setBoundsPickingBehaviour(AbstractShape.BOUNDS_ONLY_CHECK);
-		keybCloseSvg.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				if (arg0.getID() == TapEvent.TAPPED)
+		keybCloseSvg.addGestureListener(TapProcessor.class, new IGestureEventListener() {
+			@Override
+			public boolean processGestureEvent(MTGestureEvent ge) {
+				TapEvent te = (TapEvent)ge;
+				if (te.isTapped()){
 					onCloseButtonClicked();
+				}
+				return false;
 			}
 		});
 		this.addChild(keybCloseSvg);

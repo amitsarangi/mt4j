@@ -17,9 +17,6 @@
  ***********************************************************************/
 package org.mt4j.components.visibleComponents.widgets;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
 import org.mt4j.components.MTComponent;
 import org.mt4j.components.StateChange;
 import org.mt4j.components.StateChangeEvent;
@@ -29,8 +26,11 @@ import org.mt4j.components.visibleComponents.shapes.AbstractShape;
 import org.mt4j.components.visibleComponents.shapes.MTPolygon;
 import org.mt4j.components.visibleComponents.shapes.MTRectangle;
 import org.mt4j.components.visibleComponents.widgets.buttons.MTSvgButton;
+import org.mt4j.input.inputProcessors.IGestureEventListener;
+import org.mt4j.input.inputProcessors.MTGestureEvent;
 import org.mt4j.input.inputProcessors.componentProcessors.lassoProcessor.IdragClusterable;
 import org.mt4j.input.inputProcessors.componentProcessors.tapProcessor.TapEvent;
+import org.mt4j.input.inputProcessors.componentProcessors.tapProcessor.TapProcessor;
 import org.mt4j.util.MT4jSettings;
 import org.mt4j.util.MTColor;
 import org.mt4j.util.animation.Animation;
@@ -128,7 +128,8 @@ public class MTImage extends MTRectangle implements IdragClusterable{
 				keybCloseSvg.scale(0.5f, 0.5f, 1, new Vector3D(0,0,0));
 				keybCloseSvg.translate(new Vector3D(this.getWidthXY(TransformSpace.RELATIVE_TO_PARENT) - 45, 2,0));
 				keybCloseSvg.setBoundsPickingBehaviour(AbstractShape.BOUNDS_ONLY_CHECK);
-				keybCloseSvg.addActionListener(new CloseActionListener(new MTComponent[]{this, keybCloseSvg}) );
+				keybCloseSvg.addGestureListener(TapProcessor.class, new CloseActionListener(new MTComponent[]{this, keybCloseSvg}) );
+				
 				keybCloseSvg.setName("closeButton");
 				this.addChild(keybCloseSvg);
 				this.closeButton = keybCloseSvg;
@@ -151,7 +152,7 @@ public class MTImage extends MTRectangle implements IdragClusterable{
 	 * 
 	 * @author Cruff
 	 */
-	private class CloseActionListener implements ActionListener{
+	private class CloseActionListener implements IGestureEventListener{
 			/** The comps. */
 			public MTComponent[] comps;
 			
@@ -168,11 +169,47 @@ public class MTImage extends MTRectangle implements IdragClusterable{
 				this.comps = comps;
 			}
 
-			/* (non-Javadoc)
-			 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+			
+			/**
+			 * Resize.
+			 * 
+			 * @param referenceComp the reference comp
+			 * @param compToResize the comp to resize
+			 * @param width the width
+			 * @param height the height
 			 */
-			public void actionPerformed(ActionEvent arg0) {
-				switch (arg0.getID()) {
+			protected void resize(MTPolygon referenceComp, MTComponent compToResize, float width, float height){ 
+				Vector3D centerPoint = getRefCompCenterRelParent(referenceComp);
+				compToResize.scale(1/referenceComp.getWidthXY(TransformSpace.RELATIVE_TO_PARENT), (float)1/referenceComp.getWidthXY(TransformSpace.RELATIVE_TO_PARENT), 1, centerPoint, TransformSpace.RELATIVE_TO_PARENT);
+				compToResize.scale(width, width, 1, centerPoint, TransformSpace.RELATIVE_TO_PARENT);
+			}
+			
+			
+			/**
+			 * Gets the ref comp center local.
+			 * 
+			 * @param shape the shape
+			 * 
+			 * @return the ref comp center local
+			 */
+			protected Vector3D getRefCompCenterRelParent(AbstractShape shape){
+				Vector3D centerPoint;
+				if (shape.hasBounds()){
+					centerPoint = shape.getBounds().getCenterPointLocal();
+					centerPoint.transform(shape.getLocalMatrix()); //macht den punkt in self space
+				}else{
+					Vector3D localObjCenter = shape.getCenterPointGlobal();
+					localObjCenter.transform(shape.getGlobalInverseMatrix()); //to localobj space
+					localObjCenter.transform(shape.getLocalMatrix()); //to parent relative space
+					centerPoint = localObjCenter;
+				}
+				return centerPoint;
+			}
+
+			@Override
+			public boolean processGestureEvent(MTGestureEvent ge) {
+				TapEvent te = (TapEvent)ge;
+				switch (te.getTapID()) {
 				case TapEvent.TAPPED:
 					//Get the first polygon type out of the array
                     for (MTComponent comp : comps) { //TODO this is stupid.. redo this whole thing
@@ -216,42 +253,7 @@ public class MTImage extends MTRectangle implements IdragClusterable{
 				default:
 					break;
 				}//switch aeID
-			}
-			
-			/**
-			 * Resize.
-			 * 
-			 * @param referenceComp the reference comp
-			 * @param compToResize the comp to resize
-			 * @param width the width
-			 * @param height the height
-			 */
-			protected void resize(MTPolygon referenceComp, MTComponent compToResize, float width, float height){ 
-				Vector3D centerPoint = getRefCompCenterRelParent(referenceComp);
-				compToResize.scale(1/referenceComp.getWidthXY(TransformSpace.RELATIVE_TO_PARENT), (float)1/referenceComp.getWidthXY(TransformSpace.RELATIVE_TO_PARENT), 1, centerPoint, TransformSpace.RELATIVE_TO_PARENT);
-				compToResize.scale(width, width, 1, centerPoint, TransformSpace.RELATIVE_TO_PARENT);
-			}
-			
-			
-			/**
-			 * Gets the ref comp center local.
-			 * 
-			 * @param shape the shape
-			 * 
-			 * @return the ref comp center local
-			 */
-			protected Vector3D getRefCompCenterRelParent(AbstractShape shape){
-				Vector3D centerPoint;
-				if (shape.hasBounds()){
-					centerPoint = shape.getBounds().getCenterPointLocal();
-					centerPoint.transform(shape.getLocalMatrix()); //macht den punkt in self space
-				}else{
-					Vector3D localObjCenter = shape.getCenterPointGlobal();
-					localObjCenter.transform(shape.getGlobalInverseMatrix()); //to localobj space
-					localObjCenter.transform(shape.getLocalMatrix()); //to parent relative space
-					centerPoint = localObjCenter;
-				}
-				return centerPoint;
+				return false;
 			}
 	}//Class closebutton actionlistener
 	

@@ -104,6 +104,12 @@ public class GLFBO {
 		this.pa = pa;
 //		this.gl = ((PGraphicsOpenGL)pa.g).gl;
 		this.gl = GraphicsUtil.getGL20();
+		if (this.gl == null){
+			this.gl = GraphicsUtil.getGL11Plus();
+		}
+		if (this.gl == null){
+			System.err.println("Error initializing GLFBO - no GL 2.0 compatible OpenGL implementation available!");
+		}
 		
 		this.stencilBufferAttached = attachStencilBuffer;
 		
@@ -142,6 +148,7 @@ public class GLFBO {
 		if (this.isStencilBufferAttached() && GraphicsUtil.isDesktop()){
 			//THIS CREATES A FBO WITH A STENCIL BUFFER! HAS TO BE SUPPORTED ON THE PLATFORM!
 			gl.glRenderbufferStorage(GL20.GL_RENDERBUFFER, GL.GL_DEPTH24_STENCIL8_EXT, this.width, this.height);
+//			gl.glRenderbufferStorageEXT(GL.GL_RENDERBUFFER_EXT, GL.GL_DEPTH24_STENCIL8_EXT, this.width, this.height);
 		}else{
 			//Creates a fbo with a depth but without a stencil buffer
 			gl.glRenderbufferStorage(GL20.GL_RENDERBUFFER, GL20.GL_DEPTH_COMPONENT, this.width, this.height); //orginal	
@@ -150,7 +157,7 @@ public class GLFBO {
 		//Attach depth buffer to FBO
 		gl.glFramebufferRenderbuffer(GL20.GL_FRAMEBUFFER, GL20.GL_DEPTH_ATTACHMENT, GL20.GL_RENDERBUFFER, depthRBID);
 		
-		if (this.isStencilBufferAttached()){
+		if (this.isStencilBufferAttached() && GraphicsUtil.isDesktop()){
 			//Attach stencil buffer to FBO - HAS TO BE SUPPORTED ON THE PLATFORM!
 			gl.glFramebufferRenderbuffer(GL20.GL_FRAMEBUFFER, GL20.GL_STENCIL_ATTACHMENT, GL20.GL_RENDERBUFFER, depthRBID);			
 		}
@@ -180,7 +187,7 @@ public class GLFBO {
 	public GLTexture addNewTexture(boolean useMipMap){
 		this.bind();
 
-		boolean isPowerOfTwoDimension = ToolsMath.isPowerOfTwo(this.width) && ToolsMath.isPowerOfTwo(this.height);
+//		boolean isPowerOfTwoDimension = ToolsMath.isPowerOfTwo(this.width) && ToolsMath.isPowerOfTwo(this.height);
 		
 		GLTextureSettings texSettings = new GLTextureSettings();
 		texSettings.wrappingHorizontal = WRAP_MODE.CLAMP_TO_EDGE;
@@ -207,23 +214,31 @@ public class GLFBO {
 ////		tp.wrap_s = GL.GL_CLAMP;
 ////		tp.wrap_t = GL.GL_CLAMP;
 		
-		//Set texture TARGET
-		if (isPowerOfTwoDimension){
-//			tp.target = GLTextureParameters.NORMAL;
-			texSettings.target = TEXTURE_TARGET.TEXTURE_2D;
-			logger.debug("Power of 2 FBO texture created");
-		}else{
-//			tp.target = GLTextureParameters.RECTANGULAR;	
-			texSettings.target = TEXTURE_TARGET.RECTANGULAR;
-			logger.debug("Rectangular FBO texture created");
-		}
+//		//Set texture TARGET
+//		if (isPowerOfTwoDimension){
+////			tp.target = GLTextureParameters.NORMAL;
+//			texSettings.target = TEXTURE_TARGET.TEXTURE_2D;
+//			logger.debug("Power of 2 FBO texture created");
+//		}else{
+////			tp.target = GLTextureParameters.RECTANGULAR;	
+//			texSettings.target = TEXTURE_TARGET.RECTANGULAR;
+//			logger.debug("Rectangular FBO texture created");
+//		}
 		
 //		GLTexture tex = new GLTexture(pa, this.width, this.height, tp, true, 0);
 		GLTexture tex = new GLTexture(this.pa, texSettings);
+//		if (!(ToolsMath.isPowerOfTwo(this.width) && ToolsMath.isPowerOfTwo(this.height)) && GraphicsUtil.isNPOTTextureSupported()){
+//			tex.width 		= this.width;
+//			tex.height 		= this.height;
+//			tex.glWidth 	= width;
+//    		tex.glHeight 	= height;
+//    	}else{
+//    		tex.width 		= this.width;
+//    		tex.height 		= this.height;
+//    		tex.glWidth 	= ToolsMath.nextPowerOfTwo(width);
+//    		tex.glHeight 	= ToolsMath.nextPowerOfTwo(height);
+//    	}
 		tex.setupGLTexture(this.width, this.height);
-		tex.width = this.width;
-		tex.height = this.height; //To prevent init() call in loadGLTexture().. not even neccessary with fbo usage?
-		
 		gl.glBindTexture(tex.getTextureTarget(), tex.getTextureID());
 		
 		//Use extension to automatically generate mipmaps for the fbo textures 

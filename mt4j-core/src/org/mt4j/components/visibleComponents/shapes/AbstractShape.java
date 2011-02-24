@@ -788,9 +788,6 @@ public abstract class AbstractShape extends AbstractVisibleComponent{
 						//FIXME dont do it if it has the same dimensions!
 						this.fromRectModeToRectMode(newTexImage, this.getVerticesLocal(), this.lastTextureDimension.x, this.lastTextureDimension.y);
 					}
-					
-					this.textureImage = newTexImage;
-					this.lastTextureDimension.setXYZ(newTexImage.width, newTexImage.height, 0);
 				}else{
 					this.setTextureMode(PConstants.NORMAL);
 					

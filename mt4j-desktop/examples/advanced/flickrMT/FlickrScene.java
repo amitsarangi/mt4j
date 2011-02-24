@@ -1,7 +1,5 @@
 package advanced.flickrMT;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.io.FileInputStream;
 import java.io.InputStream;
@@ -129,104 +127,106 @@ public class FlickrScene extends AbstractScene {
 			        flickrButton.setBoundsPickingBehaviour(AbstractShape.BOUNDS_ONLY_CHECK);
 			        
 			        //Add actionlistener to flickr button
-			        flickrButton.addActionListener(new ActionListener() {
-						public void actionPerformed(ActionEvent arg0) {
-							if (arg0.getSource() instanceof MTComponent){
-								//MTBaseComponent clickedComp = (MTBaseComponent)arg0.getSource();
-								switch (arg0.getID()) {
-								case TapEvent.TAPPED:
-									//Get current search parameters
-							        SearchParameters sp = new SearchParameters();
-							        //sp.setSafeSearch("213on");
-							        /*
-							        DateFormat dateFormat = new SimpleDateFormat ("yyyy/MM/dd HH:mm:ss");
-							        java.util.Date date = new java.util.Date ();
-							        String dateStr = dateFormat.format (date);
-							        System.out.println("Date: " + dateStr);
-							        try{
-							        	Date date2 = dateFormat.parse (dateStr);
-							        	sp.setInterestingnessDate(date2);
-							        }catch(ParseException pe){
-							        	pe.printStackTrace();
-							        }
-							        */
-							        
-							        //sp.setMachineTags(new String[]{"geo:locality=\"san francisco\""});
-							        sp.setText(t.getText());
-							        //sp.setTags(new String[]{t.getText()});
-							        sp.setSort(SearchParameters.RELEVANCE);
-							        
-							        System.out.println("Flickr search for: \"" + t.getText() + "\"");
-							        
-							        //Load flickr api key from file
-							        String flickrApiKey = "";
-							        String flickrSecret = "";
-							        Properties properties = new Properties();
-							        try {
-							        	InputStream in = null;
-							        	try {
-							        		in = new FileInputStream( "examples" + MTApplication.separator + "advanced" + MTApplication.separator + "flickrMT" + MTApplication.separator + "data" + MTApplication.separator + "FlickrApiKey.txt");
+			        flickrButton.addGestureListener(TapProcessor.class, new IGestureEventListener() {
+						
+						@Override
+						public boolean processGestureEvent(MTGestureEvent ge) {
+							TapEvent te = (TapEvent)ge;
+							switch (te.getTapID()) {
+							case TapEvent.TAPPED:
+								//Get current search parameters
+						        SearchParameters sp = new SearchParameters();
+						        //sp.setSafeSearch("213on");
+						        /*
+						        DateFormat dateFormat = new SimpleDateFormat ("yyyy/MM/dd HH:mm:ss");
+						        java.util.Date date = new java.util.Date ();
+						        String dateStr = dateFormat.format (date);
+						        System.out.println("Date: " + dateStr);
+						        try{
+						        	Date date2 = dateFormat.parse (dateStr);
+						        	sp.setInterestingnessDate(date2);
+						        }catch(ParseException pe){
+						        	pe.printStackTrace();
+						        }
+						        */
+						        
+						        //sp.setMachineTags(new String[]{"geo:locality=\"san francisco\""});
+						        sp.setText(t.getText());
+						        //sp.setTags(new String[]{t.getText()});
+						        sp.setSort(SearchParameters.RELEVANCE);
+						        
+						        System.out.println("Flickr search for: \"" + t.getText() + "\"");
+						        
+						        //Load flickr api key from file
+						        String flickrApiKey = "";
+						        String flickrSecret = "";
+						        Properties properties = new Properties();
+						        try {
+						        	InputStream in = null;
+						        	try {
+						        		in = new FileInputStream( "examples" + MTApplication.separator + "advanced" + MTApplication.separator + "flickrMT" + MTApplication.separator + "data" + MTApplication.separator + "FlickrApiKey.txt");
+									} catch (Exception e) {
+										System.err.println(e.getLocalizedMessage());
+									}
+									
+						        	if (in == null){
+						        		try {
+						        			in = Thread.currentThread().getContextClassLoader().getResourceAsStream("advanced" + MTApplication.separator + "flickrMT" + MTApplication.separator + "data" + MTApplication.separator + "FlickrApiKey.txt");
 										} catch (Exception e) {
 											System.err.println(e.getLocalizedMessage());
 										}
-										
-							        	if (in == null){
-							        		try {
-							        			in = Thread.currentThread().getContextClassLoader().getResourceAsStream("advanced" + MTApplication.separator + "flickrMT" + MTApplication.separator + "data" + MTApplication.separator + "FlickrApiKey.txt");
-											} catch (Exception e) {
-												System.err.println(e.getLocalizedMessage());
-											}
-							        	}
-							        	properties.load(in);
+						        	}
+						        	properties.load(in);
 
-							        	flickrApiKey = properties.getProperty("FlickrApiKey", " ");
-							        	flickrSecret = properties.getProperty("FlickrSecret", " ");
-								    } catch (Exception e) {
-								    	System.err.println("Error while loading FlickrApiKey.txt file.");
-								    	e.printStackTrace();
-								    	
-								    }
-							        
-							        //Create flickr loader thread
-							        final FlickrMTFotoLoader flickrLoader = new FlickrMTFotoLoader(app, flickrApiKey, flickrSecret, sp, 300);
-							        flickrLoader.setFotoLoadCount(5);
-							        //Define action when loader thread finished
-							        flickrLoader.addProgressFinishedListener(new IMTEventListener(){
-										public void processMTEvent(MTEvent mtEvent) {
-											//Add the loaded fotos in the main drawing thread to
-											//avoid threading problems
-											registerPreDrawAction(new IPreDrawAction(){
-												public void processAction() {
-													MTImage[] fotos = flickrLoader.getMtFotos();
-                                                    for (MTImage card : fotos) {
-                                                        card.setUseDirectGL(true);
-                                                        card.setDisplayCloseButton(true);
-                                                        card.setPositionGlobal(new Vector3D(ToolsMath.getRandom(10, MT4jSettings.getInstance().getWindowWidth() - 100), ToolsMath.getRandom(10, MT4jSettings.getInstance().getWindowHeight() - 50), 0));
-                                                        card.scale(0.6f, 0.6f, 0.6f, card.getCenterPointLocal(), TransformSpace.LOCAL);
-                                                        card.addGestureListener(DragProcessor.class, new InertiaDragAction());
-                                                        lassoProcessor.addClusterable(card); //make fotos lasso-able
-                                                        pictureLayer.addChild(card);
-                                                    }
-													progressBar.setVisible(false);
-												}
-												
-												public boolean isLoop() {
-													return false;
-												}
-											});
-										}
-							        });
-							        progressBar.setProgressInfoProvider(flickrLoader);
-							        progressBar.setVisible(true);
-							        //Run the thread
-							        flickrLoader.start();
-							        //Clear textarea
-							        t.clear();
-									break;
-								default:
-									break;
-								}
+						        	flickrApiKey = properties.getProperty("FlickrApiKey", " ");
+						        	flickrSecret = properties.getProperty("FlickrSecret", " ");
+							    } catch (Exception e) {
+							    	System.err.println("Error while loading FlickrApiKey.txt file.");
+							    	e.printStackTrace();
+							    	
+							    }
+						        
+						        //Create flickr loader thread
+						        final FlickrMTFotoLoader flickrLoader = new FlickrMTFotoLoader(app, flickrApiKey, flickrSecret, sp, 300);
+						        flickrLoader.setFotoLoadCount(5);
+						        //Define action when loader thread finished
+						        flickrLoader.addProgressFinishedListener(new IMTEventListener(){
+									public void processMTEvent(MTEvent mtEvent) {
+										//Add the loaded fotos in the main drawing thread to
+										//avoid threading problems
+										registerPreDrawAction(new IPreDrawAction(){
+											public void processAction() {
+												MTImage[] fotos = flickrLoader.getMtFotos();
+                                                for (MTImage card : fotos) {
+                                                    card.setUseDirectGL(true);
+                                                    card.setDisplayCloseButton(true);
+                                                    card.setPositionGlobal(new Vector3D(ToolsMath.getRandom(10, MT4jSettings.getInstance().getWindowWidth() - 100), ToolsMath.getRandom(10, MT4jSettings.getInstance().getWindowHeight() - 50), 0));
+                                                    card.scale(0.6f, 0.6f, 0.6f, card.getCenterPointLocal(), TransformSpace.LOCAL);
+                                                    card.addGestureListener(DragProcessor.class, new InertiaDragAction());
+                                                    lassoProcessor.addClusterable(card); //make fotos lasso-able
+                                                    pictureLayer.addChild(card);
+                                                }
+												progressBar.setVisible(false);
+											}
+											
+											public boolean isLoop() {
+												return false;
+											}
+										});
+									}
+						        });
+						        progressBar.setProgressInfoProvider(flickrLoader);
+						        progressBar.setVisible(true);
+						        //Run the thread
+						        flickrLoader.start();
+						        //Clear textarea
+						        t.clear();
+								break;
+							default:
+								break;
 							}
+								
+							return false;
 						}
 					});
 					keyb.addChild(flickrButton);
