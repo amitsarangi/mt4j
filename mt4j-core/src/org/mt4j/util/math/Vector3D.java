@@ -1033,7 +1033,7 @@ public class Vector3D {
      * @see java.lang.Object#toString()
      */
     public String toString(){
-    	return " X:" + this.getX() + " Y:" + this.getY() + " Z:" + this.getZ() + " W:" + this.getW();
+    	return "(" + x + "," + y + "," + z + "," + w + ")";
     }
     
 //    //TODO CHECK IF THIS WORKS; TOO

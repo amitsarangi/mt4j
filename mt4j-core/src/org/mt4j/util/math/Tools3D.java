@@ -1158,6 +1158,7 @@ public class Tools3D {
 	public static boolean adaptTextureCoordsNPOT(AbstractShape shape, GLTexture tex){
 		if(!GraphicsUtil.isNPOTTextureSupported() 
 			&& !shape.getGeometryInfo().isTextureCoordsAdaptedNPOT()
+			&& !Tools3D.isPowerOfTwoDimension(tex)
 			&& ((GLTexture) tex).getTextureTargetEnum() == TEXTURE_TARGET.TEXTURE_2D 
 			&& shape.getGeometryInfo().isTextureCoordsNormalized()
 		) {
@@ -1171,7 +1172,7 @@ public class Tools3D {
 //	            vertex.setTexCoordV( ( (vertex.y - upperLeftY) / height) * maxV);
 	        	 vertex.setTexCoordU( vertex.getTexCoordU() * maxU);
 	        	 vertex.setTexCoordV( vertex.getTexCoordV() * maxV);
-				System.out.println("TexU:" + vertex.getTexCoordU() + " TexV:" + vertex.getTexCoordV());
+//				System.out.println("TexU:" + vertex.getTexCoordU() + " TexV:" + vertex.getTexCoordV());
 	        }
 	        shape.getGeometryInfo().updateTextureBuffer(shape.isUseVBOs());
 	        shape.getGeometryInfo().setTextureCoordsAdaptedNPOT(true);

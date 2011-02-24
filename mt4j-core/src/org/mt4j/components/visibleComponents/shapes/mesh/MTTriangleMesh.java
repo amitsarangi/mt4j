@@ -219,7 +219,8 @@ public class MTTriangleMesh extends AbstractShape{
 	}
 	
 	
-
+	//TODO re-use old triangles array if same length => dont create new ones each time geometry changes its vertices (and cound stays same)
+	
 	/**
 	 * Create triangles from the mesh information.
 	 * <br>If the geometryInfo is indexed, one triangle is created per 3 indices.

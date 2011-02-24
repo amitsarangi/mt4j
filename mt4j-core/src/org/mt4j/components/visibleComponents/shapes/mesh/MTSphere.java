@@ -818,27 +818,27 @@ public class MTSphere extends MTTriangleMesh {
 //    }
 
     /**
-     * @param textureMode
-     *            The textureMode to set.
-     * @deprecated Use enum version of setTextureMode
-     */
-    @Deprecated
-    public void setTextureMode(int textureMode) {
-        if (textureMode == TEX_ORIGINAL)
-            this.textureMode = TextureMode.Original;
-        else if (textureMode == TEX_PROJECTED)
-            this.textureMode = TextureMode.Projected;
-        setGeometryData(this.getRenderer());
-    }
+//     * @param textureMode
+//     *            The textureMode to set.
+//     * @deprecated Use enum version of setTextureMode
+//     */
+//    @Deprecated
+//    public void setTextureMode(int textureMode) {
+//        if (textureMode == TEX_ORIGINAL)
+//            this.textureMode = TextureMode.Original;
+//        else if (textureMode == TEX_PROJECTED)
+//            this.textureMode = TextureMode.Projected;
+//        setGeometryData(this.getRenderer());
+//    }
 
-    /**
-     * @param textureMode
-     *            The textureMode to set.
-     */
-    public void setTextureMode(TextureMode textureMode) {
-        this.textureMode = textureMode;
-        setGeometryData(this.getRenderer());
-    }
+//    /**
+//     * @param textureMode
+//     *            The textureMode to set.
+//     */
+//    public void setTextureMode(TextureMode textureMode) {
+//        this.textureMode = textureMode;
+//        setGeometryData(this.getRenderer());
+//    }
 
     /**
      * Changes the information of the sphere into the given values.
@@ -864,7 +864,15 @@ public class MTSphere extends MTTriangleMesh {
     }
 
     
-    @Override
+	//FIXME TEST -> adapt tex coords for non fitting, NPOT gl texture
+	private void adaptTexCoordsForNPOTUse(){
+		PImage tex = this.getTexture();
+		if (tex instanceof GLTexture){
+			Tools3D.adaptTextureCoordsNPOT(this, (GLTexture)tex);
+		}
+	}
+	
+	@Override
 	public void setUseDirectGL(boolean drawPureGL) {
 		super.setUseDirectGL(drawPureGL);
 		adaptTexCoordsForNPOTUse();
@@ -874,18 +882,6 @@ public class MTSphere extends MTTriangleMesh {
 	public void setTexture(PImage newTexImage) {
 		super.setTexture(newTexImage);
 		adaptTexCoordsForNPOTUse();
-	}
-	
-	//FIXME TEST -> adapt tex coords for non fitting, NPOT gl texture
-	private boolean adaptedCoords = false;
-	private void adaptTexCoordsForNPOTUse(){
-		PImage tex = this.getTexture();
-		if (tex instanceof GLTexture 
-			&& !adaptedCoords 
-		){
-			GLTexture glt = (GLTexture) tex;
-			adaptedCoords = Tools3D.adaptTextureCoordsNPOT(this, glt);
-		}
 	}
 
 }

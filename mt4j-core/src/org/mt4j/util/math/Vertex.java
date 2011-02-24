@@ -506,4 +506,9 @@ public class Vertex extends Vector3D {
 		this.b = b;
 		this.a = a;
 	}
+	
+	@Override
+	public String toString() {
+		return super.toString() + " U:" + textureU + " V:" + textureV + " Color:(" + r + "," + g + "," + b + "," + a + ")";
+	}
 }
