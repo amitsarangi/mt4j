@@ -137,11 +137,9 @@ public class PhysicsScene extends AbstractScene {
 	}
 
 	public void onEnter() {
-		getMTApplication().registerKeyEvent(this);
 	}
 	
 	public void onLeave() {	
-		getMTApplication().unregisterKeyEvent(this);
 	}
 
 }
