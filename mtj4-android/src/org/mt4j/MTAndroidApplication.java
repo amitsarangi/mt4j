@@ -11,8 +11,11 @@ import org.mt4j.util.logging.ILogger;
 import org.mt4j.util.logging.MTLoggerFactory;
 import org.mt4j.util.opengl.AndroidGL10;
 import org.mt4j.util.opengl.AndroidGL11;
+import org.mt4j.util.opengl.GLTexture;
 
 import processing.core.PGraphicsAndroid3D;
+import processing.core.PImage;
+import processing.core.PTexture.Parameters;
 import android.util.Log;
 import android.view.MotionEvent;
 
@@ -172,6 +175,24 @@ public abstract class MTAndroidApplication extends MTApplication{
 		return true;
 	}
 
+	
+	@Override
+	public PImage loadImage(String filename, int sampling) {
+		if (MT4jSettings.getInstance().isOpenGlMode()){
+			return new GLTexture(this, super.loadImage(filename, sampling));
+		}else{
+			return super.loadImage(filename, sampling);
+		}
+	}
+	
+	@Override
+	public PImage loadImage(String filename, Parameters params) {
+		if (MT4jSettings.getInstance().isOpenGlMode()){
+			return new GLTexture(this, super.loadImage(filename, params));
+		}else{
+			return super.loadImage(filename, params);
+		}
+	}
 
 	
 }

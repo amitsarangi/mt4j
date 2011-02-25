@@ -1492,15 +1492,6 @@ public abstract class MTApplication extends PApplet implements IMTApplication{
 		}
 	}
 	
-//	@Override
-//	public PImage loadImage(String filename, int sampling) { //TODO put into MTAndroidApplication
-//		if (MT4jSettings.getInstance().isOpenGlMode()){
-//			return new GLTexture(this, super.loadImage(filename, sampling));
-//		}else{
-//			return super.loadImage(filename, sampling);
-//		}
-//	}
-	
 	//////////////////////////////////////////////////
 	
 	

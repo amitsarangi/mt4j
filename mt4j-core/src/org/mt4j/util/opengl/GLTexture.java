@@ -1300,6 +1300,15 @@ public class GLTexture extends PImage {
 	
 	
 	@Override
+	public void resize(int wide, int high) {
+		super.resize(wide, high);
+		if (this.isGLTexObjectInitialized()){
+			updateGLTextureFromPImage();
+		}
+	}
+	
+	
+	@Override
 	protected void finalize() throws Throwable {
 		//System.out.println("Finalizing GLTEXTURE - " + this);
 		if (this.app instanceof MTApplication) {
