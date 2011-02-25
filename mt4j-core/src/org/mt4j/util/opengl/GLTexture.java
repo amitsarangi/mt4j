@@ -1306,12 +1306,18 @@ public class GLTexture extends PImage {
 			MTApplication mtApp = (MTApplication) this.app;
 			mtApp.invokeLater(new Runnable() {
 				public void run() {
+					System.out.println("Destroying Texture: " + getTextureID());
 					destroy();
 				}
 			});
 		}else{
 			//TODO use registerPre()?
 			//is the object even valid after finalize() is called??
+			try {
+				destroy();
+			} catch (Exception e) {
+				System.err.println(e.getLocalizedMessage());
+			}
 		}
 		super.finalize();
 	}

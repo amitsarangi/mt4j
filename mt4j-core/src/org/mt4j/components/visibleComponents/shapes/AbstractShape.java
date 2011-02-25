@@ -1245,6 +1245,7 @@ public abstract class AbstractShape extends AbstractVisibleComponent{
 		
 		this.setBounds(null);
 		
+		/*
 		//Delete openGL texture object
 		if (this.getTexture() instanceof GLTexture){
 			GLTexture tex = (GLTexture) this.getTexture();
@@ -1253,6 +1254,8 @@ public abstract class AbstractShape extends AbstractVisibleComponent{
 			this.setTexture(null);
 			this.setTextureEnabled(false);
 		} 
+		*/
+		
 		super.destroy();
 	}
 	
