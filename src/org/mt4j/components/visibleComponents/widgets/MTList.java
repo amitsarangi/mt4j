@@ -187,6 +187,19 @@ public class MTList extends MTClipRectangle {
 	}
 	
 	
+	/**
+	 * Removes the all list elements.
+	 */
+	public void removeAllListElements(){
+		MTComponent[] children = this.listCellContainer.getChildren();
+		for (MTComponent child : children) {
+			if (child instanceof MTListCell) {
+				MTListCell cell = (MTListCell) child;
+				this.listCellContainer.removeCell(cell);
+			}
+		}
+	}
+	
 	private Vector3D getListUpperLeftLocal(){
 		PositionAnchor savedAnchor = this.getAnchor();
 		this.setAnchor(PositionAnchor.UPPER_LEFT);
