@@ -1315,7 +1315,6 @@ public class GLTexture extends PImage {
 			MTApplication mtApp = (MTApplication) this.app;
 			mtApp.invokeLater(new Runnable() {
 				public void run() {
-					System.out.println("Destroying Texture: " + getTextureID());
 					destroy();
 				}
 			});

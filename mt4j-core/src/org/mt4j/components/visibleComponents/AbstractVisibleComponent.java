@@ -181,7 +181,7 @@ public abstract class AbstractVisibleComponent extends MTComponent {
 	public void postDrawChildren(PGraphics g) {
 		//FIXME this is a hack to draw the outline of the shape
 		//over the clipped children, to not process the clipmask
-		//in the superclass we set it to null temporary
+		//in the superclass we temporarily set it to null
 		Clip saved = this.getChildClip();
 		if (saved != null){
 			saved.disableClip(g);

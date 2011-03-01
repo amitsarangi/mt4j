@@ -82,10 +82,11 @@ public class GLStencilUtil {
 	public void beginDrawClipShape(GL10 gl){ //begin draw clip shape
 //		gl.glPushAttrib(GL10.GL_STENCIL_BUFFER_BIT | GL10.GL_STENCIL_TEST); //FIXME do only at initialization??
 //		gl.glPushAttrib(GL10.GL_STENCIL_BUFFER_BIT); //FIXME do only at initialization??
-		if (gl instanceof GL11Plus) {
-			GL11Plus gl11Plus = (GL11Plus) gl;
-			gl11Plus.glPushAttrib(GL10.GL_STENCIL_BUFFER_BIT);
-		}
+
+//		if (gl instanceof GL11Plus) {
+//			GL11Plus gl11Plus = (GL11Plus) gl;
+//			gl11Plus.glPushAttrib(GL10.GL_STENCIL_BUFFER_BIT);
+//		}
 		
 		if (!initialized){
 //			gl.glPushAttrib(GL10.GL_STENCIL_BUFFER_BIT | GL10.GL_STENCIL_TEST);
@@ -244,12 +245,36 @@ public class GLStencilUtil {
 			}
 		}
 		
-		//Restore stencil attributes, disables stencil test and restores stencil buffer bit
-//		gl.glPopAttrib(); //FIXME do this only when stack is emtpied?
-		if (gl instanceof GL11Plus) {
-			GL11Plus gl11Plus = (GL11Plus) gl;
-			gl11Plus.glPopAttrib();
+//		//Restore stencil attributes, disables stencil test and restores stencil buffer bit
+////		gl.glPopAttrib(); //FIXME do this only when stack is emtpied?
+//		if (gl instanceof GL11Plus) {
+//			GL11Plus gl11Plus = (GL11Plus) gl;
+//			gl11Plus.glPopAttrib();
+//		}
+		
+		//Restore /glpushAttrib not available in OpenGL ES
+		gl.glStencilFunc(GL10.GL_EQUAL, stencilValueStack.peek(), stencilValueStack.peek());
+		gl.glStencilOp(GL10.GL_KEEP, GL10.GL_KEEP, GL10.GL_KEEP);
+		if (!initialized){
+//			gl.glClearStencil(stencilValueStack.peek());
+//			gl.glClear(GL10.GL_STENCIL_BUFFER_BIT);
+			gl.glDisable(GL10.GL_STENCIL_TEST);
 		}
+		
+		/*
+		 GL_STENCIL_BUFFER_BIT
+		    GL_STENCIL_TEST enable bit
+		
+		    Stencil function and reference value
+		
+		    Stencil value mask
+		
+		    Stencil fail, pass, and depth buffer pass actions
+		
+		    Stencil buffer clear value
+		
+		    Stencil buffer writemask 
+		*/
 	}
 	
 

@@ -245,7 +245,8 @@ public class FluidSimulationScene extends AbstractScene{
 	        
 	        app.textureMode(PConstants.NORMAL);
 //	        app.textureMode(app.IMAGE);
-	        app.beginShape(MTApplication.QUADS);
+//	        app.beginShape(MTApplication.QUADS);
+	        app.beginShape();
 	        app.texture(imgFluid);
 	        app.vertex(0, 0, 0, 0);
 	        app.vertex(app.width, 0, 1, 0);

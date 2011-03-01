@@ -17,6 +17,9 @@
  ***********************************************************************/
 package org.mt4j.util.opengl;
 
+import java.util.WeakHashMap;
+
+
 //import java.util.WeakHashMap;
 
 //FIXME this is class is not used at the moment - hard to track all states if processing also messes with it
@@ -24,16 +27,13 @@ package org.mt4j.util.opengl;
 //import javax.media.opengl.GL;
 
 
-/**
- * The Class GLStateHolder.
- */
 public class GLStateHolder {
 	
 //	    /** The state. */
 //    	IntHashtable state;
-////	    GLFunc gl;
+//    	//	    GLFunc gl;
 //	    /** The version. */
-//String version;
+//    	String version;
 //	    
 //    	/** The saved count. */
 //    	int savedCount;
@@ -54,7 +54,7 @@ public class GLStateHolder {
 //    	static final boolean DEBUG = false;
 //	    
 //	    /** The gl. */
-//    	GL gl;
+//    	GL20 gl;
 //	    
 //	    
 //	    /**
@@ -316,5 +316,5 @@ public class GLStateHolder {
 //	        glColor4ub((byte)(r*255), (byte)(g*255), (byte)(b*255), (byte)(a*255));
 //	    }
 //	    
-//	    
+	    
 }

@@ -186,6 +186,9 @@ public class MTList extends MTClipRectangle {
 		this.listCellContainer.removeCell(item);
 	}
 	
+	/**
+	 * Removes the all list elements.
+	 */
 	public void removeAllListElements(){
 		MTComponent[] children = this.listCellContainer.getChildren();
 		for (MTComponent child : children) {
