@@ -6,7 +6,7 @@
 	<classpathentry kind="lib" path="lib/ani.jar"/>
 	<classpathentry kind="lib" path="lib/batik-css.jar"/>
 	<classpathentry kind="lib" path="lib/xml-apis-ext.jar"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/android-core"/>
 	<classpathentry kind="var" path="android_sdk_dir_8"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/android-core"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

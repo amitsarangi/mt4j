@@ -50,7 +50,6 @@ import org.mt4j.util.opengl.GLFBO;
 import processing.core.PApplet;
 import processing.core.PImage;
 import scenes.WaterSceneExportObf;
-//import sun.misc.GC;
 import advanced.drawing.MainDrawingScene;
 import advanced.flickrMT.FlickrScene;
 import advanced.fluidSimulator.FluidSimulationScene;

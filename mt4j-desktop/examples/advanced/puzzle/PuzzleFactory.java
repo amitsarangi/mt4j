@@ -16,7 +16,6 @@ import org.mt4j.input.inputData.InputCursor;
 import org.mt4j.input.inputProcessors.IGestureEventListener;
 import org.mt4j.input.inputProcessors.MTGestureEvent;
 import org.mt4j.input.inputProcessors.componentProcessors.dragProcessor.DragProcessor;
-import org.mt4j.input.inputProcessors.componentProcessors.lassoProcessor.IdragClusterable;
 import org.mt4j.input.inputProcessors.componentProcessors.rotateProcessor.RotateEvent;
 import org.mt4j.input.inputProcessors.componentProcessors.rotateProcessor.RotateProcessor;
 import org.mt4j.input.inputProcessors.componentProcessors.scaleProcessor.ScaleProcessor;
@@ -326,10 +325,10 @@ public class PuzzleFactory {
 	}
 	
 	
-	public MTComplexPolyClusterable getPolygon(final PApplet app, TileSide top, TileSide right, TileSide bottom, TileSide left, float tileWidth, float tileHeight){
+	public MTComplexPolygon getPolygon(final PApplet app, TileSide top, TileSide right, TileSide bottom, TileSide left, float tileWidth, float tileHeight){
 		this.init(tileWidth, tileHeight);
 		Vertex[] v = getTile(top, right, bottom, left);
-		MTComplexPolyClusterable poly = new MTComplexPolyClusterable(app, v);
+		MTComplexPolygon poly = new MTComplexPolygon(app, v);
 		poly.removeAllGestureEventListeners(ScaleProcessor.class);
 		poly.addGestureListener(DragProcessor.class, new InertiaDragAction());
 		
@@ -395,19 +394,19 @@ public class PuzzleFactory {
 		}
 	}
 	
-	private class MTComplexPolyClusterable extends MTComplexPolygon implements IdragClusterable{
-		public MTComplexPolyClusterable(PApplet app, Vertex[] vertices) {
-			super(app, vertices);
-		}
-
-		public boolean isSelected() {
-			return false;
-		}
-
-		public void setSelected(boolean selected) {
-		}
-		
-	}
+//	private class MTComplexPolyClusterable extends MTComplexPolygon implements IdragClusterable{
+//		public MTComplexPolyClusterable(PApplet app, Vertex[] vertices) {
+//			super(app, vertices);
+//		}
+//
+//		public boolean isSelected() {
+//			return false;
+//		}
+//
+//		public void setSelected(boolean selected) {
+//		}
+//		
+//	}
 	
 	private Vertex[] getTile(TileSide top, TileSide right, TileSide bottom, TileSide left){
 		List<Vertex> list = new ArrayList<Vertex>();

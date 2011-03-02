@@ -17,9 +17,6 @@
  ***********************************************************************/
 package org.mt4j.components.visibleComponents.widgets.keyboard;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
 import org.mt4j.components.MTComponent;
 import org.mt4j.components.StateChange;
 import org.mt4j.components.StateChangeEvent;
@@ -218,11 +215,11 @@ public class MTTextKeyboard extends MTKeyboard {
 //		}
 //	}
 	
-	
+
 	/**
- * Creates a new textarea at the keyboard.
- * Fails if there is still one attached to it.
- */
+	 * Creates a new textarea at the keyboard.
+	 * Fails if there is still one attached to it.
+	 */
 	public void createNewTextArea(){
 		if (this.textInputListener == null){
 			final MTTextArea t = new MTTextArea(pa, fontForTextField);

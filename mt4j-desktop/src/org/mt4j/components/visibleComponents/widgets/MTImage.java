@@ -28,7 +28,6 @@ import org.mt4j.components.visibleComponents.shapes.MTRectangle;
 import org.mt4j.components.visibleComponents.widgets.buttons.MTSvgButton;
 import org.mt4j.input.inputProcessors.IGestureEventListener;
 import org.mt4j.input.inputProcessors.MTGestureEvent;
-import org.mt4j.input.inputProcessors.componentProcessors.lassoProcessor.IdragClusterable;
 import org.mt4j.input.inputProcessors.componentProcessors.tapProcessor.TapEvent;
 import org.mt4j.input.inputProcessors.componentProcessors.tapProcessor.TapProcessor;
 import org.mt4j.util.MT4jSettings;
@@ -50,11 +49,7 @@ import processing.core.PImage;
  * 
  * @author Christopher Ruff
  */
-public class MTImage extends MTRectangle implements IdragClusterable{
-	
-	/** The selected. */
-	private boolean selected;
-
+public class MTImage extends MTRectangle {
 	
 	private MTRectangle image;
 	
@@ -94,16 +89,6 @@ public class MTImage extends MTRectangle implements IdragClusterable{
 	}
 	
 
-	
-	public boolean isSelected() {
-		return selected;
-	}
-
-	public void setSelected(boolean selected) {
-		this.selected = selected;
-	}
-
-	
 	/**
 	 * Sets the display close button.
 	 * 

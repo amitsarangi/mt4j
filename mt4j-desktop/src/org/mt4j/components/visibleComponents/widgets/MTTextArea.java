@@ -33,7 +33,6 @@ import org.mt4j.components.visibleComponents.font.IFontCharacter;
 import org.mt4j.components.visibleComponents.shapes.MTRectangle;
 import org.mt4j.components.visibleComponents.widgets.keyboard.ITextInputListener;
 import org.mt4j.components.visibleComponents.widgets.keyboard.MTKeyboard;
-import org.mt4j.input.inputProcessors.componentProcessors.lassoProcessor.IdragClusterable;
 import org.mt4j.util.GraphicsUtil;
 import org.mt4j.util.MT4jSettings;
 import org.mt4j.util.MTColor;
@@ -56,7 +55,7 @@ import processing.core.PGraphics;
  * 
  * @author Christopher Ruff
  */
-public class MTTextArea extends MTRectangle implements IdragClusterable, ITextInputListener, Comparable<Object>{
+public class MTTextArea extends MTRectangle implements ITextInputListener, Comparable<Object>{
 
 //Standard expand direction is {@link ExpandDirection#UP} for
 // backward compatibility.
@@ -1234,16 +1233,6 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
 //		this.translate(new Vector3D(30, -(getFont().getFontAbsoluteHeight() * (getLineCount())) + getFont().getFontMaxDescent() - borderHeight, 0));
 		mtKeyboard.addChild(this);
 		this.setPositionRelativeToParent(new Vector3D(40, -this.getHeightXY(TransformSpace.LOCAL)*0.5f));
-	}
-
-
-	public boolean isSelected() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	public void setSelected(boolean selected) {
-		// TODO Auto-generated method stub
 	}
 
 

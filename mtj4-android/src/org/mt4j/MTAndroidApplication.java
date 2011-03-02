@@ -81,26 +81,6 @@ public abstract class MTAndroidApplication extends MTApplication{
 	}
 
 	
-//	protected int sketchWidth = 200;
-//	protected int sketchHeight = 300;
-	
-	
-	public int sketchWidth() {
-//		return screenWidth;
-		return screenWidth;
-	}
-
-	public int sketchHeight() {
-//		return sketchHeight;
-		return screenHeight;
-	}
-
-	public String sketchRenderer() {
-		return A3D; 
-	}
-	
-	
-	
 	protected void loadGL(){
 		/*
 		String version = ((PGraphicsAndroid3D)g).gl.glGetString(GL10.GL_VERSION);
@@ -194,5 +174,34 @@ public abstract class MTAndroidApplication extends MTApplication{
 		}
 	}
 
+	
+//	protected int sketchWidth = 200;
+//	protected int sketchHeight = 300;
+	
+	
+	@Override
+	public int sketchWidth() {
+//		return screenWidth;
+		return screenWidth;
+	}
+
+	@Override
+	public int sketchHeight() {
+//		return sketchHeight;
+		return screenHeight;
+	}
+
+	@Override
+	public String sketchRenderer() {
+		return A3D; 
+	}
+	
+	
+	@Override
+	public String sketchColordepth() { 
+//		return super.sketchColordepth(); //To get default color, depth and stencil bit depths
+//		return HIGH_COLOR_DEPTH;
+		return "8:8:8:8:24:8"; //To get a stencil buffer
+	}
 	
 }

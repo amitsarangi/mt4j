@@ -256,8 +256,6 @@ public class GLStencilUtil {
 		gl.glStencilFunc(GL10.GL_EQUAL, stencilValueStack.peek(), stencilValueStack.peek());
 		gl.glStencilOp(GL10.GL_KEEP, GL10.GL_KEEP, GL10.GL_KEEP);
 		if (!initialized){
-//			gl.glClearStencil(stencilValueStack.peek());
-//			gl.glClear(GL10.GL_STENCIL_BUFFER_BIT);
 			gl.glDisable(GL10.GL_STENCIL_TEST);
 		}
 		
