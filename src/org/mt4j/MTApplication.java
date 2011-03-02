@@ -499,7 +499,13 @@ public abstract class MTApplication extends PApplet {
 	public void setup(){
 		//TOGGLES ALWAYS ON TOP MODE
 		//this.frame.setAlwaysOnTop(true);
-	
+		if (logger == null){
+			//Initialize Loggin facilities  - IMPORTANT TO DO THIS ASAP!//////
+			MTLoggerFactory.setLoggerProvider(new Log4jLogger()); 
+			logger = MTLoggerFactory.getLogger(MTApplication.class.getName());
+			logger.setLevel(ILogger.INFO);
+		}
+
 		logger.debug("-> setup called");
 
 		//Check if OS 32/64 Bit
