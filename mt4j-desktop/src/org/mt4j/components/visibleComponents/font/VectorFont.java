@@ -400,8 +400,8 @@ public class VectorFont implements IFont {
 
 	@Override
 	public void beginBatchRenderGL(GL10 gl, IFont font) {
-		// TODO Auto-generated method stub
-		
+		MTColor fillColor = font.getFillColor();
+		gl.glColor4f(fillColor.getR()/255f, fillColor.getG()/255f, fillColor.getB()/255f, fillColor.getAlpha()/255f); 
 	}
 
 
