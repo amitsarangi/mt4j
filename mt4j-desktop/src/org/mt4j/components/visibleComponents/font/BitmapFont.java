@@ -27,6 +27,7 @@ import org.mt4j.components.visibleComponents.font.fontFactories.IFontFactory;
 import org.mt4j.util.MTColor;
 import org.mt4j.util.logging.ILogger;
 import org.mt4j.util.logging.MTLoggerFactory;
+import org.mt4j.util.opengl.GL10;
 
 import processing.core.PApplet;
 
@@ -324,6 +325,32 @@ public class BitmapFont implements IFont {
             iFontCharacter.destroy();
         }
 		FontManager.getInstance().removeFromCache(this);
+	}
+
+
+	@Override
+	public void beginBatchRenderGL(GL10 gl, IFont font) {
+		MTColor fillColor = font.getFillColor();
+		gl.glColor4f(fillColor.getR()/255f, fillColor.getG()/255f, fillColor.getB()/255f, fillColor.getAlpha()/255f); 
+		
+		//Default texture target -> has to be POT dimensions
+		int textureTarget = GL10.GL_TEXTURE_2D;
+		gl.glEnable(textureTarget);
+		
+		//Enable Pointers, set vertex array pointer
+		gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
+		gl.glEnableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
+	}
+
+
+	@Override
+	public void endBatchRenderGL(GL10 gl, IFont font) {
+		int textureTarget = GL10.GL_TEXTURE_2D;
+		gl.glBindTexture(textureTarget, 0);//Unbind texture
+		gl.glDisable(textureTarget); 
+		
+		gl.glDisableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
+		gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
 	}
 
 

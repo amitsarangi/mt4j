@@ -27,6 +27,7 @@ import org.mt4j.components.visibleComponents.font.fontFactories.TTFontFactory;
 import org.mt4j.util.MTColor;
 import org.mt4j.util.logging.ILogger;
 import org.mt4j.util.logging.MTLoggerFactory;
+import org.mt4j.util.opengl.GL10;
 
 import processing.core.PApplet;
 
@@ -394,6 +395,20 @@ public class VectorFont implements IFont {
             iFontCharacter.destroy();
         }
 		FontManager.getInstance().removeFromCache(this);
+	}
+
+
+	@Override
+	public void beginBatchRenderGL(GL10 gl, IFont font) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public void endBatchRenderGL(GL10 gl, IFont font) {
+		// TODO Auto-generated method stub
+		
 	}
 
 

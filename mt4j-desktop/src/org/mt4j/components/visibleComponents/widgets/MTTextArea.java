@@ -560,9 +560,13 @@ public class MTTextArea extends MTRectangle implements ITextInputListener, Compa
 		int thisLineTotalXAdvancement = lineTotalAdv;
 		
 		
-		//Set the color for all characters (since the characters dont set their own fill/stroke color anymore
-		MTColor fillColor = this.getFont().getFillColor();
-		gl.glColor4f(fillColor.getR()/255f, fillColor.getG()/255f, fillColor.getB()/255f, fillColor.getAlpha()/255f); 
+		//TODO?
+		font.beginBatchRenderGL(gl, font); 
+		
+//		//Set the color for all characters (since the characters dont set their own fill/stroke color anymore
+//		MTColor fillColor = this.getFont().getFillColor();
+//		gl.glColor4f(fillColor.getR()/255f, fillColor.getG()/255f, fillColor.getB()/255f, fillColor.getAlpha()/255f); 
+		
 		
 		for (int i = 0; i < charListSize; i++) {
 			IFontCharacter character = characterList.get(i);
@@ -594,6 +598,8 @@ public class MTTextArea extends MTRectangle implements ITextInputListener, Compa
 				}
 			}
 		}
+		
+		font.endBatchRenderGL(gl, font);
 	}
 	
 	private boolean noStrokeSettingSaved;

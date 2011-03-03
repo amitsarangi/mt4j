@@ -30,6 +30,7 @@ import org.mt4j.util.MT4jSettings;
 import org.mt4j.util.MTColor;
 import org.mt4j.util.logging.ILogger;
 import org.mt4j.util.logging.MTLoggerFactory;
+import org.mt4j.util.math.ToolsMath;
 
 import processing.core.PFont.Glyph;
 
@@ -371,8 +372,8 @@ public class BitmapFontFactoryProxy implements IFontFactory {
 				//Shift character image data down and right in the image because of aliasing artifacts at the border
 				//we need to compensate for this when displaying the char
 				//FIXME this creates far to big images..but because of artefacts needed..?
-				int topShiftAmount = 4;
-				int leftShiftAmount = 4;
+				int topShiftAmount = 1;
+				int leftShiftAmount = 1;
 				
 //				PImage copy = new PImage(ToolsMath.nearestPowerOfTwo(charWidth + shiftAmount), ToolsMath.nearestPowerOfTwo(charHeight + shiftAmount), PImage.ARGB);
 //				
@@ -419,14 +420,10 @@ public class BitmapFontFactoryProxy implements IFontFactory {
 		}
 		return bitMapCharacters;
 	}
-	
+
 	private int nextPowerOfTwo(int val) {
-	      int ret = 1;
-	      while (ret < val) {
-	        ret <<= 1;
-	      }
-	      return ret;
-	    }
+		return ToolsMath.nextPowerOfTwo(val);
+	}
 
 //	
 //	  /**

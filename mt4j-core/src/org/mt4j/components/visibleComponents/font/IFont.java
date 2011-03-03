@@ -18,6 +18,7 @@
 package org.mt4j.components.visibleComponents.font;
 
 import org.mt4j.util.MTColor;
+import org.mt4j.util.opengl.GL10;
 
 /**
  * The Interface IFont.
@@ -137,4 +138,10 @@ public interface IFont {
 	 * Destroys the font's characters and removes it from the FontManager's cache.
 	 */
 	public void destroy();
+
+	
+	
+	public void beginBatchRenderGL(GL10 gl, IFont font);
+
+	public void endBatchRenderGL(GL10 gl, IFont font);
 }

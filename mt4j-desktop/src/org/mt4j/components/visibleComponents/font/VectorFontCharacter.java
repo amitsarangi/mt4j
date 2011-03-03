@@ -130,8 +130,6 @@ public class VectorFontCharacter extends
 		gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
 		
 		if (this.isUseVBOs()){//Vertices
-//			gl.glBindBuffer(GL.GL_ARRAY_BUFFER, this.getGeometryInfo().getVBOVerticesName());
-//			gl.glVertexPointer(3, GL.GL_FLOAT, 0, 0);
 			gl11.glBindBuffer(GL11.GL_ARRAY_BUFFER, this.getGeometryInfo().getVBOVerticesName());
 			gl11.glVertexPointer(3, GL10.GL_FLOAT, 0, 0);
 		}else{
@@ -158,8 +156,6 @@ public class VectorFontCharacter extends
 				gl.glEnableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
 				
 				if (this.isUseVBOs()){//Texture
-//					gl.glBindBuffer(GL.GL_ARRAY_BUFFER, this.getGeometryInfo().getVBOTextureName());
-//					gl.glTexCoordPointer(2, GL.GL_FLOAT, 0, 0);
 					gl11.glBindBuffer(GL11.GL_ARRAY_BUFFER, this.getGeometryInfo().getVBOTextureName());
 					gl11.glTexCoordPointer(2, GL10.GL_FLOAT, 0, 0);
 				}else{
@@ -172,8 +168,6 @@ public class VectorFontCharacter extends
 			if (this.getGeometryInfo().isContainsNormals()){
 				gl.glEnableClientState(GL10.GL_NORMAL_ARRAY);
 				if (this.isUseVBOs()){
-//					gl.glBindBuffer(GL.GL_ARRAY_BUFFER, this.getGeometryInfo().getVBONormalsName());
-//					gl.glNormalPointer(GL.GL_FLOAT, 0, 0); 
 					gl11.glBindBuffer(GL11.GL_ARRAY_BUFFER, this.getGeometryInfo().getVBONormalsName());
 					gl11.glNormalPointer(GL10.GL_FLOAT, 0, 0); 
 				}else{
@@ -208,7 +202,6 @@ public class VectorFontCharacter extends
 			//SET LINE STIPPLE
 			short lineStipple = this.getLineStipple();
 			if (lineStipple != 0){
-//				gl.glLineStipple(1, lineStipple);
 				GL11Plus gl11Plus = (GL11Plus)gl;
 				gl11Plus.glLineStipple(1, lineStipple);
 				gl.glEnable(GL11Plus.GL_LINE_STIPPLE);
@@ -237,8 +230,6 @@ public class VectorFontCharacter extends
 		gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
 		
 		if (this.isUseVBOs()){
-//			gl.glBindBuffer(GL.GL_ARRAY_BUFFER, 0);
-//			gl.glBindBuffer(GL.GL_ELEMENT_ARRAY_BUFFER, 0);
 			gl11.glBindBuffer(GL11.GL_ARRAY_BUFFER, 0);
 			gl11.glBindBuffer(GL11.GL_ELEMENT_ARRAY_BUFFER, 0);
 		}

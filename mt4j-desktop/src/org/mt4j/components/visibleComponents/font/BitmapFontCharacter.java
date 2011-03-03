@@ -21,12 +21,9 @@ import java.nio.FloatBuffer;
 
 import org.mt4j.components.bounds.IBoundingShape;
 import org.mt4j.components.visibleComponents.shapes.MTRectangle;
-import org.mt4j.util.GraphicsUtil;
 import org.mt4j.util.MT4jSettings;
 import org.mt4j.util.math.Vertex;
 import org.mt4j.util.opengl.GL10;
-import org.mt4j.util.opengl.GL11;
-import org.mt4j.util.opengl.GL11Plus;
 import org.mt4j.util.opengl.GLTexture;
 import org.mt4j.util.opengl.GLTexture.EXPANSION_FILTER;
 import org.mt4j.util.opengl.GLTexture.SHRINKAGE_FILTER;
@@ -124,103 +121,142 @@ public class BitmapFontCharacter extends MTRectangle implements IFontCharacter {
 //		this.drawPureGl(gl);
 //		/*
 		if (MT4jSettings.getInstance().isOpenGlMode()){
-			if (this.isUseDisplayList() && this.getGeometryInfo().getDisplayListIDs()[0] != -1){
-//				gl.glCallList(this.getGeometryInfo().getDisplayListIDs()[0]);
-				((GL11Plus)gl).glCallList(this.getGeometryInfo().getDisplayListIDs()[0]);
-//				gl.glCallList(this.getGeometryInfo().getDisplayListIDs()[1]); //Outline rectangle
-			}else{
+//			if (this.isUseDisplayList() && this.getGeometryInfo().getDisplayListIDs()[0] != -1){
+////				gl.glCallList(this.getGeometryInfo().getDisplayListIDs()[0]);
+//				((GL11Plus)gl).glCallList(this.getGeometryInfo().getDisplayListIDs()[0]);
+////				gl.glCallList(this.getGeometryInfo().getDisplayListIDs()[1]); //Outline rectangle
+//			}else{
 				this.drawPureGl(gl);
-			}
+//			}
 		}
 //		*/
 	}
 	
 	@Override
-	protected void drawPureGl(GL10 gl){
-		GL11 gl11 = GraphicsUtil.getGL11();
-		
-//		/*
-		//Get display array/buffer pointers
-		FloatBuffer tbuff 			= this.getGeometryInfo().getTexBuff();
-		FloatBuffer vertBuff 		= this.getGeometryInfo().getVertBuff();
-		
-		//Enable Pointers, set vertex array pointer
-		gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
-		if (this.isUseVBOs()){//Vertices
-//			gl.glBindBuffer(GL.GL_ARRAY_BUFFER, this.getGeometryInfo().getVBOVerticesName());
-//			gl.glVertexPointer(3, GL.GL_FLOAT, 0, 0);
-			gl11.glBindBuffer(GL11.GL_ARRAY_BUFFER, this.getGeometryInfo().getVBOVerticesName());
-			gl11.glVertexPointer(3, GL10.GL_FLOAT, 0, 0);
-		}else{
-			gl.glVertexPointer(3, GL10.GL_FLOAT, 0, vertBuff);
-		}
-		
-		//Default texture target
-		int textureTarget = GL10.GL_TEXTURE_2D;
-		
-		/////// DRAW SHAPE ///////
-		if (!this.isNoFill()){ 
-			boolean textureDrawn = false;
-			if (this.isTextureEnabled()
-				&& this.getTexture() != null 
-				&& this.getTexture() instanceof GLTexture) //Bad for performance?
-			{
-				GLTexture tex = (GLTexture)this.getTexture();
-				textureTarget = tex.getTextureTarget();
-				
-				//tells opengl which texture to reference in following calls from now on!
-				//the first parameter is eigher GL.GL_TEXTURE_2D or ..1D
-				gl.glEnable(textureTarget);
-				gl.glBindTexture(textureTarget, tex.getTextureID());
-				
-				gl.glEnableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
-				
-				if (this.isUseVBOs()){//Texture
-//					gl.glBindBuffer(GL.GL_ARRAY_BUFFER, this.getGeometryInfo().getVBOTextureName());
-//					gl.glTexCoordPointer(2, GL.GL_FLOAT, 0, 0);
-					gl11.glBindBuffer(GL11.GL_ARRAY_BUFFER, this.getGeometryInfo().getVBOTextureName());
-					gl11.glTexCoordPointer(2, GL10.GL_FLOAT, 0, 0);
-				}else
-					gl.glTexCoordPointer(2, GL10.GL_FLOAT, 0, tbuff);
-				
-				textureDrawn = true;
-			}
-			
-			//Normals
-			if (this.getGeometryInfo().isContainsNormals()){
-				gl.glEnableClientState(GL10.GL_NORMAL_ARRAY);
-				if (this.isUseVBOs()){
-//					gl.glBindBuffer(GL.GL_ARRAY_BUFFER, this.getGeometryInfo().getVBONormalsName());
-//					gl.glNormalPointer(GL.GL_FLOAT, 0, 0); 
-					gl11.glBindBuffer(GL11.GL_ARRAY_BUFFER, this.getGeometryInfo().getVBONormalsName());
-					gl11.glNormalPointer(GL10.GL_FLOAT, 0, 0); 
-				}else{
-					gl.glNormalPointer(GL10.GL_FLOAT, 0, this.getGeometryInfo().getNormalsBuff());
-				}
-			}
-			
-			gl.glDrawArrays(this.getFillDrawMode(), 0, vertBuff.capacity()/3);
-			
-			if (this.getGeometryInfo().isContainsNormals()){
-				gl.glDisableClientState(GL10.GL_NORMAL_ARRAY);
-			}
-			
-			if (textureDrawn){
-				gl.glBindTexture(textureTarget, 0);//Unbind texture
-				gl.glDisableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
-				gl.glDisable(textureTarget); //weiter nach unten?
-			}
-		}
-		gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
-		//TEST
-		if (this.isUseVBOs()){
-//			gl.glBindBuffer(GL.GL_ARRAY_BUFFER, 0);
-//			gl.glBindBuffer(GL.GL_ELEMENT_ARRAY_BUFFER, 0);
-			gl11.glBindBuffer(GL11.GL_ARRAY_BUFFER, 0);
-			gl11.glBindBuffer(GL11.GL_ELEMENT_ARRAY_BUFFER, 0);
-		}
-//		*/
+	public void generateAndUseDisplayLists() {
+//		super.generateAndUseDisplayLists();
+//		System.out.println("display list not supported in: " + this.getClass().getName());
 	}
+	
+	@Override
+	public void setUseDisplayList(boolean useDisplayList) {
+//		super.setUseDisplayList(useDisplayList);
+//		System.out.println("display list not supported in: " + this.getClass().getName());
+	}
+	
+
+	@Override
+	protected void drawPureGl(GL10 gl){
+		if (!this.isNoFill()){
+			////
+			//Get display array/buffer pointers
+			FloatBuffer tbuff 			= this.getGeometryInfo().getTexBuff(); 
+			FloatBuffer vertBuff 		= this.getGeometryInfo().getVertBuff();
+			
+			gl.glVertexPointer(3, GL10.GL_FLOAT, 0, vertBuff);
+			
+			// tex.getTextureTarget has to be the same as used in font.prepareBatchRenderGL() !!
+			// we assume its GL_TEXTURE_2D
+			GLTexture tex = (GLTexture)this.getTexture();
+			int textureTarget = tex.getTextureTarget();
+			gl.glBindTexture(textureTarget, tex.getTextureID()); 
+			gl.glTexCoordPointer(2, GL10.GL_FLOAT, 0, tbuff);
+
+			gl.glDrawArrays(this.getFillDrawMode(), 0, vertBuff.capacity()/3);
+
+			////
+		}
+	}
+	
+	
+	
+	
+//	@Override
+//	protected void drawPureGl(GL10 gl){
+//		GL11 gl11 = GraphicsUtil.getGL11();
+//		
+////		/*
+//		//Get display array/buffer pointers
+//		FloatBuffer tbuff 			= this.getGeometryInfo().getTexBuff();
+//		FloatBuffer vertBuff 		= this.getGeometryInfo().getVertBuff();
+//		
+//		//Enable Pointers, set vertex array pointer
+//		gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
+//		if (this.isUseVBOs()){//Vertices
+////			gl.glBindBuffer(GL.GL_ARRAY_BUFFER, this.getGeometryInfo().getVBOVerticesName());
+////			gl.glVertexPointer(3, GL.GL_FLOAT, 0, 0);
+//			gl11.glBindBuffer(GL11.GL_ARRAY_BUFFER, this.getGeometryInfo().getVBOVerticesName());
+//			gl11.glVertexPointer(3, GL10.GL_FLOAT, 0, 0);
+//		}else{
+//			gl.glVertexPointer(3, GL10.GL_FLOAT, 0, vertBuff);
+//		}
+//		
+//		//Default texture target
+//		int textureTarget = GL10.GL_TEXTURE_2D;
+//		
+//		/////// DRAW SHAPE ///////
+//		if (!this.isNoFill()){ 
+//			boolean textureDrawn = false;
+//			if (this.isTextureEnabled()
+//				&& this.getTexture() != null 
+//				&& this.getTexture() instanceof GLTexture) //Bad for performance?
+//			{
+//				GLTexture tex = (GLTexture)this.getTexture();
+//				textureTarget = tex.getTextureTarget();
+//				
+//				//tells opengl which texture to reference in following calls from now on!
+//				//the first parameter is eigher GL.GL_TEXTURE_2D or ..1D
+//				gl.glEnable(textureTarget);
+//				gl.glBindTexture(textureTarget, tex.getTextureID());
+//				
+//				gl.glEnableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
+//				
+//				if (this.isUseVBOs()){//Texture
+////					gl.glBindBuffer(GL.GL_ARRAY_BUFFER, this.getGeometryInfo().getVBOTextureName());
+////					gl.glTexCoordPointer(2, GL.GL_FLOAT, 0, 0);
+//					gl11.glBindBuffer(GL11.GL_ARRAY_BUFFER, this.getGeometryInfo().getVBOTextureName());
+//					gl11.glTexCoordPointer(2, GL10.GL_FLOAT, 0, 0);
+//				}else
+//					gl.glTexCoordPointer(2, GL10.GL_FLOAT, 0, tbuff);
+//				
+//				textureDrawn = true;
+//			}
+//			
+//			//Normals
+//			if (this.getGeometryInfo().isContainsNormals()){
+//				gl.glEnableClientState(GL10.GL_NORMAL_ARRAY);
+//				if (this.isUseVBOs()){
+////					gl.glBindBuffer(GL.GL_ARRAY_BUFFER, this.getGeometryInfo().getVBONormalsName());
+////					gl.glNormalPointer(GL.GL_FLOAT, 0, 0); 
+//					gl11.glBindBuffer(GL11.GL_ARRAY_BUFFER, this.getGeometryInfo().getVBONormalsName());
+//					gl11.glNormalPointer(GL10.GL_FLOAT, 0, 0); 
+//				}else{
+//					gl.glNormalPointer(GL10.GL_FLOAT, 0, this.getGeometryInfo().getNormalsBuff());
+//				}
+//			}
+//			
+//			gl.glDrawArrays(this.getFillDrawMode(), 0, vertBuff.capacity()/3);
+//			
+//			if (this.getGeometryInfo().isContainsNormals()){
+//				gl.glDisableClientState(GL10.GL_NORMAL_ARRAY);
+//			}
+//			
+//			if (textureDrawn){
+//				gl.glBindTexture(textureTarget, 0);//Unbind texture
+//				gl.glDisableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
+//				gl.glDisable(textureTarget); //weiter nach unten?
+//			}
+//		}
+//		gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
+//		//TEST
+//		if (this.isUseVBOs()){
+////			gl.glBindBuffer(GL.GL_ARRAY_BUFFER, 0);
+////			gl.glBindBuffer(GL.GL_ELEMENT_ARRAY_BUFFER, 0);
+//			gl11.glBindBuffer(GL11.GL_ARRAY_BUFFER, 0);
+//			gl11.glBindBuffer(GL11.GL_ELEMENT_ARRAY_BUFFER, 0);
+//		}
+////		*/
+//	}
 	
 	
 	@Override

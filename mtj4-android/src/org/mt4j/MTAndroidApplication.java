@@ -33,6 +33,9 @@ public abstract class MTAndroidApplication extends MTApplication{
 	public void setup() {
 		Log.i(this.getClass().getSimpleName(), "SETUP CALLED");
 		
+		 orientation(LANDSCAPE); //TODO make configurable
+//		 orientation(PORTRAIT); //TODO make configurable
+		
 		//Initialize Loggin facilities  - IMPORTANT TO DO THIS ASAP!//////
 		MTLoggerFactory.setLoggerProvider(new AndroidDefaultLogger()); 
 //		MTLoggerFactory.setLoggerProvider(new AndroidDummyLogger());
@@ -73,8 +76,6 @@ public abstract class MTAndroidApplication extends MTApplication{
 		if (getInputManager() == null){ //only set the default inputManager if none is set yet
 			this.setInputManager(new AndroidInputManager(this, true));
 		}
-		
-//		orientation(LANDSCAPE); //FIXME TEST!!
 		
 		//Call startup at the end of setup(). Should be overridden in extending classes
 		this.startUp();
@@ -157,16 +158,7 @@ public abstract class MTAndroidApplication extends MTApplication{
 
 	
 	@Override
-	public PImage loadImage(String filename, int sampling) {
-		if (MT4jSettings.getInstance().isOpenGlMode()){
-			return new GLTexture(this, super.loadImage(filename, sampling));
-		}else{
-			return super.loadImage(filename, sampling);
-		}
-	}
-	
-	@Override
-	public PImage loadImage(String filename, Parameters params) {
+	public PImage loadImage(String filename, Object params) {
 		if (MT4jSettings.getInstance().isOpenGlMode()){
 			return new GLTexture(this, super.loadImage(filename, params));
 		}else{
