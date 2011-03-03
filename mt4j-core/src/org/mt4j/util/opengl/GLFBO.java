@@ -29,10 +29,8 @@ import org.mt4j.util.logging.ILogger;
 import org.mt4j.util.logging.MTLoggerFactory;
 import org.mt4j.util.math.Tools3D;
 import org.mt4j.util.math.ToolsBuffers;
-import org.mt4j.util.math.ToolsMath;
 import org.mt4j.util.opengl.GLTexture.EXPANSION_FILTER;
 import org.mt4j.util.opengl.GLTexture.SHRINKAGE_FILTER;
-import org.mt4j.util.opengl.GLTexture.TEXTURE_TARGET;
 import org.mt4j.util.opengl.GLTexture.WRAP_MODE;
 
 import processing.core.PApplet;
@@ -392,6 +390,8 @@ public class GLFBO {
 		if (gl instanceof GL11Plus) {
 			GL11Plus gl11Plus = (GL11Plus) gl;
 			gl11Plus.glPopAttrib();
+		}else{
+			gl.glViewport(0, 0, pa.width, pa.height); //Restore viewport to max
 		}
 
 		//FIXME FBO STACK TEST
