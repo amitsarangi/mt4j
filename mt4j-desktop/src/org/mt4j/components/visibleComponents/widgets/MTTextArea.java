@@ -387,67 +387,6 @@ public class MTTextArea extends MTRectangle implements ITextInputListener, Compa
 	}
 	
 	
-	private boolean useDisplayList = false;
-	private boolean contentDisplayListDirty = true;
-	private void setContentDisplayListDirty(boolean dirty){
-		this.contentDisplayListDirty = dirty;
-		this.useDisplayList = (!this.contentDisplayListDirty);
-	}
-	private int displayListID = 0;
-	
-	public int useContentDisplayList(){
-		if (enableCaret)
-			return -1;
-		
-//		GL gl = GLU.getCurrentGL();
-		GL10 gl = GraphicsUtil.getGL();
-		GL11Plus gl11Plus = GraphicsUtil.getGL11Plus();
-		
-		//Delete old one
-		if (this.displayListID != 0){
-			gl11Plus.glDeleteLists(this.displayListID, 1);
-		}
-		
-		//Create new list
-		int listIDFill = gl11Plus.glGenLists(1);
-		if (listIDFill == 0){
-			System.err.println("Failed to create fill display list");
-		}
-		
-		int thisLineTotalXAdvancement = 0;
-		int lastXAdvancement = innerPaddingLeft;
-		//To set caret at most left start pos when charlist empty (looks better)
-		if (enableCaret && showCaret && characterList.size() == 1){
-			lastXAdvancement = 0;
-		}
-		
-		//Record list
-		gl11Plus.glNewList(listIDFill, GL11Plus.GL_COMPILE);
-			drawCharactersGL(gl, characterList, characterList.size(), lastXAdvancement, thisLineTotalXAdvancement);
-			gl11Plus.glEndList();
-		
-		if (listIDFill != 0){
-			useDisplayList = true;
-			displayListID = listIDFill;
-		}
-
-		this.setContentDisplayListDirty(false);
-		return (listIDFill == 0)?  -1 : listIDFill;
-	}
-	
-	
-	@Override
-		protected void destroyComponent() {
-			super.destroyComponent();
-			if (MT4jSettings.getInstance().isOpenGlMode() && this.displayListID != 0){
-//				GL gl = GLU.getCurrentGL();
-				GL11Plus gl = GraphicsUtil.getGL11Plus();
-				//Delete old one
-				if (gl != null){
-					gl.glDeleteLists(this.displayListID, 1);
-				}
-			}
-		}
 	
 	@Override
 	public void drawComponent(PGraphics g) {
@@ -518,7 +457,6 @@ public class MTTextArea extends MTRectangle implements ITextInputListener, Compa
 		if (this.isUseDirectGL()){
 //			GL gl = Tools3D.beginGL(pa);
 			GL10 gl = GraphicsUtil.beginGL();
-			GL11Plus gl11Plus = GraphicsUtil.getGL11Plus();
 			if (totalScrollTextX != 0.0f || totalScrollTextY != 0.0f){
 				gl.glTranslatef(totalScrollTextX, totalScrollTextY + font.getFontMaxAscent(), 0);
 			}else{
@@ -537,11 +475,7 @@ public class MTTextArea extends MTRectangle implements ITextInputListener, Compa
 			//in bitmap font mode for example:
 			//enable textures, enable vertex arrays and color only once!
 			
-			if(!enableCaret && useDisplayList && this.displayListID != 0){
-				gl11Plus.glCallList(this.displayListID);
-			}else{
-				drawCharactersGL(gl, characterList, charListSize, lastXAdvancement, thisLineTotalXAdvancement);
-			}
+			drawCharactersGL(gl, this.font, characterList, charListSize, lastXAdvancement, thisLineTotalXAdvancement);
 			
 //			Tools3D.endGL(pa);
 			GraphicsUtil.endGL();
@@ -621,9 +555,10 @@ public class MTTextArea extends MTRectangle implements ITextInputListener, Compa
 		this.getFont().setFillColor(fontColor);
 	}
 	
-	private void drawCharactersGL(GL10 gl, List<IFontCharacter> characterList, int charListSize, int lastXAdv, int lineTotalAdv){
+	private void drawCharactersGL(GL10 gl, IFont font, List<IFontCharacter> characterList, int charListSize, int lastXAdv, int lineTotalAdv){
 		int lastXAdvancement = lastXAdv;
 		int thisLineTotalXAdvancement = lineTotalAdv;
+		
 		
 		//Set the color for all characters (since the characters dont set their own fill/stroke color anymore
 		MTColor fillColor = this.getFont().getFillColor();
@@ -944,10 +879,7 @@ public class MTTextArea extends MTRectangle implements ITextInputListener, Compa
 	 */
 	private void addCharacter(IFontCharacter character){
 		this.characterList.add(character);
-		
 		this.characterAdded(character);
-		
-		this.setContentDisplayListDirty(true);
 	}
 	
 	/**
@@ -1061,8 +993,6 @@ public class MTTextArea extends MTRectangle implements ITextInputListener, Compa
 		this.characterList.remove(this.characterList.size()-1);
 		
 		this.characterRemoved(lastCharacter);
-		
-		this.setContentDisplayListDirty(true);
 	}
 	
 	
@@ -1267,8 +1197,6 @@ public class MTTextArea extends MTRectangle implements ITextInputListener, Compa
 		}else{
 			System.err.println("Cant enable caret for this textfield, the font doesent include the letter '|'");
 		}
-		
-		this.setContentDisplayListDirty(true);
 	}
 
 
