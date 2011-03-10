@@ -6,6 +6,7 @@ public interface GL11Plus  extends GL11, GL20 {
 	//Added for backwards compatibility
 	public static final int GL_LINE_STIPPLE = 0x0B24;
 	public static final int GL_COMPILE = 0x1300;
+	public static final int GL_COMPILE_AND_EXECUTE = 4865;
 	public static final int GL_QUADS = 0x0007; 
 	
 	public int glGenLists(int id);

@@ -305,8 +305,12 @@ public class FontManager {
 				IFontFactory factoryToUse = this.getFactoryForFileSuffix(getFontSuffix(fontAbsoultePath));
 				if (factoryToUse != null){
 					IFont copy = factoryToUse.getCopy(font);
-					copy.setFillColor(new MTColor(fillColor));
-					return copy;
+					if (copy != null){
+						copy.setFillColor(new MTColor(fillColor));
+						return copy;	
+					}else{
+						System.err.println("Couldnt copy font: " + font);
+					}
 				}
 			}
 		}
