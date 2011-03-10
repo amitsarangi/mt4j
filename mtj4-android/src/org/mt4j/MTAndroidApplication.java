@@ -11,11 +11,8 @@ import org.mt4j.util.logging.ILogger;
 import org.mt4j.util.logging.MTLoggerFactory;
 import org.mt4j.util.opengl.AndroidGL10;
 import org.mt4j.util.opengl.AndroidGL11;
-import org.mt4j.util.opengl.GLTexture;
 
 import processing.core.PGraphicsAndroid3D;
-import processing.core.PImage;
-import processing.core.PTexture.Parameters;
 import android.util.Log;
 import android.view.MotionEvent;
 
@@ -33,8 +30,8 @@ public abstract class MTAndroidApplication extends MTApplication{
 	public void setup() {
 		Log.i(this.getClass().getSimpleName(), "SETUP CALLED");
 		
-		 orientation(LANDSCAPE); //TODO make configurable
-//		 orientation(PORTRAIT); //TODO make configurable
+//		 orientation(LANDSCAPE); //TODO make configurable
+		 orientation(PORTRAIT); //TODO make configurable
 		
 		//Initialize Loggin facilities  - IMPORTANT TO DO THIS ASAP!//////
 		MTLoggerFactory.setLoggerProvider(new AndroidDefaultLogger()); 
@@ -157,14 +154,16 @@ public abstract class MTAndroidApplication extends MTApplication{
 	}
 
 	
-	@Override
-	public PImage loadImage(String filename, Object params) {
-		if (MT4jSettings.getInstance().isOpenGlMode()){
-			return new GLTexture(this, super.loadImage(filename, params));
-		}else{
-			return super.loadImage(filename, params);
-		}
-	}
+	//Dont override, because loadImage(img) which already creates a GLTexture (MTApplication) will call loadImage(img, null) and again try to create
+	//a GLTexture..we just shouldnt use loadImage(img, params) directly..
+//	@Override
+//	public PImage loadImage(String filename, Object params) {
+//		if (MT4jSettings.getInstance().isOpenGlMode()){
+//			return new GLTexture(this, super.loadImage(filename, params));
+//		}else{
+//			return super.loadImage(filename, params);
+//		}
+//	}
 
 	
 //	protected int sketchWidth = 200;
@@ -175,12 +174,14 @@ public abstract class MTAndroidApplication extends MTApplication{
 	public int sketchWidth() {
 //		return screenWidth;
 		return screenWidth;
+//		return 600;
 	}
 
 	@Override
 	public int sketchHeight() {
 //		return sketchHeight;
 		return screenHeight;
+//		return 1024;
 	}
 
 	@Override

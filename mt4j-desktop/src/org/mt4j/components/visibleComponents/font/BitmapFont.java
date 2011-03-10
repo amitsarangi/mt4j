@@ -35,7 +35,7 @@ import processing.core.PApplet;
  * The Class BitmapFont.
  * @author Christopher Ruff
  */
-public class BitmapFont implements IFont {
+public class BitmapFont implements IFont, ITextureFont {
 	/** The Constant logger. */
 	private static final ILogger logger = MTLoggerFactory.getLogger(BitmapFont.class.getName());
 	static{

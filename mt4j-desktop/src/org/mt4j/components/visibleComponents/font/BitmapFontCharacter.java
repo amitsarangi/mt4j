@@ -37,7 +37,7 @@ import processing.core.PImage;
  * The Class BitmapFontCharacter.
  * @author Christopher Ruff
  */
-public class BitmapFontCharacter extends MTRectangle implements IFontCharacter {
+public class BitmapFontCharacter extends MTRectangle implements IFontCharacter, ITextureFontCharacter {
 	
 	/** The unicode. */
 	private String unicode;
@@ -60,10 +60,6 @@ public class BitmapFontCharacter extends MTRectangle implements IFontCharacter {
 	 */
 	public BitmapFontCharacter(PApplet applet, PImage texture, String unicode, int leftOffset, int topOffset, int horizontalAdvance) {
 		super(applet, new Vertex(leftOffset, topOffset,0), texture.width, texture.height);
-		//hm..this is for the card loading, because
-		//when we init gl texture in other thread it breaks..
-//		this.setUseDirectGL(false);
-//		this.setUseDirectGL(true);
 		
 		this.setTexture(texture);
 		this.setTextureEnabled(true);
@@ -163,7 +159,6 @@ public class BitmapFontCharacter extends MTRectangle implements IFontCharacter {
 			gl.glTexCoordPointer(2, GL10.GL_FLOAT, 0, tbuff);
 
 			gl.glDrawArrays(this.getFillDrawMode(), 0, vertBuff.capacity()/3);
-
 			////
 		}
 	}

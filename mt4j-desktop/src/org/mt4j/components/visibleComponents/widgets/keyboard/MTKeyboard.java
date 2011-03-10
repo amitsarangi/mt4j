@@ -31,6 +31,7 @@ import org.mt4j.components.visibleComponents.font.IFont;
 import org.mt4j.components.visibleComponents.font.VectorFontCharacter;
 import org.mt4j.components.visibleComponents.shapes.AbstractShape;
 import org.mt4j.components.visibleComponents.shapes.MTRoundRectangle;
+import org.mt4j.components.visibleComponents.widgets.MTTextArea;
 import org.mt4j.components.visibleComponents.widgets.buttons.MTSvgButton;
 import org.mt4j.input.IKeyListener;
 import org.mt4j.input.gestureAction.DefaultDragAction;
@@ -890,6 +891,19 @@ public class MTKeyboard extends MTRoundRectangle implements IKeyListener {
 				System.err.println(e.getMessage());
 			}
 		}
+	}
+	
+	
+	/**
+	 * Snap to keyboard.
+	 * 
+	 * @param mtKeyboard the mt keyboard
+	 */
+	public void snapToKeyboard(MTTextArea textArea){
+		//OLD WAY
+//		this.translate(new Vector3D(30, -(getFont().getFontAbsoluteHeight() * (getLineCount())) + getFont().getFontMaxDescent() - borderHeight, 0));
+		this.addChild(textArea);
+		textArea.setPositionRelativeToParent(new Vector3D(40, -textArea.getHeightXY(TransformSpace.LOCAL)*0.5f));
 	}
 
 }

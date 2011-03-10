@@ -87,6 +87,9 @@ public class SvgFontFactory extends DefaultHandler implements IFontFactory {
 	public SvgFontFactory() {  }
 	
 	
+	/* (non-Javadoc)
+	 * @see org.mt4j.components.visibleComponents.font.fontFactories.IFontFactory#getCopy(org.mt4j.components.visibleComponents.font.IFont)
+	 */
 	public IFont getCopy(IFont font) {
 		if (font instanceof VectorFont) {
 			VectorFont vf = (VectorFont) font;

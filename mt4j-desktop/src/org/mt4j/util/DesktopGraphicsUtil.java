@@ -110,7 +110,11 @@ public class DesktopGraphicsUtil implements IGraphicsUtil {
 
 	@Override
 	public PMatrix getProjection() {
-		return ((PGraphicsOpenGL)app.getPGraphics()).projection;
+//		if (MT4jSettings.getInstance().isOpenGlMode()){
+//			return ((PGraphicsOpenGL)app.getPGraphics()).projection;
+//		}else{
+			return ((PGraphics3D)app.getPGraphics()).projection;
+//		}
 	}
 
 	@Override

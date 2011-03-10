@@ -116,7 +116,8 @@ public class FlickrScene extends AbstractScene {
 					t.setFillColor(new MTColor(205,200,177, 255));
 					t.unregisterAllInputProcessors();
 					t.setEnableCaret(true);
-					t.snapToKeyboard(keyb);
+//					t.snapToKeyboard(keyb);
+					keyb.snapToKeyboard(t);
 					keyb.addTextInputListener(t);
 			        
 			        //Flickr Button for the keyboard

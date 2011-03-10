@@ -237,7 +237,8 @@ public class MTTextKeyboard extends MTKeyboard {
 			t.addGestureListener(DragProcessor.class, dragFromKeybAction);
 			
 			t.setEnableCaret(true);
-			t.snapToKeyboard(this);
+//			t.snapToKeyboard(this);
+			snapToKeyboard(t);
 			
 			this.addTextInputListener(this.textInputListener);
 			//Remove textarea from listening if destroyed

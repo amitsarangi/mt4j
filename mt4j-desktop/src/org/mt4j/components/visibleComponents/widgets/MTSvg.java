@@ -482,8 +482,7 @@ public class MTSvg extends MTComponent {
 	private void setPickableRecursive(MTComponent current, boolean pickable){
 		if (!current.equals(this))
 				current.setPickable(pickable);
-		MTComponent[] children = current.getChildren();
-        for (MTComponent child : children) {
+        for (MTComponent child : current.getChildren()) {
             setPickableRecursive(child, pickable);
         }
 	}
