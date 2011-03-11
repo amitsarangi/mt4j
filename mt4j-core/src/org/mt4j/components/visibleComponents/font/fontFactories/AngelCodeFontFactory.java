@@ -102,6 +102,28 @@ public class AngelCodeFontFactory implements IFontFactory {
 		private int scaleWfromFile;
 
 		private int scaleHfromFile;
+
+		private String imageFileName;
+
+		private String fontFace;
+
+		private int fontSize;
+
+		private int bold;
+
+		private int italic;
+
+		private String charset;
+
+		private int unicode;
+
+		private int stretchH;
+
+		private int smooth;
+
+		private int aa;
+
+		private int[] paddingVals;
 		
 		
 		public AngelCodeFontFactory() {		}
@@ -244,12 +266,54 @@ public class AngelCodeFontFactory implements IFontFactory {
 					displayListCaching = false;
 			}
 
+			paddingVals = new int[]{0,0,0,0};
+			
 			try {
 				// now parse the font file
 				BufferedReader in = new BufferedReader(new InputStreamReader(fntFile));
 				String info = in.readLine();
 				String common = in.readLine();
 				String page = in.readLine();
+				
+				String infoRegEx = "[\\s=]+";
+				String[] infoTokens = info.split(infoRegEx);
+				if (infoTokens[0].equals("info")) {
+	                    for (int i = 1; i < infoTokens.length; i++) {
+	                        String token = infoTokens[i];
+	                        if (token.equals("face")) {
+	                            fontFace = removeQuotes(infoTokens[i + 1]);
+	                        } else if (token.equals("size")) {
+	                            fontSize = Integer.parseInt(infoTokens[i + 1]);
+	                        } else if (token.equals("bold")) {
+	                        	bold = Integer.parseInt(infoTokens[i + 1]);
+	                        } else if (token.equals("italic")) {
+	                            italic = Integer.parseInt(infoTokens[i + 1]);
+	                        } else if (token.equals("charset")) {
+	                        	charset = infoTokens[i + 1];
+	                        } else if (token.equals("unicode")) {
+	                        	unicode = Integer.parseInt(infoTokens[i + 1]);
+	                        } else if (token.equals("stretchH")) {
+	                        	stretchH = Integer.parseInt(infoTokens[i + 1]);
+	                        } else if (token.equals("smooth")) {
+	                        	smooth = Integer.parseInt(infoTokens[i + 1]);
+	                        } else if (token.equals("aa")) {
+	                        	aa = Integer.parseInt(infoTokens[i + 1]);
+	                        } else if (token.equals("padding")) {
+	                        	String padding = infoTokens[i + 1];
+	                        	try {
+									paddingVals[0] = Integer.parseInt(String.valueOf(padding.charAt(0)));
+									paddingVals[1] = Integer.parseInt(String.valueOf(padding.charAt(2)));
+									paddingVals[2] = Integer.parseInt(String.valueOf(padding.charAt(4)));
+									paddingVals[3] = Integer.parseInt(String.valueOf(padding.charAt(6)));
+								} catch (Exception e) {
+									System.err.println("Error trying to fetch padding data.");
+									e.printStackTrace();
+								}
+	                        } else if (token.equals("spacing")) {
+	                        	String spacing = infoTokens[i + 1]; //TODO
+	                        } // else if
+	                    }
+				}
 				
 				
 				String regex = "[\\s=]+";
@@ -268,6 +332,25 @@ public class AngelCodeFontFactory implements IFontFactory {
 	                        } // else if
 	                    }
 				}
+				
+				//Get image file name (we only get the first page - so make sure all your characters fit on 1 texture!)
+				imageFileName = "";
+				String pageRegEx = "[\\s=]+";
+				String[] pageTokens = page.split(pageRegEx);
+				if (pageTokens[0].equals("page")) {
+					for (int i = 1; i < pageTokens.length; i++) {
+						String token = pageTokens[i];
+						if (token.equals("file")) {
+							System.out.println("Found FILE: ");
+							System.out.println("--> " + commonTokens[i + 1]);
+							imageFileName = pageTokens[i + 1];
+							break;
+						}
+					}
+				}
+//				System.out.println("ImageFile: " + imageFileName);
+				imageFileName = removeQuotes(imageFileName);
+//				System.out.println("ImageFile: " + imageFileName);
 
 
 				Map kerning = new HashMap(64);
@@ -331,6 +414,14 @@ public class AngelCodeFontFactory implements IFontFactory {
 				throw new Exception("Failed to parse font file: " + fntFile);
 			}
 		}
+		
+		private String removeQuotes(String string){
+			if (string.length() > 2 && string.charAt(0) == '"' && string.charAt(string.length()-1) == '"'){
+				string = string.substring(1, string.length()-1);
+			}
+			return string;
+		}
+	
 
 		/**
 		 * Parse a single character line from the definition
@@ -727,8 +818,8 @@ public class AngelCodeFontFactory implements IFontFactory {
 			if (MT4jSettings.getInstance().isOpenGlMode())
 				this.GL = GraphicsUtil.getGL();
 
-			String imageFileName = getFontNameWithoutSuffix(fontName);
-			String fontFamily = new String(imageFileName);
+//			String imageFileName = getFontNameWithoutSuffix(fontName);
+//			String fontFamily = new String(getFontNameWithoutSuffix(fontName));
 			
 			//TODO get image file name from .fnt file
 			try {
@@ -740,21 +831,19 @@ public class AngelCodeFontFactory implements IFontFactory {
 			}
 			
 			try {
-				String bmfontFileName = new String(imageFileName);
-				bmfontFileName += "_0"; //BMFont adds page info at the file end //TODO what about fonts with more than 1 sheet (AngelCode) ?
-				bmfontFileName += ".png"; //Only png supported (BMFont Targa's arent loaded by processing)
-				
-				imageFileName += ".png"; //Hiero outputs  .png
-				
-//				imageFileName += ".tga"; //TODO tga error with angelcode .tga and Processing -> Hiero outputs  .png
-				
-				imageFileName = imageFileName.toLowerCase();
+//				String bmfontFileName = new String(imageFileName);
+//				bmfontFileName += "_0"; //BMFont adds page info at the file end //TODO what about fonts with more than 1 sheet (AngelCode) ?
+//				bmfontFileName += ".png"; //Only png supported (BMFont Targa's arent loaded by processing)
+//				imageFileName += ".png"; //Hiero outputs  .png
+////			imageFileName += ".tga"; //TODO tga error with angelcode .tga and Processing -> Hiero outputs  .png
+//				
+//				imageFileName = imageFileName.toLowerCase();
 				
 				fontImage = app.loadImage(imageFileName);
 				
-				if (fontImage == null){
-					fontImage = app.loadImage(bmfontFileName);
-				}
+//				if (fontImage == null){
+//					fontImage = app.loadImage(bmfontFileName);
+//				}
 				
 				if (fontImage == null){
 					System.err.println("Couldnt loading font image.");
@@ -779,7 +868,7 @@ public class AngelCodeFontFactory implements IFontFactory {
 //					System.out.println("Creating character unicode: " + unicode);
 					
 					AngelCodeFontCharacter fontCharacter 
-					= new AngelCodeFontCharacter(app, fontImage, unicode, character.x, character.y, character.width, character.height, character.xoffset, character.yoffset, character.xadvance);
+					= new AngelCodeFontCharacter(app, fontImage, unicode, character.x, character.y, character.width, character.height, character.xoffset, character.yoffset, character.xadvance, paddingVals);
 					
 					characters.add(fontCharacter);
 				}
@@ -787,12 +876,12 @@ public class AngelCodeFontFactory implements IFontFactory {
 			
 			int fontMaxAscent = lineHeightFromFile - baseFromFile;
 			int fontMaxDescent = (lineHeightFromFile - fontMaxAscent) * -1; //We use negative descent values
-			
 			int unitsPerEm = 1000; //FIXME arbitrary default value..
 
 			System.out.println("Line height: " + lineHeightFromFile);
 			System.out.println("Baseline: " + baseFromFile);
-			System.out.println("Font Family: " + fontFamily);
+			System.out.println("Font size: " + this.fontSize);
+			System.out.println("Font Family: " + fontFace);
 			System.out.println("Ascent: " + fontMaxAscent);
 			System.out.println("Descent: " + fontMaxDescent);
 			
@@ -813,7 +902,7 @@ public class AngelCodeFontFactory implements IFontFactory {
 			
 			//TODO put kerning info into font
 			
-			AngelCodeFont font = new AngelCodeFont(fontImage, characters.toArray(new AngelCodeFontCharacter[characters.size()]), defaultHorizontalAdvX, fontName, fontFamily, fontMaxAscent, fontMaxDescent, unitsPerEm, fontSize, fillColor, antiAliased);
+			AngelCodeFont font = new AngelCodeFont(fontImage, characters.toArray(new AngelCodeFontCharacter[characters.size()]), defaultHorizontalAdvX, fontName, fontFace, fontMaxAscent, fontMaxDescent, unitsPerEm, this.fontSize, fillColor, antiAliased);
 			
 			return font;
 	}

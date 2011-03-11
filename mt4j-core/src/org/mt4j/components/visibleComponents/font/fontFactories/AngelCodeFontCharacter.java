@@ -36,10 +36,16 @@ public class AngelCodeFontCharacter extends MTRectangle implements IFontCharacte
 	private String unicode;
 
 	private int horizontalAdvance;
+
+	private int[] padding;
 	
 	
-	public AngelCodeFontCharacter(PApplet app, PImage fontImage, String unicode, short x, short y, short width, short height, short xOffset, short yOffset, int horizontalAdvance){
+	public AngelCodeFontCharacter(PApplet app, PImage fontImage, String unicode, short x, short y, short width, short height, short xOffset, short yOffset, int horizontalAdvance, int[] paddingVals){
 		super(app, xOffset, yOffset, width, height);
+		
+//		super(app, xOffset - (short)paddingVals[0], yOffset - (short)paddingVals[1], width - (short)paddingVals[0], height - (short)paddingVals[1]);
+		
+//		super(app, xOffset - paddingVals[0], yOffset - paddingVals[1], width, height);
 		
 		this.setTextureEnabled(true);
 		this.setNoStroke(true); 
@@ -59,6 +65,8 @@ public class AngelCodeFontCharacter extends MTRectangle implements IFontCharacte
 		this.yoffset = yOffset;
 		
 		this.horizontalAdvance = horizontalAdvance;
+		
+		this.padding = paddingVals;
 		
 		//TODO have to handle p3d mode by hand!? -> setTexture(fontImage) -> texcoords etc
 		
