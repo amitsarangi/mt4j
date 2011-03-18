@@ -23,6 +23,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.mt4j.components.css.util.CSSStyleManager;
+import org.mt4j.components.visibleComponents.font.FontManager;
 import org.mt4j.input.IKeyListener;
 import org.mt4j.input.InputManager;
 import org.mt4j.input.inputData.AbstractCursorInputEvt;
@@ -46,15 +47,16 @@ import org.mt4j.util.opengl.GL11Plus;
 import org.mt4j.util.opengl.GL20;
 import org.mt4j.util.opengl.GLCommon;
 import org.mt4j.util.opengl.GLTexture;
-import org.mt4j.util.opengl.GLTextureSettings;
 import org.mt4j.util.opengl.GLTexture.EXPANSION_FILTER;
 import org.mt4j.util.opengl.GLTexture.SHRINKAGE_FILTER;
 import org.mt4j.util.opengl.GLTexture.WRAP_MODE;
+import org.mt4j.util.opengl.GLTextureSettings;
 
 import processing.core.PApplet;
 import processing.core.PGraphics;
 import processing.core.PImage;
 import processing.core.PMatrix3D;
+import android.app.Application;
 
 
 
@@ -1494,5 +1496,11 @@ public abstract class MTApplication extends PApplet implements IMTApplication{
 	
 	//////////////////////////////////////////////////
 	
+	@Override
+	protected void onStop() {
+		//at least on android even if stopping the mt4j app, the fontmanager seems to be kept with fonts cached, but textures destroyed already?
+		FontManager.getInstance().clearCache(); 
+		super.onStop();
+	}
 	
 }

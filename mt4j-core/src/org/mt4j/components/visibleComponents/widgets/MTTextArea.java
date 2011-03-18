@@ -111,6 +111,9 @@ public class MTTextArea extends MTRectangle implements ITextInputListener, Compa
 	private static ArtificalLineBreak artificialLineBreak;
 
     private ExpandDirection expandDirection ;
+    
+    
+    public boolean enableKerning = true; //TODO remove later
 	
 	//TODO different font sizes in one textarea?
 	//TODO (create mode : expand vertically but do word wrap horizontally?
@@ -579,13 +582,25 @@ public class MTTextArea extends MTRectangle implements ITextInputListener, Compa
 				//If caret is showing and we are at index one before caret calc the advancement to include the caret in the text area
 				if (enableCaret && showCaret && i == charListSize-2){
 					if (character.getUnicode().equals("\t")){
+//						lastXAdvancement = character.getHorizontalDist() - character.getHorizontalDist() / 20;
 						lastXAdvancement = character.getHorizontalDist() - character.getHorizontalDist() / 20;
 					}else{
 						//approximated value, cant get the real one
+//						lastXAdvancement = 2 + character.getHorizontalDist() - (character.getHorizontalDist() / 3);
 						lastXAdvancement = 2 + character.getHorizontalDist() - (character.getHorizontalDist() / 3);
 					}
 				}else{
-					lastXAdvancement = character.getHorizontalDist();
+//					lastXAdvancement = character.getHorizontalDist();
+					if (enableKerning && i+1 < charListSize){
+						lastXAdvancement = character.getHorizontalDist() + character.getKerning(characterList.get(i+1).getUnicode());
+//						if (character.getKerning(characterList.get(i+1).getUnicode()) != 0 ){
+//							System.out.println("Kerning (" + character.getKerning(characterList.get(i+1).getUnicode()) + ") between: " + character.getUnicode() + " and " + characterList.get(i+1).getUnicode());
+//						}
+//						System.out.println(character.getKerning(characterList.get(i+1).getUnicode()));
+					}else{
+						lastXAdvancement = character.getHorizontalDist();
+					}
+					
 				}
 			}
 		}
@@ -1020,19 +1035,42 @@ public class MTTextArea extends MTRectangle implements ITextInputListener, Compa
 		float currentLineWidth = 2 * this.getInnerPaddingLeft() + caretWidth;
 		float maxWidth = currentLineWidth;
 
-        for (IFontCharacter character : this.characterList) {
-            if (character.getUnicode().equals("\n")) {
-                if (currentLineWidth > maxWidth) {
-                    maxWidth = currentLineWidth;
-                }
-                currentLineWidth = 2 * this.getInnerPaddingLeft() + caretWidth;
-            } else {
-                currentLineWidth += character.getHorizontalDist();
-                if (currentLineWidth > maxWidth) {
-                    maxWidth = currentLineWidth;
-                }
-            }
-        }
+		int characterListSize = this.characterList.size();
+		for (int i = 0; i < characterListSize; i++) {
+			IFontCharacter character = characterList.get(i);
+			 if (character.getUnicode().equals("\n")) {
+	                if (currentLineWidth > maxWidth) {
+	                    maxWidth = currentLineWidth;
+	                }
+	                currentLineWidth = 2 * this.getInnerPaddingLeft() + caretWidth;
+	            } else {
+	            	
+	            	if (enableKerning && i-1 > 0){
+	            		int kern = characterList.get(i-1).getKerning(character.getUnicode());
+	            		currentLineWidth += character.getHorizontalDist() + kern;
+	            	}else{
+	            		currentLineWidth += character.getHorizontalDist();	
+	            	}
+	                
+	                if (currentLineWidth > maxWidth) {
+	                    maxWidth = currentLineWidth;
+	                }
+	            }
+		}
+		
+//        for (IFontCharacter character : this.characterList) {
+//            if (character.getUnicode().equals("\n")) {
+//                if (currentLineWidth > maxWidth) {
+//                    maxWidth = currentLineWidth;
+//                }
+//                currentLineWidth = 2 * this.getInnerPaddingLeft() + caretWidth;
+//            } else {
+//                currentLineWidth += character.getHorizontalDist();
+//                if (currentLineWidth > maxWidth) {
+//                    maxWidth = currentLineWidth;
+//                }
+//            }
+//        }
 		return maxWidth;
 	}
 
@@ -1224,6 +1262,10 @@ public class MTTextArea extends MTRectangle implements ITextInputListener, Compa
 		}
 		public String getUnicode() {
 			return "\n";
+		}
+		@Override
+		public int getKerning(String character) {
+			return 0;
 		}
 		
 	}

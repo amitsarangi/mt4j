@@ -1,5 +1,7 @@
 package org.mt4j;
 
+import org.mt4j.components.visibleComponents.font.FontManager;
+import org.mt4j.components.visibleComponents.font.fontFactories.AngelCodeFontFactory;
 import org.mt4j.input.AndroidInputManager;
 import org.mt4j.input.ISurfaceTouchListener;
 import org.mt4j.util.AndroidGraphicsUtil;
@@ -41,6 +43,7 @@ public abstract class MTAndroidApplication extends MTApplication{
 		
 		//Add default font factories /////////////
 //		FontManager.getInstance().registerFontFactory(".ttf", new TTFontFactory());
+		FontManager.getInstance().registerFontFactory(".fnt", new AngelCodeFontFactory());
 		//////////////////////
 		
 		/////////////////////// //FIXME TEST

@@ -185,8 +185,10 @@ public class FontManager {
 		
 		//Return cached font if there
 //		IFont font = this.getCachedFont(fontAbsoultePath, fontSize,	fillColor, strokeColor, antiAliased);
+		
 		IFont font = this.getCachedFont(fontAbsoultePath, fontSize,	fillColor, antiAliased);
 		if (font != null){
+			System.out.println("Using cached font (" + fontFileName + ")");
 			return font;
 		}
 		
@@ -305,7 +307,7 @@ public class FontManager {
 				IFontFactory factoryToUse = this.getFactoryForFileSuffix(getFontSuffix(fontAbsoultePath));
 				if (factoryToUse != null){
 					IFont copy = factoryToUse.getCopy(font);
-					if (copy != null){
+					if (copy != null && copy.isEqual(font)){
 						copy.setFillColor(new MTColor(fillColor));
 						return copy;	
 					}else{
@@ -329,9 +331,9 @@ public class FontManager {
 	 * 
 	 * @return true, if successful
 	 */
-	public static boolean fontsAreEqual(IFont font, String IVectorFontFileName, int fontSize, MTColor fillColor /*, MTColor strokeColor */, boolean antiAliased){
+	public static boolean fontsAreEqual(IFont font, String fontFileName, int fontSize, MTColor fillColor /*, MTColor strokeColor */, boolean antiAliased){
 		return (	
-				font.getFontFileName().equalsIgnoreCase(IVectorFontFileName)
+				font.getFontFileName().equalsIgnoreCase(fontFileName)
 				&& 	
 				font.getOriginalFontSize() == fontSize
 				&&
@@ -341,9 +343,9 @@ public class FontManager {
 		);
 	}
 	
-	public static boolean fontsAreSimilar(IFont font, String IVectorFontFileName, int fontSize, MTColor fillColor, boolean antiAliased){
+	public static boolean fontsAreSimilar(IFont font, String fontFileName, int fontSize, MTColor fillColor, boolean antiAliased){
 		return (	
-				font.getFontFileName().equalsIgnoreCase(IVectorFontFileName)
+				font.getFontFileName().equalsIgnoreCase(fontFileName)
 				&& 	
 				font.getOriginalFontSize() == fontSize
 				&&
@@ -394,6 +396,21 @@ public class FontManager {
 		}else{
 			return false;
 		}
+	}
+
+	public void clearCache() {
+		IFont[] theFonts = fonts.toArray(new IFont[fonts.size()]);
+		
+		for (IFont font : theFonts) {
+			font.destroy();
+		}
+		fonts.clear();
+	}
+	
+	@Override
+	protected void finalize() throws Throwable {
+		super.finalize();
+		clearCache();
 	}
 	
 

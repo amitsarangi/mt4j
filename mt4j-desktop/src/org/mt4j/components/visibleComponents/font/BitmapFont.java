@@ -354,6 +354,24 @@ public class BitmapFont implements IFont, ITextureFont {
 	}
 
 
+	@Override
+	public boolean isEqual(IFont font){
+		if (font instanceof BitmapFont) {
+			if (
+					font.getFontFileName().equalsIgnoreCase(getFontFileName())
+					&& 	
+					font.getOriginalFontSize() == getOriginalFontSize()
+					&&
+					font.isAntiAliased() == antiAliased	
+			){
+				return true;		
+			}
+		}
+		return false;
+	}
+
+
+
 
 	
 	

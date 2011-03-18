@@ -3,7 +3,6 @@ package org.mt4j.components.visibleComponents.font.fontFactories;
 import java.util.HashMap;
 import java.util.List;
 
-import org.mt4j.components.MTComponent;
 import org.mt4j.components.visibleComponents.font.FontManager;
 import org.mt4j.components.visibleComponents.font.IFont;
 import org.mt4j.components.visibleComponents.font.IFontCharacter;
@@ -14,7 +13,6 @@ import org.mt4j.util.logging.MTLoggerFactory;
 import org.mt4j.util.opengl.GL10;
 import org.mt4j.util.opengl.GLTexture;
 
-import processing.core.PApplet;
 import processing.core.PImage;
 
 public class AngelCodeFont implements IFont, ITextureFont {
@@ -60,11 +58,11 @@ public class AngelCodeFont implements IFont, ITextureFont {
 //	/** The stroke color. */
 //	private MTColor strokeColor;
 	
-	private List<String> notAvailableChars;
-
 	private boolean antiAliased;
 	
 	private PImage fontImage;
+
+	private int hieroPadding;
 	
 	
 	//TODO make class AbstractFont with destroy method, getters, setters
@@ -72,7 +70,7 @@ public class AngelCodeFont implements IFont, ITextureFont {
 	
 	public AngelCodeFont(PImage fontImage, AngelCodeFontCharacter[] characters, int defaultHorizontalAdvX, String fontFileName, String fontFamily, int fontMaxAscent, int fontMaxDescent, int unitsPerEm, int originalFontSize,
 			MTColor fillColor,
-			boolean antiAliased
+			boolean antiAliased, int hieroPadding
 	) {
 		this.fontImage = fontImage;
 		
@@ -88,6 +86,8 @@ public class AngelCodeFont implements IFont, ITextureFont {
 		this.fontMaxDescent = fontMaxDescent;
 		
 		this.unitsPerEM = unitsPerEm;
+		
+		this.hieroPadding = hieroPadding;
 		
 		//Put characters in hashmaps for quick access
 		uniCodeToChar 	= new HashMap<String, AngelCodeFontCharacter>();
@@ -226,5 +226,38 @@ public class AngelCodeFont implements IFont, ITextureFont {
 		gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
 	}
 
+	public PImage getFontImage() {
+		return fontImage;
+	}
+
+	
+	public AngelCodeFont getCopy(){
+		return new AngelCodeFont(fontImage, characters, defaultHorizontalAdvX, fontFileName, fontFamily, fontMaxAscent , fontMaxDescent , unitsPerEM, originalFontSize, fillColor,  /*bf.getStrokeColor(),*/ antiAliased, getHieroPadding());
+	}
+	
+	public boolean isEqual(IFont font){
+		if (font instanceof AngelCodeFont) {
+			AngelCodeFont af = (AngelCodeFont) font;
+			if (
+					font.getFontFileName().equalsIgnoreCase(getFontFileName())
+					&& 	
+					font.getOriginalFontSize() == getOriginalFontSize()
+					&&
+					font.isAntiAliased() == antiAliased	
+					&&
+					af.getHieroPadding() == getHieroPadding()
+			){
+					return true;	
+			}
+				
+		}
+		return false;
+	}
+
+	public int getHieroPadding() {
+		return hieroPadding;
+	}
+	
+	
 
 }

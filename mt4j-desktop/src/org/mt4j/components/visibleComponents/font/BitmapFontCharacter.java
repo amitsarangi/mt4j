@@ -330,4 +330,12 @@ public class BitmapFontCharacter extends MTRectangle implements IFontCharacter, 
 		}
 	}
 
+
+
+	@Override
+	public int getKerning(String character) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
 }

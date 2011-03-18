@@ -1,19 +1,5 @@
 package org.mt4j.components.visibleComponents.font.fontFactories;
 
-import org.mt4j.components.visibleComponents.font.IFont;
-import org.mt4j.components.visibleComponents.font.IFontCharacter;
-import org.mt4j.util.GraphicsUtil;
-import org.mt4j.util.MT4jSettings;
-import org.mt4j.util.MTColor;
-import org.mt4j.util.logging.ILogger;
-import org.mt4j.util.logging.MTLoggerFactory;
-import org.mt4j.util.opengl.GL10;
-import org.mt4j.util.opengl.GL11Plus;
-import org.mt4j.util.opengl.GLTexture;
-import org.mt4j.util.opengl.GLTexture.EXPANSION_FILTER;
-import org.mt4j.util.opengl.GLTexture.SHRINKAGE_FILTER;
-import org.mt4j.util.opengl.GLTexture.WRAP_MODE;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -24,8 +10,20 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.StringTokenizer;
 import java.util.Map.Entry;
+import java.util.StringTokenizer;
+
+import org.mt4j.components.visibleComponents.font.IFont;
+import org.mt4j.util.GraphicsUtil;
+import org.mt4j.util.MT4jSettings;
+import org.mt4j.util.MTColor;
+import org.mt4j.util.logging.ILogger;
+import org.mt4j.util.logging.MTLoggerFactory;
+import org.mt4j.util.opengl.GL10;
+import org.mt4j.util.opengl.GLTexture;
+import org.mt4j.util.opengl.GLTexture.EXPANSION_FILTER;
+import org.mt4j.util.opengl.GLTexture.SHRINKAGE_FILTER;
+import org.mt4j.util.opengl.GLTexture.WRAP_MODE;
 
 import processing.core.PApplet;
 import processing.core.PImage;
@@ -353,8 +351,8 @@ public class AngelCodeFontFactory implements IFontFactory {
 //				System.out.println("ImageFile: " + imageFileName);
 
 
-				Map kerning = new HashMap(64);
-				List charDefs = new ArrayList(MAX_CHAR);
+				Map<Short, List> kerning = new HashMap<Short, List>(64);
+				List<CharDef> charDefs = new ArrayList<CharDef>(MAX_CHAR);
 				int maxChar = 0;
 				boolean done = false;
 				while (!done) {
@@ -382,9 +380,9 @@ public class AngelCodeFontFactory implements IFontFactory {
 							int second = Integer.parseInt(tokens.nextToken()); // second value
 							tokens.nextToken(); // offset
 							int offset = Integer.parseInt(tokens.nextToken()); // offset value
-							List values = (List)kerning.get(new Short(first));
+							List<Short> values = (List<Short>)kerning.get(new Short(first));
 							if (values == null) {
-								values = new ArrayList();
+								values = new ArrayList<Short>();
 								kerning.put(new Short(first), values);
 							}
 							// Pack the character and kerning offset into a short.
@@ -394,13 +392,13 @@ public class AngelCodeFontFactory implements IFontFactory {
 				}
 
 				chars = new CharDef[maxChar + 1];
-				for (Iterator iter = charDefs.iterator(); iter.hasNext();) {
+				for (Iterator<CharDef> iter = charDefs.iterator(); iter.hasNext();) {
 					CharDef def = (CharDef)iter.next();
 					chars[def.id] = def;
 				}
 
 				// Turn each list of kerning values into a short[] and set on the chardef. 
-				for (Iterator iter = kerning.entrySet().iterator(); iter.hasNext(); ) {
+				for (Iterator<?> iter = kerning.entrySet().iterator(); iter.hasNext(); ) {
 					Entry entry = (Entry)iter.next();
 					short first = ((Short)entry.getKey()).shortValue();
 					List valueList = (List)entry.getValue();
@@ -811,10 +809,35 @@ public class AngelCodeFontFactory implements IFontFactory {
 			}
 			return imageFileName;
 		}
+		
+
+		@Override
+		public IFont createFont(PApplet app, String fontName, int fontSize,	MTColor fillColor, MTColor strokeColor) {
+			return createFont(app, fontName, fontSize, fillColor, strokeColor, true);
+		}
 
 
 		@Override
-	public IFont createFont(PApplet app, String fontName, int fontSize,	MTColor fillColor, MTColor strokeColor, boolean antiAliased) {
+		public IFont createFont(PApplet app, String fontName, int fontSize,	MTColor color) {
+			return createFont(app, fontName, fontSize, color, color, true);
+		}
+
+		@Override
+		public IFont createFont(PApplet app, String fontName, int fontSize,	MTColor color, boolean antiAliased) {
+			return createFont(app, fontName, fontSize, color, color, antiAliased);
+		}
+		
+		@Override
+		public IFont createFont(PApplet app, String fontName, int fontSize,	MTColor fillColor, MTColor strokeColor, boolean antiAliased) {
+			return this.createFont(app, fontName, fontSize, fillColor, strokeColor, antiAliased, 0);
+		}
+		
+		public IFont createFont(PApplet app, String fontName, int fontSize,	MTColor fillColor, boolean antiAliased, int hieroPadding) {
+			return this.createFont(app, fontName, fontSize, fillColor, fillColor, antiAliased, hieroPadding);
+		}
+
+	
+		public IFont createFont(PApplet app, String fontName, int fontSize,	MTColor fillColor, MTColor strokeColor, boolean antiAliased, int hieroPadding) {
 			if (MT4jSettings.getInstance().isOpenGlMode())
 				this.GL = GraphicsUtil.getGL();
 
@@ -868,12 +891,12 @@ public class AngelCodeFontFactory implements IFontFactory {
 //					System.out.println("Creating character unicode: " + unicode);
 					
 					AngelCodeFontCharacter fontCharacter 
-					= new AngelCodeFontCharacter(app, fontImage, unicode, character.x, character.y, character.width, character.height, character.xoffset, character.yoffset, character.xadvance, paddingVals);
+					= new AngelCodeFontCharacter(app, fontImage, unicode, character.x, character.y, character.width, character.height, character.xoffset, character.yoffset, character.xadvance, paddingVals, character.kerning, hieroPadding);
 					
 					characters.add(fontCharacter);
 				}
 			}
-			
+			lineHeightFromFile -= hieroPadding * 2;
 			int fontMaxAscent = lineHeightFromFile - baseFromFile;
 			int fontMaxDescent = (lineHeightFromFile - fontMaxAscent) * -1; //We use negative descent values
 			int unitsPerEm = 1000; //FIXME arbitrary default value..
@@ -902,30 +925,18 @@ public class AngelCodeFontFactory implements IFontFactory {
 			
 			//TODO put kerning info into font
 			
-			AngelCodeFont font = new AngelCodeFont(fontImage, characters.toArray(new AngelCodeFontCharacter[characters.size()]), defaultHorizontalAdvX, fontName, fontFace, fontMaxAscent, fontMaxDescent, unitsPerEm, this.fontSize, fillColor, antiAliased);
+			AngelCodeFont font = new AngelCodeFont(fontImage, characters.toArray(new AngelCodeFontCharacter[characters.size()]), defaultHorizontalAdvX, fontName, fontFace, fontMaxAscent, fontMaxDescent, unitsPerEm, this.fontSize, fillColor, antiAliased, hieroPadding);
 			
 			return font;
 	}
 
-	@Override
-	public IFont createFont(PApplet app, String fontName, int fontSize,	MTColor fillColor, MTColor strokeColor) {
-		return createFont(app, fontName, fontSize, fillColor, strokeColor, true);
-	}
-
-
-	@Override
-	public IFont createFont(PApplet app, String fontName, int fontSize,	MTColor color) {
-		return createFont(app, fontName, fontSize, color, color, true);
-	}
-
-	@Override
-	public IFont createFont(PApplet app, String fontName, int fontSize,	MTColor color, boolean antiAliased) {
-		return createFont(app, fontName, fontSize, color, color, antiAliased);
-	}
 
 	@Override
 	public IFont getCopy(IFont font) {
-		// TODO Auto-generated method stub
+		if (font instanceof AngelCodeFont) {
+			AngelCodeFont f = (AngelCodeFont) font;
+			return f.getCopy();
+		}
 		return null;
 	}
 

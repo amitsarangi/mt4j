@@ -39,13 +39,26 @@ public class AngelCodeFontCharacter extends MTRectangle implements IFontCharacte
 
 	private int[] padding;
 	
+	private int id;
 	
-	public AngelCodeFontCharacter(PApplet app, PImage fontImage, String unicode, short x, short y, short width, short height, short xOffset, short yOffset, int horizontalAdvance, int[] paddingVals){
+	private short[] kerning;
+	
+	private int hieroPadding;
+	
+	
+	public AngelCodeFontCharacter(PApplet app, PImage fontImage, String unicode, short x, short y, short width, short height, short xOffset, short yOffset, int horizontalAdvance, int[] paddingVals,  short[] kerning, int hieroPadding){
 		super(app, xOffset, yOffset, width, height);
+		
+		this.id = Character.codePointAt(unicode.toCharArray(), 0);
+		this.kerning = kerning;
 		
 //		super(app, xOffset - (short)paddingVals[0], yOffset - (short)paddingVals[1], width - (short)paddingVals[0], height - (short)paddingVals[1]);
 		
 //		super(app, xOffset - paddingVals[0], yOffset - paddingVals[1], width, height);
+		
+//		System.out.println("id: " + "id" +  " Padding: " + paddingVals[0] + ", " + paddingVals[1] + ", " + paddingVals[2] + ", " + paddingVals[3]);
+		
+		this.hieroPadding = hieroPadding; //hiero doesent set padding in the padding field of the .fnt file but instead increases the advanceX and other values..
 		
 		this.setTextureEnabled(true);
 		this.setNoStroke(true); 
@@ -61,27 +74,21 @@ public class AngelCodeFontCharacter extends MTRectangle implements IFontCharacte
 		this.width = width;
 		this.height = height;
 		
-		this.xoffset = xOffset;
-		this.yoffset = yOffset;
+		this.xoffset = (short) (xOffset); 
+		this.yoffset = (short) (yOffset);
 		
-		this.horizontalAdvance = horizontalAdvance;
+		this.horizontalAdvance = horizontalAdvance - hieroPadding * 2;
 		
 		this.padding = paddingVals;
 		
 		//TODO have to handle p3d mode by hand!? -> setTexture(fontImage) -> texcoords etc
 		
-		float x_ = (float)x/(float)fontImage.width;
-		float y_ = (float)y/(float)fontImage.height;
+		float x_ = (float)x / (float)fontImage.width;
+		float y_ = (float)y / (float)fontImage.height;
 		
 		float x__ = (float)(x+width) / (float)fontImage.width;
 		float y__ = (float)(y+height) / (float)fontImage.height;
 		
-//		x_ -= 0.001f;
-//		y_ -= 0.001f;
-//		
-//		x__ -= 0.001f;
-//		y__ -= 0.001f;
-	
 		Vertex[] v = this.getVerticesLocal();
 		v[0].setTexCoordU(x_);
 		v[0].setTexCoordV(y_);
@@ -117,7 +124,57 @@ public class AngelCodeFontCharacter extends MTRectangle implements IFontCharacte
 //        this.setVertices(v);
 	}
 	
+	public int getKerning (String unicode) {
+//		int otherCodePoint = Charcter.codePointAt(unicode.toCharArray(), 0);
+		char otherCodePointC = unicode.charAt(0);
+		int otherCodePoint = (int)otherCodePointC;
+		
+		if (kerning == null) 
+			return 0;
+		
+//		int low = 0;
+//		int high = kerning.length - 1;
+//		while (low <= high) {
+//			int midIndex = (low + high) >>> 1;
+//			int value = kerning[midIndex];
+//			int foundCodePoint = value & 0xff;
+//			if (foundCodePoint < otherCodePoint)
+//				low = midIndex + 1;
+//			else if (foundCodePoint > otherCodePoint)
+//				high = midIndex - 1;
+//			else 
+//				return value >> 8;
+//		}
+		
+		for (int i = 0; i < kerning.length; i++) {
+			short value = kerning[i];
+			int foundCodePoint = value & 0xff;
+			if (foundCodePoint == otherCodePoint){
+				return value >> 8;
+			}
+		}
+		
+		return 0;
+	}
 	
+	
+	public int getKerning (int otherCodePoint) {
+		if (kerning == null) return 0;
+		int low = 0;
+		int high = kerning.length - 1;
+		while (low <= high) {
+			int midIndex = (low + high) >>> 1;
+			int value = kerning[midIndex];
+			int foundCodePoint = value & 0xff;
+			if (foundCodePoint < otherCodePoint)
+				low = midIndex + 1;
+			else if (foundCodePoint > otherCodePoint)
+				high = midIndex - 1;
+			else 
+				return value >> 8;
+		}
+		return 0;
+	} 
 	
 
 	@Override
@@ -182,5 +239,13 @@ public class AngelCodeFontCharacter extends MTRectangle implements IFontCharacte
 		}
 	}
 
+	public int getHieroPadding() {
+		return hieroPadding;
+	}
+	
+	@Override
+	protected void destroyComponent() {
+//		super.destroyComponent();
+	}
 
 }

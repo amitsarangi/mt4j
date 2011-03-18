@@ -412,6 +412,23 @@ public class VectorFont implements IFont {
 	}
 
 
+	@Override
+	public boolean isEqual(IFont font){
+		if (font instanceof VectorFont) {
+			if (
+					font.getFontFileName().equalsIgnoreCase(getFontFileName())
+					&& 	
+					font.getOriginalFontSize() == getOriginalFontSize()
+					&&
+					font.isAntiAliased() == antiAliased	
+			){
+				return true;		
+			}
+		}
+		return false;
+	}
+
+
 
 	
 

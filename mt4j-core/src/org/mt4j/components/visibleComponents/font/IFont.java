@@ -144,4 +144,6 @@ public interface IFont {
 	public void beginBatchRenderGL(GL10 gl, IFont font);
 
 	public void endBatchRenderGL(GL10 gl, IFont font);
+
+	public boolean isEqual(IFont font);
 }

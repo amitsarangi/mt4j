@@ -49,6 +49,9 @@ public interface IFontCharacter {
 	public String getUnicode();
 	
 	
+	public int getKerning(String character);
+	
+	
 	/**
 	 * The horizontal advancement distance specifies, how many units
 	 * to the right we have to move before drawing the NEXT character.

@@ -308,6 +308,13 @@ public class VectorFontCharacter extends
 		//So we have to destroy the list if we explicitly destroy a font
 		//E.g. when we remove it from the cache
 	}
+	
+	
+	@Override
+	public int getKerning(String character) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 
 
 }
