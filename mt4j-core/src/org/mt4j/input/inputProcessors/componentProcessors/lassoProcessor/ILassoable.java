@@ -25,7 +25,7 @@ import org.mt4j.util.math.Vector3D;
  * The Interface IdragClusterable.
  * @author Christopher Ruff
  */
-public interface IdragClusterable extends IMTComponent3D{
+public interface ILassoable extends IMTComponent3D{
 	
 	/**
 	 * Gets the center point global.

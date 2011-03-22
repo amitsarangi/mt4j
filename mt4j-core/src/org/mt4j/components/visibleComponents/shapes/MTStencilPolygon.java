@@ -427,13 +427,17 @@ public class MTStencilPolygon extends MTPolygon {
 				gl.glVertexPointer(3, GL10.GL_FLOAT, 0, stencilQuad);
 		    	gl.glDrawArrays(GL10.GL_TRIANGLE_FAN, 0, stencilQuad.capacity()/3); 
 
-		    if (GLStencilUtil.getInstance().isClipActive()  && GraphicsUtil.getGL11Plus() != null){
-//			    gl.glPopAttrib();
-		    	GraphicsUtil.getGL11Plus().glPopAttrib();
-	    	}else{
-	    		 gl.glDisable (GL10.GL_STENCIL_TEST);
-	    	}
-
+		    	if (GLStencilUtil.getInstance().isClipActive()){
+		    		if (GraphicsUtil.getGL11Plus() != null){
+		    			//gl.glPopAttrib();
+		    			GraphicsUtil.getGL11Plus().glPopAttrib();
+		    		}else{
+		    			gl.glStencilFunc(GL10.GL_EQUAL, GLStencilUtil.stencilValueStack.peek(), GLStencilUtil.stencilValueStack.peek());
+		    			gl.glStencilOp(GL10.GL_KEEP, GL10.GL_KEEP, GL10.GL_KEEP);
+		    		}
+		    	}else{
+		    		gl.glDisable (GL10.GL_STENCIL_TEST);
+		    	}
 	    }
 	    
 	    //////////////////////////////

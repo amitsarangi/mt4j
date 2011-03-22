@@ -27,7 +27,7 @@ import org.mt4j.input.gestureAction.DefaultDragAction;
 import org.mt4j.input.gestureAction.DefaultRotateAction;
 import org.mt4j.input.gestureAction.DefaultScaleAction;
 import org.mt4j.input.inputProcessors.componentProcessors.dragProcessor.DragProcessor;
-import org.mt4j.input.inputProcessors.componentProcessors.lassoProcessor.IdragClusterable;
+import org.mt4j.input.inputProcessors.componentProcessors.lassoProcessor.ILassoable;
 import org.mt4j.input.inputProcessors.componentProcessors.rotateProcessor.RotateProcessor;
 import org.mt4j.input.inputProcessors.componentProcessors.scaleProcessor.ScaleProcessor;
 import org.mt4j.util.MT4jSettings;
@@ -62,7 +62,7 @@ import processing.core.PImage;
  * 
  * @author Christopher Ruff
  */
-public abstract class AbstractShape extends AbstractVisibleComponent implements IdragClusterable{
+public abstract class AbstractShape extends AbstractVisibleComponent implements ILassoable{
 	private static final ILogger logger = MTLoggerFactory.getLogger(AbstractShape.class.getName());
 	static{
 		logger.setLevel(ILogger.ERROR);

@@ -27,7 +27,7 @@ import org.mt4j.components.clusters.ClusterManager;
 import org.mt4j.input.inputProcessors.IGestureEventListener;
 import org.mt4j.input.inputProcessors.MTGestureEvent;
 import org.mt4j.input.inputProcessors.componentProcessors.dragProcessor.DragProcessor;
-import org.mt4j.input.inputProcessors.componentProcessors.lassoProcessor.IdragClusterable;
+import org.mt4j.input.inputProcessors.componentProcessors.lassoProcessor.ILassoable;
 import org.mt4j.input.inputProcessors.componentProcessors.lassoProcessor.LassoEvent;
 import org.mt4j.input.inputProcessors.componentProcessors.rotateProcessor.RotateProcessor;
 import org.mt4j.input.inputProcessors.componentProcessors.scaleProcessor.ScaleProcessor;
@@ -86,7 +86,7 @@ public class DefaultLassoAction implements IGestureEventListener {
 				//so it can be called from the outside too /addNewSelection(comps[])
 				
 				//System.out.println("dse ended");
-				IdragClusterable[] selectedComps = dse.getClusteredComponents();
+				ILassoable[] selectedComps = dse.getClusteredComponents();
 				
 				//Create new selection only if at least more than 1 is selected
 				if (selectedComps.length > 1){
@@ -121,7 +121,7 @@ public class DefaultLassoAction implements IGestureEventListener {
 //					int n = -1;
 					int n = Integer.MAX_VALUE;
 					//Set all cards selected
-					for (IdragClusterable currentComp : selectedComps){
+					for (ILassoable currentComp : selectedComps){
 						System.out.print((currentComp).getName() + "  "); //remove later
 						
 						if (currentComp instanceof MTComponent){//Add selected comps to selection - RIGHT NOW ONLY SUPPORTS INSTANCES OF MTCOMPONENT!
@@ -138,7 +138,7 @@ public class DefaultLassoAction implements IGestureEventListener {
 										//Remove component from cluster it is in
 										Cluster clusterOfComponent = clusterMgr.getCluster(sourceComp);
 										if (clusterOfComponent != null){
-											((IdragClusterable)sourceComp).setSelected(false);
+											((ILassoable)sourceComp).setSelected(false);
 											//Remvove the component from its former selection
 											clusterOfComponent.removeChild(sourceComp);
 											
@@ -214,7 +214,7 @@ public class DefaultLassoAction implements IGestureEventListener {
 					clusterMgr.addCluster(cluster);
 				//IF exactly 1 component is selected and its already part of an selection remove it from it without making a new selection with it
 				}else if (selectedComps.length == 1){ 
-					for (IdragClusterable currentComp : selectedComps){
+					for (ILassoable currentComp : selectedComps){
 						if (currentComp instanceof MTComponent){//Add selected comps to selection - RIGHT NOW ONLY SUPPORTS INSTANCES OF MTCOMPONENT!
 							//Remove comp from former selection if it is in a new selection
 							Cluster formerSelection = clusterMgr.getCluster(currentComp);

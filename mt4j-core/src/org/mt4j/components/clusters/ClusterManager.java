@@ -24,7 +24,7 @@ import org.mt4j.components.MTCanvas;
 import org.mt4j.components.MTComponent;
 import org.mt4j.components.interfaces.IMTComponent3D;
 import org.mt4j.components.visibleComponents.shapes.MTPolygon;
-import org.mt4j.input.inputProcessors.componentProcessors.lassoProcessor.IdragClusterable;
+import org.mt4j.input.inputProcessors.componentProcessors.lassoProcessor.ILassoable;
 
 /**
  * The Class ClusterManager.
@@ -92,8 +92,8 @@ public class ClusterManager {
 		//mark the remaining components from the deleted slection as not selected
 		for (int i = 0; i < selection.getChildCount(); i++) {
 			MTComponent comp = selection.getChildByIndex(i);
-			if (comp instanceof IdragClusterable)
-				((IdragClusterable)comp).setSelected(false);
+			if (comp instanceof ILassoable)
+				((ILassoable)comp).setSelected(false);
 		}
 		
 		if (this.containsCluster(selection))

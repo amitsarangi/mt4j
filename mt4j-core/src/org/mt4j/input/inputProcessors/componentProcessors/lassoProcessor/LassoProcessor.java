@@ -68,7 +68,7 @@ public class LassoProcessor extends AbstractCursorProcessor {
 	private Hashtable<InputCursor, ClusteringContext> cursorToContext;
 	
 	/** The drag selectables. */
-	private List<IdragClusterable> dragSelectables;
+	private List<ILassoable> dragSelectables;
 	
 	/** The camera. */
 	private Icamera camera;
@@ -93,7 +93,7 @@ public class LassoProcessor extends AbstractCursorProcessor {
 		this.pa = pa;
 		this.canvas = canvas;
 		this.camera = camera;
-		this.dragSelectables = new ArrayList<IdragClusterable>();
+		this.dragSelectables = new ArrayList<ILassoable>();
 		cursorToContext = new Hashtable<InputCursor, ClusteringContext>();
 		planeNormal = new Vector3D(0,0,1);
 		pointInPlane = new Vector3D(0,0,0);
@@ -112,7 +112,7 @@ public class LassoProcessor extends AbstractCursorProcessor {
 			if (!context.gestureAborted){
 				cursorToContext.put(c, context);
 				//To speed things up, selection is only checked at the end of the gesture
-				IdragClusterable[] selectedComps = new IdragClusterable[0]; //no things selected anyway yet
+				ILassoable[] selectedComps = new ILassoable[0]; //no things selected anyway yet
 				this.fireGestureEvent(new LassoEvent(this, MTGestureEvent.GESTURE_STARTED, canvas, c, context.getPolygon(), selectedComps));
 			}
 		}
@@ -131,7 +131,7 @@ public class LassoProcessor extends AbstractCursorProcessor {
 			if (!context.gestureAborted){
 				context.update(c);
 				//TODO visually mark selected cards and give back real selected cards again..
-				IdragClusterable[] selectedComps = new IdragClusterable[0];
+				ILassoable[] selectedComps = new ILassoable[0];
 				this.fireGestureEvent(new LassoEvent(this, MTGestureEvent.GESTURE_UPDATED, canvas, c, context.getPolygon(), selectedComps));
 			}
 		}
@@ -147,7 +147,7 @@ public class LassoProcessor extends AbstractCursorProcessor {
 		ClusteringContext context = cursorToContext.get(c);
 		if (context != null){ //cursor was used here
 			cursorToContext.remove(c); 
-			IdragClusterable[] selectedComps = context.getselectedComps();
+			ILassoable[] selectedComps = context.getselectedComps();
 			this.fireGestureEvent(new LassoEvent(this, MTGestureEvent.GESTURE_ENDED, canvas, c, context.getPolygon(), selectedComps));
 			this.unLock(c);
 		}
@@ -185,7 +185,7 @@ public class LassoProcessor extends AbstractCursorProcessor {
 			cursorToContext.remove(c); 
 			context.update(c);
 			//because of aborting we send an empty selection array 
-			IdragClusterable[] selectedComps = new IdragClusterable[0];
+			ILassoable[] selectedComps = new ILassoable[0];
 			this.fireGestureEvent(new LassoEvent(this, MTGestureEvent.GESTURE_ENDED, canvas, c, context.getPolygon(), selectedComps));
 			logger.debug(this.getName() + " cursor:" + c.getId() + " cursor LOCKED. Was an active cursor in this gesture!");
 		}else{
@@ -193,28 +193,38 @@ public class LassoProcessor extends AbstractCursorProcessor {
 		}
 	}
 	
-	
+	/**
+	 * Adds the lassoable.
+	 *
+	 * @param selectable the selectable
+	 */
+	public synchronized void addLassoable(ILassoable selectable){
+		if (!dragSelectables.contains(selectable)){
+			dragSelectables.add(selectable);
+			if (selectable instanceof MTComponent) {
+				MTComponent baseComp = (MTComponent) selectable;
+				baseComp.addStateChangeListener(StateChange.COMPONENT_DESTROYED, new StateChangeListener(){
+					public void stateChanged(StateChangeEvent evt) {
+						if (evt.getSource() instanceof ILassoable) {
+							ILassoable clusterAble = (ILassoable) evt.getSource();
+							removeClusterable(clusterAble);
+							//logger.debug("Removed comp from cluster gesture analyzers tracking");
+						}
+					}
+				});
+
+			}
+		}
+	}
+
 	/**
 	 * Adds the clusterable.
 	 * 
 	 * @param selectable the selectable
+	 * @deprecated renamed, use addLassoable() instead.
 	 */
-	public synchronized void addClusterable(IdragClusterable selectable){
-		dragSelectables.add(selectable);
-		if (selectable instanceof MTComponent) {
-			MTComponent baseComp = (MTComponent) selectable;
-
-			baseComp.addStateChangeListener(StateChange.COMPONENT_DESTROYED, new StateChangeListener(){
-				public void stateChanged(StateChangeEvent evt) {
-					if (evt.getSource() instanceof IdragClusterable) {
-						IdragClusterable clusterAble = (IdragClusterable) evt.getSource();
-						removeClusterable(clusterAble);
-						//logger.debug("Removed comp from cluster gesture analyzers tracking");
-					}
-				}
-			});
-			
-		}
+	public synchronized void addClusterable(ILassoable selectable){
+		addLassoable(selectable);
 	}
 	
 	
@@ -223,7 +233,7 @@ public class LassoProcessor extends AbstractCursorProcessor {
 	 * 
 	 * @param selectable the selectable
 	 */
-	public synchronized  void removeClusterable(IdragClusterable selectable){
+	public synchronized  void removeClusterable(ILassoable selectable){
 		dragSelectables.remove(selectable);
 	}
 	
@@ -232,8 +242,8 @@ public class LassoProcessor extends AbstractCursorProcessor {
 	 * 
 	 * @return the tracked selectables
 	 */
-	public IdragClusterable[] getTrackedSelectables(){
-		return dragSelectables.toArray(new IdragClusterable[this.dragSelectables.size()]);
+	public ILassoable[] getTrackedSelectables(){
+		return dragSelectables.toArray(new ILassoable[this.dragSelectables.size()]);
 	}
 	
 	
@@ -257,7 +267,7 @@ public class LassoProcessor extends AbstractCursorProcessor {
 		private InputCursor cursor;
 		
 		/** The selected comps. */
-		private ArrayList<IdragClusterable> selectedComps;
+		private ArrayList<ILassoable> selectedComps;
 		
 		/** The gesture aborted. */
 		protected boolean gestureAborted;
@@ -323,7 +333,7 @@ public class LassoProcessor extends AbstractCursorProcessor {
 			polygon.setBoundsBehaviour(AbstractShape.BOUNDS_DONT_USE);
 			
 //			polygon.setComposite(true);
-			selectedComps = new ArrayList<IdragClusterable>();
+			selectedComps = new ArrayList<ILassoable>();
 		}
 		
 		/**
@@ -331,9 +341,9 @@ public class LassoProcessor extends AbstractCursorProcessor {
 		 * 
 		 * @return the selected comps
 		 */
-		public IdragClusterable[] getselectedComps() {
+		public ILassoable[] getselectedComps() {
 			selectedComps.clear();
-            for (IdragClusterable currentCard : dragSelectables) {
+            for (ILassoable currentCard : dragSelectables) {
                 Vector3D globCenter = new Vector3D(currentCard.getCenterPointGlobal());
                 globCenter.setZ(0);
 //				if (this.getPolygon().containsPointGlobal(currentCard.getCenterPointGlobal())){
@@ -341,7 +351,7 @@ public class LassoProcessor extends AbstractCursorProcessor {
                     selectedComps.add(currentCard);
                 }
             }
-			return selectedComps.toArray(new IdragClusterable[this.selectedComps.size()]);
+			return selectedComps.toArray(new ILassoable[this.selectedComps.size()]);
 		}
 
 		
