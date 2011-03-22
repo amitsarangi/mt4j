@@ -1,13 +1,13 @@
 package org.mt4j.test.components.visibleComponents.font;
 
 import org.mt4j.MTApplication;
-import org.mt4j.components.visibleComponents.font.FontManager;
-import org.mt4j.components.visibleComponents.font.IFont;
 import org.mt4j.components.visibleComponents.widgets.MTTextArea;
 import org.mt4j.test.AbstractWindowTestcase;
 import org.mt4j.test.testUtil.DummyScene;
 import org.mt4j.test.testUtil.TestRunnable;
 import org.mt4j.util.MTColor;
+import org.mt4j.util.font.FontManager;
+import org.mt4j.util.font.IFont;
 
 public class FontLoadingTest extends AbstractWindowTestcase {
 

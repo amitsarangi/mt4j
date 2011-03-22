@@ -18,8 +18,8 @@
 package org.mt4j.components.visibleComponents.widgets;
 
 import org.mt4j.components.TransformSpace;
-import org.mt4j.components.visibleComponents.font.IFont;
-import org.mt4j.components.visibleComponents.font.IFontCharacter;
+import org.mt4j.util.font.IFont;
+import org.mt4j.util.font.IFontCharacter;
 
 import processing.core.PApplet;
 

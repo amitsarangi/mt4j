@@ -25,16 +25,16 @@ import org.mt4j.components.TransformSpace;
 import org.mt4j.components.clipping.Clip;
 import org.mt4j.components.css.style.CSSFont;
 import org.mt4j.components.css.style.CSSStyle;
-import org.mt4j.components.visibleComponents.font.FontManager;
-import org.mt4j.components.visibleComponents.font.IFont;
-import org.mt4j.components.visibleComponents.font.IFontCharacter;
-import org.mt4j.components.visibleComponents.font.ITextureFont;
-import org.mt4j.components.visibleComponents.font.ITextureFontCharacter;
 import org.mt4j.components.visibleComponents.shapes.MTRectangle;
 import org.mt4j.components.visibleComponents.widgets.keyboard.ITextInputListener;
 import org.mt4j.util.GraphicsUtil;
 import org.mt4j.util.MT4jSettings;
 import org.mt4j.util.MTColor;
+import org.mt4j.util.font.FontManager;
+import org.mt4j.util.font.IFont;
+import org.mt4j.util.font.IFontCharacter;
+import org.mt4j.util.font.ITextureFont;
+import org.mt4j.util.font.ITextureFontCharacter;
 import org.mt4j.util.math.Matrix;
 import org.mt4j.util.math.Vector3D;
 import org.mt4j.util.math.Vertex;
@@ -113,7 +113,7 @@ public class MTTextArea extends MTRectangle implements ITextInputListener, Compa
     private ExpandDirection expandDirection ;
     
     
-    public boolean enableKerning = true; //TODO remove later
+    private boolean enableKerning; 
 	
 	//TODO different font sizes in one textarea?
 	//TODO (create mode : expand vertically but do word wrap horizontally?
@@ -302,6 +302,8 @@ public class MTTextArea extends MTRectangle implements ITextInputListener, Compa
 		enableCaret = false;
 		showCaretTime = 600;
 		
+		enableKerning = true;
+		
 		this.setStrokeWeight(1.5f);
 		this.setStrokeColor(new MTColor(255, 255, 255, 255));
 		this.setDrawSmooth(true);
@@ -327,10 +329,10 @@ public class MTTextArea extends MTRectangle implements ITextInputListener, Compa
 	 */
 	public void setFont(IFont font){
 		if (this.characterList != null) {
-		this.font = font;
-		this.fontHeight = font.getFontAbsoluteHeight();
-		this.isTextureFont = (font instanceof ITextureFont);
-		this.updateLayout();
+			this.font = font;
+			this.fontHeight = font.getFontAbsoluteHeight();
+			this.isTextureFont = (font instanceof ITextureFont);
+			this.updateLayout();
 		}
 	}
 
@@ -362,7 +364,7 @@ public class MTTextArea extends MTRectangle implements ITextInputListener, Compa
 		}
 	}
 	
-	//FIXME TEST Align/round text with screen pixels
+	//TEST: Align/round text with screen pixels to avoid visual artifacts with texture fonts
 	private boolean textPositionRounding = true;
 	private boolean snapVectorDirty = false;
 	private Vector3D defaultScale = new Vector3D(1,1,1);
@@ -1287,6 +1289,28 @@ public class MTTextArea extends MTRectangle implements ITextInputListener, Compa
 			}
 		}
 	}
+
+
+	/**
+	 * Checks if is kerning.
+	 *
+	 * @return true, if is kerning
+	 */
+	public boolean isKerning() {
+		return enableKerning;
+	}
+
+
+	/**
+	 * Enables / disables kerning. At the moment this isnt supported by all font types.
+	 *
+	 * @param enableKerning the new kerning
+	 */
+	public void setKerning(boolean enableKerning) {
+		this.enableKerning = enableKerning;
+	}
+	
+	
 
 	
 }

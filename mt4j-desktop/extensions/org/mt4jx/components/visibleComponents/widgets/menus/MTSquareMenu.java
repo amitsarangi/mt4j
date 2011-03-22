@@ -13,7 +13,6 @@ import org.mt4j.components.css.style.CSSStyle;
 import org.mt4j.components.css.util.CSSFontManager;
 import org.mt4j.components.css.util.CSSKeywords.CSSFontWeight;
 import org.mt4j.components.css.util.CSSStylableComponent;
-import org.mt4j.components.visibleComponents.font.IFont;
 import org.mt4j.components.visibleComponents.shapes.MTPolygon;
 import org.mt4j.components.visibleComponents.shapes.MTRectangle;
 import org.mt4j.components.visibleComponents.widgets.MTTextArea;
@@ -22,6 +21,7 @@ import org.mt4j.input.inputProcessors.MTGestureEvent;
 import org.mt4j.input.inputProcessors.componentProcessors.tapProcessor.TapEvent;
 import org.mt4j.input.inputProcessors.componentProcessors.tapProcessor.TapProcessor;
 import org.mt4j.util.MTColor;
+import org.mt4j.util.font.IFont;
 import org.mt4j.util.math.Vector3D;
 import org.mt4j.util.math.Vertex;
 

@@ -23,7 +23,6 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.mt4j.components.css.util.CSSStyleManager;
-import org.mt4j.components.visibleComponents.font.FontManager;
 import org.mt4j.input.IKeyListener;
 import org.mt4j.input.InputManager;
 import org.mt4j.input.inputData.AbstractCursorInputEvt;
@@ -40,6 +39,7 @@ import org.mt4j.util.ArrayDeque;
 import org.mt4j.util.GraphicsUtil;
 import org.mt4j.util.MT4jSettings;
 import org.mt4j.util.animation.AnimationManager;
+import org.mt4j.util.font.FontManager;
 import org.mt4j.util.logging.ILogger;
 import org.mt4j.util.opengl.GL10;
 import org.mt4j.util.opengl.GL11;

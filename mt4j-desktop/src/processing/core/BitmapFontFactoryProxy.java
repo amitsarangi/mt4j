@@ -22,12 +22,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.mt4j.MTApplication;
-import org.mt4j.components.visibleComponents.font.BitmapFont;
 import org.mt4j.components.visibleComponents.font.BitmapFontCharacter;
-import org.mt4j.components.visibleComponents.font.IFont;
-import org.mt4j.components.visibleComponents.font.fontFactories.IFontFactory;
 import org.mt4j.util.MT4jSettings;
 import org.mt4j.util.MTColor;
+import org.mt4j.util.font.BitmapFont;
+import org.mt4j.util.font.IFont;
+import org.mt4j.util.font.fontFactories.IFontFactory;
 import org.mt4j.util.logging.ILogger;
 import org.mt4j.util.logging.MTLoggerFactory;
 import org.mt4j.util.math.ToolsMath;

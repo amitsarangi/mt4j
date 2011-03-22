@@ -11,9 +11,9 @@ import org.mt4j.components.css.parser.CSSParserConnection;
 import org.mt4j.components.css.style.CSSSelector;
 import org.mt4j.components.css.style.CSSStyle;
 import org.mt4j.components.css.util.CSSKeywords.CSSSelectorType;
-import org.mt4j.components.visibleComponents.font.FontManager;
-import org.mt4j.components.visibleComponents.font.IFont;
 import org.mt4j.util.MTColor;
+import org.mt4j.util.font.FontManager;
+import org.mt4j.util.font.IFont;
 
 
 

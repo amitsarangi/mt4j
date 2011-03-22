@@ -1,13 +1,14 @@
 package org.mt4j;
 
-import org.mt4j.components.visibleComponents.font.FontManager;
-import org.mt4j.components.visibleComponents.font.fontFactories.AngelCodeFontFactory;
 import org.mt4j.input.AndroidInputManager;
 import org.mt4j.input.ISurfaceTouchListener;
 import org.mt4j.util.AndroidGraphicsUtil;
 import org.mt4j.util.GraphicsUtil;
 import org.mt4j.util.MT4jSettings;
+import org.mt4j.util.MTColor;
 import org.mt4j.util.animation.ani.AniAnimation;
+import org.mt4j.util.font.FontManager;
+import org.mt4j.util.font.fontFactories.AngelCodeFontFactory;
 import org.mt4j.util.logging.AndroidDefaultLogger;
 import org.mt4j.util.logging.ILogger;
 import org.mt4j.util.logging.MTLoggerFactory;
@@ -15,47 +16,70 @@ import org.mt4j.util.opengl.AndroidGL10;
 import org.mt4j.util.opengl.AndroidGL11;
 
 import processing.core.PGraphicsAndroid3D;
-import android.util.Log;
 import android.view.MotionEvent;
 
-
+/*
+ Android notes:
+  * at the moment OpenGL ES Version 1.1 is supported/used
+  * put all resources in the asset folder -> asset subfolders are not supported for the most part
+  * fonts dont support dynamic sizes -> at createFont, use the font size which is specified in the .fnt font file's name
+    - to create new fonts, use the BMFont tool (Set the output to .png - tga seems to have problem, also only use 1 page and to avoid artifacts at scaling add a little padding)
+  
+  
+  
+ */
 
 public abstract class MTAndroidApplication extends MTApplication{
 	
 	public MTAndroidApplication(){
 		super();
-		Log.i(this.getClass().getSimpleName(), "MTAndroidApplication() constructor CALLED");
 	}
 	
 	
 	@Override
 	public void setup() {
-		Log.i(this.getClass().getSimpleName(), "SETUP CALLED");
+//		Log.i(this.getClass().getSimpleName(), "SETUP CALLED");
 		
 //		 orientation(LANDSCAPE); //TODO make configurable
 		 orientation(PORTRAIT); //TODO make configurable
 		
-		//Initialize Loggin facilities  - IMPORTANT TO DO THIS ASAP!//////
+		// Initialize Loggin facilities  - IMPORTANT TO DO THIS ASAP! \\
 		MTLoggerFactory.setLoggerProvider(new AndroidDefaultLogger()); 
 //		MTLoggerFactory.setLoggerProvider(new AndroidDummyLogger());
 		logger = MTLoggerFactory.getLogger(MTAndroidApplication.class.getName());
 		logger.setLevel(ILogger.INFO);
 		
-		//Add default font factories /////////////
-//		FontManager.getInstance().registerFontFactory(".ttf", new TTFontFactory());
+		// Default font settings and factories \\
+		FontManager.DEFAULT_FONT = "arial20.fnt";
+		FontManager.DEFAULT_FONT_SIZE = 16;
+		FontManager.DEFAULT_FONT_FILL_COLOR = MTColor.BLACK;
+		FontManager.DEFAULT_FONT_STROKE_COLOR = MTColor.BLACK;
+		FontManager.DEFAULT_FONT_ANTIALIASING = true;
+		//FontManager.getInstance().registerFontFactory(".ttf", new TTFontFactory());
 		FontManager.getInstance().registerFontFactory(".fnt", new AngelCodeFontFactory());
 		//////////////////////
 		
-		/////////////////////// //FIXME TEST
+		/////////////////////// 
 		GraphicsUtil.setGraphicsUtilProvider(new AndroidGraphicsUtil(this));
 		///////////////////////
 		
-		// Save this applets rendering thread for reference
-		this.renderThread = Thread.currentThread();
+		//Set all default paths to the "" (asset folder) path because we cant use the assetmanager 
+		//if we use subfolders (no path separators allowed) but have to load the files/set permissions ourselves :( 
+		//TODO -> is there another way to handle this?
+		MT4jSettings.DEFAULT_3D_MODEL_PATH = "";
+		MT4jSettings.DEFAULT_DATA_FOLDER_PATH = "";
+		MT4jSettings.DEFAULT_FONT_PATH = "";
+		MT4jSettings.DEFAULT_IMAGES_PATH = "";
+		MT4jSettings.DEFAULT_SETTINGS_PATH = "";
+		MT4jSettings.DEFAULT_SVG_PATH = "";
+		MT4jSettings.DEFAULT_VIDEOS_PATH = "";
 		
 		MT4jSettings.getInstance().windowHeight = this.sketchHeight();
 		MT4jSettings.getInstance().windowWidth = this.sketchWidth();
 		logger.info("MT4j window dimensions: \"" + MT4jSettings.getInstance().getWindowWidth() + " x " +  MT4jSettings.getInstance().getWindowHeight() + "\"");
+		
+		// Save this applets rendering thread for reference
+		this.renderThread = Thread.currentThread();
 		
 		//Set background color
 		background(150);

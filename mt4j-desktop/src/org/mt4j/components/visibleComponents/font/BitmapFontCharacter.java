@@ -22,6 +22,8 @@ import java.nio.FloatBuffer;
 import org.mt4j.components.bounds.IBoundingShape;
 import org.mt4j.components.visibleComponents.shapes.MTRectangle;
 import org.mt4j.util.MT4jSettings;
+import org.mt4j.util.font.IFontCharacter;
+import org.mt4j.util.font.ITextureFontCharacter;
 import org.mt4j.util.math.Vertex;
 import org.mt4j.util.opengl.GL10;
 import org.mt4j.util.opengl.GLTexture;

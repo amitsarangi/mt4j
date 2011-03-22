@@ -1,5 +1,5 @@
 /***********************************************************************
- * mt4j Copyright (c) 2008 - 2009, C.Ruff, Fraunhofer-Gesellschaft All rights reserved.
+ * mt4j Copyright (c) 2008 - 2009 C.Ruff, Fraunhofer-Gesellschaft All rights reserved.
  *  
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -15,31 +15,34 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  ***********************************************************************/
-package org.mt4j.components.visibleComponents.font;
+package org.mt4j.util.font;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 import org.mt4j.components.MTComponent;
-import org.mt4j.components.visibleComponents.font.fontFactories.IFontFactory;
-import org.mt4j.components.visibleComponents.font.fontFactories.TTFontFactory;
+import org.mt4j.components.visibleComponents.font.BitmapFontCharacter;
 import org.mt4j.util.MTColor;
+import org.mt4j.util.font.FontManager;
+import org.mt4j.util.font.IFont;
+import org.mt4j.util.font.IFontCharacter;
+import org.mt4j.util.font.ITextureFont;
+import org.mt4j.util.font.fontFactories.BitmapFontFactory;
+import org.mt4j.util.font.fontFactories.IFontFactory;
 import org.mt4j.util.logging.ILogger;
 import org.mt4j.util.logging.MTLoggerFactory;
 import org.mt4j.util.opengl.GL10;
 
 import processing.core.PApplet;
 
-
 /**
- * A vector font.
- * 
+ * The Class BitmapFont.
  * @author Christopher Ruff
  */
-public class VectorFont implements IFont {
+public class BitmapFont implements IFont, ITextureFont {
 	/** The Constant logger. */
-	private static final ILogger logger = MTLoggerFactory.getLogger(VectorFont.class.getName());
+	private static final ILogger logger = MTLoggerFactory.getLogger(BitmapFont.class.getName());
 	static{
 //		logger.setLevel(ILogger.ERROR);
 //		logger.setLevel(ILogger.WARN);
@@ -47,7 +50,7 @@ public class VectorFont implements IFont {
 	}
 	
 	/** The characters. */
-	private VectorFontCharacter[] characters;
+	private BitmapFontCharacter[] characters;
 	
 	/** The default horizontal adv x. */
 	private int defaultHorizontalAdvX;
@@ -55,8 +58,8 @@ public class VectorFont implements IFont {
 	/** The font family. */
 	private String fontFamily;
 	
-	/** The font id. */
-	private String fontId;
+	/** The original font size. */
+	private int originalFontSize;
 	
 	/** The font max ascent. */
 	private int fontMaxAscent;
@@ -70,15 +73,12 @@ public class VectorFont implements IFont {
 	/** The font file name. */
 	private String fontFileName;
 	
-	/** The original font size. */
-	private int originalFontSize;
-	
 	/** The uni code to char. */
-	private HashMap<String , VectorFontCharacter> uniCodeToChar;
+	private HashMap<String, BitmapFontCharacter> uniCodeToChar;
 	
 	/** The char name to char. */
-	private HashMap<String , VectorFontCharacter> charNameToChar;
-
+	private HashMap<String, BitmapFontCharacter> charNameToChar;
+	
 	/** The fill color. */
 	private MTColor fillColor;
 	
@@ -89,9 +89,9 @@ public class VectorFont implements IFont {
 
 	private boolean antiAliased;
 	
-
+	
 	/**
-	 * The Constructor.
+	 * Instantiates a new bitmap font.
 	 *
 	 * @param characters the characters
 	 * @param defaultHorizontalAdvX the default horizontal adv x
@@ -104,12 +104,11 @@ public class VectorFont implements IFont {
 	 * @param strokeColor the stroke color
 	 * @param antiAliased the anti aliased
 	 */
-	public VectorFont(VectorFontCharacter[] characters, int defaultHorizontalAdvX, String fontFamily, int fontMaxAscent, int fontMaxDescent, int unitsPerEm, int originalFontSize,
+	public BitmapFont(BitmapFontCharacter[] characters, int defaultHorizontalAdvX, String fontFamily, int fontMaxAscent, int fontMaxDescent, int unitsPerEm, int originalFontSize,
 			MTColor fillColor,
 //			MTColor strokeColor,
 			boolean antiAliased
 	) {
-		super();
 		this.characters = characters;
 		this.defaultHorizontalAdvX = defaultHorizontalAdvX;
 		this.fontFamily = fontFamily;
@@ -118,10 +117,7 @@ public class VectorFont implements IFont {
 //		this.strokeColor = strokeColor;
 		this.antiAliased = antiAliased;
 		
-//		this.fontSize = fontSize;
-//		this.fontUnitsPerEm = fontUnitsPerEm;
-		
-		this.fontId = "";
+//		this.fontId = "";
 		
 		this.fontMaxAscent 	= fontMaxAscent;
 		this.fontMaxDescent = fontMaxDescent;
@@ -129,10 +125,10 @@ public class VectorFont implements IFont {
 		this.unitsPerEM = unitsPerEm;
 		
 		//Put characters in hashmaps for quick access
-		uniCodeToChar 	= new HashMap<String, VectorFontCharacter>();
-		charNameToChar 	= new HashMap<String, VectorFontCharacter>();
+		uniCodeToChar 	= new HashMap<String, BitmapFontCharacter>();
+		charNameToChar 	= new HashMap<String, BitmapFontCharacter>();
 
-        for (VectorFontCharacter currentChar : characters) {
+        for (BitmapFontCharacter currentChar : characters) {
             uniCodeToChar.put(currentChar.getUnicode(), currentChar);
             charNameToChar.put(currentChar.getName(), currentChar);
         }
@@ -140,15 +136,14 @@ public class VectorFont implements IFont {
 		notAvailableChars = new ArrayList<String>();
 	}
 	
-
+	
 	/* (non-Javadoc)
 	 * @see org.mt4j.components.visibleComponents.font.IFont#getFontCharacterByName(java.lang.String)
 	 */
 	public IFontCharacter getFontCharacterByName(String characterName){
-		VectorFontCharacter returnChar = charNameToChar.get(characterName);
-		if (returnChar == null){
+		BitmapFontCharacter returnChar = charNameToChar.get(characterName);
+		if (returnChar == null)
 			logger.warn("Font couldnt load charactername: " + characterName);
-		}
 		return returnChar;
 	}
 	
@@ -158,35 +153,37 @@ public class VectorFont implements IFont {
 	 * @see org.mt4j.components.visibleComponents.font.IFont#getFontCharacterByUnicode(java.lang.String)
 	 */
 	public IFontCharacter getFontCharacterByUnicode(String unicode){
-		VectorFontCharacter returnChar = uniCodeToChar.get(unicode);
+		BitmapFontCharacter returnChar = uniCodeToChar.get(unicode);
 		if (returnChar == null){
-			logger.warn("Font couldnt load characterunicode: " + unicode);
-			//This is a kind of hacky way to try to dynamically load characters from a .ttf
-			//font that were not loaded by default. 
-			if (!unicode.equalsIgnoreCase("missing-glyph") 
+			logger.warn("Font couldnt load characterunicode: '" + unicode + "'");
+			
+			//This is a kind of hacky way to try to dynamically load characters from
+			//a font that were not loaded by default. 
+			if (!unicode.equalsIgnoreCase("missing-glyph")
 				&& !isInNotAvailableList(unicode) 
-				&& fontFileName != null 
-				&& fontFileName.length() > 0 
-				&& fontFileName.endsWith(".ttf")
+				&& fontFileName != null
+				&& fontFileName.length() > 0
 			){
-				IFontFactory fontFactory = FontManager.getInstance().getFactoryForFileSuffix(".ttf");
-				if (fontFactory != null && fontFactory instanceof TTFontFactory){
-					TTFontFactory ttFontFactory = (TTFontFactory)fontFactory;
+				IFontFactory fontFactory = FontManager.getInstance().getFactoryForFileSuffix("");
+				if (fontFactory != null && fontFactory instanceof BitmapFontFactory){
+					BitmapFontFactory bitmapFontFactory = (BitmapFontFactory)fontFactory;
 					if (this.getCharacters().length > 0 && this.getCharacters()[0] != null && this.getCharacters()[0] instanceof MTComponent){
 						MTComponent comp = (MTComponent)this.getCharacters()[0];
 						PApplet pa = comp.getRenderer();
-						VectorFontCharacter[] characters = ttFontFactory.getTTFCharacters(pa, unicode, fillColor /*, strokeColor*/ , this.fontFileName, this.originalFontSize, this.antiAliased);
-						if (characters.length == 1 && characters[0] != null){
-							VectorFontCharacter loadedCharacter = characters[0];
-							VectorFontCharacter[] newArray = new VectorFontCharacter[this.getCharacters().length + 1];
+						List<BitmapFontCharacter> charactersList = bitmapFontFactory.getCharacters(pa, unicode, fillColor, /*strokeColor,*/ this.fontFileName, this.originalFontSize, this.antiAliased);
+						BitmapFontCharacter[] characters = charactersList.toArray(new BitmapFontCharacter[charactersList.size()]); 
+						if (characters.length >= 1 && characters[0] != null){
+							BitmapFontCharacter loadedCharacter = characters[0];
+							BitmapFontCharacter[] newArray = new BitmapFontCharacter[this.getCharacters().length + 1];
 							System.arraycopy(this.getCharacters(), 0, newArray, 0, this.getCharacters().length);
 							newArray[newArray.length-1] = loadedCharacter;
 							this.setCharacters(newArray);
 							returnChar = loadedCharacter;
-							logger.debug("Re-loaded missing character: " + unicode + " from the font: " + this.fontFileName);
-						}	 
+							logger.debug("Re-loaded missing character: '" + unicode + "' from the font: " + this.fontFileName);
+						}
 					}
 				}
+				
 				if (returnChar == null){
 					if (!isInNotAvailableList(unicode)){
 						logger.debug("Couldnt re-load the character: '" + unicode + "' -> adding to ignore list.");
@@ -194,10 +191,11 @@ public class VectorFont implements IFont {
 					}
 				}
 			}
+			
 		}
 		return returnChar;
 	}
-
+	
 	
 	private boolean isInNotAvailableList(String unicode){
 		boolean blackListed = false;
@@ -209,23 +207,22 @@ public class VectorFont implements IFont {
 		return blackListed;
 	}
 	
-	
+
 	/* (non-Javadoc)
 	 * @see org.mt4j.components.visibleComponents.font.IFont#getCharacters()
 	 */
 	public IFontCharacter[] getCharacters() {
-		return characters;
+		return this.characters;
 	}
-
+	
 	/**
-	 * Sets the characters.
-	 * 
+	 * Sets the characters for the font.
 	 * @param characters the new characters
 	 */
-	public void setCharacters(VectorFontCharacter[] characters) {
+	public void setCharacters(BitmapFontCharacter[] characters) {
 		uniCodeToChar.clear();
 		charNameToChar.clear();
-        for (VectorFontCharacter currentChar : characters) {
+        for (BitmapFontCharacter currentChar : characters) {
             uniCodeToChar.put(currentChar.getUnicode(), currentChar);
             charNameToChar.put(currentChar.getName(), currentChar);
         }
@@ -236,141 +233,72 @@ public class VectorFont implements IFont {
 	 * @see org.mt4j.components.visibleComponents.font.IFont#getDefaultHorizontalAdvX()
 	 */
 	public int getDefaultHorizontalAdvX() {
-		return defaultHorizontalAdvX;
+		return this.defaultHorizontalAdvX;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.mt4j.components.visibleComponents.font.IFont#getFontAbsoluteHeight()
+	 */
+	public int getFontAbsoluteHeight() {
+		return ((Math.abs(this.getFontMaxAscent())) + (Math.abs(this.getFontMaxDescent())));
 	}
 
 	/* (non-Javadoc)
 	 * @see org.mt4j.components.visibleComponents.font.IFont#getFontFamily()
 	 */
 	public String getFontFamily() {
-		return fontFamily;
-	}
-
-	/**
-	 * Sets the font family.
-	 * 
-	 * @param fontFamily the new font family
-	 */
-	public void setFontFamily(String fontFamily) {
-		this.fontFamily = fontFamily;
-	}
-
-
-	/* (non-Javadoc)
-	 * @see org.mt4j.components.visibleComponents.font.IFont#getFontMaxAscent()
-	 */
-	public int getFontMaxAscent() {
-		return fontMaxAscent;
-	}
-
-
-	/* (non-Javadoc)
-	 * @see org.mt4j.components.visibleComponents.font.IFont#getFontMaxDescent()
-	 */
-	public int getFontMaxDescent() {
-		return fontMaxDescent;
-	}
-
-	/**
-	 * Sets the font max ascent.
-	 * 
-	 * @param fontMaxAscent the new font max ascent
-	 */
-	public void setFontMaxAscent(int fontMaxAscent) {
-		this.fontMaxAscent = fontMaxAscent;
-	}
-
-	/**
-	 * Sets the font max descent.
-	 * 
-	 * @param fontMaxDescent the new font max descent
-	 */
-	public void setFontMaxDescent(int fontMaxDescent) {
-		this.fontMaxDescent = fontMaxDescent;
-	}
-
-	/* (non-Javadoc)
-	 * @see org.mt4j.components.visibleComponents.font.IFont#getFontAbsoluteHeight()
-	 */
-	public int getFontAbsoluteHeight(){
-		return ((Math.abs(fontMaxAscent)) + (Math.abs(fontMaxDescent)));
+		return this.fontFamily;
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.mt4j.components.visibleComponents.font.IFont#getUnitsPerEM()
-	 */
-	public int getUnitsPerEM() {
-		return unitsPerEM;
-	}
-
-
 	/**
-	 * Sets the units per em.
+	 * Sets the font file name.
 	 * 
-	 * @param unitsPerEM the new units per em
+	 * @param fileName the new font file name
 	 */
-	public void setUnitsPerEM(int unitsPerEM) {
-		this.unitsPerEM = unitsPerEM;
+	public void setFontFileName(String fileName){
+		this.fontFileName = fileName;
 	}
-
-	/**
-	 * Gets the font id.
-	 * 
-	 * @return the font id
-	 */
-	public String getFontId() {
-		return fontId;
-	}
-
-	/**
-	 * Sets the font id.
-	 * 
-	 * @param fontId the new font id
-	 */
-	public void setFontId(String fontId) {
-		this.fontId = fontId;
-	}
-
 
 	/* (non-Javadoc)
 	 * @see org.mt4j.components.visibleComponents.font.IFont#getFontFileName()
 	 */
 	public String getFontFileName() {
-		return fontFileName;
+		return this.fontFileName;
 	}
 
-
-	/**
-	 * Sets the font file name.
-	 * 
-	 * @param fontFileName the new font file name
+	/* (non-Javadoc)
+	 * @see org.mt4j.components.visibleComponents.font.IFont#getFontMaxAscent()
 	 */
-	public void setFontFileName(String fontFileName) {
-		this.fontFileName = fontFileName;
+	public int getFontMaxAscent() {
+		return this.fontMaxAscent;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.mt4j.components.visibleComponents.font.IFont#getFontMaxDescent()
+	 */
+	public int getFontMaxDescent() {
+		return this.fontMaxDescent;
+	}
 
 	/* (non-Javadoc)
 	 * @see org.mt4j.components.visibleComponents.font.IFont#getOriginalFontSize()
 	 */
 	public int getOriginalFontSize() {
-		return originalFontSize;
+		return this.originalFontSize;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.mt4j.components.visibleComponents.font.IFont#getUnitsPerEM()
+	 */
+	public int getUnitsPerEM() {
+		return this.unitsPerEM;
+	}
 
 	/* (non-Javadoc)
 	 * @see org.mt4j.components.visibleComponents.font.IFont#getFillColor()
 	 */
 	public MTColor getFillColor() {
 		return fillColor;
-	}
-	
-	
-	/* (non-Javadoc)
-	 * @see org.mt4j.components.visibleComponents.font.IFont#setFillColor(org.mt4j.util.MTColor)
-	 */
-	public void setFillColor(MTColor color){
-		this.fillColor = color;
 	}
 
 //	/* (non-Javadoc)
@@ -379,8 +307,15 @@ public class VectorFont implements IFont {
 //	public MTColor getStrokeColor() {
 //		return strokeColor;
 //	}
+
+	public void setFillColor(MTColor color){
+		this.fillColor = color;
+	}
 	
 
+	/* (non-Javadoc)
+	 * @see org.mt4j.components.visibleComponents.font.IFont#isAntiAliased()
+	 */
 	public boolean isAntiAliased() {
 		return this.antiAliased;
 	}
@@ -402,19 +337,31 @@ public class VectorFont implements IFont {
 	public void beginBatchRenderGL(GL10 gl, IFont font) {
 		MTColor fillColor = font.getFillColor();
 		gl.glColor4f(fillColor.getR()/255f, fillColor.getG()/255f, fillColor.getB()/255f, fillColor.getAlpha()/255f); 
+		
+		//Default texture target -> has to be POT dimensions
+		int textureTarget = GL10.GL_TEXTURE_2D;
+		gl.glEnable(textureTarget);
+		
+		//Enable Pointers, set vertex array pointer
+		gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
+		gl.glEnableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
 	}
 
 
 	@Override
 	public void endBatchRenderGL(GL10 gl, IFont font) {
-		// TODO Auto-generated method stub
+		int textureTarget = GL10.GL_TEXTURE_2D;
+		gl.glBindTexture(textureTarget, 0);//Unbind texture
+		gl.glDisable(textureTarget); 
 		
+		gl.glDisableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
+		gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
 	}
 
 
 	@Override
 	public boolean isEqual(IFont font){
-		if (font instanceof VectorFont) {
+		if (font instanceof BitmapFont) {
 			if (
 					font.getFontFileName().equalsIgnoreCase(getFontFileName())
 					&& 	
@@ -430,6 +377,8 @@ public class VectorFont implements IFont {
 
 
 
+
+	
 	
 
 }
