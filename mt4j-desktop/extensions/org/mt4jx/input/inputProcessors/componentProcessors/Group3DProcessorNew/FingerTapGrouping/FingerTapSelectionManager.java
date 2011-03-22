@@ -16,7 +16,7 @@ import org.mt4j.input.MTEvent;
 import org.mt4j.input.inputData.AbstractCursorInputEvt;
 import org.mt4j.input.inputData.InputCursor;
 import org.mt4j.input.inputData.MTInputEvent;
-import org.mt4j.input.inputProcessors.componentProcessors.lassoProcessor.IdragClusterable;
+import org.mt4j.input.inputProcessors.componentProcessors.lassoProcessor.ILassoable;
 import org.mt4j.input.inputProcessors.componentProcessors.rotate3DProcessor.Cluster3DExt;
 import org.mt4j.input.inputProcessors.globalProcessors.AbstractGlobalInputProcessor;
 import org.mt4j.util.logging.ILogger;
@@ -95,8 +95,8 @@ public class FingerTapSelectionManager extends AbstractGlobalInputProcessor impl
 			
 			baseComp.addStateChangeListener(StateChange.COMPONENT_DESTROYED, new StateChangeListener(){
 				public void stateChanged(StateChangeEvent evt) {
-					if (evt.getSource() instanceof IdragClusterable) {
-						IdragClusterable clusterAble = (IdragClusterable) evt.getSource();
+					if (evt.getSource() instanceof ILassoable) {
+						ILassoable clusterAble = (ILassoable) evt.getSource();
 						removeClusterable(clusterAble);
 						//logger.debug("Removed comp from clustergesture analyzers tracking");
 					}
@@ -110,7 +110,7 @@ public class FingerTapSelectionManager extends AbstractGlobalInputProcessor impl
 	 * 
 	 * @param selectable the selectable
 	 */
-	public synchronized  void removeClusterable(IdragClusterable selectable){
+	public synchronized  void removeClusterable(ILassoable selectable){
 		getDragSelectables().remove(selectable);
 	}
 
