@@ -23,6 +23,8 @@ import org.mt4j.util.math.Matrix;
 import org.mt4j.util.math.Vector3D;
 
 import processing.core.PApplet;
+import processing.core.PGraphics;
+import processing.core.PGraphicsAndroid3D;
 import processing.core.PMatrix3D;
 
 /**
@@ -188,6 +190,11 @@ public class MTCamera implements Icamera{
 		
 		modelViewP5.set(cameraMat);
 		modelViewInvP5.set(cameraInvMat);
+		
+		PGraphics g = this.pa.g;
+		PGraphicsAndroid3D androidGraphics = (PGraphicsAndroid3D)g;
+		androidGraphics.updateModelview();
+//		androidGraphics.updateCamera();
 		
 		
 	}
