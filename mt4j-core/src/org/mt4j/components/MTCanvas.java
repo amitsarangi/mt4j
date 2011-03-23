@@ -74,7 +74,7 @@ public class MTCanvas extends MTComponent implements IHitTestInfoProvider{
 
 	private long lastUpdateTime;
 
-	private PMatrix3D modelViewP5;
+//	private PMatrix3D modelViewP5;
 
 	
 	
@@ -132,7 +132,7 @@ public class MTCanvas extends MTComponent implements IHitTestInfoProvider{
 		//Frustum culling default
 		frustumCulling = false;
 		
-		this.modelViewP5 = GraphicsUtil.getModelView();
+//		this.modelViewP5 = GraphicsUtil.getModelView(); //TODO does this even work? -> better get it each time
 	}
 	
 	@Override
@@ -338,7 +338,8 @@ public class MTCanvas extends MTComponent implements IHitTestInfoProvider{
 					Matrix m = currentcomp.getParent().getGlobalMatrix();
 //					PGraphics3D pgraphics3D = (PGraphics3D)graphics;
 //					pgraphics3D.modelview.apply(
-					modelViewP5.apply(
+//					modelViewP5.apply(
+					GraphicsUtil.getModelView().apply(
 							m.m00, m.m01, m.m02,  m.m03,
 							m.m10, m.m11, m.m12,  m.m13,
 							m.m20, m.m21, m.m22,  m.m23,

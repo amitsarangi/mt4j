@@ -283,7 +283,7 @@ public class LassoProcessor extends AbstractCursorProcessor {
 			this.cursor = cursor;
 			
 			Vector3D newPos = ToolsGeometry.getRayPlaneIntersection(
-					Tools3D.getCameraPickRay(pa, camera, cursor.getCurrentEvent().getX(), cursor.getCurrentEvent().getY()), 
+					Tools3D.getCameraPickRay(pa, camera, cursor.getCurrentEvtPosX(), cursor.getCurrentEvtPosY()), 
 					planeNormal, 
 					pointInPlane);
 			
@@ -370,11 +370,16 @@ public class LassoProcessor extends AbstractCursorProcessor {
 //				this.newPosition = Tools3D.unprojectScreenCoords(pa, cursor.getLastEvent().getPositionX(), cursor.getLastEvent().getPositionY());			
 //				pa.popMatrix();
 
-				this.newPosition = Tools3D.unprojectScreenCoords(pa, camera, cursor.getCurrentEvent().getX(), cursor.getCurrentEvent().getY());
-
-				Vector3D rayStartPoint = camera.getPosition(); //default cam
-				Vector3D newPos = ToolsGeometry.getRayPlaneIntersection(new Ray(rayStartPoint, newPosition), planeNormal, pointInPlane);
-				newPosition = newPos;
+//				this.newPosition = Tools3D.unprojectScreenCoords(pa, camera, cursor.getCurrentEvent().getX(), cursor.getCurrentEvent().getY());
+//				Vector3D rayStartPoint = camera.getPosition(); //default cam
+//				Vector3D newPos = ToolsGeometry.getRayPlaneIntersection(new Ray(rayStartPoint, newPosition), planeNormal, pointInPlane);
+//				newPosition = newPos;
+				
+				newPosition = ToolsGeometry.getRayPlaneIntersection(
+						Tools3D.getCameraPickRay(pa, camera, cursor.getCurrentEvtPosX(), cursor.getCurrentEvtPosY()), 
+						planeNormal, 
+						pointInPlane);
+				
 
 				if (newPosition != null && !lastPosition.equalsVector(newPosition)){
 					Vertex[] newArr = new Vertex[this.getPolygon().getVertexCount()+1];

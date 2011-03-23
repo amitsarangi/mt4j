@@ -25,6 +25,7 @@ import java.util.Map;
 import org.mt4j.components.PickResult.PickEntry;
 import org.mt4j.components.bounds.IBoundingShape;
 import org.mt4j.components.clipping.Clip;
+import org.mt4j.components.clusters.Cluster;
 import org.mt4j.components.css.util.CSSStylableComponent;
 import org.mt4j.components.interfaces.IMTComponent3D;
 import org.mt4j.components.interfaces.IMTController;
@@ -398,7 +399,7 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 		}else{
 			//Search up the component tree for a attached camera
 			//automatically sets this viewcamera to the attached camera if found
-			this.searchViewingCamera();
+			this.viewingCamera = this.searchViewingCamera();
 			return this.viewingCamera;
 		}
 	}
@@ -406,8 +407,9 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 	/**
 	 * Search viewing camera.
 	 */
-	private void searchViewingCamera(){
+	protected Icamera searchViewingCamera(){
 		 this.viewingCamera = this.searchViewingCamRecur(this);
+		 return this.viewingCamera;
 	}
 	
 	/**
@@ -2594,6 +2596,12 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 		
 //		System.out.println("At: " + this.getName() + " Current Distance: " + currObjDist);
 		
+		//FIXME REMOVEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE
+		if (this instanceof Cluster) {
+			Cluster cluster = (Cluster) this;
+			cluster.getViewingCamera();
+		}
+		
 		if (visible && 
 			( (onlyPickables && pickable) || !onlyPickables) 
 		){
@@ -2630,7 +2638,7 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 					interSP.transform(this.getGlobalMatrix());
 					// Get distance from raystart to the intersecting point
 					objDistance = interSP.getSubtracted(currentRay.getRayStartPoint()).length();
-					//System.out.println("Pick found: " + this.getName() + " InterSP: " + interSP +  " ObjDist: " + objDistance +  " Mouse Pos: " + pickInfo.getScreenXCoordinate() + "," + pickInfo.getScreenYCoordinate() + " InvRay RS:" + invertedRay.getRayStartPoint() + ",RE: " + invertedRay.getPointInRayDirection());
+//					System.out.println("Pick found: " + this.getName() + " InterSP: " + interSP +  " ObjDist: " + objDistance +  " Mouse Pos: " + pickInfo.getScreenXCoordinate() + "," + pickInfo.getScreenYCoordinate() + " InvRay RS:" + invertedRay.getRayStartPoint() + ",RE: " + invertedRay.getPointInRayDirection());
 
 //					//If the distance is the smallest yet = closest to the raystart: replace the returnObject and current distanceFrom
 //					if ( (objDistance - HIT_TOLERANCE) <= currObjDist /*|| this.isAlwaysDrawnOnTop()*/){//take isDrawnOnTop into account here?? -> OBJDistance auf 0 setzen?

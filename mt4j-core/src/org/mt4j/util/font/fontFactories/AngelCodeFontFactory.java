@@ -901,6 +901,7 @@ public class AngelCodeFontFactory implements IFontFactory {
 			int fontMaxDescent = (lineHeightFromFile - fontMaxAscent) * -1; //We use negative descent values
 			int unitsPerEm = 1000; //FIXME arbitrary default value..
 
+			System.out.println("Loading font: " + fontName);
 			System.out.println("Line height: " + lineHeightFromFile);
 			System.out.println("Baseline: " + baseFromFile);
 			System.out.println("Font size: " + this.fontSize);
@@ -923,10 +924,7 @@ public class AngelCodeFontFactory implements IFontFactory {
 //				glTex.setFilter(SHRINKAGE_FILTER.BilinearNoMipMaps, EXPANSION_FILTER.NearestNeighbor); //NO AA
 			}
 			
-			//TODO put kerning info into font
-			
 			AngelCodeFont font = new AngelCodeFont(fontImage, characters.toArray(new AngelCodeFontCharacter[characters.size()]), defaultHorizontalAdvX, fontName, fontFace, fontMaxAscent, fontMaxDescent, unitsPerEm, this.fontSize, fillColor, antiAliased, hieroPadding);
-			
 			return font;
 	}
 

@@ -27,6 +27,7 @@ import org.mt4j.components.bounds.BoundsArbitraryPlanarPolygon;
 import org.mt4j.components.bounds.BoundsZPlaneRectangle;
 import org.mt4j.components.visibleComponents.shapes.AbstractShape;
 import org.mt4j.components.visibleComponents.shapes.MTPolygon;
+import org.mt4j.util.camera.Icamera;
 import org.mt4j.util.math.ConvexQuickHull2D;
 import org.mt4j.util.math.Matrix;
 import org.mt4j.util.math.Vector3D;
@@ -48,6 +49,18 @@ public class Cluster extends MTComponent { //extends MTComponent/implements IMTC
  //each of the children are transformed, not only the cluster parent -> performance..
  //hardwired into mtcanvas -> should be removed..
  //could be replaced with a composite component -> but then we have the problem of picking child components of the group
+ 
+ 	private Icamera viewingCam;
+ 
+ 	@Override
+ 	protected Icamera searchViewingCamera() {
+ 		Icamera viewCam = super.searchViewingCamera();
+ 		if (viewCam == null && viewingCam != null){
+ 			return viewingCam;
+ 		}else{
+ 			return viewCam;
+ 		}
+ 	}
 	
 	/**
 	 * Instantiates a new cluster.
@@ -68,6 +81,10 @@ public class Cluster extends MTComponent { //extends MTComponent/implements IMTC
 	 */
 	public Cluster(PApplet pApplet, MTComponent[] components, MTPolygon selectionPolygon) {
 		super(pApplet);
+		
+		if (components.length > 0 && components[0] != null){
+			this.viewingCam = components[0].getViewingCamera();
+		}
 		
 		this.selectionPolygon = selectionPolygon;
 		if (selectionPolygon != null){
@@ -203,11 +220,15 @@ public class Cluster extends MTComponent { //extends MTComponent/implements IMTC
 
 	@Override
 	public void addChild(MTComponent tangibleComp) {
+		this.viewingCam = tangibleComp.getViewingCamera();
 		this.getChildList().add(tangibleComp);
 	}
 
 	@Override
 	public void addChildren(MTComponent[] tangibleComps) {
+		if (tangibleComps.length > 0 && tangibleComps[0].getViewingCamera() != null){ //FIXME TEST -> 
+			this.viewingCam = tangibleComps[0].getViewingCamera();
+		}
         for (MTComponent object : tangibleComps) {
             //Add direct objects
             this.getChildList().add(object);
@@ -216,16 +237,33 @@ public class Cluster extends MTComponent { //extends MTComponent/implements IMTC
 
 	@Override
 	public void removeAllChildren() {
+		this.viewingCam = null;
 		this.getChildList().clear();
 	}
 
 	@Override
 	public void removeChild(int i) {
+		Icamera newViewCam = null; 
+		for (MTComponent comp  : this.getChildren()) {
+			if (comp.getViewingCamera() != null){
+				newViewCam = comp.getViewingCamera();
+				break;
+			}
+		}
+		this.viewingCam = newViewCam;
 		this.getChildList().remove(i);
 	}
 
 	@Override
 	public void removeChild(MTComponent comp) {
+		Icamera newViewCam = null; 
+		for (MTComponent compo  : this.getChildren()) {
+			if (compo.getViewingCamera() != null){
+				newViewCam = compo.getViewingCamera();
+				break;
+			}
+		}
+		this.viewingCam = newViewCam;
 		this.getChildList().remove(comp);
 	}
 	

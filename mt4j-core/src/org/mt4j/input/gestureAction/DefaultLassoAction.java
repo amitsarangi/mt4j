@@ -93,7 +93,7 @@ public class DefaultLassoAction implements IGestureEventListener {
 					//Create new Cluster
 					Cluster cluster = new Cluster(pa, dse.getSelectionPoly());
 					//Attach a cam to the cluster because it doesent have the canvas as a parent as it is now..
-					cluster.attachCamera(selectedComps[0].getViewingCamera());
+//					cluster.attachCamera(selectedComps[0].getViewingCamera());
 					
 					//Add gestures //TODO what about the isRotatable/dragable settings of the childs?
 					//TODO What if we want to click a item of the cluster only? ->Maybe cluster should 
