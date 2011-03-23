@@ -224,4 +224,12 @@ public abstract class MTAndroidApplication extends MTApplication{
 		return "8:8:8:8:24:8"; //To get a stencil buffer
 	}
 	
+	
+	@Override
+	protected void onStop() {
+		//at least on android even if stopping the mt4j app, the fontmanager seems to be kept with fonts cached, but textures destroyed already?
+		FontManager.getInstance().clearCache(); 
+		super.onStop();
+	}
+	
 }
