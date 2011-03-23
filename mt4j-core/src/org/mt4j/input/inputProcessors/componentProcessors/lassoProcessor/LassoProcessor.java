@@ -39,9 +39,9 @@ import org.mt4j.input.inputProcessors.componentProcessors.dragProcessor.DragProc
 import org.mt4j.input.inputProcessors.componentProcessors.rotateProcessor.RotateProcessor;
 import org.mt4j.input.inputProcessors.componentProcessors.scaleProcessor.ScaleProcessor;
 import org.mt4j.input.inputProcessors.componentProcessors.tapProcessor.TapProcessor;
+import org.mt4j.util.GraphicsUtil;
 import org.mt4j.util.MTColor;
 import org.mt4j.util.camera.Icamera;
-import org.mt4j.util.math.Ray;
 import org.mt4j.util.math.Tools3D;
 import org.mt4j.util.math.ToolsGeometry;
 import org.mt4j.util.math.Vector3D;
@@ -79,7 +79,9 @@ public class LassoProcessor extends AbstractCursorProcessor {
 	/** The point in plane. */
 	private Vector3D pointInPlane;
 	
+	private int verticesLimit;
 	
+	private int minDistance;
 
 	/**
 	 * Instantiates a new lasso processor.
@@ -98,6 +100,15 @@ public class LassoProcessor extends AbstractCursorProcessor {
 		planeNormal = new Vector3D(0,0,1);
 		pointInPlane = new Vector3D(0,0,0);
 		this.setLockPriority(1);
+		
+		if (GraphicsUtil.isAndroid()){
+			this.verticesLimit = 170;
+			this.minDistance = 7;	
+		}else{
+			this.verticesLimit = 270;
+			this.minDistance = 3;
+		}
+		
 	}
 	
 	
@@ -271,7 +282,7 @@ public class LassoProcessor extends AbstractCursorProcessor {
 		
 		/** The gesture aborted. */
 		protected boolean gestureAborted;
-		
+
 		
 		/**
 		 * Instantiates a new clustering context.
@@ -381,23 +392,41 @@ public class LassoProcessor extends AbstractCursorProcessor {
 						pointInPlane);
 				
 
-				if (newPosition != null && !lastPosition.equalsVector(newPosition)){
-					Vertex[] newArr = new Vertex[this.getPolygon().getVertexCount()+1];
-
-					Vertex[] polyVertices = this.getPolygon().getVerticesGlobal();
-
-					//set the old last point to the next index
-					System.arraycopy(polyVertices, 0, newArr, 0, this.getPolygon().getVertexCount());
-					newArr[newArr.length-1] = polyVertices[0]; //close poly correctly
-
-					//Create the new vertex
-					Vertex newVert = new Vertex(newPosition.getX(), newPosition.getY(), newPosition.getZ(), 100,150,250,255);
-					newVert.setA(120);
-					newArr[newArr.length-2] = newVert; //set the new value to be the length-2 one
-
-					polygon.setVertices(newArr);
+				if (newPosition != null && !lastPosition.equalsVector(newPosition) && this.getPolygon().getVertexCount() < verticesLimit){
+					if (minDistance == 0 ){
+						addNewPoint(newPosition);
+					}else{
+						Vertex[] verts = this.getPolygon().getVerticesLocal();
+						if (verts.length > 1){
+							Vertex lastVert = new Vertex(verts[verts.length-2]);
+							lastVert.transform(getPolygon().getGlobalMatrix());
+							float distance = lastVert.distance2D(newPosition);
+							if (distance > minDistance){
+								addNewPoint(newPosition);	
+							}
+						}else{
+							addNewPoint(newPosition);
+						}
+					}
 				}
 			}
+		}
+	
+		private void addNewPoint(Vector3D newPosition){
+			Vertex[] newArr = new Vertex[this.getPolygon().getVertexCount()+1];
+
+			Vertex[] polyVertices = this.getPolygon().getVerticesGlobal();
+
+			//set the old last point to the next index
+			System.arraycopy(polyVertices, 0, newArr, 0, this.getPolygon().getVertexCount());
+			newArr[newArr.length-1] = polyVertices[0]; //close poly correctly
+
+			//Create the new vertex
+			Vertex newVert = new Vertex(newPosition.getX(), newPosition.getY(), newPosition.getZ(), 100,150,250,255);
+			newVert.setA(120);
+			newArr[newArr.length-2] = newVert; //set the new value to be the length-2 one
+
+			polygon.setVertices(newArr);
 		}
 
 		/**
