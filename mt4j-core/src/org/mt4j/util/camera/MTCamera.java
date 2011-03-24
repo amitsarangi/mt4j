@@ -18,6 +18,8 @@
 package org.mt4j.util.camera;
 
 
+import javax.microedition.khronos.opengles.GL10;
+
 import org.mt4j.util.GraphicsUtil;
 import org.mt4j.util.math.Matrix;
 import org.mt4j.util.math.Vector3D;
@@ -159,43 +161,81 @@ public class MTCamera implements Icamera{
 		Matrix m = this.cameraMatrix;
 		Matrix mi = this.cameraInvMatrix;
 		
-		cameraMat.set(
-				m.m00, m.m01, m.m02, m.m03,
-				m.m10, m.m11, m.m12, m.m13,
-				m.m20, m.m21, m.m22, m.m23,
-				m.m30, m.m31, m.m32, m.m33);
-		
-		cameraInvMat.set(
-				mi.m00, mi.m01, mi.m02, mi.m03,
-				mi.m10, mi.m11, mi.m12, mi.m13,
-				mi.m20, mi.m21, mi.m22, mi.m23,
-				mi.m30, mi.m31, mi.m32, mi.m33);
-		
-		//cant also set cameraInv..not visible
-//		p3d.camera.set(
+//		cameraMat.set(
 //				m.m00, m.m01, m.m02, m.m03,
 //				m.m10, m.m11, m.m12, m.m13,
 //				m.m20, m.m21, m.m22, m.m23,
 //				m.m30, m.m31, m.m32, m.m33);
-		camP5.set(
-				m.m00, m.m01, m.m02, m.m03,
-				m.m10, m.m11, m.m12, m.m13,
-				m.m20, m.m21, m.m22, m.m23,
-				m.m30, m.m31, m.m32, m.m33);
+//		
+//		cameraInvMat.set(
+//				mi.m00, mi.m01, mi.m02, mi.m03,
+//				mi.m10, mi.m11, mi.m12, mi.m13,
+//				mi.m20, mi.m21, mi.m22, mi.m23,
+//				mi.m30, mi.m31, mi.m32, mi.m33);
+//		
+//		//cant also set cameraInv..not visible
+////		p3d.camera.set(
+////				m.m00, m.m01, m.m02, m.m03,
+////				m.m10, m.m11, m.m12, m.m13,
+////				m.m20, m.m21, m.m22, m.m23,
+////				m.m30, m.m31, m.m32, m.m33);
+//		camP5.set(
+//				m.m00, m.m01, m.m02, m.m03,
+//				m.m10, m.m11, m.m12, m.m13,
+//				m.m20, m.m21, m.m22, m.m23,
+//				m.m30, m.m31, m.m32, m.m33);
 		
 		//FIXME cannot set p5 cameraInv because its not visible..problem?
 		
 //		p3d.modelview.set(cameraMat);
 //		p3d.modelviewInv.set(cameraInvMat);
 		
-		modelViewP5.set(cameraMat);
-		modelViewInvP5.set(cameraInvMat);
+//		modelViewP5.set(cameraMat);
+//		modelViewInvP5.set(cameraInvMat);
 		
-		PGraphics g = this.pa.g;
-		PGraphicsAndroid3D androidGraphics = (PGraphicsAndroid3D)g;
-		androidGraphics.updateModelview();
+		//FIXME remove platform dependence
+//		PGraphics g = this.pa.g;
+//		PGraphicsAndroid3D androidGraphics = (PGraphicsAndroid3D)g;
+//		androidGraphics.updateModelview();
+		
+		GraphicsUtil.setModelView(
+				m.m00, m.m01, m.m02, m.m03,
+				m.m10, m.m11, m.m12, m.m13,
+				m.m20, m.m21, m.m22, m.m23,
+				m.m30, m.m31, m.m32, m.m33);
+		
+		GraphicsUtil.setModelViewInv(	
+				mi.m00, mi.m01, mi.m02, mi.m03,
+				mi.m10, mi.m11, mi.m12, mi.m13,
+				mi.m20, mi.m21, mi.m22, mi.m23,
+				mi.m30, mi.m31, mi.m32, mi.m33);
+		
+		GraphicsUtil.setCamera(	
+				m.m00, m.m01, m.m02, m.m03,
+				m.m10, m.m11, m.m12, m.m13,
+				m.m20, m.m21, m.m22, m.m23,
+				m.m30, m.m31, m.m32, m.m33);
+		
+		GraphicsUtil.setCameraInv(
+				mi.m00, mi.m01, mi.m02, mi.m03,
+				mi.m10, mi.m11, mi.m12, mi.m13,
+				mi.m20, mi.m21, mi.m22, mi.m23,
+				mi.m30, mi.m31, mi.m32, mi.m33);
+		
+		//TODO!?
+//		gl.glMatrixMode(GL10.GL_MODELVIEW);
+//	    gl.glLoadMatrixf(glmodelview, 0);
+//	    if (usingGLMatrixStack) {
+//	      modelviewStack.set(glmodelview);
+//	    }
+		
 //		androidGraphics.updateCamera();
 		
+//		AndroidGraphicsUtil.
+		
+		//Sets our Matrix class cached 
+		//cameraMatrix -> processing's modelView (and glModelView) and -> camera matrix 
+		//and cameraInvMatrix -> processings modelviewInv (and glModelviewInv)
 		
 	}
 	
