@@ -26,6 +26,7 @@ import org.mt4j.input.inputProcessors.IInputProcessor;
 import org.mt4j.input.inputProcessors.MTGestureEvent;
 import org.mt4j.input.inputProcessors.componentProcessors.AbstractComponentProcessor;
 import org.mt4j.input.inputProcessors.componentProcessors.AbstractCursorProcessor;
+import org.mt4j.util.MT4jSettings;
 import org.mt4j.util.math.Vector3D;
 
 import processing.core.PApplet;
@@ -52,7 +53,7 @@ public class ZoomProcessor extends AbstractCursorProcessor {
 	 * @param graphicsContext the graphics context
 	 */
 	public ZoomProcessor(PApplet graphicsContext){
-		this(graphicsContext, graphicsContext.width/2);
+		this(graphicsContext, MT4jSettings.getInstance().getWindowWidth()/2);
 	}
 	
 	/**

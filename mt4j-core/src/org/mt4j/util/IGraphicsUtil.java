@@ -46,7 +46,7 @@ public PGraphics getPGraphics();
 
 	public IGLU getGLU();
 
-	public PMatrix getProjection();
+	public PMatrix3D getProjection();
 
 	public boolean isBigEndian();
 

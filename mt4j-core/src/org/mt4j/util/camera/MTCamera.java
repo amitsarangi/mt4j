@@ -18,15 +18,12 @@
 package org.mt4j.util.camera;
 
 
-import javax.microedition.khronos.opengles.GL10;
-
 import org.mt4j.util.GraphicsUtil;
+import org.mt4j.util.MT4jSettings;
 import org.mt4j.util.math.Matrix;
 import org.mt4j.util.math.Vector3D;
 
 import processing.core.PApplet;
-import processing.core.PGraphics;
-import processing.core.PGraphicsAndroid3D;
 import processing.core.PMatrix3D;
 
 /**
@@ -80,8 +77,27 @@ public class MTCamera implements Icamera{
 	 * @param processingApplet the processing applet
 	 */
 	public MTCamera(PApplet processingApplet){
-		this(processingApplet.width/2.0f, processingApplet.height/2.0f, processingApplet.height/2.0f / PApplet.tan(PApplet.PI*60.0f / 360.0f),
-                processingApplet.width/2.0f, processingApplet.height/2.0f, 0, 0, 1,0, processingApplet);
+//		this(processingApplet.width/2.0f, processingApplet.height/2.0f, (processingApplet.height/2.0f) / PApplet.tan(PApplet.PI*60.0f / 360.0f),
+//                processingApplet.width/2.0f, processingApplet.height/2.0f, 0, 0, 1,0, processingApplet);
+		
+		this(MT4jSettings.getInstance().getWindowWidth()/2.0f, MT4jSettings.getInstance().getWindowHeight()/2.0f, (MT4jSettings.getInstance().getWindowHeight()/2.0f) / PApplet.tan(PApplet.PI*60.0f / 360.0f),
+				MT4jSettings.getInstance().getWindowWidth()/2.0f, MT4jSettings.getInstance().getWindowHeight()/2.0f, 0, 0, 1,0, processingApplet);
+
+		
+//		System.out.println("processingApplet.width: " + processingApplet.width);
+//		System.out.println("processingApplet.height: " + processingApplet.height);
+	    
+//		this(processingApplet.width/2.0f, processingApplet.height/2.0f, (processingApplet.height/2.0f) / (((float) Math.tan(60 * PApplet.DEG_TO_RAD / 2.0f))),
+//              processingApplet.width/2.0f, processingApplet.height/2.0f, 0, 0, 1, 0, processingApplet);
+		
+//		// init perspective projection based on new dimensions
+//	    cameraFOV = 60 * DEG_TO_RAD; // at least for now
+//	    cameraX = width / 2.0f;
+//	    cameraY = height / 2.0f;
+//	    cameraZ = cameraY / ((float) Math.tan(cameraFOV / 2.0f));
+//	    cameraNear = cameraZ / 10.0f;
+//	    cameraFar = cameraZ * 10.0f;
+//	    cameraAspect = (float) width / (float) height;
 	}
 	
 	
@@ -231,12 +247,9 @@ public class MTCamera implements Icamera{
 		
 //		androidGraphics.updateCamera();
 		
-//		AndroidGraphicsUtil.
-		
 		//Sets our Matrix class cached 
 		//cameraMatrix -> processing's modelView (and glModelView) and -> camera matrix 
 		//and cameraInvMatrix -> processings modelviewInv (and glModelviewInv)
-		
 	}
 	
 	
@@ -553,8 +566,10 @@ public class MTCamera implements Icamera{
 	 * Reset to default.
 	 */
 	public void resetToDefault(){
-		this.camPos = new Vector3D((float)(pa.width/2.0), (float)(pa.height/2.0), (float)(pa.height/2.0) / PApplet.tan((float)(PApplet.PI*60.0 / 360.0)));
-		this.viewCenterPos	= new Vector3D((float)(pa.width/2.0), (float)(pa.height/2.0), 0) ;
+//		this.camPos = new Vector3D((float)(pa.width/2.0), (float)(pa.height/2.0), (float)(pa.height/2.0) / PApplet.tan((float)(PApplet.PI*60.0 / 360.0)));
+//		this.viewCenterPos	= new Vector3D((float)(pa.width/2.0), (float)(pa.height/2.0), 0) ;
+		this.camPos = new Vector3D((float)(MT4jSettings.getInstance().getWindowWidth()/2.0), (float)(MT4jSettings.getInstance().getWindowHeight()/2.0), (float)(MT4jSettings.getInstance().getWindowHeight()/2.0) / PApplet.tan((float)(PApplet.PI*60.0 / 360.0)));
+		this.viewCenterPos	= new Vector3D((float)(MT4jSettings.getInstance().getWindowWidth()/2.0), (float)(MT4jSettings.getInstance().getWindowHeight()/2.0), 0) ;
 		this.xAxisUp = 0;
 		this.yAxisUp = 1;
 		this.zAxisUp = 0;

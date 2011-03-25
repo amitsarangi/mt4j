@@ -92,7 +92,7 @@ public class GraphicsUtil {
 		return graphicsUtil.getGLU();
 	}
 
-	public static PMatrix getProjection() {
+	public static PMatrix3D getProjection() {
 		return graphicsUtil.getProjection();
 	}
 	

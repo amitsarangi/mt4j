@@ -2537,6 +2537,7 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 	 * @return the pick result
 	 */
 	public PickResult pick(float x, float y){ 
+//		System.out.println("MTComponent pick at: " + x + "," + y + " - this:" + this); 
 		PickResult pickResult = new PickResult();
 		PickInfo pickInfo = new PickInfo(x,y, Tools3D.getCameraPickRay(this.getRenderer(), this, x, y));
 		this.pickRecursive(pickInfo, pickResult, Float.MAX_VALUE, pickInfo.getPickRay(), true);
@@ -2595,12 +2596,6 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 //		currObjDist = pickResult.getDistanceNearestPickObj();
 		
 //		System.out.println("At: " + this.getName() + " Current Distance: " + currObjDist);
-		
-		//FIXME REMOVEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE
-		if (this instanceof Cluster) {
-			Cluster cluster = (Cluster) this;
-			cluster.getViewingCamera();
-		}
 		
 		if (visible && 
 			( (onlyPickables && pickable) || !onlyPickables) 
@@ -2748,6 +2743,8 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 			//Re-Project unprojected world coords to projected viewport screen coords (Tuio INput)
 			float x = pickInfo.getScreenXCoordinate(); 
 			float y = pickInfo.getScreenYCoordinate(); 
+			
+//			System.out.println("MTComponent getChangedCameraPickRay at: " + x + "," + y + " obj: " + obj); 
 			
 			return Tools3D.getCameraPickRay(pa, obj, x, y);
 		}else{

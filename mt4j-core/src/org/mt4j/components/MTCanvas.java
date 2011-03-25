@@ -236,9 +236,6 @@ public class MTCanvas extends MTComponent implements IHitTestInfoProvider{
 	}
 	
 	
-	/* (non-Javadoc)
-	 * @see com.jMT.input.IHitTestInfoProvider#isBackGroundAt(float, float)
-	 */
 	public boolean isBackGroundAt(float x, float y) {
 		return this.getComponentAt(x, y).equals(this);
 	}
@@ -339,12 +336,28 @@ public class MTCanvas extends MTComponent implements IHitTestInfoProvider{
 //					PGraphics3D pgraphics3D = (PGraphics3D)graphics;
 //					pgraphics3D.modelview.apply(
 //					modelViewP5.apply(
-					GraphicsUtil.getModelView().apply(
-							m.m00, m.m01, m.m02,  m.m03,
-							m.m10, m.m11, m.m12,  m.m13,
-							m.m20, m.m21, m.m22,  m.m23,
-							m.m30, m.m31, m.m32,  m.m33
-					);
+					
+//					GraphicsUtil.getModelView().apply(
+//							m.m00, m.m01, m.m02,  m.m03,
+//							m.m10, m.m11, m.m12,  m.m13,
+//							m.m20, m.m21, m.m22,  m.m23,
+//							m.m30, m.m31, m.m32,  m.m33
+//					);
+					
+					if (GraphicsUtil.isAndroid()){
+						getRenderer().g.applyMatrix(
+								m.m00, m.m01, m.m02,  m.m03,
+								m.m10, m.m11, m.m12,  m.m13,
+								m.m20, m.m21, m.m22,  m.m23,
+								m.m30, m.m31, m.m32,  m.m33);
+					}else{
+						GraphicsUtil.getModelView().apply(
+								m.m00, m.m01, m.m02,  m.m03,
+								m.m10, m.m11, m.m12,  m.m13,
+								m.m20, m.m21, m.m22,  m.m23,
+								m.m30, m.m31, m.m32,  m.m33
+						);
+					}
 				}
 				
 				//Apply local transform etc

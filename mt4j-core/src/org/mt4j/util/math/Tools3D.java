@@ -199,21 +199,25 @@ public class Tools3D {
 			try{
 				float winZ = 1; //or read from depth buffer at that pixel! (but not available in Ogl ES)
 				
-				modelViewTmp.set(applet.g.getMatrix());
+//				modelViewTmp.set(applet.g.getMatrix()); //FIXME creates a new PMatrix3D everytime :(
+				modelViewTmp.set(GraphicsUtil.getModelView());
+				
 //				PMatrix3D projectionM 	= new PMatrix3D(((PGraphics3D)applet.g).projection);
 				projectionTmp.set(GraphicsUtil.getProjection());
 				
 				//-> in dekstop version glScale(1,-1,1) is done every frame because in (Desktop) opengl
 				// 0,0 is on the down left corner instead of upper left
 				if (GraphicsUtil.isAndroid()){
-					screenY = applet.height - screenY;
+					screenY = MT4jSettings.getInstance().getWindowHeight() - screenY;
 				}
 				
 				projectionTmp.apply(modelViewTmp);
 				projectionTmp.invert(); //Expensive!
 				
-				factor[0] = ((2 * screenX)  / applet.width)  -1;
-				factor[1] = ((2 * screenY)  / applet.height) -1;
+//				factor[0] = ((2 * screenX)  / applet.width)  -1;
+//				factor[1] = ((2 * screenY)  / applet.height) -1;
+				factor[0] = ((2 * screenX)  / MT4jSettings.getInstance().getWindowWidth())  -1;
+				factor[1] = ((2 * screenY)  / MT4jSettings.getInstance().getWindowHeight()) -1;
 				factor[2] = (2 * winZ) -1;
 				factor[3] = 1;
 				
@@ -247,15 +251,15 @@ public class Tools3D {
 		PMatrix3D projectionM 	= new PMatrix3D(GraphicsUtil.getProjection());
 
 		if (GraphicsUtil.isAndroid()){
-			winY = applet.height - winY;
+			winY = MT4jSettings.getInstance().getWindowHeight() - winY;
 		}
 
 		projectionM.apply(modelView);
 		projectionM.invert();
 
 		float[] result = new float[4];
-		float[] factor = new float[]{  ((2 * winX)  / applet.width)  -1,
-				((2 * winY)  / applet.height) -1, //screenH - y?
+		float[] factor = new float[]{  ((2 * winX)  / MT4jSettings.getInstance().getWindowWidth())  -1,
+				((2 * winY)  / MT4jSettings.getInstance().getWindowHeight()) -1, //screenH - y?
 				(2 * winZ) -1 ,
 				1,};
 		projectionM.mult(factor, result);
@@ -458,8 +462,29 @@ public class Tools3D {
 		
 		try{
 			float x = applet.screenX(point.x, point.y, point.z);
-			float y = applet.screenY(point.x, point.y, point.z);
+			
+			float y = 0;
+			if (GraphicsUtil.isAndroid()){ //because android opengl isnt inverted..?
+				y = applet.screenY(point.x, (MT4jSettings.getInstance().getWindowHeight() - point.y) * -1, point.z); //	 applet.height - screenY
+			}else{
+				y = applet.screenY(point.x, point.y, point.z);
+			}
+			
+//			float y = applet.screenY(point.x, point.y, point.z);
+//			float y = applet.screenY(point.x, -1 * point.y, point.z); //	y = -1 * y;
+//			float y = applet.screenY(point.x, (applet.height - point.y) * -1, point.z); //	 applet.height - screenY
+//			y = applet.height - y;
+			
+			//we have to use applet.height - point.y in android, and in the screenY method dont use *-1 
+			
+//			if (GraphicsUtil.isAndroid()){
+//				screenY = applet.height - screenY;
+//			}
+			
 			float z = applet.screenZ(point.x, point.y, point.z);
+			
+			System.out.println("Projected: " + x + "," + y + "," + z );
+			
 			return new Vector3D(x,y,z);
 		}catch(Exception e){
 			e.printStackTrace();

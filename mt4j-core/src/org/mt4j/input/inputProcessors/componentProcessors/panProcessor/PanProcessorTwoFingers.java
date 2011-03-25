@@ -26,6 +26,7 @@ import org.mt4j.input.inputProcessors.IInputProcessor;
 import org.mt4j.input.inputProcessors.MTGestureEvent;
 import org.mt4j.input.inputProcessors.componentProcessors.AbstractComponentProcessor;
 import org.mt4j.input.inputProcessors.componentProcessors.AbstractCursorProcessor;
+import org.mt4j.util.MT4jSettings;
 import org.mt4j.util.math.Tools3D;
 import org.mt4j.util.math.ToolsGeometry;
 import org.mt4j.util.math.Vector3D;
@@ -60,7 +61,7 @@ public class PanProcessorTwoFingers extends AbstractCursorProcessor {
 	 * @param app the app
 	 */
 	public PanProcessorTwoFingers(PApplet app) {
-		this(app, app.width/2);
+		this(app, MT4jSettings.getInstance().getWindowWidth()/2);
 	}
 	
 	/**

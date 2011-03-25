@@ -25,6 +25,7 @@ import javax.media.opengl.GL;
 
 import org.mt4j.MTApplication;
 import org.mt4j.util.GraphicsUtil;
+import org.mt4j.util.MT4jSettings;
 import org.mt4j.util.logging.ILogger;
 import org.mt4j.util.logging.MTLoggerFactory;
 import org.mt4j.util.math.Tools3D;
@@ -391,7 +392,8 @@ public class GLFBO {
 			GL11Plus gl11Plus = (GL11Plus) gl;
 			gl11Plus.glPopAttrib();
 		}else{
-			gl.glViewport(0, 0, pa.width, pa.height); //Restore viewport to max
+//			gl.glViewport(0, 0, pa.width, pa.height); //Restore viewport to max
+			gl.glViewport(0, 0, MT4jSettings.getInstance().getWindowWidth(), MT4jSettings.getInstance().getWindowHeight()); //Restore viewport to max
 		}
 
 		//FIXME FBO STACK TEST

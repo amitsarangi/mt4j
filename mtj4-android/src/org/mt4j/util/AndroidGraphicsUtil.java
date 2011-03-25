@@ -32,7 +32,8 @@ public class AndroidGraphicsUtil implements IGraphicsUtil {
 	}
 	
 	public PMatrix3D getModelView() {
-		return ((PGraphicsAndroid3D)app.getPGraphics()).modelview;
+//		return ((PGraphicsAndroid3D)app.getPGraphics()).modelview;
+		return this.p5ProtectedAccessProxy.getModelView();
 	}
 	
 	public PMatrix3D getModelViewInv() {
@@ -96,8 +97,9 @@ public class AndroidGraphicsUtil implements IGraphicsUtil {
 	}
 
 	@Override
-	public PMatrix getProjection() {
-		return ((PGraphicsAndroid3D)app.getPGraphics()).projection;
+	public PMatrix3D getProjection() {
+//		return ((PGraphicsAndroid3D)app.getPGraphics()).projection;
+		return p5ProtectedAccessProxy.getProjection();
 	}
 
 	@Override

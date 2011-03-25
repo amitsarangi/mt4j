@@ -13,17 +13,18 @@ import org.mt4j.util.opengl.JoglGLU;
 
 import processing.core.PGraphics;
 import processing.core.PGraphics3D;
-import processing.core.PMatrix;
 import processing.core.PMatrix3D;
 import processing.opengl.PGraphicsOpenGL;
 
 public class DesktopGraphicsUtil implements IGraphicsUtil {
 	private final MTApplication app;
 	private final JoglGLU joglGLU;
+	private PGraphics3D pg3d;
 
 	public DesktopGraphicsUtil(MTApplication app){
 		this.app = app;
 		this.joglGLU = new JoglGLU(new GLU());
+		this.pg3d = ((PGraphics3D)app.getPGraphics());
 	}
 
 	public PGraphics getPGraphics(){
@@ -31,31 +32,31 @@ public class DesktopGraphicsUtil implements IGraphicsUtil {
 	}
 	
 	public PMatrix3D getModelView() {
-		return ((PGraphics3D)app.getPGraphics()).modelview;
+		return pg3d.modelview;
 	}
 	
 	public PMatrix3D getModelViewInv() {
-		return ((PGraphics3D)app.getPGraphics()).modelviewInv;
+		return pg3d.modelviewInv;
 	}
 	
 	public PMatrix3D getCamera() {
-		return ((PGraphics3D)app.getPGraphics()).camera;
+		return pg3d.camera;
 	}
 	
 	public float getCameraFOV() {
-		return ((PGraphics3D)app.getPGraphics()).cameraFOV;
+		return pg3d.cameraFOV;
 	}
 
 	public float getCameraAspect() {
-		return ((PGraphics3D)app.getPGraphics()).cameraAspect;
+		return pg3d.cameraAspect;
 	}
 
 	public float getCameraNear() {
-		return ((PGraphics3D)app.getPGraphics()).cameraNear;
+		return pg3d.cameraNear;
 	}
 
 	public float getCameraFar() {
-		return ((PGraphics3D)app.getPGraphics()).cameraFar;
+		return pg3d.cameraFar;
 	}
 
 //	public GL10 getGL() {
@@ -72,7 +73,7 @@ public class DesktopGraphicsUtil implements IGraphicsUtil {
 //    }
 	
 	public GL10 getGL() {
-		return app.getGL10(); //FIXME DOES THE CAST TO kronos.GL10 work!??
+		return app.getGL10(); //FIXME DOES THE CAST TO kronos.GL10 work!?? -> prolly not
 	}
 	
 	public GL11 getGL11() {
@@ -109,11 +110,11 @@ public class DesktopGraphicsUtil implements IGraphicsUtil {
 	}
 
 	@Override
-	public PMatrix getProjection() {
+	public PMatrix3D getProjection() {
 //		if (MT4jSettings.getInstance().isOpenGlMode()){
 //			return ((PGraphicsOpenGL)app.getPGraphics()).projection;
 //		}else{
-			return ((PGraphics3D)app.getPGraphics()).projection;
+			return pg3d.projection;
 //		}
 	}
 
@@ -125,6 +126,34 @@ public class DesktopGraphicsUtil implements IGraphicsUtil {
 	@Override
 	public boolean isNPOTTextureSupported() {
 		return Tools3D.supportsNonPowerOfTwoTexture(app);
+	}
+
+	@Override
+	public void setModelView(float m00, float m01, float m02, float m03,
+			float m10, float m11, float m12, float m13, float m20, float m21,
+			float m22, float m23, float m30, float m31, float m32, float m33) {
+		pg3d.modelview.set(m00, m01, m02, m03, m10, m11, m12, m13, m20, m21, m22, m23, m30, m31, m32, m33);
+	}
+
+	@Override
+	public void setModelViewInv(float m00, float m01, float m02, float m03,
+			float m10, float m11, float m12, float m13, float m20, float m21,
+			float m22, float m23, float m30, float m31, float m32, float m33) {
+		pg3d.modelviewInv.set(m00, m01, m02, m03, m10, m11, m12, m13, m20, m21, m22, m23, m30, m31, m32, m33);
+	}
+
+	@Override
+	public void setCamera(float m00, float m01, float m02, float m03,
+			float m10, float m11, float m12, float m13, float m20, float m21,
+			float m22, float m23, float m30, float m31, float m32, float m33) {
+		pg3d.camera.set(m00, m01, m02, m03, m10, m11, m12, m13, m20, m21, m22, m23, m30, m31, m32, m33);
+	}
+
+	@Override
+	public void setCameraInv(float m00, float m01, float m02, float m03,
+			float m10, float m11, float m12, float m13, float m20, float m21,
+			float m22, float m23, float m30, float m31, float m32, float m33) {
+		//FIXME not visible!
 	}
 
 	

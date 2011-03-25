@@ -89,5 +89,14 @@ public class P5ProtectedAccessProxy {
 		
 		a3d.copyPMatrixToGLArray(a3d.cameraInv, a3d.pcameraInv);
 	}
+	
+	
+	public PMatrix3D getProjection(){
+		if (!a3d.projectionUpdated) {
+		      a3d.getProjectionMatrix();
+		    }
+//		a3d.copyGLArrayToPMatrix(a3d.glmodelview, modelView);
+		return a3d.projection;
+	}
 			
 }

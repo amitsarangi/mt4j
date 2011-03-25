@@ -20,6 +20,7 @@ package org.mt4j.sceneManagement.transition;
 import org.mt4j.MTApplication;
 import org.mt4j.components.visibleComponents.shapes.MTRectangle;
 import org.mt4j.sceneManagement.Iscene;
+import org.mt4j.util.MT4jSettings;
 import org.mt4j.util.MTColor;
 import org.mt4j.util.animation.Animation;
 import org.mt4j.util.animation.AnimationEvent;
@@ -126,7 +127,8 @@ public class FadeTransition extends AbstractTransition {
         	}});
        anim.setResetOnFinish(true);
        
-       fullScreenQuad = new MTRectangle(app,0, 0, app.width, app.height);
+//       fullScreenQuad = new MTRectangle(app,0, 0, app.width, app.height);
+       fullScreenQuad = new MTRectangle(app,0, 0, MT4jSettings.getInstance().getWindowWidth(), MT4jSettings.getInstance().getWindowHeight());
        fullScreenQuad.setFillColor(new MTColor(0,0,0,0));
        fullScreenQuad.setNoStroke(true);
 	}
