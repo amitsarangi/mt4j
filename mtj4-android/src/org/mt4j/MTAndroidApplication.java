@@ -63,6 +63,9 @@ public abstract class MTAndroidApplication extends MTApplication{
 		GraphicsUtil.setGraphicsUtilProvider(new AndroidGraphicsUtil(this));
 		///////////////////////
 		
+		//Set to use our own OpenGL rendering by default
+		MT4jSettings.getInstance().renderer = MT4jSettings.OPENGL_MODE;
+		
 		//Set all default paths to the "" (asset folder) path because we cant use the assetmanager 
 		//if we use subfolders (no path separators allowed) but have to load the files/set permissions ourselves :( 
 		//TODO -> is there another way to handle this?
