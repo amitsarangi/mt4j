@@ -278,7 +278,7 @@ public class MTPolygon extends MTCSSStylableShape{
                 g.fill(v.getR(), v.getG(), v.getB(), v.getA()); //takes vertex colors into account
             }
 
-            if (this.isTextureEnabled())
+            if (this.getTexture() != null && this.isTextureEnabled())
                 g.vertex(v.x, v.y, v.z, v.getTexCoordU(), v.getTexCoordV());
             else {
                 if (v.getType() == Vector3D.BEZIERVERTEX) {
