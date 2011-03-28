@@ -19,6 +19,8 @@ package org.mt4j.components.visibleComponents.widgets;
 
 import org.mt4j.components.MTComponent;
 import org.mt4j.components.TransformSpace;
+import org.mt4j.components.bounds.BoundsZPlaneRectangle;
+import org.mt4j.components.bounds.IBoundingShape;
 import org.mt4j.components.visibleComponents.shapes.AbstractShape;
 import org.mt4j.input.gestureAction.DefaultDragAction;
 import org.mt4j.input.gestureAction.DefaultRotateAction;
@@ -54,6 +56,8 @@ public class MTSvg extends MTComponent {
 
 	/** The center point local. */
 	private Vector3D centerPointLocal;
+	
+	private IBoundingShape bounds;
 
 	//TODO we could extens mtpolygon and set the polygon points to be the svg's bounding rectangle
 	
@@ -112,6 +116,10 @@ public class MTSvg extends MTComponent {
 //				
 //			}
 //		});
+		
+		//We dont set these bounds using this.setBounds() because then the svg would get picked
+		//by the rectangular bounds and not the child shapes, which is more accurate
+		this.bounds = new BoundsZPlaneRectangle(this, upperLeft.x, upperLeft.y, width, height);
 		
 		//Draw this component and its children above 
 		//everything previously drawn and avoid z-fighting
@@ -485,5 +493,11 @@ public class MTSvg extends MTComponent {
         for (MTComponent child : current.getChildren()) {
             setPickableRecursive(child, pickable);
         }
+	}
+	
+	
+	@Override
+	protected boolean componentContainsPointLocal(Vector3D testPoint) {
+		return this.bounds.containsPointLocal(testPoint);
 	}
 }
