@@ -498,6 +498,10 @@ public class MTSvg extends MTComponent {
 	
 	@Override
 	protected boolean componentContainsPointLocal(Vector3D testPoint) {
-		return this.bounds.containsPointLocal(testPoint);
+		if (this.hasBounds()){
+			return this.getBounds().containsPointLocal(testPoint);
+		}else{
+			return this.bounds.containsPointLocal(testPoint);
+		}
 	}
 }
