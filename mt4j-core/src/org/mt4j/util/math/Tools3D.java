@@ -483,8 +483,6 @@ public class Tools3D {
 			
 			float z = applet.screenZ(point.x, point.y, point.z);
 			
-			System.out.println("Projected: " + x + "," + y + "," + z );
-			
 			return new Vector3D(x,y,z);
 		}catch(Exception e){
 			e.printStackTrace();
