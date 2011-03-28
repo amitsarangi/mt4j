@@ -537,6 +537,15 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 		stateChangeSupport.addStateChangeListener(state, listener);
 	}
 	
+	
+	/**
+	 * Gets the state change listeners.
+	 * @return the state change listeners
+	 */
+	public StateChangeListener[] getStateChangeListeners(){
+		return stateChangeSupport.getListeners();
+	}
+	
 
 	/**
 	 * Removes the state change listener.
