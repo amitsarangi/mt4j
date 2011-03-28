@@ -21,6 +21,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.mt4j.components.MTComponent;
+import org.mt4j.components.StateChange;
+import org.mt4j.components.StateChangeEvent;
+import org.mt4j.components.StateChangeListener;
 import org.mt4j.components.TransformSpace;
 import org.mt4j.components.interfaces.IMTController;
 import org.mt4j.components.visibleComponents.shapes.MTRectangle;
@@ -232,6 +235,22 @@ public class MTList extends MTClipRectangle {
 		listCellContainer.setAnchor(saved);
 		return returnPos;
 	}
+	
+	
+	private class CellDestroyedListener implements StateChangeListener{
+		private MTListCell cell;
+		
+		public CellDestroyedListener(MTListCell cell){
+			this.cell = cell;
+		}
+		
+		@Override
+		public void stateChanged(StateChangeEvent evt) {
+			if (evt.getState().equals(StateChange.COMPONENT_DESTROYED)){
+				removeListElement(cell);
+			}
+		}
+	}
 
 	/**
 	 * The Class MTListCellContainer. Container for all the MTListCell's.
@@ -265,6 +284,19 @@ public class MTList extends MTClipRectangle {
 			if (cells.contains(item)){
 				return;
 			}
+			
+			//Add a statechangelistener (only once) to check when the cell is destroyed -> remove from list
+			StateChangeListener[] stateListeners = item.getStateChangeListeners();
+			boolean alreadyHasDestroyedListener = false;
+			for (StateChangeListener stateChangeListener : stateListeners) {
+				if (stateChangeListener instanceof CellDestroyedListener){
+					alreadyHasDestroyedListener = true;
+				}
+			}
+			if (!alreadyHasDestroyedListener){
+				item.addStateChangeListener(StateChange.COMPONENT_DESTROYED, new CellDestroyedListener(item));	
+			}
+			
 			
 			this.addChild(index, item);
 			this.cells.add(index, item);
@@ -322,12 +354,14 @@ public class MTList extends MTClipRectangle {
 		}
 		
 		public void removeCell(MTListCell item){
-			if (!this.containsDirectChild(item)){
-				return;
+			if (this.containsDirectChild(item)){
+				this.removeChild(item);
 			}
-			this.removeChild(item);
-			this.cells.remove(item);
-			this.updateLayout();
+			
+			if (cells.contains(item)){
+				this.cells.remove(item);	
+				this.updateLayout();
+			}
 		}
 		
 		
