@@ -24,7 +24,6 @@
 	<classpathentry kind="lib" path="lib/batik/js.jar"/>
 	<classpathentry kind="lib" path="lib/batik/pdf-transcoder.jar"/>
 	<classpathentry kind="lib" path="lib/batik/xml-apis.jar"/>
-	<classpathentry kind="lib" path="lib/tuio/libTUIO.jar"/>
 	<classpathentry kind="lib" path="lib/whirlylib/log4j-1.2.8.jar"/>
 	<classpathentry kind="lib" path="lib/whirlylib/whirlycache-1.0.1.jar"/>
 	<classpathentry kind="lib" path="extensions/lib/jbullet/jbullet.jar"/>

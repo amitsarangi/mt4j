@@ -16,7 +16,6 @@ import org.mt4j.input.inputSources.MouseInputSource;
 import org.mt4j.input.inputSources.MultipleMiceInputSource;
 import org.mt4j.input.inputSources.Tuio2DCursorInputSource;
 import org.mt4j.input.inputSources.Tuio2dObjectInputSource;
-import org.mt4j.input.inputSources.TuioInputSource;
 import org.mt4j.input.inputSources.Win7NativeTouchSource;
 import org.mt4j.util.MT4jSettings;
 
@@ -110,9 +109,6 @@ public class DesktopInputManager extends InputManager{
 	    //Register keyboard multitouch-emulation input source
 	    KeyboardInputSource keyInput = new KeyboardInputSource(app);
 		this.registerInputSource(keyInput);
-		
-//		TuioInputSource tuioInput 	= new TuioInputSource(app);
-//		this.registerInputSource(tuioInput);
 		
 //		MuitoInputSource muitoInput = new MuitoInputSource(pa, "localhost", 6666);
 		
