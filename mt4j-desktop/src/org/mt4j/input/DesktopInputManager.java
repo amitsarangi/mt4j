@@ -19,16 +19,33 @@ import org.mt4j.input.inputSources.Tuio2dObjectInputSource;
 import org.mt4j.input.inputSources.Win7NativeTouchSource;
 import org.mt4j.util.MT4jSettings;
 
+/**
+ * The Class DesktopInputManager.
+ */
 public class DesktopInputManager extends InputManager{
 	
+	/**
+	 * Instantiates a new desktop input manager.
+	 *
+	 * @param app the app
+	 */
 	public DesktopInputManager(MTApplication app) {
 		this(app, true);
 	}
 	
+	/**
+	 * Instantiates a new desktop input manager.
+	 *
+	 * @param app the app
+	 * @param registerDefaultSources the register default sources
+	 */
 	public DesktopInputManager(MTApplication app, boolean registerDefaultSources) {
 		super(app, registerDefaultSources);
 	}
 
+	/* (non-Javadoc)
+	 * @see org.mt4j.input.InputManager#registerDefaultInputSources()
+	 */
 	@Override
 	/**
 	 * Initialize default input sources.

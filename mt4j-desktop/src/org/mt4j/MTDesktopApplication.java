@@ -97,16 +97,6 @@ public abstract class MTDesktopApplication extends MTApplication {
 	 * @param showSettingsMenu show settings menu
 	 */
 	public static void initialize(String classToInstantiate, boolean showSettingsMenu){
-//		//Initialize Loggin facilities  - IMPORTANT TO DO THIS ASAP!//////
-//		MTLoggerFactory.setLoggerProvider(new Log4jLogger()); //FIXME TEST
-////		MTLoggerFactory.setLoggerProvider(new JavaLogger()); //FIXME TEST
-//		logger = MTLoggerFactory.getLogger(MTApplication.class.getName());
-//		logger.setLevel(ILogger.INFO);
-//		/////////////////////////////////////////////////////////////////
-		
-//		logger.debug(classToInstantiate + " is the class instatiated by PApplet class.");
-		 
-		//FIXME TEST
 		if (showSettingsMenu){
 			settingsLoadedFromFile = true;
 			SettingsMenu menu = new SettingsMenu(classToInstantiate);
@@ -223,14 +213,6 @@ public abstract class MTDesktopApplication extends MTApplication {
 		
 		//TOGGLES ALWAYS ON TOP MODE
 		//this.frame.setAlwaysOnTop(true);
-		
-//		//INIT LOGGING /////////////
-//		MTLoggerFactory.setLoggerProvider(new Log4jLogger()); //FIXME TEST
-////		MTLoggerFactory.setLoggerProvider(new JavaLogger()); //FIXME TEST
-//		logger = MTLoggerFactory.getLogger(MTApplication.class.getName());
-//		logger.setLevel(ILogger.INFO);
-//		logger.debug("-> setup called");
-		////////////////////
 		
 		//Add default font factories /////////////
 		//Register default font factories
@@ -351,7 +333,6 @@ public abstract class MTDesktopApplication extends MTApplication {
 	
 
 	protected void loadGL(){
-		//FIXME TEST!!
 		String version = ((PGraphicsOpenGL)g).gl.glGetString(GL.GL_VERSION);
 		logger.info("OpenGL Version: " + version);
         int major = Integer.parseInt("" + version.charAt(0));

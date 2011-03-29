@@ -134,11 +134,7 @@ public class ClusterManager {
 	 * @return the clusters
 	 */
 	public Cluster[] getClusters(){
-		Cluster[] objects =  new Cluster[childObjects.size()];
-		for (int i = 0; i < childObjects.size(); i++) {
-			objects[i] = childObjects.get(i);
-		}
-		return objects;
+		return childObjects.toArray(new Cluster[childObjects.size()]);
 	}
 	
 	
