@@ -69,3 +69,9 @@ special, incidental, punitive and/or consequential.
 This disclaimer of liability constitutes an essential and material term of 
 this agreement. If you do not or cannot accept this, or if it is
 unenforceable in your jurisdiction, then you may not use the Software.
+
+References:
+-----------
+This application uses the Processing library.
+See http://Processing.org
+for more information see the source code.
