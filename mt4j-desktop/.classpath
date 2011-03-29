@@ -7,7 +7,6 @@
 	<classpathentry kind="lib" path="lib/GlulogicMT.jar"/>
 	<classpathentry kind="lib" path="lib/junit-4.8.2.jar"/>
 	<classpathentry kind="lib" path="lib/mri.jar"/>
-	<classpathentry kind="lib" path="lib/muito_blobtracking.jar"/>
 	<classpathentry kind="lib" path="lib/batik/batik-anim.jar"/>
 	<classpathentry kind="lib" path="lib/batik/batik-awt-util.jar"/>
 	<classpathentry kind="lib" path="lib/batik/batik-bridge.jar"/>
@@ -48,5 +47,7 @@
 	<classpathentry kind="lib" path="lib/jogl/gluegen-rt.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/processing-core"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/processing-opengl"/>
+	<classpathentry kind="lib" path="lib/muito_blobtracking.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/MT4j TUIO4j InputSources"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

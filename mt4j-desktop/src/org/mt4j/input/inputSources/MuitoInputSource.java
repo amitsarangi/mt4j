@@ -34,7 +34,8 @@ import org.mt4j.util.MT4jSettings;
 
 
 /**
- * The Class MuitoInputSource.
+ * The Class MuitoInputSource. This is an input protocol used internally at the Fraunhofer Institute.
+ * 
  * @author Christopher Ruff
  */
 public class MuitoInputSource extends AbstractInputSource implements MotionProviderListener {
