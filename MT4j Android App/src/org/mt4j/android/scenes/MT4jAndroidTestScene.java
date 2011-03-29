@@ -47,6 +47,27 @@ public class MT4jAndroidTestScene extends AbstractScene {
 		//Add the textfield to our canvas
 		this.getCanvas().addChild(textField);
 		
+		/*
+		float cellWidth = 155;
+		float cellHeight = 40;
+		
+		MTList list = new MTList(mtApplication,0, 0, 157, 1* cellHeight + 7*3);
+		list.unregisterAllInputProcessors();
+		list.setAnchor(PositionAnchor.CENTER);
+		getCanvas().addChild(list);
+
+		final MTListCell cell = new MTListCell(mtApplication, cellWidth, cellHeight);
+		cell.setChildClip(null); //FIXME TEST, no clipping for performance!
+		cell.setFillColor(MTColor.YELLOW);
+		list.addListElement(cell);
+		
+		final MTListCell cell2 = new MTListCell(mtApplication, cellWidth, cellHeight);
+		cell2.setChildClip(null); //FIXME TEST, no clipping for performance!
+		cell2.setFillColor(MTColor.BLUE);
+		list.addListElement(cell2);
+		
+		//cell.destroy();
+		*/
 	}
 
 }
