@@ -6,8 +6,8 @@
 	<classpathentry kind="lib" path="lib/ani.jar"/>
 	<classpathentry kind="lib" path="lib/batik-css.jar"/>
 	<classpathentry kind="lib" path="lib/xml-apis-ext.jar"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/processing-core"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/processing-opengl"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="/mt4j-desktop/lib/jogl/opengl.jar"/>
+	<classpathentry kind="lib" path="/mt4j-desktop/lib/core.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
