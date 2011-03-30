@@ -126,6 +126,8 @@ ToDo list:
 
 
 -> Gestures/Input
+- hold&drag gesture
+- 2/3 finger tap gesture
 - differentiate between manipulation s and gestures? (1 difference is: eg. flick is a gesture, drag a manipulation, we have to wait if it is a flick -> if not switch to drag but start drag from the 1st event, not resume at current)
 - support Linux HID touch
 - add ability in component processors to get informed of other cursors, not from the component?

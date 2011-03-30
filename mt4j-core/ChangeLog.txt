@@ -1,4 +1,15 @@
 Change log for MT4j - Multi-Touch for Java
+=== Version 0.98 (30/3/2011): ===
+=== Input: ===
+
+=== Components: ===
+
+jogl.jar really in core? not in desktop?
+
+=== Examples: ===
+
+=== Other: ===
+
 
 === Version 0.95 (08/13/2010): ===
 === Input: ===
