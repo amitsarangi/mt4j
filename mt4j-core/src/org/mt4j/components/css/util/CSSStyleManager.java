@@ -15,7 +15,6 @@ import org.mt4j.util.MTColor;
 import org.mt4j.util.font.FontManager;
 import org.mt4j.util.font.IFont;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class CSSStyleManager.
  */
