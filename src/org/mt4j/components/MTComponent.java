@@ -1874,7 +1874,8 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 				i--;//If we removed the comp from this (same parent) we have to decrease the index
 				sameParent = true;
 			}
-			i = (i<0)? 0 : i; //ensure i > 0
+//			i = (i<0)? 0 : i; //ensure i > 0
+			i = Math.max(0, Math.min(childComponents.size(), i));
 		}
 		tangibleComp.setParent(this);
 		childComponents.add(i, tangibleComp);
