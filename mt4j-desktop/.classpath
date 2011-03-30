@@ -34,11 +34,6 @@
 	<classpathentry kind="lib" path="examples/advanced/modestMapsMT/lib/modestMaps.jar"/>
 	<classpathentry kind="lib" path="examples/advanced/physics/lib/jbox2d.jar"/>
 	<classpathentry kind="lib" path="examples/advanced/water/lib/waterScene.jar"/>
-	<classpathentry kind="lib" path="/mt4j-core/lib/jogl.jar">
-		<attributes>
-			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="mt4j-desktop"/>
-		</attributes>
-	</classpathentry>
 	<classpathentry combineaccessrules="false" kind="src" path="/mt4j-core"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="/mt4j-core/lib/batik-css.jar"/>
@@ -49,5 +44,6 @@
 	<classpathentry kind="lib" path="lib/tuio/tuio4jinput.jar"/>
 	<classpathentry kind="lib" path="lib/core.jar"/>
 	<classpathentry kind="lib" path="lib/jogl/opengl.jar"/>
+	<classpathentry kind="lib" path="lib/jogl/jogl.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
