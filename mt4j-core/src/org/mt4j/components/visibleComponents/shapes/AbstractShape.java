@@ -17,7 +17,7 @@
  ***********************************************************************/
 package org.mt4j.components.visibleComponents.shapes;
 
-import org.mt4j.MTApplication;
+import org.mt4j.AbstractMTApplication;
 import org.mt4j.components.MTComponent;
 import org.mt4j.components.TransformSpace;
 import org.mt4j.components.bounds.IBoundingShape;
@@ -568,7 +568,7 @@ public abstract class AbstractShape extends AbstractVisibleComponent implements 
 			if (!useVBOs){
 				this.useVBOs = useVBOs;
 			}else{
-				if (this.getRenderer() instanceof MTApplication && ((MTApplication) this.getRenderer()).isGL20Available()) {
+				if (this.getRenderer() instanceof AbstractMTApplication && ((AbstractMTApplication) this.getRenderer()).isGL20Available()) {
 					this.useVBOs = useVBOs;
 				}
 			}

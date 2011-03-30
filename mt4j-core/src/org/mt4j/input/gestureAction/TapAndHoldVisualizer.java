@@ -17,7 +17,7 @@
  ***********************************************************************/
 package org.mt4j.input.gestureAction;
 
-import org.mt4j.MTApplication;
+import org.mt4j.AbstractMTApplication;
 import org.mt4j.components.MTComponent;
 import org.mt4j.components.interfaces.IMTController;
 import org.mt4j.components.visibleComponents.shapes.MTEllipse;
@@ -40,7 +40,7 @@ import processing.core.PApplet;
 public class TapAndHoldVisualizer implements IGestureEventListener {
 	
 	/** The app. */
-	private MTApplication app;
+	private AbstractMTApplication app;
 	
 	/** The parent. */
 	private MTComponent parent;
@@ -58,7 +58,7 @@ public class TapAndHoldVisualizer implements IGestureEventListener {
 	 * @param app the app
 	 * @param parent the parent
 	 */
-	public TapAndHoldVisualizer(MTApplication app, MTComponent parent) {
+	public TapAndHoldVisualizer(AbstractMTApplication app, MTComponent parent) {
 		super();
 		this.app = app;
 		this.parent = parent;

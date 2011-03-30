@@ -20,7 +20,7 @@ package org.mt4j.components.visibleComponents.widgets;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.mt4j.MTApplication;
+import org.mt4j.AbstractMTApplication;
 import org.mt4j.components.TransformSpace;
 import org.mt4j.components.clipping.Clip;
 import org.mt4j.components.css.style.CSSFont;
@@ -139,7 +139,7 @@ public class MTTextArea extends MTRectangle implements ITextInputListener, Compa
      * @param pApplet the applet
      * @param font the font
      */
-	public MTTextArea(MTApplication pApplet, CSSFont font) {
+	public MTTextArea(AbstractMTApplication pApplet, CSSFont font) {
 		this(pApplet, FontManager.getInstance().getDefaultFont(pApplet));
 		this.getCssHelper().getPrivateStyleSheets().add(new CSSStyle(font,pApplet));
 	}
@@ -263,7 +263,7 @@ public class MTTextArea extends MTRectangle implements ITextInputListener, Compa
 		this.setAnchor(prevAnchor);
 	}
 	
-	public MTTextArea(MTApplication app) {
+	public MTTextArea(AbstractMTApplication app) {
 		this(app, app.getCssStyleManager().getDefaultFont(app));
 	}
 	
@@ -1277,8 +1277,8 @@ public class MTTextArea extends MTRectangle implements ITextInputListener, Compa
 	protected void applyStyleSheetCustom(CSSStyle virtualStyleSheet) {
 		super.applyStyleSheetCustom(virtualStyleSheet);
 
-		if (this.getRenderer() instanceof MTApplication) {
-			MTApplication app = (MTApplication) this.getRenderer();
+		if (this.getRenderer() instanceof AbstractMTApplication) {
+			AbstractMTApplication app = (AbstractMTApplication) this.getRenderer();
 			if (!virtualStyleSheet.getFont().equals(
 					app.getCssStyleManager().getDefaultFont(app))
 					&& !this.isIgnoreCSSFont()) {

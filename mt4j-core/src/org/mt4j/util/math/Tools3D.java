@@ -24,7 +24,7 @@ import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.StringTokenizer;
 
-import org.mt4j.MTApplication;
+import org.mt4j.AbstractMTApplication;
 import org.mt4j.components.interfaces.IMTComponent3D;
 import org.mt4j.components.visibleComponents.StyleInfo;
 import org.mt4j.components.visibleComponents.shapes.AbstractShape;
@@ -508,7 +508,7 @@ public class Tools3D {
 		case MT4jSettings.OPENGL_MODE:
 //			GL gl = ((PGraphicsOpenGL)pa.g).gl; 
 			GL10 gl = GraphicsUtil.getGL(); 
-			gl.glDepthFunc(javax.media.opengl.GL.GL_ALWAYS); //turn off Z buffering
+			gl.glDepthFunc(GL10.GL_ALWAYS); //turn off Z buffering
 			//reset to the default camera
 			pa.camera(); 
 			break;
@@ -565,7 +565,7 @@ public class Tools3D {
 				plus.glPushAttrib(GL10.GL_DEPTH_BUFFER_BIT);//FIXME TEST	
 			}
 //			gl.glPushAttrib(GL10.GL_DEPTH_BUFFER_BIT);//FIXME TEST
-			gl.glDepthFunc(javax.media.opengl.GL.GL_ALWAYS); //turn off Z buffering
+			gl.glDepthFunc(GL10.GL_ALWAYS); //turn off Z buffering
 			break;
 		case MT4jSettings.P3D_MODE:
 			//FIXME how to handle platform independent?
@@ -1147,7 +1147,7 @@ public class Tools3D {
 	 * @param z
 	 * @return
 	 */
-	public static Vector3D projectPointToPlaneInPerspectiveMode(Vector3D point,IFrustum frustum,float z,MTApplication mtApp)
+	public static Vector3D projectPointToPlaneInPerspectiveMode(Vector3D point,IFrustum frustum,float z,AbstractMTApplication mtApp)
 	{
 		float heightOfPlaneAtZ = frustum.getHeightOfPlane(z);
 		float widthOfPlaneAtZ = frustum.getWidthOfPlane(z);

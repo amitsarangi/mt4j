@@ -1,6 +1,6 @@
 package org.mt4j.util.animation.ani;
 
-import org.mt4j.MTApplication;
+import org.mt4j.AbstractMTApplication;
 import org.mt4j.util.animation.AbstractAnimation;
 import org.mt4j.util.animation.AnimationEvent;
 
@@ -72,7 +72,7 @@ public class AniAnimation extends AbstractAnimation /*implements AniConstants*/{
 	}
 	
 	
-	public static void init(MTApplication pApplet){
+	public static void init(AbstractMTApplication pApplet){
 		Ani.init(pApplet);
 	}
 	

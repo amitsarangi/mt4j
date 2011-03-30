@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.mt4j.MTApplication;
+import org.mt4j.AbstractMTApplication;
 import org.mt4j.input.inputProcessors.globalProcessors.AbstractGlobalInputProcessor;
 import org.mt4j.input.inputSources.AbstractInputSource;
 import org.mt4j.input.inputSources.IinputSourceListener;
@@ -57,7 +57,7 @@ public class InputManager {
 	private Map<AbstractGlobalInputProcessor, Iscene> inputProcessorsToScene;
 	
 	/** The pa. */
-	protected MTApplication app;
+	protected AbstractMTApplication app;
 	
 	
 	/**
@@ -65,7 +65,7 @@ public class InputManager {
 	 * 
 	 * @param pa the processing context
 	 */
-	public InputManager(MTApplication pa) {
+	public InputManager(AbstractMTApplication pa) {
 		this(pa, true);
 	}
 	
@@ -75,7 +75,7 @@ public class InputManager {
 	 * 
 	 * @param pa the processing context
 	 */
-	public InputManager(MTApplication pa, boolean registerDefaultSources) {
+	public InputManager(AbstractMTApplication pa, boolean registerDefaultSources) {
 		super();
 		this.registeredInputSources	= new ArrayList<AbstractInputSource>();
 		this.inputProcessorsToScene = new HashMap<AbstractGlobalInputProcessor, Iscene>();

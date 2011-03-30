@@ -21,7 +21,7 @@ package org.mt4j.input.inputSources;
 import java.util.ArrayList;
 import java.util.NoSuchElementException;
 
-import org.mt4j.MTApplication;
+import org.mt4j.AbstractMTApplication;
 import org.mt4j.input.inputData.MTInputEvent;
 import org.mt4j.sceneManagement.IPreDrawAction;
 import org.mt4j.util.ArrayDeque;
@@ -41,7 +41,7 @@ public abstract class AbstractInputSource implements IPreDrawAction {
 	/** The event queue. */
 	private ArrayDeque<MTInputEvent> eventQueue;
 	
-	private MTApplication app;
+	private AbstractMTApplication app;
 	
 	private ArrayList<IinputSourceListener> inputProcessorsToFireTo;
 	
@@ -50,7 +50,7 @@ public abstract class AbstractInputSource implements IPreDrawAction {
 	 *
 	 * @param mtApp the mt app
 	 */
-	public AbstractInputSource(MTApplication mtApp) {
+	public AbstractInputSource(AbstractMTApplication mtApp) {
 		this.inputListeners = new ArrayList<IinputSourceListener>();
 		this.eventQueue 	= new ArrayDeque<MTInputEvent>(20);
 		

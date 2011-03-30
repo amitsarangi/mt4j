@@ -19,7 +19,7 @@ package org.mt4j.input.inputProcessors.componentProcessors.tapAndHoldProcessor;
 
 import java.util.List;
 
-import org.mt4j.MTApplication;
+import org.mt4j.AbstractMTApplication;
 import org.mt4j.components.MTCanvas;
 import org.mt4j.components.interfaces.IMTComponent3D;
 import org.mt4j.input.inputData.AbstractCursorInputEvt;
@@ -43,7 +43,7 @@ import org.mt4j.util.math.Vector3D;
 public class TapAndHoldProcessor extends AbstractCursorProcessor implements IPreDrawAction{
 	
 	/** The applet. */
-	private MTApplication app;
+	private AbstractMTApplication app;
 	
 	/** The max finger up dist. */
 	private float maxFingerUpDist;
@@ -67,11 +67,11 @@ public class TapAndHoldProcessor extends AbstractCursorProcessor implements IPre
 	 * Instantiates a new tap processor.
 	 * @param pa the pa
 	 */
-	public TapAndHoldProcessor(MTApplication pa) {
+	public TapAndHoldProcessor(AbstractMTApplication pa) {
 		this(pa, 1800, false);
 	}
 	
-	public TapAndHoldProcessor(MTApplication pa, int duration){
+	public TapAndHoldProcessor(AbstractMTApplication pa, int duration){
 		this(pa, duration, false);
 	}
 	
@@ -81,7 +81,7 @@ public class TapAndHoldProcessor extends AbstractCursorProcessor implements IPre
 	 * @param duration the duration
 	 * @param stopPropatation 
 	 */
-	public TapAndHoldProcessor(MTApplication pa, int duration, boolean stopPropatation) {
+	public TapAndHoldProcessor(AbstractMTApplication pa, int duration, boolean stopPropatation) {
 		super(stopPropatation);
 		this.app = pa;
 		

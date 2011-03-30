@@ -19,13 +19,11 @@ package org.mt4j.util.math;
 
 import java.nio.FloatBuffer;
 
-
 import org.mt4j.util.GraphicsUtil;
 import org.mt4j.util.opengl.GL11;
+import org.mt4j.util.opengl.GL11Plus;
 
 import processing.core.PApplet;
-
-import com.sun.opengl.util.BufferUtil;
 
 /**
  * Methods to build VBOs and get their binding names	(Ids).
@@ -56,7 +54,7 @@ public class ToolsVBO {
 			gl.glGenBuffers(1, vboVertices, 0);  // Get A Valid Name
 			gl.glBindBuffer(GL11.GL_ARRAY_BUFFER, vboVertices[0]);  // Bind The Buffer
 			// Load The Data
-			gl.glBufferData(GL11.GL_ARRAY_BUFFER, vertexCount * 3 * BufferUtil.SIZEOF_FLOAT, vertexBuffer, GL11.GL_STATIC_DRAW);
+			gl.glBufferData(GL11.GL_ARRAY_BUFFER, vertexCount * 3 * (int)GL11Plus.SIZEOF_FLOAT, vertexBuffer, GL11.GL_STATIC_DRAW);
 			//Unbind VBOs 
 			gl.glBindBuffer(GL11.GL_ARRAY_BUFFER, 0);
 			gl.glBindBuffer(GL11.GL_ELEMENT_ARRAY_BUFFER, 0);
@@ -76,7 +74,7 @@ public class ToolsVBO {
 		GL11 gl = GraphicsUtil.getGL11();
 		gl.glBindBuffer(GL11.GL_ARRAY_BUFFER, vboName);  // Bind The Buffer
 		// Load The Data
-		gl.glBufferData(GL11.GL_ARRAY_BUFFER, vertexCount * 3 * BufferUtil.SIZEOF_FLOAT, vertexBuffer, GL11.GL_STATIC_DRAW);
+		gl.glBufferData(GL11.GL_ARRAY_BUFFER, vertexCount * 3 * (int)GL11Plus.SIZEOF_FLOAT, vertexBuffer, GL11.GL_STATIC_DRAW);
 		//Unbind VBOs 
 		gl.glBindBuffer(GL11.GL_ARRAY_BUFFER, 0);
 		gl.glBindBuffer(GL11.GL_ELEMENT_ARRAY_BUFFER, 0);
@@ -98,7 +96,7 @@ public class ToolsVBO {
 			gl.glGenBuffers(1, vboTexCoords, 0);  // Get A Valid Name
 			gl.glBindBuffer(GL11.GL_ARRAY_BUFFER, vboTexCoords[0]); // Bind The Buffer
 			// Load The Data
-			gl.glBufferData(GL11.GL_ARRAY_BUFFER, vertexCount * 2 * BufferUtil.SIZEOF_FLOAT, textureBuffer, GL11.GL_STATIC_DRAW);
+			gl.glBufferData(GL11.GL_ARRAY_BUFFER, vertexCount * 2 * (int)GL11Plus.SIZEOF_FLOAT, textureBuffer, GL11.GL_STATIC_DRAW);
 			//Unbind VBOs 
 			gl.glBindBuffer(GL11.GL_ARRAY_BUFFER, 0);
 			gl.glBindBuffer(GL11.GL_ELEMENT_ARRAY_BUFFER, 0);
@@ -118,7 +116,7 @@ public class ToolsVBO {
 		GL11 gl = GraphicsUtil.getGL11();
 			gl.glBindBuffer(GL11.GL_ARRAY_BUFFER, vboName); // Bind The Buffer
 			// Load The Data
-			gl.glBufferData(GL11.GL_ARRAY_BUFFER, vertexCount * 2 * BufferUtil.SIZEOF_FLOAT, textureBuffer, GL11.GL_STATIC_DRAW);
+			gl.glBufferData(GL11.GL_ARRAY_BUFFER, vertexCount * 2 * (int)GL11Plus.SIZEOF_FLOAT, textureBuffer, GL11.GL_STATIC_DRAW);
 			//Unbind VBOs 
 			gl.glBindBuffer(GL11.GL_ARRAY_BUFFER, 0);
 			gl.glBindBuffer(GL11.GL_ELEMENT_ARRAY_BUFFER, 0);
@@ -140,7 +138,7 @@ public class ToolsVBO {
 			gl.glGenBuffers(1, vboColor, 0);  // Get A Valid Name
 			gl.glBindBuffer(GL11.GL_ARRAY_BUFFER, vboColor[0]); // Bind The Buffer
 			// Load The Data
-			gl.glBufferData(GL11.GL_ARRAY_BUFFER, vertexCount * 4 * BufferUtil.SIZEOF_FLOAT, colorBuffer, GL11.GL_STATIC_DRAW);
+			gl.glBufferData(GL11.GL_ARRAY_BUFFER, vertexCount * 4 * (int)GL11Plus.SIZEOF_FLOAT, colorBuffer, GL11.GL_STATIC_DRAW);
 			//Unbind VBOs 
 			gl.glBindBuffer(GL11.GL_ARRAY_BUFFER, 0);
 			gl.glBindBuffer(GL11.GL_ELEMENT_ARRAY_BUFFER, 0);
@@ -160,7 +158,7 @@ public class ToolsVBO {
 		GL11 gl = GraphicsUtil.getGL11();
 			gl.glBindBuffer(GL11.GL_ARRAY_BUFFER, vboName); // Bind The Buffer
 			// Load The Data
-			gl.glBufferData(GL11.GL_ARRAY_BUFFER, vertexCount * 4 * BufferUtil.SIZEOF_FLOAT, colorBuffer, GL11.GL_STATIC_DRAW);
+			gl.glBufferData(GL11.GL_ARRAY_BUFFER, vertexCount * 4 * (int)GL11Plus.SIZEOF_FLOAT, colorBuffer, GL11.GL_STATIC_DRAW);
 			//Unbind VBOs 
 			gl.glBindBuffer(GL11.GL_ARRAY_BUFFER, 0);
 			gl.glBindBuffer(GL11.GL_ELEMENT_ARRAY_BUFFER, 0);
@@ -182,7 +180,7 @@ public class ToolsVBO {
 			gl.glGenBuffers(1, vboStrokeColor, 0);  // Get A Valid Name
 			gl.glBindBuffer(GL11.GL_ARRAY_BUFFER, vboStrokeColor[0]); // Bind The Buffer
 			// Load The Data
-			gl.glBufferData(GL11.GL_ARRAY_BUFFER,vertexCount * 4 * BufferUtil.SIZEOF_FLOAT, strokeColBuffer, GL11.GL_STATIC_DRAW);
+			gl.glBufferData(GL11.GL_ARRAY_BUFFER,vertexCount * 4 * (int)GL11Plus.SIZEOF_FLOAT, strokeColBuffer, GL11.GL_STATIC_DRAW);
 			//Unbind VBOs 
 			gl.glBindBuffer(GL11.GL_ARRAY_BUFFER, 0);
 			gl.glBindBuffer(GL11.GL_ELEMENT_ARRAY_BUFFER, 0);
@@ -202,7 +200,7 @@ public class ToolsVBO {
 		GL11 gl = GraphicsUtil.getGL11();
 			gl.glBindBuffer(GL11.GL_ARRAY_BUFFER, vboName); // Bind The Buffer
 			// Load The Data
-			gl.glBufferData(GL11.GL_ARRAY_BUFFER,vertexCount * 4 * BufferUtil.SIZEOF_FLOAT, strokeColBuffer, GL11.GL_STATIC_DRAW);
+			gl.glBufferData(GL11.GL_ARRAY_BUFFER,vertexCount * 4 * (int)GL11Plus.SIZEOF_FLOAT, strokeColBuffer, GL11.GL_STATIC_DRAW);
 			//Unbind VBOs 
 			gl.glBindBuffer(GL11.GL_ARRAY_BUFFER, 0);
 			gl.glBindBuffer(GL11.GL_ELEMENT_ARRAY_BUFFER, 0);
@@ -225,7 +223,7 @@ public class ToolsVBO {
 			gl.glGenBuffers(1, vboNormals, 0);  // Get A Valid Name
 			gl.glBindBuffer(GL11.GL_ARRAY_BUFFER, vboNormals[0]);  // Bind The Buffer
 			// Load The Data
-			gl.glBufferData(GL11.GL_ARRAY_BUFFER, normalsCount * 3 * BufferUtil.SIZEOF_FLOAT, normalsBuffer, GL11.GL_STATIC_DRAW);
+			gl.glBufferData(GL11.GL_ARRAY_BUFFER, normalsCount * 3 * (int)GL11Plus.SIZEOF_FLOAT, normalsBuffer, GL11.GL_STATIC_DRAW);
 			//Unbind VBOs 
 			gl.glBindBuffer(GL11.GL_ARRAY_BUFFER, 0);
 			gl.glBindBuffer(GL11.GL_ELEMENT_ARRAY_BUFFER, 0);
@@ -246,7 +244,7 @@ public class ToolsVBO {
 		GL11 gl = GraphicsUtil.getGL11();
 		gl.glBindBuffer(GL11.GL_ARRAY_BUFFER, vboName);  // Bind The Buffer
 		// Load The Data
-		gl.glBufferData(GL11.GL_ARRAY_BUFFER, normalsCount * 3 * BufferUtil.SIZEOF_FLOAT, normalsBuffer, GL11.GL_STATIC_DRAW);
+		gl.glBufferData(GL11.GL_ARRAY_BUFFER, normalsCount * 3 * (int)GL11Plus.SIZEOF_FLOAT, normalsBuffer, GL11.GL_STATIC_DRAW);
 		//Unbind VBOs 
 		gl.glBindBuffer(GL11.GL_ARRAY_BUFFER, 0);
 		gl.glBindBuffer(GL11.GL_ELEMENT_ARRAY_BUFFER, 0);

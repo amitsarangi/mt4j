@@ -19,9 +19,6 @@ package org.mt4j.util.opengl;
 
 import java.util.Stack;
 
-import javax.media.opengl.GL;
-import javax.media.opengl.glu.GLU;
-
 import org.mt4j.util.logging.ILogger;
 import org.mt4j.util.logging.MTLoggerFactory;
 
@@ -42,7 +39,7 @@ public class GLFboStack{
 	}
 	
 	/** The gl. */
-	public GL gl;
+	public GL20 gl;
 	
 	/** The current fbo. */
 	protected int currentFBO;
@@ -57,7 +54,7 @@ public class GLFboStack{
 	 * Instantiates a new gL fbo stack.
 	 * @param gl the gl
 	 */
-	private GLFboStack(GL gl){
+	private GLFboStack(GL20 gl){
 		this.gl = gl;
 		fboNameStack = new Stack<Integer>();
 		currentFBO = 0;
@@ -68,9 +65,10 @@ public class GLFboStack{
 	 *
 	 * @return single instance of GLFboStack
 	 */
-	public static GLFboStack getInstance(){
+	public static GLFboStack getInstance(GL20 gl){
 		if (instance == null){
-			instance = new GLFboStack(GLU.getCurrentGL());
+//			instance = new GLFboStack(GLU.getCurrentGL());
+			instance = new GLFboStack(gl);
 			return instance;
 		}else{
 			return instance;
@@ -91,7 +89,7 @@ public class GLFboStack{
 	 */
 	public void useFBO(int fbo){
 		currentFBO = fbo;
-		gl.glBindFramebufferEXT(GL.GL_FRAMEBUFFER_EXT, currentFBO);
+		gl.glBindFramebuffer(GL20.GL_FRAMEBUFFER, currentFBO);
 	}
 
 	/**
@@ -129,7 +127,7 @@ public class GLFboStack{
 			logger.error("Trying to pop() from an empty framebuffer stack!"); //TODO -> just bind 0 !?
 		}else{
 			currentFBO = fboNameStack.pop();
-			gl.glBindFramebufferEXT(GL.GL_FRAMEBUFFER_EXT, currentFBO);
+			gl.glBindFramebuffer(GL20.GL_FRAMEBUFFER, currentFBO);
 		}
 	}
 	

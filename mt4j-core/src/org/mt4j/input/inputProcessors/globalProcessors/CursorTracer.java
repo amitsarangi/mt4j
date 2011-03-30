@@ -20,7 +20,7 @@ package org.mt4j.input.inputProcessors.globalProcessors;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.mt4j.MTApplication;
+import org.mt4j.AbstractMTApplication;
 import org.mt4j.components.MTComponent;
 import org.mt4j.components.bounds.IBoundingShape;
 import org.mt4j.components.visibleComponents.shapes.AbstractShape;
@@ -45,7 +45,7 @@ import processing.core.PApplet;
 public class CursorTracer extends AbstractGlobalInputProcessor{
 	
 	/** The app. */
-	private MTApplication app;
+	private AbstractMTApplication app;
 	
 	/** The cursor id to display shape. */
 	private Map<InputCursor, AbstractShape>cursorIDToDisplayShape;
@@ -65,7 +65,7 @@ public class CursorTracer extends AbstractGlobalInputProcessor{
 	 * @param mtApp the mt app
 	 * @param currentScene the current scene
 	 */
-	public CursorTracer(MTApplication mtApp, Iscene currentScene){
+	public CursorTracer(AbstractMTApplication mtApp, Iscene currentScene){
 		this.app = mtApp;
 		this.scene = currentScene;
 		this.cursorIDToDisplayShape = new HashMap<InputCursor, AbstractShape>();

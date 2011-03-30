@@ -19,9 +19,7 @@ package org.mt4j.util.opengl;
 
 import java.nio.IntBuffer;
 
-import javax.media.opengl.GL;
-
-import org.mt4j.MTApplication;
+import org.mt4j.AbstractMTApplication;
 import org.mt4j.util.GraphicsUtil;
 import org.mt4j.util.math.ToolsBuffers;
 import org.mt4j.util.math.ToolsMath;
@@ -42,9 +40,9 @@ public class GLTexture extends PImage {
 	
 	public enum WRAP_MODE{
 		REPEAT(GL10.GL_REPEAT),
-		CLAMP(GL.GL_CLAMP),
+		CLAMP(GL11Plus.GL_CLAMP),
 		CLAMP_TO_EDGE(GL10.GL_CLAMP_TO_EDGE),
-		CLAMP_TO_BORDER(GL.GL_CLAMP_TO_BORDER);
+		CLAMP_TO_BORDER(GL11Plus.GL_CLAMP_TO_BORDER);
 		
 		private int glConstant;
         private WRAP_MODE(int glConstant) {
@@ -158,11 +156,11 @@ public class GLTexture extends PImage {
 	}
 	
 	public enum TEXTURE_TARGET{
-		TEXTURE_1D(GL.GL_TEXTURE_1D),
+		TEXTURE_1D(GL11Plus.GL_TEXTURE_1D),
 		
 		TEXTURE_2D(GL10.GL_TEXTURE_2D),
 		
-		RECTANGULAR(GL.GL_TEXTURE_RECTANGLE_ARB);
+		RECTANGULAR(GL11Plus.GL_TEXTURE_RECTANGLE_ARB);
 		
 		private int glConstant;
         private TEXTURE_TARGET(int glConstant) {
@@ -460,7 +458,7 @@ public class GLTexture extends PImage {
     	}
 
     	//FIXME TEST -> only init GL texture if in opengl thread!
-    	if (app instanceof MTApplication && ((MTApplication)app).isRenderThreadCurrent()) {
+    	if (app instanceof AbstractMTApplication && ((AbstractMTApplication)app).isRenderThreadCurrent()) {
 			setupGLTexture(width, height);
 		}
     }	
@@ -751,7 +749,7 @@ public class GLTexture extends PImage {
 
 		//      int glFormat = glTextureSettings.glType.getGLConstant();
 		
-		int glFormat 	= GL.GL_BGRA; 				//FIXME DONT HARDCODE!?
+		int glFormat 	= GL11Plus.GL_BGRA; 				//FIXME DONT HARDCODE!?
 		if (GraphicsUtil.isAndroid()){ 				//FIXME TEST -> opengl es /android doesent support BGRA!?
 			glFormat = GL10.GL_RGBA;
 		}
@@ -790,7 +788,7 @@ public class GLTexture extends PImage {
 
 		switch (glTextureSettings.target) {
 		case TEXTURE_1D:
-			if (glFormat == GL.GL_BGRA){ 
+			if (glFormat == GL11Plus.GL_BGRA){ 
 				glFormat = GL10.GL_RGBA;
 			}
 			if (gl instanceof GL11Plus) {
@@ -870,7 +868,7 @@ public class GLTexture extends PImage {
 			IntBuffer buff = ToolsBuffers.newIntBuffer(this.width * this.height); //FIXME WORKS WITH width != glWidth?? -> TEST!
 	        int textureTarget = this.glTextureSettings.target.getGLConstant();
 	        gl11Plus.glBindTexture(textureTarget, this.glTextureID[0]);
-	        gl11Plus.glGetTexImage(textureTarget, 0, GL.GL_BGRA, GL10.GL_UNSIGNED_BYTE, buff);
+	        gl11Plus.glGetTexImage(textureTarget, 0, GL11Plus.GL_BGRA, GL10.GL_UNSIGNED_BYTE, buff);
 	        gl11Plus.glBindTexture(textureTarget, 0);
 	        buff.get(pixels);
 		}
@@ -1311,8 +1309,8 @@ public class GLTexture extends PImage {
 	@Override
 	protected void finalize() throws Throwable {
 		//System.out.println("Finalizing GLTEXTURE - " + this);
-		if (this.app instanceof MTApplication) {
-			MTApplication mtApp = (MTApplication) this.app;
+		if (this.app instanceof AbstractMTApplication) {
+			AbstractMTApplication mtApp = (AbstractMTApplication) this.app;
 			mtApp.invokeLater(new Runnable() {
 				public void run() {
 					destroy();

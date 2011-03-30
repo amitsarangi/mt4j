@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
 
-import org.mt4j.MTApplication;
+import org.mt4j.AbstractMTApplication;
 import org.mt4j.components.css.style.CSSBackgroundPosition;
 import org.mt4j.components.css.style.CSSFont;
 import org.mt4j.components.css.style.CSSSelector;
@@ -51,7 +51,7 @@ public class CSSHandler implements DocumentHandler{
 	CSSFont currentFont = null;
 	
 	/** The app. */
-	MTApplication app = null;
+	AbstractMTApplication app = null;
 	
 	/** The default font size. */
 	float defaultFontSize = 16f;
@@ -62,7 +62,7 @@ public class CSSHandler implements DocumentHandler{
 	 * @param app the MTApplication
 	 * @param styles the List, to which the styles are added
 	 */
-	public CSSHandler(MTApplication app, List<CSSStyle> styles) {
+	public CSSHandler(AbstractMTApplication app, List<CSSStyle> styles) {
 		logger = MTLoggerFactory.getLogger(CSSHandler.class.getName());
 		this.styles = styles;
 		this.app = app;

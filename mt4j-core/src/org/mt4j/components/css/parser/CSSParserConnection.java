@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.batik.css.parser.Parser;
-import org.mt4j.MTApplication;
+import org.mt4j.AbstractMTApplication;
 import org.mt4j.components.css.style.CSSStyle;
 import org.w3c.css.sac.CSSException;
 import org.w3c.css.sac.InputSource;
@@ -38,16 +38,16 @@ public class CSSParserConnection {
 	 * @param source the source file
 	 * @param app the MTApplication
 	 */
-	public CSSParserConnection(String source, MTApplication app) {
+	public CSSParserConnection(String source, AbstractMTApplication app) {
 		
 		
 		
-		boolean exists_data = (new File("data" + MTApplication.separator + source)).exists();
+		boolean exists_data = (new File("data" + AbstractMTApplication.separator + source)).exists();
 		boolean exists_root =  (new File(source)).exists();
-		boolean exists_css = (new File("css" + MTApplication.separator + source)).exists();
+		boolean exists_css = (new File("css" + AbstractMTApplication.separator + source)).exists();
 		
-		if (exists_data && !exists_css) source = "data" + MTApplication.separator + source; 
-		if (exists_css) source = "css" + MTApplication.separator + source; 
+		if (exists_data && !exists_css) source = "data" + AbstractMTApplication.separator + source; 
+		if (exists_css) source = "css" + AbstractMTApplication.separator + source; 
 		
 		if (exists_css || exists_data || exists_root) {
 		
@@ -75,7 +75,7 @@ public class CSSParserConnection {
 	 * @param app the app
 	 * @param source the source
 	 */
-	private void loadStyles(MTApplication app, InputSource source) {
+	private void loadStyles(AbstractMTApplication app, InputSource source) {
 		List<CSSStyle> styles= new ArrayList<CSSStyle>();
 		cssh = new CSSHandler(app, styles);
 		pa = new Parser();
@@ -96,7 +96,7 @@ public class CSSParserConnection {
 	 * @param input the input
 	 * @param app the app
 	 */
-	public CSSParserConnection(InputStream input, MTApplication app) {
+	public CSSParserConnection(InputStream input, AbstractMTApplication app) {
 		if (input != null) {
 			InputStreamReader streamReader = new InputStreamReader(input);
 

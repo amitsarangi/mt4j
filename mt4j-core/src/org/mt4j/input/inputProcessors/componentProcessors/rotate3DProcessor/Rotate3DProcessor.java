@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.mt4j.MTApplication;
+import org.mt4j.AbstractMTApplication;
 import org.mt4j.components.MTCanvas;
 import org.mt4j.components.MTComponent;
 import org.mt4j.components.PickResult;
@@ -513,7 +513,7 @@ public class Rotate3DProcessor extends AbstractCursorProcessor {
 		{
 			IFrustum frustum = object.getViewingCamera().getFrustum();
 			//projiziere Punkt auf die Near Plane
-			point = Tools3D.projectPointToPlaneInPerspectiveMode(point, frustum, frustum.getZValueOfNearPlane(),(MTApplication)object.getRenderer());
+			point = Tools3D.projectPointToPlaneInPerspectiveMode(point, frustum, frustum.getZValueOfNearPlane(),(AbstractMTApplication)object.getRenderer());
 			return point;
 		}
 		

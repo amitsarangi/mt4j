@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.mt4j.MTApplication;
+import org.mt4j.AbstractMTApplication;
 import org.mt4j.components.MTComponent;
 import org.mt4j.components.StateChange;
 import org.mt4j.components.StateChangeEvent;
@@ -50,7 +50,7 @@ public class CSSHelper {
 	private CSSStyleManager cssStyleManager;
 	
 	/** The MTApplication. */
-	private MTApplication app;
+	private AbstractMTApplication app;
 	
 	/** The MTComponent. */
 	private MTComponent c;
@@ -61,7 +61,7 @@ public class CSSHelper {
 	 * @param c the MTComponent
 	 * @param a the MTApplication
 	 */
-	public CSSHelper(MTComponent c, MTApplication a) {
+	public CSSHelper(MTComponent c, AbstractMTApplication a) {
 		this.c = c;
 		this.app = a;
 		this.cssStyleManager = a.getCssStyleManager();
@@ -75,7 +75,7 @@ public class CSSHelper {
 	 * @param a the MTApplication
 	 * @param s the new private CSSStyle
 	 */
-	public CSSHelper(MTComponent c, MTApplication a, CSSStyle s) {
+	public CSSHelper(MTComponent c, AbstractMTApplication a, CSSStyle s) {
 		this(c,a);
 		this.getPrivateStyleSheets().add(s);
 		
@@ -89,7 +89,7 @@ public class CSSHelper {
 	 * @param a the MTApplication
 	 * @param s the list of private style sheets
 	 */
-	public CSSHelper(MTComponent c, MTApplication a, List<CSSStyle> s) {
+	public CSSHelper(MTComponent c, AbstractMTApplication a, List<CSSStyle> s) {
 		this(c,a);
 		this.getPrivateStyleSheets().addAll(s);
 	}

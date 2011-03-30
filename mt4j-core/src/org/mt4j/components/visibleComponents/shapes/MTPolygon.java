@@ -20,8 +20,6 @@ package org.mt4j.components.visibleComponents.shapes;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 
-import javax.media.opengl.GL;
-
 import org.mt4j.components.bounds.BoundingSphere;
 import org.mt4j.components.bounds.IBoundingShape;
 import org.mt4j.components.bounds.OrientedBoundingBox;
@@ -384,7 +382,7 @@ public class MTPolygon extends MTCSSStylableShape{
 			//DRAW //Draw with drawElements if geometry is indexed, else draw with drawArrays!
 			if (this.getGeometryInfo().isIndexed()){
 //				gl.glDrawElements(this.getFillDrawMode(), indexBuff.limit(), GL10.GL_UNSIGNED_SHORT, indexBuff);
-				gl.glDrawElements(this.getFillDrawMode(), indexBuff.capacity(), GL.GL_UNSIGNED_INT, indexBuff);
+				gl.glDrawElements(this.getFillDrawMode(), indexBuff.capacity(), GL11Plus.GL_UNSIGNED_INT, indexBuff);
 			}else{
 				gl.glDrawArrays(this.getFillDrawMode(), 0, vertBuff.capacity()/3);
 			}

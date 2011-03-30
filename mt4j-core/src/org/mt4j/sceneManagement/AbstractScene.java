@@ -19,7 +19,7 @@ package org.mt4j.sceneManagement;
 
 import java.util.Iterator;
 
-import org.mt4j.MTApplication;
+import org.mt4j.AbstractMTApplication;
 import org.mt4j.components.MTCanvas;
 import org.mt4j.input.inputProcessors.globalProcessors.AbstractGlobalInputProcessor;
 import org.mt4j.input.inputProcessors.globalProcessors.InputRetargeter;
@@ -59,7 +59,7 @@ public abstract class AbstractScene implements Iscene {
 	private MTCanvas mainCanvas;
 	
 	/** The mt application. */
-	private MTApplication mtApplication;
+	private AbstractMTApplication mtApplication;
 	
 	/** The name. */
 	private String name;
@@ -85,7 +85,7 @@ public abstract class AbstractScene implements Iscene {
 	 * @param mtApplication the mt application
 	 * @param name the name
 	 */
-	public AbstractScene(MTApplication mtApplication, String name) {
+	public AbstractScene(AbstractMTApplication mtApplication, String name) {
 		super();
 		this.name = name;
 		this.mtApplication = mtApplication;
@@ -263,7 +263,7 @@ public abstract class AbstractScene implements Iscene {
 	 * 
 	 * @return the mT application
 	 */
-	public MTApplication getMTApplication(){
+	public AbstractMTApplication getMTApplication(){
 		return this.mtApplication;
 	}
 

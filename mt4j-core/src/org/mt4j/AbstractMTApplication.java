@@ -74,7 +74,7 @@ import processing.core.PMatrix3D;
  * 
  * @author Christopher Ruff
  */
-public abstract class MTApplication extends PApplet implements IMTApplication{
+public abstract class AbstractMTApplication extends PApplet implements IMTApplication{
 	/** The Constant logger. */
 	protected static ILogger logger;
 	
@@ -235,7 +235,7 @@ public abstract class MTApplication extends PApplet implements IMTApplication{
 	 * It gets instantiated by the PApplet class via
 	 * java reflection.
 	 */
-	public MTApplication(){
+	public AbstractMTApplication(){
 		sceneList 		= new ArrayList<Iscene>();
 		currentScene 	= null;
 		animMgr 		= AnimationManager.getInstance();
@@ -256,9 +256,9 @@ public abstract class MTApplication extends PApplet implements IMTApplication{
 	
 	public void setOpenGLErrorReportingEnabled(boolean reportErros){
 		if (reportErros){
-			hint(MTApplication.ENABLE_OPENGL_ERROR_REPORT);
+			hint(AbstractMTApplication.ENABLE_OPENGL_ERROR_REPORT);
 		}else{
-			hint(MTApplication.DISABLE_OPENGL_ERROR_REPORT);
+			hint(AbstractMTApplication.DISABLE_OPENGL_ERROR_REPORT);
 		}
 	}
 	

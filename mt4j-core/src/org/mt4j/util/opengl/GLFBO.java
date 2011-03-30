@@ -21,9 +21,7 @@ import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.media.opengl.GL;
-
-import org.mt4j.MTApplication;
+import org.mt4j.AbstractMTApplication;
 import org.mt4j.util.GraphicsUtil;
 import org.mt4j.util.MT4jSettings;
 import org.mt4j.util.logging.ILogger;
@@ -126,7 +124,7 @@ public class GLFBO {
 		this.textures = new ArrayList<GLTexture>();
 		
 		//FIXME FBO STACK TEST!!
-		this.fboStack = GLFboStack.getInstance(); 
+		this.fboStack = GLFboStack.getInstance(gl); 
 		
 		this.initFBO();
 	}
@@ -146,7 +144,7 @@ public class GLFBO {
 		
 		if (this.isStencilBufferAttached() && GraphicsUtil.isDesktop()){
 			//THIS CREATES A FBO WITH A STENCIL BUFFER! HAS TO BE SUPPORTED ON THE PLATFORM!
-			gl.glRenderbufferStorage(GL20.GL_RENDERBUFFER, GL.GL_DEPTH24_STENCIL8_EXT, this.width, this.height);
+			gl.glRenderbufferStorage(GL20.GL_RENDERBUFFER, GL11Plus.GL_DEPTH24_STENCIL8_EXT, this.width, this.height);
 //			gl.glRenderbufferStorageEXT(GL.GL_RENDERBUFFER_EXT, GL.GL_DEPTH24_STENCIL8_EXT, this.width, this.height);
 		}else{
 			//Creates a fbo with a depth but without a stencil buffer
@@ -367,7 +365,7 @@ public class GLFBO {
 		
 		if (gl instanceof GL11Plus) {
 			GL11Plus gl11Plus = (GL11Plus) gl;
-			gl11Plus.glPushAttrib(GL.GL_VIEWPORT_BIT);
+			gl11Plus.glPushAttrib(GL11Plus.GL_VIEWPORT_BIT);
 		}
 		
 //		gl.glDrawBuffer(GL.GL_NONE);
@@ -404,7 +402,7 @@ public class GLFBO {
 	
 	protected void unBind() {
 		//gl.glBindRenderbufferEXT(GL.GL_RENDERBUFFER_EXT, 0);
-		gl.glBindFramebuffer(GL.GL_FRAMEBUFFER_EXT, 0);
+		gl.glBindFramebuffer(GL11Plus.GL_FRAMEBUFFER_EXT, 0);
 	}
 	
 	
@@ -445,8 +443,8 @@ public class GLFBO {
 	@Override
 	protected void finalize() throws Throwable {
 		logger.debug("Finalizing - " + this);
-		if (this.pa instanceof MTApplication) {
-			MTApplication mtApp = (MTApplication) this.pa;
+		if (this.pa instanceof AbstractMTApplication) {
+			AbstractMTApplication mtApp = (AbstractMTApplication) this.pa;
 			mtApp.invokeLater(new Runnable() {
 				public void run() {
 					destroy();
@@ -529,13 +527,13 @@ public class GLFBO {
 		case GL20.GL_FRAMEBUFFER_INCOMPLETE_DIMENSIONS:
 			doError(", has caused a GL_FRAMEBUFFER_INCOMPLETE_DIMENSIONS exception", fboID);
 			break;
-		case GL.GL_FRAMEBUFFER_INCOMPLETE_DRAW_BUFFER_EXT:
+		case GL11Plus.GL_FRAMEBUFFER_INCOMPLETE_DRAW_BUFFER_EXT:
 			doError(", has caused a GL_FRAMEBUFFER_INCOMPLETE_DRAW_BUFFER_EXT exception", fboID);
 			break;
-		case GL.GL_FRAMEBUFFER_INCOMPLETE_FORMATS_EXT:
+		case GL11Plus.GL_FRAMEBUFFER_INCOMPLETE_FORMATS_EXT:
 			doError(", has caused a GL_FRAMEBUFFER_INCOMPLETE_FORMATS_EXT exception", fboID);
 			break;
-		case GL.GL_FRAMEBUFFER_INCOMPLETE_READ_BUFFER_EXT:
+		case GL11Plus.GL_FRAMEBUFFER_INCOMPLETE_READ_BUFFER_EXT:
 			doError(", has caused a GL_FRAMEBUFFER_INCOMPLETE_READ_BUFFER_EXT exception", fboID);
 			break;
 		case GL20.GL_FRAMEBUFFER_UNSUPPORTED:

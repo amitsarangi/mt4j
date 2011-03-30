@@ -17,7 +17,7 @@
  ***********************************************************************/
 package org.mt4j.components.visibleComponents.shapes;
 
-import org.mt4j.MTApplication;
+import org.mt4j.AbstractMTApplication;
 import org.mt4j.components.TransformSpace;
 import org.mt4j.components.bounds.BoundsZPlaneRectangle;
 import org.mt4j.components.bounds.IBoundingShape;
@@ -88,8 +88,8 @@ public class MTRectangle extends MTPolygon {
 		//To avoid errors if this is created in non opengl thread so the gl texture wont be created correctly when setting setTexture
 		this.setUseDirectGL(false);
 
-		if (applet instanceof MTApplication) {
-			MTApplication app = (MTApplication) applet;
+		if (applet instanceof AbstractMTApplication) {
+			AbstractMTApplication app = (AbstractMTApplication) applet;
 			
 			if (MT4jSettings.getInstance().isOpenGlMode()){
 				if (app.isRenderThreadCurrent()){

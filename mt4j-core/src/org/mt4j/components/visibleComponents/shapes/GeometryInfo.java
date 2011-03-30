@@ -20,7 +20,7 @@ package org.mt4j.components.visibleComponents.shapes;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 
-import org.mt4j.MTApplication;
+import org.mt4j.AbstractMTApplication;
 import org.mt4j.components.visibleComponents.StyleInfo;
 import org.mt4j.util.GraphicsUtil;
 import org.mt4j.util.MT4jSettings;
@@ -1100,8 +1100,8 @@ public class GeometryInfo {
 	@Override
 	protected void finalize() throws Throwable {
 		//System.out.println("Finalizing GLTEXTURE - " + this);
-		if (this.r instanceof MTApplication) {
-			MTApplication mtApp = (MTApplication) this.r;
+		if (this.r instanceof AbstractMTApplication) {
+			AbstractMTApplication mtApp = (AbstractMTApplication) this.r;
 			mtApp.invokeLater(new Runnable() {
 				public void run() {
 					deleteDisplayLists();
