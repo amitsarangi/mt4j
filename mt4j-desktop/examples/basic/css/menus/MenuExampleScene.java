@@ -3,7 +3,7 @@ package basic.css.menus;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.mt4j.MTApplication;
+import org.mt4j.AbstractMTApplication;
 import org.mt4j.components.css.style.CSSSelector;
 import org.mt4j.components.css.util.CSSKeywords.CSSSelectorType;
 import org.mt4j.components.css.util.CSSTemplates;
@@ -21,9 +21,9 @@ import processing.core.PImage;
 
 
 public class MenuExampleScene  extends AbstractScene{
-	private MTApplication app;
+	private AbstractMTApplication app;
 	
-	public MenuExampleScene(MTApplication mtApplication, String name) {
+	public MenuExampleScene(AbstractMTApplication mtApplication, String name) {
 		super(mtApplication, name);
 
 		this.app = mtApplication;

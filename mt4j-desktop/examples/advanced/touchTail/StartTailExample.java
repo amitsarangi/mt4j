@@ -1,9 +1,9 @@
 package advanced.touchTail;
 
-import org.mt4j.MTDesktopApplication;
+import org.mt4j.MTApplication;
 
 
-public class StartTailExample extends MTDesktopApplication{
+public class StartTailExample extends MTApplication{
 	private static final long serialVersionUID = 1L;
 
 	public static void main(String args[]){

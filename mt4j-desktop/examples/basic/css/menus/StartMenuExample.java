@@ -1,9 +1,9 @@
 package basic.css.menus;
 
-import org.mt4j.MTDesktopApplication;
+import org.mt4j.MTApplication;
 
 
-public class StartMenuExample extends MTDesktopApplication {
+public class StartMenuExample extends MTApplication {
 	/**
 	 * 
 	 */

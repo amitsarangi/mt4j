@@ -1,5 +1,5 @@
 package basic.helloWorld;
-import org.mt4j.MTApplication;
+import org.mt4j.AbstractMTApplication;
 import org.mt4j.components.visibleComponents.widgets.MTTextArea;
 import org.mt4j.input.inputProcessors.globalProcessors.CursorTracer;
 import org.mt4j.sceneManagement.AbstractScene;
@@ -10,7 +10,7 @@ import org.mt4j.util.math.Vector3D;
 
 public class HelloWorldScene extends AbstractScene {
 
-	public HelloWorldScene(MTApplication mtApplication, String name) {
+	public HelloWorldScene(AbstractMTApplication mtApplication, String name) {
 		super(mtApplication, name);
 		
 		MTColor white = new MTColor(255,255,255);

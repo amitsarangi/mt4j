@@ -20,7 +20,7 @@ package org.mt4j.input.inputSources;
 
 import java.awt.event.KeyEvent;
 
-import org.mt4j.MTApplication;
+import org.mt4j.AbstractMTApplication;
 import org.mt4j.input.inputData.ActiveCursorPool;
 import org.mt4j.input.inputData.InputCursor;
 import org.mt4j.input.inputData.MTFingerInputEvt;
@@ -65,7 +65,7 @@ public class KeyboardInputSource extends AbstractInputSource {
 	 * 
 	 * @param pa the pa
 	 */
-	public KeyboardInputSource(MTApplication pa){
+	public KeyboardInputSource(AbstractMTApplication pa){
 		super(pa);
 		this.applet = pa;
 		applet.registerKeyEvent(this);

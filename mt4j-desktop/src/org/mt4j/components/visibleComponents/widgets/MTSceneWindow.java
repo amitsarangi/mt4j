@@ -17,7 +17,7 @@
  ***********************************************************************/
 package org.mt4j.components.visibleComponents.widgets;
 
-import org.mt4j.MTApplication;
+import org.mt4j.AbstractMTApplication;
 import org.mt4j.components.StateChange;
 import org.mt4j.components.StateChangeEvent;
 import org.mt4j.components.StateChangeListener;
@@ -71,7 +71,7 @@ extends MTRoundRectangle {
 	 * @param applet the applet
 	 * @deprecated constructor will deleted! Please , use the constructor with the PApplet instance as the first parameter.
 	 */
-	public MTSceneWindow(final Iscene scene, float borderWidth, float borderHeight, MTApplication applet) {
+	public MTSceneWindow(final Iscene scene, float borderWidth, float borderHeight, AbstractMTApplication applet) {
 		this(applet, scene, borderWidth, borderHeight);
 	}
 	
@@ -86,7 +86,7 @@ extends MTRoundRectangle {
 	 * @param fboHeight the fbo height
 	 * @deprecated constructor will deleted! Please , use the constructor with the PApplet instance as the first parameter.
 	 */
-	public MTSceneWindow(final Iscene scene, float borderWidth, float borderHeight, final MTApplication applet, int fboWidth, int fboHeight) {
+	public MTSceneWindow(final Iscene scene, float borderWidth, float borderHeight, final AbstractMTApplication applet, int fboWidth, int fboHeight) {
 		this(applet, scene, borderWidth, borderHeight, fboWidth, fboHeight);
 	}
 	
@@ -97,7 +97,7 @@ extends MTRoundRectangle {
 	 * @param borderWidth the border width
 	 * @param borderHeight the border height
 	 */
-	public MTSceneWindow(MTApplication applet, final Iscene scene, float borderWidth, float borderHeight) {
+	public MTSceneWindow(AbstractMTApplication applet, final Iscene scene, float borderWidth, float borderHeight) {
 		this(applet, scene, borderWidth, borderHeight, Math.round(MT4jSettings.getInstance().getWindowWidth() * 0.6f), Math.round(MT4jSettings.getInstance().getWindowHeight() * 0.6f));
 	}
 	
@@ -110,7 +110,7 @@ extends MTRoundRectangle {
 	 * @param fboWidth the fbo width
 	 * @param fboHeight the fbo height
 	 */
-	public MTSceneWindow(final MTApplication applet, final Iscene scene, float borderWidth, float borderHeight, int fboWidth, int fboHeight) {
+	public MTSceneWindow(final AbstractMTApplication applet, final Iscene scene, float borderWidth, float borderHeight, int fboWidth, int fboHeight) {
 //		super(0-borderWidth, 0-borderHeight, applet.width+2*borderWidth, applet.height+2*borderHeight, applet);
 		super(applet, 0-borderWidth, 0-borderHeight, 0, MT4jSettings.getInstance().getWindowWidth()+2*borderWidth, MT4jSettings.getInstance().getWindowHeight()+2*borderHeight, 30, 30);
 		

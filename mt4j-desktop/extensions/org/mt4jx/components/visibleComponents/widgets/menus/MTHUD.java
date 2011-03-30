@@ -3,7 +3,7 @@ package org.mt4jx.components.visibleComponents.widgets.menus;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.mt4j.MTApplication;
+import org.mt4j.AbstractMTApplication;
 import org.mt4j.components.MTComponent;
 import org.mt4j.components.TransformSpace;
 import org.mt4j.components.clipping.Clip;
@@ -49,7 +49,7 @@ public class MTHUD extends MTOverlayContainer implements CSSStylableComponent {
 	public final static short BOTTOM = 4;
 
 	/** The app. */
-	private MTApplication app;
+	private AbstractMTApplication app;
 
 	/** The menu contents. */
 	private List<MTRectangle> menuContents = new ArrayList<MTRectangle>();
@@ -70,7 +70,7 @@ public class MTHUD extends MTOverlayContainer implements CSSStylableComponent {
 	private CSSHelper cssHelper;
 
 	/** The mt app. */
-	private MTApplication mtApp;
+	private AbstractMTApplication mtApp;
 
 	/** The css styled. */
 	private boolean cssStyled = false;
@@ -86,7 +86,7 @@ public class MTHUD extends MTOverlayContainer implements CSSStylableComponent {
 	 * @param menuItems
 	 *            the menu items
 	 */
-	public MTHUD(MTApplication applet, List<MenuItem> menuItems) {
+	public MTHUD(AbstractMTApplication applet, List<MenuItem> menuItems) {
 		this(applet, menuItems, 64, 8, LEFT);
 	}
 
@@ -100,7 +100,7 @@ public class MTHUD extends MTOverlayContainer implements CSSStylableComponent {
 	 * @param size
 	 *            the size
 	 */
-	public MTHUD(MTApplication applet, List<MenuItem> menuItems, float size) {
+	public MTHUD(AbstractMTApplication applet, List<MenuItem> menuItems, float size) {
 		this(applet, menuItems, size, (float) Math.sqrt(size), LEFT);
 	}
 
@@ -119,7 +119,7 @@ public class MTHUD extends MTOverlayContainer implements CSSStylableComponent {
 	 *            the position (MTHUD.LEFT, MTHUD.RIGHT, MTHUD.TOP,
 	 *            MTHUD.BOTTOM)
 	 */
-	public MTHUD(MTApplication applet, List<MenuItem> menuItems, float size, float offset, short position) {
+	public MTHUD(AbstractMTApplication applet, List<MenuItem> menuItems, float size, float offset, short position) {
 		super(applet);
 		this.app = applet;
 		this.menuItems = menuItems;
@@ -147,7 +147,7 @@ public class MTHUD extends MTOverlayContainer implements CSSStylableComponent {
 	 *            the position (MTHUD.LEFT, MTHUD.RIGHT, MTHUD.TOP,
 	 *            MTHUD.BOTTOM)
 	 */
-	public MTHUD(MTApplication applet, List<MenuItem> menuItems, float size, short position) {
+	public MTHUD(AbstractMTApplication applet, List<MenuItem> menuItems, float size, short position) {
 		this(applet, menuItems, size, (float) Math.sqrt(size), position);
 	}
 

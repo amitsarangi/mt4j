@@ -1,8 +1,8 @@
 package basic.fiducials;
 
-import org.mt4j.MTDesktopApplication;
+import org.mt4j.MTApplication;
 
-public class StartFiducialExample extends MTDesktopApplication {
+public class StartFiducialExample extends MTApplication {
 	private static final long serialVersionUID = 1L;
 
 	/**

@@ -1,8 +1,8 @@
 package advanced.puzzle;
 
-import org.mt4j.MTDesktopApplication;
+import org.mt4j.MTApplication;
 
-public class StartPuzzle extends MTDesktopApplication {
+public class StartPuzzle extends MTApplication {
 	private static final long serialVersionUID = 1L;
 	
 	public static void main(String[] args) {

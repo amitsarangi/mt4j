@@ -3,7 +3,7 @@ package org.mt4jx.components.visibleComponents.widgets;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.mt4j.MTApplication;
+import org.mt4j.AbstractMTApplication;
 import org.mt4j.components.StateChange;
 import org.mt4j.components.StateChangeEvent;
 import org.mt4j.components.StateChangeListener;
@@ -32,7 +32,7 @@ public class MTSuggestionTextArea extends MTTextArea {
 	private List<String> availableValues;
 
 	/** The MTApplication. */
-	private MTApplication app;
+	private AbstractMTApplication app;
 
 	/** The suggestion box. */
 	private MTTextArea suggestionBox;
@@ -60,7 +60,7 @@ public class MTSuggestionTextArea extends MTTextArea {
 	 * @param width
 	 *            the width
 	 */
-	public MTSuggestionTextArea(MTApplication app, float width) {
+	public MTSuggestionTextArea(AbstractMTApplication app, float width) {
 		this(app, width, new ArrayList<String>());
 	}
 
@@ -74,7 +74,7 @@ public class MTSuggestionTextArea extends MTTextArea {
 	 * @param suggestions
 	 *            the suggestions as List<String>
 	 */
-	public MTSuggestionTextArea(MTApplication app, float width,
+	public MTSuggestionTextArea(AbstractMTApplication app, float width,
 			List<String> suggestions) {
 		// Instantiate with default font, can be changed using CSS
 		super(app);
@@ -91,7 +91,7 @@ public class MTSuggestionTextArea extends MTTextArea {
 	 * @param width
 	 *            the width of the text input box
 	 */
-	public MTSuggestionTextArea(MTApplication app, IFont font, float width) {
+	public MTSuggestionTextArea(AbstractMTApplication app, IFont font, float width) {
 		this(app, font, width, new ArrayList<String>());
 	}
 
@@ -107,7 +107,7 @@ public class MTSuggestionTextArea extends MTTextArea {
 	 * @param suggestions
 	 *            the suggestions as List<String>
 	 */
-	public MTSuggestionTextArea(MTApplication app, IFont font, float width,
+	public MTSuggestionTextArea(AbstractMTApplication app, IFont font, float width,
 			List<String> suggestions) {
 		super(app, font);
 		this.init(app, width, suggestions);
@@ -237,7 +237,7 @@ public class MTSuggestionTextArea extends MTTextArea {
 	 * @param suggestions
 	 *            the suggestions as List<String>
 	 */
-	private void init(MTApplication app, float width, List<String> suggestions) {
+	private void init(AbstractMTApplication app, float width, List<String> suggestions) {
 		this.width = width;
 		
 		this.availableValues = suggestions;

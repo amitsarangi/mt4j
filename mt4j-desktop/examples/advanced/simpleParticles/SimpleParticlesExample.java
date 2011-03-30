@@ -1,7 +1,7 @@
 package advanced.simpleParticles;
 
+import org.mt4j.AbstractMTApplication;
 import org.mt4j.MTApplication;
-import org.mt4j.MTDesktopApplication;
 import org.mt4j.input.IMTInputEventListener;
 import org.mt4j.input.inputData.AbstractCursorInputEvt;
 import org.mt4j.input.inputData.MTInputEvent;
@@ -12,7 +12,7 @@ import org.mt4j.util.camera.MTCamera;
 import processing.core.PImage;
 import processing.core.PVector;
 
-public class SimpleParticlesExample extends MTDesktopApplication {
+public class SimpleParticlesExample extends MTApplication {
 	private static final long serialVersionUID = 1L;
 
 	public static void main(String[] args) {
@@ -29,9 +29,9 @@ public class SimpleParticlesExample extends MTDesktopApplication {
 	}
 	
 	private class ParticleTest extends AbstractScene{
-		private String path = "advanced" + MTApplication.separator + "simpleParticles" + MTApplication.separator + "data" + MTApplication.separator;
+		private String path = "advanced" + AbstractMTApplication.separator + "simpleParticles" + AbstractMTApplication.separator + "data" + AbstractMTApplication.separator;
 		
-		public ParticleTest(MTApplication mtApplication, String name) {
+		public ParticleTest(AbstractMTApplication mtApplication, String name) {
 			super(mtApplication, name);
 			
 			final MTParticleSystem mtPs = new MTParticleSystem(getMTApplication(), 0,0, mtApplication.width, mtApplication.height);

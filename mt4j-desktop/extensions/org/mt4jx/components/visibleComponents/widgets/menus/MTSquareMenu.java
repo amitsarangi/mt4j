@@ -4,7 +4,7 @@ package org.mt4jx.components.visibleComponents.widgets.menus;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.mt4j.MTApplication;
+import org.mt4j.AbstractMTApplication;
 import org.mt4j.components.MTComponent;
 import org.mt4j.components.TransformSpace;
 import org.mt4j.components.clipping.Clip;
@@ -35,7 +35,7 @@ import processing.core.PImage;
 public class MTSquareMenu extends MTRectangle implements CSSStylableComponent {
 
 	/** The app. */
-	private MTApplication app;
+	private AbstractMTApplication app;
 	
 	/** The menu contents. */
 	private List<MTRectangle> menuContents = new ArrayList<MTRectangle>();
@@ -70,7 +70,7 @@ public class MTSquareMenu extends MTRectangle implements CSSStylableComponent {
 	 * @param menuItems the menu items
 	 * @param size the size of the squares
 	 */
-	public MTSquareMenu(MTApplication app, Vector3D position,
+	public MTSquareMenu(AbstractMTApplication app, Vector3D position,
 			List<MenuItem> menuItems, float size) {
 		super(app, position.x, position.y, (float) (int) Math
 						.sqrt(menuItems.size() + 1) * size, (float) (int) Math

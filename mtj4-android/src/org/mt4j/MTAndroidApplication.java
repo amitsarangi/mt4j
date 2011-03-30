@@ -29,7 +29,7 @@ import android.view.MotionEvent;
   
  */
 
-public abstract class MTAndroidApplication extends MTApplication{
+public abstract class MTAndroidApplication extends AbstractMTApplication{
 	
 	public MTAndroidApplication(){
 		super();

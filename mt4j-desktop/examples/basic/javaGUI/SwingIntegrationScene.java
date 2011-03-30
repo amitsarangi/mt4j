@@ -1,6 +1,6 @@
 package basic.javaGUI;
 
-import org.mt4j.MTApplication;
+import org.mt4j.AbstractMTApplication;
 import org.mt4j.components.visibleComponents.shapes.MTRectangle;
 import org.mt4j.input.gestureAction.InertiaDragAction;
 import org.mt4j.input.inputProcessors.componentProcessors.dragProcessor.DragProcessor;
@@ -12,7 +12,7 @@ import org.mt4j.util.math.Vector3D;
 
 public class SwingIntegrationScene extends AbstractScene {
 	
-	public SwingIntegrationScene(MTApplication mtApplication, String name) {
+	public SwingIntegrationScene(AbstractMTApplication mtApplication, String name) {
 		super(mtApplication, name);
 		CursorTracer c = new CursorTracer(mtApplication, this);
 		registerGlobalInputProcessor(c);

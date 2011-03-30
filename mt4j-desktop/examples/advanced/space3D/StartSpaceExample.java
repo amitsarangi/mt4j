@@ -1,10 +1,10 @@
 package advanced.space3D;
 
 
-import org.mt4j.MTDesktopApplication;
+import org.mt4j.MTApplication;
 
 
-public class StartSpaceExample extends MTDesktopApplication{
+public class StartSpaceExample extends MTApplication{
 	/**
 	 * 
 	 */

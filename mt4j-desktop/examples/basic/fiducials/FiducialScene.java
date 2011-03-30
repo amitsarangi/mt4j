@@ -3,7 +3,7 @@ package basic.fiducials;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.mt4j.MTApplication;
+import org.mt4j.AbstractMTApplication;
 import org.mt4j.components.visibleComponents.shapes.AbstractShape;
 import org.mt4j.components.visibleComponents.shapes.MTEllipse;
 import org.mt4j.components.visibleComponents.widgets.MTTextArea;
@@ -20,11 +20,11 @@ import org.mt4j.util.math.Vector3D;
 
 
 public class FiducialScene extends AbstractScene implements IMTInputEventListener {
-	private MTApplication app;
+	private AbstractMTApplication app;
 	private IFont font;
 	private Map<Integer, AbstractShape> fiducialIDToComp;
 	
-	public FiducialScene(MTApplication mtApplication, String name) {
+	public FiducialScene(AbstractMTApplication mtApplication, String name) {
 		super(mtApplication, name);
 		this.app = mtApplication;
 		this.setClearColor(new MTColor(220, 220, 200, 255));
@@ -58,7 +58,7 @@ public class FiducialScene extends AbstractScene implements IMTInputEventListene
 				//Save the absolute rotation angle in the component for late
 				newComp.setUserData("angle", fEvt.getAngle()); 
 				//Rotate the component
-				newComp.rotateZ(newComp.getCenterPointRelativeToParent(), MTApplication.degrees(fEvt.getAngle()));
+				newComp.rotateZ(newComp.getCenterPointRelativeToParent(), AbstractMTApplication.degrees(fEvt.getAngle()));
 				//Add the component to the canvas to draw it
 				getCanvas().addChild(newComp);	
 				break;
@@ -75,7 +75,7 @@ public class FiducialScene extends AbstractScene implements IMTInputEventListene
 					if (oldAngle != newAngle){
 						float diff = newAngle-oldAngle;
 						comp.setUserData("angle", newAngle);
-						diff = MTApplication.degrees(diff); //our rotation expects degrees (not radians)
+						diff = AbstractMTApplication.degrees(diff); //our rotation expects degrees (not radians)
 						comp.rotateZ(comp.getCenterPointRelativeToParent(), diff); 
 					}
 				}

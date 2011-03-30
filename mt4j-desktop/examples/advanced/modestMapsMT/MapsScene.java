@@ -31,7 +31,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
-import org.mt4j.MTApplication;
+import org.mt4j.AbstractMTApplication;
 import org.mt4j.components.MTComponent;
 import org.mt4j.components.TransformSpace;
 import org.mt4j.components.interfaces.IMTComponent3D;
@@ -105,7 +105,7 @@ public class MapsScene extends AbstractScene implements MouseWheelListener, Mous
 	private TestInteractiveMap map;
 	
 	/** The p. */
-	private MTApplication p;
+	private AbstractMTApplication p;
 	
 	/** The tag container. */
 	private MTComponent tagContainer;
@@ -135,7 +135,7 @@ public class MapsScene extends AbstractScene implements MouseWheelListener, Mous
 	 * @param mtApplication the mt application
 	 * @param name the name
 	 */
-	public MapsScene(MTApplication mtApplication, String name) {
+	public MapsScene(AbstractMTApplication mtApplication, String name) {
 		super(mtApplication, name);
 		this.p = mtApplication;
 		
@@ -196,7 +196,7 @@ public class MapsScene extends AbstractScene implements MouseWheelListener, Mous
 //		PImage fotoButtonImg = p.loadImage(System.getProperty("user.dir")+File.separator + "examples"+  File.separator +"advanced"+ File.separator+ File.separator +"modestMapsMT"+ File.separator +  File.separator + "data"+ File.separator + 
 //				"foto6.png");
 		//Load image from classpath
-		PImage fotoButtonImg = p.loadImage( "advanced" + MTApplication.separator + "modestMapsMT" + MTApplication.separator + "data" + MTApplication.separator + 
+		PImage fotoButtonImg = p.loadImage( "advanced" + AbstractMTApplication.separator + "modestMapsMT" + AbstractMTApplication.separator + "data" + AbstractMTApplication.separator + 
 		"foto6.png");
 		fotoButtonImg.resize((int)(fotoButtonImg.width/1.5f), (int)(fotoButtonImg.height/1.5f));
 		fotoButton = new MTImageButton(p, fotoButtonImg);

@@ -3,7 +3,7 @@ package advanced.drawing;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
-import org.mt4j.MTApplication;
+import org.mt4j.AbstractMTApplication;
 import org.mt4j.components.TransformSpace;
 import org.mt4j.components.visibleComponents.shapes.MTEllipse;
 import org.mt4j.components.visibleComponents.shapes.MTPolygon;
@@ -30,15 +30,15 @@ import org.mt4j.util.opengl.GLFBO;
 import processing.core.PImage;
 
 public class MainDrawingScene extends AbstractScene {
-	private MTApplication pa;
+	private AbstractMTApplication pa;
 	private MTRectangle textureBrush;
 	private MTEllipse pencilBrush;
 	private DrawSurfaceScene drawingScene;
 	
 //	private String imagesPath = System.getProperty("user.dir")+File.separator + "examples"+  File.separator +"advanced"+ File.separator + File.separator +"drawing"+ File.separator + File.separator +"data"+ File.separator +  File.separator +"images" + File.separator ;
-	private String imagesPath = "advanced" + MTApplication.separator + "drawing" + MTApplication.separator + "data" + MTApplication.separator + "images" + MTApplication.separator;
+	private String imagesPath = "advanced" + AbstractMTApplication.separator + "drawing" + AbstractMTApplication.separator + "data" + AbstractMTApplication.separator + "images" + AbstractMTApplication.separator;
 
-	public MainDrawingScene(MTApplication mtApplication, String name) {
+	public MainDrawingScene(AbstractMTApplication mtApplication, String name) {
 		super(mtApplication, name);
 		this.pa = mtApplication;
 		

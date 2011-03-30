@@ -1,8 +1,8 @@
 package basic.svgExample;
 
-import org.mt4j.MTDesktopApplication;
+import org.mt4j.MTApplication;
 
-public class StartSVGExample extends MTDesktopApplication{
+public class StartSVGExample extends MTApplication{
 	/**
 	 * 
 	 */

@@ -1,6 +1,6 @@
 package org.mt4j.test.components.visibleComponents.shapes;
 
-import org.mt4j.MTApplication;
+import org.mt4j.AbstractMTApplication;
 import org.mt4j.components.MTCanvas;
 import org.mt4j.components.MTComponent;
 import org.mt4j.components.TransformSpace;
@@ -25,7 +25,7 @@ public class ShapesTest extends AbstractWindowTestcase {
 	private MTComponent parent;
 
 	@Override
-	public void inStartUp(MTApplication app) {
+	public void inStartUp(AbstractMTApplication app) {
 		//Add a scene to the mt application
 		this.scene = new DummyScene(app, "Dummy Scene");
 		app.addScene(scene);

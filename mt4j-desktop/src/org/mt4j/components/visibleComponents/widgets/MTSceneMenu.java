@@ -17,7 +17,7 @@
  ***********************************************************************/
 package org.mt4j.components.visibleComponents.widgets;
 
-import org.mt4j.MTApplication;
+import org.mt4j.AbstractMTApplication;
 import org.mt4j.components.MTCanvas;
 import org.mt4j.components.MTComponent;
 import org.mt4j.components.visibleComponents.shapes.AbstractShape;
@@ -59,7 +59,7 @@ public class MTSceneMenu extends MTRectangle{
 	}
 	
 	/** The app. */
-	private MTApplication app;
+	private AbstractMTApplication app;
 	
 	/** The scene. */
 	private Iscene scene;
@@ -94,7 +94,7 @@ public class MTSceneMenu extends MTRectangle{
 	 * @param width the width
 	 * @param height the height
 	 */
-	public MTSceneMenu(MTApplication app, Iscene scene, float x, float y, float width, float height) {
+	public MTSceneMenu(AbstractMTApplication app, Iscene scene, float x, float y, float width, float height) {
 		super(app, x, y, width, height);
 		this.app = app;
 		this.scene = scene;
@@ -113,7 +113,7 @@ public class MTSceneMenu extends MTRectangle{
 	 * @param width the width
 	 * @param height the height
 	 */
-	public MTSceneMenu(MTApplication app, MTSceneTexture sceneTexture, float x, float y, float width, float height) {
+	public MTSceneMenu(AbstractMTApplication app, MTSceneTexture sceneTexture, float x, float y, float width, float height) {
 		super(app, x, y, width, height);
 		this.app = app;
 		this.scene = sceneTexture.getScene();

@@ -7,7 +7,7 @@ import java.util.Iterator;
 import javax.vecmath.Matrix4f;
 import javax.vecmath.Vector3f;
 
-import org.mt4j.MTApplication;
+import org.mt4j.AbstractMTApplication;
 import org.mt4j.components.MTCanvas;
 import org.mt4j.components.MTComponent;
 import org.mt4j.components.visibleComponents.shapes.mesh.MTTriangleMesh;
@@ -50,7 +50,7 @@ public class SimulatePreDrawAction implements IPreDrawAction {
 	private Iscene sceneRef;
 	private boolean debugPoint = false;
 	private CollisionManager collisionManager;
-	private MTApplication mtApp;
+	private AbstractMTApplication mtApp;
 	private HashMap<MTComponent,Transform> oldComponentMatrices = new HashMap<MTComponent,Transform>();
 	private HashMap<MTComponent,Vector3f> oldComponentScaling = new HashMap<MTComponent,Vector3f>();
 	private ArrayList<MTComponent> contactMap = new ArrayList<MTComponent>();

@@ -20,7 +20,7 @@ package org.mt4j.input.inputSources;
 import java.util.Collection;
 import java.util.WeakHashMap;
 
-import org.mt4j.MTApplication;
+import org.mt4j.AbstractMTApplication;
 import org.mt4j.components.MTCanvas;
 import org.mt4j.components.visibleComponents.shapes.MTEllipse;
 import org.mt4j.input.inputData.ActiveCursorPool;
@@ -60,7 +60,7 @@ public class MultipleMiceInputSource extends AbstractInputSource {
 	private int maxScreenH;
 
 	/** The mt app. */
-	private MTApplication mtApp;
+	private AbstractMTApplication mtApp;
 	
 	/** The default center cam. */
 	private Icamera defaultCenterCam;
@@ -73,7 +73,7 @@ public class MultipleMiceInputSource extends AbstractInputSource {
 	 * 
 	 * @param applet the applet
 	 */
-	public MultipleMiceInputSource(MTApplication applet) {
+	public MultipleMiceInputSource(AbstractMTApplication applet) {
 		super(applet);
 		
 		this.maxScreenW = MT4jSettings.getInstance().getWindowWidth();
@@ -228,7 +228,7 @@ public class MultipleMiceInputSource extends AbstractInputSource {
 	 * 
 	 * @param mtApp the new mT app
 	 */
-	public void setMTApp(MTApplication mtApp){
+	public void setMTApp(AbstractMTApplication mtApp){
 		this.mtApp = mtApp;
 //		this.currentCanvas = mtApp.getCurrentScene().getMainCanvas();
 

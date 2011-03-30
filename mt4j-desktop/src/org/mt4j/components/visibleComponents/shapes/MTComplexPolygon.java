@@ -3,7 +3,7 @@ package org.mt4j.components.visibleComponents.shapes;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.mt4j.MTApplication;
+import org.mt4j.AbstractMTApplication;
 import org.mt4j.components.css.util.CSSHelper;
 import org.mt4j.components.css.util.CSSStylableComponent;
 import org.mt4j.components.visibleComponents.shapes.mesh.MTTriangleMesh;
@@ -44,8 +44,8 @@ public class MTComplexPolygon extends MTTriangleMesh implements CSSStylableCompo
 		this.setNoStroke(false);
 		
 //		 /*
-        if (app instanceof MTApplication) {
-                this.mtApp = (MTApplication)app;
+        if (app instanceof AbstractMTApplication) {
+                this.mtApp = (AbstractMTApplication)app;
                 this.cssHelper = new CSSHelper(this, mtApp);
                 if (this.mtApp.getCssStyleManager().isGloballyEnabled()) {
                         this.enableCSS();
@@ -78,8 +78,8 @@ public class MTComplexPolygon extends MTTriangleMesh implements CSSStylableCompo
 		this.setNoStroke(false);
 		
 //		 /*
-        if (app instanceof MTApplication) {
-                this.mtApp = (MTApplication)app;
+        if (app instanceof AbstractMTApplication) {
+                this.mtApp = (AbstractMTApplication)app;
                 this.cssHelper = new CSSHelper(this, mtApp);
                 if (this.mtApp.getCssStyleManager().isGloballyEnabled()) {
                         this.enableCSS();
@@ -125,7 +125,7 @@ public class MTComplexPolygon extends MTTriangleMesh implements CSSStylableCompo
 //	 /*
 	//CSS Stuff
     /** The mt app. */
-	private MTApplication mtApp;
+	private AbstractMTApplication mtApp;
     
     /** The css styled. */
     private boolean cssStyled = false;

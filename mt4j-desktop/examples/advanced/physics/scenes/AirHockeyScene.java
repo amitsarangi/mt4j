@@ -16,7 +16,7 @@ import org.jbox2d.dynamics.contacts.ContactResult;
 import org.jbox2d.dynamics.joints.Joint;
 import org.jbox2d.dynamics.joints.JointType;
 import org.jbox2d.dynamics.joints.MouseJoint;
-import org.mt4j.MTApplication;
+import org.mt4j.AbstractMTApplication;
 import org.mt4j.components.MTComponent;
 import org.mt4j.components.visibleComponents.shapes.MTEllipse;
 import org.mt4j.components.visibleComponents.shapes.MTLine;
@@ -49,7 +49,7 @@ public class AirHockeyScene extends AbstractScene {
 	
 	/** THE CANVAS SCALE **/
 	private float scale = 20;
-	private MTApplication app;
+	private AbstractMTApplication app;
 	private World world;
 	
 	private MTComponent physicsContainer;
@@ -77,10 +77,10 @@ public class AirHockeyScene extends AbstractScene {
 	//TODO get graphics, sounds, effects
 	
 //	private String imagesPath = System.getProperty("user.dir") + File.separator + "examples" + File.separator +"advanced"+ File.separator +  "physics"  + File.separator + "data" +  File.separator  + "images" +  File.separator;
-	private String imagesPath =  "advanced" + MTApplication.separator +  "physics"  + MTApplication.separator + "data" +  MTApplication.separator  + "images" +  MTApplication.separator;
+	private String imagesPath =  "advanced" + AbstractMTApplication.separator +  "physics"  + AbstractMTApplication.separator + "data" +  AbstractMTApplication.separator  + "images" +  AbstractMTApplication.separator;
 	
 	
-	public AirHockeyScene(MTApplication mtApplication, String name) {
+	public AirHockeyScene(AbstractMTApplication mtApplication, String name) {
 		super(mtApplication, name);
 		this.app = mtApplication;
 //		this.setClearColor(new MTColor(120,150,150));

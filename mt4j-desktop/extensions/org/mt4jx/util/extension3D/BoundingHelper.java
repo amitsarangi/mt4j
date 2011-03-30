@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.mt4j.MTApplication;
+import org.mt4j.AbstractMTApplication;
 import org.mt4j.components.MTComponent;
 import org.mt4j.components.StateChangeEvent;
 import org.mt4j.components.StateChangeListener;
@@ -66,7 +66,7 @@ public class BoundingHelper {
 			
 			for(Vector3D vec : globalVectors)
 			{
-				Vector3D projVec = Tools3D.projectPointToPlaneInPerspectiveMode(vec, cam.getFrustum(), atDepth,(MTApplication)pApplet);
+				Vector3D projVec = Tools3D.projectPointToPlaneInPerspectiveMode(vec, cam.getFrustum(), atDepth,(AbstractMTApplication)pApplet);
 				allVectors.add(projVec);
 			}			
 		}

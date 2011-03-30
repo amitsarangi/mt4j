@@ -1,6 +1,6 @@
 package basic.mtGestures;
 
-import org.mt4j.MTApplication;
+import org.mt4j.AbstractMTApplication;
 import org.mt4j.components.MTComponent;
 import org.mt4j.components.TransformSpace;
 import org.mt4j.components.visibleComponents.shapes.MTRectangle;
@@ -42,9 +42,9 @@ import org.mt4j.util.font.IFont;
 import org.mt4j.util.math.Vector3D;
 
 public class MTGesturesExampleScene extends AbstractScene {
-	private MTApplication app;
+	private AbstractMTApplication app;
 	
-	public MTGesturesExampleScene(MTApplication mtApplication, String name) {
+	public MTGesturesExampleScene(AbstractMTApplication mtApplication, String name) {
 		super(mtApplication, name);
 		this.app = mtApplication;
 		this.setClearColor(new MTColor(126, 130, 168, 255));

@@ -1,6 +1,6 @@
 package org.mt4j.test.components;
 
-import org.mt4j.MTApplication;
+import org.mt4j.AbstractMTApplication;
 import org.mt4j.components.MTCanvas;
 import org.mt4j.components.MTComponent;
 import org.mt4j.components.visibleComponents.shapes.MTRectangle;
@@ -16,11 +16,11 @@ import org.mt4j.util.math.Vector3D;
 
 public class MTComponentTest extends AbstractWindowTestcase {
 	private MTComponent parent;
-	private MTApplication app;
+	private AbstractMTApplication app;
 	private Iscene scene;
 	
 	@Override
-	public void inStartUp(MTApplication app) {
+	public void inStartUp(AbstractMTApplication app) {
 		this.app = app;
 		//Add a scene to the mt application
 		this.scene = new DummyScene(app, "Dummy Scene");

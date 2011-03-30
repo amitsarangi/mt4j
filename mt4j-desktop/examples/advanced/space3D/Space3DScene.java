@@ -21,7 +21,7 @@ import java.awt.event.KeyEvent;
 
 import javax.media.opengl.GL;
 
-import org.mt4j.MTApplication;
+import org.mt4j.AbstractMTApplication;
 import org.mt4j.components.MTComponent;
 import org.mt4j.components.MTLight;
 import org.mt4j.components.TransformSpace;
@@ -57,7 +57,7 @@ import org.mt4j.util.opengl.GLTextureSettings;
 
 
 public class Space3DScene extends AbstractScene {
-	private MTApplication pa;
+	private AbstractMTApplication pa;
 	private MTSphere earth;
 
 	//TODO make earth spinnable with velocity
@@ -65,7 +65,7 @@ public class Space3DScene extends AbstractScene {
 	//Loads from file system only
 //	private String imagesPath = System.getProperty("user.dir") + File.separator + "examples" + File.separator +"advanced"+ File.separator+ File.separator + "space3D"  + File.separator + "data" +  File.separator ;
 	//allows loading from jar
-	private String imagesPath =  "advanced" + MTApplication.separator + "space3D" + MTApplication.separator + "data" +  MTApplication.separator ;
+	private String imagesPath =  "advanced" + AbstractMTApplication.separator + "space3D" + AbstractMTApplication.separator + "data" +  AbstractMTApplication.separator ;
 	
 	/**
 	 * Instantiates a new model display scene.
@@ -73,7 +73,7 @@ public class Space3DScene extends AbstractScene {
 	 * @param mtApplication the mt application
 	 * @param name the name
 	 */
-	public Space3DScene(MTApplication mtApplication, String name) {
+	public Space3DScene(AbstractMTApplication mtApplication, String name) {
 		super(mtApplication, name);
 		this.pa = mtApplication;
 		

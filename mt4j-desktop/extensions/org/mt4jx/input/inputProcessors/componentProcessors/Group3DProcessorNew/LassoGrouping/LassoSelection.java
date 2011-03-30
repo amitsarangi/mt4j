@@ -2,7 +2,7 @@ package org.mt4jx.input.inputProcessors.componentProcessors.Group3DProcessorNew.
 
 import java.util.ArrayList;
 
-import org.mt4j.MTApplication;
+import org.mt4j.AbstractMTApplication;
 import org.mt4j.components.MTComponent;
 import org.mt4j.components.visibleComponents.shapes.AbstractShape;
 import org.mt4j.components.visibleComponents.shapes.MTPolygon;
@@ -68,7 +68,7 @@ public class LassoSelection implements ISelection {
 		
 		selectedComps = new ArrayList<MTComponent>();
 
-		pointInPlane = new Vector3D(((MTApplication)pApplet).width/2.f,((MTApplication)pApplet).height/2.f,camera.getFrustum().getZValueOfNearPlane());
+		pointInPlane = new Vector3D(((AbstractMTApplication)pApplet).width/2.f,((AbstractMTApplication)pApplet).height/2.f,camera.getFrustum().getZValueOfNearPlane());
 		planeNormal = new Vector3D(0,0,1);
 		
 		Vector3D newPos = ToolsGeometry.getRayPlaneIntersection(
@@ -178,7 +178,7 @@ public class LassoSelection implements ISelection {
 			//project center point on z plane
 			
 			Vector3D projectedCenterPoint = ComponentHelper.getCenterPointGlobal(currentCard).getCopy();
-			projectedCenterPoint = Tools3D.projectPointToPlaneInPerspectiveMode(projectedCenterPoint, camera.getFrustum(), this.getPolygon().getCenterPointGlobal().z,(MTApplication)pApplet);
+			projectedCenterPoint = Tools3D.projectPointToPlaneInPerspectiveMode(projectedCenterPoint, camera.getFrustum(), this.getPolygon().getCenterPointGlobal().z,(AbstractMTApplication)pApplet);
 						
 			if (this.getPolygon().containsPointGlobal(projectedCenterPoint)){				
 				selectedComps.add(currentCard);				

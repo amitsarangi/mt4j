@@ -57,7 +57,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import org.mt4j.MTApplication;
+import org.mt4j.AbstractMTApplication;
 import org.mt4j.components.visibleComponents.shapes.GeometryInfo;
 import org.mt4j.components.visibleComponents.shapes.mesh.MTTriangleMesh;
 import org.mt4j.util.GraphicsUtil;
@@ -979,13 +979,13 @@ public class ModelObjFileFactory  extends ModelImporterFactory {
 	 * containing that file.
 	 */
 	private void setBasePathFromFilename(String fileName) {
-		if (fileName.lastIndexOf(MTApplication.separator) == -1 && fileName.lastIndexOf(java.io.File.separator) == -1) {
+		if (fileName.lastIndexOf(AbstractMTApplication.separator) == -1 && fileName.lastIndexOf(java.io.File.separator) == -1) {
 			// No path given - current directory
 			setBasePath("");
 		} else{
-			if (fileName.lastIndexOf(MTApplication.separator) != -1 ) {
+			if (fileName.lastIndexOf(AbstractMTApplication.separator) != -1 ) {
 				setBasePath(
-						fileName.substring(0, fileName.lastIndexOf(MTApplication.separator)));
+						fileName.substring(0, fileName.lastIndexOf(AbstractMTApplication.separator)));
 			}else if (fileName.lastIndexOf(java.io.File.separator) != -1){
 				setBasePath(
 						fileName.substring(0, fileName.lastIndexOf(java.io.File.separator)));
@@ -1199,10 +1199,10 @@ public class ModelObjFileFactory  extends ModelImporterFactory {
 //			basePath = MTApplication.separator;
 		
 //		basePath = basePath.replace('/', MTApplication.separatorChar);
-		basePath = basePath.replace('\\', MTApplication.separatorChar);
+		basePath = basePath.replace('\\', AbstractMTApplication.separatorChar);
 		
-		if (!basePath.endsWith(MTApplication.separator))
-			basePath = basePath + MTApplication.separator;
+		if (!basePath.endsWith(AbstractMTApplication.separator))
+			basePath = basePath + AbstractMTApplication.separator;
 		
 	} // End of setBasePath
 

@@ -3,7 +3,7 @@ package org.mt4jx.components.visibleComponents.widgets.menus;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.mt4j.MTApplication;
+import org.mt4j.AbstractMTApplication;
 import org.mt4j.components.MTComponent;
 import org.mt4j.components.TransformSpace;
 import org.mt4j.components.clipping.Clip;
@@ -34,7 +34,7 @@ import processing.core.PImage;
 public class MTHexagonMenu extends MTRectangle{
 
 	/** The app. */
-	private MTApplication app;
+	private AbstractMTApplication app;
 
 	/** The menu contents. */
 	private List<MTPolygon> menuContents = new ArrayList<MTPolygon>();
@@ -76,7 +76,7 @@ public class MTHexagonMenu extends MTRectangle{
 	 * @param size
 	 *            the size (width of the Hexagon, the height is bigger)
 	 */
-	public MTHexagonMenu(MTApplication app, Vector3D position,
+	public MTHexagonMenu(AbstractMTApplication app, Vector3D position,
 			List<MenuItem> menuItems, float size) {
 		super(app, position.x, position.y, (float) (int) Math
 						.sqrt(menuItems.size() + 1) * size, (float) (int) Math

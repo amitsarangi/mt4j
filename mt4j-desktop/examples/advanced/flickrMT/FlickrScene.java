@@ -5,7 +5,7 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.Properties;
 
-import org.mt4j.MTApplication;
+import org.mt4j.AbstractMTApplication;
 import org.mt4j.components.MTComponent;
 import org.mt4j.components.TransformSpace;
 import org.mt4j.components.visibleComponents.shapes.AbstractShape;
@@ -45,13 +45,13 @@ import processing.core.PImage;
 import com.aetrion.flickr.photos.SearchParameters;
 
 public class FlickrScene extends AbstractScene {
-	private MTApplication app;
+	private AbstractMTApplication app;
 	private MTProgressBar progressBar;
 	
 	private MTComponent pictureLayer;
 	private LassoProcessor lassoProcessor;
 	
-	public FlickrScene(MTApplication mtAppl, String name) {
+	public FlickrScene(AbstractMTApplication mtAppl, String name) {
 		super(mtAppl, name);
 		this.app = mtAppl;
 		
@@ -82,7 +82,7 @@ public class FlickrScene extends AbstractScene {
 		MTComponent topLayer = new MTComponent(app, "top layer group", new MTCamera(app));
 		
 		//Load from classpath
-		PImage keyboardImg = app.loadImage("advanced" + MTApplication.separator + "flickrMT"+ MTApplication.separator + "data"+ MTApplication.separator 
+		PImage keyboardImg = app.loadImage("advanced" + AbstractMTApplication.separator + "flickrMT"+ AbstractMTApplication.separator + "data"+ AbstractMTApplication.separator 
 				+ "keyb128.png");
 		
 		final MTImageButton keyboardButton = new MTImageButton(app, keyboardImg);
@@ -121,7 +121,7 @@ public class FlickrScene extends AbstractScene {
 					keyb.addTextInputListener(t);
 			        
 			        //Flickr Button for the keyboard
-			        MTSvgButton flickrButton = new MTSvgButton( app, "advanced" + MTApplication.separator +  "flickrMT" + MTApplication.separator + "data" + MTApplication.separator
+			        MTSvgButton flickrButton = new MTSvgButton( app, "advanced" + AbstractMTApplication.separator +  "flickrMT" + AbstractMTApplication.separator + "data" + AbstractMTApplication.separator
 									+ "Flickr_Logo.svg");
 			        flickrButton.scale(0.4f, 0.4f, 1, new Vector3D(0,0,0), TransformSpace.LOCAL);
 			        flickrButton.translate(new Vector3D(0, 15,0));
@@ -165,14 +165,14 @@ public class FlickrScene extends AbstractScene {
 						        try {
 						        	InputStream in = null;
 						        	try {
-						        		in = new FileInputStream( "examples" + MTApplication.separator + "advanced" + MTApplication.separator + "flickrMT" + MTApplication.separator + "data" + MTApplication.separator + "FlickrApiKey.txt");
+						        		in = new FileInputStream( "examples" + AbstractMTApplication.separator + "advanced" + AbstractMTApplication.separator + "flickrMT" + AbstractMTApplication.separator + "data" + AbstractMTApplication.separator + "FlickrApiKey.txt");
 									} catch (Exception e) {
 										System.err.println(e.getLocalizedMessage());
 									}
 									
 						        	if (in == null){
 						        		try {
-						        			in = Thread.currentThread().getContextClassLoader().getResourceAsStream("advanced" + MTApplication.separator + "flickrMT" + MTApplication.separator + "data" + MTApplication.separator + "FlickrApiKey.txt");
+						        			in = Thread.currentThread().getContextClassLoader().getResourceAsStream("advanced" + AbstractMTApplication.separator + "flickrMT" + AbstractMTApplication.separator + "data" + AbstractMTApplication.separator + "FlickrApiKey.txt");
 										} catch (Exception e) {
 											System.err.println(e.getLocalizedMessage());
 										}

@@ -17,7 +17,7 @@
  ***********************************************************************/
 package org.mt4j.sceneManagement.transition;
 
-import org.mt4j.MTApplication;
+import org.mt4j.AbstractMTApplication;
 import org.mt4j.components.visibleComponents.shapes.MTRectangle;
 import org.mt4j.components.visibleComponents.widgets.MTSceneTexture;
 import org.mt4j.sceneManagement.Iscene;
@@ -36,7 +36,7 @@ import org.mt4j.util.math.Vector3D;
 public class SlideTransition extends AbstractTransition {
 	
 	/** The app. */
-	private MTApplication app;
+	private AbstractMTApplication app;
 	
 	/** The finished. */
 	private boolean finished;
@@ -73,11 +73,11 @@ public class SlideTransition extends AbstractTransition {
 	 * 
 	 * @param mtApplication the mt application
 	 */
-	public SlideTransition(MTApplication mtApplication) {
+	public SlideTransition(AbstractMTApplication mtApplication) {
 		this(mtApplication, 2000);
 	}
 	
-	public SlideTransition(MTApplication mtApplication, long duration) {
+	public SlideTransition(AbstractMTApplication mtApplication, long duration) {
 		this(mtApplication, duration, true);
 	}
 	
@@ -87,7 +87,7 @@ public class SlideTransition extends AbstractTransition {
 	 * @param mtApplication the mt application
 	 * @param duration the duration
 	 */
-	public SlideTransition(MTApplication mtApplication, long duration, boolean slideLeft) {
+	public SlideTransition(AbstractMTApplication mtApplication, long duration, boolean slideLeft) {
 		super(mtApplication, "Slide Transition");
 		this.app = mtApplication;
 		this.duration = (int) duration;

@@ -26,7 +26,7 @@ import muito.motion.MotionProviderListener;
 import muito.motion.Settings;
 import muito.motion.provider.MuitoMotionTrackerPorvider;
 
-import org.mt4j.MTApplication;
+import org.mt4j.AbstractMTApplication;
 import org.mt4j.input.inputData.ActiveCursorPool;
 import org.mt4j.input.inputData.InputCursor;
 import org.mt4j.input.inputData.MTFingerInputEvt;
@@ -50,7 +50,7 @@ public class MuitoInputSource extends AbstractInputSource implements MotionProvi
 	 * @param server the server
 	 * @param port the port
 	 */
-	public MuitoInputSource(MTApplication pa, String server, int port){
+	public MuitoInputSource(AbstractMTApplication pa, String server, int port){
 		super(pa);
 	    Settings.getInstance().setScreensizeX(MT4jSettings.getInstance().getWindowWidth());
 	    Settings.getInstance().setScreensizeY(MT4jSettings.getInstance().getWindowHeight());

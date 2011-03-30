@@ -1,8 +1,8 @@
 package advanced.fluidSimulator;
 
-import org.mt4j.MTDesktopApplication;
+import org.mt4j.MTApplication;
 
-public class StartFluidExample extends MTDesktopApplication{
+public class StartFluidExample extends MTApplication{
 	/**
 	 * 
 	 */

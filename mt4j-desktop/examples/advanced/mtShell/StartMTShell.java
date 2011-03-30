@@ -1,9 +1,9 @@
 package advanced.mtShell;
 
-import org.mt4j.MTDesktopApplication;
+import org.mt4j.MTApplication;
 
 
-public class StartMTShell extends MTDesktopApplication {
+public class StartMTShell extends MTApplication {
 	private static final long serialVersionUID = 1L;
 
 	public static void main(String args[]){

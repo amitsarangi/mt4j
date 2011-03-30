@@ -3,7 +3,7 @@ package org.mt4j.test.css;
 import java.util.List;
 
 import org.junit.Test;
-import org.mt4j.MTApplication;
+import org.mt4j.AbstractMTApplication;
 import org.mt4j.components.MTCanvas;
 import org.mt4j.components.MTComponent;
 import org.mt4j.components.TransformSpace;
@@ -24,14 +24,14 @@ import org.mt4j.util.math.Vector3D;
 
 public class SelectorIntegrationTest extends AbstractWindowTestcase {
 	private MTComponent parent;
-	private MTApplication app;
+	private AbstractMTApplication app;
 	private Iscene scene;
 	CSSParserConnection pc;
 	List<CSSStyle> styles;
 	MTColor w = new MTColor(255,255,255,255);
 	
 	@Override
-	public void inStartUp(MTApplication app) {
+	public void inStartUp(AbstractMTApplication app) {
 		this.app = app;
 		//Add a scene to the mt application
 		this.scene = new DummyScene(app, "Dummy Scene");

@@ -2,7 +2,7 @@ package org.mt4jx.input.inputProcessors.componentProcessors.Group3DProcessorNew.
 
 import java.util.ArrayList;
 
-import org.mt4j.MTApplication;
+import org.mt4j.AbstractMTApplication;
 import org.mt4j.components.MTComponent;
 import org.mt4j.components.TransformSpace;
 import org.mt4j.components.bounds.BoundingSphere;
@@ -63,7 +63,7 @@ public class LassoVisualizationAction implements IMTEventListener {
 						visualComponentGroup.addChild(lassoEvent.getSelectionPoly());
 						//System.out.println("lassoEvent " + lassoEvent.getSelectionPoly().toString());
 						lassoEvent.getCluster().setVisualComponentGroup(visualComponentGroup);
-						((MTApplication)pApplet).getCurrentScene().getCanvas().addChild(lassoEvent.getSelectionPoly());
+						((AbstractMTApplication)pApplet).getCurrentScene().getCanvas().addChild(lassoEvent.getSelectionPoly());
 						
 					}
 					break;
@@ -207,7 +207,7 @@ public class LassoVisualizationAction implements IMTEventListener {
 				for (Vector3D v : verts){
 					if(cluster.getAttachedCamera().getFrustum().getZValueOfNearPlane()!=v.z)
 					{
-						v = Tools3D.projectPointToPlaneInPerspectiveMode(v, cluster.getAttachedCamera().getFrustum(), cluster.getAttachedCamera().getFrustum().getZValueOfNearPlane(),((MTApplication)pApplet));
+						v = Tools3D.projectPointToPlaneInPerspectiveMode(v, cluster.getAttachedCamera().getFrustum(), cluster.getAttachedCamera().getFrustum().getZValueOfNearPlane(),((AbstractMTApplication)pApplet));
 					}					
 					allClusteredVerts.add(v);
 				}

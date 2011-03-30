@@ -2,7 +2,7 @@ package org.mt4jx.components.visibleComponents.widgets;
 
 import java.util.ArrayList;
 
-import org.mt4j.MTApplication;
+import org.mt4j.AbstractMTApplication;
 import org.mt4j.components.MTCanvas;
 import org.mt4j.components.MTComponent;
 import org.mt4j.components.bounds.IBoundingShape;
@@ -148,7 +148,7 @@ public class MTDepthHelper extends MTComponent {
 
 		Vector3D rightVector = BoundingHelper.getOuterPointsOfBounding(shapes,nearTopLeft.getZ(),BoundingHelper.RIGHT_BOUNDING_POINT, cam, this.getRenderer());
 				
-		Vector3D nearPoint = Tools3D.projectPointToPlaneInPerspectiveMode(rightVector,  this.getAttachedCamera().getFrustum(), nearTopLeft.getZ(),(MTApplication) this.getRenderer());
+		Vector3D nearPoint = Tools3D.projectPointToPlaneInPerspectiveMode(rightVector,  this.getAttachedCamera().getFrustum(), nearTopLeft.getZ(),(AbstractMTApplication) this.getRenderer());
 		//Vector3D nearPoint  = Tools3D.project(pApplet,cam,new Vector3D(rightVector.x,rightVector.y, rightVector.z));
 			
 //		PGraphics3D p3d = ((PGraphics3D)this.getRenderer().g);

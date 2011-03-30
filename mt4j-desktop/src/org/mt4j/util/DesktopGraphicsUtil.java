@@ -2,7 +2,7 @@ package org.mt4j.util;
 
 import javax.media.opengl.glu.GLU;
 
-import org.mt4j.MTApplication;
+import org.mt4j.AbstractMTApplication;
 import org.mt4j.util.math.Tools3D;
 import org.mt4j.util.opengl.GL10;
 import org.mt4j.util.opengl.GL11;
@@ -17,11 +17,11 @@ import processing.core.PMatrix3D;
 import processing.opengl.PGraphicsOpenGL;
 
 public class DesktopGraphicsUtil implements IGraphicsUtil {
-	private final MTApplication app;
+	private final AbstractMTApplication app;
 	private final JoglGLU joglGLU;
 	private PGraphics3D pg3d;
 
-	public DesktopGraphicsUtil(MTApplication app){
+	public DesktopGraphicsUtil(AbstractMTApplication app){
 		this.app = app;
 		this.joglGLU = new JoglGLU(new GLU());
 		this.pg3d = ((PGraphics3D)app.getPGraphics());

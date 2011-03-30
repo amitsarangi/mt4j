@@ -1,6 +1,6 @@
 package org.mt4j.test.css;
 
-import org.mt4j.MTApplication;
+import org.mt4j.AbstractMTApplication;
 import org.mt4j.components.MTComponent;
 import org.mt4j.components.visibleComponents.shapes.MTPolygon;
 import org.mt4j.components.visibleComponents.shapes.MTRectangle;
@@ -9,9 +9,9 @@ import org.mt4j.util.math.Vertex;
 
 public class IntegrationTestApp extends AbstractScene{
 	private MTComponent parent;
-	private MTApplication app;
+	private AbstractMTApplication app;
 	
-	public IntegrationTestApp(MTApplication mtApplication, String name) {
+	public IntegrationTestApp(AbstractMTApplication mtApplication, String name) {
 		super(mtApplication, name);
 
 		this.app = mtApplication;

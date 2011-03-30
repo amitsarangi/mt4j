@@ -17,7 +17,7 @@
  ***********************************************************************/
 package org.mt4j.sceneManagement.transition;
 
-import org.mt4j.MTApplication;
+import org.mt4j.AbstractMTApplication;
 import org.mt4j.components.visibleComponents.shapes.MTRectangle;
 import org.mt4j.components.visibleComponents.widgets.MTSceneTexture;
 import org.mt4j.sceneManagement.Iscene;
@@ -37,7 +37,7 @@ import processing.core.PGraphics;
 public class BlendTransition extends AbstractTransition {
 	
 	/** The app. */
-	private MTApplication app;
+	private AbstractMTApplication app;
 	
 	/** The finished. */
 	private boolean finished;
@@ -65,7 +65,7 @@ public class BlendTransition extends AbstractTransition {
 	 * 
 	 * @param mtApplication the mt application
 	 */
-	public BlendTransition(MTApplication mtApplication) {
+	public BlendTransition(AbstractMTApplication mtApplication) {
 		this(mtApplication, 2000);
 	}
 	
@@ -76,7 +76,7 @@ public class BlendTransition extends AbstractTransition {
 	 * @param mtApplication the mt application
 	 * @param duration the duration
 	 */
-	public BlendTransition(MTApplication mtApplication, int duration) {
+	public BlendTransition(AbstractMTApplication mtApplication, int duration) {
 		super(mtApplication, "Blend Transition");
 		this.app = mtApplication;
 		this.duration = duration;

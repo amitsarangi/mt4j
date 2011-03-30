@@ -42,14 +42,14 @@ import processing.core.PApplet;
 import processing.opengl.PGraphicsOpenGL;
 
 
-public abstract class MTDesktopApplication extends MTApplication {
+public abstract class MTApplication extends AbstractMTApplication {
 	private static final long serialVersionUID = 1L;
 	
 	static{
 		//Initialize Loggin facilities  - IMPORTANT TO DO THIS ASAP!//////
 		MTLoggerFactory.setLoggerProvider(new Log4jLogger()); //FIXME TEST
 //		MTLoggerFactory.setLoggerProvider(new JavaLogger()); //FIXME TEST
-		logger = MTLoggerFactory.getLogger(MTApplication.class.getName());
+		logger = MTLoggerFactory.getLogger(AbstractMTApplication.class.getName());
 		logger.setLevel(ILogger.INFO);
 	}
 	
@@ -60,7 +60,7 @@ public abstract class MTDesktopApplication extends MTApplication {
 	
 	
 	
-	public MTDesktopApplication(){
+	public MTApplication(){
 		super();
 	}
 	
@@ -295,7 +295,7 @@ public abstract class MTDesktopApplication extends MTApplication {
 	    logger.info("Maximum framerate: \"" + MT4jSettings.getInstance().getMaxFrameRate() + "\"");
 	    
 	    //FIXME TODO add in settings.txt?
-	    hint(MTApplication.DISABLE_OPENGL_ERROR_REPORT);
+	    hint(AbstractMTApplication.DISABLE_OPENGL_ERROR_REPORT);
 		
 		MT4jSettings.getInstance().programStartTime = System.currentTimeMillis();
 		

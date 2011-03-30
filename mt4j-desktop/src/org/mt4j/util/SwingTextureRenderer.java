@@ -34,7 +34,7 @@ import javax.swing.JComponent;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 
-import org.mt4j.MTApplication;
+import org.mt4j.AbstractMTApplication;
 import org.mt4j.util.opengl.GLTextureSettings;
 import org.mt4j.util.opengl.GLTexture;
 import org.mt4j.util.opengl.GLTexture.EXPANSION_FILTER;
@@ -65,7 +65,7 @@ public class SwingTextureRenderer {
 	private Component compToDraw;
 	
 	/** The mt app. */
-	private MTApplication mtApp;
+	private AbstractMTApplication mtApp;
 
 	/** The texture to render to. */
 	private GLTexture textureToRenderTo;
@@ -89,7 +89,7 @@ public class SwingTextureRenderer {
 	 * @param mtApp the mt app
 	 * @param compToRender the comp to render into texture
 	 */
-	public SwingTextureRenderer(MTApplication mtApp, Component compToRender) {
+	public SwingTextureRenderer(AbstractMTApplication mtApp, Component compToRender) {
 		super();
 		this.compToDraw = compToRender;
 		this.mtApp = mtApp;

@@ -3,7 +3,7 @@ package basic.css.genericItems;
 import java.util.Arrays;
 import java.util.List;
 
-import org.mt4j.MTApplication;
+import org.mt4j.AbstractMTApplication;
 import org.mt4j.components.css.style.CSSSelector;
 import org.mt4j.components.css.util.CSSKeywords.CSSSelectorType;
 import org.mt4j.components.css.util.CSSTemplates;
@@ -17,9 +17,9 @@ import org.mt4jx.components.visibleComponents.widgets.OptionGroup;
 
 
 public class GenericExampleScene  extends AbstractScene{
-	private MTApplication app;
+	private AbstractMTApplication app;
 	
-	public GenericExampleScene(MTApplication mtApplication, String name) {
+	public GenericExampleScene(AbstractMTApplication mtApplication, String name) {
 		super(mtApplication, name);
 
 		this.app = mtApplication;

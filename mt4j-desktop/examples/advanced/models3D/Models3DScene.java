@@ -4,7 +4,7 @@ import java.awt.event.KeyEvent;
 
 import javax.media.opengl.GL;
 
-import org.mt4j.MTApplication;
+import org.mt4j.AbstractMTApplication;
 import org.mt4j.components.MTComponent;
 import org.mt4j.components.MTLight;
 import org.mt4j.components.TransformSpace;
@@ -31,14 +31,14 @@ import org.mt4j.util.modelImporter.ModelImporterFactory;
 import org.mt4j.util.opengl.GLMaterial;
 
 public class Models3DScene extends AbstractScene {
-	private MTApplication mtApp;
+	private AbstractMTApplication mtApp;
 	
 	//TODO switch button/wireframe
 	
 //	private String modelsPath = System.getProperty("user.dir") + File.separator + "examples" +  File.separator +"advanced"+ File.separator + "models3D"  + File.separator + "data" +  File.separator;
-	private String modelsPath = "advanced" + MTApplication.separator  + "models3D"  + MTApplication.separator + "data" +  MTApplication.separator;
+	private String modelsPath = "advanced" + AbstractMTApplication.separator  + "models3D"  + AbstractMTApplication.separator + "data" +  AbstractMTApplication.separator;
 
-	public Models3DScene(MTApplication mtApplication, String name) {
+	public Models3DScene(AbstractMTApplication mtApplication, String name) {
 		super(mtApplication, name);
 		mtApp = mtApplication;
 		
@@ -82,7 +82,7 @@ public class Models3DScene extends AbstractScene {
 
 		//Load the meshes with the ModelImporterFactory (A file can contain more than 1 mesh)
 		//Loads 3ds model
-		MTTriangleMesh[] meshes = ModelImporterFactory.loadModel(mtApplication, modelsPath + "jazz_Obj" + MTApplication.separator + "honda_jazz.obj", 180, true, false );
+		MTTriangleMesh[] meshes = ModelImporterFactory.loadModel(mtApplication, modelsPath + "jazz_Obj" + AbstractMTApplication.separator + "honda_jazz.obj", 180, true, false );
 		
 		//Get the biggest mesh in the group to use as a reference for setting the position/scale
 		final MTTriangleMesh biggestMesh = this.getBiggestMesh(meshes);

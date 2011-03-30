@@ -3,7 +3,7 @@ package advanced.puzzle;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.mt4j.MTApplication;
+import org.mt4j.AbstractMTApplication;
 import org.mt4j.components.MTComponent;
 import org.mt4j.components.TransformSpace;
 import org.mt4j.components.bounds.BoundsZPlaneRectangle;
@@ -61,10 +61,10 @@ public class PuzzleFactory {
 	private float horizontalTileCount;
 	private PApplet app;
 	private float verticalTileCount;
-	public static String svgPath =  "advanced"+MTApplication.separator+"puzzle"+MTApplication.separator+"data"+MTApplication.separator ;
+	public static String svgPath =  "advanced"+AbstractMTApplication.separator+"puzzle"+AbstractMTApplication.separator+"data"+AbstractMTApplication.separator ;
 	public static String svgname = "knobOutRight.svg";
 	
-	public PuzzleFactory(MTApplication app) {
+	public PuzzleFactory(AbstractMTApplication app) {
 		this.app = app;
 	}
 

@@ -1,12 +1,12 @@
 package org.mt4j.test.misc;
-	import org.mt4j.MTApplication;
-import org.mt4j.MTDesktopApplication;
+	import org.mt4j.AbstractMTApplication;
+import org.mt4j.MTApplication;
 import org.mt4j.components.visibleComponents.shapes.MTRectangle;
 import org.mt4j.components.visibleComponents.widgets.MTClipRectangle;
 import org.mt4j.sceneManagement.AbstractScene;
 import org.mt4j.util.MTColor;
 
-	public class ClipHierarchyTest_ extends MTDesktopApplication {
+	public class ClipHierarchyTest_ extends MTApplication {
 		private static final long serialVersionUID = 1L;
 
 		/**
@@ -23,7 +23,7 @@ import org.mt4j.util.MTColor;
 		}
 		
 		private class Scene extends AbstractScene{
-			public Scene(MTApplication mtApplication, String name) {
+			public Scene(AbstractMTApplication mtApplication, String name) {
 				super(mtApplication, name);
 				
 				// CLIP HIERARCHY RECTANGLE TEST

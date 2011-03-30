@@ -19,7 +19,7 @@ package org.mt4j.components.visibleComponents.widgets;
 
 import java.util.HashMap;
 
-import org.mt4j.MTApplication;
+import org.mt4j.AbstractMTApplication;
 import org.mt4j.components.visibleComponents.shapes.MTRectangle;
 import org.mt4j.input.inputData.AbstractCursorInputEvt;
 import org.mt4j.input.inputData.InputCursor;
@@ -35,7 +35,6 @@ import org.mt4j.util.math.Tools3D;
 import org.mt4j.util.math.Vector3D;
 import org.mt4j.util.math.Vertex;
 import org.mt4j.util.opengl.GL10;
-import org.mt4j.util.opengl.GL11;
 import org.mt4j.util.opengl.GL11Plus;
 import org.mt4j.util.opengl.GL20;
 import org.mt4j.util.opengl.GLFBO;
@@ -56,7 +55,7 @@ public class MTSceneTexture extends MTRectangle {
 
 	private GLFBO fbo;
 	private Iscene scene;
-	private MTApplication app;
+	private AbstractMTApplication app;
 	
 	private Plane p;
 	private HashMap<InputCursor, InputCursor> oldCursorToNewCursor;
@@ -68,11 +67,11 @@ public class MTSceneTexture extends MTRectangle {
 	
 	private MTSceneMenu sceneMenu;
 	
-	public MTSceneTexture(MTApplication pa, float x,	float y, Iscene theScene){
+	public MTSceneTexture(AbstractMTApplication pa, float x,	float y, Iscene theScene){
 		this(pa, x, y, Math.round(MT4jSettings.getInstance().getWindowWidth() * 0.6f), Math.round(MT4jSettings.getInstance().getWindowHeight() * 0.6f), theScene);
 	}
 
-	public MTSceneTexture(MTApplication pa, float x,	float y, int fboWidth, int fboHeight, Iscene theScene){
+	public MTSceneTexture(AbstractMTApplication pa, float x,	float y, int fboWidth, int fboHeight, Iscene theScene){
 		super(pa, x, y, 0, MT4jSettings.getInstance().getWindowWidth(), MT4jSettings.getInstance().getWindowHeight());
 		
 		this.scene = theScene;
@@ -156,7 +155,7 @@ public class MTSceneTexture extends MTRectangle {
 	public void drawComponent(PGraphics g){
 //		PGraphicsOpenGL pgl = (PGraphicsOpenGL)g; 
 //		GL gl = pgl.gl;
-		GL11 gl = GraphicsUtil.getGL11();
+		GL10 gl = GraphicsUtil.getGL();
 		GL20 gl20 = GraphicsUtil.getGL20();
 
 //		boolean b = false;
@@ -205,7 +204,7 @@ public class MTSceneTexture extends MTRectangle {
 //			GLStencilUtil.getInstance().endClipping(gl, this);
 		fbo.stopRenderToTexture();
 			
-		if (GLFboStack.getInstance().peekFBO() == 0)
+		if (gl20 != null && GLFboStack.getInstance((GL20) gl).peekFBO() == 0)
 			gl.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA); //Restore default blend mode //FIXME TEST -> neccessary?
 		
 		//FIXME NOT NEEDED!? sufficient to call glGenerateMipmapEXT at texture creation!? 

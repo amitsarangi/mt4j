@@ -1,8 +1,8 @@
 package advanced.modestMapsMT;
 
-import org.mt4j.MTDesktopApplication;
+import org.mt4j.MTApplication;
 
-public class StartMapsExample extends MTDesktopApplication{
+public class StartMapsExample extends MTApplication{
 	/**
 	 * 
 	 */

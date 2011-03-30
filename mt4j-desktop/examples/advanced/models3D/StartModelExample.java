@@ -1,9 +1,9 @@
 package advanced.models3D;
 
-import org.mt4j.MTDesktopApplication;
+import org.mt4j.MTApplication;
 
 
-public class StartModelExample extends MTDesktopApplication{
+public class StartModelExample extends MTApplication{
 	/**
 	 * 
 	 */

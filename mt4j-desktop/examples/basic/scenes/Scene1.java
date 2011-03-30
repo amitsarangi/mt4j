@@ -1,6 +1,6 @@
 package basic.scenes;
 
-import org.mt4j.MTApplication;
+import org.mt4j.AbstractMTApplication;
 import org.mt4j.components.TransformSpace;
 import org.mt4j.components.visibleComponents.widgets.MTTextArea;
 import org.mt4j.components.visibleComponents.widgets.buttons.MTImageButton;
@@ -24,13 +24,13 @@ import org.mt4j.util.opengl.GLFBO;
 import processing.core.PImage;
 
 public class Scene1 extends AbstractScene {
-	private MTApplication mtApp;
+	private AbstractMTApplication mtApp;
 	private Iscene scene2;
 	
 //	private String imagePath = System.getProperty("user.dir") + File.separator + "examples"+  File.separator +"basic"+  File.separator + "scenes" + File.separator + "data" + File.separator;
-	private String imagePath =  "basic"+  MTApplication.separator + "scenes" + MTApplication.separator + "data" + MTApplication.separator;
+	private String imagePath =  "basic"+  AbstractMTApplication.separator + "scenes" + AbstractMTApplication.separator + "data" + AbstractMTApplication.separator;
 	
-	public Scene1(MTApplication mtApplication, String name) {
+	public Scene1(AbstractMTApplication mtApplication, String name) {
 		super(mtApplication, name);
 		this.mtApp = mtApplication;
 		

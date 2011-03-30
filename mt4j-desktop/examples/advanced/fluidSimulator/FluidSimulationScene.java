@@ -37,7 +37,7 @@ import javax.media.opengl.GL;
 
 import msafluid.MSAFluidSolver2D;
 
-import org.mt4j.MTApplication;
+import org.mt4j.AbstractMTApplication;
 import org.mt4j.components.MTComponent;
 import org.mt4j.input.IMTInputEventListener;
 import org.mt4j.input.inputData.AbstractCursorInputEvt;
@@ -68,9 +68,9 @@ public class FluidSimulationScene extends AbstractScene{
 	private ParticleSystem particleSystem;
 	/////////
 	
-	private MTApplication app;
+	private AbstractMTApplication app;
 
-	public FluidSimulationScene(MTApplication mtApplication, String name) {
+	public FluidSimulationScene(AbstractMTApplication mtApplication, String name) {
 		super(mtApplication, name);
 		this.app = mtApplication;
 		

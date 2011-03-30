@@ -21,7 +21,7 @@ import java.util.HashMap;
 
 import javax.swing.SwingUtilities;
 
-import org.mt4j.MTApplication;
+import org.mt4j.AbstractMTApplication;
 import org.mt4j.input.inputData.ActiveCursorPool;
 import org.mt4j.input.inputData.InputCursor;
 import org.mt4j.input.inputData.MTFingerInputEvt;
@@ -48,7 +48,7 @@ public class Win7NativeTouchSource extends AbstractInputSource {
 	
 	static boolean loaded = false;
 	
-	private MTApplication app;
+	private AbstractMTApplication app;
 
 	private int sunAwtCanvasHandle;
 
@@ -95,7 +95,7 @@ public class Win7NativeTouchSource extends AbstractInputSource {
 	 *
 	 * @param mtApp the mt app
 	 */
-	public Win7NativeTouchSource(MTApplication mtApp) {
+	public Win7NativeTouchSource(AbstractMTApplication mtApp) {
 		super(mtApp);
 		this.app = mtApp;
 		this.success = false;

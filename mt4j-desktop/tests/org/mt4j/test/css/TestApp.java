@@ -1,12 +1,12 @@
 package org.mt4j.test.css;
 
-import org.mt4j.MTApplication;
+import org.mt4j.AbstractMTApplication;
 import org.mt4j.sceneManagement.AbstractScene;
 
 
 public class TestApp extends AbstractScene{
 
-	public TestApp(MTApplication mtApplication, String name) {
+	public TestApp(AbstractMTApplication mtApplication, String name) {
 		super( mtApplication,  name);
 		
 		/*System.out.println("Started Test Application");

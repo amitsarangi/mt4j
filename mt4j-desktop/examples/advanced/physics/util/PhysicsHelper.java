@@ -38,7 +38,7 @@ import org.jbox2d.dynamics.joints.MouseJoint;
 import org.jbox2d.dynamics.joints.MouseJointDef;
 import org.jbox2d.util.nonconvex.Polygon;
 import org.jbox2d.util.nonconvex.Triangle;
-import org.mt4j.MTApplication;
+import org.mt4j.AbstractMTApplication;
 import org.mt4j.components.MTComponent;
 import org.mt4j.input.inputProcessors.IGestureEventListener;
 import org.mt4j.input.inputProcessors.MTGestureEvent;
@@ -258,7 +258,7 @@ public class PhysicsHelper {
 	}
 	
 	
-	public static List<Vertex> triangulateGLU(MTApplication app, List<Vertex> vertices){
+	public static List<Vertex> triangulateGLU(AbstractMTApplication app, List<Vertex> vertices){
 		System.err.println("Trying glu triangulation..");
 		GluTrianglulator triangulator = new GluTrianglulator(app);
 		Vertex[] vertexArray = vertices.toArray(new Vertex[vertices.size()]);

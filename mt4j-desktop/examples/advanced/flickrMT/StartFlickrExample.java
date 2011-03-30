@@ -1,9 +1,9 @@
 package advanced.flickrMT;
 
-import org.mt4j.MTDesktopApplication;
+import org.mt4j.MTApplication;
 
 
-public class StartFlickrExample extends MTDesktopApplication{
+public class StartFlickrExample extends MTApplication{
 	/**
 	 * 
 	 */

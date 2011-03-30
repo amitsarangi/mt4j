@@ -1,6 +1,6 @@
 package org.mt4j.test.components.visibleComponents.font;
 
-import org.mt4j.MTApplication;
+import org.mt4j.AbstractMTApplication;
 import org.mt4j.components.visibleComponents.widgets.MTTextArea;
 import org.mt4j.test.AbstractWindowTestcase;
 import org.mt4j.test.testUtil.DummyScene;
@@ -14,7 +14,7 @@ public class FontLoadingTest extends AbstractWindowTestcase {
 	private DummyScene scene;
 
 	@Override
-	public void inStartUp(MTApplication app) {
+	public void inStartUp(AbstractMTApplication app) {
 		this.scene = new DummyScene(app, "scene");
 		app.addScene(scene);
 	}

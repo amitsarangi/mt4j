@@ -22,7 +22,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 
-import org.mt4j.MTApplication;
+import org.mt4j.AbstractMTApplication;
 import org.mt4j.input.inputData.ActiveCursorPool;
 import org.mt4j.input.inputData.InputCursor;
 import org.mt4j.input.inputData.MTFingerInputEvt;
@@ -56,7 +56,7 @@ public class MouseInputSource extends AbstractInputSource implements MouseMotion
 	 * 
 	 * @param pa the pa
 	 */
-	public MouseInputSource(MTApplication pa){
+	public MouseInputSource(AbstractMTApplication pa){
 		super(pa);
 		
 		pa.registerMouseEvent(this);

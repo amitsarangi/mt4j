@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
+import org.mt4j.AbstractMTApplication;
 import org.mt4j.MTApplication;
 import org.mt4j.input.inputSources.KeyboardInputSource;
 import org.mt4j.input.inputSources.MouseInputSource;
@@ -29,7 +30,7 @@ public class DesktopInputManager extends InputManager{
 	 *
 	 * @param app the app
 	 */
-	public DesktopInputManager(MTApplication app) {
+	public DesktopInputManager(AbstractMTApplication app) {
 		this(app, true);
 	}
 	
@@ -39,7 +40,7 @@ public class DesktopInputManager extends InputManager{
 	 * @param app the app
 	 * @param registerDefaultSources the register default sources
 	 */
-	public DesktopInputManager(MTApplication app, boolean registerDefaultSources) {
+	public DesktopInputManager(AbstractMTApplication app, boolean registerDefaultSources) {
 		super(app, registerDefaultSources);
 	}
 
@@ -130,8 +131,11 @@ public class DesktopInputManager extends InputManager{
 //		MuitoInputSource muitoInput = new MuitoInputSource(pa, "localhost", 6666);
 		
 		//Register TUIO protocol input sources
-		this.registerInputSource(new Tuio2DCursorInputSource(app));
-		this.registerInputSource(new Tuio2dObjectInputSource(app));
+		if (app instanceof MTApplication) {
+			MTApplication desktopApp = (MTApplication) app;
+			this.registerInputSource(new Tuio2DCursorInputSource(desktopApp));
+			this.registerInputSource(new Tuio2dObjectInputSource(desktopApp));
+		}
 	}
 
 

@@ -25,7 +25,7 @@ import javax.media.opengl.glu.GLU;
 import javax.media.opengl.glu.GLUtessellator;
 import javax.media.opengl.glu.GLUtessellatorCallbackAdapter;
 
-import org.mt4j.MTApplication;
+import org.mt4j.AbstractMTApplication;
 import org.mt4j.components.visibleComponents.shapes.GeometryInfo;
 import org.mt4j.components.visibleComponents.shapes.mesh.MTTriangleMesh;
 import org.mt4j.util.math.Vertex;
@@ -109,8 +109,8 @@ public class GluTrianglulator extends GLUtessellatorCallbackAdapter{
     
     @Override
     protected void finalize() throws Throwable {
-    	if (this.p instanceof MTApplication ) {
-			MTApplication mtApp = (MTApplication) this.p;
+    	if (this.p instanceof AbstractMTApplication ) {
+			AbstractMTApplication mtApp = (AbstractMTApplication) this.p;
 			mtApp.invokeLater(new Runnable() {
 				public void run() {
 					deleteTess();

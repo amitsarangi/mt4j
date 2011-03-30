@@ -35,7 +35,7 @@ import mri.v3ds.TexCoord3ds;
 import mri.v3ds.TextDecode3ds;
 import mri.v3ds.Vertex3ds;
 
-import org.mt4j.MTApplication;
+import org.mt4j.AbstractMTApplication;
 import org.mt4j.components.visibleComponents.shapes.GeometryInfo;
 import org.mt4j.components.visibleComponents.shapes.mesh.MTTriangleMesh;
 import org.mt4j.util.MT4jSettings;
@@ -377,7 +377,7 @@ public class Model3dsFileFactory extends ModelImporterFactory{
 						for (int j = 0; j < suffix.length; j++) {
 							String suffixString = suffix[j];
 							//Try to load and set texture to mesh
-							String texturePath 	= modelFolder + MTApplication.separator + materialName + "." +  suffixString;
+							String texturePath 	= modelFolder + AbstractMTApplication.separator + materialName + "." +  suffixString;
 							File textureFile = new File(texturePath);
 							if (textureFile.exists()){
 								boolean success = textureFile.renameTo(new File(texturePath));
@@ -413,8 +413,8 @@ public class Model3dsFileFactory extends ModelImporterFactory{
 						PImage texture = null;
 						String[] suffix = new String[]{"jpg", "JPG", "tga" , "TGA", "bmp", "BMP", "png", "PNG", "tiff", "TIFF"};
 						for (String suffixString : suffix) {
-							String modelFolder  = pathToModel.substring(0, pathToModel.lastIndexOf(MTApplication.separator));
-							String texturePath 	= modelFolder + MTApplication.separator + materialName + "." +  suffixString;
+							String modelFolder  = pathToModel.substring(0, pathToModel.lastIndexOf(AbstractMTApplication.separator));
+							String texturePath 	= modelFolder + AbstractMTApplication.separator + materialName + "." +  suffixString;
 							if (MT4jSettings.getInstance().isOpenGlMode()){
 								PImage img = pa.loadImage(texturePath);
 								if (Tools3D.isPowerOfTwoDimension(img)){

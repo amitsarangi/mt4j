@@ -2,7 +2,7 @@ package advanced.drawing;
 
 import java.util.HashMap;
 
-import org.mt4j.MTApplication;
+import org.mt4j.AbstractMTApplication;
 import org.mt4j.components.TransformSpace;
 import org.mt4j.components.visibleComponents.shapes.AbstractShape;
 import org.mt4j.input.IMTInputEventListener;
@@ -20,7 +20,7 @@ import processing.core.PApplet;
 
 public class DrawSurfaceScene extends AbstractScene {
 
-	private MTApplication mtApp;
+	private AbstractMTApplication mtApp;
 
 	private AbstractShape drawShape;
 
@@ -46,7 +46,7 @@ public class DrawSurfaceScene extends AbstractScene {
 	//TODO eraser?
 	//TODO get blobwidth from win7 touch events and adjust the brush scale
 	
-	public DrawSurfaceScene(MTApplication mtApplication, String name) {
+	public DrawSurfaceScene(AbstractMTApplication mtApplication, String name) {
 		super(mtApplication, name);
 		this.mtApp = mtApplication;
 		

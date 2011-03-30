@@ -17,7 +17,7 @@
  ***********************************************************************/
 package org.mt4j.components.visibleComponents.widgets;
 
-import org.mt4j.MTApplication;
+import org.mt4j.AbstractMTApplication;
 import org.mt4j.components.TransformSpace;
 import org.mt4j.components.bounds.BoundsZPlaneRectangle;
 import org.mt4j.components.bounds.IBoundingShape;
@@ -53,7 +53,7 @@ public class MTBackgroundImage extends MTPolygon {
 	 * @param bgImage the bg image
 	 * @param tiled the tiled
 	 */
-	public MTBackgroundImage(MTApplication mtApp, PImage bgImage, boolean tiled) {
+	public MTBackgroundImage(AbstractMTApplication mtApp, PImage bgImage, boolean tiled) {
 		super(mtApp, 
 				new Vertex[]{
 				new Vertex(0,0,0 , 0,0),

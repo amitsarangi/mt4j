@@ -1,6 +1,6 @@
 package org.mt4j.test.misc;
 
-import org.mt4j.MTApplication;
+import org.mt4j.AbstractMTApplication;
 import org.mt4j.components.visibleComponents.shapes.MTRectangle;
 import org.mt4j.components.visibleComponents.widgets.MTOverlayContainer;
 import org.mt4j.test.AbstractWindowTestcase;
@@ -13,7 +13,7 @@ public class MiscSmallTests extends AbstractWindowTestcase {
 	private DummyScene scene;
 
 	@Override
-	public void inStartUp(MTApplication app) {
+	public void inStartUp(AbstractMTApplication app) {
 		//Add a scene to the mt application
 		this.scene = new DummyScene(app, "Dummy SceneA");
 		app.addScene(scene);

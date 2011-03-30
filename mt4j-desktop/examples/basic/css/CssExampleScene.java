@@ -1,6 +1,6 @@
 package basic.css;
 
-import org.mt4j.MTApplication;
+import org.mt4j.AbstractMTApplication;
 import org.mt4j.components.css.style.CSSSelector;
 import org.mt4j.components.css.util.CSSKeywords.CSSSelectorType;
 import org.mt4j.components.css.util.CSSTemplates;
@@ -16,9 +16,9 @@ import org.mt4jx.components.visibleComponents.widgets.MTSuggestionTextArea;
 
 
 public class CssExampleScene  extends AbstractScene{
-	private MTApplication app;
+	private AbstractMTApplication app;
 	
-	public CssExampleScene(MTApplication mtApplication, String name) {
+	public CssExampleScene(AbstractMTApplication mtApplication, String name) {
 		super(mtApplication, name);
 
 		this.app = mtApplication;

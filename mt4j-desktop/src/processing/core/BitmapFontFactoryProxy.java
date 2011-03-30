@@ -21,7 +21,7 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.mt4j.MTApplication;
+import org.mt4j.AbstractMTApplication;
 import org.mt4j.components.visibleComponents.font.BitmapFontCharacter;
 import org.mt4j.util.MT4jSettings;
 import org.mt4j.util.MTColor;
@@ -237,7 +237,7 @@ public class BitmapFontFactoryProxy implements IFontFactory {
 			//If not found try to load from the "/data" directory
 			if (p5Font == null){
 				int lastDirFileSeparator = fontFileName.lastIndexOf(java.io.File.separator);
-				int lastDirSeparator = fontFileName.lastIndexOf(MTApplication.separator);
+				int lastDirSeparator = fontFileName.lastIndexOf(AbstractMTApplication.separator);
 				if (lastDirFileSeparator != -1){
 					p5Font = pa.loadFont(fontFileName.substring(lastDirFileSeparator+1, fontFileName.length()));
 				}else if (lastDirSeparator != -1){
@@ -250,7 +250,7 @@ public class BitmapFontFactoryProxy implements IFontFactory {
 			//If not found try to load from the "/data" directory
 			if (p5Font == null){
 				int lastDirFileSeparator = fontFileName.lastIndexOf(java.io.File.separator);
-				int lastDirSeparator = fontFileName.lastIndexOf(MTApplication.separator);
+				int lastDirSeparator = fontFileName.lastIndexOf(AbstractMTApplication.separator);
 				if (lastDirFileSeparator != -1){
 					p5Font = pa.createFont(fontFileName.substring(lastDirFileSeparator+1, fontFileName.length()), fontSize, antiAliased); 
 				}else if (lastDirSeparator != -1){
@@ -263,7 +263,7 @@ public class BitmapFontFactoryProxy implements IFontFactory {
 		else{
 			//No file suffix -> Create font from a java/system font
 			int lastDirFileSeparator = fontFileName.lastIndexOf(java.io.File.separator);
-			int lastDirSeparator = fontFileName.lastIndexOf(MTApplication.separator);
+			int lastDirSeparator = fontFileName.lastIndexOf(AbstractMTApplication.separator);
 			if (lastDirFileSeparator != -1){
 				p5Font = pa.createFont(fontFileName.substring(lastDirFileSeparator+1, fontFileName.length()), fontSize, antiAliased); //Creats the font
 			}

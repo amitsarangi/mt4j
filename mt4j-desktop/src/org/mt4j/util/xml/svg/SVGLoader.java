@@ -101,7 +101,7 @@ import org.apache.batik.parser.PathParser;
 import org.apache.batik.parser.TransformListParser;
 import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.XMLResourceDescriptor;
-import org.mt4j.MTApplication;
+import org.mt4j.AbstractMTApplication;
 import org.mt4j.components.MTComponent;
 import org.mt4j.components.TransformSpace;
 import org.mt4j.components.bounds.BoundsZPlaneRectangle;
@@ -1180,8 +1180,8 @@ public class SVGLoader implements SVGConstants{
 								  }
 							  }
 							//Per default use direct gl drawing and displaylists in OGL mode
-							if (pa instanceof MTApplication) {
-								MTApplication app = (MTApplication) pa;
+							if (pa instanceof AbstractMTApplication) {
+								AbstractMTApplication app = (AbstractMTApplication) pa;
 								app.invokeLater(new InvokeLaterAction(shape));
 							}
 						  }
@@ -1445,8 +1445,8 @@ public class SVGLoader implements SVGConstants{
         	awtCycleMethod = CycleMethod.REFLECT;
         }
 
-        if (pa instanceof MTApplication) {
-        	MTApplication app = (MTApplication) pa;
+        if (pa instanceof AbstractMTApplication) {
+        	AbstractMTApplication app = (AbstractMTApplication) pa;
 
         	//Calculate a bounding rectangle from the rotated shape
         	BoundsZPlaneRectangle boundsZ = new BoundsZPlaneRectangle(shape, shape.getVerticesLocal());

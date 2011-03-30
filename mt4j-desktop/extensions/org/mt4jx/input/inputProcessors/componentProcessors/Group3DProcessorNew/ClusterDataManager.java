@@ -2,7 +2,7 @@ package org.mt4jx.input.inputProcessors.componentProcessors.Group3DProcessorNew;
 
 import java.util.ArrayList;
 
-import org.mt4j.MTApplication;
+import org.mt4j.AbstractMTApplication;
 import org.mt4j.components.MTCanvas;
 import org.mt4j.components.MTComponent;
 import org.mt4j.input.MTEvent;
@@ -81,7 +81,7 @@ public class ClusterDataManager implements ISelectionListener {
 		cl.addGestureListener(ScaleProcessor.class,  new DefaultScaleAction());
 		
 		//cl.registerInputProcessor(new TapProcessor(pApplet,999999.0f));
-		cl.addGestureListener(DragProcessor.class,new CreateDragHelperAction((MTApplication)pApplet,this.canvas,this.canvas.getAttachedCamera(),cl));
+		cl.addGestureListener(DragProcessor.class,new CreateDragHelperAction((AbstractMTApplication)pApplet,this.canvas,this.canvas.getAttachedCamera(),cl));
 				
 		cl.attachCamera(canvas.getAttachedCamera());
 		cl.setComposite(true);

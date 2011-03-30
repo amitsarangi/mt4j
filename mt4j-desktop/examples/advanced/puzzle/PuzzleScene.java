@@ -17,7 +17,7 @@
  ***********************************************************************/
 package advanced.puzzle;
 
-import org.mt4j.MTApplication;
+import org.mt4j.AbstractMTApplication;
 import org.mt4j.components.MTComponent;
 import org.mt4j.components.TransformSpace;
 import org.mt4j.components.visibleComponents.shapes.AbstractShape;
@@ -50,7 +50,7 @@ public class PuzzleScene extends AbstractScene{
 	private PuzzleFactory pf;
 	
 	/** The images path. */
-	private String imagesPath = "advanced"+MTApplication.separator+"puzzle"+MTApplication.separator+"data"+MTApplication.separator;
+	private String imagesPath = "advanced"+AbstractMTApplication.separator+"puzzle"+AbstractMTApplication.separator+"data"+AbstractMTApplication.separator;
 	
 	/** The images names. */
 	private String[] imagesNames = new String[]{
@@ -65,7 +65,7 @@ public class PuzzleScene extends AbstractScene{
 	private MTList list;
 	private MTRoundRectangle loadingScreen;
 
-	public PuzzleScene(MTApplication mtApplication, String name) {
+	public PuzzleScene(AbstractMTApplication mtApplication, String name) {
 		super(mtApplication, name);
 		if (!MT4jSettings.getInstance().isOpenGlMode()){
 			System.err.println(this.getName() + " is only usable with the OpenGL renderer.");

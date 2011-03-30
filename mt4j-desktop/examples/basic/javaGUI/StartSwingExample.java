@@ -20,8 +20,8 @@ import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.UIManager;
 
+import org.mt4j.AbstractMTApplication;
 import org.mt4j.MTApplication;
-import org.mt4j.MTDesktopApplication;
 import org.mt4j.components.MTComponent;
 import org.mt4j.components.visibleComponents.shapes.MTEllipse;
 import org.mt4j.components.visibleComponents.shapes.MTRectangle;
@@ -59,7 +59,7 @@ public class StartSwingExample extends JFrame {
 		this.setLayout(new BorderLayout());
         
 		//Create our mt4j applet
-        final MTApplication instance = new TestMTApplication();
+        final AbstractMTApplication instance = new TestMTApplication();
         instance.frame = this; //Important for registering the Windows 7 Touch input
         instance.init();
         
@@ -191,7 +191,7 @@ public class StartSwingExample extends JFrame {
 	}
 	
 	
-	private class TestMTApplication extends MTDesktopApplication{
+	private class TestMTApplication extends MTApplication{
 		private static final long serialVersionUID = 1L;
 
 		@Override

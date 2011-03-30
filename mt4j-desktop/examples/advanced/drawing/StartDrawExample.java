@@ -1,8 +1,8 @@
 package advanced.drawing;
 
-import org.mt4j.MTDesktopApplication;
+import org.mt4j.MTApplication;
 
-public class StartDrawExample extends MTDesktopApplication{
+public class StartDrawExample extends MTApplication{
 	/**
 	 * 
 	 */

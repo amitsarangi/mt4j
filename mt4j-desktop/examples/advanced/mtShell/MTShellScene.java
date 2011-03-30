@@ -19,7 +19,7 @@ package advanced.mtShell;
 
 import java.awt.event.KeyEvent;
 
-import org.mt4j.MTApplication;
+import org.mt4j.AbstractMTApplication;
 import org.mt4j.components.TransformSpace;
 import org.mt4j.components.visibleComponents.shapes.MTPolygon;
 import org.mt4j.components.visibleComponents.widgets.MTList;
@@ -76,7 +76,7 @@ public class MTShellScene extends AbstractScene {
 	}
 	
 	/** The app. */
-	private MTApplication app;
+	private AbstractMTApplication app;
 	
 	/** The has fbo. */
 	private boolean hasFBO;
@@ -119,7 +119,7 @@ public class MTShellScene extends AbstractScene {
 	 * @param mtApplication the mt application
 	 * @param name the name
 	 */
-	public MTShellScene(MTApplication mtApplication, String name) {
+	public MTShellScene(AbstractMTApplication mtApplication, String name) {
 		super(mtApplication, name);
 		this.app = mtApplication;
 		this.hasFBO = GLFBO.isSupported(app);
@@ -326,7 +326,7 @@ public class MTShellScene extends AbstractScene {
 	private String getPathToIcons(){
 //		return System.getProperty("user.dir")+File.separator+"examples"+File.separator+"advanced"+File.separator+"mtShell"+ File.separator +"data"+ File.separator+"images"+File.separator; 
 		//Load from classpath
-		return  "advanced" + MTApplication.separator + "mtShell" + MTApplication.separator + "data"+ MTApplication.separator + "images" + MTApplication.separator;
+		return  "advanced" + AbstractMTApplication.separator + "mtShell" + AbstractMTApplication.separator + "data"+ AbstractMTApplication.separator + "images" + AbstractMTApplication.separator;
 	}
 	
 	

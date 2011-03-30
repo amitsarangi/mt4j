@@ -6,7 +6,7 @@ import java.util.ArrayList;
 
 import javax.media.opengl.GL;
 
-import org.mt4j.MTApplication;
+import org.mt4j.AbstractMTApplication;
 import org.mt4j.components.MTComponent;
 import org.mt4j.components.MTLight;
 import org.mt4j.components.TransformSpace;
@@ -44,7 +44,7 @@ import org.mt4jx.util.extension3D.collision.CollisionManager;
 import processing.core.PGraphics;
 
 public class Extension3DScene extends AbstractScene {
-	private MTApplication mtApp;
+	private AbstractMTApplication mtApp;
 	
 	private CollisionManager collisionManager;
 	
@@ -55,7 +55,7 @@ public class Extension3DScene extends AbstractScene {
 	
 	private MTComponent comp = null;
 	Vector3D grundflaecheTranslation = null;
-	public Extension3DScene(MTApplication mtApplication, String name) {
+	public Extension3DScene(AbstractMTApplication mtApplication, String name) {
 		super(mtApplication, name);
 		mtApp = mtApplication;
 	
@@ -271,7 +271,7 @@ public class Extension3DScene extends AbstractScene {
         g.popMatrix();
     }
 	
-	private MTComponent getMeshGroupForSimpleObject(MTApplication mtApplication,MTTriangleMesh inputMesh,Vector3D translation,MTLight light,GLMaterial material,String name)
+	private MTComponent getMeshGroupForSimpleObject(AbstractMTApplication mtApplication,MTTriangleMesh inputMesh,Vector3D translation,MTLight light,GLMaterial material,String name)
 	{		
 		
 		
@@ -337,7 +337,7 @@ public class Extension3DScene extends AbstractScene {
 		return meshGroup;
 	}
 	
-	private MTComponent getMeshGroup(MTApplication mtApplication,Vector3D translation,String filename,MTLight light,GLMaterial material,String name)
+	private MTComponent getMeshGroup(AbstractMTApplication mtApplication,Vector3D translation,String filename,MTLight light,GLMaterial material,String name)
 	{		
 		
 		
@@ -402,7 +402,7 @@ public class Extension3DScene extends AbstractScene {
 		return meshGroup;
 	}
 	
-	private MTComponent getGroundMesh(MTApplication mtApplication,String filename,MTLight light,GLMaterial material,Icamera cam)
+	private MTComponent getGroundMesh(AbstractMTApplication mtApplication,String filename,MTLight light,GLMaterial material,Icamera cam)
 	{
 		MTComponent grundflaecheGroup = new MTComponent(mtApplication);
 	
@@ -450,7 +450,7 @@ public class Extension3DScene extends AbstractScene {
 		return grundflaecheGroup;
 	}
 
-	private void settingsForNormalMeshGroup(MTApplication mtApplication,final MTComponent meshGroup)
+	private void settingsForNormalMeshGroup(AbstractMTApplication mtApplication,final MTComponent meshGroup)
 	{
 		meshGroup.setComposite(true); //-> Group gets picked instead of its children
 		
