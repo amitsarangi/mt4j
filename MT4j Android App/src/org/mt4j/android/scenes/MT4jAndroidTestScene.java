@@ -1,6 +1,6 @@
 package org.mt4j.android.scenes;
 
-import org.mt4j.MTApplication;
+import org.mt4j.AbstractMTApplication;
 import org.mt4j.components.visibleComponents.widgets.MTTextArea;
 import org.mt4j.input.gestureAction.DefaultLassoAction;
 import org.mt4j.input.gestureAction.DefaultPanAction;
@@ -17,7 +17,7 @@ import org.mt4j.util.font.IFont;
 
 public class MT4jAndroidTestScene extends AbstractScene {
 
-	public MT4jAndroidTestScene(MTApplication mtApplication, String name) {
+	public MT4jAndroidTestScene(AbstractMTApplication mtApplication, String name) {
 		super(mtApplication, name);
 		
 		this.setClearColor(new MTColor(146, 150, 188, 255));
