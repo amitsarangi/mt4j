@@ -103,11 +103,13 @@ public class BitmapFont implements IFont, ITextureFont {
 	 * @param fillColor the fill color
 	 * @param strokeColor the stroke color
 	 * @param antiAliased the anti aliased
+	 * @param fontFileName2 
 	 */
 	public BitmapFont(BitmapFontCharacter[] characters, int defaultHorizontalAdvX, String fontFamily, int fontMaxAscent, int fontMaxDescent, int unitsPerEm, int originalFontSize,
 			MTColor fillColor,
 //			MTColor strokeColor,
-			boolean antiAliased
+			boolean antiAliased, 
+			String fontFileName
 	) {
 		this.characters = characters;
 		this.defaultHorizontalAdvX = defaultHorizontalAdvX;
@@ -116,6 +118,8 @@ public class BitmapFont implements IFont, ITextureFont {
 		this.fillColor = fillColor;
 //		this.strokeColor = strokeColor;
 		this.antiAliased = antiAliased;
+		
+		this.fontFileName = fontFileName;
 		
 //		this.fontId = "";
 		

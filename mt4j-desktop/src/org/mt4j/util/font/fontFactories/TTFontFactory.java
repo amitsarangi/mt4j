@@ -80,7 +80,7 @@ public class TTFontFactory implements IFontFactory{
 	public IFont getCopy(IFont font) {
 		if (font instanceof VectorFont) {
 			VectorFont vf = (VectorFont) font;
-			VectorFont copy = new VectorFont( (VectorFontCharacter[]) vf.getCharacters(), vf.getDefaultHorizontalAdvX(), vf.getFontFamily(), vf.getFontMaxAscent(), vf.getFontMaxDescent(), vf.getUnitsPerEM(), vf.getOriginalFontSize(), vf.getFillColor(), /*vf.getStrokeColor(),*/ vf.isAntiAliased());
+			VectorFont copy = new VectorFont( (VectorFontCharacter[]) vf.getCharacters(), vf.getDefaultHorizontalAdvX(), vf.getFontFamily(), vf.getFontMaxAscent(), vf.getFontMaxDescent(), vf.getUnitsPerEM(), vf.getOriginalFontSize(), vf.getFillColor(), /*vf.getStrokeColor(),*/ vf.isAntiAliased(), vf.getFontFileName());
 			return copy;
 		}
 		return null;
@@ -208,8 +208,10 @@ public class TTFontFactory implements IFontFactory{
 		VectorFont vectorFont = new VectorFont(newArray, fontDefaultXAdvancing, this.getFamily(f), fontMaxAscent, fontMaxDescent, this.unitsPerEm, fontSize,
 				fillColor,
 //				strokeColor,
-				antiAliasing);
-		vectorFont.setFontFileName(fontPath);
+				antiAliasing,
+				fontPath
+		);
+//		vectorFont.setFontFileName(fontPath);
 		vectorFont.setFontId("-1");
 		return vectorFont;
 	}

@@ -83,6 +83,7 @@ public class SvgFontFactory extends DefaultHandler implements IFontFactory {
 	private MTColor fillColor;
 //	private MTColor strokeColor;
 	private boolean antiAliased;
+	private String fontFileName;
 	
 	
 	public SvgFontFactory() {  }
@@ -94,7 +95,7 @@ public class SvgFontFactory extends DefaultHandler implements IFontFactory {
 	public IFont getCopy(IFont font) {
 		if (font instanceof VectorFont) {
 			VectorFont vf = (VectorFont) font;
-			VectorFont copy = new VectorFont( (VectorFontCharacter[]) vf.getCharacters(), vf.getDefaultHorizontalAdvX(), vf.getFontFamily(), vf.getFontMaxAscent(), vf.getFontMaxDescent(), vf.getUnitsPerEM(), vf.getOriginalFontSize(), vf.getFillColor(), /*vf.getStrokeColor(),*/ vf.isAntiAliased());
+			VectorFont copy = new VectorFont( (VectorFontCharacter[]) vf.getCharacters(), vf.getDefaultHorizontalAdvX(), vf.getFontFamily(), vf.getFontMaxAscent(), vf.getFontMaxDescent(), vf.getUnitsPerEM(), vf.getOriginalFontSize(), vf.getFillColor(), /*vf.getStrokeColor(),*/ vf.isAntiAliased(), font.getFontFileName());
 			return copy;
 		}
 		return null;
@@ -165,6 +166,8 @@ public class SvgFontFactory extends DefaultHandler implements IFontFactory {
 		pathHandler = new CustomPathHandler();
 		pathParser 	= new PathParser();
 		pathParser.setPathHandler(pathHandler);
+		
+		this.fontFileName = svgFontFileName;
 		
 		XmlHandler.getInstance().saxParse(
 				svgFontFileName, 
@@ -441,7 +444,8 @@ public class SvgFontFactory extends DefaultHandler implements IFontFactory {
 		VectorFont svgFont = new VectorFont(characters.toArray(new VectorFontCharacter[characters.size()]), fontDefaultXAdvancing, fontFamily, fontMaxAscent, fontMaxDescent, font_units_per_em, fontSize,
 				fillColor,
 //				strokeColor,
-				antiAliased
+				antiAliased,
+				fontFileName
 		);
 		
 		//TODO this caused performance problems - reason UNKOWN! DISABLE IF PERFORMANCE DROPS SIGNIFICANTLY!

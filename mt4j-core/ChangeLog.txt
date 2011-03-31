@@ -3,10 +3,10 @@ Change log for MT4j - Multi-Touch for Java
 === Version 0.98 (30/3/2011): ===
 === Input/Gestures: ===
 * added UniStroke stroke gesture processor (1$ Gesture)
+* added Rotate3D processor 3-finger gesture 
 * input event propagation - > MTInputEvent's now have a currentTarget and an eventPhase (CAPTURING_PHASE/AT_TARGET/BUBBLING_PHASE) and bubble up the component hierarchy - stop input event bubbling using mtInputEvent.stopPropagation() - -> we should use event.getCurrentTarget() for most tasks instead of
 getTarget() now -> only the processors of the parent that we set inputProcessor.setEnableForBubbledEvents(true) will use the bubbled events (false by default)
 * AbstractCursorProcessor now works with AbstractCursorInputEvt instead of MTFingerInputEvt -> Note: Fiducial Events will also trigger the default gestures!
-* UniStroke gestures' UniStrokeEvent: added cursor information - getCursor()
 * input processors now have 2 more states: GESTURE_CANCELED and GESTURE_RESUMED -> GESTURE_CANCELED occurs when the gesture is aborted because a higher priority gesture took over one or more cursors. GESTURE_RESUMED is called if the gesture gets a lock on the needed cursors again - Note that after GESTURE_CANCELED, no GESTURE_ENDED has to follow because the gesture may never be resumed!
 * added MTMouseInputEvt which carries the mouse button and modifiers which was used in MouseInputSource
 * changed the TapProcessor to cancle the tap if the cursor is moved too far
@@ -64,7 +64,8 @@ resolution (* we now only set the window width/height to the screen dimensions i
 -> to get a clearer image
 * you can drag tiles while rotating in the Puzzle Example
 * added stroke gestures, double tap and flick to MTGesturesExamplesScene
-* add flick gestures to Scenes Example
+* added flick gestures to Scenes Example
+* added rotate3d processor to model in ModelsExample
 
 
 

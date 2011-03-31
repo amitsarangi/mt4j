@@ -58,7 +58,7 @@ public class BitmapFontFactoryProxy implements IFontFactory {
 	public IFont getCopy(IFont font) {
 		if (font instanceof BitmapFont) {
 			BitmapFont bf = (BitmapFont) font;
-			BitmapFont copy = new BitmapFont((BitmapFontCharacter[]) bf.getCharacters(), bf.getDefaultHorizontalAdvX(), bf.getFontFamily(), bf.getFontMaxAscent(), bf.getFontMaxDescent(), bf.getUnitsPerEM(), bf.getOriginalFontSize(), bf.getFillColor(),  /*bf.getStrokeColor(),*/ bf.isAntiAliased());
+			BitmapFont copy = new BitmapFont((BitmapFontCharacter[]) bf.getCharacters(), bf.getDefaultHorizontalAdvX(), bf.getFontFamily(), bf.getFontMaxAscent(), bf.getFontMaxDescent(), bf.getUnitsPerEM(), bf.getOriginalFontSize(), bf.getFillColor(),  /*bf.getStrokeColor(),*/ bf.isAntiAliased(), bf.getFontFileName());
 			return copy;
 		}
 		return null;
@@ -199,7 +199,8 @@ public class BitmapFontFactoryProxy implements IFontFactory {
 		BitmapFont bitmapFont = new BitmapFont(characters, defaultHorizontalAdvX, fontFamily, fontMaxAscent, fontMaxDescent, unitsPerEm, originalFontSize, 
 				fillColor,
 //				strokeColor,
-				antiAliased
+				antiAliased,
+				fontFileName
 		);
 		bitmapFont.setFontFileName(fontFileName);
 		return bitmapFont;

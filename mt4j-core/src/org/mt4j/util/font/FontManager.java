@@ -311,7 +311,7 @@ public class FontManager {
 						copy.setFillColor(new MTColor(fillColor));
 						return copy;	
 					}else{
-						System.err.println("Couldnt copy font: " + font);
+						logger.error("Couldnt copy font: " + font);
 					}
 				}
 			}

@@ -107,11 +107,12 @@ public class VectorFont implements IFont {
 	 * @param fillColor the fill color
 	 * @param strokeColor the stroke color
 	 * @param antiAliased the anti aliased
+	 * @param fontFileName 
 	 */
 	public VectorFont(VectorFontCharacter[] characters, int defaultHorizontalAdvX, String fontFamily, int fontMaxAscent, int fontMaxDescent, int unitsPerEm, int originalFontSize,
 			MTColor fillColor,
 //			MTColor strokeColor,
-			boolean antiAliased
+			boolean antiAliased, String fontFileName
 	) {
 		super();
 		this.characters = characters;
@@ -121,6 +122,8 @@ public class VectorFont implements IFont {
 		this.fillColor = fillColor;
 //		this.strokeColor = strokeColor;
 		this.antiAliased = antiAliased;
+		
+		this.fontFileName = fontFileName;
 		
 //		this.fontSize = fontSize;
 //		this.fontUnitsPerEm = fontUnitsPerEm;
