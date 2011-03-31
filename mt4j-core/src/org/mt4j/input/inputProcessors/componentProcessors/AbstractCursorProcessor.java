@@ -101,7 +101,7 @@ public abstract class AbstractCursorProcessor extends AbstractComponentProcessor
 			InputCursor inputCursor = (InputCursor) element;
 			AbstractCursorProcessor ip = this.cursorToLockLostInputProcessor.get(element);
 			
-			//so we can use getCurrentTarget() in the processors method
+			//so we can use getCurrentTarget() in the processor's method
 			//because  the current target may have changed through bubbling
 			IMTComponent3D saved = inputCursor.getCurrentTarget(); //FIXME Hack
 			inputCursor.getCurrentEvent().setCurrentTarget(inputEvent.getCurrentTarget()); //FIXME Hack
@@ -109,8 +109,6 @@ public abstract class AbstractCursorProcessor extends AbstractComponentProcessor
 			this.cursorLocked(inputCursor, ip);
 			
 			inputCursor.getCurrentEvent().setCurrentTarget(saved); //FIXME Hack
-			
-			posEvt.getCursor(); //FIXME REMOVE
 		}
 		this.cursorToLockLostInputProcessor.clear();
 		
