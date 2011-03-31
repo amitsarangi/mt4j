@@ -23,7 +23,7 @@ import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 
 
-import org.mt4j.util.GraphicsUtil;
+import org.mt4j.util.PlatformUtil;
 import org.mt4j.util.opengl.GL10;
 import org.mt4j.util.opengl.GL11Plus;
 
@@ -50,7 +50,7 @@ public class ToolsLight {
      */
     public static void setupDefaultLightning(PApplet pa, int lightID, Vector3D position){
 //    	GL gl = Tools3D.getGL(pa);
-    	GL10 gl = GraphicsUtil.getGL();
+    	GL10 gl = PlatformUtil.getGL();
     	
     	//Set default ambient lightning for all objs
     	setAmbientLight(gl, new float[]{0.2f, 0.2f, 0.2f,1});

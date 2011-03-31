@@ -2,8 +2,8 @@ package org.mt4j;
 
 import org.mt4j.input.AndroidInputManager;
 import org.mt4j.input.ISurfaceTouchListener;
-import org.mt4j.util.AndroidGraphicsUtil;
-import org.mt4j.util.GraphicsUtil;
+import org.mt4j.util.AndroidPlatformUtil;
+import org.mt4j.util.PlatformUtil;
 import org.mt4j.util.MT4jSettings;
 import org.mt4j.util.MTColor;
 import org.mt4j.util.animation.ani.AniAnimation;
@@ -60,7 +60,7 @@ public abstract class MTAndroidApplication extends AbstractMTApplication{
 		//////////////////////
 		
 		/////////////////////// 
-		GraphicsUtil.setGraphicsUtilProvider(new AndroidGraphicsUtil(this));
+		PlatformUtil.setGraphicsUtilProvider(new AndroidPlatformUtil(this));
 		///////////////////////
 		
 		//Set to use our own OpenGL rendering by default

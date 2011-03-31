@@ -16,12 +16,12 @@ import processing.core.PGraphics3D;
 import processing.core.PMatrix3D;
 import processing.opengl.PGraphicsOpenGL;
 
-public class DesktopGraphicsUtil implements IGraphicsUtil {
+public class DesktopPlatformUtil implements IPlatformUtil {
 	private final AbstractMTApplication app;
 	private final JoglGLU joglGLU;
 	private PGraphics3D pg3d;
 
-	public DesktopGraphicsUtil(AbstractMTApplication app){
+	public DesktopPlatformUtil(AbstractMTApplication app){
 		this.app = app;
 		this.joglGLU = new JoglGLU(new GLU());
 		this.pg3d = ((PGraphics3D)app.getPGraphics());
@@ -97,7 +97,7 @@ public class DesktopGraphicsUtil implements IGraphicsUtil {
     
     
     public int getPlatform() {
-		return IGraphicsUtil.DESKTOP;
+		return IPlatformUtil.DESKTOP;
 	}
 
 	public GL11Plus getGL11Plus() {

@@ -26,7 +26,7 @@ import org.mt4j.components.bounds.BoundingSphere;
 import org.mt4j.components.bounds.IBoundingShape;
 import org.mt4j.components.visibleComponents.shapes.AbstractShape;
 import org.mt4j.components.visibleComponents.shapes.GeometryInfo;
-import org.mt4j.util.GraphicsUtil;
+import org.mt4j.util.PlatformUtil;
 import org.mt4j.util.MT4jSettings;
 import org.mt4j.util.MTColor;
 import org.mt4j.util.math.BezierVertex;
@@ -484,10 +484,10 @@ public class MTTriangleMesh extends AbstractShape{
 		
 		if (this.isUseDirectGL()){
 //			GL gl = Tools3D.beginGL(g);
-			GL10 gl = GraphicsUtil.beginGL();
+			GL10 gl = PlatformUtil.beginGL();
 				this.drawComponent(gl);
 //			Tools3D.endGL(g);
-			GraphicsUtil.endGL();
+			PlatformUtil.endGL();
 		}else{ //Draw with pure proccessing...
 			pa.strokeWeight(this.getStrokeWeight());
 
@@ -661,8 +661,8 @@ public class MTTriangleMesh extends AbstractShape{
 	 * @param gl the gl
 	 */
 	protected void drawPureGl(GL10 gl){
-		GL11Plus gl11Plus = GraphicsUtil.getGL11Plus();
-		GL11 gl11 = GraphicsUtil.getGL11();
+		GL11Plus gl11Plus = PlatformUtil.getGL11Plus();
+		GL11 gl11 = PlatformUtil.getGL11();
 			
 		//Get display array/buffer pointers
 		FloatBuffer tbuff 			= this.getGeometryInfo().getTexBuff();
@@ -926,7 +926,7 @@ public class MTTriangleMesh extends AbstractShape{
 			//Delete default outline display list, not really usable in a mesh.
 			if (MT4jSettings.getInstance().isOpenGlMode()){
 //				GL gl =Tools3D.getGL(getRenderer());
-				GL11Plus gl = GraphicsUtil.getGL11Plus();
+				GL11Plus gl = PlatformUtil.getGL11Plus();
 				if (ids[1] != -1){
 					gl.glDeleteLists(ids[1], 1);
 				}
@@ -954,7 +954,7 @@ public class MTTriangleMesh extends AbstractShape{
 				int[] ids = this.getGeometryInfo().getDisplayListIDs();
 				if (ids[1] != -1){
 //					GL gl = Tools3D.getGL(getRenderer());
-					GL11Plus gl = GraphicsUtil.getGL11Plus();
+					GL11Plus gl = PlatformUtil.getGL11Plus();
 					gl.glDeleteLists(ids[1], 1);
 				}
 				//Create outline display list from manually set outline contours if available.
@@ -974,7 +974,7 @@ public class MTTriangleMesh extends AbstractShape{
 	protected int generateContoursDisplayList(boolean useColor){
 //		GL gl = Tools3D.getGL(getRenderer());
 //		GL10 gl = GraphicsUtil.getGL();
-		GL11Plus gl = GraphicsUtil.getGL11Plus();
+		GL11Plus gl = PlatformUtil.getGL11Plus();
 		
 		int listId = gl.glGenLists(1);
 		if (listId == 0){

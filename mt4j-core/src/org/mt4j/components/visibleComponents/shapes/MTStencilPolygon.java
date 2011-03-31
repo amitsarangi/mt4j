@@ -22,7 +22,7 @@ import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.mt4j.util.GraphicsUtil;
+import org.mt4j.util.PlatformUtil;
 import org.mt4j.util.math.Tools3D;
 import org.mt4j.util.math.ToolsBuffers;
 import org.mt4j.util.math.ToolsGeometry;
@@ -252,10 +252,10 @@ public class MTStencilPolygon extends MTPolygon {
 	public void drawComponent(PGraphics g) {
 		if (isUseDirectGL()){
 //			GL gl=((PGraphicsOpenGL)this.getRenderer().g).beginGL();
-			GL10 gl = GraphicsUtil.beginGL();
+			GL10 gl = PlatformUtil.beginGL();
 			drawComponent(gl);
 //			((PGraphicsOpenGL)this.getRenderer().g).endGL();
-			GraphicsUtil.endGL();
+			PlatformUtil.endGL();
 		}
 	}
 	
@@ -272,7 +272,7 @@ public class MTStencilPolygon extends MTPolygon {
 	    gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
 		gl.glEnableClientState(GL10.GL_COLOR_ARRAY);
 		
-		GL11 gl11 = GraphicsUtil.getGL11(); //TODO check if 1.1 available?
+		GL11 gl11 = PlatformUtil.getGL11(); //TODO check if 1.1 available?
 		
 		if (this.isUseVBOs()){
 			gl11.glBindBuffer(GL11.GL_ARRAY_BUFFER, this.getGeometryInfo().getVBOVerticesName());
@@ -360,9 +360,9 @@ public class MTStencilPolygon extends MTPolygon {
 		    ///////////////////////
 //	    	GLStencilUtil.getInstance().beginDrawClipShape(gl);
 	    	
-	    	if (GLStencilUtil.getInstance().isClipActive() && GraphicsUtil.getGL11Plus() != null){
+	    	if (GLStencilUtil.getInstance().isClipActive() && PlatformUtil.getGL11Plus() != null){
 //	    		gl.glPushAttrib(GL.GL_STENCIL_BUFFER_BIT);
-	    		((GraphicsUtil.getGL11Plus())).glPushAttrib(GL10.GL_STENCIL_BUFFER_BIT);
+	    		((PlatformUtil.getGL11Plus())).glPushAttrib(GL10.GL_STENCIL_BUFFER_BIT);
 	    	}else{
 	    		//Enable stencilbuffer
 				gl.glEnable(GL10.GL_STENCIL_TEST);
@@ -428,9 +428,9 @@ public class MTStencilPolygon extends MTPolygon {
 		    	gl.glDrawArrays(GL10.GL_TRIANGLE_FAN, 0, stencilQuad.capacity()/3); 
 
 		    	if (GLStencilUtil.getInstance().isClipActive()){
-		    		if (GraphicsUtil.getGL11Plus() != null){
+		    		if (PlatformUtil.getGL11Plus() != null){
 		    			//gl.glPopAttrib();
-		    			GraphicsUtil.getGL11Plus().glPopAttrib();
+		    			PlatformUtil.getGL11Plus().glPopAttrib();
 		    		}else{
 		    			gl.glStencilFunc(GL10.GL_EQUAL, GLStencilUtil.stencilValueStack.peek(), GLStencilUtil.stencilValueStack.peek());
 		    			gl.glStencilOp(GL10.GL_KEEP, GL10.GL_KEEP, GL10.GL_KEEP);
@@ -466,8 +466,8 @@ public class MTStencilPolygon extends MTPolygon {
 		    gl.glLineWidth(this.getStrokeWeight());
 		    
 		    short lineStipple = this.getLineStipple();
-			if (lineStipple != 0 && GraphicsUtil.getGL11Plus() != null){
-				GraphicsUtil.getGL11Plus().glLineStipple(1, lineStipple);
+			if (lineStipple != 0 && PlatformUtil.getGL11Plus() != null){
+				PlatformUtil.getGL11Plus().glLineStipple(1, lineStipple);
 				gl.glEnable(GL11Plus.GL_LINE_STIPPLE);
 			}
 		    
@@ -594,8 +594,8 @@ public class MTStencilPolygon extends MTPolygon {
 		)
 	{
 //		GL gl=((PGraphicsOpenGL)pa.g).beginGL();
-		GL10 gl = GraphicsUtil.beginGL();
-		GL11Plus gl11Plus = GraphicsUtil.getGL11Plus();
+		GL10 gl = PlatformUtil.beginGL();
+		GL11Plus gl11Plus = PlatformUtil.getGL11Plus();
 		
 		/*
 		//Unbind any VBOs first
@@ -802,7 +802,7 @@ public class MTStencilPolygon extends MTPolygon {
 		gl.glDisableClientState(GL10.GL_COLOR_ARRAY);
 		
 //		((PGraphicsOpenGL)pa.g).endGL();
-		GraphicsUtil.endGL();
+		PlatformUtil.endGL();
 		////////////////
 		
 		return returnVal;

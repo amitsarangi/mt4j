@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.mt4j.AbstractMTApplication;
-import org.mt4j.util.GraphicsUtil;
+import org.mt4j.util.PlatformUtil;
 import org.mt4j.util.MT4jSettings;
 import org.mt4j.util.logging.ILogger;
 import org.mt4j.util.logging.MTLoggerFactory;
@@ -100,9 +100,9 @@ public class GLFBO {
 		super();
 		this.pa = pa;
 //		this.gl = ((PGraphicsOpenGL)pa.g).gl;
-		this.gl = GraphicsUtil.getGL20();
+		this.gl = PlatformUtil.getGL20();
 		if (this.gl == null){
-			this.gl = GraphicsUtil.getGL11Plus();
+			this.gl = PlatformUtil.getGL11Plus();
 		}
 		if (this.gl == null){
 			System.err.println("Error initializing GLFBO - no GL 2.0 compatible OpenGL implementation available!");
@@ -142,7 +142,7 @@ public class GLFBO {
 		this.depthRBID = buffer2.get(0);
 		gl.glBindRenderbuffer(GL20.GL_RENDERBUFFER, depthRBID);
 		
-		if (this.isStencilBufferAttached() && GraphicsUtil.isDesktop()){
+		if (this.isStencilBufferAttached() && PlatformUtil.isDesktop()){
 			//THIS CREATES A FBO WITH A STENCIL BUFFER! HAS TO BE SUPPORTED ON THE PLATFORM!
 			gl.glRenderbufferStorage(GL20.GL_RENDERBUFFER, GL11Plus.GL_DEPTH24_STENCIL8_EXT, this.width, this.height);
 //			gl.glRenderbufferStorageEXT(GL.GL_RENDERBUFFER_EXT, GL.GL_DEPTH24_STENCIL8_EXT, this.width, this.height);
@@ -154,7 +154,7 @@ public class GLFBO {
 		//Attach depth buffer to FBO
 		gl.glFramebufferRenderbuffer(GL20.GL_FRAMEBUFFER, GL20.GL_DEPTH_ATTACHMENT, GL20.GL_RENDERBUFFER, depthRBID);
 		
-		if (this.isStencilBufferAttached() && GraphicsUtil.isDesktop()){
+		if (this.isStencilBufferAttached() && PlatformUtil.isDesktop()){
 			//Attach stencil buffer to FBO - HAS TO BE SUPPORTED ON THE PLATFORM!
 			gl.glFramebufferRenderbuffer(GL20.GL_FRAMEBUFFER, GL20.GL_STENCIL_ATTACHMENT, GL20.GL_RENDERBUFFER, depthRBID);			
 		}

@@ -23,7 +23,7 @@ import org.mt4j.input.inputProcessors.componentProcessors.scaleProcessor.ScalePr
 import org.mt4j.input.inputProcessors.componentProcessors.zoomProcessor.ZoomProcessor;
 import org.mt4j.input.inputProcessors.globalProcessors.CursorTracer;
 import org.mt4j.sceneManagement.AbstractScene;
-import org.mt4j.util.GraphicsUtil;
+import org.mt4j.util.PlatformUtil;
 import org.mt4j.util.MT4jSettings;
 import org.mt4j.util.MTColor;
 import org.mt4j.util.math.Vector3D;
@@ -61,7 +61,7 @@ public class Models3DScene extends AbstractScene {
 		MTLight light = new MTLight(mtApplication, GL.GL_LIGHT3, new Vector3D(0,-300,0));
 		
 		//Set up a material to react to the light
-		GLMaterial material = new GLMaterial(GraphicsUtil.getGL());
+		GLMaterial material = new GLMaterial(PlatformUtil.getGL());
 		material.setAmbient(new float[]{ .5f, .5f, .5f, 1f });
 		material.setDiffuse(new float[]{ .8f, .8f, .8f, 1f } );
 		material.setEmission(new float[]{ .0f, .0f, .0f, 1f });

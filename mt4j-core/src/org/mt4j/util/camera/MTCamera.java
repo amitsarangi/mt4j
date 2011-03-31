@@ -18,7 +18,7 @@
 package org.mt4j.util.camera;
 
 
-import org.mt4j.util.GraphicsUtil;
+import org.mt4j.util.PlatformUtil;
 import org.mt4j.util.MT4jSettings;
 import org.mt4j.util.math.Matrix;
 import org.mt4j.util.math.Vector3D;
@@ -133,9 +133,9 @@ public class MTCamera implements Icamera{
 		this.frustum.setCamDef(this.getPosition(), this.getViewCenterPos(),  xAxisUp, -yAxisUp, zAxisUp); //new Vector3D(xAxisUp, -yAxisUp, zAxisUp));
 		
 //		this.p3d = ((PGraphics3D)pa.g);
-		this.modelViewP5 = GraphicsUtil.getModelView();
-		this.modelViewInvP5 = GraphicsUtil.getModelViewInv();
-		this.camP5 = GraphicsUtil.getCamera();
+		this.modelViewP5 = PlatformUtil.getModelView();
+		this.modelViewInvP5 = PlatformUtil.getModelViewInv();
+		this.camP5 = PlatformUtil.getCamera();
 		
 		this.dirty = true;
 		this.cameraMat 			= new PMatrix3D();
@@ -214,25 +214,25 @@ public class MTCamera implements Icamera{
 //		PGraphicsAndroid3D androidGraphics = (PGraphicsAndroid3D)g;
 //		androidGraphics.updateModelview();
 		
-		GraphicsUtil.setModelView(
+		PlatformUtil.setModelView(
 				m.m00, m.m01, m.m02, m.m03,
 				m.m10, m.m11, m.m12, m.m13,
 				m.m20, m.m21, m.m22, m.m23,
 				m.m30, m.m31, m.m32, m.m33);
 		
-		GraphicsUtil.setModelViewInv(	
+		PlatformUtil.setModelViewInv(	
 				mi.m00, mi.m01, mi.m02, mi.m03,
 				mi.m10, mi.m11, mi.m12, mi.m13,
 				mi.m20, mi.m21, mi.m22, mi.m23,
 				mi.m30, mi.m31, mi.m32, mi.m33);
 		
-		GraphicsUtil.setCamera(	
+		PlatformUtil.setCamera(	
 				m.m00, m.m01, m.m02, m.m03,
 				m.m10, m.m11, m.m12, m.m13,
 				m.m20, m.m21, m.m22, m.m23,
 				m.m30, m.m31, m.m32, m.m33);
 		
-		GraphicsUtil.setCameraInv(
+		PlatformUtil.setCameraInv(
 				mi.m00, mi.m01, mi.m02, mi.m03,
 				mi.m10, mi.m11, mi.m12, mi.m13,
 				mi.m20, mi.m21, mi.m22, mi.m23,

@@ -17,7 +17,7 @@
  ***********************************************************************/
 package org.mt4j.util.camera;
 
-import org.mt4j.util.GraphicsUtil;
+import org.mt4j.util.PlatformUtil;
 import org.mt4j.util.MT4jSettings;
 import org.mt4j.util.math.Plane;
 import org.mt4j.util.math.ToolsMath;
@@ -91,7 +91,7 @@ public class Frustum implements IFrustum{
 	public Frustum(PApplet pa){
 		if (MT4jSettings.getInstance().isOpenGlMode()){
 //			this.gl = ((PGraphicsOpenGL)pa.g).gl;
-			this.gl = GraphicsUtil.getGL();
+			this.gl = PlatformUtil.getGL();
 		}
 		
 		
@@ -115,10 +115,10 @@ public class Frustum implements IFrustum{
 //		float cameraNear = p3d.cameraNear;
 //		float cameraFar = p3d.cameraFar;
 
-		float cameraFov = GraphicsUtil.getCameraFOV();
-		float cameraAspect = GraphicsUtil.getCameraAspect();
-		float cameraNear = GraphicsUtil.getCameraNear();
-		float cameraFar = GraphicsUtil.getCameraFar();
+		float cameraFov = PlatformUtil.getCameraFOV();
+		float cameraAspect = PlatformUtil.getCameraAspect();
+		float cameraNear = PlatformUtil.getCameraNear();
+		float cameraFar = PlatformUtil.getCameraFar();
 		
 		//This has to be called if the perspective is changed!!
         this.setCamInternals(cameraFov*0.5f, cameraAspect, cameraNear,  cameraFar);

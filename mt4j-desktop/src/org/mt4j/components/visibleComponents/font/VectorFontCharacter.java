@@ -24,7 +24,7 @@ import java.util.List;
 import org.mt4j.components.bounds.IBoundingShape;
 import org.mt4j.components.visibleComponents.shapes.GeometryInfo;
 import org.mt4j.components.visibleComponents.shapes.mesh.MTTriangleMesh;
-import org.mt4j.util.GraphicsUtil;
+import org.mt4j.util.PlatformUtil;
 import org.mt4j.util.font.IFontCharacter;
 import org.mt4j.util.math.Tools3D;
 import org.mt4j.util.math.ToolsGeometry;
@@ -119,7 +119,7 @@ public class VectorFontCharacter extends
 
 	@Override
 	protected void drawPureGl(GL10 gl) {
-		GL11 gl11 = GraphicsUtil.getGL11();
+		GL11 gl11 = PlatformUtil.getGL11();
 		
 //		super.drawPureGl(gl);
 		//Get display array/buffer pointers

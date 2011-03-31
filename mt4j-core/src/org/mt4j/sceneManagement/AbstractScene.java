@@ -25,7 +25,7 @@ import org.mt4j.input.inputProcessors.globalProcessors.AbstractGlobalInputProces
 import org.mt4j.input.inputProcessors.globalProcessors.InputRetargeter;
 import org.mt4j.sceneManagement.transition.ITransition;
 import org.mt4j.util.ArrayDeque;
-import org.mt4j.util.GraphicsUtil;
+import org.mt4j.util.PlatformUtil;
 import org.mt4j.util.MT4jSettings;
 import org.mt4j.util.MTColor;
 import org.mt4j.util.camera.Icamera;
@@ -173,9 +173,9 @@ public abstract class AbstractScene implements Iscene {
 	
 
 	protected void clear(PGraphics graphics){
-		if (MT4jSettings.getInstance().isOpenGlMode() && !GraphicsUtil.isAndroid()){
+		if (MT4jSettings.getInstance().isOpenGlMode() && !PlatformUtil.isAndroid()){
 //			GL gl = Tools3D.getGL(mtApplication);
-			GL10 gl = GraphicsUtil.getGL();
+			GL10 gl = PlatformUtil.getGL();
 			gl.glClearColor(this.glClearColor.getR(), this.glClearColor.getG(), this.glClearColor.getB(), this.glClearColor.getAlpha());
 			gl.glClear(
 					GL10.GL_COLOR_BUFFER_BIT 

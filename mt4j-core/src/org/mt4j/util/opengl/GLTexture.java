@@ -20,7 +20,7 @@ package org.mt4j.util.opengl;
 import java.nio.IntBuffer;
 
 import org.mt4j.AbstractMTApplication;
-import org.mt4j.util.GraphicsUtil;
+import org.mt4j.util.PlatformUtil;
 import org.mt4j.util.math.ToolsBuffers;
 import org.mt4j.util.math.ToolsMath;
 
@@ -274,7 +274,7 @@ public class GLTexture extends PImage {
     	this.parent = parent;
 //    	pgl = (PGraphicsOpenGL)parent.g;
 //    	gl = pgl.gl;
-    	gl = GraphicsUtil.getGL();
+    	gl = PlatformUtil.getGL();
 	}
 
 	/**
@@ -309,7 +309,7 @@ public class GLTexture extends PImage {
 //    	this.pImageUpToDate = false;
     	this.glTextureSettings = settings;
 
-    	if (!isPImagePOT(width, height) && GraphicsUtil.isNPOTTextureSupported()){
+    	if (!isPImagePOT(width, height) && PlatformUtil.isNPOTTextureSupported()){
     		this.glTextureSettings.target = TEXTURE_TARGET.RECTANGULAR;
     		this.glWidth = width;
     		this.glHeight = height;
@@ -323,7 +323,7 @@ public class GLTexture extends PImage {
     	this.parent = parent;
 //    	pgl = (PGraphicsOpenGL)parent.g;
 //    	gl = pgl.gl;
-    	gl = GraphicsUtil.getGL();
+    	gl = PlatformUtil.getGL();
 
 //    	 		setTextureParams(params);
 
@@ -369,7 +369,7 @@ public class GLTexture extends PImage {
     	this.parent = parent;
 //    	pgl = (PGraphicsOpenGL)app.g;
 //    	gl = pgl.gl;
-    	gl = GraphicsUtil.getGL();
+    	gl = PlatformUtil.getGL();
     	this.glTextureSettings = settings;
     	this.loadTexture(fileName, this.glTextureSettings);
     } 
@@ -406,7 +406,7 @@ public class GLTexture extends PImage {
     	this.width 	= pImage.width;
     	this.height = pImage.height;
     	
-    	if (!isPImagePOT(width, height) && GraphicsUtil.isNPOTTextureSupported()){
+    	if (!isPImagePOT(width, height) && PlatformUtil.isNPOTTextureSupported()){
     		this.glTextureSettings.target = TEXTURE_TARGET.RECTANGULAR;
     		this.glWidth = width;
     		this.glHeight = height;
@@ -447,7 +447,7 @@ public class GLTexture extends PImage {
 
     	this.glTextureSettings = texSettings;
 
-    	if (!isPImagePOT(width, height) && GraphicsUtil.isNPOTTextureSupported()){
+    	if (!isPImagePOT(width, height) && PlatformUtil.isNPOTTextureSupported()){
     		this.glTextureSettings.target = TEXTURE_TARGET.RECTANGULAR;
     		this.glWidth = width;
     		this.glHeight = height;
@@ -488,7 +488,7 @@ public class GLTexture extends PImage {
     	}
     	
     	if (this.glWidth == 0 && this.glHeight == 0){
-    		if (!isPImagePOT(width, height) && GraphicsUtil.isNPOTTextureSupported()){
+    		if (!isPImagePOT(width, height) && PlatformUtil.isNPOTTextureSupported()){
         		this.glTextureSettings.target = TEXTURE_TARGET.RECTANGULAR;
         		this.glWidth = width;
         		this.glHeight = height;
@@ -500,7 +500,7 @@ public class GLTexture extends PImage {
     	}
     	
     	//FIXME if check done here, we can remove the check elsewhere?
-    	if (this.glTextureSettings.target != TEXTURE_TARGET.RECTANGULAR && !isPImagePOT(width, height) && GraphicsUtil.isNPOTTextureSupported()){
+    	if (this.glTextureSettings.target != TEXTURE_TARGET.RECTANGULAR && !isPImagePOT(width, height) && PlatformUtil.isNPOTTextureSupported()){
     		this.glTextureSettings.target = TEXTURE_TARGET.RECTANGULAR;
     	}
     	
@@ -558,8 +558,8 @@ public class GLTexture extends PImage {
 		//Bind the texture
 		gl.glBindTexture(textureTarget, glTextureID[0]);
 		
-		if (GraphicsUtil.getGL11() != null){
-			GL11 gl11 = GraphicsUtil.getGL11();
+		if (PlatformUtil.getGL11() != null){
+			GL11 gl11 = PlatformUtil.getGL11();
 			//SET texture mag/min FILTER mode
 			gl11.glTexParameteri(textureTarget, GL10.GL_TEXTURE_MIN_FILTER, minFilter);
 			gl11.glTexParameteri(textureTarget, GL10.GL_TEXTURE_MAG_FILTER, magFilter);
@@ -607,7 +607,7 @@ public class GLTexture extends PImage {
     	PImage img = app.loadImage(filename);
     	this.glTextureSettings = settings;
     	
-    	if (!isPImagePOT(width, height) && GraphicsUtil.isNPOTTextureSupported()){
+    	if (!isPImagePOT(width, height) && PlatformUtil.isNPOTTextureSupported()){
     		this.glTextureSettings.target = TEXTURE_TARGET.RECTANGULAR;
     		this.glWidth = width;
     		this.glHeight = height;
@@ -639,7 +639,7 @@ public class GLTexture extends PImage {
       img.loadPixels();
 
       this.glTextureSettings = settings;
-      if (!isPImagePOT(img.width, img.height) && GraphicsUtil.isNPOTTextureSupported()){
+      if (!isPImagePOT(img.width, img.height) && PlatformUtil.isNPOTTextureSupported()){
     	  this.glTextureSettings.target = TEXTURE_TARGET.RECTANGULAR;
     	  this.glWidth = img.width;
     	  this.glHeight = img.height;
@@ -670,7 +670,7 @@ public class GLTexture extends PImage {
      * @param img the new gL texture
      */
     public void loadGLTexture(PImage img) {
-    	if (!isPImagePOT(img.width, img.height) && GraphicsUtil.isNPOTTextureSupported()){
+    	if (!isPImagePOT(img.width, img.height) && PlatformUtil.isNPOTTextureSupported()){
     		this.glTextureSettings.target = TEXTURE_TARGET.RECTANGULAR;
     		this.glWidth = img.width;
     		this.glHeight = img.height;
@@ -722,7 +722,7 @@ public class GLTexture extends PImage {
 	public void updateGLTexture(int[] intArray){ 
 //		this.updateGLTexture(IntBuffer.wrap(intArray)); //FIXME original
 		IntBuffer pixelBuffer = IntBuffer.allocate(intArray.length);
-		if (GraphicsUtil.isAndroid()){ //on android, most opengl implementations dont support BGRA
+		if (PlatformUtil.isAndroid()){ //on android, most opengl implementations dont support BGRA
 			int[] rgbaPixels = new int[width * height];
 		    convertToRGBA(intArray, rgbaPixels, format, width, height);
 			pixelBuffer.put(rgbaPixels);
@@ -750,7 +750,7 @@ public class GLTexture extends PImage {
 		//      int glFormat = glTextureSettings.glType.getGLConstant();
 		
 		int glFormat 	= GL11Plus.GL_BGRA; 				//FIXME DONT HARDCODE!?
-		if (GraphicsUtil.isAndroid()){ 				//FIXME TEST -> opengl es /android doesent support BGRA!?
+		if (PlatformUtil.isAndroid()){ 				//FIXME TEST -> opengl es /android doesent support BGRA!?
 			glFormat = GL10.GL_RGBA;
 		}
 		
@@ -809,16 +809,16 @@ public class GLTexture extends PImage {
 				if (this.forcedRectMipMaps){
 					//Resizes NPOT textures to POT
 //					GLU glu = ((PGraphicsOpenGL)this.parent.g).glu;
-					IGLU glu = GraphicsUtil.getGLU();
+					IGLU glu = PlatformUtil.getGLU();
 					glu.gluBuild2DMipmaps(textureTarget, internalFormat, this.width, this.height, glFormat, type, buffer);
 				}else{
-					if (this.fboSupported && GraphicsUtil.getGL20() != null){ //Naive check if glGenerateMipmapEXT command is supported
+					if (this.fboSupported && PlatformUtil.getGL20() != null){ //Naive check if glGenerateMipmapEXT command is supported
 						gl.glTexSubImage2D(textureTarget, 0, 0, 0, this.width, this.height, glFormat, type, buffer);
-						GraphicsUtil.getGL20().glGenerateMipmap(textureTarget);  //newer OpenGL 3.x method of creating mip maps //TODO problems on ATI? use gl.glEnable(textureTarget) first? 
+						PlatformUtil.getGL20().glGenerateMipmap(textureTarget);  //newer OpenGL 3.x method of creating mip maps //TODO problems on ATI? use gl.glEnable(textureTarget) first? 
 					}else{
 						//Old school software method, will resize a NPOT texture to a POT texture
 //						GLU glu = ((PGraphicsOpenGL)this.parent.g).glu;
-						IGLU glu = GraphicsUtil.getGLU();
+						IGLU glu = PlatformUtil.getGLU();
 						glu.gluBuild2DMipmaps(textureTarget, internalFormat, this.width, this.height, glFormat, type, buffer);
 					}
 //					if (this.fboSupported){ //Naive check if glGenerateMipmapEXT command is supported
@@ -906,8 +906,8 @@ public class GLTexture extends PImage {
 		this.glTextureSettings.wrappingVertical = wrappingVertical;
 		
 		if (this.isGLTexObjectInitialized()){
-			if (GraphicsUtil.getGL11() != null){
-				GL11 gl11 = GraphicsUtil.getGL11();
+			if (PlatformUtil.getGL11() != null){
+				GL11 gl11 = PlatformUtil.getGL11();
 				gl11.glBindTexture(this.getTextureTarget(), this.getTextureID());
 				gl11.glTexParameteri(this.getTextureTarget(), GL10.GL_TEXTURE_WRAP_S, this.glTextureSettings.wrappingHorizontal.getGLConstant());
 				gl11.glTexParameteri(this.getTextureTarget(), GL10.GL_TEXTURE_WRAP_T, this.glTextureSettings.wrappingVertical.getGLConstant());
@@ -946,8 +946,8 @@ public class GLTexture extends PImage {
 		this.glTextureSettings.expansionFilter = magFilter;
 		
 		if (this.isGLTexObjectInitialized()){
-			if (GraphicsUtil.getGL11() != null){
-				GL11 gl11 = GraphicsUtil.getGL11();
+			if (PlatformUtil.getGL11() != null){
+				GL11 gl11 = PlatformUtil.getGL11();
 				gl11.glBindTexture(this.getTextureTarget(), this.getTextureID());
 				gl11.glTexParameteri(this.getTextureTarget(), GL10.GL_TEXTURE_MIN_FILTER, this.glTextureSettings.shrinkFilter.getGLConstant());
 				gl11.glTexParameteri(this.getTextureTarget(), GL10.GL_TEXTURE_MAG_FILTER, this.glTextureSettings.expansionFilter.getGLConstant());
@@ -1009,7 +1009,7 @@ public class GLTexture extends PImage {
 	   * @param h int
 	   */
 	  protected void convertToRGBA(int[] intArray, int[] tIntArray, int arrayFormat, int w, int h)  {
-	    if (GraphicsUtil.isBigEndian())  {
+	    if (PlatformUtil.isBigEndian())  {
 	      switch (arrayFormat) {
 	      case ALPHA:
 	                  

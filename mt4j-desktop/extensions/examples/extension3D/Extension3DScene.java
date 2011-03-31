@@ -25,7 +25,7 @@ import org.mt4j.input.inputProcessors.componentProcessors.scaleProcessor.ScaleEv
 import org.mt4j.input.inputProcessors.componentProcessors.scaleProcessor.ScaleProcessor;
 import org.mt4j.input.inputProcessors.globalProcessors.CursorTracer;
 import org.mt4j.sceneManagement.AbstractScene;
-import org.mt4j.util.GraphicsUtil;
+import org.mt4j.util.PlatformUtil;
 import org.mt4j.util.camera.Icamera;
 import org.mt4j.util.math.Vector3D;
 import org.mt4j.util.modelImporter.ModelImporterFactory;
@@ -72,7 +72,7 @@ public class Extension3DScene extends AbstractScene {
 		MTLight light = new MTLight(mtApplication, GL.GL_LIGHT3, new Vector3D(0,0,0));
 		
 		//Set up a material to react to the light
-		GLMaterial material = new GLMaterial(GraphicsUtil.getGL());
+		GLMaterial material = new GLMaterial(PlatformUtil.getGL());
 		material.setAmbient(new float[]{ .3f, .3f, .3f, 1f });
 		material.setDiffuse(new float[]{ .9f, .9f, .9f, 1f } );
 		material.setEmission(new float[]{ .0f, .0f, .0f, 1f });
@@ -254,7 +254,7 @@ public class Extension3DScene extends AbstractScene {
         g.pushMatrix();
 //        Tools3D.beginGL(mtApp);
 //        GL gl = Tools3D.getGL(mtApp);
-        GL10 gl = GraphicsUtil.beginGL();
+        GL10 gl = PlatformUtil.beginGL();
         if(drawAction!=null)
         {
         	for(Rotate3DAction act:drawAction)
@@ -267,7 +267,7 @@ public class Extension3DScene extends AbstractScene {
         }
         
 //        Tools3D.endGL(mtApp);
-        GraphicsUtil.endGL();
+        PlatformUtil.endGL();
         g.popMatrix();
     }
 	

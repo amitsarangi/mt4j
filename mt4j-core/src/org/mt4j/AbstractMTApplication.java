@@ -36,7 +36,7 @@ import org.mt4j.sceneManagement.Iscene;
 import org.mt4j.sceneManagement.SceneChangeEvent;
 import org.mt4j.sceneManagement.transition.ITransition;
 import org.mt4j.util.ArrayDeque;
-import org.mt4j.util.GraphicsUtil;
+import org.mt4j.util.PlatformUtil;
 import org.mt4j.util.MT4jSettings;
 import org.mt4j.util.animation.AnimationManager;
 import org.mt4j.util.logging.ILogger;
@@ -834,20 +834,20 @@ public abstract class AbstractMTApplication extends PApplet implements IMTApplic
 	
 //	/*
 	public PMatrix3D getModelView() {
-		return GraphicsUtil.getModelView();
+		return PlatformUtil.getModelView();
 	}
 	
 	public PMatrix3D getModelViewInv() {
-		return GraphicsUtil.getModelViewInv();
+		return PlatformUtil.getModelViewInv();
 	}
 	
 	public GL10 beginGL() {
-		GraphicsUtil.beginGL();
+		PlatformUtil.beginGL();
 		return this.iGL10;
 	}
     
     public void endGL(){
-    	GraphicsUtil.endGL();
+    	PlatformUtil.endGL();
     }
 //    */
 	

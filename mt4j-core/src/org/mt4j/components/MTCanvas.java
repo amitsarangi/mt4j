@@ -28,7 +28,7 @@ import org.mt4j.input.inputProcessors.componentProcessors.dragProcessor.DragProc
 import org.mt4j.input.inputProcessors.componentProcessors.rotateProcessor.RotateProcessor;
 import org.mt4j.input.inputProcessors.componentProcessors.scaleProcessor.ScaleProcessor;
 import org.mt4j.input.inputProcessors.componentProcessors.tapProcessor.TapProcessor;
-import org.mt4j.util.GraphicsUtil;
+import org.mt4j.util.PlatformUtil;
 import org.mt4j.util.camera.Icamera;
 import org.mt4j.util.math.Matrix;
 
@@ -344,14 +344,14 @@ public class MTCanvas extends MTComponent implements IHitTestInfoProvider{
 //							m.m30, m.m31, m.m32,  m.m33
 //					);
 					
-					if (GraphicsUtil.isAndroid()){
+					if (PlatformUtil.isAndroid()){
 						getRenderer().g.applyMatrix(
 								m.m00, m.m01, m.m02,  m.m03,
 								m.m10, m.m11, m.m12,  m.m13,
 								m.m20, m.m21, m.m22,  m.m23,
 								m.m30, m.m31, m.m32,  m.m33);
 					}else{
-						GraphicsUtil.getModelView().apply(
+						PlatformUtil.getModelView().apply(
 								m.m00, m.m01, m.m02,  m.m03,
 								m.m10, m.m11, m.m12,  m.m13,
 								m.m20, m.m21, m.m22,  m.m23,

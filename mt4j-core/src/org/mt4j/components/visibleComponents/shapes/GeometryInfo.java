@@ -22,7 +22,7 @@ import java.nio.IntBuffer;
 
 import org.mt4j.AbstractMTApplication;
 import org.mt4j.components.visibleComponents.StyleInfo;
-import org.mt4j.util.GraphicsUtil;
+import org.mt4j.util.PlatformUtil;
 import org.mt4j.util.MT4jSettings;
 import org.mt4j.util.math.ToolsBuffers;
 import org.mt4j.util.math.ToolsVBO;
@@ -710,7 +710,7 @@ public class GeometryInfo {
 	public void deleteAllVBOs(){
 		if (MT4jSettings.getInstance().isOpenGlMode()){
 			//			GL gl = Tools3D.getGL(r);
-			GL11 gl = GraphicsUtil.getGL11();
+			GL11 gl = PlatformUtil.getGL11();
 			if (gl != null){
 				if (this.getVBOVerticesName() != -1){
 					gl.glDeleteBuffers(1, new int[]{this.getVBOVerticesName()},0);
@@ -819,7 +819,7 @@ public class GeometryInfo {
 
 		//Create a new empty displaylist
 //		GL gl = Tools3D.getGL(getRenderer());
-		GL11Plus gl = GraphicsUtil.getGL11Plus();
+		GL11Plus gl = PlatformUtil.getGL11Plus();
 		int listIDFill = gl.glGenLists(1);
 		if (listIDFill == 0){
 			System.err.println("Failed to create fill display list");
@@ -877,7 +877,7 @@ public class GeometryInfo {
 	public void deleteDisplayLists(){
 		if (MT4jSettings.getInstance().isOpenGlMode()){
 //			GL gl = Tools3D.getGL(this.r);
-			GL11Plus gl11Plus = GraphicsUtil.getGL11Plus();
+			GL11Plus gl11Plus = PlatformUtil.getGL11Plus();
 			if (gl11Plus != null) {
 				for (int id : this.displayListIDs){
 					if (id != -1){

@@ -9,10 +9,10 @@ import org.mt4j.util.opengl.IGLU;
 import processing.core.PGraphics;
 import processing.core.PMatrix3D;
 
-public class GraphicsUtil {
+public class PlatformUtil {
 	//TODO dont make static? maybe we have different swing windows with different gl contexts?
 	
-	private static IGraphicsUtil graphicsUtil;
+	private static IPlatformUtil graphicsUtil;
 
 	public static PGraphics getPGraphics() {
 		return graphicsUtil.getPGraphics();
@@ -66,16 +66,16 @@ public class GraphicsUtil {
 		graphicsUtil.endGL();
 	}
 	
-	public static void setGraphicsUtilProvider(IGraphicsUtil graphicsUtilitiy){
+	public static void setGraphicsUtilProvider(IPlatformUtil graphicsUtilitiy){
 		graphicsUtil = graphicsUtilitiy;
 	}
 	
 	public static boolean isDesktop(){
-		return graphicsUtil.getPlatform() == IGraphicsUtil.DESKTOP;
+		return graphicsUtil.getPlatform() == IPlatformUtil.DESKTOP;
 	}
 	
 	public static boolean isAndroid(){
-		return graphicsUtil.getPlatform() == IGraphicsUtil.ANDROID;
+		return graphicsUtil.getPlatform() == IPlatformUtil.ANDROID;
 	}
 	
 	public static boolean isNPOTTextureSupported(){

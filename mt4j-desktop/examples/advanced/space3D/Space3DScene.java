@@ -39,7 +39,7 @@ import org.mt4j.input.inputProcessors.componentProcessors.scaleProcessor.ScaleEv
 import org.mt4j.input.inputProcessors.componentProcessors.scaleProcessor.ScaleProcessor;
 import org.mt4j.input.inputProcessors.globalProcessors.CursorTracer;
 import org.mt4j.sceneManagement.AbstractScene;
-import org.mt4j.util.GraphicsUtil;
+import org.mt4j.util.PlatformUtil;
 import org.mt4j.util.MT4jSettings;
 import org.mt4j.util.MTColor;
 import org.mt4j.util.animation.Animation;
@@ -95,7 +95,7 @@ public class Space3DScene extends AbstractScene {
 		MTLight light = new MTLight(pa, GL.GL_LIGHT3, new Vector3D(pa.width/5f,-pa.height/10f,0));
 		
 		//Set up a material to react to the light
-		GLMaterial material = new GLMaterial(GraphicsUtil.getGL());
+		GLMaterial material = new GLMaterial(PlatformUtil.getGL());
 		material.setAmbient(new float[]{ .1f, .1f, .1f, 1f });
 		material.setDiffuse(new float[]{ 1.0f, 1.0f, 1.0f, 1f } );
 		material.setEmission(new float[]{ .0f, .0f, .0f, 1f });

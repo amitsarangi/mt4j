@@ -26,7 +26,7 @@ import org.mt4j.input.inputProcessors.IGestureEventListener;
 import org.mt4j.input.inputProcessors.MTGestureEvent;
 import org.mt4j.input.inputProcessors.componentProcessors.scaleProcessor.ScaleEvent;
 import org.mt4j.input.inputProcessors.componentProcessors.scaleProcessor.ScaleProcessor;
-import org.mt4j.util.GraphicsUtil;
+import org.mt4j.util.PlatformUtil;
 import org.mt4j.util.MT4jSettings;
 import org.mt4j.util.MTColor;
 import org.mt4j.util.math.Matrix;
@@ -104,7 +104,7 @@ public class MTWindow extends MTRoundRectangle {
 		//Create inner children clip shape
 		float border = 10;
 //		GL gl = ((PGraphicsOpenGL)applet.g).gl;
-		GL10 gl = GraphicsUtil.getGL();
+		GL10 gl = PlatformUtil.getGL();
 //		MTRoundRectangle clipRect =  new MTRoundRectangle(x+border, y+border, z, width-(2*border), height-(2*border), arcWidth, arcHeight, applet);
 		MTRectangle clipRect =  new MTRectangle(applet, x+border, y+border, z, width-(2*border), height-(2*border));
 		clipRect.setDrawSmooth(true);

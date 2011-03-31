@@ -3,8 +3,8 @@ Change log for MT4j - Multi-Touch for Java
 === Version 0.98 (30/3/2011): ===
 === Input/Gestures: ===
 * added UniStroke stroke gesture processor (1$ Gesture)
-* MTInputEvent's now have a currentTarget and an eventPhase and bubble up the component hierarchy - stop input event bubbling using mtInputEvent.stopPropagation() - -> we should use event.getCurrentTarget() for most tasks instead of
-getTarget() now
+* input event propagation - > MTInputEvent's now have a currentTarget and an eventPhase (CAPTURING_PHASE/AT_TARGET/BUBBLING_PHASE) and bubble up the component hierarchy - stop input event bubbling using mtInputEvent.stopPropagation() - -> we should use event.getCurrentTarget() for most tasks instead of
+getTarget() now -> only the processors of the parent that we set inputProcessor.setEnableForBubbledEvents(true) will use the bubbled events (false by default)
 * AbstractCursorProcessor now works with AbstractCursorInputEvt instead of MTFingerInputEvt -> Note: Fiducial Events will also trigger the default gestures!
 * UniStroke gestures' UniStrokeEvent: added cursor information - getCursor()
 * input processors now have 2 more states: GESTURE_CANCELED and GESTURE_RESUMED -> GESTURE_CANCELED occurs when the gesture is aborted because a higher priority gesture took over one or more cursors. GESTURE_RESUMED is called if the gesture gets a lock on the needed cursors again - Note that after GESTURE_CANCELED, no GESTURE_ENDED has to follow because the gesture may never be resumed!
@@ -18,7 +18,7 @@ getTarget() now
 * removed textarea's snapToKeyboard method -> added snapToKeyboard(MTTextarea) method of MTKeyboard instead!
 * let AbstractShape implement ILassoable -> so all shapes can now be lassoed (in conjuction with a LassoProcessor ofc)
 * added removeAllListElements() to MTList
-* removed all AWT/Swing stuff -> so MTImageButton and MTSVGButton dont accept an ActionListener anymore! -> instead just add a TapProcessor gesture listener!
+* removed all AWT/Swing stuff from core -> so MTImageButton and MTSVGButton dont accept an ActionListener anymore! -> instead just add a TapProcessor gesture listener!
 * AbstractVisibleComponent: create a copy of the fill/stroke color upon setting it
 * MTColor: ability to create write protected/unchangeable colors
 * do automatic VBO deletion of AbstractShapes in GeometryInfo's finalize() method now

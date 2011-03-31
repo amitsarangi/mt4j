@@ -27,7 +27,7 @@ import org.mt4j.components.css.style.CSSFont;
 import org.mt4j.components.css.style.CSSStyle;
 import org.mt4j.components.visibleComponents.shapes.MTRectangle;
 import org.mt4j.components.visibleComponents.widgets.keyboard.ITextInputListener;
-import org.mt4j.util.GraphicsUtil;
+import org.mt4j.util.PlatformUtil;
 import org.mt4j.util.MT4jSettings;
 import org.mt4j.util.MTColor;
 import org.mt4j.util.font.FontManager;
@@ -459,7 +459,7 @@ public class MTTextArea extends MTRectangle implements ITextInputListener, Compa
 		
 		if (this.isUseDirectGL()){
 //			GL gl = Tools3D.beginGL(pa);
-			GL10 gl = GraphicsUtil.beginGL();
+			GL10 gl = PlatformUtil.beginGL();
 			if (totalScrollTextX != 0.0f || totalScrollTextY != 0.0f){
 				gl.glTranslatef(totalScrollTextX, totalScrollTextY + font.getFontMaxAscent(), 0);
 			}else{
@@ -481,7 +481,7 @@ public class MTTextArea extends MTRectangle implements ITextInputListener, Compa
 			drawCharactersGL(gl, this.font, characterList, charListSize, lastXAdvancement, thisLineTotalXAdvancement);
 			
 //			Tools3D.endGL(pa);
-			GraphicsUtil.endGL();
+			PlatformUtil.endGL();
 		}
 		else{ //P3D rendering
 			g.pushMatrix(); //FIXME TEST text scrolling - but IMHO better done with parent list/scroll container

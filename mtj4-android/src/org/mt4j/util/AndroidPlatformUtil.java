@@ -12,15 +12,14 @@ import processing.core.P5ProtectedAccessProxy;
 import processing.core.PApplet;
 import processing.core.PGraphics;
 import processing.core.PGraphicsAndroid3D;
-import processing.core.PMatrix;
 import processing.core.PMatrix3D;
 
-public class AndroidGraphicsUtil implements IGraphicsUtil {
+public class AndroidPlatformUtil implements IPlatformUtil {
 	private final IMTApplication app;
 	private AndroidGLU androidGLU;
 	private P5ProtectedAccessProxy p5ProtectedAccessProxy;
 
-	public AndroidGraphicsUtil(IMTApplication app){
+	public AndroidPlatformUtil(IMTApplication app){
 		this.app = app;
 		this.androidGLU = new AndroidGLU();
 		
@@ -80,7 +79,7 @@ public class AndroidGraphicsUtil implements IGraphicsUtil {
     }
 
 	public int getPlatform() {
-		return IGraphicsUtil.ANDROID;
+		return IPlatformUtil.ANDROID;
 	}
 
 	public PMatrix3D getCamera() {

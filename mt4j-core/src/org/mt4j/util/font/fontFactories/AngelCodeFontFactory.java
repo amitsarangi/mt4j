@@ -13,7 +13,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.StringTokenizer;
 
-import org.mt4j.util.GraphicsUtil;
+import org.mt4j.util.PlatformUtil;
 import org.mt4j.util.MT4jSettings;
 import org.mt4j.util.MTColor;
 import org.mt4j.util.font.IFont;
@@ -257,8 +257,8 @@ public class AngelCodeFontFactory implements IFontFactory {
 		 */
 		private void parseFnt(InputStream fntFile) throws Exception {
 			if (displayListCaching) {
-				if (GraphicsUtil.getGL11Plus() != null) {
-					baseDisplayListID = GraphicsUtil.getGL11Plus().glGenLists(DISPLAY_LIST_CACHE_SIZE);
+				if (PlatformUtil.getGL11Plus() != null) {
+					baseDisplayListID = PlatformUtil.getGL11Plus().glGenLists(DISPLAY_LIST_CACHE_SIZE);
 				}
 				if (baseDisplayListID == 0) 
 					displayListCaching = false;
@@ -839,7 +839,7 @@ public class AngelCodeFontFactory implements IFontFactory {
 	
 		public IFont createFont(PApplet app, String fontName, int fontSize,	MTColor fillColor, MTColor strokeColor, boolean antiAliased, int hieroPadding) {
 			if (MT4jSettings.getInstance().isOpenGlMode())
-				this.GL = GraphicsUtil.getGL();
+				this.GL = PlatformUtil.getGL();
 
 //			String imageFileName = getFontNameWithoutSuffix(fontName);
 //			String fontFamily = new String(getFontNameWithoutSuffix(fontName));

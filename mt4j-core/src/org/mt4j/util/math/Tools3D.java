@@ -30,7 +30,7 @@ import org.mt4j.components.visibleComponents.StyleInfo;
 import org.mt4j.components.visibleComponents.shapes.AbstractShape;
 import org.mt4j.components.visibleComponents.shapes.GeometryInfo;
 import org.mt4j.input.inputData.InputCursor;
-import org.mt4j.util.GraphicsUtil;
+import org.mt4j.util.PlatformUtil;
 import org.mt4j.util.MT4jSettings;
 import org.mt4j.util.camera.IFrustum;
 import org.mt4j.util.camera.Icamera;
@@ -200,14 +200,14 @@ public class Tools3D {
 				float winZ = 1; //or read from depth buffer at that pixel! (but not available in Ogl ES)
 				
 //				modelViewTmp.set(applet.g.getMatrix()); //FIXME creates a new PMatrix3D everytime :(
-				modelViewTmp.set(GraphicsUtil.getModelView());
+				modelViewTmp.set(PlatformUtil.getModelView());
 				
 //				PMatrix3D projectionM 	= new PMatrix3D(((PGraphics3D)applet.g).projection);
-				projectionTmp.set(GraphicsUtil.getProjection());
+				projectionTmp.set(PlatformUtil.getProjection());
 				
 				//-> in dekstop version glScale(1,-1,1) is done every frame because in (Desktop) opengl
 				// 0,0 is on the down left corner instead of upper left
-				if (GraphicsUtil.isAndroid()){
+				if (PlatformUtil.isAndroid()){
 					screenY = MT4jSettings.getInstance().getWindowHeight() - screenY;
 				}
 				
@@ -248,9 +248,9 @@ public class Tools3D {
 
 	private static Vector3D unprojectScreenCoords(PApplet applet, float winX, float winY, float winZ){
 		PMatrix3D modelView 	= new PMatrix3D(applet.g.getMatrix());
-		PMatrix3D projectionM 	= new PMatrix3D(GraphicsUtil.getProjection());
+		PMatrix3D projectionM 	= new PMatrix3D(PlatformUtil.getProjection());
 
-		if (GraphicsUtil.isAndroid()){
+		if (PlatformUtil.isAndroid()){
 			winY = MT4jSettings.getInstance().getWindowHeight() - winY;
 		}
 
@@ -464,7 +464,7 @@ public class Tools3D {
 			float x = applet.screenX(point.x, point.y, point.z);
 			
 			float y = 0;
-			if (GraphicsUtil.isAndroid()){ //because android opengl isnt inverted..?
+			if (PlatformUtil.isAndroid()){ //because android opengl isnt inverted..?
 				y = applet.screenY(point.x, (MT4jSettings.getInstance().getWindowHeight() - point.y) * -1, point.z); //	 applet.height - screenY
 			}else{
 				y = applet.screenY(point.x, point.y, point.z);
@@ -507,7 +507,7 @@ public class Tools3D {
 		switch (MT4jSettings.getInstance().getRendererMode()) {
 		case MT4jSettings.OPENGL_MODE:
 //			GL gl = ((PGraphicsOpenGL)pa.g).gl; 
-			GL10 gl = GraphicsUtil.getGL(); 
+			GL10 gl = PlatformUtil.getGL(); 
 			gl.glDepthFunc(GL10.GL_ALWAYS); //turn off Z buffering
 			//reset to the default camera
 			pa.camera(); 
@@ -534,7 +534,7 @@ public class Tools3D {
 		switch (MT4jSettings.getInstance().getRendererMode()) {
 		case MT4jSettings.OPENGL_MODE:
 //			GL gl = ((PGraphicsOpenGL)pa.g).gl;
-			GL10 gl = GraphicsUtil.getGL(); 
+			GL10 gl = PlatformUtil.getGL(); 
 			gl.glDepthFunc(GL10.GL_LEQUAL); //This is used by standart processing..
 			//Change camera back to current 3d camera
 			camera.update();
@@ -559,8 +559,8 @@ public class Tools3D {
 		case MT4jSettings.OPENGL_MODE:
 //			GL gl = ((PGraphicsOpenGL)pa.g).gl;
 //			GL gl = ((PGraphicsOpenGL)g).gl;
-			GL10 gl = GraphicsUtil.getGL();
-			GL11Plus plus = GraphicsUtil.getGL11Plus();
+			GL10 gl = PlatformUtil.getGL();
+			GL11Plus plus = PlatformUtil.getGL11Plus();
 			if (plus != null){
 				plus.glPushAttrib(GL10.GL_DEPTH_BUFFER_BIT);//FIXME TEST	
 			}
@@ -587,7 +587,7 @@ public class Tools3D {
 		switch (MT4jSettings.getInstance().getRendererMode()) {
 		case MT4jSettings.OPENGL_MODE:
 //			GL gl = ((PGraphicsOpenGL)g).gl;
-			GL11Plus plus = GraphicsUtil.getGL11Plus();
+			GL11Plus plus = PlatformUtil.getGL11Plus();
 			if (plus != null){
 				plus.glPopAttrib(); 
 			}
@@ -621,7 +621,7 @@ public class Tools3D {
 		if (!MT4jSettings.getInstance().isOpenGlMode())
 			return;
 //		GL gl =((PGraphicsOpenGL)pa.g).beginGL();
-		GL10 gl = GraphicsUtil.getGL();
+		GL10 gl = PlatformUtil.getGL();
 		String ext = gl.glGetString(GL10.GL_EXTENSIONS);
 		StringTokenizer tok = new StringTokenizer( ext, " " );
 		while (tok.hasMoreTokens()) {
@@ -646,7 +646,7 @@ public class Tools3D {
 		System.out.println("Depth Buffer bits: " + depthBits[0]);
 		System.out.println("Stencil Buffer bits: " + stencilBits[0]);
 //		((PGraphicsOpenGL)pa.g).endGL();
-		GraphicsUtil.endGL();
+		PlatformUtil.endGL();
 	}
 	
 		
@@ -679,12 +679,12 @@ public class Tools3D {
 		 * @return the gL
 		 */
 		public static GL10 getGL(PApplet pa){
-			return GraphicsUtil.getGL();
+			return PlatformUtil.getGL();
 		}
 		
 		
 		public static GL10 getGL(PGraphics g){
-			return GraphicsUtil.getGL();
+			return PlatformUtil.getGL();
 		}
 
 	
@@ -695,7 +695,7 @@ public class Tools3D {
 	 * @return the gL
 	 */
 	public static GL10 beginGL(PApplet pa){
-		return GraphicsUtil.beginGL();
+		return PlatformUtil.beginGL();
 	}
 	
 	/**
@@ -705,7 +705,7 @@ public class Tools3D {
 	 * @return the gL
 	 */
 	public static GL10 beginGL(PGraphics g){
-		return GraphicsUtil.beginGL();
+		return PlatformUtil.beginGL();
 	}
 
 	
@@ -715,7 +715,7 @@ public class Tools3D {
 	 * @param pa the pa
 	 */
 	public static void endGL(PApplet pa){
-		GraphicsUtil.endGL();
+		PlatformUtil.endGL();
 	}
 	
 	/**
@@ -724,7 +724,7 @@ public class Tools3D {
 	 * @param g the g
 	 */
 	public static void endGL(PGraphics g){
-		GraphicsUtil.endGL();
+		PlatformUtil.endGL();
 	}
 
 
@@ -743,7 +743,7 @@ public class Tools3D {
 			return false;
 		
 //		GL gl =((PGraphicsOpenGL)pa.g).gl;
-		GL11Plus gl = GraphicsUtil.getGL11Plus();
+		GL11Plus gl = PlatformUtil.getGL11Plus();
 		if (gl != null){
 			boolean avail = gl.isExtensionAvailable(extensionName);
 			/*
@@ -788,7 +788,7 @@ public class Tools3D {
 	public static void setVSyncing(PApplet pa, boolean on){
 		if (MT4jSettings.getInstance().getRendererMode() == MT4jSettings.OPENGL_MODE){
 //			GL gl = getGL(pa);
-			GL11Plus gl = GraphicsUtil.getGL11Plus();
+			GL11Plus gl = PlatformUtil.getGL11Plus();
 			if (on){
 				gl.setSwapInterval(1);
 			}else{
@@ -884,8 +884,8 @@ public class Tools3D {
 		FloatBuffer strokeColBuff 	= geometryInfo.getStrokeColBuff();
 		IntBuffer indexBuff 		= geometryInfo.getIndexBuff(); //null if not indexed
 		
-		GL10 gl = GraphicsUtil.beginGL();
-		GL11Plus gl11Plus = GraphicsUtil.getGL11Plus();
+		GL10 gl = PlatformUtil.beginGL();
+		GL11Plus gl11Plus = PlatformUtil.getGL11Plus();
 		
 		//Generate new list IDs
 		int[] returnVal = new int[2];
@@ -1028,8 +1028,8 @@ public class Tools3D {
 	public static int generateOutLineDisplayList(PApplet pa, FloatBuffer vertBuff, FloatBuffer strokeColBuff, IntBuffer indexBuff, 
 												boolean drawSmooth, float strokeWeight, short lineStipple){
 //		GL gl = beginGL(pa.g);
-		GL10 gl = GraphicsUtil.beginGL();
-		GL11Plus gl11Plus = GraphicsUtil.getGL11Plus();
+		GL10 gl = PlatformUtil.beginGL();
+		GL11Plus gl11Plus = PlatformUtil.getGL11Plus();
 		
 		//Generate new list IDs
 		int returnVal = -1;
@@ -1079,7 +1079,7 @@ public class Tools3D {
 		gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
 		gl.glDisableClientState(GL10.GL_COLOR_ARRAY);
 //		((PGraphicsOpenGL)pa.g).endGL();
-		GraphicsUtil.endGL();
+		PlatformUtil.endGL();
 		return returnVal;
 	}
 	
@@ -1179,7 +1179,7 @@ public class Tools3D {
 			
 	
 	public static boolean adaptTextureCoordsNPOT(AbstractShape shape, GLTexture tex){
-		if(!GraphicsUtil.isNPOTTextureSupported() 
+		if(!PlatformUtil.isNPOTTextureSupported() 
 			&& !shape.getGeometryInfo().isTextureCoordsAdaptedNPOT()
 			&& !Tools3D.isPowerOfTwoDimension(tex)
 			&& ((GLTexture) tex).getTextureTargetEnum() == TEXTURE_TARGET.TEXTURE_2D 

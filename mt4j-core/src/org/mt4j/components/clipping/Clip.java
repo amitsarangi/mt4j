@@ -22,7 +22,7 @@ import org.mt4j.components.bounds.BoundsZPlaneRectangle;
 import org.mt4j.components.visibleComponents.AbstractVisibleComponent;
 import org.mt4j.components.visibleComponents.shapes.AbstractShape;
 import org.mt4j.components.visibleComponents.shapes.MTRectangle;
-import org.mt4j.util.GraphicsUtil;
+import org.mt4j.util.PlatformUtil;
 import org.mt4j.util.MT4jSettings;
 import org.mt4j.util.math.Ray;
 import org.mt4j.util.math.Vector3D;
@@ -77,7 +77,7 @@ public class Clip {
 		
 		if (MT4jSettings.getInstance().isOpenGlMode()){
 //			this.gl = Tools3D.getGL(pApplet);	
-			this.gl = GraphicsUtil.getGL();
+			this.gl = PlatformUtil.getGL();
 		}
 	}
 	
@@ -91,7 +91,7 @@ public class Clip {
 	 */
 	public Clip(AbstractVisibleComponent clipShape) {
 //		this(Tools3D.getGL(clipShape.getRenderer()), clipShape);
-		this(GraphicsUtil.getGL(), clipShape);
+		this(PlatformUtil.getGL(), clipShape);
 	}
 	
 	

@@ -10,7 +10,7 @@ import processing.core.PGraphics;
 import processing.core.PMatrix;
 import processing.core.PMatrix3D;
 
-public interface IGraphicsUtil {
+public interface IPlatformUtil {
 	
 public PGraphics getPGraphics();
 	public static final int DESKTOP = 0;

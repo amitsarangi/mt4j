@@ -44,7 +44,7 @@ import org.mt4j.input.inputData.AbstractCursorInputEvt;
 import org.mt4j.input.inputData.InputCursor;
 import org.mt4j.input.inputData.MTInputEvent;
 import org.mt4j.sceneManagement.AbstractScene;
-import org.mt4j.util.GraphicsUtil;
+import org.mt4j.util.PlatformUtil;
 import org.mt4j.util.MT4jSettings;
 import org.mt4j.util.math.Vector3D;
 import org.mt4j.util.opengl.GL10;
@@ -154,7 +154,7 @@ public class FluidSimulationScene extends AbstractScene{
 			//FIXME TEST
 //			PGraphicsOpenGL pgl = (PGraphicsOpenGL)g; 
 //			GL gl = pgl.gl;
-			GL10 gl = GraphicsUtil.getGL();
+			GL10 gl = PlatformUtil.getGL();
 			gl.glDisableClientState(GL.GL_VERTEX_ARRAY);
 			gl.glDisableClientState(GL.GL_COLOR_ARRAY);
 			gl.glDisable(GL.GL_LINE_SMOOTH);
@@ -446,7 +446,7 @@ public class FluidSimulationScene extends AbstractScene{
 		public void updateAndDraw(){
 //			PGraphicsOpenGL pgl = (PGraphicsOpenGL)p.g;         // processings opengl graphics object
 //			GL gl = pgl.beginGL();                // JOGL's GL object
-			GL10 gl = GraphicsUtil.beginGL();
+			GL10 gl = PlatformUtil.beginGL();
 
 			gl.glEnable( GL.GL_BLEND );             // enable blending
 			
@@ -492,7 +492,7 @@ public class FluidSimulationScene extends AbstractScene{
 			//Reset blendfunction
 			gl.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA);
 //			pgl.endGL();
-			GraphicsUtil.endGL();
+			PlatformUtil.endGL();
 		}
 
 		/*

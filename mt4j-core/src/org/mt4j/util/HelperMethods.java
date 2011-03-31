@@ -171,7 +171,7 @@ public class HelperMethods {
 		case PROCESSING_MATRIX_MODE:
 			RENDERER_STATE = OPENGL_MATRIX_MODE;
 //			gl = Tools3D.beginGL(pa);
-			gl = GraphicsUtil.beginGL();
+			gl = PlatformUtil.beginGL();
 			return gl;
 		case OPENGL_MATRIX_MODE:
 //			return ((PGraphicsOpenGL)pa.g).gl;
@@ -180,7 +180,7 @@ public class HelperMethods {
 			break;
 		}
 //    	return Tools3D.beginGL(pa);
-    	return GraphicsUtil.beginGL();
+    	return PlatformUtil.beginGL();
     }
     
     /*
@@ -231,7 +231,7 @@ public class HelperMethods {
 		case OPENGL_MATRIX_MODE:
 			RENDERER_STATE = PROCESSING_MATRIX_MODE;
 //			Tools3D.endGL(pa);
-			GraphicsUtil.endGL();
+			PlatformUtil.endGL();
 			break;
 		default:
 			break;
@@ -261,7 +261,7 @@ public class HelperMethods {
     public static void applyMatrix(PApplet renderer, Matrix m) {
 		switch (RENDERER_STATE) {
 		case PROCESSING_MATRIX_MODE:
-			GraphicsUtil.getModelView().apply(
+			PlatformUtil.getModelView().apply(
 					m.m00, m.m01, m.m02,  m.m03,
 					m.m10, m.m11, m.m12,  m.m13,
 					m.m20, m.m21, m.m22,  m.m23,

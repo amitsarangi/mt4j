@@ -61,7 +61,7 @@ import org.mt4j.input.inputProcessors.componentProcessors.tapProcessor.TapProces
 import org.mt4j.input.inputProcessors.globalProcessors.CursorTracer;
 import org.mt4j.sceneManagement.AbstractScene;
 import org.mt4j.sceneManagement.IPreDrawAction;
-import org.mt4j.util.GraphicsUtil;
+import org.mt4j.util.PlatformUtil;
 import org.mt4j.util.MT4jSettings;
 import org.mt4j.util.MTColor;
 import org.mt4j.util.animation.AnimationEvent;
@@ -479,7 +479,7 @@ public class MapsScene extends AbstractScene implements MouseWheelListener, Mous
 //		PGraphicsOpenGL pgl = ((PGraphicsOpenGL)p.g);
 //		GL gl = pgl.beginGL();
 //		GL gl = pgl.gl;
-		GL11 gl = GraphicsUtil.getGL11();
+		GL11 gl = PlatformUtil.getGL11();
 		
 		gl.glPushMatrix();
 		gl.glScalef(1, -1, 1);

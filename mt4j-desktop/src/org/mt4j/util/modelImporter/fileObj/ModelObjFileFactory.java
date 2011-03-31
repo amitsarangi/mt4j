@@ -60,7 +60,7 @@ import java.util.HashMap;
 import org.mt4j.AbstractMTApplication;
 import org.mt4j.components.visibleComponents.shapes.GeometryInfo;
 import org.mt4j.components.visibleComponents.shapes.mesh.MTTriangleMesh;
-import org.mt4j.util.GraphicsUtil;
+import org.mt4j.util.PlatformUtil;
 import org.mt4j.util.TriangleNormalGenerator;
 import org.mt4j.util.math.Vector3D;
 import org.mt4j.util.math.Vertex;
@@ -540,7 +540,7 @@ public class ModelObjFileFactory  extends ModelImporterFactory {
                     //Assign texture and material
                     String matName = groupMaterials.get(currentGroupName);
 //                    materials.assignMaterial(((PGraphicsOpenGL) pa.g).gl, matName, mesh);
-                    materials.assignMaterial(GraphicsUtil.getGL(), matName, mesh);
+                    materials.assignMaterial(PlatformUtil.getGL(), matName, mesh);
 
                     if (mesh.getTexture() != null) {
                         mesh.setTextureEnabled(true);

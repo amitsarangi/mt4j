@@ -126,7 +126,7 @@ import org.mt4j.input.inputProcessors.IGestureEventListener;
 import org.mt4j.input.inputProcessors.componentProcessors.dragProcessor.DragProcessor;
 import org.mt4j.input.inputProcessors.componentProcessors.rotateProcessor.RotateProcessor;
 import org.mt4j.input.inputProcessors.componentProcessors.scaleProcessor.ScaleProcessor;
-import org.mt4j.util.GraphicsUtil;
+import org.mt4j.util.PlatformUtil;
 import org.mt4j.util.HelperMethods;
 import org.mt4j.util.MT4jSettings;
 import org.mt4j.util.MTColor;
@@ -1550,7 +1550,7 @@ public class SVGLoader implements SVGConstants{
         		 */
         	}
 //        	FillPaint gradStencil = new FillPaint(((PGraphicsOpenGL)pa.g).gl, rectangle);
-        	FillPaint gradStencil = new FillPaint(GraphicsUtil.getGL(), rectangle);
+        	FillPaint gradStencil = new FillPaint(PlatformUtil.getGL(), rectangle);
         	return gradStencil;
 //      	return null;
         }
@@ -1756,7 +1756,7 @@ public class SVGLoader implements SVGConstants{
 
 	private FillPaint setUpRotatedGradientUserSpace(AbstractShape testShape, float angle, List<Stop> stops, Point2D p1, Point2D p2){
 //		GL gl = ((PGraphicsOpenGL)pa.g).gl;
-		GL10 gl = GraphicsUtil.getGL();
+		GL10 gl = PlatformUtil.getGL();
 		float gradAngle = angle;
 		
 		float invAngle = angle*-1;
@@ -1897,7 +1897,7 @@ public class SVGLoader implements SVGConstants{
 	
 	private FillPaint setUpRotatedGradientBBox(AbstractShape testShape, float angle, List<Stop> stops){
 //			GL gl = ((PGraphicsOpenGL)pa.g).gl;
-			GL10 gl = GraphicsUtil.getGL();
+			GL10 gl = PlatformUtil.getGL();
 			float gradAngle = angle;
 			
 			//Get copy of shapes vertices

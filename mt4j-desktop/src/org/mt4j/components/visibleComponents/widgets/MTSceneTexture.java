@@ -27,7 +27,7 @@ import org.mt4j.input.inputData.MTInputEvent;
 import org.mt4j.input.inputProcessors.globalProcessors.AbstractGlobalInputProcessor;
 import org.mt4j.input.inputProcessors.globalProcessors.CursorTracer;
 import org.mt4j.sceneManagement.Iscene;
-import org.mt4j.util.GraphicsUtil;
+import org.mt4j.util.PlatformUtil;
 import org.mt4j.util.MT4jSettings;
 import org.mt4j.util.camera.Icamera;
 import org.mt4j.util.math.Plane;
@@ -155,8 +155,8 @@ public class MTSceneTexture extends MTRectangle {
 	public void drawComponent(PGraphics g){
 //		PGraphicsOpenGL pgl = (PGraphicsOpenGL)g; 
 //		GL gl = pgl.gl;
-		GL10 gl = GraphicsUtil.getGL();
-		GL20 gl20 = GraphicsUtil.getGL20();
+		GL10 gl = PlatformUtil.getGL();
+		GL20 gl20 = PlatformUtil.getGL20();
 
 //		boolean b = false;
 //		if (GLStencilUtil.getInstance().isClipActive()){

@@ -38,7 +38,7 @@ import org.mt4j.input.inputProcessors.IGestureEventListener;
 import org.mt4j.input.inputProcessors.IInputProcessor;
 import org.mt4j.input.inputProcessors.MTGestureEvent;
 import org.mt4j.input.inputProcessors.componentProcessors.AbstractComponentProcessor;
-import org.mt4j.util.GraphicsUtil;
+import org.mt4j.util.PlatformUtil;
 import org.mt4j.util.MT4jSettings;
 import org.mt4j.util.camera.IFrustum;
 import org.mt4j.util.camera.Icamera;
@@ -311,7 +311,7 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 		this.inversePrecisionErrors = 0;
 		this.orthogonalityErrors  = 0;
 		
-		this.isAndroid = GraphicsUtil.isAndroid();
+		this.isAndroid = PlatformUtil.isAndroid();
 	}
 
 	
@@ -668,7 +668,7 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 					m.m20, m.m21, m.m22,  m.m23,
 					m.m30, m.m31, m.m32,  m.m33);
 		}else{
-			GraphicsUtil.getModelView().apply(
+			PlatformUtil.getModelView().apply(
 					m.m00, m.m01, m.m02,  m.m03,
 					m.m10, m.m11, m.m12,  m.m13,
 					m.m20, m.m21, m.m22,  m.m23,
@@ -1688,7 +1688,7 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 		g.pushMatrix();
 
 		if (light != null){
-			GL10 gl = GraphicsUtil.getGL();
+			GL10 gl = PlatformUtil.getGL();
 			gl.glEnable(GL10.GL_LIGHTING); //this is expensive
 			light.enable();
 		}
@@ -1750,7 +1750,7 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 		//FIXME TRIAL
 		if (light != null){
 			light.disable();
-			GL10 gl = GraphicsUtil.getGL();
+			GL10 gl = PlatformUtil.getGL();
 			gl.glDisable(GL10.GL_LIGHTING);
 		}
 	}

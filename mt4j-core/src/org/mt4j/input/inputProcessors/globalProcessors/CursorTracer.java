@@ -30,7 +30,7 @@ import org.mt4j.input.inputData.AbstractCursorInputEvt;
 import org.mt4j.input.inputData.InputCursor;
 import org.mt4j.input.inputData.MTInputEvent;
 import org.mt4j.sceneManagement.Iscene;
-import org.mt4j.util.GraphicsUtil;
+import org.mt4j.util.PlatformUtil;
 import org.mt4j.util.MTColor;
 import org.mt4j.util.math.Vector3D;
 
@@ -70,7 +70,7 @@ public class CursorTracer extends AbstractGlobalInputProcessor{
 		this.scene = currentScene;
 		this.cursorIDToDisplayShape = new HashMap<InputCursor, AbstractShape>();
 		
-		if (GraphicsUtil.isAndroid()){
+		if (PlatformUtil.isAndroid()){
 			ellipseRadius = 30;
 		}
 		

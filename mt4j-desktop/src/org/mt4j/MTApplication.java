@@ -16,8 +16,8 @@ import javax.media.opengl.GL;
 import javax.swing.ImageIcon;
 
 import org.mt4j.input.DesktopInputManager;
-import org.mt4j.util.DesktopGraphicsUtil;
-import org.mt4j.util.GraphicsUtil;
+import org.mt4j.util.DesktopPlatformUtil;
+import org.mt4j.util.PlatformUtil;
 import org.mt4j.util.MT4jSettings;
 import org.mt4j.util.SettingsMenu;
 import org.mt4j.util.animation.ani.AniAnimation;
@@ -232,7 +232,7 @@ public abstract class MTApplication extends AbstractMTApplication {
 		//////////////////////
 		
 		/////////////////////// //FIXME TEST
-		GraphicsUtil.setGraphicsUtilProvider(new DesktopGraphicsUtil(this));
+		PlatformUtil.setGraphicsUtilProvider(new DesktopPlatformUtil(this));
 		///////////////////////
 		
 		/////////////////////

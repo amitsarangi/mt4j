@@ -23,7 +23,7 @@ import org.mt4j.components.bounds.BoundsArbitraryPlanarPolygon;
 import org.mt4j.components.bounds.IBoundingShape;
 import org.mt4j.components.css.style.CSSStyle;
 import org.mt4j.components.visibleComponents.StyleInfo;
-import org.mt4j.util.GraphicsUtil;
+import org.mt4j.util.PlatformUtil;
 import org.mt4j.util.MT4jSettings;
 import org.mt4j.util.MTColor;
 import org.mt4j.util.math.Ray;
@@ -207,7 +207,7 @@ public class MTLine extends MTCSSStylableShape{
 		if (MT4jSettings.getInstance().isOpenGlMode()   
 		    && this.isUseDirectGL()){
 //				GL gl = Tools3D.beginGL(g);
-				GL10 gl = GraphicsUtil.beginGL();
+				GL10 gl = PlatformUtil.beginGL();
 			
 				//Draw with PURE opengl
 				if (this.isUseDisplayList()){
@@ -220,7 +220,7 @@ public class MTLine extends MTCSSStylableShape{
 					this.drawPureGl(gl);
 				}
 //				Tools3D.endGL(g);
-				GraphicsUtil.endGL();
+				PlatformUtil.endGL();
 		}else{
 			//Draw with processing
 			MTColor strokeColor = this.getStrokeColor();
@@ -248,8 +248,8 @@ public class MTLine extends MTCSSStylableShape{
 	 * @param gl the gl
 	 */
 	protected void drawPureGl(GL10 gl){
-		GL11 gl11 = GraphicsUtil.getGL11();
-		GL11Plus gl11Plus = GraphicsUtil.getGL11Plus();
+		GL11 gl11 = PlatformUtil.getGL11();
+		GL11Plus gl11Plus = PlatformUtil.getGL11Plus();
 		
 		FloatBuffer strokeColBuff 	= this.getGeometryInfo().getStrokeColBuff();
 		FloatBuffer vertBuff 		= this.getGeometryInfo().getVertBuff();
