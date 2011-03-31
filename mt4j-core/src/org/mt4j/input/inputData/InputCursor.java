@@ -246,7 +246,6 @@ public class InputCursor{
 	}
 	
 	
-	//TODO how to call implicitly in analyzters?
 	/**
 	 * Input processors should call this when new input has started to be
 	 * able to use the cursor locking mechanisms.

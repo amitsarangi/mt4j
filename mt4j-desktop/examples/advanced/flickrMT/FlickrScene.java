@@ -204,7 +204,7 @@ public class FlickrScene extends AbstractScene {
                                                     card.setPositionGlobal(new Vector3D(ToolsMath.getRandom(10, MT4jSettings.getInstance().getWindowWidth() - 100), ToolsMath.getRandom(10, MT4jSettings.getInstance().getWindowHeight() - 50), 0));
                                                     card.scale(0.6f, 0.6f, 0.6f, card.getCenterPointLocal(), TransformSpace.LOCAL);
                                                     card.addGestureListener(DragProcessor.class, new InertiaDragAction());
-                                                    lassoProcessor.addClusterable(card); //make fotos lasso-able
+                                                    lassoProcessor.addLassoable(card); //make fotos lasso-able
                                                     pictureLayer.addChild(card);
                                                 }
 												progressBar.setVisible(false);
