@@ -122,8 +122,8 @@ public class TriangleNormalGenerator {
 		short[] indices = null;
 		if (!geometryInfo.isIndexed()){
 			indices = new short[vertices.length];
-			for (short i = 0; i < vertices.length; i++) {
-				indices[i] = i;
+			for (int i = 0; i < vertices.length; i++) {
+				indices[i] = (short) i;
 			}
 		}else{
 			indices = geometryInfo.getIndices();
@@ -131,10 +131,22 @@ public class TriangleNormalGenerator {
 		
 		//Gen texcoord array as same as indices array
 		int[] texIndices = new int[indices.length];
-        System.arraycopy(indices, 0, texIndices, 0, indices.length);
-        //		for (int i = 0; i < indices.length; i++) {
-		//	texIndices[i] = indices[i];
-		//}
+//		if (PlatformUtil.isAndroid()){
+//			for (int i = 0; i < indices.length; i++) {
+//				texIndices[i] = indices[i];
+//			}	
+//		}else{
+//	        System.arraycopy(indices, 0, texIndices, 0, indices.length);			
+//		}
+
+        try {
+        	 System.arraycopy(indices, 0, texIndices, 0, indices.length);
+		} catch (Exception e) {
+			for (int i = 0; i < indices.length; i++) {
+				texIndices[i] = indices[i];
+			}	
+		}
+        
 
 		//Generate normals
 		GeometryInfo geom = null;
