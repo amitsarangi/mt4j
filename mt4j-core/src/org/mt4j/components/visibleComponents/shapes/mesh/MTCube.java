@@ -101,7 +101,7 @@ public class MTCube extends MTTriangleMesh {
 					})
 		);
 		//Set crease angle 89 normals
-//		this.getGeometryInfo().setNormals(new TriangleNormalGenerator().generateTriangleNormals(pApplet, this.getGeometryInfo(), 89).getNormals(), true, false);
+		this.getGeometryInfo().setNormals(new TriangleNormalGenerator().generateTriangleNormals(pApplet, this.getGeometryInfo(), 89).getNormals(), true, false);
 		this.setName("unnamed mt cube");
 		this.setBoundsBehaviour(AbstractShape.BOUNDS_ONLY_CHECK);
 	}
