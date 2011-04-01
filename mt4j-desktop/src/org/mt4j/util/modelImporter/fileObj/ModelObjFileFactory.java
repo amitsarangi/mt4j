@@ -516,7 +516,7 @@ public class ModelObjFileFactory  extends ModelImporterFactory {
 
             //Get the new arrays
             Vertex[] vertices = currentGroup.getGroupVertices(); //currentGroup.verticesForGroup.toArray(new Vertex[currentGroup.verticesForGroup.size()]);
-            int[] indices = currentGroup.getIndexArray(); //currentGroup.indexArray;
+            short[] indices = currentGroup.getIndexArray(); //currentGroup.indexArray;
             float[][] textureCoords = currentGroup.getGroupTexCoords(); //currentGroup.texCoordsForGroup.toArray(new float[currentGroup.texCoordsForGroup.size()][]);
             int[] texIndices = currentGroup.getTexCoordIndices(); //currentGroup.texCoordIndexArray;
 
@@ -1271,7 +1271,7 @@ public class ModelObjFileFactory  extends ModelImporterFactory {
 		private ArrayList<float[]> texCoordsForGroup;
 		private HashMap<Integer, Integer> oldTexIndexToNewTexIndex;
 		
-		private int[] indexArray;
+		private short[] indexArray;
 		
 		private int[] texCoordIndexArray;
 		
@@ -1285,7 +1285,7 @@ public class ModelObjFileFactory  extends ModelImporterFactory {
 			texCoordsForGroup = new ArrayList<float[]>();
 			oldTexIndexToNewTexIndex = new HashMap<Integer, Integer>();
 			
-			indexArray = new int[0];
+			indexArray = new short[0];
 			texCoordIndexArray = new int[0];
 			
 			name = "default";
@@ -1308,7 +1308,7 @@ public class ModelObjFileFactory  extends ModelImporterFactory {
 		 * @param allTexCoords
 		 */
 		public void compileItsOwnLists(ArrayList<Vertex> allFileVerts, ArrayList<float[]> allTexCoords){
-			indexArray = new int[faces.size()*3];
+			indexArray = new short[faces.size()*3];
 			
 			if (allTexCoords.size() > 0){
 				texCoordIndexArray = new int[faces.size()*3];
@@ -1414,9 +1414,9 @@ public class ModelObjFileFactory  extends ModelImporterFactory {
 					currentFace.p2 = newIndex;
 				}
 				
-				indexArray[i*3]   = currentFace.p0;
-				indexArray[i*3+1] = currentFace.p1;
-				indexArray[i*3+2] = currentFace.p2;
+				indexArray[i*3]   = (short) currentFace.p0;
+				indexArray[i*3+1] = (short) currentFace.p1;
+				indexArray[i*3+2] = (short) currentFace.p2;
 				
 				if (allTexCoords.size() > 0){
 					texCoordIndexArray[i*3]   = currentFace.t0;
@@ -1426,7 +1426,7 @@ public class ModelObjFileFactory  extends ModelImporterFactory {
 			}
 		}
 
-		public int[] getIndexArray() {
+		public short[] getIndexArray() {
 			return indexArray;
 		}
 

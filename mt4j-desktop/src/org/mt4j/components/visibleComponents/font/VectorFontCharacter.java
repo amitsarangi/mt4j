@@ -17,8 +17,8 @@
  ***********************************************************************/
 package org.mt4j.components.visibleComponents.font;
 
+import java.nio.Buffer;
 import java.nio.FloatBuffer;
-import java.nio.IntBuffer;
 import java.util.List;
 
 import org.mt4j.components.bounds.IBoundingShape;
@@ -125,7 +125,7 @@ public class VectorFontCharacter extends
 		//Get display array/buffer pointers
 		FloatBuffer tbuff 			= this.getGeometryInfo().getTexBuff();
 		FloatBuffer vertBuff 		= this.getGeometryInfo().getVertBuff();
-		IntBuffer indexBuff 		= this.getGeometryInfo().getIndexBuff(); //null if not indexed
+		Buffer indexBuff 			= this.getGeometryInfo().getIndexBuff(); //null if not indexed
 		
 		//Enable Pointers, set vertex array pointer
 		gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);

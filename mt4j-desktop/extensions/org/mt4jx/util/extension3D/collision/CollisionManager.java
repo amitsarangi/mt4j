@@ -201,7 +201,7 @@ public class CollisionManager {
 	 */
 	public ByteBuffer getIndexBuffer(MTTriangleMesh mesh)
 	{
-		int[] indices = mesh.getGeometryInfo().getIndices();
+		short[] indices = mesh.getGeometryInfo().getIndices();
 		ByteBuffer buf = ByteBuffer.allocateDirect(indices.length*4).order(ByteOrder.nativeOrder());
 		
 		for (int i=0; i<indices.length; i++) {			

@@ -164,7 +164,7 @@ public class Model3dsFileFactory extends ModelImporterFactory{
 				
 				//Create the arrays needed for the cruncher
 				Vertex[] vertices 		= new Vertex[m.vertices()];
-				int[] indices 			= new int[m.faces()*3];
+				short[] indices 		= new short[m.faces()*3];
 				
 				int[] texCoordIndices 	= new int[m.faces()*3];
 				float[][] textureCoords = new float[m.texCoords()][2];
@@ -250,7 +250,7 @@ public class Model3dsFileFactory extends ModelImporterFactory{
 
 						//Get the new arrays 
 						Vertex[] newVertices 		= currentGroup.getGroupVertices(); 
-						int[] newIndices 			= currentGroup.getIndexArray(); 
+						short[] newIndices 			= currentGroup.getIndexArray(); 
 						float[][] newTextureCoords  = currentGroup.getGroupTexCoords();
 						int[] newTexIndices 		= currentGroup.getTexCoordIndices();
 
@@ -289,9 +289,9 @@ public class Model3dsFileFactory extends ModelImporterFactory{
 					for( int faceIndex = 0; faceIndex < m.faces(); faceIndex++ ){
 						Face3ds f = m.face( faceIndex );
 
-						indices[faceIndex*3] 	= f.P0;
-						indices[faceIndex*3+1] 	= f.P1;
-						indices[faceIndex*3+2] 	= f.P2;
+						indices[faceIndex*3] 	= (short) f.P0;
+						indices[faceIndex*3+1] 	= (short) f.P1;
+						indices[faceIndex*3+2] 	= (short) f.P2;
 
 						texCoordIndices[faceIndex*3] 	= f.P0;
 						texCoordIndices[faceIndex*3+1] 	= f.P1;
@@ -477,7 +477,7 @@ public class Model3dsFileFactory extends ModelImporterFactory{
 		private ArrayList<float[]> texCoordsForGroup;
 		private HashMap<Integer, Integer> oldTexIndexToNewTexIndex;
 		
-		private int[] indexArray;
+		private short[] indexArray;
 		
 		private int[] texCoordIndexArray;
 		
@@ -492,7 +492,7 @@ public class Model3dsFileFactory extends ModelImporterFactory{
 			texCoordsForGroup 			= new ArrayList<float[]>();
 			oldTexIndexToNewTexIndex 	= new HashMap<Integer, Integer>();
 			
-			indexArray 			= new int[0];
+			indexArray 			= new short[0];
 			texCoordIndexArray 	= new int[0];
 			
 			//name = "default";
@@ -515,7 +515,7 @@ public class Model3dsFileFactory extends ModelImporterFactory{
 		 * @param allTexCoords
 		 */
 		public void compileItsOwnLists(Vertex[] allFileVerts, float[][] allTexCoords){
-			indexArray = new int[faces.size()*3];
+			indexArray = new short[faces.size()*3];
 			
 			if (allTexCoords.length > 0){
 				texCoordIndexArray = new int[faces.size()*3];
@@ -621,9 +621,9 @@ public class Model3dsFileFactory extends ModelImporterFactory{
 					currentFace.p2 = newIndex;
 				}
 				
-				indexArray[i*3]   = currentFace.p0;
-				indexArray[i*3+1] = currentFace.p1;
-				indexArray[i*3+2] = currentFace.p2;
+				indexArray[i*3]   = (short) currentFace.p0;
+				indexArray[i*3+1] = (short) currentFace.p1;
+				indexArray[i*3+2] = (short) currentFace.p2;
 				
 				if (allTexCoords.length > 0){
 					texCoordIndexArray[i*3]   = currentFace.t0;
@@ -633,7 +633,7 @@ public class Model3dsFileFactory extends ModelImporterFactory{
 			}
 		}
 
-		public int[] getIndexArray() {
+		public short[] getIndexArray() {
 			return indexArray;
 		}
 
