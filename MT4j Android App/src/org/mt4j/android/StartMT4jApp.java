@@ -1,7 +1,7 @@
 package org.mt4j.android;
 
 import org.mt4j.MTAndroidApplication;
-import org.mt4j.android.scenes.MT4jAndroidTestScene;
+import org.mt4j.android.scenes.Scene1;
 
 public class StartMT4jApp extends MTAndroidApplication {
 	
@@ -9,7 +9,8 @@ public class StartMT4jApp extends MTAndroidApplication {
 
 	@Override
 	public void startUp() {
-		this.addScene(new MT4jAndroidTestScene(this, "MT4j Android TestScene"));
+//		this.addScene(new MT4jAndroidTestScene(this, "MT4j Android TestScene"));
+		this.addScene(new Scene1(this, "MT4j Android TestScene"));
 	}
 	
 	
