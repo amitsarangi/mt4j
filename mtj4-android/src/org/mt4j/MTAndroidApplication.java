@@ -41,7 +41,7 @@ public abstract class MTAndroidApplication extends AbstractMTApplication{
 //		Log.i(this.getClass().getSimpleName(), "SETUP CALLED");
 		
 //		 orientation(LANDSCAPE); //TODO make configurable
-		 orientation(PORTRAIT); //TODO make configurable
+//		 orientation(PORTRAIT); //TODO make configurable
 		
 		// Initialize Loggin facilities  - IMPORTANT TO DO THIS ASAP! \\
 		MTLoggerFactory.setLoggerProvider(new AndroidDefaultLogger()); 
