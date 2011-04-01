@@ -4,6 +4,7 @@ import org.mt4j.AbstractMTApplication;
 import org.mt4j.components.TransformSpace;
 import org.mt4j.components.visibleComponents.shapes.MTEllipse;
 import org.mt4j.components.visibleComponents.shapes.MTRectangle;
+import org.mt4j.components.visibleComponents.shapes.MTRoundRectangle;
 import org.mt4j.components.visibleComponents.shapes.mesh.MTCube;
 import org.mt4j.components.visibleComponents.shapes.mesh.MTSphere;
 import org.mt4j.components.visibleComponents.widgets.MTTextArea;
@@ -11,9 +12,11 @@ import org.mt4j.components.visibleComponents.widgets.buttons.MTImageButton;
 import org.mt4j.input.gestureAction.DefaultLassoAction;
 import org.mt4j.input.gestureAction.DefaultPanAction;
 import org.mt4j.input.gestureAction.DefaultZoomAction;
+import org.mt4j.input.gestureAction.InertiaDragAction;
 import org.mt4j.input.gestureAction.Rotate3DAction;
 import org.mt4j.input.inputProcessors.IGestureEventListener;
 import org.mt4j.input.inputProcessors.MTGestureEvent;
+import org.mt4j.input.inputProcessors.componentProcessors.dragProcessor.DragProcessor;
 import org.mt4j.input.inputProcessors.componentProcessors.flickProcessor.FlickEvent;
 import org.mt4j.input.inputProcessors.componentProcessors.flickProcessor.FlickProcessor;
 import org.mt4j.input.inputProcessors.componentProcessors.lassoProcessor.LassoProcessor;
@@ -89,7 +92,7 @@ public class Scene1 extends AbstractScene {
 		this.setTransition(new FadeTransition(mtApplication, 1700));
 		
 		//Register flick gesture with the canvas to change the scene
-		getCanvas().registerInputProcessor(new FlickProcessor());
+		getCanvas().registerInputProcessor(new FlickProcessor(220, 7));
 		getCanvas().addGestureListener(FlickProcessor.class, new IGestureEventListener() {
 			public boolean processGestureEvent(MTGestureEvent ge) {
 				FlickEvent e = (FlickEvent)ge;
@@ -129,31 +132,58 @@ public class Scene1 extends AbstractScene {
 		getCanvas().registerInputProcessor(pp);
 		getCanvas().addGestureListener(PanProcessorTwoFingers.class, new DefaultPanAction());
 		
-		MTRectangle rect = new MTRectangle(getMTApplication(), getMTApplication().loadImage("MT4j.gif"));
-		rect.setStrokeColor(MTColor.BLACK);
-		rect.registerInputProcessor(new Rotate3DProcessor(getMTApplication(), rect));
-		rect.addGestureListener(Rotate3DProcessor.class, new Rotate3DAction(getMTApplication(), rect));
-		getCanvas().addChild(rect);
 		
-		MTCube c = new MTCube(getMTApplication(), 300);
-		c.setFillColor(MTColor.randomColor());
-		getCanvas().addChild(c);
-//		c.setPositionGlobal(new Vector3D(ToolsMath.getRandom(0, MT4jSettings.getInstance().getWindowWidth()),ToolsMath.getRandom(0, MT4jSettings.getInstance().getWindowHeight())));
-//		c.rotateX(c.getCenterPointRelativeToParent(), ToolsMath.getRandom(0, 90), TransformSpace.RELATIVE_TO_PARENT);
-//		c.rotateY(c.getCenterPointRelativeToParent(), ToolsMath.getRandom(0, 90), TransformSpace.RELATIVE_TO_PARENT);
-//		c.setTexture(getMTApplication().loadImage("MT4j.gif"));
-		lp.addLassoable(c);
-		
-		MTSphere sphere = new MTSphere(mtApplication, "", 20, 20, 50);
-		getCanvas().addChild(sphere);
-		
-		
-//		sphere.setUseVBOs(true);
-//		c.setUseVBOs(true);
 		
 		lp.addLassoable(textField);
+		
+		PImage mt4jTexture = getMTApplication().loadImage("MT4j.gif");
+		
+		MTRectangle rect = new MTRectangle(getMTApplication(), mt4jTexture);
+		rect.setStrokeColor(MTColor.BLACK);
+		rect.addGestureListener(DragProcessor.class, new InertiaDragAction());
+		getCanvas().addChild(rect);
+		rect.setPositionGlobal(new Vector3D(ToolsMath.getRandom(0, MT4jSettings.getInstance().getWindowWidth()),ToolsMath.getRandom(0, MT4jSettings.getInstance().getWindowHeight())));
+		rect.rotateZ(rect.getCenterPointRelativeToParent(), ToolsMath.getRandom(-45, 45), TransformSpace.RELATIVE_TO_PARENT);
 		lp.addLassoable(rect);
-
+		
+		MTRoundRectangle roundRect = new MTRoundRectangle(getMTApplication(), 0,0,0, 150, 120, 30,30);
+		roundRect.setStrokeColor(MTColor.BLACK);
+		roundRect.setTexture(mt4jTexture);
+		roundRect.addGestureListener(DragProcessor.class, new InertiaDragAction());
+		getCanvas().addChild(roundRect);
+		roundRect.setPositionGlobal(new Vector3D(ToolsMath.getRandom(0, MT4jSettings.getInstance().getWindowWidth()),ToolsMath.getRandom(0, MT4jSettings.getInstance().getWindowHeight())));
+		roundRect.rotateZ(rect.getCenterPointRelativeToParent(), ToolsMath.getRandom(-45, 145), TransformSpace.RELATIVE_TO_PARENT);
+		lp.addLassoable(roundRect);
+		
+		MTEllipse ell = new MTEllipse(getMTApplication(), new Vector3D(), 150, 100);
+		ell.setTexture(mt4jTexture);
+		ell.addGestureListener(DragProcessor.class, new InertiaDragAction());
+		getCanvas().addChild(ell);
+		ell.setPositionGlobal(new Vector3D(ToolsMath.getRandom(0, MT4jSettings.getInstance().getWindowWidth()),ToolsMath.getRandom(0, MT4jSettings.getInstance().getWindowHeight())));
+		ell.rotateZ(rect.getCenterPointRelativeToParent(), ToolsMath.getRandom(-145, 45), TransformSpace.RELATIVE_TO_PARENT);
+		lp.addLassoable(ell);
+		
+		MTCube c = new MTCube(getMTApplication(), 190);
+		c.registerInputProcessor(new Rotate3DProcessor(getMTApplication(), rect));
+		c.addGestureListener(Rotate3DProcessor.class, new Rotate3DAction(getMTApplication(), c));
+		c.addGestureListener(DragProcessor.class, new InertiaDragAction());
+		getCanvas().addChild(c);
+		c.setPositionGlobal(new Vector3D(ToolsMath.getRandom(0, MT4jSettings.getInstance().getWindowWidth()),ToolsMath.getRandom(0, MT4jSettings.getInstance().getWindowHeight())));
+		c.rotateX(c.getCenterPointRelativeToParent(), ToolsMath.getRandom(0, 90), TransformSpace.RELATIVE_TO_PARENT);
+		c.rotateY(c.getCenterPointRelativeToParent(), ToolsMath.getRandom(0, 90), TransformSpace.RELATIVE_TO_PARENT);
+		c.setTexture(mt4jTexture);
+		lp.addLassoable(c);
+		
+		MTSphere sphere = new MTSphere(mtApplication, "", 20, 20, 125);
+		sphere.registerInputProcessor(new Rotate3DProcessor(getMTApplication(), rect));
+		sphere.addGestureListener(Rotate3DProcessor.class, new Rotate3DAction(getMTApplication(), sphere));
+		sphere.setTexture(mt4jTexture);
+		sphere.rotateX(c.getCenterPointRelativeToParent(), ToolsMath.getRandom(0, 90), TransformSpace.RELATIVE_TO_PARENT);
+		sphere.rotateY(c.getCenterPointRelativeToParent(), ToolsMath.getRandom(0, 90), TransformSpace.RELATIVE_TO_PARENT);
+		sphere.addGestureListener(DragProcessor.class, new InertiaDragAction());
+		getCanvas().addChild(sphere);
+		sphere.setPositionGlobal(new Vector3D(ToolsMath.getRandom(0, MT4jSettings.getInstance().getWindowWidth()),ToolsMath.getRandom(0, MT4jSettings.getInstance().getWindowHeight())));
+		sphere.setUseVBOs(true);
 		
 		
 		
