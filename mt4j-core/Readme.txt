@@ -72,6 +72,21 @@ unenforceable in your jurisdiction, then you may not use the Software.
 
 References:
 -----------
-This application uses the Processing library.
-See http://Processing.org
+MT4j makes use of following open source projects:
+* Processing - http://Processing.org
+* Java Monkey Engine
+* LibGDX
+* Ani
+* JBullet
+* JBox2D
+* Batik
+* MRI
+* WhirlyLib
+* ManyMouse
+* jax 
+* java osc
+* xalan
+* and probably some more
+
+
 for more information see the source code.
