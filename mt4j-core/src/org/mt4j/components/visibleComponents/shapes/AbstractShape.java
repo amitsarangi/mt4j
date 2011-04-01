@@ -568,7 +568,7 @@ public abstract class AbstractShape extends AbstractVisibleComponent implements 
 			if (!useVBOs){
 				this.useVBOs = useVBOs;
 			}else{
-				if (this.getRenderer() instanceof AbstractMTApplication && ((AbstractMTApplication) this.getRenderer()).isGL20Available()) {
+				if (this.getRenderer() instanceof AbstractMTApplication && ((AbstractMTApplication) this.getRenderer()).isGL11Available()) {
 					this.useVBOs = useVBOs;
 				}
 			}

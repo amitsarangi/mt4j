@@ -119,10 +119,10 @@ public class TriangleNormalGenerator {
 		}
 		
 		//Gen or get indices array
-		int[] indices = null;
+		short[] indices = null;
 		if (!geometryInfo.isIndexed()){
-			indices = new int[vertices.length];
-			for (int i = 0; i < vertices.length; i++) {
+			indices = new short[vertices.length];
+			for (short i = 0; i < vertices.length; i++) {
 				indices[i] = i;
 			}
 		}else{
@@ -174,7 +174,7 @@ public class TriangleNormalGenerator {
 	 * 
 	 * @return the geometry info
 	 */
-	public GeometryInfo generateSmoothNormals(PApplet pa, Vertex[] originalVertices, int[] originalIndices, float[][] originalTexCoords, int[] originalTexIndices, float creaseAngle, boolean flipTextureY, boolean flipTextureX){
+	public GeometryInfo generateSmoothNormals(PApplet pa, Vertex[] originalVertices, short[] originalIndices, float[][] originalTexCoords, int[] originalTexIndices, float creaseAngle, boolean flipTextureY, boolean flipTextureX){
 			int newDuplicatesWithDiffTexCoordsCreated 	= 0;
 			int newDuplicatesWithDiffNormalCreated 		= 0;
 			
@@ -357,7 +357,7 @@ public class TriangleNormalGenerator {
 			//Create arrays
 			Vertex[] newVertices 	= new Vertex[vertexDatas.size()];
 			Vector3D[] normals  	= new Vector3D[vertexDatas.size()];
-			int[] newIndices		= new int[faces.size()*3];
+			short[] newIndices		= new short[faces.size()*3];
 			
 			
 			/*
@@ -371,9 +371,9 @@ public class TriangleNormalGenerator {
 				int indexP2 = myFace.p2;
 				
 				//Use pointers as newIndices and fill newIndices array
-				newIndices[j*3]		= indexP0;
-				newIndices[j*3+1]	= indexP1;
-				newIndices[j*3+2]	= indexP2;
+				newIndices[j*3]		= (short) indexP0;
+				newIndices[j*3+1]	= (short) indexP1;
+				newIndices[j*3+2]	= (short) indexP2;
 				
 				//Get the vertexdatas out of the list with the pointers
 				VertexData vdP0 = vertexDatas.get(indexP0);
@@ -501,7 +501,7 @@ public class TriangleNormalGenerator {
 	 * 
 	 * indexed, geometry info with normals
 	 */
-	public GeometryInfo generateCreaseAngleNormals(PApplet pa, Vertex[] originalVertices, int[] originalIndices, float[][] originalTexCoords, int[] originalTexIndices, float creaseAngle, boolean flipTextureY, boolean flipTextureX){
+	public GeometryInfo generateCreaseAngleNormals(PApplet pa, Vertex[] originalVertices, short[] originalIndices, float[][] originalTexCoords, int[] originalTexIndices, float creaseAngle, boolean flipTextureY, boolean flipTextureX){
 			int newDuplicatesWithDiffTexCoordsCreated 	= 0;
 			int newDuplicatesWithDiffNormalCreated 		= 0;
 			
@@ -866,7 +866,7 @@ public class TriangleNormalGenerator {
 			//Create arrays
 			Vertex[] newVertices 	= new Vertex[vertexDatas.size()];
 			Vector3D[] normals  	= new Vector3D[vertexDatas.size()];
-			int[] newIndices		= new int[faces.size()*3];
+			short[] newIndices		= new short[faces.size()*3];
 			
 			/*
 			 * Go through the final faces list and fill vertex/newIndices/normal arrays
@@ -879,9 +879,9 @@ public class TriangleNormalGenerator {
 				int indexP2 = myFace.p2;
 				
 				//Use pointers as newIndices and fill newIndices array
-				newIndices[j*3]		= indexP0;
-				newIndices[j*3+1]	= indexP1;
-				newIndices[j*3+2]	= indexP2;
+				newIndices[j*3]		= (short) indexP0;
+				newIndices[j*3+1]	= (short) indexP1;
+				newIndices[j*3+2]	= (short) indexP2;
 				
 				//Get the vertexdatas out of the list with the pointers
 				VertexData vdP0 = vertexDatas.get(indexP0);

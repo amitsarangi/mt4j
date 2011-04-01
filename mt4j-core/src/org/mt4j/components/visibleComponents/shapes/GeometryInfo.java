@@ -17,13 +17,14 @@
  ***********************************************************************/
 package org.mt4j.components.visibleComponents.shapes;
 
+import java.nio.Buffer;
 import java.nio.FloatBuffer;
-import java.nio.IntBuffer;
+import java.nio.ShortBuffer;
 
 import org.mt4j.AbstractMTApplication;
 import org.mt4j.components.visibleComponents.StyleInfo;
-import org.mt4j.util.PlatformUtil;
 import org.mt4j.util.MT4jSettings;
+import org.mt4j.util.PlatformUtil;
 import org.mt4j.util.math.ToolsBuffers;
 import org.mt4j.util.math.ToolsVBO;
 import org.mt4j.util.math.Vector3D;
@@ -54,7 +55,7 @@ public class GeometryInfo {
 	private Vector3D[] normals;
 	
 	/** The indices. */
-	private int[] indices; 
+	private short[] indices; 
 	
 	/** The vert buff. */
 	private FloatBuffer vertBuff;
@@ -72,7 +73,7 @@ public class GeometryInfo {
 	private FloatBuffer normalsBuff; 
 	
 	/** The indices buff. */
-	private IntBuffer 	indicesBuff;
+	private Buffer 	indicesBuff;
 	
 	//	 Pure GL VBO indices names \\	
 	/** The vbo vertices id. */
@@ -136,7 +137,7 @@ public class GeometryInfo {
 	 * @param vertices the vertices
 	 * @param indices the indices
 	 */
-	public GeometryInfo(PApplet pApplet, Vertex[] vertices, int[] indices){
+	public GeometryInfo(PApplet pApplet, Vertex[] vertices, short[] indices){
 		this(pApplet, vertices, null, indices);
 	}
 
@@ -149,7 +150,7 @@ public class GeometryInfo {
 	 * @param normals the normals
 	 * @param indices the indices
 	 */
-	public GeometryInfo(PApplet pApplet, Vertex[] vertices, Vector3D[] normals, int[] indices){
+	public GeometryInfo(PApplet pApplet, Vertex[] vertices, Vector3D[] normals, short[] indices){
 		this.r = pApplet;
 		//VBO Ids
 		this.vboVerticesID 	= -1;
@@ -180,7 +181,7 @@ public class GeometryInfo {
 	public void reconstruct(
 			Vertex[] 	vertices, 
 			Vector3D[] 	normals, 
-			int[] 		indices, 
+			short[] 		indices, 
 			boolean 	createOrUpdateOGLBuffers, 
 			boolean 	createOrUpdateVBO, 
 			StyleInfo 	styleInfo
@@ -219,19 +220,22 @@ public class GeometryInfo {
 	 * @param indices the indices
 	 * @param createOrUpdateOGLBuffers the create or update ogl buffers
 	 */
-	public void setIndices(int[] indices, boolean createOrUpdateOGLBuffers/*, boolean createOrUpdateVBO*/) {
+	public void setIndices(short[] indices, boolean createOrUpdateOGLBuffers/*, boolean createOrUpdateVBO*/) {
 		if (indices != null && indices.length > 0){
 			this.setIndexed(true);
 			this.indices = indices;
 			
 			if (MT4jSettings.getInstance().isOpenGlMode() && createOrUpdateOGLBuffers){
 				//Set Buffer and maybe EBO //TODO create EBO Element Buffer Object?
+//				this.setIndicesBuffer(ToolsBuffers.generateIndicesBuffer(indices));
+				
 				this.setIndicesBuffer(ToolsBuffers.generateIndicesBuffer(indices));
 			}
 		}else{
 			this.setIndexed(false);
 		}
 	}
+	
 	
 	/**
 	 * Gets the indices.
@@ -240,7 +244,7 @@ public class GeometryInfo {
 	 * 
 	 * the array if indices
 	 */
-	public int[] getIndices(){
+	public short[] getIndices(){
 		return this.indices;
 	}
 
@@ -487,7 +491,7 @@ public class GeometryInfo {
 	 * 
 	 * @param indicesBuff the new indices buffer
 	 */
-	private void setIndicesBuffer(IntBuffer indicesBuff){
+	private void setIndicesBuffer(ShortBuffer indicesBuff){
 		this.indicesBuff = indicesBuff;
 	}
 	
@@ -506,7 +510,7 @@ public class GeometryInfo {
 	 * 
 	 * @return the index buff
 	 */
-	public IntBuffer getIndexBuff() {
+	public Buffer getIndexBuff() {
 		return this.indicesBuff;
 	}
 	

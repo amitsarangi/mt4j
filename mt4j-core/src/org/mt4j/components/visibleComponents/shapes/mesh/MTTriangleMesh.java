@@ -17,8 +17,10 @@
  ***********************************************************************/
 package org.mt4j.components.visibleComponents.shapes.mesh;
 
+import java.nio.Buffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
+import java.nio.ShortBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -232,7 +234,7 @@ public class MTTriangleMesh extends AbstractShape{
 		
 		if (geom.isIndexed()){
 			//System.out.println("MTTriangleMesh object: \"" + this.getName() + "\" Debug-> Supplied geometry is INDEXED");
-			int[] indices = geom.getIndices();
+			short[] indices = geom.getIndices();
 			if (indices.length % 3 != 0){
 				System.err.println("WARNING: the indices of the indexed mesh geometry:\"" + this.getName() + "\" arent dividable by 3 => probably no TRIANGLES indices provided!");
 			}
@@ -290,7 +292,7 @@ public class MTTriangleMesh extends AbstractShape{
 		GeometryInfo geom = this.getGeometryInfo();
 		if (geom.isIndexed()){
 			//Create smooth vertex normals, smoothed across all neighbors
-			int[] indices = geom.getIndices();
+			short[] indices = geom.getIndices();
 			normals = new Vector3D[geom.getVertices().length];
 			for (int i = 0; i < indices.length/3; i++) {
 				if (normals[indices[i*3]] == null){
@@ -593,7 +595,7 @@ public class MTTriangleMesh extends AbstractShape{
 			g.textureMode(this.getTextureMode());
 		}
 		if (this.getGeometryInfo().isIndexed()){
-			int[] indices =  this.getGeometryInfo().getIndices();
+			short[] indices =  this.getGeometryInfo().getIndices();
             for (int index : indices) {
                 drawP5Vertex(g, vertices[index], useTexture);
             }
@@ -668,7 +670,7 @@ public class MTTriangleMesh extends AbstractShape{
 		FloatBuffer tbuff 			= this.getGeometryInfo().getTexBuff();
 		FloatBuffer vertBuff 		= this.getGeometryInfo().getVertBuff();
 		FloatBuffer colorBuff 		= this.getGeometryInfo().getColorBuff();
-		IntBuffer indexBuff 		= this.getGeometryInfo().getIndexBuff(); //null if not indexed
+		Buffer indexBuff 			= this.getGeometryInfo().getIndexBuff(); //null if not indexed
 		
 		//Enable Pointers, set vertex array pointer
 		gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
@@ -737,7 +739,8 @@ public class MTTriangleMesh extends AbstractShape{
 			
 			//DRAW with drawElements if geometry is indexed, else draw with drawArrays!
 			if (this.getGeometryInfo().isIndexed()){
-				gl.glDrawElements(this.getFillDrawMode(), indexBuff.capacity(), GL11Plus.GL_UNSIGNED_INT, indexBuff); //limit() oder capacity()??
+//				gl.glDrawElements(this.getFillDrawMode(), indexBuff.capacity(), GL11Plus.GL_UNSIGNED_INT, indexBuff); //limit() oder capacity()??
+				gl.glDrawElements(this.getFillDrawMode(), indexBuff.limit(), GL11.GL_UNSIGNED_SHORT, indexBuff); //limit() oder capacity()??
 			}else{
 				gl.glDrawArrays(this.getFillDrawMode(), 0, vertBuff.capacity()/3);
 			}

@@ -17,6 +17,7 @@
  ***********************************************************************/
 package org.mt4j.util.math;
 
+import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.DoubleBuffer;
@@ -30,8 +31,8 @@ import org.mt4j.components.visibleComponents.StyleInfo;
 import org.mt4j.components.visibleComponents.shapes.AbstractShape;
 import org.mt4j.components.visibleComponents.shapes.GeometryInfo;
 import org.mt4j.input.inputData.InputCursor;
-import org.mt4j.util.PlatformUtil;
 import org.mt4j.util.MT4jSettings;
+import org.mt4j.util.PlatformUtil;
 import org.mt4j.util.camera.IFrustum;
 import org.mt4j.util.camera.Icamera;
 import org.mt4j.util.opengl.GL10;
@@ -882,7 +883,7 @@ public class Tools3D {
 		FloatBuffer vertBuff 		= geometryInfo.getVertBuff();
 		FloatBuffer colorBuff 		= geometryInfo.getColorBuff();
 		FloatBuffer strokeColBuff 	= geometryInfo.getStrokeColBuff();
-		IntBuffer indexBuff 		= geometryInfo.getIndexBuff(); //null if not indexed
+		Buffer indexBuff 		    = geometryInfo.getIndexBuff(); //null if not indexed
 		
 		GL10 gl = PlatformUtil.beginGL();
 		GL11Plus gl11Plus = PlatformUtil.getGL11Plus();

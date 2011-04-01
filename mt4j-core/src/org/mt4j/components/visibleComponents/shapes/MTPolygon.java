@@ -17,16 +17,16 @@
  ***********************************************************************/
 package org.mt4j.components.visibleComponents.shapes;
 
+import java.nio.Buffer;
 import java.nio.FloatBuffer;
-import java.nio.IntBuffer;
 
 import org.mt4j.components.bounds.BoundingSphere;
 import org.mt4j.components.bounds.IBoundingShape;
 import org.mt4j.components.bounds.OrientedBoundingBox;
 import org.mt4j.components.css.style.CSSStyle;
-import org.mt4j.util.PlatformUtil;
 import org.mt4j.util.MT4jSettings;
 import org.mt4j.util.MTColor;
+import org.mt4j.util.PlatformUtil;
 import org.mt4j.util.math.BezierVertex;
 import org.mt4j.util.math.Ray;
 import org.mt4j.util.math.Tools3D;
@@ -320,7 +320,7 @@ public class MTPolygon extends MTCSSStylableShape{
 		FloatBuffer vertBuff 		= this.getGeometryInfo().getVertBuff();
 		FloatBuffer colorBuff 		= this.getGeometryInfo().getColorBuff();
 		FloatBuffer strokeColBuff 	= this.getGeometryInfo().getStrokeColBuff();
-		IntBuffer indexBuff 		= this.getGeometryInfo().getIndexBuff();
+		Buffer indexBuff 			= this.getGeometryInfo().getIndexBuff();
 		
 		//Enable Pointers, set vertex array pointer
 		gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
@@ -381,8 +381,8 @@ public class MTPolygon extends MTCSSStylableShape{
 			
 			//DRAW //Draw with drawElements if geometry is indexed, else draw with drawArrays!
 			if (this.getGeometryInfo().isIndexed()){
-//				gl.glDrawElements(this.getFillDrawMode(), indexBuff.limit(), GL10.GL_UNSIGNED_SHORT, indexBuff);
-				gl.glDrawElements(this.getFillDrawMode(), indexBuff.capacity(), GL11Plus.GL_UNSIGNED_INT, indexBuff);
+				gl.glDrawElements(this.getFillDrawMode(), indexBuff.limit(), GL10.GL_UNSIGNED_SHORT, indexBuff);
+//				gl.glDrawElements(this.getFillDrawMode(), indexBuff.capacity(), GL11Plus.GL_UNSIGNED_INT, indexBuff);
 			}else{
 				gl.glDrawArrays(this.getFillDrawMode(), 0, vertBuff.capacity()/3);
 			}
