@@ -164,7 +164,7 @@ public class Scene1 extends AbstractScene {
 		lp.addLassoable(ell);
 		
 		MTCube c = new MTCube(getMTApplication(), 190);
-		c.registerInputProcessor(new Rotate3DProcessor(getMTApplication(), rect));
+		c.registerInputProcessor(new Rotate3DProcessor(getMTApplication(), c));
 		c.addGestureListener(Rotate3DProcessor.class, new Rotate3DAction(getMTApplication(), c));
 		c.addGestureListener(DragProcessor.class, new InertiaDragAction());
 		getCanvas().addChild(c);
