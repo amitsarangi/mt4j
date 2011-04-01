@@ -22,6 +22,7 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
+import java.nio.ShortBuffer;
 
 /**
  * Methods to build Buffers for use with vertex/texture/color arrays in opengl
@@ -216,6 +217,20 @@ public class ToolsBuffers {
 		  return indexBuff;	
 	}
 	
+	/**
+     * Generate indices buffer.
+     * 
+     * @param indicesArray the indices array
+     * 
+     * @return the int buffer
+     */
+	public static ShortBuffer generateIndicesBuffer(short[] indicesArray){ 
+		  ShortBuffer indexBuff = createShortBuffer(indicesArray.length);
+		  indexBuff.put(indicesArray);
+		  indexBuff.rewind();
+		  return indexBuff;	
+	}
+	
 	
 	
 	/**
@@ -368,6 +383,25 @@ public class ToolsBuffers {
         return inds;
     }
     
+    /**
+	 * Create a new short[] array and populates
+	 * it with the given ShortBuffer contents.
+	 * 
+	 * @param buff the ShortBuffer to read from
+	 * 
+	 * @return a new int array populated from the ShortBuffer
+	 */
+    public static short[] getShortArray(ShortBuffer buff) {
+        if (buff == null) return null;
+        buff.clear();
+        short[] inds = new short[buff.limit()];
+        for (int x = 0; x < inds.length; x++) {
+            inds[x] = buff.get();
+        }
+        buff.clear(); //Reset position to 0 again
+        return inds;
+    }
+    
     
     /**
      * Create a new float[] array and populate it with the given FloatBuffer's
@@ -483,7 +517,7 @@ public class ToolsBuffers {
 	 * @return the new FloatBuffer
 	 */
 	public  static FloatBuffer createFloatBuffer(int size) {
-	    FloatBuffer buf = ByteBuffer.allocateDirect(4 * size).order(ByteOrder.nativeOrder()).asFloatBuffer();
+	    FloatBuffer buf = ByteBuffer.allocateDirect(SIZEOF_FLOAT * size).order(ByteOrder.nativeOrder()).asFloatBuffer();
 	    buf.clear();
 	    return buf;
 	}
@@ -511,7 +545,20 @@ public class ToolsBuffers {
 	 * @return the new IntBuffer
 	 */
 	public static IntBuffer createIntBuffer(int size) {
-	    IntBuffer buf = ByteBuffer.allocateDirect(4 * size).order(ByteOrder.nativeOrder()).asIntBuffer();
+	    IntBuffer buf = ByteBuffer.allocateDirect(SIZEOF_INT * size).order(ByteOrder.nativeOrder()).asIntBuffer();
+	    buf.clear();
+	    return buf;
+	}
+	
+	/**
+	 * Create a new ShortBuffer of the specified size.
+	 * 
+	 * @param size required number of ints to store.
+	 * 
+	 * @return the new ShortBuffer
+	 */
+	public static ShortBuffer createShortBuffer(int size) {
+	    ShortBuffer buf = ByteBuffer.allocateDirect(SIZEOF_SHORT * size).order(ByteOrder.nativeOrder()).asShortBuffer();
 	    buf.clear();
 	    return buf;
 	}
