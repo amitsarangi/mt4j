@@ -136,7 +136,8 @@ public class Scene1 extends AbstractScene {
 		
 		lp.addLassoable(textField);
 		
-		PImage mt4jTexture = getMTApplication().loadImage("MT4j.gif");
+//		PImage mt4jTexture = getMTApplication().loadImage("MT4j.gif");
+		PImage mt4jTexture = getMTApplication().loadImage("MT4jAndroid_256px_black.png");
 		
 		MTRectangle rect = new MTRectangle(getMTApplication(), mt4jTexture);
 		rect.setStrokeColor(MTColor.BLACK);
