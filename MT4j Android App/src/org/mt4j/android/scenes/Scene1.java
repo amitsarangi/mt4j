@@ -176,7 +176,7 @@ public class Scene1 extends AbstractScene {
 		lp.addLassoable(c);
 		
 		MTSphere sphere = new MTSphere(mtApplication, "", 20, 20, 125);
-		sphere.registerInputProcessor(new Rotate3DProcessor(getMTApplication(), rect));
+		sphere.registerInputProcessor(new Rotate3DProcessor(getMTApplication(), sphere));
 		sphere.addGestureListener(Rotate3DProcessor.class, new Rotate3DAction(getMTApplication(), sphere));
 		sphere.setTexture(mt4jTexture);
 		sphere.rotateX(c.getCenterPointRelativeToParent(), ToolsMath.getRandom(0, 90), TransformSpace.RELATIVE_TO_PARENT);
