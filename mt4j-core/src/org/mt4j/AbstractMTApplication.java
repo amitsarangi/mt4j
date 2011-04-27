@@ -1032,7 +1032,7 @@ public abstract class AbstractMTApplication extends PApplet implements IMTApplic
 	//in which a separate GLTexture object is created each time
 	@Override
 	public PImage loadImage(String filename) {
-		if (MT4jSettings.getInstance().isOpenGlMode()){
+		if (MT4jSettings.getInstance().isOpenGlMode() && this.isRenderThreadCurrent()){
 			GLTextureSettings ts = new GLTextureSettings();
 			//Create new GLTexture from PImage
 			ts.shrinkFilter 		= SHRINKAGE_FILTER.BilinearNoMipMaps;
