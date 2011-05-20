@@ -40,7 +40,6 @@
 	<classpathentry kind="lib" path="/mt4j-core/lib/xml-apis-ext.jar"/>
 	<classpathentry kind="lib" path="lib/jogl/gluegen-rt.jar"/>
 	<classpathentry kind="lib" path="lib/muito_blobtracking.jar"/>
-	<classpathentry kind="lib" path="lib/tuio/tuio4j.jar"/>
 	<classpathentry kind="lib" path="lib/tuio/tuio4jinput.jar"/>
 	<classpathentry kind="lib" path="lib/core.jar"/>
 	<classpathentry kind="lib" path="lib/jogl/opengl.jar"/>
@@ -49,5 +48,6 @@
 			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="mt4j-desktop"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="lib" path="lib/tuio/tuio4j_v1.1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
