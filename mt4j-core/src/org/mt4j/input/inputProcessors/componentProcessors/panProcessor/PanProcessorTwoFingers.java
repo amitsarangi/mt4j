@@ -234,16 +234,20 @@ public class PanProcessorTwoFingers extends AbstractCursorProcessor {
 				planeNormal, 
 				pointInPlane);
 		
-		Vector3D oldMiddlePoint = getMiddlePointBetweenFingers(fromSecondFinger, fromFirstFinger);
-		
-		Vector3D toFirstFinger = ToolsGeometry.getRayPlaneIntersection(
-				Tools3D.getCameraPickRay(applet, comp.getViewingCamera(), movingCursor.getCurrentEvent().getX(), movingCursor.getCurrentEvent().getY()), 
-				planeNormal, 
-				pointInPlane);
-		
-		Vector3D newMiddlePoint = getMiddlePointBetweenFingers(toFirstFinger ,  fromSecondFinger);
-		Vector3D distance = newMiddlePoint.getSubtracted(oldMiddlePoint);
-		return distance;
+		if (fromFirstFinger != null && fromSecondFinger != null){
+			Vector3D oldMiddlePoint = getMiddlePointBetweenFingers(fromSecondFinger, fromFirstFinger);
+			
+			Vector3D toFirstFinger = ToolsGeometry.getRayPlaneIntersection(
+					Tools3D.getCameraPickRay(applet, comp.getViewingCamera(), movingCursor.getCurrentEvent().getX(), movingCursor.getCurrentEvent().getY()), 
+					planeNormal, 
+					pointInPlane);
+			
+			Vector3D newMiddlePoint = getMiddlePointBetweenFingers(toFirstFinger ,  fromSecondFinger);
+			Vector3D distance = newMiddlePoint.getSubtracted(oldMiddlePoint);
+			return distance;
+		}else{
+			return new Vector3D();
+		}
 	}
 	
 	

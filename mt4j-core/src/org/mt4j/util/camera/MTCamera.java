@@ -18,8 +18,12 @@
 package org.mt4j.util.camera;
 
 
-import org.mt4j.util.PlatformUtil;
 import org.mt4j.util.MT4jSettings;
+import org.mt4j.util.PlatformUtil;
+import org.mt4j.util.animation.AnimationEvent;
+import org.mt4j.util.animation.IAnimation;
+import org.mt4j.util.animation.IAnimationListener;
+import org.mt4j.util.animation.ani.AniAnimation;
 import org.mt4j.util.math.Matrix;
 import org.mt4j.util.math.Vector3D;
 
@@ -690,5 +694,80 @@ public class MTCamera implements Icamera{
 
 	//TODO setFrustum(float near, float far, float left, float right, float top, float bottom);
 	//TODO setFrustumPerspective(float fovY, float aspect, float near, float far);
+	
+	
+	
+	public IAnimation tweenTo(float x, float y, float z, int interpolationDuration, String interpolationFunction, int delay){
+		Vector3D from 			= getPosition();
+		Vector3D targetPoint 	= new Vector3D(x, y, z);
+		Vector3D directionVect 	= targetPoint.getSubtracted(from);
+//		System.out.println("Distance Cam - Target: " + directionVect);
+		float distance = directionVect.length();
+		AniAnimation animation = new AniAnimation(0, distance, interpolationDuration, interpolationFunction, this);
+		animation.addAnimationListener(new CamTranslationAnimationListener(directionVect, new Vector3D(x,y,z)));
+		animation.setTriggerTime(delay);
+		animation.start();
+		return animation;
+	}
+	
+	
+	/**
+	 * This private class acts as an AnimationListener for translation animations.
+	 * 
+	 * @author C.Ruff
+	 */
+	private class CamTranslationAnimationListener implements IAnimationListener{
+		/** The direction vector. */
+		private Vector3D directionVector;
+		
+		/** The normalized dir vect. */
+		private Vector3D normalizedDirVect;
+		
+		private Vector3D destinationPos;
+		
+		/**
+		 * Instantiates a new translation animation listener.
+		 * 
+		 * @param shape the shape
+		 * @param directionVector the direction vector
+		 * @param destinationPosition 
+		 */
+		public CamTranslationAnimationListener(Icamera cam, Vector3D directionVector){
+			this(directionVector, null);
+		}
+
+		/**
+		 * Instantiates a new translation animation listener.
+		 * 
+		 * @param shape the shape
+		 * @param directionVector the direction vector
+		 * @param destinationPosition 
+		 */
+		public CamTranslationAnimationListener(Vector3D directionVector, Vector3D destinationPosition){
+			this.directionVector = directionVector;
+			this.normalizedDirVect = this.directionVector.getCopy();
+			this.normalizedDirVect.normalizeLocal();
+			this.destinationPos = destinationPosition;
+//			System.out.println("Destination Pos: " + destinationPosition);
+		}
+		
+		public void processAnimationEvent(AnimationEvent ae) {
+			Object target = ae.getTarget();
+			if (target != null){
+				Icamera cam = (Icamera)target;
+				float amount = ae.getAnimation().getDelta();
+				Vector3D newTranslationVect = this.normalizedDirVect.getCopy();
+				newTranslationVect.scaleLocal(amount);
+				//Move cam
+				moveCamAndViewCenter(newTranslationVect.x, newTranslationVect.y, newTranslationVect.z);
+//				if (ae.getId() == AnimationEvent.ANIMATION_ENDED && destinationPos != null){
+//					cam.setPosition(destinationPos); //Set position at the end to fight round-off errors during translation
+////					cam.setViewCenterPos(Komp.this.getPosition(TransformSpace.GLOBAL));
+//					cam.setViewCenterPos(destinationPos);
+//				}
+			}
+		}
+	}
+	
 	
 }
