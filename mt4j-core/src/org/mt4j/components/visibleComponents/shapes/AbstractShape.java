@@ -1222,6 +1222,129 @@ public abstract class AbstractShape extends AbstractVisibleComponent implements 
 	
 	
 	/**
+	 * Scales this shape to the given width and height. Relative to its parent frame of reference.
+	 * <br>Uses the shapes bounding shape for calculation.
+	 * 
+	 * @param width the width
+	 * @param height the height
+	 * 
+	 * @return true, if sets the size xy relative to parent
+	 * 
+	 * returns false if negative values are put in
+	 */
+	public boolean setSizeXYRelativeToParent(float width, float height){
+		if (width > 0 && height > 0){
+			Vector3D centerPoint = this.getCenterPointRelativeToParent();
+			this.scale( (1f/this.getWidthXYRelativeToParent()) * width, (1f/this.getHeightXYRelativeToParent()) * height, 1, centerPoint);
+			return true;
+		}else
+			return false;
+	}
+	
+	/**
+	 * Scales this shape to the given width and height in the XY-Plane. Relative to world space.
+	 * <br>Uses the shapes bounding shape for calculation.
+	 * 
+	 * @param width the width
+	 * @param height the height
+	 * 
+	 * @return true, if sets the size xy global
+	 */
+	public boolean setSizeXYGlobal(float width, float height){
+		if (width > 0 && height > 0){
+			Vector3D centerPoint = this.getCenterPointGlobal();
+			this.scaleGlobal( (1f/this.getWidthXYGlobal())* width , (1f/this.getHeightXYGlobal()) * height, 1, centerPoint);
+			return true;
+		}else
+			return false;
+	}
+	
+	
+	/**
+	 * Scales the shape to the given height relative to parent space.
+	 * Aspect ratio is preserved! The scaling is done Axis aligned, so
+	 * shearing might occour if rotated!
+	 * <br>Uses the shapes bounding shape for calculation.
+	 * 
+	 * @param height the height
+	 * 
+	 * @return true, if the height isnt negative
+	 */
+	public boolean setHeightXYRelativeToParent(float height){
+		if (height > 0){
+			Vector3D centerPoint = this.getCenterPointRelativeToParent();
+			float factor = (1f/this.getHeightXYRelativeToParent()) * height;
+			this.scale(factor, factor, 1, centerPoint);
+			return true;
+		}else
+			return false;
+	}
+	
+	
+	/**
+	 * Scales the shape to the given height relative to world space.
+	 * Aspect ratio is preserved! The scaling is done Axis aligned, so
+	 * shearing might occour if rotated!
+	 * <br>Uses the shapes bounding shape for calculation.
+	 * 
+	 * @param height the height
+	 * 
+	 * @return true, if sets the height xy global
+	 */
+	public boolean setHeightXYGlobal(float height){
+		if (height > 0){
+			Vector3D centerPoint = this.getCenterPointGlobal();
+			float factor = (1f/this.getHeightXYGlobal())* height;
+			this.scaleGlobal(factor, factor, 1, centerPoint);
+			return true;
+		}else
+			return false;
+	}
+	
+	/**
+	 * Scales the shape to the given width relative to parent space.
+	 * Aspect ratio is preserved! 
+	 * <br>NOTE: The scaling is done Axis aligned, so
+	 * shearing might occour if rotated before!
+	 * <br>Uses the shapes bounding shape for calculation.
+	 * 
+	 * @param width the width
+	 * 
+	 * @return true, if the width isnt negative
+	 */
+	public boolean setWidthXYRelativeToParent(float width){
+		if (width > 0){
+			Vector3D centerPoint = this.getCenterPointRelativeToParent(); 
+			float factor = (1f/this.getWidthXYRelativeToParent()) * width;
+			this.scale(factor, factor, 1, centerPoint);
+			return true;
+		}else
+			return false;
+	}
+	
+	
+	/**
+	 * Scales the shape to the given width relative to world space.
+	 * Aspect ratio is preserved! The scaling is done Axis aligned, so
+	 * shearing might occour if rotated!
+	 * <br>Uses the shapes bounding shape for calculation.
+	 * 
+	 * @param width the width
+	 * 
+	 * @return true, if sets the width xy global
+	 */
+	public boolean setWidthXYGlobal(float width){
+		if (width > 0){
+			Vector3D centerPoint = this.getCenterPointGlobal();
+			float factor = (1f/this.getWidthXYGlobal())* width;
+			this.scaleGlobal(factor, factor, 1, centerPoint);
+			return true;
+		}else
+			return false;
+	}
+	
+	
+	/**
 	 * <li>Removes this component from its parent.
 	 * <li>Calls <code>destroyComponent</code> on this component which
 	 * can be used to free resources that the component used.
