@@ -321,6 +321,7 @@ public class MapsScene extends AbstractScene implements MouseWheelListener, Mous
 		
 		cell.setFillColor(cellFillColor);
 		MTTextArea listLabel = new MTTextArea(p, font);
+		listLabel.unregisterAllInputProcessors();
 		listLabel.setNoFill(true);
 		listLabel.setNoStroke(true);
 		listLabel.setText(label);

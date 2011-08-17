@@ -412,6 +412,7 @@ public class MTShellScene extends AbstractScene {
 				new Vertex(realListCellWidth-topShift, 				border,		  		0, 0,0),
 		};
 		MTPolygon p = new MTPolygon(getMTApplication(), vertices);
+		p.unregisterAllInputProcessors();
 		p.setTexture(icon);
 //		p.setNoStroke(true);
 //		p.setStrokeColor(new MTColor(150,150,150, 255));
@@ -425,6 +426,7 @@ public class MTShellScene extends AbstractScene {
 				new Vertex(listCellWidth - icon.height - reflectionDistanceFromImage, 									border,	0, 	0,0),
 		};
 		MTPolygon pRef = new MTPolygon(getMTApplication(), verticesRef);
+		pRef.unregisterAllInputProcessors();
 		pRef.setTexture(reflection);
 		pRef.setNoStroke(true);
 		

@@ -155,6 +155,7 @@ public class PuzzleScene extends AbstractScene{
 		final MTListCell cell = new MTListCell(getMTApplication(), cellWidth, cellHeight);
 		cell.setFillColor(cellFillColor);
 		MTTextArea listLabel = new MTTextArea(getMTApplication(), font);
+		listLabel.unregisterAllInputProcessors();
 		listLabel.setNoFill(true);
 		listLabel.setNoStroke(true);
 		listLabel.setText(imageName);
