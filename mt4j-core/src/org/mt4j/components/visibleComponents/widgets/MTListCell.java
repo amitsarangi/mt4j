@@ -1,6 +1,7 @@
 package org.mt4j.components.visibleComponents.widgets;
 
 
+import org.mt4j.input.inputProcessors.componentProcessors.AbstractComponentProcessor;
 import org.mt4j.input.inputProcessors.componentProcessors.dragProcessor.DragProcessor;
 import org.mt4j.util.MTColor;
 
@@ -37,7 +38,7 @@ extends MTClipRectangle{
 	public MTListCell(PApplet applet, float width, float height) {
 		super(applet, 0, 0, 0, width, height);
 		this.setStrokeColor(new MTColor(0,0,0));
-		this.setComposite(true);
+//		this.setComposite(true);
 		
 	}
 	
@@ -46,7 +47,19 @@ extends MTClipRectangle{
 	 */
 	@Override
 	protected void setDefaultGestureActions() {
-		this.registerInputProcessor(new DragProcessor(getRenderer()));
+//		this.registerInputProcessor(new DragProcessor(getRenderer()));
 //		this.addGestureListener(DragProcessor.class, new DefaultDragAction());
+		
+		DragProcessor dp = new DragProcessor(getRenderer());
+//		dp.setLockPriority(1.0f);
+		registerInputProcessor(dp);
+//		dp.setBubbledEventsEnabled(true);
+	}
+	
+	@Override
+	public void registerInputProcessor(AbstractComponentProcessor inputProcessor) {
+		super.registerInputProcessor(inputProcessor);
+		
+		inputProcessor.setBubbledEventsEnabled(true);
 	}
 }
