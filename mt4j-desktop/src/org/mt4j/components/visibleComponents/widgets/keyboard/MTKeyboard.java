@@ -659,7 +659,7 @@ public class MTKeyboard extends MTRoundRectangle implements IKeyListener {
 			setSizeXYRelativeToParent(clickedKey, keyWidth-keyPressIndent, keyHeight-keyPressIndent);
 			
 			if (clickedKey.getCharacterToWrite().equals("shift")){
-				shiftPressed = true;
+				shiftPressed = true; //TODO inform textinput listener that shift was pressed
 				// Make certain keys visible / not visible when shift pressed!
 				for (MTKey key: shiftChangers){
 					key.setVisible(!key.isVisible());
