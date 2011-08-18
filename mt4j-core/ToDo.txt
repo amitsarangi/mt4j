@@ -35,6 +35,8 @@ ToDo list:
 - how to create own component example
 - how to create own gesture example
 - brainstorm example - textareas + draw links!
+- depth sort abstractshapes method
+
 
 - mt4j as p5 library - difficult because mtapplication is derived from papplet
 - manymouse problem loadlibrary!? -> Compile on Mac!

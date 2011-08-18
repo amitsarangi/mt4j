@@ -38,7 +38,7 @@ extends MTClipRectangle{
 	public MTListCell(PApplet applet, float width, float height) {
 		super(applet, 0, 0, 0, width, height);
 		this.setStrokeColor(new MTColor(0,0,0));
-//		this.setComposite(true);
+		this.setComposite(true);
 		
 	}
 	
