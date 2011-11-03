@@ -270,7 +270,7 @@ public class RotateProcessor extends AbstractCursorProcessor {
 			this.rotateFingerCursor = rotateFingerCursor;
 
 //			Vector3D interPoint = getIntersection(applet, object, pinFingerCursor);
-			Vector3D interPoint = getIntersection(applet, pinFingerCursor.getCurrentEvent().getCurrentTarget(), pinFingerCursor);
+			Vector3D interPoint = getIntersection(applet, object, pinFingerCursor);
 			if (interPoint !=null)
 				pinFingerNew = interPoint;
 			else{
