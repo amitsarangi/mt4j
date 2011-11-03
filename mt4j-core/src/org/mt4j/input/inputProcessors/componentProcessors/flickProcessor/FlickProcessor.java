@@ -113,7 +113,7 @@ public class FlickProcessor extends AbstractCursorProcessor {
 			Vector3D vel = cursor.getVelocityVector(50);
 			
 //			Vector3D vel = cursor.getVelocityVector((int) (currentEvent.getTimeStamp() - this.startTime));
-			System.out.println("Veclocity: " + vel);
+//			System.out.println("Veclocity: " + vel);
 			
 //			/*
 			if (Math.abs(vel.x) > velThreshHold || Math.abs(vel.y) > velThreshHold){
@@ -158,7 +158,7 @@ public class FlickProcessor extends AbstractCursorProcessor {
 			}else{
 				long nowTime = currentEvent.getTimeStamp();
 				long elapsedTime = nowTime - this.startTime;
-				System.out.println("Elapsed time: " + elapsedTime + " Needed time: " + flickTime);
+//				System.out.println("Elapsed time: " + elapsedTime + " Needed time: " + flickTime);
 				if (flickVelocity && elapsedTime <= flickTime){
 //					System.out.println("Was a FLICK!");
 					FlickDirection fd = getFlickDirection(cursor);
