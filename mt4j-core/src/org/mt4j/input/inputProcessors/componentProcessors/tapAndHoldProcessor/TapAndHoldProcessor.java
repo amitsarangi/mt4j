@@ -114,6 +114,8 @@ public class TapAndHoldProcessor extends AbstractCursorProcessor implements IPre
 					this.fireGestureEvent(new TapAndHoldEvent(this, MTGestureEvent.GESTURE_STARTED, positionEvent.getCurrentTarget(), c, false, c.getPosition(), this.holdTime, 0, 0));
 					try {
 //						applet.registerPre(this);
+						
+						logger.debug("Registering pre draw action with component " + lastCurrentTarget);
 						app.registerPreDrawAction(this);
 					} catch (Exception e) {
 						System.err.println(e.getMessage());
@@ -146,24 +148,38 @@ public class TapAndHoldProcessor extends AbstractCursorProcessor implements IPre
 			if (elapsedTime >= holdTime){
 				normalized = 1;
 				logger.debug("TIME PASSED!");
-				Vector3D intersection = getIntersection(app, comp, c);
-				//logger.debug("Distance between buttondownScreenPos: " + buttonDownScreenPos + " and upScrPos: " + buttonUpScreenPos +  " is: " + Vector3D.distance(buttonDownScreenPos, buttonUpScreenPos));
-				if ( (intersection != null || comp instanceof MTCanvas) //hack - at canvas no intersection..
-						&& 
-					Vector3D.distance2D(buttonDownScreenPos, screenPos) <= this.maxFingerUpDist
-				){
-					this.fireGestureEvent(new TapAndHoldEvent(this, MTGestureEvent.GESTURE_ENDED, currentTarget, c, true, screenPos, this.holdTime, elapsedTime, normalized));
+//				Vector3D intersection = getIntersection(app, comp, c);
+				
+				if (lastCurrentTarget.getViewingCamera() != null){
+					Vector3D intersection = getIntersection(app, lastCurrentTarget, c);
+
+					//logger.debug("Distance between buttondownScreenPos: " + buttonDownScreenPos + " and upScrPos: " + buttonUpScreenPos +  " is: " + Vector3D.distance(buttonDownScreenPos, buttonUpScreenPos));
+					if ( (intersection != null || comp instanceof MTCanvas) //hack - at canvas no intersection..
+							&& 
+							Vector3D.distance2D(buttonDownScreenPos, screenPos) <= this.maxFingerUpDist
+					){
+						this.fireGestureEvent(new TapAndHoldEvent(this, MTGestureEvent.GESTURE_ENDED, currentTarget, c, true, screenPos, this.holdTime, elapsedTime, normalized));
+					}else{
+						logger.debug("DISTANCE TOO FAR OR NO INTERSECTION");
+						this.fireGestureEvent(new TapAndHoldEvent(this, MTGestureEvent.GESTURE_ENDED, currentTarget, c, false, screenPos, this.holdTime, elapsedTime, normalized));
+					}
 				}else{
-					logger.debug("DISTANCE TOO FAR OR NO INTERSECTION");
+					logger.warn("Component : " + lastCurrentTarget + " probably was destroyed before tap&hold could finish. -> Ending gesture.");
 					this.fireGestureEvent(new TapAndHoldEvent(this, MTGestureEvent.GESTURE_ENDED, currentTarget, c, false, screenPos, this.holdTime, elapsedTime, normalized));
 				}
+
 				this.unLock(c); 
+				
 				try {
 //					app.unregisterPre(this);
 					app.unregisterPreDrawAction(this);
+					
+					logger.debug("UNREGISTERING pre draw action with component " + lastCurrentTarget);
 				} catch (Exception e) {
 					System.err.println(e.getMessage());
 				}
+				
+				
 			}else{
 				this.fireGestureEvent(new TapAndHoldEvent(this, MTGestureEvent.GESTURE_UPDATED, currentTarget, c, false, screenPos, this.holdTime, elapsedTime, normalized));
 			}
@@ -230,6 +246,8 @@ public class TapAndHoldProcessor extends AbstractCursorProcessor implements IPre
 					}
 				}
 			}else{
+				this.unLock(c);
+				
 				//We have no other cursor to continue gesture -> end
 				this.fireGestureEvent(new TapAndHoldEvent(this, MTGestureEvent.GESTURE_ENDED, positionEvent.getCurrentTarget(), c, false,  c.getPosition(), this.holdTime, elapsedTime, normalized));
 				try {
@@ -239,7 +257,6 @@ public class TapAndHoldProcessor extends AbstractCursorProcessor implements IPre
 					System.err.println(e.getMessage());
 				}
 			}
-			this.unLock(c); 
 		}	
 	}
 
