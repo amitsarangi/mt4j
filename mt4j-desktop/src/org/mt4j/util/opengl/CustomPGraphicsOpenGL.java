@@ -69,6 +69,12 @@ extends PGraphicsOpenGL
 //	      capabilities.setDepthBits(4);
 //	      capabilities.setDepthBits(32);
 
+	      // for steroscopic handling
+	      if (MT4jSettings.getInstance().isOpenGlMode() && MT4jSettings.getInstance().isStereoscopic()){
+	    	  capabilities.setDoubleBuffered(true);
+	    	  capabilities.setStereo(true);
+	      }
+
 	      // get a rendering surface and a context for this canvas
 	      GLDrawableFactory factory = GLDrawableFactory.getFactory();
 

@@ -177,6 +177,8 @@ public abstract class MTApplication extends AbstractMTApplication {
 			 
 			 MT4jSettings.getInstance().maxFrameRate = Integer.parseInt(properties.getProperty("MaximumFrameRate", String.valueOf(MT4jSettings.getInstance().getMaxFrameRate())).trim());
 			 MT4jSettings.getInstance().renderer = Integer.parseInt(properties.getProperty("Renderer", String.valueOf(MT4jSettings.getInstance().getRendererMode())).trim());
+			 MT4jSettings.getInstance().steroscopic = Boolean.parseBoolean(properties.getProperty("Stereoscopic", Boolean.valueOf(MT4jSettings.getInstance().isFullscreen()).toString()).trim());;
+			 MT4jSettings.getInstance().eyeseparation = Integer.parseInt(properties.getProperty("EyeSeparation", String.valueOf(MT4jSettings.getInstance().getRendererMode())).trim());
 			 MT4jSettings.getInstance().numSamples = Integer.parseInt(properties.getProperty("OpenGLAntialiasing", String.valueOf(MT4jSettings.getInstance().getNumSamples())).trim());
 	
 			 MT4jSettings.getInstance().vSync = Boolean.parseBoolean(properties.getProperty("Vertical_sync", Boolean.valueOf(MT4jSettings.getInstance().isVerticalSynchronization()).toString()).trim());

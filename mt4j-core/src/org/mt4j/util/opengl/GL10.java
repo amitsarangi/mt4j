@@ -265,6 +265,18 @@ public interface GL10 extends GLCommon {
 	public static final int GL_LINE = 0x1B01;
 	public static final int GL_FILL = 0x1B02;
 	
+	public static final int GL_NONE = 0;
+	public static final int GL_FRONT_LEFT = 0x400;
+	public static final int GL_FRONT_RIGHT = 0x401;
+	public static final int GL_BACK_LEFT = 0x402;
+	public static final int GL_BACK_RIGHT = 0x403;
+	public static final int GL_LEFT = 0x406;
+	public static final int GL_RIGHT = 0x407;
+	public static final int GL_AUX0 = 0x409;
+	public static final int GL_AUX1 = 0x40A;
+	public static final int GL_AUX2 = 0x40B;
+	public static final int GL_AUX3 = 0x40C;
+
 
 	public void glAlphaFunc (int func, float ref);
 
@@ -359,4 +371,14 @@ public interface GL10 extends GLCommon {
 	public void glVertexPointer (int size, int type, int stride, Buffer pointer);
 
 	public void glPolygonMode (int face, int mode);
+
+	/**
+	 * @see http://www.opengl.org/wiki/GLAPI/glDrawBuffer
+	 */
+	public void glDrawBuffer(int glBuffer);
+
+	/**
+	 * @see http://www.opengl.org/wiki/GLAPI/glReadBuffer
+	 */
+	public void glReadBuffer(int glBuffer);
 }

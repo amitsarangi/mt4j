@@ -2,6 +2,10 @@
 Frametitle=MT Application
 #Renderer: OpenGL: 1 P3D: 2
 Renderer=1
+#Stereoscopic rendering:'true' or 'false'
+Stereoscopic=false
+#Eye separation for stereoscopic rendering
+EyeSeparation=10
 #Fullscreen:'true' or 'false'
 Fullscreen=false
 #Switch for using fullscreen exclusive mode 

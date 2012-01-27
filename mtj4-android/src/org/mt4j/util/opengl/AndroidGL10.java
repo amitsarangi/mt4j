@@ -400,4 +400,12 @@ public class AndroidGL10 implements GL10 {
 	@Override public void glPolygonMode (int face, int mode) {
 // throw new UnsupportedOperationException( "not available in OpenGL ES" );
 	}
+
+	@Override public void glDrawBuffer(int glBuffer) {
+		throw new UnsupportedOperationException("not implemented");
+	}
+
+	@Override public void glReadBuffer(int glBuffer) {
+		throw new UnsupportedOperationException("not implemented");
+	}
 }

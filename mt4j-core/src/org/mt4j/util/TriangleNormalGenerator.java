@@ -139,7 +139,7 @@ public class TriangleNormalGenerator {
 //	        System.arraycopy(indices, 0, texIndices, 0, indices.length);			
 //		}
 
-        try {
+        try { //Newer java versions seem to throw an arraystore exception when trying to copy from shor[] to int[]
         	 System.arraycopy(indices, 0, texIndices, 0, indices.length);
 		} catch (Exception e) {
 			for (int i = 0; i < indices.length; i++) {

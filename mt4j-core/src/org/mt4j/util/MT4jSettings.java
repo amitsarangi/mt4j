@@ -46,6 +46,12 @@ public class MT4jSettings {
 	/** Current DrawMode. */
 	public int renderer = P3D_MODE;
 	
+	/** The steroscopic rendering mode. */
+	public boolean steroscopic = false;
+	
+	/** Eye separation for stereoscopic mode. */
+	public int eyeseparation = 10;
+
 	/** The num samples. */
 	public int numSamples = 0;
 	
@@ -328,6 +334,25 @@ public class MT4jSettings {
 		return this.getRendererMode() == MT4jSettings.OPENGL_MODE;
 	}
 	
+
+	/**
+	 * Checks if stereoscopic rendering is.
+	 * 
+	 * @return true, if is stereoscopic rendering
+	 */
+	public boolean isStereoscopic() {
+		return steroscopic;
+	}
+	
+	/**
+	 * Gets eye separation for stereoscopic rendering.
+	 * 
+	 * @return the eye separation
+	 */
+	public int getEyeSeparation() {
+		return eyeseparation;
+	}
+	
 	/**
 	 * Checks if is p3d mode.
 	 * 
@@ -375,6 +400,6 @@ public class MT4jSettings {
 	public boolean isFullscreenExclusive() {
 		return this.fullscreenExclusive;
 	}
-	
+
 
 }

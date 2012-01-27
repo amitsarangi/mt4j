@@ -162,7 +162,21 @@ public class MTCanvas extends MTComponent implements IHitTestInfoProvider{
             cluster.updateComponent(updateTime);
         }
 		
-		this.drawUpdateRecursive(this, updateTime, graphics);
+		this.drawUpdateRecursive(this, updateTime, graphics, true);
+//		System.out.println("Culled objects: " + culledObjects);
+	}
+	
+	/**
+	 * Force redraw of every visible object in the canvas without updated them first. Useful
+	 * when stereoscopic rendering is enabled.
+	 * Calls the <code>drawComponent()</code> method of each object in the scene graph.
+	 * Also handles the setting of cameras attached to the objects.
+	 * @param graphics 
+	 */
+	public void redrawCanvas(PGraphics graphics){
+		this.culledObjects = 0;
+		
+		this.drawUpdateRecursive(this, 0, graphics, false);
 //		System.out.println("Culled objects: " + culledObjects);
 	}
 
@@ -173,11 +187,13 @@ public class MTCanvas extends MTComponent implements IHitTestInfoProvider{
 	 * @param currentcomp the currentcomp
 	 * @param updateTime the update time
 	 * @param graphics the renderer
+	 * @param updateComp if set to true, each component to be drawn is updated first
 	 */
-	private void drawUpdateRecursive(MTComponent currentcomp, long updateTime, PGraphics graphics){
+	private void drawUpdateRecursive(MTComponent currentcomp, long updateTime, PGraphics graphics, boolean updateComp){
 		if (currentcomp.isVisible()){
-			//Update current component
-			currentcomp.updateComponent(updateTime);
+			if (updateComp)
+				//Update current component
+				currentcomp.updateComponent(updateTime);
 			
 			if (currentcomp.getAttachedCamera() != null){
 				//Saves transformations up to this object
@@ -230,7 +246,7 @@ public class MTCanvas extends MTComponent implements IHitTestInfoProvider{
 				List<MTComponent> childs = currentcomp.getChildList();
 				int childCount = childs.size();
 				for (int i = 0; i < childCount; i++) { //Note: for each loop sometimes throws concurrentmodification error because of fail-fast iterator
-					drawUpdateRecursive(childs.get(i), updateTime, graphics);
+					drawUpdateRecursive(childs.get(i), updateTime, graphics, updateComp);
 				}
 
 				currentcomp.postDrawChildren(graphics);
@@ -265,7 +281,7 @@ public class MTCanvas extends MTComponent implements IHitTestInfoProvider{
 				List<MTComponent> childs = currentcomp.getChildList();
 				int childCount = childs.size();
 				for (int i = 0; i < childCount; i++) {
-					drawUpdateRecursive(childs.get(i), updateTime, graphics);
+					drawUpdateRecursive(childs.get(i), updateTime, graphics, updateComp);
 				}
 				
 				currentcomp.postDrawChildren(graphics);

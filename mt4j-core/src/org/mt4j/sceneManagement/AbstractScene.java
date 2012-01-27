@@ -161,13 +161,48 @@ public abstract class AbstractScene implements Iscene {
 			}
 		}
 		
+		/*
+		 * Update and render canvas (for left eye if stereoscopic rendering is enabled)
+		 */
+		if (MT4jSettings.getInstance().isOpenGlMode() && !PlatformUtil.isAndroid() && MT4jSettings.getInstance().isStereoscopic()){
+			GL10 gl = PlatformUtil.getGL();
+			gl.glDrawBuffer(GL10.GL_BACK_LEFT);
+		
+			// Locate cam for left eye
+			this.getSceneCam().moveCamAndViewCenter(-MT4jSettings.getInstance().getEyeSeparation() / 2.0f, 0, 0);
+		}
+		else {
+			GL10 gl = PlatformUtil.getGL();
+			gl.glDrawBuffer(GL10.GL_BACK);  //TODO do only once when switching off stereoscopic rendering, rather than each frame?
+		}
+		
 		//Clear the background
-		if (this.clearBeforeDraw){ 
+		if (this.clearBeforeDraw){
 			this.clear(graphics);
 		}
 		
 		//Draw and update canvas
 		this.getCanvas().drawAndUpdateCanvas(graphics, timeDelta);
+		
+		 //Render canvas for right eye if stereoscopic rendering is enabled
+		if (MT4jSettings.getInstance().isOpenGlMode() && !PlatformUtil.isAndroid() && MT4jSettings.getInstance().isStereoscopic()){
+			GL10 gl = PlatformUtil.getGL();
+			gl.glDrawBuffer(GL10.GL_BACK_RIGHT);
+				
+			// Locate cam for right eye
+			this.getSceneCam().moveCamAndViewCenter(MT4jSettings.getInstance().getEyeSeparation(), 0, 0);
+			
+			// Clear the background
+			if (this.clearBeforeDraw){ 
+				this.clear(graphics);
+			}
+			
+			// Draw canvas (w/o update)
+			this.getCanvas().redrawCanvas(graphics);
+			
+			// Center cam
+			this.getSceneCam().moveCamAndViewCenter(-MT4jSettings.getInstance().getEyeSeparation() / 2.0f, 0, 0);
+		}
 	}
 	
 	
