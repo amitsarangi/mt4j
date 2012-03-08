@@ -1678,20 +1678,20 @@ public void keyTyped();
  */
 public int millis();
 
-/**
- * The delay() function causes the program to halt for a specified time.
- * Delay times are specified in thousandths of a second. For example,
- * running delay(3000) will stop the program for three seconds and
- * delay(500) will stop the program for a half-second. Remember: the
- * display window is updated only at the end of draw(), so putting more
- * than one delay() inside draw() will simply add them together and the new
- * frame will be drawn when the total delay is over.
- * <br/> <br/>
- * I'm not sure if this is even helpful anymore, as the screen isn't
- * updated before or after the delay, meaning which means it just
- * makes the app lock up temporarily.
- */
-public void delay(int napTime);
+///**
+// * The delay() function causes the program to halt for a specified time.
+// * Delay times are specified in thousandths of a second. For example,
+// * running delay(3000) will stop the program for three seconds and
+// * delay(500) will stop the program for a half-second. Remember: the
+// * display window is updated only at the end of draw(), so putting more
+// * than one delay() inside draw() will simply add them together and the new
+// * frame will be drawn when the total delay is over.
+// * <br/> <br/>
+// * I'm not sure if this is even helpful anymore, as the screen isn't
+// * updated before or after the delay, meaning which means it just
+// * makes the app lock up temporarily.
+// */
+//public void delay(int napTime);
 
 /**
  * Specifies the number of frames to be displayed every second.
@@ -2386,9 +2386,9 @@ public int color(float x, float y, float z, float a);
 // * Begin recording (echoing) commands to the specified PGraphics object.
 // */
 //public void beginRecord(PGraphics recorder);
-
-	public void endRecord();
-
+//
+//	public void endRecord();
+//
 ///**
 // * Begin recording raw shape data to a renderer of the specified type,
 // * using the width and height of the main drawing surface.
