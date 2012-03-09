@@ -41,7 +41,7 @@ public class MTInputEvent extends MTEvent {
 	}
 	
 	public MTInputEvent(Object source, IMTComponent3D target) {
-		this(source, target, true);//FIXME?
+		this(source, target, true);
 	}
 	
 	/**
@@ -55,7 +55,7 @@ public class MTInputEvent extends MTEvent {
 		this.target = target;
 		this.propatationStopped = false;
 		this.bubbles = bubbles; 
-		this.eventPhase = CAPTURING_PHASE; //FIXME?
+		this.eventPhase = CAPTURING_PHASE; //default?
 	}
 
 
@@ -126,15 +126,16 @@ public class MTInputEvent extends MTEvent {
      * The <code>setEventPhase</code> method is used by the DOM implementation 
      * to change the value of a <code>eventPhase</code> attribute on the 
      * <code>Event</code> interface.
-     * @param phase Specifies the <code>eventPahse</code> attribute on the 
+     * @param phase Specifies the <code>eventPhase</code> attribute on the 
      *   <code>Event</code> interface.
      */
     public void setEventPhase(short phase){
+    	//TODO check if bubbles = true if someone wants to set the pase to BUBBLING_PHASE?
     	this.eventPhase = phase;
     }
     
     public short getEventPhase(){
-    	return this.eventPhase; //TODO set in constructor?
+    	return this.eventPhase; 
     }
     
     

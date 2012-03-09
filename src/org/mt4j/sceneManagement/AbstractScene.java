@@ -17,24 +17,22 @@
  ***********************************************************************/
 package org.mt4j.sceneManagement;
 
-import java.util.ArrayDeque;
-import java.util.Deque;
 import java.util.Iterator;
 
-import javax.media.opengl.GL;
-
-import org.mt4j.MTApplication;
+import org.mt4j.AbstractMTApplication;
 import org.mt4j.components.MTCanvas;
 import org.mt4j.input.inputProcessors.globalProcessors.AbstractGlobalInputProcessor;
 import org.mt4j.input.inputProcessors.globalProcessors.InputRetargeter;
 import org.mt4j.sceneManagement.transition.ITransition;
+import org.mt4j.util.ArrayDeque;
+import org.mt4j.util.PlatformUtil;
 import org.mt4j.util.MT4jSettings;
 import org.mt4j.util.MTColor;
 import org.mt4j.util.camera.Icamera;
 import org.mt4j.util.camera.MTCamera;
 import org.mt4j.util.logging.ILogger;
 import org.mt4j.util.logging.MTLoggerFactory;
-import org.mt4j.util.math.Tools3D;
+import org.mt4j.util.opengl.GL10;
 
 import processing.core.PGraphics;
 
@@ -61,13 +59,13 @@ public abstract class AbstractScene implements Iscene {
 	private MTCanvas mainCanvas;
 	
 	/** The mt application. */
-	private MTApplication mtApplication;
+	private AbstractMTApplication mtApplication;
 	
 	/** The name. */
 	private String name;
 
 	/** The pre draw actions. */
-	private final Deque<IPreDrawAction> preDrawActions;
+	private final ArrayDeque<IPreDrawAction> preDrawActions;
 	
 	/** The clear color. */
 	private MTColor clearColor;
@@ -87,7 +85,7 @@ public abstract class AbstractScene implements Iscene {
 	 * @param mtApplication the mt application
 	 * @param name the name
 	 */
-	public AbstractScene(MTApplication mtApplication, String name) {
+	public AbstractScene(AbstractMTApplication mtApplication, String name) {
 		super();
 		this.name = name;
 		this.mtApplication = mtApplication;
@@ -163,30 +161,68 @@ public abstract class AbstractScene implements Iscene {
 			}
 		}
 		
+		/*
+		 * Update and render canvas (for left eye if stereoscopic rendering is enabled)
+		 */
+		if (MT4jSettings.getInstance().isOpenGlMode() && !PlatformUtil.isAndroid() && MT4jSettings.getInstance().isStereoscopic()){
+			GL10 gl = PlatformUtil.getGL();
+			gl.glDrawBuffer(GL10.GL_BACK_LEFT);
+		
+			// Locate cam for left eye
+			this.getSceneCam().moveCamAndViewCenter(-MT4jSettings.getInstance().getEyeSeparation() / 2.0f, 0, 0);
+		}
+		else {
+			GL10 gl = PlatformUtil.getGL();
+			gl.glDrawBuffer(GL10.GL_BACK);  //TODO do only once when switching off stereoscopic rendering, rather than each frame?
+		}
+		
 		//Clear the background
-		if (this.clearBeforeDraw){ 
+		if (this.clearBeforeDraw){
 			this.clear(graphics);
 		}
 		
 		//Draw and update canvas
 		this.getCanvas().drawAndUpdateCanvas(graphics, timeDelta);
+		
+		 //Render canvas for right eye if stereoscopic rendering is enabled
+		if (MT4jSettings.getInstance().isOpenGlMode() && !PlatformUtil.isAndroid() && MT4jSettings.getInstance().isStereoscopic()){
+			GL10 gl = PlatformUtil.getGL();
+			gl.glDrawBuffer(GL10.GL_BACK_RIGHT);
+				
+			// Locate cam for right eye
+			this.getSceneCam().moveCamAndViewCenter(MT4jSettings.getInstance().getEyeSeparation(), 0, 0);
+			
+			// Clear the background
+			if (this.clearBeforeDraw){ 
+				this.clear(graphics);
+			}
+			
+			// Draw canvas (w/o update)
+			this.getCanvas().redrawCanvas(graphics);
+			
+			// Center cam
+			this.getSceneCam().moveCamAndViewCenter(-MT4jSettings.getInstance().getEyeSeparation() / 2.0f, 0, 0);
+		}
 	}
 	
 	
 
 	protected void clear(PGraphics graphics){
-		if (MT4jSettings.getInstance().isOpenGlMode()){
-			GL gl = Tools3D.getGL(mtApplication);
+		if (MT4jSettings.getInstance().isOpenGlMode() && !PlatformUtil.isAndroid()){
+//			GL gl = Tools3D.getGL(mtApplication);
+			GL10 gl = PlatformUtil.getGL();
 			gl.glClearColor(this.glClearColor.getR(), this.glClearColor.getG(), this.glClearColor.getB(), this.glClearColor.getAlpha());
 			gl.glClear(
-					GL.GL_COLOR_BUFFER_BIT 
+					GL10.GL_COLOR_BUFFER_BIT 
 					| 
-					GL.GL_DEPTH_BUFFER_BIT
+					GL10.GL_DEPTH_BUFFER_BIT
 					);
 //			gl.glDepthMask(false);
 //			gl.glDisable(GL.GL_DEPTH_TEST);
 		}else{
-			graphics.background(this.clearColor.getR(), this.clearColor.getG(), this.clearColor.getB(), this.clearColor.getAlpha());				
+			//In androids PGraphicsAndroid3D the background() method sets clearColorBuffer to true
+			//which prevents expensive operations each frame..we cant set the variable because its protected..
+			graphics.background(this.clearColor.getR(), this.clearColor.getG(), this.clearColor.getB(), this.clearColor.getAlpha());
 		}
 	}
 	
@@ -262,7 +298,7 @@ public abstract class AbstractScene implements Iscene {
 	 * 
 	 * @return the mT application
 	 */
-	public MTApplication getMTApplication(){
+	public AbstractMTApplication getMTApplication(){
 		return this.mtApplication;
 	}
 

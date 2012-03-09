@@ -4,18 +4,17 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.mt4j.MTApplication;
+import org.mt4j.AbstractMTApplication;
 import org.mt4j.components.MTComponent;
 import org.mt4j.components.css.parser.CSSHandler;
 import org.mt4j.components.css.parser.CSSParserConnection;
 import org.mt4j.components.css.style.CSSSelector;
 import org.mt4j.components.css.style.CSSStyle;
 import org.mt4j.components.css.style.CSSStyleHierarchy;
-import org.mt4j.components.visibleComponents.font.FontManager;
-import org.mt4j.components.visibleComponents.font.IFont;
 import org.mt4j.util.MTColor;
+import org.mt4j.util.font.FontManager;
+import org.mt4j.util.font.IFont;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class CSSStyleManager.
  */
@@ -25,7 +24,7 @@ public class CSSStyleManager {
 	private List<CSSStylableComponent> components = new ArrayList<CSSStylableComponent>();
 
 	/** The MTApplication. */
-	private MTApplication app = null;
+	private AbstractMTApplication app = null;
 
 	/** The styles. */
 	private List<CSSStyleHierarchy> styles = new ArrayList<CSSStyleHierarchy>();
@@ -46,7 +45,7 @@ public class CSSStyleManager {
 	 *
 	 * @param app the MTApplication
 	 */
-	public CSSStyleManager(MTApplication app) {
+	public CSSStyleManager(AbstractMTApplication app) {
 		this.app = app;
 	}
 
@@ -57,7 +56,7 @@ public class CSSStyleManager {
 	 * @param styles the CSSStyles
 	 * @param app the MTApplication
 	 */
-	public CSSStyleManager(List<CSSStyle> styles, MTApplication app) {
+	public CSSStyleManager(List<CSSStyle> styles, AbstractMTApplication app) {
 		for (CSSStyle s: styles) {
 			this.styles.add(new CSSStyleHierarchy(s));
 		}
@@ -307,7 +306,7 @@ public class CSSStyleManager {
 	 * @param app the app
 	 * @return the default font
 	 */
-	public IFont getDefaultFont(MTApplication app) {
+	public IFont getDefaultFont(AbstractMTApplication app) {
 		if (defaultFont == null)  {
 			defaultFont = FontManager.getInstance().createFont(app,
 					"SansSerif", 16, // Font size

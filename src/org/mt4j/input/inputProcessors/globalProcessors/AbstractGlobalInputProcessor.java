@@ -19,7 +19,6 @@ package org.mt4j.input.inputProcessors.globalProcessors;
 
 
 import java.util.ArrayList;
-import java.util.List;
 
 import org.mt4j.components.interfaces.IMTComponent3D;
 import org.mt4j.input.IMTInputEventListener;
@@ -49,7 +48,7 @@ public abstract class AbstractGlobalInputProcessor implements IinputSourceListen
 	/** if disabled. */
 	private boolean disabled;
 	
-	private List<IMTInputEventListener> inputListeners;
+	private ArrayList<IMTInputEventListener> inputListeners;
 	
 	/**
 	 * Instantiates a new abstract input processor.

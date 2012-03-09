@@ -17,10 +17,9 @@
  ***********************************************************************/
 package org.mt4j.components.clipping;
 
-import javax.media.opengl.GL;
-
 import org.mt4j.components.MTComponent;
 import org.mt4j.components.visibleComponents.AbstractVisibleComponent;
+import org.mt4j.util.opengl.GL10;
 import org.mt4j.util.opengl.GLStencilUtil;
 
 import processing.core.PGraphics;
@@ -37,7 +36,7 @@ public class FillPaint {
 	/** The gradient shape. */
 	protected MTComponent fillPaint;
 	
-	private GL gl;
+	private GL10 gl;
 
 	private AbstractVisibleComponent clipShape;
 	
@@ -48,7 +47,7 @@ public class FillPaint {
 	 * @param gl the gl
 	 * @param fillPaint the fill paint
 	 */
-	public FillPaint(GL gl, AbstractVisibleComponent fillPaint) {
+	public FillPaint(GL10 gl, AbstractVisibleComponent fillPaint) {
 		//super(gl);
 		this.gl = gl;
 		this.fillPaint = fillPaint;

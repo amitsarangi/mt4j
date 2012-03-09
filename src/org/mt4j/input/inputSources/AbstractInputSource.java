@@ -18,15 +18,13 @@
 package org.mt4j.input.inputSources;
 
 
-import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.Deque;
-import java.util.List;
 import java.util.NoSuchElementException;
 
-import org.mt4j.MTApplication;
+import org.mt4j.AbstractMTApplication;
 import org.mt4j.input.inputData.MTInputEvent;
 import org.mt4j.sceneManagement.IPreDrawAction;
+import org.mt4j.util.ArrayDeque;
 
 
 /**
@@ -38,21 +36,21 @@ import org.mt4j.sceneManagement.IPreDrawAction;
 public abstract class AbstractInputSource implements IPreDrawAction {
 	
 	/** The input listeners. */
-	private List<IinputSourceListener> inputListeners;
+	private ArrayList<IinputSourceListener> inputListeners;
 	
 	/** The event queue. */
-	private Deque<MTInputEvent> eventQueue;
+	private ArrayDeque<MTInputEvent> eventQueue;
 	
-	private MTApplication app;
+	private AbstractMTApplication app;
 	
-	private List<IinputSourceListener> inputProcessorsToFireTo;
+	private ArrayList<IinputSourceListener> inputProcessorsToFireTo;
 	
 	/**
 	 * Instantiates a new abstract input source.
 	 *
 	 * @param mtApp the mt app
 	 */
-	public AbstractInputSource(MTApplication mtApp) {
+	public AbstractInputSource(AbstractMTApplication mtApp) {
 		this.inputListeners = new ArrayList<IinputSourceListener>();
 		this.eventQueue 	= new ArrayDeque<MTInputEvent>(20);
 		
@@ -204,10 +202,16 @@ public abstract class AbstractInputSource implements IPreDrawAction {
 	private void fireInputEvent(MTInputEvent inputEvt){
 		//Adds the events to the cursors one by one before firing
 		inputEvt.onFired();
+		
+		int length = inputProcessorsToFireTo.size();
+		for (int i = 0; i < length; i++) {
+			inputProcessorsToFireTo.get(i).processInputEvent(inputEvt);
+		}
 
-        for (IinputSourceListener anInputProcessorsToFireTo : inputProcessorsToFireTo) {
-            anInputProcessorsToFireTo.processInputEvent(inputEvt);
-        }
+//        for (IinputSourceListener anInputProcessorsToFireTo : inputProcessorsToFireTo) {
+//            anInputProcessorsToFireTo.processInputEvent(inputEvt);
+//        }
+		
 		/*
 		for (IinputSourceListener listener : inputListeners){
 		listener.processInputEvent(inputEvt);

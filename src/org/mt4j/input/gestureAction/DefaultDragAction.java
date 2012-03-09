@@ -90,16 +90,11 @@ public class DefaultDragAction implements IGestureEventListener,ICollisionAction
 					}
 					*/
 				}
-				if(!gestureAborted)
-				{ 	
-					dragTarget.translateGlobal(dragEvent.getTranslationVect());
-				}
+					
+				translate(dragTarget, dragEvent);
 				break;
 			case MTGestureEvent.GESTURE_UPDATED:
-				if(!gestureAborted)
-				{ 	
-					dragTarget.translateGlobal(dragEvent.getTranslationVect());
-				}
+				translate(dragTarget, dragEvent);
 				break;
 			case MTGestureEvent.GESTURE_CANCELED:
 				break;
@@ -112,6 +107,13 @@ public class DefaultDragAction implements IGestureEventListener,ICollisionAction
 		return false;
 	}
 
+	
+	protected void translate(IMTComponent3D comp, DragEvent de){
+		if(!gestureAborted)
+		{ 
+		comp.translateGlobal(de.getTranslationVect());
+		}
+	}
 
 	/* (non-Javadoc)
 	 * @see org.mt4j.input.inputProcessors.ICollisionAction#gestureAborted()

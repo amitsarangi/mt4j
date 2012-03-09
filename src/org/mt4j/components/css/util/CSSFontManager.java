@@ -1,11 +1,11 @@
 package org.mt4j.components.css.util;
 
-import org.mt4j.MTApplication;
+import org.mt4j.AbstractMTApplication;
 import org.mt4j.components.css.style.CSSFont;
 import org.mt4j.components.css.util.CSSKeywords.CSSFontWeight;
-import org.mt4j.components.visibleComponents.font.FontManager;
-import org.mt4j.components.visibleComponents.font.IFont;
 import org.mt4j.util.MTColor;
+import org.mt4j.util.font.FontManager;
+import org.mt4j.util.font.IFont;
 
 
 /**
@@ -14,14 +14,14 @@ import org.mt4j.util.MTColor;
 public class CSSFontManager {
 	
 	/** The app. */
-	MTApplication app;
+	AbstractMTApplication app;
 	
 	/**
 	 * Instantiates a new CSS font manager.
 	 *
 	 * @param app the MTApplication
 	 */
-	public CSSFontManager(MTApplication app) {
+	public CSSFontManager(AbstractMTApplication app) {
 		this.app = app;
 	}
 	

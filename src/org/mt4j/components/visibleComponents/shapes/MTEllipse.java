@@ -21,11 +21,16 @@ import org.mt4j.components.TransformSpace;
 import org.mt4j.components.bounds.BoundsZPlaneRectangle;
 import org.mt4j.components.bounds.IBoundingShape;
 import org.mt4j.components.css.style.CSSStyle;
+import org.mt4j.util.PlatformUtil;
 import org.mt4j.util.MTColor;
+import org.mt4j.util.math.Tools3D;
 import org.mt4j.util.math.Vector3D;
 import org.mt4j.util.math.Vertex;
+import org.mt4j.util.opengl.GLTexture;
+import org.mt4j.util.opengl.GLTexture.TEXTURE_TARGET;
 
 import processing.core.PApplet;
+import processing.core.PImage;
 
 /**
  * A simple ellipse shape.
@@ -211,6 +216,27 @@ public class MTEllipse extends MTPolygon {
 
 	public float getRadiusY() {
 		return radiusY;
+	}
+	
+	
+	//FIXME TEST -> adapt tex coords for non fitting, NPOT gl texture
+	private void adaptTexCoordsForNPOTUse(){
+		PImage tex = this.getTexture();
+		if (tex instanceof GLTexture){
+			Tools3D.adaptTextureCoordsNPOT(this, (GLTexture)tex);
+		}
+	}
+	
+	@Override
+	public void setUseDirectGL(boolean drawPureGL) {
+		super.setUseDirectGL(drawPureGL);
+		adaptTexCoordsForNPOTUse();
+	}
+	
+	@Override
+	public void setTexture(PImage newTexImage) {
+		super.setTexture(newTexImage);
+		adaptTexCoordsForNPOTUse();
 	}
 
 	

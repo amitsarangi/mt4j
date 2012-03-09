@@ -38,7 +38,7 @@ public class LassoEvent extends MTGestureEvent {
 	private InputCursor motion;
 	
 	/** The selected comps. */
-	private IdragClusterable[] selectedComps;
+	private ILassoable[] selectedComps;
 	
 
 	/**
@@ -51,7 +51,7 @@ public class LassoEvent extends MTGestureEvent {
 	 * @param selectionPoly the selection poly
 	 * @param selectedComponents the selected components
 	 */
-	public LassoEvent(IInputProcessor source, int id, IMTComponent3D targetComponent, InputCursor motion, MTPolygon selectionPoly, IdragClusterable[] selectedComponents) {
+	public LassoEvent(IInputProcessor source, int id, IMTComponent3D targetComponent, InputCursor motion, MTPolygon selectionPoly, ILassoable[] selectedComponents) {
 		super(source, id, targetComponent);
 		this.motion = motion;
 		this.selectionPoly = selectionPoly;
@@ -74,7 +74,7 @@ public class LassoEvent extends MTGestureEvent {
 	 * 
 	 * @return the clustered components
 	 */
-	public IdragClusterable[] getClusteredComponents() { 
+	public ILassoable[] getClusteredComponents() { 
 		return selectedComps;
 	}
 

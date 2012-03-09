@@ -108,13 +108,38 @@ public class FlickProcessor extends AbstractCursorProcessor {
 			System.out.println("Velocity:  " + nowVelocity + " (distance: " + distanceTraveled + ", millis: " + elapsedTime + ")");
 			*/
 			
+			
 //			Vector3D vel = cursor.getVelocityVector((int)elapsedTime);
 			Vector3D vel = cursor.getVelocityVector(50);
+			
+//			Vector3D vel = cursor.getVelocityVector((int) (currentEvent.getTimeStamp() - this.startTime));
+//			System.out.println("Veclocity: " + vel);
+			
+//			/*
 			if (Math.abs(vel.x) > velThreshHold || Math.abs(vel.y) > velThreshHold){
 				flickVelocity = true;
 			}
+//			*/
+			
+			//TODO we need to check the vector length but also check if the line is straight!
+			long nowTime = currentEvent.getTimeStamp();
+			long elapsedTime = nowTime - this.startTime;
+			/*
+			if (vel.length() > velThreshHold){ 
+				flickVelocity = true;
+			}
+			*/
+			
+			//unlock the cursor to allow drag, for example, if the flick took too long to complete
+			if (elapsedTime > flickTime){
+				this.fireGestureEvent(new FlickEvent(this, MTGestureEvent.GESTURE_ENDED, cursor.getCurrentTarget(), FlickDirection.UNDETERMINED, false));
+				this.unLock(cursor); 
+			}else{
+				this.fireGestureEvent(new FlickEvent(this, MTGestureEvent.GESTURE_UPDATED, cursor.getCurrentTarget(), FlickDirection.UNDETERMINED, false));
+				
+			}
+			
 //			System.out.println("Vel: " + vel );
-			this.fireGestureEvent(new FlickEvent(this, MTGestureEvent.GESTURE_UPDATED, cursor.getCurrentTarget(), FlickDirection.UNDETERMINED, false));
 		}
 	}
 
@@ -133,6 +158,7 @@ public class FlickProcessor extends AbstractCursorProcessor {
 			}else{
 				long nowTime = currentEvent.getTimeStamp();
 				long elapsedTime = nowTime - this.startTime;
+//				System.out.println("Elapsed time: " + elapsedTime + " Needed time: " + flickTime);
 				if (flickVelocity && elapsedTime <= flickTime){
 //					System.out.println("Was a FLICK!");
 					FlickDirection fd = getFlickDirection(cursor);

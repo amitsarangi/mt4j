@@ -20,7 +20,7 @@ package org.mt4j.input.inputProcessors.globalProcessors;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.mt4j.MTApplication;
+import org.mt4j.AbstractMTApplication;
 import org.mt4j.components.MTComponent;
 import org.mt4j.components.bounds.IBoundingShape;
 import org.mt4j.components.visibleComponents.shapes.AbstractShape;
@@ -30,6 +30,7 @@ import org.mt4j.input.inputData.AbstractCursorInputEvt;
 import org.mt4j.input.inputData.InputCursor;
 import org.mt4j.input.inputData.MTInputEvent;
 import org.mt4j.sceneManagement.Iscene;
+import org.mt4j.util.PlatformUtil;
 import org.mt4j.util.MTColor;
 import org.mt4j.util.math.Vector3D;
 
@@ -44,7 +45,7 @@ import processing.core.PApplet;
 public class CursorTracer extends AbstractGlobalInputProcessor{
 	
 	/** The app. */
-	private MTApplication app;
+	private AbstractMTApplication app;
 	
 	/** The cursor id to display shape. */
 	private Map<InputCursor, AbstractShape>cursorIDToDisplayShape;
@@ -54,6 +55,8 @@ public class CursorTracer extends AbstractGlobalInputProcessor{
 	
 	/** The overlay group. */
 	private MTComponent overlayGroup;
+	
+	private float ellipseRadius = 15;
 
 
 	/**
@@ -62,10 +65,14 @@ public class CursorTracer extends AbstractGlobalInputProcessor{
 	 * @param mtApp the mt app
 	 * @param currentScene the current scene
 	 */
-	public CursorTracer(MTApplication mtApp, Iscene currentScene){
+	public CursorTracer(AbstractMTApplication mtApp, Iscene currentScene){
 		this.app = mtApp;
 		this.scene = currentScene;
 		this.cursorIDToDisplayShape = new HashMap<InputCursor, AbstractShape>();
+		
+		if (PlatformUtil.isAndroid()){
+			ellipseRadius = 30;
+		}
 		
 //		this.overlayGroup = new MTComponent(app, "Cursor Trace group", new MTCamera(app));
 //		this.overlayGroup.setDepthBufferDisabled(true);
@@ -143,7 +150,7 @@ public class CursorTracer extends AbstractGlobalInputProcessor{
 	 * @return the abstract shape
 	 */
 	protected AbstractShape createDisplayComponent(PApplet applet, Vector3D position){
-		MTEllipse displayShape = new CursorEllipse(applet, position, 15, 15);
+		MTEllipse displayShape = new CursorEllipse(applet, position, ellipseRadius, 15);
 		displayShape.setPickable(false);
 		displayShape.setNoFill(true);
 		displayShape.setDrawSmooth(true);

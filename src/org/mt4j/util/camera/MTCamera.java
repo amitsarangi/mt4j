@@ -18,11 +18,16 @@
 package org.mt4j.util.camera;
 
 
+import org.mt4j.util.MT4jSettings;
+import org.mt4j.util.PlatformUtil;
+import org.mt4j.util.animation.AnimationEvent;
+import org.mt4j.util.animation.IAnimation;
+import org.mt4j.util.animation.IAnimationListener;
+import org.mt4j.util.animation.ani.AniAnimation;
 import org.mt4j.util.math.Matrix;
 import org.mt4j.util.math.Vector3D;
 
 import processing.core.PApplet;
-import processing.core.PGraphics3D;
 import processing.core.PMatrix3D;
 
 /**
@@ -61,8 +66,14 @@ public class MTCamera implements Icamera{
 	
 	private Matrix cameraMatrix;
 	private Matrix cameraInvMatrix;
+
+	private PMatrix3D modelViewP5;
+
+	private PMatrix3D modelViewInvP5;
+
+	private PMatrix3D camP5;
 	
-	private PGraphics3D p3d;
+//	private PGraphics3D p3d;
 
 	/**
 	 * Instantiates a new mT camera.
@@ -70,8 +81,27 @@ public class MTCamera implements Icamera{
 	 * @param processingApplet the processing applet
 	 */
 	public MTCamera(PApplet processingApplet){
-		this(processingApplet.width/2.0f, processingApplet.height/2.0f, processingApplet.height/2.0f / PApplet.tan(PApplet.PI*60.0f / 360.0f),
-                processingApplet.width/2.0f, processingApplet.height/2.0f, 0, 0, 1,0, processingApplet);
+//		this(processingApplet.width/2.0f, processingApplet.height/2.0f, (processingApplet.height/2.0f) / PApplet.tan(PApplet.PI*60.0f / 360.0f),
+//                processingApplet.width/2.0f, processingApplet.height/2.0f, 0, 0, 1,0, processingApplet);
+		
+		this(MT4jSettings.getInstance().getWindowWidth()/2.0f, MT4jSettings.getInstance().getWindowHeight()/2.0f, (MT4jSettings.getInstance().getWindowHeight()/2.0f) / PApplet.tan(PApplet.PI*60.0f / 360.0f),
+				MT4jSettings.getInstance().getWindowWidth()/2.0f, MT4jSettings.getInstance().getWindowHeight()/2.0f, 0, 0, 1,0, processingApplet);
+
+		
+//		System.out.println("processingApplet.width: " + processingApplet.width);
+//		System.out.println("processingApplet.height: " + processingApplet.height);
+	    
+//		this(processingApplet.width/2.0f, processingApplet.height/2.0f, (processingApplet.height/2.0f) / (((float) Math.tan(60 * PApplet.DEG_TO_RAD / 2.0f))),
+//              processingApplet.width/2.0f, processingApplet.height/2.0f, 0, 0, 1, 0, processingApplet);
+		
+//		// init perspective projection based on new dimensions
+//	    cameraFOV = 60 * DEG_TO_RAD; // at least for now
+//	    cameraX = width / 2.0f;
+//	    cameraY = height / 2.0f;
+//	    cameraZ = cameraY / ((float) Math.tan(cameraFOV / 2.0f));
+//	    cameraNear = cameraZ / 10.0f;
+//	    cameraFar = cameraZ * 10.0f;
+//	    cameraAspect = (float) width / (float) height;
 	}
 	
 	
@@ -106,7 +136,11 @@ public class MTCamera implements Icamera{
 		this.frustum = new Frustum(pa);
 		this.frustum.setCamDef(this.getPosition(), this.getViewCenterPos(),  xAxisUp, -yAxisUp, zAxisUp); //new Vector3D(xAxisUp, -yAxisUp, zAxisUp));
 		
-		this.p3d = ((PGraphics3D)pa.g);
+//		this.p3d = ((PGraphics3D)pa.g);
+		this.modelViewP5 = PlatformUtil.getModelView();
+		this.modelViewInvP5 = PlatformUtil.getModelViewInv();
+		this.camP5 = PlatformUtil.getCamera();
+		
 		this.dirty = true;
 		this.cameraMat 			= new PMatrix3D();
 		this.cameraInvMat 		= new PMatrix3D();
@@ -143,37 +177,87 @@ public class MTCamera implements Icamera{
 	}
 	
 	
-	private void setCachedCamMatrices(){
+	protected void setCachedCamMatrices(){
 		Matrix m = this.cameraMatrix;
 		Matrix mi = this.cameraInvMatrix;
 		
-		cameraMat.set(
+//		cameraMat.set(
+//				m.m00, m.m01, m.m02, m.m03,
+//				m.m10, m.m11, m.m12, m.m13,
+//				m.m20, m.m21, m.m22, m.m23,
+//				m.m30, m.m31, m.m32, m.m33);
+//		
+//		cameraInvMat.set(
+//				mi.m00, mi.m01, mi.m02, mi.m03,
+//				mi.m10, mi.m11, mi.m12, mi.m13,
+//				mi.m20, mi.m21, mi.m22, mi.m23,
+//				mi.m30, mi.m31, mi.m32, mi.m33);
+//		
+//		//cant also set cameraInv..not visible
+////		p3d.camera.set(
+////				m.m00, m.m01, m.m02, m.m03,
+////				m.m10, m.m11, m.m12, m.m13,
+////				m.m20, m.m21, m.m22, m.m23,
+////				m.m30, m.m31, m.m32, m.m33);
+//		camP5.set(
+//				m.m00, m.m01, m.m02, m.m03,
+//				m.m10, m.m11, m.m12, m.m13,
+//				m.m20, m.m21, m.m22, m.m23,
+//				m.m30, m.m31, m.m32, m.m33);
+		
+		//FIXME cannot set p5 cameraInv because its not visible..problem?
+		
+//		p3d.modelview.set(cameraMat);
+//		p3d.modelviewInv.set(cameraInvMat);
+		
+//		modelViewP5.set(cameraMat);
+//		modelViewInvP5.set(cameraInvMat);
+		
+		//FIXME remove platform dependence
+//		PGraphics g = this.pa.g;
+//		PGraphicsAndroid3D androidGraphics = (PGraphicsAndroid3D)g;
+//		androidGraphics.updateModelview();
+		
+		PlatformUtil.setModelView(
 				m.m00, m.m01, m.m02, m.m03,
 				m.m10, m.m11, m.m12, m.m13,
 				m.m20, m.m21, m.m22, m.m23,
 				m.m30, m.m31, m.m32, m.m33);
 		
-		cameraInvMat.set(
+		PlatformUtil.setModelViewInv(	
 				mi.m00, mi.m01, mi.m02, mi.m03,
 				mi.m10, mi.m11, mi.m12, mi.m13,
 				mi.m20, mi.m21, mi.m22, mi.m23,
 				mi.m30, mi.m31, mi.m32, mi.m33);
 		
-		//cant also set cameraInv..not visible
-		p3d.camera.set(
+		PlatformUtil.setCamera(	
 				m.m00, m.m01, m.m02, m.m03,
 				m.m10, m.m11, m.m12, m.m13,
 				m.m20, m.m21, m.m22, m.m23,
 				m.m30, m.m31, m.m32, m.m33);
 		
-		//FIXME cannot set p5 cameraInv because its not visible..problem?
+		PlatformUtil.setCameraInv(
+				mi.m00, mi.m01, mi.m02, mi.m03,
+				mi.m10, mi.m11, mi.m12, mi.m13,
+				mi.m20, mi.m21, mi.m22, mi.m23,
+				mi.m30, mi.m31, mi.m32, mi.m33);
 		
-		p3d.modelview.set(cameraMat);
-		p3d.modelviewInv.set(cameraInvMat);
+		//TODO!?
+//		gl.glMatrixMode(GL10.GL_MODELVIEW);
+//	    gl.glLoadMatrixf(glmodelview, 0);
+//	    if (usingGLMatrixStack) {
+//	      modelviewStack.set(glmodelview);
+//	    }
+		
+//		androidGraphics.updateCamera();
+		
+		//Sets our Matrix class cached 
+		//cameraMatrix -> processing's modelView (and glModelView) and -> camera matrix 
+		//and cameraInvMatrix -> processings modelviewInv (and glModelviewInv)
 	}
 	
 	
-	private void calcCameraMatrix(float eyeX, 	float eyeY, 	float eyeZ,
+	protected void calcCameraMatrix(float eyeX, 	float eyeY, 	float eyeZ,
 							float centerX, 	float centerY, 	float centerZ,
 							float upX, 		float upY, 		float upZ
 	) {
@@ -269,7 +353,7 @@ public class MTCamera implements Icamera{
 					viewCenterPos.getX(), viewCenterPos.getY(), viewCenterPos.getZ(), //view center
 					xAxisUp, yAxisUp, zAxisUp); 						//which axis points up?
 			
-			
+			/*
 			this.cameraMatrix.set(new float[]{
 					p3d.modelview.m00, p3d.modelview.m01, p3d.modelview.m02, p3d.modelview.m03,
 					p3d.modelview.m10, p3d.modelview.m11, p3d.modelview.m12, p3d.modelview.m13,
@@ -285,7 +369,23 @@ public class MTCamera implements Icamera{
 					p3d.modelviewInv.m20, p3d.modelviewInv.m21, p3d.modelviewInv.m22, p3d.modelviewInv.m23,
 					p3d.modelviewInv.m30, p3d.modelviewInv.m31, p3d.modelviewInv.m32, p3d.modelviewInv.m33	
 			});
+			 */
+			
+			this.cameraMatrix.set(new float[]{
+					modelViewP5.m00, modelViewP5.m01, modelViewP5.m02, modelViewP5.m03,
+					modelViewP5.m10, modelViewP5.m11, modelViewP5.m12, modelViewP5.m13,
+					modelViewP5.m20, modelViewP5.m21, modelViewP5.m22, modelViewP5.m23,
+					modelViewP5.m30, modelViewP5.m31, modelViewP5.m32, modelViewP5.m33	
+			});
+			
+//			System.out.println("p5 camMatrix: " + this.cameraMatrix);
 
+			this.cameraInvMatrix.set(new float[]{
+					modelViewInvP5.m00, modelViewInvP5.m01, modelViewInvP5.m02, modelViewInvP5.m03,
+					modelViewInvP5.m10, modelViewInvP5.m11, modelViewInvP5.m12, modelViewInvP5.m13,
+					modelViewInvP5.m20, modelViewInvP5.m21, modelViewInvP5.m22, modelViewInvP5.m23,
+					modelViewInvP5.m30, modelViewInvP5.m31, modelViewInvP5.m32, modelViewInvP5.m33	
+			});
 
 			this.dirty = false;
 
@@ -470,8 +570,10 @@ public class MTCamera implements Icamera{
 	 * Reset to default.
 	 */
 	public void resetToDefault(){
-		this.camPos = new Vector3D((float)(pa.width/2.0), (float)(pa.height/2.0), (float)(pa.height/2.0) / PApplet.tan((float)(PApplet.PI*60.0 / 360.0)));
-		this.viewCenterPos	= new Vector3D((float)(pa.width/2.0), (float)(pa.height/2.0), 0) ;
+//		this.camPos = new Vector3D((float)(pa.width/2.0), (float)(pa.height/2.0), (float)(pa.height/2.0) / PApplet.tan((float)(PApplet.PI*60.0 / 360.0)));
+//		this.viewCenterPos	= new Vector3D((float)(pa.width/2.0), (float)(pa.height/2.0), 0) ;
+		this.camPos = new Vector3D((float)(MT4jSettings.getInstance().getWindowWidth()/2.0), (float)(MT4jSettings.getInstance().getWindowHeight()/2.0), (float)(MT4jSettings.getInstance().getWindowHeight()/2.0) / PApplet.tan((float)(PApplet.PI*60.0 / 360.0)));
+		this.viewCenterPos	= new Vector3D((float)(MT4jSettings.getInstance().getWindowWidth()/2.0), (float)(MT4jSettings.getInstance().getWindowHeight()/2.0), 0) ;
 		this.xAxisUp = 0;
 		this.yAxisUp = 1;
 		this.zAxisUp = 0;
@@ -592,5 +694,80 @@ public class MTCamera implements Icamera{
 
 	//TODO setFrustum(float near, float far, float left, float right, float top, float bottom);
 	//TODO setFrustumPerspective(float fovY, float aspect, float near, float far);
+	
+	
+	
+	public IAnimation tweenTo(float x, float y, float z, int interpolationDuration, String interpolationFunction, int delay){
+		Vector3D from 			= getPosition();
+		Vector3D targetPoint 	= new Vector3D(x, y, z);
+		Vector3D directionVect 	= targetPoint.getSubtracted(from);
+//		System.out.println("Distance Cam - Target: " + directionVect);
+		float distance = directionVect.length();
+		AniAnimation animation = new AniAnimation(0, distance, interpolationDuration, interpolationFunction, this);
+		animation.addAnimationListener(new CamTranslationAnimationListener(directionVect, new Vector3D(x,y,z)));
+		animation.setTriggerTime(delay);
+		animation.start();
+		return animation;
+	}
+	
+	
+	/**
+	 * This private class acts as an AnimationListener for translation animations.
+	 * 
+	 * @author C.Ruff
+	 */
+	private class CamTranslationAnimationListener implements IAnimationListener{
+		/** The direction vector. */
+		private Vector3D directionVector;
+		
+		/** The normalized dir vect. */
+		private Vector3D normalizedDirVect;
+		
+		private Vector3D destinationPos;
+		
+		/**
+		 * Instantiates a new translation animation listener.
+		 * 
+		 * @param shape the shape
+		 * @param directionVector the direction vector
+		 * @param destinationPosition 
+		 */
+		public CamTranslationAnimationListener(Icamera cam, Vector3D directionVector){
+			this(directionVector, null);
+		}
+
+		/**
+		 * Instantiates a new translation animation listener.
+		 * 
+		 * @param shape the shape
+		 * @param directionVector the direction vector
+		 * @param destinationPosition 
+		 */
+		public CamTranslationAnimationListener(Vector3D directionVector, Vector3D destinationPosition){
+			this.directionVector = directionVector;
+			this.normalizedDirVect = this.directionVector.getCopy();
+			this.normalizedDirVect.normalizeLocal();
+			this.destinationPos = destinationPosition;
+//			System.out.println("Destination Pos: " + destinationPosition);
+		}
+		
+		public void processAnimationEvent(AnimationEvent ae) {
+			Object target = ae.getTarget();
+			if (target != null){
+				Icamera cam = (Icamera)target;
+				float amount = ae.getAnimation().getDelta();
+				Vector3D newTranslationVect = this.normalizedDirVect.getCopy();
+				newTranslationVect.scaleLocal(amount);
+				//Move cam
+				moveCamAndViewCenter(newTranslationVect.x, newTranslationVect.y, newTranslationVect.z);
+//				if (ae.getId() == AnimationEvent.ANIMATION_ENDED && destinationPos != null){
+//					cam.setPosition(destinationPos); //Set position at the end to fight round-off errors during translation
+////					cam.setViewCenterPos(Komp.this.getPosition(TransformSpace.GLOBAL));
+//					cam.setViewCenterPos(destinationPos);
+//				}
+			}
+		}
+	}
+	
 	
 }

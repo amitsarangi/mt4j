@@ -304,7 +304,9 @@ public class MTList extends MTClipRectangle {
 			
 			//Add drag listener which drags the cells parent (listcontainer) restriced to one axis 
 			if (!hasDragProcessor(item)){
-				item.registerInputProcessor(new DragProcessor(app));
+				DragProcessor dp = new DragProcessor(app);
+				item.registerInputProcessor(dp);
+				dp.setBubbledEventsEnabled(true);
 			}
 			
 			//Remove the default drag listener from the cell for safety

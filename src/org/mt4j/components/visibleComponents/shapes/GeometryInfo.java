@@ -17,19 +17,20 @@
  ***********************************************************************/
 package org.mt4j.components.visibleComponents.shapes;
 
+import java.nio.Buffer;
 import java.nio.FloatBuffer;
-import java.nio.IntBuffer;
+import java.nio.ShortBuffer;
 
-import javax.media.opengl.GL;
-
-import org.mt4j.MTApplication;
+import org.mt4j.AbstractMTApplication;
 import org.mt4j.components.visibleComponents.StyleInfo;
 import org.mt4j.util.MT4jSettings;
-import org.mt4j.util.math.Tools3D;
+import org.mt4j.util.PlatformUtil;
 import org.mt4j.util.math.ToolsBuffers;
 import org.mt4j.util.math.ToolsVBO;
 import org.mt4j.util.math.Vector3D;
 import org.mt4j.util.math.Vertex;
+import org.mt4j.util.opengl.GL11;
+import org.mt4j.util.opengl.GL11Plus;
 
 import processing.core.PApplet;
 
@@ -54,7 +55,7 @@ public class GeometryInfo {
 	private Vector3D[] normals;
 	
 	/** The indices. */
-	private int[] indices; 
+	private short[] indices; 
 	
 	/** The vert buff. */
 	private FloatBuffer vertBuff;
@@ -72,7 +73,7 @@ public class GeometryInfo {
 	private FloatBuffer normalsBuff; 
 	
 	/** The indices buff. */
-	private IntBuffer 	indicesBuff;
+	private Buffer 	indicesBuff;
 	
 	//	 Pure GL VBO indices names \\	
 	/** The vbo vertices id. */
@@ -101,6 +102,8 @@ public class GeometryInfo {
 	private boolean containsNormals;
 	
 	private boolean textureCoordsNormalized = true;
+	
+	private boolean adaptedCoordsNPOT = false;
 	
 	
 	/**
@@ -134,7 +137,7 @@ public class GeometryInfo {
 	 * @param vertices the vertices
 	 * @param indices the indices
 	 */
-	public GeometryInfo(PApplet pApplet, Vertex[] vertices, int[] indices){
+	public GeometryInfo(PApplet pApplet, Vertex[] vertices, short[] indices){
 		this(pApplet, vertices, null, indices);
 	}
 
@@ -147,7 +150,7 @@ public class GeometryInfo {
 	 * @param normals the normals
 	 * @param indices the indices
 	 */
-	public GeometryInfo(PApplet pApplet, Vertex[] vertices, Vector3D[] normals, int[] indices){
+	public GeometryInfo(PApplet pApplet, Vertex[] vertices, Vector3D[] normals, short[] indices){
 		this.r = pApplet;
 		//VBO Ids
 		this.vboVerticesID 	= -1;
@@ -178,7 +181,7 @@ public class GeometryInfo {
 	public void reconstruct(
 			Vertex[] 	vertices, 
 			Vector3D[] 	normals, 
-			int[] 		indices, 
+			short[] 		indices, 
 			boolean 	createOrUpdateOGLBuffers, 
 			boolean 	createOrUpdateVBO, 
 			StyleInfo 	styleInfo
@@ -217,19 +220,22 @@ public class GeometryInfo {
 	 * @param indices the indices
 	 * @param createOrUpdateOGLBuffers the create or update ogl buffers
 	 */
-	public void setIndices(int[] indices, boolean createOrUpdateOGLBuffers/*, boolean createOrUpdateVBO*/) {
+	public void setIndices(short[] indices, boolean createOrUpdateOGLBuffers/*, boolean createOrUpdateVBO*/) {
 		if (indices != null && indices.length > 0){
 			this.setIndexed(true);
 			this.indices = indices;
 			
 			if (MT4jSettings.getInstance().isOpenGlMode() && createOrUpdateOGLBuffers){
 				//Set Buffer and maybe EBO //TODO create EBO Element Buffer Object?
+//				this.setIndicesBuffer(ToolsBuffers.generateIndicesBuffer(indices));
+				
 				this.setIndicesBuffer(ToolsBuffers.generateIndicesBuffer(indices));
 			}
 		}else{
 			this.setIndexed(false);
 		}
 	}
+	
 	
 	/**
 	 * Gets the indices.
@@ -238,7 +244,7 @@ public class GeometryInfo {
 	 * 
 	 * the array if indices
 	 */
-	public int[] getIndices(){
+	public short[] getIndices(){
 		return this.indices;
 	}
 
@@ -485,7 +491,7 @@ public class GeometryInfo {
 	 * 
 	 * @param indicesBuff the new indices buffer
 	 */
-	private void setIndicesBuffer(IntBuffer indicesBuff){
+	private void setIndicesBuffer(ShortBuffer indicesBuff){
 		this.indicesBuff = indicesBuff;
 	}
 	
@@ -504,7 +510,7 @@ public class GeometryInfo {
 	 * 
 	 * @return the index buff
 	 */
-	public IntBuffer getIndexBuff() {
+	public Buffer getIndexBuff() {
 		return this.indicesBuff;
 	}
 	
@@ -707,26 +713,29 @@ public class GeometryInfo {
 	 */
 	public void deleteAllVBOs(){
 		if (MT4jSettings.getInstance().isOpenGlMode()){
-			GL gl = Tools3D.getGL(r);
-			if (this.getVBOVerticesName() != -1){
-				gl.glDeleteBuffersARB(1, new int[]{this.getVBOVerticesName()},0);
-				this.vboVerticesID = -1;
-			}
-			if (this.getVBOColorName() != -1){
-				gl.glDeleteBuffersARB(1, new int[]{this.getVBOColorName()},0);
-				this.vboColorID = -1;
-			}
-			if (this.getVBOStrokeColorName() != -1){
-				gl.glDeleteBuffersARB(1, new int[]{this.getVBOStrokeColorName()},0);
-				this.vboStrokeColID = -1;
-			}
-			if (this.getVBOTextureName() != -1){
-				gl.glDeleteBuffersARB(1, new int[]{this.getVBOTextureName()},0);
-				this.vboTextureID = -1;
-			}
-			if (this.getVBONormalsName() != -1){
-				gl.glDeleteBuffersARB(1, new int[]{this.getVBONormalsName()},0);
-				this.vboNormalsID = -1;
+			//			GL gl = Tools3D.getGL(r);
+			GL11 gl = PlatformUtil.getGL11();
+			if (gl != null){
+				if (this.getVBOVerticesName() != -1){
+					gl.glDeleteBuffers(1, new int[]{this.getVBOVerticesName()},0);
+					this.vboVerticesID = -1;
+				}
+				if (this.getVBOColorName() != -1){
+					gl.glDeleteBuffers(1, new int[]{this.getVBOColorName()},0);
+					this.vboColorID = -1;
+				}
+				if (this.getVBOStrokeColorName() != -1){
+					gl.glDeleteBuffers(1, new int[]{this.getVBOStrokeColorName()},0);
+					this.vboStrokeColID = -1;
+				}
+				if (this.getVBOTextureName() != -1){
+					gl.glDeleteBuffers(1, new int[]{this.getVBOTextureName()},0);
+					this.vboTextureID = -1;
+				}
+				if (this.getVBONormalsName() != -1){
+					gl.glDeleteBuffers(1, new int[]{this.getVBONormalsName()},0);
+					this.vboNormalsID = -1;
+				}
 			}
 		}
 	}
@@ -813,7 +822,8 @@ public class GeometryInfo {
 		int[] displayListIDs = new int[]{-1,-1};
 
 		//Create a new empty displaylist
-		GL gl = Tools3D.getGL(getRenderer());
+//		GL gl = Tools3D.getGL(getRenderer());
+		GL11Plus gl = PlatformUtil.getGL11Plus();
 		int listIDFill = gl.glGenLists(1);
 		if (listIDFill == 0){
 			System.err.println("Failed to create fill display list");
@@ -833,7 +843,7 @@ public class GeometryInfo {
 		
 		if (genFillList){
 			//Start recording display list
-			gl.glNewList(listIDFill, GL.GL_COMPILE);
+			gl.glNewList(listIDFill, GL11Plus.GL_COMPILE);
 			shape.setNoFill(false);
 			shape.setNoStroke(true);
 			shape.drawPureGl(gl);
@@ -846,7 +856,7 @@ public class GeometryInfo {
 		
 		if (genStrokeList){
 		//Start recording display list
-		gl.glNewList(listIDOutline, GL.GL_COMPILE);
+		gl.glNewList(listIDOutline, GL11Plus.GL_COMPILE);
 		shape.setNoFill(true);
 		shape.setNoStroke(false);
 		shape.drawPureGl(gl);
@@ -870,10 +880,13 @@ public class GeometryInfo {
 	 */
 	public void deleteDisplayLists(){
 		if (MT4jSettings.getInstance().isOpenGlMode()){
-			GL gl = Tools3D.getGL(this.r);
-			for (int id : this.displayListIDs){
-				if (id != -1){
-					gl.glDeleteLists(id, 1);
+//			GL gl = Tools3D.getGL(this.r);
+			GL11Plus gl11Plus = PlatformUtil.getGL11Plus();
+			if (gl11Plus != null) {
+				for (int id : this.displayListIDs){
+					if (id != -1){
+						gl11Plus.glDeleteLists(id, 1);
+					}
 				}
 			}
 			this.displayListIDs[0] = -1;
@@ -1047,20 +1060,52 @@ public class GeometryInfo {
 		return this.r;
 	}
 
+	/**
+	 * Checks if is texture coords are normalized.
+	 *
+	 * @return true, if is texture coords normalized
+	 */
 	public boolean isTextureCoordsNormalized() {
 		return this.textureCoordsNormalized;
 	}
 	
+	/**
+	 * Informs the geometryinfo that the texture coordinates are 
+	 * supplied normalized (0..1). This method doesent normalize the
+	 * tex coords itself.
+	 *
+	 * @param normalized the new texture coords normalized
+	 */
 	public void setTextureCoordsNormalized(boolean normalized){
 		this.textureCoordsNormalized = normalized;
+	}
+	
+	/**
+	 * Checks if is texture coords are adapted to npot.
+	 * (image data is actually smaller than the OpenGL texture object)
+	 * @return true, if is texture coords are adapted npot
+	 */
+	public boolean isTextureCoordsAdaptedNPOT() {
+		return this.adaptedCoordsNPOT;
+	}
+	
+	/**
+	 * Informs the geometryinfo that the texture coordinates are 
+	 * adapted to NPOT texture dimensions (image data is actually smaller than the OpenGL texture object). 
+	 * This method doesent adapt the tex coords itself!
+	 *
+	 * @param adaptedCoords adaptedCoords
+	 */
+	public void setTextureCoordsAdaptedNPOT(boolean adaptedCoords){
+		this.adaptedCoordsNPOT = adaptedCoords;
 	}
 	
 	
 	@Override
 	protected void finalize() throws Throwable {
 		//System.out.println("Finalizing GLTEXTURE - " + this);
-		if (this.r instanceof MTApplication) {
-			MTApplication mtApp = (MTApplication) this.r;
+		if (this.r instanceof AbstractMTApplication) {
+			AbstractMTApplication mtApp = (AbstractMTApplication) this.r;
 			mtApp.invokeLater(new Runnable() {
 				public void run() {
 					deleteDisplayLists();

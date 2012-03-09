@@ -23,10 +23,13 @@ import java.util.List;
 import org.mt4j.components.bounds.BoundsZPlaneRectangle;
 import org.mt4j.components.bounds.IBoundingShape;
 import org.mt4j.util.MTColor;
+import org.mt4j.util.math.Tools3D;
 import org.mt4j.util.math.ToolsGeometry;
 import org.mt4j.util.math.Vertex;
+import org.mt4j.util.opengl.GLTexture;
 
 import processing.core.PApplet;
+import processing.core.PImage;
 
 /**
  * This class can be used to display a rounded rectangle shape.
@@ -302,5 +305,28 @@ public class MTRoundRectangle extends MTPolygon {
 //		}else
 //			return false;
 //	}
+	
+	
+	
+	
+	//FIXME TEST -> adapt tex coords for non fitting, NPOT gl texture
+	private void adaptTexCoordsForNPOTUse(){
+		PImage tex = this.getTexture();
+		if (tex instanceof GLTexture){
+			Tools3D.adaptTextureCoordsNPOT(this, (GLTexture)tex);
+		}
+	}
+	
+	@Override
+	public void setUseDirectGL(boolean drawPureGL) {
+		super.setUseDirectGL(drawPureGL);
+		adaptTexCoordsForNPOTUse();
+	}
+	
+	@Override
+	public void setTexture(PImage newTexImage) {
+		super.setTexture(newTexImage);
+		adaptTexCoordsForNPOTUse();
+	}
 
 }

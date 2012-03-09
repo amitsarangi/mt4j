@@ -17,7 +17,7 @@
  ***********************************************************************/
 package org.mt4j.util;
 
-import org.mt4j.MTApplication;
+import org.mt4j.AbstractMTApplication;
 import org.mt4j.util.math.Vector3D;
 
 /**
@@ -46,6 +46,12 @@ public class MT4jSettings {
 	/** Current DrawMode. */
 	public int renderer = P3D_MODE;
 	
+	/** The steroscopic rendering mode. */
+	public boolean steroscopic = false;
+	
+	/** Eye separation for stereoscopic mode. */
+	public int eyeseparation = 10;
+
 	/** The num samples. */
 	public int numSamples = 0;
 	
@@ -84,13 +90,13 @@ public class MT4jSettings {
 	public static String DEFAULT_SETTINGS_PATH = "";
 
 	/** The DEFAUL t_ dat a_ folde r_ path. */
-	public static String DEFAULT_DATA_FOLDER_PATH = "data" + MTApplication.separator;
+	public static String DEFAULT_DATA_FOLDER_PATH = "data" + AbstractMTApplication.separator;
 	
 	/** The DEFAUL t_ fon t_ path. */
 	public static String DEFAULT_FONT_PATH = DEFAULT_DATA_FOLDER_PATH;
 	
 	/** The DEFAUL t_ image s_ path. */
-	public static String DEFAULT_IMAGES_PATH = "data" + MTApplication.separator + "images" + MTApplication.separator;
+	public static String DEFAULT_IMAGES_PATH = "data" + AbstractMTApplication.separator + "images" + AbstractMTApplication.separator;
 			 
 	
 //	public static String DEFAULT_VIDEOS_PATH = new String(System.getProperty("user.dir") + File.separator + "data" /*+ File.separator + "videos"  */ +  File.separator);
@@ -99,10 +105,10 @@ public class MT4jSettings {
 	public static String DEFAULT_VIDEOS_PATH = "";
 	
 	/** The DEFAUL t_ sv g_ path. */
-	public static String DEFAULT_SVG_PATH = "data" + MTApplication.separator + "svg" + MTApplication.separator;
+	public static String DEFAULT_SVG_PATH = "data" + AbstractMTApplication.separator + "svg" + AbstractMTApplication.separator;
 	
 	/** The DEFAUL t_3 d_ mode l_ path. */
-	public static String DEFAULT_3D_MODEL_PATH = "data" + MTApplication.separator + "models" + MTApplication.separator;
+	public static String DEFAULT_3D_MODEL_PATH = "data" + AbstractMTApplication.separator + "models" + AbstractMTApplication.separator;
 	
 
 	/**
@@ -328,6 +334,25 @@ public class MT4jSettings {
 		return this.getRendererMode() == MT4jSettings.OPENGL_MODE;
 	}
 	
+
+	/**
+	 * Checks if stereoscopic rendering is.
+	 * 
+	 * @return true, if is stereoscopic rendering
+	 */
+	public boolean isStereoscopic() {
+		return steroscopic;
+	}
+	
+	/**
+	 * Gets eye separation for stereoscopic rendering.
+	 * 
+	 * @return the eye separation
+	 */
+	public int getEyeSeparation() {
+		return eyeseparation;
+	}
+	
 	/**
 	 * Checks if is p3d mode.
 	 * 
@@ -375,6 +400,6 @@ public class MT4jSettings {
 	public boolean isFullscreenExclusive() {
 		return this.fullscreenExclusive;
 	}
-	
+
 
 }

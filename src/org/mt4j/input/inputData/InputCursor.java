@@ -246,7 +246,6 @@ public class InputCursor{
 	}
 	
 	
-	//TODO how to call implicitly in analyzters?
 	/**
 	 * Input processors should call this when new input has started to be
 	 * able to use the cursor locking mechanisms.
@@ -740,7 +739,8 @@ public class InputCursor{
 		
 		float totalX = 0;
 		float totalY = 0;
-		for (int i = 0; i < lastEvents.size(); i++) {
+		int size = lastEvents.size();
+		for (int i = 0; i < size; i++) {
 			 AbstractCursorInputEvt ce = lastEvents.get(i);
 			 float x = ce.getX();
 			 float y = ce.getY();

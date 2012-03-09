@@ -28,7 +28,8 @@ import org.mt4j.util.math.Vector3D;
 
 
 /**
- * Default clickgesture action for image buttons.
+ * Default clickgesture action for image buttons. Shrinks the shape upon pressing and scales it back
+ * to original size on releasing.
  * 
  * @author Christopher Ruff
  */
@@ -87,7 +88,7 @@ public class DefaultButtonClickAction implements IGestureEventListener  {
 						this.shrink(width-sizeChangeValue, height-sizeChangeValue);
 						if (comp instanceof IclickableButton){
 							IclickableButton polyButton = (IclickableButton)g.getTarget();
-							polyButton.fireActionPerformed(clickEvent);
+//							polyButton.fireActionPerformed(clickEvent);
 							polyButton.setSelected(true);
 						}
 					}
@@ -97,7 +98,7 @@ public class DefaultButtonClickAction implements IGestureEventListener  {
 					if ( clickEvent.getTapID() == TapEvent.TAP_DOWN){
 						if (comp instanceof IclickableButton){
 							IclickableButton polyButton = (IclickableButton)g.getTarget();
-							polyButton.fireActionPerformed(clickEvent);
+//							polyButton.fireActionPerformed(clickEvent);
 						}
 					}
 					break;
@@ -110,7 +111,7 @@ public class DefaultButtonClickAction implements IGestureEventListener  {
 						this.enlarge(width, height);
 						if (comp instanceof IclickableButton){
 							IclickableButton polyButton = (IclickableButton)g.getTarget();
-							polyButton.fireActionPerformed(clickEvent);
+//							polyButton.fireActionPerformed(clickEvent);
 							polyButton.setSelected(false);
 						}
 					}

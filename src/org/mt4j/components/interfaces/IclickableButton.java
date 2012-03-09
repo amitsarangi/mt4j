@@ -24,12 +24,12 @@ import org.mt4j.input.inputProcessors.componentProcessors.tapProcessor.TapEvent;
  */
 public interface IclickableButton {
 	
-	/**
-	 * Fire action performed.
-	 * 
-	 * @param ce the ce
-	 */
-	public void fireActionPerformed(TapEvent ce);
+//	/**
+//	 * Fire action performed.
+//	 * 
+//	 * @param ce the ce
+//	 */
+//	public void fireActionPerformed(TapEvent ce);
 	
 	
 	/**

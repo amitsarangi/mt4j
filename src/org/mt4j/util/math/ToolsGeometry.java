@@ -17,13 +17,16 @@
  ***********************************************************************/
 package org.mt4j.util.math;
 
+import java.nio.Buffer;
 import java.nio.IntBuffer;
+import java.nio.ShortBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.mt4j.components.visibleComponents.shapes.AbstractShape;
 import org.mt4j.components.visibleComponents.shapes.MTPolygon;
 import org.mt4j.components.visibleComponents.shapes.mesh.MTTriangleMesh;
+
 import processing.core.PApplet;
 
 
@@ -240,31 +243,58 @@ public class ToolsGeometry {
      * @return True if they intersect, false otherwise.
      */
     public static boolean isMeshesIntersecting(MTTriangleMesh mesh1, MTTriangleMesh mesh2) {
-    	IntBuffer indexA = mesh1.getGeometryInfo().getIndexBuff();
-    	IntBuffer indexB = mesh2.getGeometryInfo().getIndexBuff();
+    	Buffer indexAA = mesh1.getGeometryInfo().getIndexBuff();
+    	Buffer indexBB = mesh2.getGeometryInfo().getIndexBuff();
     	
-    	//Transform the vertices of both meshes into world coordinates
-    	Matrix aTransform = mesh1.getGlobalMatrix();
-    	Matrix bTransform = mesh2.getGlobalMatrix();
+    	if (indexAA instanceof ShortBuffer && indexBB instanceof ShortBuffer) {
+			ShortBuffer indexA = (ShortBuffer) indexAA;
+			ShortBuffer indexB = (ShortBuffer) indexBB;
+			
+			//Transform the vertices of both meshes into world coordinates
+	    	Matrix aTransform = mesh1.getGlobalMatrix();
+	    	Matrix bTransform = mesh2.getGlobalMatrix();
 
-    	Vector3D[] vertA = ToolsBuffers.getVector3DArray(mesh1.getGeometryInfo().getVertBuff());
-//    	Vector3D[] vertA = mesh1.getGeometryInfo().getVerticesLocal(); //This would have to be copied..
-    	Vector3D.transFormArrayLocal(aTransform, vertA);
+	    	Vector3D[] vertA = ToolsBuffers.getVector3DArray(mesh1.getGeometryInfo().getVertBuff());
+	    	Vector3D.transFormArrayLocal(aTransform, vertA);
 
-    	Vector3D[] vertB = ToolsBuffers.getVector3DArray(mesh2.getGeometryInfo().getVertBuff());
-//    	Vector3D[] vertB = mesh2.getGeometryInfo().getVerticesLocal(); 
-    	Vector3D.transFormArrayLocal(bTransform, vertB);
+	    	Vector3D[] vertB = ToolsBuffers.getVector3DArray(mesh2.getGeometryInfo().getVertBuff());
+	    	Vector3D.transFormArrayLocal(bTransform, vertB);
 
-    	for (int i = 0; i < mesh1.getTriangleCount(); i++) {
-    		for (int j = 0; j < mesh2.getTriangleCount(); j++) {
-    			if (isTrianglesIntersect(vertA[indexA.get(i * 3 + 0)],
-    					vertA[indexA.get(i * 3 + 1)], vertA[indexA.get(i * 3 + 2)],
-    					vertB[indexB.get(j * 3 + 0)], vertB[indexB.get(j * 3 + 1)],
-    					vertB[indexB.get(j * 3 + 2)]))
-    				return true;
-    		}
-    	}
-    	return false;
+	    	for (int i = 0; i < mesh1.getTriangleCount(); i++) {
+	    		for (int j = 0; j < mesh2.getTriangleCount(); j++) {
+	    			if (isTrianglesIntersect(vertA[indexA.get(i * 3 + 0)],
+	    					vertA[indexA.get(i * 3 + 1)], vertA[indexA.get(i * 3 + 2)],
+	    					vertB[indexB.get(j * 3 + 0)], vertB[indexB.get(j * 3 + 1)],
+	    					vertB[indexB.get(j * 3 + 2)]))
+	    				return true;
+	    		}
+	    	}
+	    	return false;
+		}else{
+			IntBuffer indexA = (IntBuffer) indexAA;
+			IntBuffer indexB = (IntBuffer) indexBB;
+			
+			//Transform the vertices of both meshes into world coordinates
+	    	Matrix aTransform = mesh1.getGlobalMatrix();
+	    	Matrix bTransform = mesh2.getGlobalMatrix();
+
+	    	Vector3D[] vertA = ToolsBuffers.getVector3DArray(mesh1.getGeometryInfo().getVertBuff());
+	    	Vector3D.transFormArrayLocal(aTransform, vertA);
+
+	    	Vector3D[] vertB = ToolsBuffers.getVector3DArray(mesh2.getGeometryInfo().getVertBuff());
+	    	Vector3D.transFormArrayLocal(bTransform, vertB);
+
+	    	for (int i = 0; i < mesh1.getTriangleCount(); i++) {
+	    		for (int j = 0; j < mesh2.getTriangleCount(); j++) {
+	    			if (isTrianglesIntersect(vertA[indexA.get(i * 3 + 0)],
+	    					vertA[indexA.get(i * 3 + 1)], vertA[indexA.get(i * 3 + 2)],
+	    					vertB[indexB.get(j * 3 + 0)], vertB[indexB.get(j * 3 + 1)],
+	    					vertB[indexB.get(j * 3 + 2)]))
+	    				return true;
+	    		}
+	    	}
+	    	return false;
+		}
     }
 
     /**
@@ -1787,6 +1817,19 @@ public class ToolsGeometry {
         }
 		ArrayList<Vector3D> edgeList = ConvexQuickHull2D.getConvexHull2D(vers);
 		return (edgeList.toArray(new Vector3D[edgeList.size()]));
+	}
+	
+	/**
+	 * @param vects The Vector3D[] to be converted to a Vertex[]
+	 * @return a Vertex[] created from the given Vector3D[]
+	 */
+	public static Vertex[] toVertices(Vector3D[] vects){
+		Vertex[] result = new Vertex[vects.length];
+		int length = result.length;
+		for (int i = 0; i < length; i++) {
+			result[i] = new Vertex(vects[i]);
+		}
+		return result;
 	}
 
 }

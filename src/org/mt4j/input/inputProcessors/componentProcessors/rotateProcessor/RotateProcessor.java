@@ -22,7 +22,6 @@ import java.util.List;
 import org.mt4j.components.interfaces.IMTComponent3D;
 import org.mt4j.input.inputData.AbstractCursorInputEvt;
 import org.mt4j.input.inputData.InputCursor;
-import org.mt4j.input.inputData.MTFingerInputEvt;
 import org.mt4j.input.inputProcessors.IInputProcessor;
 import org.mt4j.input.inputProcessors.MTGestureEvent;
 import org.mt4j.input.inputProcessors.componentProcessors.AbstractComponentProcessor;
@@ -271,7 +270,7 @@ public class RotateProcessor extends AbstractCursorProcessor {
 			this.rotateFingerCursor = rotateFingerCursor;
 
 //			Vector3D interPoint = getIntersection(applet, object, pinFingerCursor);
-			Vector3D interPoint = getIntersection(applet, pinFingerCursor.getCurrentEvent().getCurrentTarget(), pinFingerCursor);
+			Vector3D interPoint = getIntersection(applet, object, pinFingerCursor);
 			if (interPoint !=null)
 				pinFingerNew = interPoint;
 			else{

@@ -23,8 +23,6 @@ import java.util.Iterator;
 import java.util.Set;
 
 import org.mt4j.components.visibleComponents.shapes.mesh.MTTriangleMesh;
-import org.mt4j.util.modelImporter.file3ds.Model3dsFileFactory;
-import org.mt4j.util.modelImporter.fileObj.ModelObjFileFactory;
 
 import processing.core.PApplet;
 
@@ -37,13 +35,13 @@ public abstract class ModelImporterFactory {
 	/** The suffix to factory. */
 	private static HashMap<String, Class<? extends ModelImporterFactory>> suffixToFactory;
 
-	static {
-		suffixToFactory = new HashMap<String, Class<? extends ModelImporterFactory>>();
-		//Add default factories for .3ds and for .obj files
-		registerModelImporterFactory(".3ds", Model3dsFileFactory.class);
-		registerModelImporterFactory(".obj", ModelObjFileFactory.class);
-	}
 
+	private static HashMap<String, Class<? extends ModelImporterFactory>> getMap(){
+		if (suffixToFactory == null){
+			suffixToFactory = new HashMap<String, Class<? extends ModelImporterFactory>>();
+		}
+		return suffixToFactory;
+	}
 
 	/**
 	 * Gets the appropriate class for suffix.
@@ -53,7 +51,7 @@ public abstract class ModelImporterFactory {
 	 * @return the appropriate class for suffix
 	 */
 	private static Class<? extends ModelImporterFactory> getAppropriateClassForSuffix(String fileSuffix){
-		return suffixToFactory.get(fileSuffix);
+		return getMap().get(fileSuffix);
 	}
 	
 	
@@ -65,7 +63,7 @@ public abstract class ModelImporterFactory {
 	 * @param factory the factory to load the models with the specified suffix with. The factory has to be derived from ModelImporterFactory!
 	 */
 	public static void registerModelImporterFactory(String fileSuffix, Class<? extends ModelImporterFactory> factory){ 
-		suffixToFactory.put(fileSuffix, factory);
+		getMap().put(fileSuffix, factory);
 	}
 	
 	
@@ -75,11 +73,11 @@ public abstract class ModelImporterFactory {
 	 * @param factory the factory to load the models with the specified suffix with. The factory has to be derived from ModelImporterFactory!
 	 */
 	public static void unregisterModelImporterFactory(Class<? extends ModelImporterFactory> factory){ 
-		Set<String> suffixesInHashMap = suffixToFactory.keySet();
+		Set<String> suffixesInHashMap = getMap().keySet();
 		for (Iterator<String> iter = suffixesInHashMap.iterator(); iter.hasNext();) {
 			String suffix = (String) iter.next();
-			if (suffixToFactory.get(suffix).equals(factory)){
-				suffixToFactory.remove(suffix);
+			if (getMap().get(suffix).equals(factory)){
+				getMap().remove(suffix);
 			}
 		}
 	}

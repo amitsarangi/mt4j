@@ -17,10 +17,12 @@
  ***********************************************************************/
 package org.mt4j.util.math;
 
+import java.lang.reflect.Method;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
+import java.nio.ShortBuffer;
 
 /**
  * Methods to build Buffers for use with vertex/texture/color arrays in opengl
@@ -29,6 +31,12 @@ import java.nio.IntBuffer;
  * @author C.Ruff
  */
 public class ToolsBuffers {
+	public static final int SIZEOF_BYTE = 1;
+	public static final int SIZEOF_SHORT = 2;
+	public static final int SIZEOF_INT = 4;
+	public static final int SIZEOF_FLOAT = 4;
+	public static final int SIZEOF_LONG = 8;
+	public static final int SIZEOF_DOUBLE = 8;
 	
 	////////////////////////////////////////////////////////////
 	// Methods to build Buffers for use with vertex/texture/color arrays in opengl 
@@ -209,6 +217,20 @@ public class ToolsBuffers {
 		  return indexBuff;	
 	}
 	
+	/**
+     * Generate indices buffer.
+     * 
+     * @param indicesArray the indices array
+     * 
+     * @return the int buffer
+     */
+	public static ShortBuffer generateIndicesBuffer(short[] indicesArray){ 
+		  ShortBuffer indexBuff = createShortBuffer(indicesArray.length);
+		  indexBuff.put(indicesArray);
+		  indexBuff.rewind();
+		  return indexBuff;	
+	}
+	
 	
 	
 	/**
@@ -280,6 +302,30 @@ public class ToolsBuffers {
     }
     
     /**
+     * Generates a Vertex array from the given FloatBuffers.
+     * 
+     * @param buff the FloatBuffer to read from
+     * 
+     * @return a newly generated array of Vertex objects
+     */
+    public static Vertex[] getVertexArray(FloatBuffer buff, FloatBuffer colBuff) {
+        buff.clear(); //this doesent delete its contents!
+        colBuff.clear();
+//        if (colBuff.limit() != buff.limit() + buff.limit()* 1f/3f){ //Check
+//        	System.err.println("Warning: Vertex Buffer limit doesent match with colorbuffer!");
+//        }
+        
+        Vertex[] verts = new Vertex[buff.limit() / 3];
+        for (int x = 0; x < verts.length; x++) {
+        	Vertex v = new Vertex(buff.get(), buff.get(), buff.get(), colBuff.get(), colBuff.get(), colBuff.get(), colBuff.get());
+            verts[x] = v;
+        }
+        buff.clear(); //Reset position to 0 again
+        colBuff.clear();
+        return verts;
+    }
+    
+    /**
      * Generates a Vector3D array from the given FloatBuffer.
      * 
      * @param buff the FloatBuffer to read from
@@ -330,6 +376,25 @@ public class ToolsBuffers {
         if (buff == null) return null;
         buff.clear();
         int[] inds = new int[buff.limit()];
+        for (int x = 0; x < inds.length; x++) {
+            inds[x] = buff.get();
+        }
+        buff.clear(); //Reset position to 0 again
+        return inds;
+    }
+    
+    /**
+	 * Create a new short[] array and populates
+	 * it with the given ShortBuffer contents.
+	 * 
+	 * @param buff the ShortBuffer to read from
+	 * 
+	 * @return a new int array populated from the ShortBuffer
+	 */
+    public static short[] getShortArray(ShortBuffer buff) {
+        if (buff == null) return null;
+        buff.clear();
+        short[] inds = new short[buff.limit()];
         for (int x = 0; x < inds.length; x++) {
             inds[x] = buff.get();
         }
@@ -452,7 +517,7 @@ public class ToolsBuffers {
 	 * @return the new FloatBuffer
 	 */
 	public  static FloatBuffer createFloatBuffer(int size) {
-	    FloatBuffer buf = ByteBuffer.allocateDirect(4 * size).order(ByteOrder.nativeOrder()).asFloatBuffer();
+	    FloatBuffer buf = ByteBuffer.allocateDirect(SIZEOF_FLOAT * size).order(ByteOrder.nativeOrder()).asFloatBuffer();
 	    buf.clear();
 	    return buf;
 	}
@@ -480,7 +545,20 @@ public class ToolsBuffers {
 	 * @return the new IntBuffer
 	 */
 	public static IntBuffer createIntBuffer(int size) {
-	    IntBuffer buf = ByteBuffer.allocateDirect(4 * size).order(ByteOrder.nativeOrder()).asIntBuffer();
+	    IntBuffer buf = ByteBuffer.allocateDirect(SIZEOF_INT * size).order(ByteOrder.nativeOrder()).asIntBuffer();
+	    buf.clear();
+	    return buf;
+	}
+	
+	/**
+	 * Create a new ShortBuffer of the specified size.
+	 * 
+	 * @param size required number of ints to store.
+	 * 
+	 * @return the new ShortBuffer
+	 */
+	public static ShortBuffer createShortBuffer(int size) {
+	    ShortBuffer buf = ByteBuffer.allocateDirect(SIZEOF_SHORT * size).order(ByteOrder.nativeOrder()).asShortBuffer();
 	    buf.clear();
 	    return buf;
 	}
@@ -538,6 +616,70 @@ public class ToolsBuffers {
         buf.position(toPos);
         buf.put(data);
     }
+    
+    
+    // NOTE that this work must be done reflectively at the present time
+    // because this code must compile and run correctly on both CDC/FP and J2SE
+    private static boolean isCDCFP;
+    private static Class byteOrderClass;
+    private static Object nativeOrderObject;
+    private static Method orderMethod;
 
-	
+    public static ByteBuffer nativeOrder(ByteBuffer buf) {
+    	if (!isCDCFP) {
+    		try {
+    			if (byteOrderClass == null) {
+    				byteOrderClass = Class.forName("java.nio.ByteOrder");
+    				orderMethod = ByteBuffer.class.getMethod("order", new Class[] { byteOrderClass });
+    				Method nativeOrderMethod = byteOrderClass.getMethod("nativeOrder", null);
+    				nativeOrderObject = nativeOrderMethod.invoke(null, null);
+    			}
+    		} catch (Throwable t) {
+    			// Must be running on CDC / FP
+    			isCDCFP = true;
+    		}
+
+    		if (!isCDCFP) {
+    			try {
+    				orderMethod.invoke(buf, new Object[] { nativeOrderObject });
+    			} catch (Throwable t) {
+    			}
+    		}
+    	}
+    	return buf;
+    }
+
+    /** Allocates a new direct ByteBuffer with the specified number of
+        elements. The returned buffer will have its byte order set to
+    the host platform's native byte order. */
+    public static ByteBuffer newByteBuffer(int numElements) {
+    	ByteBuffer bb = ByteBuffer.allocateDirect(numElements);
+    	nativeOrder(bb);
+    	return bb;
+    }
+
+    /** Allocates a new direct IntBuffer with the specified number of
+          elements. The returned buffer will have its byte order set to
+          the host platform's native byte order. */
+    public static IntBuffer newIntBuffer(int numElements) {
+    	ByteBuffer bb = newByteBuffer(numElements * SIZEOF_INT);
+    	return bb.asIntBuffer();
+    }
+
+    public static IntBuffer newIntBuffer(int[] values, int offset, int len) {
+    	IntBuffer bb = newIntBuffer(len);
+    	bb.put(values, offset, len);
+    	bb.rewind();
+    	return bb;
+    }
+
+    public static IntBuffer newIntBuffer(int[] values, int offset) {
+    	return newIntBuffer(values, 0, values.length-offset);
+    }
+
+    public static IntBuffer newIntBuffer(int[] values) {
+    	return newIntBuffer(values, 0);
+    }
+
+
 }

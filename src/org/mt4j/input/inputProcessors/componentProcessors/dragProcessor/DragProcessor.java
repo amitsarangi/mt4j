@@ -205,7 +205,7 @@ public class DragProcessor extends AbstractCursorProcessor {
 					this.m = c;
 					gestureAborted = false;
 					
-					this.dragObject = c.getCurrentEvent().getCurrentTarget();
+//					this.dragObject = c.getCurrentEvent().getCurrentTarget();
 					
 					//Calculate the normal of the plane we will be dragging at (useful if camera isnt default)
 					this.dragPlaneNormal =  dragObject.getViewingCamera().getPosition().getSubtracted(dragObject.getViewingCamera().getViewCenterPos()).normalizeLocal();

@@ -26,9 +26,12 @@ import org.mt4j.input.gestureAction.DefaultRotateAction;
 import org.mt4j.input.inputProcessors.componentProcessors.dragProcessor.DragProcessor;
 import org.mt4j.input.inputProcessors.componentProcessors.rotateProcessor.RotateProcessor;
 import org.mt4j.util.TriangleNormalGenerator;
+import org.mt4j.util.math.Tools3D;
 import org.mt4j.util.math.Vertex;
+import org.mt4j.util.opengl.GLTexture;
 
 import processing.core.PApplet;
+import processing.core.PImage;
 
 /**
  * The Class MTCube.
@@ -71,7 +74,7 @@ public class MTCube extends MTTriangleMesh {
 //				,new Vector3D[]{
 //						
 //				}
-		        ,new int[]{
+		        ,new short[]{
 						  //front
 						   0 ,1 ,2 
 						  ,0 ,2 ,3 
@@ -115,6 +118,26 @@ public class MTCube extends MTTriangleMesh {
 	@Override
 	protected IBoundingShape computeDefaultBounds() {
 		return new OrientedBoundingBox(this);
+	}
+	
+	//FIXME TEST -> adapt tex coords for non fitting, NPOT gl texture
+	private void adaptTexCoordsForNPOTUse(){
+		PImage tex = this.getTexture();
+		if (tex instanceof GLTexture){
+			Tools3D.adaptTextureCoordsNPOT(this, (GLTexture)tex);
+		}
+	}
+	
+	@Override
+	public void setUseDirectGL(boolean drawPureGL) {
+		super.setUseDirectGL(drawPureGL);
+		adaptTexCoordsForNPOTUse();
+	}
+	
+	@Override
+	public void setTexture(PImage newTexImage) {
+		super.setTexture(newTexImage);
+		adaptTexCoordsForNPOTUse();
 	}
 	
 	

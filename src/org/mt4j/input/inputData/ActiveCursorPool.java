@@ -19,7 +19,6 @@ package org.mt4j.input.inputData;
 
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.Map;
 
 
 
@@ -37,14 +36,13 @@ public class ActiveCursorPool {
 	private static ActiveCursorPool cursorPool;
 	
 	/** The cursors map. */
-	private Map<Long, InputCursor> cursorMap;
+	private HashMap<Long, InputCursor> cursorMap;
 	
 	/**
 	 * Instantiates a new cursor pool.
 	 */
 	private ActiveCursorPool(){
 		cursorMap = new HashMap<Long, InputCursor>();
-//		cursorMap = new WeakHashMap<Long, InputCursor>();
 	}
 	
 	/**

@@ -1,6 +1,6 @@
 package org.mt4j.components.visibleComponents.shapes;
 
-import org.mt4j.MTApplication;
+import org.mt4j.AbstractMTApplication;
 import org.mt4j.components.MTComponent;
 import org.mt4j.components.css.style.CSSStyle;
 import org.mt4j.components.css.util.CSSHelper;
@@ -15,7 +15,7 @@ import processing.core.PApplet;
 public abstract class MTCSSStylableShape extends AbstractShape implements CSSStylableComponent {
 	
 	/** The mt app. */
-	private MTApplication mtApp;
+	private AbstractMTApplication mtApp;
 	
 	/** The css styled. */
 	private boolean cssStyled = false;
@@ -47,8 +47,8 @@ public abstract class MTCSSStylableShape extends AbstractShape implements CSSSty
 	public MTCSSStylableShape(PApplet pApplet, GeometryInfo geometryInfo) {
 		super(pApplet, geometryInfo);
 		
-		if (pApplet instanceof MTApplication) {
-			this.mtApp = (MTApplication)pApplet;
+		if (pApplet instanceof AbstractMTApplication) {
+			this.mtApp = (AbstractMTApplication)pApplet;
 			this.cssHelper = new CSSHelper(this, mtApp);
 			if (this.mtApp.getCssStyleManager().isGloballyEnabled()) {
 				this.enableCSS();

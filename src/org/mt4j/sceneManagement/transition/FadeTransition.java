@@ -17,9 +17,10 @@
  ***********************************************************************/
 package org.mt4j.sceneManagement.transition;
 
-import org.mt4j.MTApplication;
+import org.mt4j.AbstractMTApplication;
 import org.mt4j.components.visibleComponents.shapes.MTRectangle;
 import org.mt4j.sceneManagement.Iscene;
+import org.mt4j.util.MT4jSettings;
 import org.mt4j.util.MTColor;
 import org.mt4j.util.animation.Animation;
 import org.mt4j.util.animation.AnimationEvent;
@@ -36,7 +37,7 @@ import processing.core.PGraphics;
 public class FadeTransition extends AbstractTransition {
 	
 	/** The app. */
-	private MTApplication app;
+	private AbstractMTApplication app;
 	
 	/** The finished. */
 	private boolean finished;
@@ -68,7 +69,7 @@ public class FadeTransition extends AbstractTransition {
 	 * 
 	 * @param mtApplication the mt application
 	 */
-	public FadeTransition(MTApplication mtApplication) {
+	public FadeTransition(AbstractMTApplication mtApplication) {
 		this(mtApplication, 2000);
 	}
 	
@@ -79,7 +80,7 @@ public class FadeTransition extends AbstractTransition {
 	 * @param mtApplication the mt application
 	 * @param duration the duration
 	 */
-	public FadeTransition(MTApplication mtApplication, long duration) {
+	public FadeTransition(AbstractMTApplication mtApplication, long duration) {
 		super(mtApplication, "Fade Transition");
 		this.app = mtApplication;
 		this.duration = duration;
@@ -126,7 +127,8 @@ public class FadeTransition extends AbstractTransition {
         	}});
        anim.setResetOnFinish(true);
        
-       fullScreenQuad = new MTRectangle(app,0, 0, app.width, app.height);
+//       fullScreenQuad = new MTRectangle(app,0, 0, app.width, app.height);
+       fullScreenQuad = new MTRectangle(app,0, 0, MT4jSettings.getInstance().getWindowWidth(), MT4jSettings.getInstance().getWindowHeight());
        fullScreenQuad.setFillColor(new MTColor(0,0,0,0));
        fullScreenQuad.setNoStroke(true);
 	}

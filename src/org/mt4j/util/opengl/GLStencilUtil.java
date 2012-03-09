@@ -19,10 +19,7 @@ package org.mt4j.util.opengl;
 
 import java.util.Stack;
 
-import javax.media.opengl.GL;
-
 import org.mt4j.components.visibleComponents.AbstractVisibleComponent;
-import org.mt4j.util.math.Tools3D;
 
 import processing.core.PGraphics;
 
@@ -82,17 +79,22 @@ public class GLStencilUtil {
 	 * 
 	 * @param gl the gl
 	 */
-	public void beginDrawClipShape(GL gl){ //begin draw clip shape
-//		gl.glPushAttrib(GL.GL_STENCIL_BUFFER_BIT | GL.GL_STENCIL_TEST); //FIXME do only at initialization??
-		gl.glPushAttrib(GL.GL_STENCIL_BUFFER_BIT); //FIXME do only at initialization??
+	public void beginDrawClipShape(GL10 gl){ //begin draw clip shape
+//		gl.glPushAttrib(GL10.GL_STENCIL_BUFFER_BIT | GL10.GL_STENCIL_TEST); //FIXME do only at initialization??
+//		gl.glPushAttrib(GL10.GL_STENCIL_BUFFER_BIT); //FIXME do only at initialization??
+
+//		if (gl instanceof GL11Plus) {
+//			GL11Plus gl11Plus = (GL11Plus) gl;
+//			gl11Plus.glPushAttrib(GL10.GL_STENCIL_BUFFER_BIT);
+//		}
 		
 		if (!initialized){
-//			gl.glPushAttrib(GL.GL_STENCIL_BUFFER_BIT | GL.GL_STENCIL_TEST);
+//			gl.glPushAttrib(GL10.GL_STENCIL_BUFFER_BIT | GL10.GL_STENCIL_TEST);
 			
 			//Enable stencilbuffer
 			gl.glClearStencil(stencilValueStack.peek());
-			gl.glClear(GL.GL_STENCIL_BUFFER_BIT);
-			gl.glEnable(GL.GL_STENCIL_TEST);
+			gl.glClear(GL10.GL_STENCIL_BUFFER_BIT);
+			gl.glEnable(GL10.GL_STENCIL_TEST);
 //			gl.glStencilMask (0x0000000D);
 		}
 
@@ -100,25 +102,25 @@ public class GLStencilUtil {
 
 		//Dont draw into the color or depth buffer while drawing the clip shape
 		gl.glColorMask(false,false,false,false);
-		gl.glDisable(GL.GL_BLEND);
+		gl.glDisable(GL10.GL_BLEND);
 		gl.glDepthMask(false);//remove..?
 
 		if (!initialized){
 			initialized = true;
 			//If were at the top level = nothing written into stencil buffer yet
 			//draw mask value into buffer regardless if stencilfunc suceeds 
-			gl.glStencilFunc (GL.GL_ALWAYS, currentStencilValue, currentStencilValue);
+			gl.glStencilFunc (GL10.GL_ALWAYS, currentStencilValue, currentStencilValue);
 		}else{
 			//= draw mask value into stencil only where the current/last stencil value is equal to the current stencil value?
 			//we may not write into the stencil somehwhere else -> the parent may have also clipped something
 			//-> write only where the parent clip wrote its stencil clip mask and dont go beyond that
-			gl.glStencilFunc (GL.GL_EQUAL, currentStencilValue, currentStencilValue); 
+			gl.glStencilFunc (GL10.GL_EQUAL, currentStencilValue, currentStencilValue); 
 		}
 		 
 		//We write the current stencil value +1 ! into the stencil buffer where the 
 		//stencil func succeeds
 		//This marks the area where we are allowed to draw the clipped shape later
-		gl.glStencilOp(GL.GL_KEEP, GL.GL_KEEP, GL.GL_INCR); //FIXME also write stencil value if depth test fails?
+		gl.glStencilOp(GL10.GL_KEEP, GL10.GL_KEEP, GL10.GL_INCR); //FIXME also write stencil value if depth test fails?
 	    
 	    //- we increment the value on the stencil stack 
 	    //so it correlates with the incremented value in the stencil buffer
@@ -133,7 +135,7 @@ public class GLStencilUtil {
 	 * 
 	 * @param gl the gl
 	 */
-	public void beginDrawClipped(GL gl){ //draw clipped
+	public void beginDrawClipped(GL10 gl){ //draw clipped
 		int incrementedStencilValue = stencilValueStack.peek();
 		//TODO instead of setting depth, blend etc, use glPush/Popattrib !?
 		
@@ -141,11 +143,11 @@ public class GLStencilUtil {
 		//the same as the current stencil stack value 
 		//(the value which was written into the buffer at "beginDrawClippingShape()"
 		gl.glDepthMask(true);
-		gl.glEnable (GL.GL_BLEND); 
-//		gl.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA);  //FIXME NEEDED?
+		gl.glEnable (GL10.GL_BLEND); 
+//		gl.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);  //FIXME NEEDED?
 		gl.glColorMask(true, true, true, true);
-		gl.glStencilFunc(GL.GL_EQUAL, incrementedStencilValue, incrementedStencilValue);
-		gl.glStencilOp(GL.GL_KEEP, GL.GL_KEEP, GL.GL_KEEP);
+		gl.glStencilFunc(GL10.GL_EQUAL, incrementedStencilValue, incrementedStencilValue);
+		gl.glStencilOp(GL10.GL_KEEP, GL10.GL_KEEP, GL10.GL_KEEP);
 	}
 
 	
@@ -154,7 +156,7 @@ public class GLStencilUtil {
 	 * 
 	 * @param gl the gl
 	 */
-	public void endClipping(PGraphics g, GL gl){
+	public void endClipping(PGraphics g, GL10 gl){
 		this.endClipping(g, gl, null);
 	}
 	
@@ -169,7 +171,7 @@ public class GLStencilUtil {
 	 * @param gl the gl
 	 * @param clipShape the clip shape
 	 */
-	public void endClipping(PGraphics g, GL gl, AbstractVisibleComponent clipShape){ //stop clipping
+	public void endClipping(PGraphics g, GL10 gl, AbstractVisibleComponent clipShape){ //stop clipping
 		//Remove the top/last used stencil mask value from the stack
 		int currentStencilValue = stencilValueStack.pop();
 		
@@ -192,8 +194,8 @@ public class GLStencilUtil {
 				//ORIGINAL
 				//Decrease stencil value again where we increased it at drawing the clipping shape 
 				//(so the stencil values are same as before drawing the clip shape)
-				gl.glStencilFunc (GL.GL_EQUAL, currentStencilValue, currentStencilValue); 
-				gl.glStencilOp(GL.GL_KEEP, GL.GL_KEEP, GL.GL_DECR);
+				gl.glStencilFunc (GL10.GL_EQUAL, currentStencilValue, currentStencilValue); 
+				gl.glStencilOp(GL10.GL_KEEP, GL10.GL_KEEP, GL10.GL_DECR);
 				//FIXME this can be bad for performance if the clipshape is complex
 				clipShape.drawComponent(clipShape.getRenderer().g); 
 //				*/
@@ -202,29 +204,29 @@ public class GLStencilUtil {
 			}else{
 				
 				//TODO use full screen quad technique if clipshape vertices > 10 ?
-//				/*
+				/*
 				//Draw fullscreen quad to restore stencil
 				//->peek last value and draw fullscreen quad writing last peek value everywhere 
 				//where lastPeekValue lesser to stencil value? 
 				
 				//Option 1, replace stencil value with previous value if stencil is higher than previous value
 				int last = stencilValueStack.peek();
-				gl.glStencilFunc (GL.GL_LESS, last, 0xFF); 
-				gl.glStencilOp(GL.GL_KEEP, GL.GL_KEEP, GL.GL_REPLACE);
+				gl.glStencilFunc (GL10.GL_LESS, last, 0xFF); 
+				gl.glStencilOp(GL10.GL_KEEP, GL10.GL_KEEP, GL10.GL_REPLACE);
 				//Option 2, decrement at the last pushed value
-//				gl.glStencilFunc (GL.GL_EQUAL, currentStencilValue, currentStencilValue);
-//				gl.glStencilOp(GL.GL_KEEP, GL.GL_KEEP, GL.GL_DECR);
+//				gl.glStencilFunc (GL10.GL_EQUAL, currentStencilValue, currentStencilValue);
+//				gl.glStencilOp(GL10.GL_KEEP, GL10.GL_KEEP, GL10.GL_DECR);
 				
 				Tools3D.beginGL(g);
-				gl.glMatrixMode(GL.GL_PROJECTION);
+				gl.glMatrixMode(GL10.GL_PROJECTION);
 				gl.glPushMatrix();
 				gl.glLoadIdentity();
 				
-				gl.glMatrixMode(GL.GL_MODELVIEW);
+				gl.glMatrixMode(GL10.GL_MODELVIEW);
 				gl.glPushMatrix();
 				gl.glLoadIdentity();
 				
-				gl.glBegin(GL.GL_QUADS);
+				gl.glBegin(GL10.GL_QUADS);
 				gl.glVertex2f(-1, -1);
 				gl.glVertex2f(1, -1);
 				gl.glVertex2f(1, 1);
@@ -233,18 +235,44 @@ public class GLStencilUtil {
 				
 				gl.glPopMatrix();
 
-				gl.glMatrixMode(GL.GL_PROJECTION);
+				gl.glMatrixMode(GL10.GL_PROJECTION);
 				gl.glPopMatrix();
 
-				gl.glMatrixMode(GL.GL_MODELVIEW);
+				gl.glMatrixMode(GL10.GL_MODELVIEW);
 				Tools3D.endGL(g);
-//				*/
+				*/
 				
 			}
 		}
 		
-		//Restore stencil attributes, disables stencil test and restores stencil buffer bit
-		gl.glPopAttrib(); //FIXME do this only when stack is emtpied?
+//		//Restore stencil attributes, disables stencil test and restores stencil buffer bit
+////		gl.glPopAttrib(); //FIXME do this only when stack is emtpied?
+//		if (gl instanceof GL11Plus) {
+//			GL11Plus gl11Plus = (GL11Plus) gl;
+//			gl11Plus.glPopAttrib();
+//		}
+		
+		//Restore /glpushAttrib not available in OpenGL ES
+		gl.glStencilFunc(GL10.GL_EQUAL, stencilValueStack.peek(), stencilValueStack.peek());
+		gl.glStencilOp(GL10.GL_KEEP, GL10.GL_KEEP, GL10.GL_KEEP);
+		if (!initialized){
+			gl.glDisable(GL10.GL_STENCIL_TEST);
+		}
+		
+		/*
+		 GL_STENCIL_BUFFER_BIT
+		    GL_STENCIL_TEST enable bit
+		
+		    Stencil function and reference value
+		
+		    Stencil value mask
+		
+		    Stencil fail, pass, and depth buffer pass actions
+		
+		    Stencil buffer clear value
+		
+		    Stencil buffer writemask 
+		*/
 	}
 	
 

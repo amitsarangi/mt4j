@@ -17,9 +17,8 @@
  ***********************************************************************/
 package org.mt4j.components.visibleComponents;
 
-import javax.media.opengl.GL;
-
 import org.mt4j.util.MTColor;
+import org.mt4j.util.opengl.GL10;
 import org.mt4j.util.opengl.GLMaterial;
 
 
@@ -65,7 +64,7 @@ public class StyleInfo {
 				false,
 				false,
 				1.0f,
-				GL.GL_TRIANGLE_FAN,
+				GL10.GL_TRIANGLE_FAN,
 				(short)0				
 			);
 	}
@@ -391,7 +390,7 @@ public class StyleInfo {
 	
 	/**
 	 * Sets a line stipple pattern for drawing outlines.
-	 * <br>Only supported under opengl!
+	 * <br>Only supported under OpenGL, not avaiable in OpenGL ES!
 	 * <br>Example: shape.setLineStipple((short)0xDDDD);
 	 * <br>Default value is '0'. No stipple should be used then.
 	 * 

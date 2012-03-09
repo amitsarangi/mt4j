@@ -18,14 +18,10 @@
 package org.mt4j.util;
 
 
-import javax.media.opengl.GL;
-
 import org.mt4j.util.math.Matrix;
-import org.mt4j.util.math.Tools3D;
+import org.mt4j.util.opengl.GL10;
 
 import processing.core.PApplet;
-import processing.core.PGraphics3D;
-import processing.opengl.PGraphicsOpenGL;
 
 /**
  * The Class HelperMethods.
@@ -157,7 +153,7 @@ public class HelperMethods {
     public static int RENDERER_STATE = PROCESSING_MATRIX_MODE;
     
     /** The gl. */
-    private static GL gl;
+    private static GL10 gl;
     
     /** The ctm. */
     private static float[] ctm = new float[16];
@@ -170,11 +166,12 @@ public class HelperMethods {
      * 
      * @return the gL
      */
-    public static GL beginGL(PApplet pa){
+    public static GL10 beginGL(PApplet pa){
     	switch (RENDERER_STATE) {
 		case PROCESSING_MATRIX_MODE:
 			RENDERER_STATE = OPENGL_MATRIX_MODE;
-			gl = Tools3D.beginGL(pa);
+//			gl = Tools3D.beginGL(pa);
+			gl = PlatformUtil.beginGL();
 			return gl;
 		case OPENGL_MATRIX_MODE:
 //			return ((PGraphicsOpenGL)pa.g).gl;
@@ -182,7 +179,8 @@ public class HelperMethods {
 		default:
 			break;
 		}
-    	return Tools3D.beginGL(pa);
+//    	return Tools3D.beginGL(pa);
+    	return PlatformUtil.beginGL();
     }
     
     /*
@@ -232,7 +230,8 @@ public class HelperMethods {
 	    	break;
 		case OPENGL_MATRIX_MODE:
 			RENDERER_STATE = PROCESSING_MATRIX_MODE;
-			Tools3D.endGL(pa);
+//			Tools3D.endGL(pa);
+			PlatformUtil.endGL();
 			break;
 		default:
 			break;
@@ -247,7 +246,7 @@ public class HelperMethods {
      * 
      * @return the gL
      */
-    public static GL getGL(){
+    public static GL10 getGL(){
     	return gl;
     }
     
@@ -259,10 +258,10 @@ public class HelperMethods {
      * @param pgraphics3D the pgraphics3 d
      * @param m the m
      */
-    public static void applyMatrix(PApplet renderer, PGraphics3D pgraphics3D, Matrix m) {
+    public static void applyMatrix(PApplet renderer, Matrix m) {
 		switch (RENDERER_STATE) {
 		case PROCESSING_MATRIX_MODE:
-			pgraphics3D.modelview.apply(
+			PlatformUtil.getModelView().apply(
 					m.m00, m.m01, m.m02,  m.m03,
 					m.m10, m.m11, m.m12,  m.m13,
 					m.m20, m.m21, m.m22,  m.m23,
@@ -270,7 +269,7 @@ public class HelperMethods {
 			);
 	    	break;
 		case OPENGL_MATRIX_MODE:
-			GL gl = getGL();
+			GL10 gl = getGL();
 			ctm[0] = m.m00;
 		    ctm[1] = m.m10;
 		    ctm[2] = m.m20;

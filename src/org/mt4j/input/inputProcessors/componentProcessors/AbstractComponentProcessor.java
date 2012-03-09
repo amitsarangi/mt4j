@@ -18,7 +18,6 @@
 package org.mt4j.input.inputProcessors.componentProcessors;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import org.mt4j.input.IMTInputEventListener;
 import org.mt4j.input.inputData.MTInputEvent;
@@ -45,22 +44,14 @@ public abstract class AbstractComponentProcessor implements IMTInputEventListene
 	private boolean disabled;
 
 	/** The input listeners. */
-	private List<IGestureEventListener> inputListeners;
+	private ArrayList<IGestureEventListener> inputListeners;
 
 	/** The debug. */
 	private boolean debug;
 	
 	private boolean stopPropagation;
 	
-	//FIXME test
-	private boolean bubbledEventsEnabled;
-	public boolean isBubbledEventsEnabled() {
-		return bubbledEventsEnabled;
-	}
-	public void setBubbledEventsEnabled(boolean enableForBubbledEvents) {
-		this.bubbledEventsEnabled = enableForBubbledEvents;
-	}
-	////
+
 	
 
 	/**
@@ -79,11 +70,7 @@ public abstract class AbstractComponentProcessor implements IMTInputEventListene
 		this.inputListeners = new ArrayList<IGestureEventListener>();
 		this.disabled = false;
 		this.debug = false;
-
 		this.stopPropagation = stopPropagation;
-		
-		
-		//TODO also change default behaviour in all processors, to NOT stop propagation!
 		this.bubbledEventsEnabled = false;
 	}
 
@@ -91,13 +78,12 @@ public abstract class AbstractComponentProcessor implements IMTInputEventListene
 	/* (non-Javadoc)
 	 * @see org.mt4j.input.IMTInputEventListener#processInputEvent(org.mt4j.input.inputData.MTInputEvent)
 	 */
-	//@Override
 	public boolean processInputEvent(MTInputEvent inEvt){
 //	public void processInputEvent(MTInputEvent inEvt){
-		if(!this.isDisabled() && inEvt.hasTarget()){ //Allow component processors to recieve inputevts only if they have a target (Canvas is target if null is picked..)
+		if(!disabled && inEvt.hasTarget()){ //Allow component processors to recieve inputevts only if they have a target (Canvas is target if null is picked..)
 			
 			//FIXME TEST
-			if (this.isBubbledEventsEnabled()  ||  (inEvt.getEventPhase() == MTInputEvent.AT_TARGET)){
+			if (this.bubbledEventsEnabled  ||  (inEvt.getEventPhase() == MTInputEvent.AT_TARGET)){
 				this.processInputEvtImpl(inEvt);
 			}
 			
@@ -119,12 +105,24 @@ public abstract class AbstractComponentProcessor implements IMTInputEventListene
 	 */
 	public void preProcess(MTInputEvent inEvt) {
 		//FIXME TEST
-		if(!this.isDisabled() && inEvt.hasTarget()){
-			if (this.isBubbledEventsEnabled()  ||  (inEvt.getEventPhase() == MTInputEvent.AT_TARGET) ){
+		if(!disabled && inEvt.hasTarget()){
+			if (bubbledEventsEnabled  ||  (inEvt.getEventPhase() == MTInputEvent.AT_TARGET) ){
 				preProcessImpl(inEvt);
 			}
 		}
 	}
+	
+	
+		//FIXME test
+	private boolean bubbledEventsEnabled;
+	public boolean isBubbledEventsEnabled() {
+		return bubbledEventsEnabled;
+	}
+	public void setBubbledEventsEnabled(boolean enableForBubbledEvents) {
+		this.bubbledEventsEnabled = enableForBubbledEvents;
+	}
+	////
+	
 	
 	/**
 	 * Process input evt implementation.

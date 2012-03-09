@@ -17,16 +17,14 @@
  ***********************************************************************/
 package org.mt4j.util.camera;
 
-import javax.media.opengl.GL;
-
+import org.mt4j.util.PlatformUtil;
 import org.mt4j.util.MT4jSettings;
-import org.mt4j.util.math.ToolsMath;
 import org.mt4j.util.math.Plane;
+import org.mt4j.util.math.ToolsMath;
 import org.mt4j.util.math.Vector3D;
+import org.mt4j.util.opengl.GL10;
 
 import processing.core.PApplet;
-import processing.core.PGraphics3D;
-import processing.opengl.PGraphicsOpenGL;
 
 /**
  * The Class Frustum. Represents a camera frustum.
@@ -41,7 +39,7 @@ public class Frustum implements IFrustum{
 	private float nearD;
 	private float farD;
 	
-	private GL gl;
+	private GL10 gl;
 	
 	private Vector3D _tmpVec3 = new Vector3D();
 	private Vector3D _tmpVec2 = new Vector3D();
@@ -92,7 +90,8 @@ public class Frustum implements IFrustum{
 	 */
 	public Frustum(PApplet pa){
 		if (MT4jSettings.getInstance().isOpenGlMode()){
-			this.gl = ((PGraphicsOpenGL)pa.g).gl;
+//			this.gl = ((PGraphicsOpenGL)pa.g).gl;
+			this.gl = PlatformUtil.getGL();
 		}
 		
 		
@@ -110,10 +109,19 @@ public class Frustum implements IFrustum{
 				,new Plane(Vector3D.ZERO_VECTOR,Vector3D.ZERO_VECTOR)
 		};
 		
-		PGraphics3D p3d = ((PGraphics3D)pa.g);
+//		PGraphics3D p3d = ((PGraphics3D)pa.g);
+//		float cameraFov = p3d.cameraFOV;
+//		float cameraAspect = p3d.cameraAspect;
+//		float cameraNear = p3d.cameraNear;
+//		float cameraFar = p3d.cameraFar;
+
+		float cameraFov = PlatformUtil.getCameraFOV();
+		float cameraAspect = PlatformUtil.getCameraAspect();
+		float cameraNear = PlatformUtil.getCameraNear();
+		float cameraFar = PlatformUtil.getCameraFar();
 		
 		//This has to be called if the perspective is changed!!
-        this.setCamInternals(p3d.cameraFOV*0.5f, p3d.cameraAspect, p3d.cameraNear,  p3d.cameraFar);
+        this.setCamInternals(cameraFov*0.5f, cameraAspect, cameraNear,  cameraFar);
 	}
 	
 	
@@ -423,6 +431,7 @@ public void setCamDef(Vector3D camPos, Vector3D viewCenterPos, float xUp, float 
 	}
 
 
+	/*
 	public void drawPoints() {
 		gl.glBegin(GL.GL_POINTS);
 			gl.glVertex3f(ntl.x,ntl.y,ntl.z);
@@ -580,6 +589,7 @@ public void setCamDef(Vector3D camPos, Vector3D viewCenterPos, float xUp, float 
 
 		gl.glEnd();
 	}
+	*/
 
 	/**
 	 * Returns the height of the plane at a specific z value

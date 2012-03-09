@@ -20,29 +20,25 @@ package org.mt4j.components.visibleComponents.widgets;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.media.opengl.GL;
-import javax.media.opengl.glu.GLU;
-
-import org.mt4j.MTApplication;
+import org.mt4j.AbstractMTApplication;
 import org.mt4j.components.TransformSpace;
 import org.mt4j.components.clipping.Clip;
 import org.mt4j.components.css.style.CSSFont;
 import org.mt4j.components.css.style.CSSStyle;
-import org.mt4j.components.visibleComponents.font.BitmapFont;
-import org.mt4j.components.visibleComponents.font.BitmapFontCharacter;
-import org.mt4j.components.visibleComponents.font.FontManager;
-import org.mt4j.components.visibleComponents.font.IFont;
-import org.mt4j.components.visibleComponents.font.IFontCharacter;
 import org.mt4j.components.visibleComponents.shapes.MTRectangle;
 import org.mt4j.components.visibleComponents.widgets.keyboard.ITextInputListener;
-import org.mt4j.components.visibleComponents.widgets.keyboard.MTKeyboard;
-import org.mt4j.input.inputProcessors.componentProcessors.lassoProcessor.IdragClusterable;
+import org.mt4j.util.PlatformUtil;
 import org.mt4j.util.MT4jSettings;
 import org.mt4j.util.MTColor;
+import org.mt4j.util.font.FontManager;
+import org.mt4j.util.font.IFont;
+import org.mt4j.util.font.IFontCharacter;
+import org.mt4j.util.font.ITextureFont;
+import org.mt4j.util.font.ITextureFontCharacter;
 import org.mt4j.util.math.Matrix;
-import org.mt4j.util.math.Tools3D;
 import org.mt4j.util.math.Vector3D;
 import org.mt4j.util.math.Vertex;
+import org.mt4j.util.opengl.GL10;
 
 import processing.core.PApplet;
 import processing.core.PGraphics;
@@ -57,7 +53,7 @@ import processing.core.PGraphics;
  * 
  * @author Christopher Ruff
  */
-public class MTTextArea extends MTRectangle implements IdragClusterable, ITextInputListener, Comparable<Object>{
+public class MTTextArea extends MTRectangle implements ITextInputListener, Comparable<Object>{
 
 //Standard expand direction is {@link ExpandDirection#UP} for
 // backward compatibility.
@@ -115,6 +111,9 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
 	private static ArtificalLineBreak artificialLineBreak;
 
     private ExpandDirection expandDirection ;
+    
+    
+    private boolean enableKerning; 
 	
 	//TODO different font sizes in one textarea?
 	//TODO (create mode : expand vertically but do word wrap horizontally?
@@ -140,7 +139,7 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
      * @param pApplet the applet
      * @param font the font
      */
-	public MTTextArea(MTApplication pApplet, CSSFont font) {
+	public MTTextArea(AbstractMTApplication pApplet, CSSFont font) {
 		this(pApplet, FontManager.getInstance().getDefaultFont(pApplet));
 		this.getCssHelper().getPrivateStyleSheets().add(new CSSStyle(font,pApplet));
 	}
@@ -264,7 +263,7 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
 		this.setAnchor(prevAnchor);
 	}
 	
-	public MTTextArea(MTApplication app) {
+	public MTTextArea(AbstractMTApplication app) {
 		this(app, app.getCssStyleManager().getDefaultFont(app));
 	}
 	
@@ -290,8 +289,8 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
 		
 		characterList = new ArrayList<IFontCharacter>();
 		
-		if (MT4jSettings.getInstance().isOpenGlMode())
-			this.setUseDirectGL(true);
+//		if (MT4jSettings.getInstance().isOpenGlMode())
+//			this.setUseDirectGL(true);
 		
 		fontHeight = font.getFontAbsoluteHeight();
 		
@@ -303,13 +302,15 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
 		enableCaret = false;
 		showCaretTime = 600;
 		
+		enableKerning = true;
+		
 		this.setStrokeWeight(1.5f);
 		this.setStrokeColor(new MTColor(255, 255, 255, 255));
 		this.setDrawSmooth(true);
 		
-		//Draw this component and its children above 
-		//everything previously drawn and avoid z-fighting
-		this.setDepthBufferDisabled(true);
+//		//Draw this component and its children above 
+//		//everything previously drawn and avoid z-fighting
+//		this.setDepthBufferDisabled(true);
 		
 		this.totalScrollTextX = 0.0f;
 		this.totalScrollTextY = 0.0f;
@@ -318,7 +319,7 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
 			artificialLineBreak = new ArtificalLineBreak();
 		}
 		
-		this.isBitmapFont = (font instanceof BitmapFont);
+		this.isTextureFont = (font instanceof ITextureFont);
 	}
 	
 	
@@ -328,10 +329,10 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
 	 */
 	public void setFont(IFont font){
 		if (this.characterList != null) {
-		this.font = font;
-		this.fontHeight = font.getFontAbsoluteHeight();
-		this.isBitmapFont = (font instanceof BitmapFont);
-		this.updateLayout();
+			this.font = font;
+			this.fontHeight = font.getFontAbsoluteHeight();
+			this.isTextureFont = (font instanceof ITextureFont);
+			this.updateLayout();
 		}
 	}
 
@@ -363,14 +364,14 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
 		}
 	}
 	
-	//FIXME TEST Align/round text with screen pixels
+	//TEST: Align/round text with screen pixels to avoid visual artifacts with texture fonts
 	private boolean textPositionRounding = true;
 	private boolean snapVectorDirty = false;
 	private Vector3D defaultScale = new Vector3D(1,1,1);
 	private Vector3D globalTranslation = new Vector3D();
 	private Vector3D rounded = new Vector3D();
 	private float tolerance = 0.05f;
-	private boolean isBitmapFont = false;
+	private boolean isTextureFont = false;
 	private Vector3D diff = new Vector3D(0,0,0);
 	
 	public void setTextPositionRounding(boolean snap){
@@ -389,64 +390,6 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
 	}
 	
 	
-	private boolean useDisplayList = false;
-	private boolean contentDisplayListDirty = true;
-	private void setContentDisplayListDirty(boolean dirty){
-		this.contentDisplayListDirty = dirty;
-		this.useDisplayList = (!this.contentDisplayListDirty);
-	}
-	private int displayListID = 0;
-	
-	public int useContentDisplayList(){
-		if (enableCaret)
-			return -1;
-		
-		GL gl = GLU.getCurrentGL();
-		//Delete old one
-		if (this.displayListID != 0){
-			gl.glDeleteLists(this.displayListID, 1);
-		}
-		
-		//Create new list
-		int listIDFill = gl.glGenLists(1);
-		if (listIDFill == 0){
-			System.err.println("Failed to create fill display list");
-		}
-		
-		int thisLineTotalXAdvancement = 0;
-		int lastXAdvancement = innerPaddingLeft;
-		//To set caret at most left start pos when charlist empty (looks better)
-		if (enableCaret && showCaret && characterList.size() == 1){
-			lastXAdvancement = 0;
-		}
-		
-		//Record list
-		gl.glNewList(listIDFill, GL.GL_COMPILE);
-			drawCharactersGL(gl, characterList, characterList.size(), lastXAdvancement, thisLineTotalXAdvancement);
-		gl.glEndList();
-		
-		if (listIDFill != 0){
-			useDisplayList = true;
-			displayListID = listIDFill;
-		}
-
-		this.setContentDisplayListDirty(false);
-		return (listIDFill == 0)?  -1 : listIDFill;
-	}
-	
-	
-	@Override
-		protected void destroyComponent() {
-			super.destroyComponent();
-			
-			if (MT4jSettings.getInstance().isOpenGlMode() && this.displayListID != 0){
-				GL gl = GLU.getCurrentGL();
-				//Delete old one
-				if (gl != null){
-					gl.glDeleteLists(this.displayListID, 1);
-				}
-			}
-		}
 	
 	@Override
 	public void drawComponent(PGraphics g) {
@@ -456,7 +399,7 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
 		//if global matrix set dirty and comp not scaled -> calculate new diff vector -> apply
 		//if snap enabled -> apply diff vector
 		boolean applySnap = false;
-		if (isBitmapFont && textPositionRounding){
+		if (isTextureFont && textPositionRounding){
 			if (snapVectorDirty){ //Calc new snap vector
 				Matrix m = this.getGlobalMatrix();
 				if (m.getScale().equalsVectorWithTolerance(defaultScale, tolerance)){ //Only if no scale applied
@@ -515,7 +458,8 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
 //		*/
 		
 		if (this.isUseDirectGL()){
-			GL gl = Tools3D.beginGL(pa);
+//			GL gl = Tools3D.beginGL(pa);
+			GL10 gl = PlatformUtil.beginGL();
 			if (totalScrollTextX != 0.0f || totalScrollTextY != 0.0f){
 				gl.glTranslatef(totalScrollTextX, totalScrollTextY + font.getFontMaxAscent(), 0);
 			}else{
@@ -534,13 +478,10 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
 			//in bitmap font mode for example:
 			//enable textures, enable vertex arrays and color only once!
 			
-			if(!enableCaret && useDisplayList && this.displayListID != 0){
-				gl.glCallList(this.displayListID);
-			}else{
-				drawCharactersGL(gl, characterList, charListSize, lastXAdvancement, thisLineTotalXAdvancement);
-			}
+			drawCharactersGL(gl, this.font, characterList, charListSize, lastXAdvancement, thisLineTotalXAdvancement);
 			
-			Tools3D.endGL(pa);
+//			Tools3D.endGL(pa);
+			PlatformUtil.endGL();
 		}
 		else{ //P3D rendering
 			g.pushMatrix(); //FIXME TEST text scrolling - but IMHO better done with parent list/scroll container
@@ -607,7 +548,7 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
 		}
 		
 		//FIXME TEST
-		if (isBitmapFont && textPositionRounding && applySnap){
+		if (isTextureFont && textPositionRounding && applySnap){
 			g.popMatrix();
 		}
 	}
@@ -617,13 +558,11 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
 		this.getFont().setFillColor(fontColor);
 	}
 	
-	private void drawCharactersGL(GL gl, List<IFontCharacter> characterList, int charListSize, int lastXAdv, int lineTotalAdv){
+	private void drawCharactersGL(GL10 gl, IFont font, List<IFontCharacter> characterList, int charListSize, int lastXAdv, int lineTotalAdv){
 		int lastXAdvancement = lastXAdv;
 		int thisLineTotalXAdvancement = lineTotalAdv;
 		
-		//Set the color for all characters (since the characters dont set their own fill/stroke color anymore
-		MTColor fillColor = this.getFont().getFillColor();
-		gl.glColor4f(fillColor.getR()/255f, fillColor.getG()/255f, fillColor.getB()/255f, fillColor.getAlpha()/255f); 
+		font.beginBatchRenderGL(gl, font); 
 		
 		for (int i = 0; i < charListSize; i++) {
 			IFontCharacter character = characterList.get(i);
@@ -645,16 +584,30 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
 				//If caret is showing and we are at index one before caret calc the advancement to include the caret in the text area
 				if (enableCaret && showCaret && i == charListSize-2){
 					if (character.getUnicode().equals("\t")){
+//						lastXAdvancement = character.getHorizontalDist() - character.getHorizontalDist() / 20;
 						lastXAdvancement = character.getHorizontalDist() - character.getHorizontalDist() / 20;
 					}else{
 						//approximated value, cant get the real one
+//						lastXAdvancement = 2 + character.getHorizontalDist() - (character.getHorizontalDist() / 3);
 						lastXAdvancement = 2 + character.getHorizontalDist() - (character.getHorizontalDist() / 3);
 					}
 				}else{
-					lastXAdvancement = character.getHorizontalDist();
+//					lastXAdvancement = character.getHorizontalDist();
+					if (enableKerning && i+1 < charListSize){
+						lastXAdvancement = character.getHorizontalDist() + character.getKerning(characterList.get(i+1).getUnicode());
+//						if (character.getKerning(characterList.get(i+1).getUnicode()) != 0 ){
+//							System.out.println("Kerning (" + character.getKerning(characterList.get(i+1).getUnicode()) + ") between: " + character.getUnicode() + " and " + characterList.get(i+1).getUnicode());
+//						}
+//						System.out.println(character.getKerning(characterList.get(i+1).getUnicode()));
+					}else{
+						lastXAdvancement = character.getHorizontalDist();
+					}
+					
 				}
 			}
 		}
+		
+		font.endBatchRenderGL(gl, font);
 	}
 	
 	private boolean noStrokeSettingSaved;
@@ -701,12 +654,12 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
 	 * @param scalable the new bitmap font scalable
 	 */
 	public void setBitmapFontTextureFiltered(boolean scalable){
-		if (MT4jSettings.getInstance().isOpenGlMode() && this.getFont() instanceof BitmapFont){
-			BitmapFont font = (BitmapFont)this.getFont();
+		if (MT4jSettings.getInstance().isOpenGlMode() && isTextureFont){
+			IFont font = (IFont)this.getFont();
 			IFontCharacter[] characters = font.getCharacters();
             for (IFontCharacter fontCharacter : characters) {
-                if (fontCharacter instanceof BitmapFontCharacter) {
-                    BitmapFontCharacter bChar = (BitmapFontCharacter) fontCharacter;
+                if (fontCharacter instanceof ITextureFontCharacter) {
+                	ITextureFontCharacter bChar = (ITextureFontCharacter) fontCharacter;
                     bChar.setTextureFiltered(scalable);
                 }
             }
@@ -940,10 +893,7 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
 	 */
 	private void addCharacter(IFontCharacter character){
 		this.characterList.add(character);
-		
 		this.characterAdded(character);
-		
-		this.setContentDisplayListDirty(true);
 	}
 	
 	/**
@@ -1057,8 +1007,6 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
 		this.characterList.remove(this.characterList.size()-1);
 		
 		this.characterRemoved(lastCharacter);
-		
-		this.setContentDisplayListDirty(true);
 	}
 	
 	
@@ -1089,19 +1037,42 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
 		float currentLineWidth = 2 * this.getInnerPaddingLeft() + caretWidth;
 		float maxWidth = currentLineWidth;
 
-        for (IFontCharacter character : this.characterList) {
-            if (character.getUnicode().equals("\n")) {
-                if (currentLineWidth > maxWidth) {
-                    maxWidth = currentLineWidth;
-                }
-                currentLineWidth = 2 * this.getInnerPaddingLeft() + caretWidth;
-            } else {
-                currentLineWidth += character.getHorizontalDist();
-                if (currentLineWidth > maxWidth) {
-                    maxWidth = currentLineWidth;
-                }
-            }
-        }
+		int characterListSize = this.characterList.size();
+		for (int i = 0; i < characterListSize; i++) {
+			IFontCharacter character = characterList.get(i);
+			 if (character.getUnicode().equals("\n")) {
+	                if (currentLineWidth > maxWidth) {
+	                    maxWidth = currentLineWidth;
+	                }
+	                currentLineWidth = 2 * this.getInnerPaddingLeft() + caretWidth;
+	            } else {
+	            	
+	            	if (enableKerning && i-1 > 0){
+	            		int kern = characterList.get(i-1).getKerning(character.getUnicode());
+	            		currentLineWidth += character.getHorizontalDist() + kern;
+	            	}else{
+	            		currentLineWidth += character.getHorizontalDist();	
+	            	}
+	                
+	                if (currentLineWidth > maxWidth) {
+	                    maxWidth = currentLineWidth;
+	                }
+	            }
+		}
+		
+//        for (IFontCharacter character : this.characterList) {
+//            if (character.getUnicode().equals("\n")) {
+//                if (currentLineWidth > maxWidth) {
+//                    maxWidth = currentLineWidth;
+//                }
+//                currentLineWidth = 2 * this.getInnerPaddingLeft() + caretWidth;
+//            } else {
+//                currentLineWidth += character.getHorizontalDist();
+//                if (currentLineWidth > maxWidth) {
+//                    maxWidth = currentLineWidth;
+//                }
+//            }
+//        }
 		return maxWidth;
 	}
 
@@ -1219,27 +1190,17 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
 		return font;
 	}
 
-	/**
-	 * Snap to keyboard.
-	 * 
-	 * @param mtKeyboard the mt keyboard
-	 */
-	public void snapToKeyboard(MTKeyboard mtKeyboard){
-		//OLD WAY
-//		this.translate(new Vector3D(30, -(getFont().getFontAbsoluteHeight() * (getLineCount())) + getFont().getFontMaxDescent() - borderHeight, 0));
-		mtKeyboard.addChild(this);
-		this.setPositionRelativeToParent(new Vector3D(40, -this.getHeightXY(TransformSpace.LOCAL)*0.5f));
-	}
-
-
-	public boolean isSelected() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	public void setSelected(boolean selected) {
-		// TODO Auto-generated method stub
-	}
+//	/**
+//	 * Snap to keyboard.
+//	 * 
+//	 * @param mtKeyboard the mt keyboard
+//	 */
+//	public void snapToKeyboard(MTKeyboard mtKeyboard){
+//		//OLD WAY
+////		this.translate(new Vector3D(30, -(getFont().getFontAbsoluteHeight() * (getLineCount())) + getFont().getFontMaxDescent() - borderHeight, 0));
+//		mtKeyboard.addChild(this);
+//		this.setPositionRelativeToParent(new Vector3D(40, -this.getHeightXY(TransformSpace.LOCAL)*0.5f));
+//	}
 
 
 	/**
@@ -1273,8 +1234,6 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
 		}else{
 			System.err.println("Cant enable caret for this textfield, the font doesent include the letter '|'");
 		}
-		
-		this.setContentDisplayListDirty(true);
 	}
 
 
@@ -1298,13 +1257,17 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
 	 */
 	protected class ArtificalLineBreak implements IFontCharacter{
 		public void drawComponent(PGraphics g) {}
-		public void drawComponent(GL gl) {	}
+		public void drawComponent(GL10 gl) {	}
 		public void destroy() {	}
 		public int getHorizontalDist() {
 			return 0;
 		}
 		public String getUnicode() {
 			return "\n";
+		}
+		@Override
+		public int getKerning(String character) {
+			return 0;
 		}
 		
 	}
@@ -1314,8 +1277,8 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
 	protected void applyStyleSheetCustom(CSSStyle virtualStyleSheet) {
 		super.applyStyleSheetCustom(virtualStyleSheet);
 
-		if (this.getRenderer() instanceof MTApplication) {
-			MTApplication app = (MTApplication) this.getRenderer();
+		if (this.getRenderer() instanceof AbstractMTApplication) {
+			AbstractMTApplication app = (AbstractMTApplication) this.getRenderer();
 			if (!virtualStyleSheet.getFont().equals(
 					app.getCssStyleManager().getDefaultFont(app))
 					&& !this.isIgnoreCSSFont()) {
@@ -1326,6 +1289,28 @@ public class MTTextArea extends MTRectangle implements IdragClusterable, ITextIn
 			}
 		}
 	}
+
+
+	/**
+	 * Checks if is kerning.
+	 *
+	 * @return true, if is kerning
+	 */
+	public boolean isKerning() {
+		return enableKerning;
+	}
+
+
+	/**
+	 * Enables / disables kerning. At the moment this isnt supported by all font types.
+	 *
+	 * @param enableKerning the new kerning
+	 */
+	public void setKerning(boolean enableKerning) {
+		this.enableKerning = enableKerning;
+	}
+	
+	
 
 	
 }

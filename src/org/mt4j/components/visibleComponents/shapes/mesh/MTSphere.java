@@ -34,17 +34,21 @@ package org.mt4j.components.visibleComponents.shapes.mesh;
 
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
+import java.nio.ShortBuffer;
 
 import org.mt4j.components.bounds.BoundingSphere;
 import org.mt4j.components.bounds.IBoundingShape;
 import org.mt4j.components.visibleComponents.shapes.AbstractShape;
 import org.mt4j.components.visibleComponents.shapes.GeometryInfo;
+import org.mt4j.util.math.Tools3D;
 import org.mt4j.util.math.ToolsMath;
 import org.mt4j.util.math.ToolsBuffers;
 import org.mt4j.util.math.Vector3D;
 import org.mt4j.util.math.Vertex;
+import org.mt4j.util.opengl.GLTexture;
 
 import processing.core.PApplet;
+import processing.core.PImage;
 
 /**
  * <code>Sphere</code> represents a 3D object with all points equidistance
@@ -624,7 +628,7 @@ public class MTSphere extends MTTriangleMesh {
 		}
        
         //get indices
-        int[] indices = this.getIndexData();
+        short[] indices = this.getIndexData();
 
 	    GeometryInfo geomInfo = new GeometryInfo(pa, verts, norms, indices);
 	    this.setGeometryInfo(geomInfo);
@@ -648,10 +652,11 @@ public class MTSphere extends MTTriangleMesh {
      * Gets the indices data for rendering the sphere.
      * @return the index data
      */
-    private int[] getIndexData() {
+    private short[] getIndexData() {
     	int triCount = (2 * (zSamples - 2) * radialSamples);
     	
-    	IntBuffer indexBuff = ToolsBuffers.createIntBuffer(3 * triCount);
+//    	IntBuffer indexBuff = ToolsBuffers.createIntBuffer(3 * triCount);
+    	ShortBuffer indexBuff = ToolsBuffers.createShortBuffer(3 * triCount);
     	
         // allocate connectivity
 //        setTriangleQuantity(2 * (zSamples - 2) * radialSamples);
@@ -659,13 +664,13 @@ public class MTSphere extends MTTriangleMesh {
 
         // generate connectivity
         int index = 0;
-        for (int iZ = 0, iZStart = 0; iZ < (zSamples - 3); iZ++) {
-            int i0 = iZStart;
-            int i1 = i0 + 1;
+        for (short iZ = 0, iZStart = 0; iZ < (zSamples - 3); iZ++) {
+            short i0 = iZStart;
+            short i1 = (short) (i0 + 1);
             iZStart += (radialSamples + 1);
-            int i2 = iZStart;
-            int i3 = i2 + 1;
-            for (int i = 0; i < radialSamples; i++, index += 6) {
+            short i2 = iZStart;
+            short i3 = (short) (i2 + 1);
+            for (short i = 0; i < radialSamples; i++, index += 6) {
                 if (true) {
                     indexBuff.put(i0++);
                     indexBuff.put(i1);
@@ -688,33 +693,34 @@ public class MTSphere extends MTTriangleMesh {
         int vertexCount = (zSamples - 2) * (radialSamples + 1) + 2; 
 
         // south pole triangles
-        for (int i = 0; i < radialSamples; i++, index += 3) {
+        for (short i = 0; i < radialSamples; i++, index += 3) {
             if (true) {
                 indexBuff.put(i);
-                indexBuff.put(vertexCount - 2);
-                indexBuff.put(i + 1);
+                indexBuff.put((short) (vertexCount - 2));
+                indexBuff.put((short) (i + 1));
             } else { // inside view
                 indexBuff.put(i);
-                indexBuff.put(i + 1);
-                indexBuff.put(vertexCount - 2);
+                indexBuff.put((short) (i + 1));
+                indexBuff.put((short) (vertexCount - 2));
             }
         }
 
         // north pole triangles
         int iOffset = (zSamples - 3) * (radialSamples + 1);
-        for (int i = 0; i < radialSamples; i++, index += 3) {
+        for (short i = 0; i < radialSamples; i++, index += 3) {
             if (true) {
-                indexBuff.put(i + iOffset);
-                indexBuff.put(i + 1 + iOffset);
-                indexBuff.put(vertexCount - 1);
+                indexBuff.put((short) (i + iOffset));
+                indexBuff.put((short) (i + 1 + iOffset));
+                indexBuff.put((short) (vertexCount - 1));
             } else { // inside view
-                indexBuff.put(i + iOffset);
-                indexBuff.put(vertexCount - 1);
-                indexBuff.put(i + 1 + iOffset);
+                indexBuff.put((short) (i + iOffset));
+                indexBuff.put((short) (vertexCount - 1));
+                indexBuff.put((short) (i + 1 + iOffset));
             }
         }
         
-        return ToolsBuffers.getIntArray(indexBuff);
+//        return ToolsBuffers.getIntArray(indexBuff);
+        return ToolsBuffers.getShortArray(indexBuff);
     }
 
     
@@ -815,27 +821,27 @@ public class MTSphere extends MTTriangleMesh {
 //    }
 
     /**
-     * @param textureMode
-     *            The textureMode to set.
-     * @deprecated Use enum version of setTextureMode
-     */
-    @Deprecated
-    public void setTextureMode(int textureMode) {
-        if (textureMode == TEX_ORIGINAL)
-            this.textureMode = TextureMode.Original;
-        else if (textureMode == TEX_PROJECTED)
-            this.textureMode = TextureMode.Projected;
-        setGeometryData(this.getRenderer());
-    }
+//     * @param textureMode
+//     *            The textureMode to set.
+//     * @deprecated Use enum version of setTextureMode
+//     */
+//    @Deprecated
+//    public void setTextureMode(int textureMode) {
+//        if (textureMode == TEX_ORIGINAL)
+//            this.textureMode = TextureMode.Original;
+//        else if (textureMode == TEX_PROJECTED)
+//            this.textureMode = TextureMode.Projected;
+//        setGeometryData(this.getRenderer());
+//    }
 
-    /**
-     * @param textureMode
-     *            The textureMode to set.
-     */
-    public void setTextureMode(TextureMode textureMode) {
-        this.textureMode = textureMode;
-        setGeometryData(this.getRenderer());
-    }
+//    /**
+//     * @param textureMode
+//     *            The textureMode to set.
+//     */
+//    public void setTextureMode(TextureMode textureMode) {
+//        this.textureMode = textureMode;
+//        setGeometryData(this.getRenderer());
+//    }
 
     /**
      * Changes the information of the sphere into the given values.
@@ -860,6 +866,26 @@ public class MTSphere extends MTTriangleMesh {
 //        getIndexData();
     }
 
+    
+	//FIXME TEST -> adapt tex coords for non fitting, NPOT gl texture
+	private void adaptTexCoordsForNPOTUse(){
+		PImage tex = this.getTexture();
+		if (tex instanceof GLTexture){
+			Tools3D.adaptTextureCoordsNPOT(this, (GLTexture)tex);
+		}
+	}
+	
+	@Override
+	public void setUseDirectGL(boolean drawPureGL) {
+		super.setUseDirectGL(drawPureGL);
+		adaptTexCoordsForNPOTUse();
+	}
+	
+	@Override
+	public void setTexture(PImage newTexImage) {
+		super.setTexture(newTexImage);
+		adaptTexCoordsForNPOTUse();
+	}
 
 }
 

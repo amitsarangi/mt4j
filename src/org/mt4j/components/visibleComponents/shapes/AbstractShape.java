@@ -17,8 +17,7 @@
  ***********************************************************************/
 package org.mt4j.components.visibleComponents.shapes;
 
-import javax.media.opengl.GL;
-
+import org.mt4j.AbstractMTApplication;
 import org.mt4j.components.MTComponent;
 import org.mt4j.components.TransformSpace;
 import org.mt4j.components.bounds.IBoundingShape;
@@ -28,6 +27,7 @@ import org.mt4j.input.gestureAction.DefaultDragAction;
 import org.mt4j.input.gestureAction.DefaultRotateAction;
 import org.mt4j.input.gestureAction.DefaultScaleAction;
 import org.mt4j.input.inputProcessors.componentProcessors.dragProcessor.DragProcessor;
+import org.mt4j.input.inputProcessors.componentProcessors.lassoProcessor.ILassoable;
 import org.mt4j.input.inputProcessors.componentProcessors.rotateProcessor.RotateProcessor;
 import org.mt4j.input.inputProcessors.componentProcessors.scaleProcessor.ScaleProcessor;
 import org.mt4j.util.MT4jSettings;
@@ -43,9 +43,9 @@ import org.mt4j.util.logging.ILogger;
 import org.mt4j.util.logging.MTLoggerFactory;
 import org.mt4j.util.math.Matrix;
 import org.mt4j.util.math.Ray;
-import org.mt4j.util.math.Tools3D;
 import org.mt4j.util.math.Vector3D;
 import org.mt4j.util.math.Vertex;
+import org.mt4j.util.opengl.GL10;
 import org.mt4j.util.opengl.GLTexture;
 import org.mt4j.util.opengl.GLTexture.EXPANSION_FILTER;
 import org.mt4j.util.opengl.GLTexture.SHRINKAGE_FILTER;
@@ -62,7 +62,7 @@ import processing.core.PImage;
  * 
  * @author Christopher Ruff
  */
-public abstract class AbstractShape extends AbstractVisibleComponent{
+public abstract class AbstractShape extends AbstractVisibleComponent implements ILassoable{
 	private static final ILogger logger = MTLoggerFactory.getLogger(AbstractShape.class.getName());
 	static{
 		logger.setLevel(ILogger.ERROR);
@@ -145,8 +145,8 @@ public abstract class AbstractShape extends AbstractVisibleComponent{
 		this.drawDirectGL = MT4jSettings.getInstance().isOpenGlMode();
 		this.useVBOs 			= false;
 		this.useDisplayList 	= false;
-		this.textureMode = PConstants.NORMALIZED;
-		this.setFillDrawMode(GL.GL_TRIANGLE_FAN);
+		this.textureMode = PConstants.NORMAL;
+		this.setFillDrawMode(GL10.GL_TRIANGLE_FAN);
 //		this.boundsGlobalVerticesDirty = true;
 		this.boundsAutoCompute = true;
 		
@@ -157,6 +157,8 @@ public abstract class AbstractShape extends AbstractVisibleComponent{
 		this.globalVerticesDirty = true;//
 		
 		this.setDefaultGestureActions();
+		
+		this.lassoed = false;
 	}
 	
 	/*
@@ -391,7 +393,7 @@ public abstract class AbstractShape extends AbstractVisibleComponent{
 		this.globalVerticesDirty = true;
 	}
 	
-	abstract protected void drawPureGl(GL gl);
+	abstract protected void drawPureGl(GL10 gl);
 	
 	/**
 	 * Gets the geometry info. The geometryinfo contains the 
@@ -561,7 +563,15 @@ public abstract class AbstractShape extends AbstractVisibleComponent{
 			if (!this.isUseVBOs()){
 				this.getGeometryInfo().generateOrUpdateAllVBOs();
 			}
-			this.useVBOs = useVBOs;
+			
+			//If we want to enable VBOs check if OpenGL 2.0 is supported
+			if (!useVBOs){
+				this.useVBOs = useVBOs;
+			}else{
+				if (this.getRenderer() instanceof AbstractMTApplication && ((AbstractMTApplication) this.getRenderer()).isGL11Available()) {
+					this.useVBOs = useVBOs;
+				}
+			}
 		}else{
 			logger.error(this.getName() + " - Cant use VBOs if not in opengl mode and setDrawDirectGL has to be set to true! Object: " + this);
 			this.useVBOs = false;
@@ -712,7 +722,7 @@ public abstract class AbstractShape extends AbstractVisibleComponent{
 		//-> updateTextureBuffer still needed if custom tex coords wanted 
 		//-> use before setTexture()!
 		
-		//TODO make sure that NORMALIZED texture coords are supplied and BEFORE setting the texture!
+		//TODO make sure that NORMAL texture coords are supplied and BEFORE setting the texture!
 		
 		//TODO Note that if we want to change the tex coords mannually, do it normalized, then for precaution update the buffer and then set the texture
 		//if the tex coords have to be un/normalized the updating is done twice but else we might miss updating it when we update from POT to POT.. 
@@ -742,7 +752,7 @@ public abstract class AbstractShape extends AbstractVisibleComponent{
 					}
 				}else{
 					//GLTexture is POT -> normalize tex coords if neccessary
-					this.setTextureMode(PConstants.NORMALIZED);
+					this.setTextureMode(PConstants.NORMAL);
 					
 					if (this.getGeometryInfo().isTextureCoordsNormalized()){
 						//0..1 -> 0..1
@@ -757,10 +767,18 @@ public abstract class AbstractShape extends AbstractVisibleComponent{
 				this.lastTextureDimension.setXYZ(newTexImage.width, newTexImage.height, 0);
 			}else{
 				//We are in OpenGL mode but the new texture is not a GLTexture -> create new GLTexture from PImage
-				boolean isPOT = Tools3D.isPowerOfTwoDimension(newTexImage);
+//				boolean isPOT = Tools3D.isPowerOfTwoDimension(newTexImage);
 				GLTextureSettings ts = new GLTextureSettings();
-				if (!isPOT){
-					ts.target = TEXTURE_TARGET.RECTANGULAR;
+				//Create new GLTexture from PImage
+				ts.shrinkFilter 		= SHRINKAGE_FILTER.BilinearNoMipMaps;
+				ts.expansionFilter 		= EXPANSION_FILTER.Bilinear;
+				ts.wrappingHorizontal 	= WRAP_MODE.CLAMP_TO_EDGE;
+				ts.wrappingVertical 	= WRAP_MODE.CLAMP_TO_EDGE;
+				GLTexture newGLTexture = new GLTexture(this.getRenderer(), newTexImage, ts);
+				
+				this.textureImage = newGLTexture;
+				
+				if (newGLTexture.getTextureTargetEnum() == TEXTURE_TARGET.RECTANGULAR){
 					this.setTextureMode(PConstants.IMAGE);
 					
 					if (this.getGeometryInfo().isTextureCoordsNormalized()){
@@ -772,12 +790,8 @@ public abstract class AbstractShape extends AbstractVisibleComponent{
 						//FIXME dont do it if it has the same dimensions!
 						this.fromRectModeToRectMode(newTexImage, this.getVerticesLocal(), this.lastTextureDimension.x, this.lastTextureDimension.y);
 					}
-					
-					this.textureImage = newTexImage;
-					this.lastTextureDimension.setXYZ(newTexImage.width, newTexImage.height, 0);
 				}else{
-					ts.target = TEXTURE_TARGET.TEXTURE_2D;
-					this.setTextureMode(PConstants.NORMALIZED);
+					this.setTextureMode(PConstants.NORMAL);
 					
 					//We are in OpenGL mode, new texture is a PImage, is POT -> create POT GLTexture and un-normalize tex coords if neccessary
 					if (this.getGeometryInfo().isTextureCoordsNormalized()){
@@ -789,14 +803,6 @@ public abstract class AbstractShape extends AbstractVisibleComponent{
 					}
 				}
 				
-				//Create new GLTexture from PImage
-				ts.shrinkFilter 		= SHRINKAGE_FILTER.BilinearNoMipMaps;
-				ts.expansionFilter 		= EXPANSION_FILTER.Bilinear;
-				ts.wrappingHorizontal 	= WRAP_MODE.CLAMP_TO_EDGE;
-				ts.wrappingVertical 	= WRAP_MODE.CLAMP_TO_EDGE;
-				GLTexture newGLTexture = new GLTexture(this.getRenderer(), newTexImage, ts);
-				
-				this.textureImage = newGLTexture;
 				this.lastTextureDimension.setXYZ(newTexImage.width, newTexImage.height, 0);
 			}
 		}else{
@@ -850,8 +856,8 @@ public abstract class AbstractShape extends AbstractVisibleComponent{
 	/**
 	 * Sets the way texture coordinates are handled in processing. This setting
 	 * is not considered if using OpenGL mode!
-	 * Allowed values are: <code>PApplet.NORMALIZED</code> and <code>PApplet.IMAGE</code>
-	 * <br>Default is <code>PApplet.NORMALIZED</code>.
+	 * Allowed values are: <code>PApplet.NORMAL</code> and <code>PApplet.IMAGE</code>
+	 * <br>Default is <code>PApplet.NORMAL</code>.
 	 * Which indicates that the texture coordinates should be in normalized
 	 * range from 0.0 to 1.0!
 	 * In image mode they have to range from 0..imageDimensions.
@@ -1216,6 +1222,129 @@ public abstract class AbstractShape extends AbstractVisibleComponent{
 	
 	
 	/**
+	 * Scales this shape to the given width and height. Relative to its parent frame of reference.
+	 * <br>Uses the shapes bounding shape for calculation.
+	 * 
+	 * @param width the width
+	 * @param height the height
+	 * 
+	 * @return true, if sets the size xy relative to parent
+	 * 
+	 * returns false if negative values are put in
+	 */
+	public boolean setSizeXYRelativeToParent(float width, float height){
+		if (width > 0 && height > 0){
+			Vector3D centerPoint = this.getCenterPointRelativeToParent();
+			this.scale( (1f/this.getWidthXYRelativeToParent()) * width, (1f/this.getHeightXYRelativeToParent()) * height, 1, centerPoint);
+			return true;
+		}else
+			return false;
+	}
+	
+	/**
+	 * Scales this shape to the given width and height in the XY-Plane. Relative to world space.
+	 * <br>Uses the shapes bounding shape for calculation.
+	 * 
+	 * @param width the width
+	 * @param height the height
+	 * 
+	 * @return true, if sets the size xy global
+	 */
+	public boolean setSizeXYGlobal(float width, float height){
+		if (width > 0 && height > 0){
+			Vector3D centerPoint = this.getCenterPointGlobal();
+			this.scaleGlobal( (1f/this.getWidthXYGlobal())* width , (1f/this.getHeightXYGlobal()) * height, 1, centerPoint);
+			return true;
+		}else
+			return false;
+	}
+	
+	
+	/**
+	 * Scales the shape to the given height relative to parent space.
+	 * Aspect ratio is preserved! The scaling is done Axis aligned, so
+	 * shearing might occour if rotated!
+	 * <br>Uses the shapes bounding shape for calculation.
+	 * 
+	 * @param height the height
+	 * 
+	 * @return true, if the height isnt negative
+	 */
+	public boolean setHeightXYRelativeToParent(float height){
+		if (height > 0){
+			Vector3D centerPoint = this.getCenterPointRelativeToParent();
+			float factor = (1f/this.getHeightXYRelativeToParent()) * height;
+			this.scale(factor, factor, 1, centerPoint);
+			return true;
+		}else
+			return false;
+	}
+	
+	
+	/**
+	 * Scales the shape to the given height relative to world space.
+	 * Aspect ratio is preserved! The scaling is done Axis aligned, so
+	 * shearing might occour if rotated!
+	 * <br>Uses the shapes bounding shape for calculation.
+	 * 
+	 * @param height the height
+	 * 
+	 * @return true, if sets the height xy global
+	 */
+	public boolean setHeightXYGlobal(float height){
+		if (height > 0){
+			Vector3D centerPoint = this.getCenterPointGlobal();
+			float factor = (1f/this.getHeightXYGlobal())* height;
+			this.scaleGlobal(factor, factor, 1, centerPoint);
+			return true;
+		}else
+			return false;
+	}
+	
+	/**
+	 * Scales the shape to the given width relative to parent space.
+	 * Aspect ratio is preserved! 
+	 * <br>NOTE: The scaling is done Axis aligned, so
+	 * shearing might occour if rotated before!
+	 * <br>Uses the shapes bounding shape for calculation.
+	 * 
+	 * @param width the width
+	 * 
+	 * @return true, if the width isnt negative
+	 */
+	public boolean setWidthXYRelativeToParent(float width){
+		if (width > 0){
+			Vector3D centerPoint = this.getCenterPointRelativeToParent(); 
+			float factor = (1f/this.getWidthXYRelativeToParent()) * width;
+			this.scale(factor, factor, 1, centerPoint);
+			return true;
+		}else
+			return false;
+	}
+	
+	
+	/**
+	 * Scales the shape to the given width relative to world space.
+	 * Aspect ratio is preserved! The scaling is done Axis aligned, so
+	 * shearing might occour if rotated!
+	 * <br>Uses the shapes bounding shape for calculation.
+	 * 
+	 * @param width the width
+	 * 
+	 * @return true, if sets the width xy global
+	 */
+	public boolean setWidthXYGlobal(float width){
+		if (width > 0){
+			Vector3D centerPoint = this.getCenterPointGlobal();
+			float factor = (1f/this.getWidthXYGlobal())* width;
+			this.scaleGlobal(factor, factor, 1, centerPoint);
+			return true;
+		}else
+			return false;
+	}
+	
+	
+	/**
 	 * <li>Removes this component from its parent.
 	 * <li>Calls <code>destroyComponent</code> on this component which
 	 * can be used to free resources that the component used.
@@ -1241,6 +1370,7 @@ public abstract class AbstractShape extends AbstractVisibleComponent{
 		
 		this.setBounds(null);
 		
+		/*
 		//Delete openGL texture object
 		if (this.getTexture() instanceof GLTexture){
 			GLTexture tex = (GLTexture) this.getTexture();
@@ -1249,6 +1379,8 @@ public abstract class AbstractShape extends AbstractVisibleComponent{
 			this.setTexture(null);
 			this.setTextureEnabled(false);
 		} 
+		*/
+		
 		super.destroy();
 	}
 	
@@ -1459,6 +1591,26 @@ public abstract class AbstractShape extends AbstractVisibleComponent{
 			}
 		}
 	}
+	
+	private boolean lassoed;
+	/**
+	 * Sets this selected by the lasso processor.
+	 * 
+	 * @param selected the new selected
+	 */
+	public void setSelected(boolean selected){
+		this.lassoed = selected;
+	}
+	
+	/**
+	 * Checks if is selected.
+	 * 
+	 * @return true, if is selected
+	 */
+	public boolean isSelected(){
+		return this.lassoed;
+	}
+
 	
 }
 

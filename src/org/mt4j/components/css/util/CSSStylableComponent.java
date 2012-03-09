@@ -1,6 +1,5 @@
 package org.mt4j.components.css.util;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Interface CSSStylableComponent.
  */

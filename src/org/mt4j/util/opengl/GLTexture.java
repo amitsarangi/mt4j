@@ -19,19 +19,14 @@ package org.mt4j.util.opengl;
 
 import java.nio.IntBuffer;
 
-import javax.media.opengl.GL;
-import javax.media.opengl.glu.GLU;
-
-import org.mt4j.MTApplication;
-import org.mt4j.util.math.Tools3D;
+import org.mt4j.AbstractMTApplication;
+import org.mt4j.util.PlatformUtil;
+import org.mt4j.util.math.ToolsBuffers;
 import org.mt4j.util.math.ToolsMath;
 
 import processing.core.PApplet;
 import processing.core.PConstants;
 import processing.core.PImage;
-import processing.opengl.PGraphicsOpenGL;
-
-import com.sun.opengl.util.BufferUtil;
 
 /**
  * This class can only be used in combination with a OpenGL renderer.
@@ -44,10 +39,10 @@ import com.sun.opengl.util.BufferUtil;
 public class GLTexture extends PImage {
 	
 	public enum WRAP_MODE{
-		REPEAT(GL.GL_REPEAT),
-		CLAMP(GL.GL_CLAMP),
-		CLAMP_TO_EDGE(GL.GL_CLAMP_TO_EDGE),
-		CLAMP_TO_BORDER(GL.GL_CLAMP_TO_BORDER);
+		REPEAT(GL10.GL_REPEAT),
+		CLAMP(GL11Plus.GL_CLAMP),
+		CLAMP_TO_EDGE(GL10.GL_CLAMP_TO_EDGE),
+		CLAMP_TO_BORDER(GL11Plus.GL_CLAMP_TO_BORDER);
 		
 		private int glConstant;
         private WRAP_MODE(int glConstant) {
@@ -65,7 +60,7 @@ public class GLTexture extends PImage {
          * center for the pixel color. While fast, this results in aliasing and
          * shimmering during minification. (GL equivalent: GL_NEAREST)
          */
-        NearestNeighborNoMipMaps(GL.GL_NEAREST, false),
+        NearestNeighborNoMipMaps(GL10.GL_NEAREST, false),
 
         /**
          * In this method the four nearest texels to the pixel center are
@@ -74,7 +69,7 @@ public class GLTexture extends PImage {
          * same aliasing and shimmering problems as nearest
          * NearestNeighborNoMipMaps. (GL equivalent: GL_LINEAR)
          */
-        BilinearNoMipMaps(GL.GL_LINEAR, false),
+        BilinearNoMipMaps(GL10.GL_LINEAR, false),
 
         /**
          * Same as NearestNeighborNoMipMaps except that instead of using samples
@@ -82,7 +77,7 @@ public class GLTexture extends PImage {
          * distance. This reduces the aliasing and shimmering significantly, but
          * does not help with blockiness. (GL equivalent: GL_NEAREST_MIPMAP_NEAREST)
          */
-        NearestNeighborNearestMipMap(GL.GL_NEAREST_MIPMAP_NEAREST, true),
+        NearestNeighborNearestMipMap(GL10.GL_NEAREST_MIPMAP_NEAREST, true),
 
         
         /**
@@ -91,7 +86,7 @@ public class GLTexture extends PImage {
          * distance. By using mipmapping we avoid the aliasing and shimmering
          * problems of BilinearNoMipMaps. (GL equivalent: GL_LINEAR_MIPMAP_NEAREST)
          */
-        BilinearNearestMipMap(GL.GL_LINEAR_MIPMAP_NEAREST, true),
+        BilinearNearestMipMap(GL10.GL_LINEAR_MIPMAP_NEAREST, true),
 
         /**
          * Similar to NearestNeighborNoMipMaps except that instead of using
@@ -99,7 +94,7 @@ public class GLTexture extends PImage {
          * closest (by distance) two mipmap levels. A weighted average of these
          * two samples is returned. (GL equivalent: GL_NEAREST_MIPMAP_LINEAR)
          */
-        NearestNeighborLinearMipMap(GL.GL_NEAREST_MIPMAP_LINEAR, true),
+        NearestNeighborLinearMipMap(GL10.GL_NEAREST_MIPMAP_LINEAR, true),
 
         /**
          * Trilinear filtering is a remedy to a common artifact seen in
@@ -114,7 +109,7 @@ public class GLTexture extends PImage {
          * one mipmap level available, and the algorithm reverts to bilinear
          * filtering (GL equivalent: GL_LINEAR_MIPMAP_LINEAR)
          */
-        Trilinear(GL.GL_LINEAR_MIPMAP_LINEAR, true);
+        Trilinear(GL10.GL_LINEAR_MIPMAP_LINEAR, true);
 
         private boolean usesMipMapLevels;
 
@@ -139,7 +134,7 @@ public class GLTexture extends PImage {
          * center for the pixel color. While fast, this results in texture
          * 'blockiness' during magnification. (GL equivalent: GL_NEAREST)
          */
-        NearestNeighbor(GL.GL_NEAREST),
+        NearestNeighbor(GL10.GL_NEAREST),
 
         /**
          * In this mode the four nearest texels to the pixel center are sampled
@@ -149,7 +144,7 @@ public class GLTexture extends PImage {
          * change from one texel to the next, instead of an abrupt jump as the
          * pixel center crosses the texel boundary. (GL equivalent: GL_LINEAR)
          */
-        Bilinear(GL.GL_LINEAR);
+        Bilinear(GL10.GL_LINEAR);
         
         private int glConstant;
         private EXPANSION_FILTER(int glConstant) {
@@ -161,11 +156,11 @@ public class GLTexture extends PImage {
 	}
 	
 	public enum TEXTURE_TARGET{
-		TEXTURE_1D(GL.GL_TEXTURE_1D),
+		TEXTURE_1D(GL11Plus.GL_TEXTURE_1D),
 		
-		TEXTURE_2D(GL.GL_TEXTURE_2D),
+		TEXTURE_2D(GL10.GL_TEXTURE_2D),
 		
-		RECTANGULAR(GL.GL_TEXTURE_RECTANGLE_ARB);
+		RECTANGULAR(GL11Plus.GL_TEXTURE_RECTANGLE_ARB);
 		
 		private int glConstant;
         private TEXTURE_TARGET(int glConstant) {
@@ -215,9 +210,11 @@ public class GLTexture extends PImage {
 	
 	private PApplet app;
 	
-	private PGraphicsOpenGL pgl;
+//	private PGraphicsOpenGL pgl;
 	
-	private GL gl;
+//	private GL gl;
+	
+	private GL10 gl;
 	
 	protected boolean fboSupported;
 	
@@ -230,6 +227,10 @@ public class GLTexture extends PImage {
 	private int internalFormat;
 	
 	private boolean forcedRectMipMaps = false;
+	
+	public int glWidth;
+	
+	public int glHeight;
 	
 //	private int width;
 //	private int height;
@@ -271,8 +272,9 @@ public class GLTexture extends PImage {
 
     	this.app = parent;
     	this.parent = parent;
-    	pgl = (PGraphicsOpenGL)parent.g;
-    	gl = pgl.gl;
+//    	pgl = (PGraphicsOpenGL)parent.g;
+//    	gl = pgl.gl;
+    	gl = PlatformUtil.getGL();
 	}
 
 	/**
@@ -307,15 +309,21 @@ public class GLTexture extends PImage {
 //    	this.pImageUpToDate = false;
     	this.glTextureSettings = settings;
 
-        //FIXME test - set target to RECTANGULAR_ARB if loaded image is NPOT
-        if ( !(ToolsMath.isPowerOfTwo(width) && ToolsMath.isPowerOfTwo(height)) ){
-       	 	this.glTextureSettings.target = TEXTURE_TARGET.RECTANGULAR;
-        }
+    	if (!isPImagePOT(width, height) && PlatformUtil.isNPOTTextureSupported()){
+    		this.glTextureSettings.target = TEXTURE_TARGET.RECTANGULAR;
+    		this.glWidth = width;
+    		this.glHeight = height;
+    	}else{
+    		this.glTextureSettings.target = TEXTURE_TARGET.TEXTURE_2D;
+    		this.glWidth = ToolsMath.nextPowerOfTwo(width);
+    		this.glHeight = ToolsMath.nextPowerOfTwo(height);
+    	}
 
     	this.app = parent;
     	this.parent = parent;
-    	pgl = (PGraphicsOpenGL)parent.g;
-    	gl = pgl.gl;
+//    	pgl = (PGraphicsOpenGL)parent.g;
+//    	gl = pgl.gl;
+    	gl = PlatformUtil.getGL();
 
 //    	 		setTextureParams(params);
 
@@ -359,8 +367,9 @@ public class GLTexture extends PImage {
 
     	this.app = parent;
     	this.parent = parent;
-    	pgl = (PGraphicsOpenGL)app.g;
-    	gl = pgl.gl;
+//    	pgl = (PGraphicsOpenGL)app.g;
+//    	gl = pgl.gl;
+    	gl = PlatformUtil.getGL();
     	this.glTextureSettings = settings;
     	this.loadTexture(fileName, this.glTextureSettings);
     } 
@@ -397,6 +406,16 @@ public class GLTexture extends PImage {
     	this.width 	= pImage.width;
     	this.height = pImage.height;
     	
+    	if (!isPImagePOT(width, height) && PlatformUtil.isNPOTTextureSupported()){
+    		this.glTextureSettings.target = TEXTURE_TARGET.RECTANGULAR;
+    		this.glWidth = width;
+    		this.glHeight = height;
+    	}else{
+    		this.glTextureSettings.target = TEXTURE_TARGET.TEXTURE_2D;
+    		this.glWidth = ToolsMath.nextPowerOfTwo(width);
+    		this.glHeight = ToolsMath.nextPowerOfTwo(height);
+    	}
+    	
     	//this.loadPixels(); //FIXME neccessary? if we assigned the pixel array it should be loaded already!
         updateGLTextureFromPImage(); //TODO invokelater if not gl thread
         updatePixels();
@@ -428,15 +447,18 @@ public class GLTexture extends PImage {
 
     	this.glTextureSettings = texSettings;
 
-    	boolean POT = (ToolsMath.isPowerOfTwo(width) && ToolsMath.isPowerOfTwo(height)) ;
-    	if (POT){
-    		this.glTextureSettings.target = TEXTURE_TARGET.TEXTURE_2D;
-    	}else{
+    	if (!isPImagePOT(width, height) && PlatformUtil.isNPOTTextureSupported()){
     		this.glTextureSettings.target = TEXTURE_TARGET.RECTANGULAR;
+    		this.glWidth = width;
+    		this.glHeight = height;
+    	}else{
+    		this.glTextureSettings.target = TEXTURE_TARGET.TEXTURE_2D;
+    		this.glWidth = ToolsMath.nextPowerOfTwo(width);
+    		this.glHeight = ToolsMath.nextPowerOfTwo(height);
     	}
 
     	//FIXME TEST -> only init GL texture if in opengl thread!
-    	if (app instanceof MTApplication && ((MTApplication)app).isRenderThreadCurrent()) {
+    	if (app instanceof AbstractMTApplication && ((AbstractMTApplication)app).isRenderThreadCurrent()) {
 			setupGLTexture(width, height);
 		}
     }	
@@ -460,9 +482,25 @@ public class GLTexture extends PImage {
     	if (this.glTextureID[0] != 0)
     		destroy();
     	
+    	if (this.width == 0 && this.height == 0){
+    		this.width = width;
+    		this.height = height;
+    	}
+    	
+    	if (this.glWidth == 0 && this.glHeight == 0){
+    		if (!isPImagePOT(width, height) && PlatformUtil.isNPOTTextureSupported()){
+        		this.glTextureSettings.target = TEXTURE_TARGET.RECTANGULAR;
+        		this.glWidth = width;
+        		this.glHeight = height;
+        	}else{
+        		this.glTextureSettings.target = TEXTURE_TARGET.TEXTURE_2D;
+        		this.glWidth = ToolsMath.nextPowerOfTwo(width);
+        		this.glHeight = ToolsMath.nextPowerOfTwo(height);
+        	}
+    	}
+    	
     	//FIXME if check done here, we can remove the check elsewhere?
-    	boolean POT = (ToolsMath.isPowerOfTwo(width) && ToolsMath.isPowerOfTwo(height));
-    	if (this.glTextureSettings.target != TEXTURE_TARGET.RECTANGULAR && !POT){
+    	if (this.glTextureSettings.target != TEXTURE_TARGET.RECTANGULAR && !isPImagePOT(width, height) && PlatformUtil.isNPOTTextureSupported()){
     		this.glTextureSettings.target = TEXTURE_TARGET.RECTANGULAR;
     	}
     	
@@ -481,7 +519,6 @@ public class GLTexture extends PImage {
 
 		//GL_REPEAT with a GL_RECTANGLE_ARB texture target are not supported! => use GL_CLAMP then.
 		if (glTextureSettings.target == TEXTURE_TARGET.RECTANGULAR){
-			//FIXME gluBuildmipmaps staucht NPOT texture auf pot zusammen?
 			//BEi clamp komischer wasser fbo error
 			if (glTextureSettings.wrappingHorizontal == WRAP_MODE.REPEAT){
 				glTextureSettings.wrappingHorizontal = WRAP_MODE.CLAMP_TO_EDGE; //        		this.wrap_s = GL.GL_CLAMP;
@@ -506,13 +543,13 @@ public class GLTexture extends PImage {
 		// Texture internal format
 		switch (this.format) {
 		case PConstants.RGB:
-			this.internalFormat = GL.GL_RGB;
+			this.internalFormat = GL10.GL_RGB;
 			break;
 		case PConstants.ARGB:
-			this.internalFormat = GL.GL_RGBA;
+			this.internalFormat = GL10.GL_RGBA;
 			break;
 		default:
-			this.internalFormat = GL.GL_RGBA;
+			this.internalFormat = GL10.GL_RGBA;
 			break;
 		}
 
@@ -520,19 +557,35 @@ public class GLTexture extends PImage {
 		gl.glGenTextures(1, glTextureID, 0);
 		//Bind the texture
 		gl.glBindTexture(textureTarget, glTextureID[0]);
-		//SET texture mag/min FILTER mode
-		gl.glTexParameteri(textureTarget, GL.GL_TEXTURE_MIN_FILTER, minFilter);
-		gl.glTexParameteri(textureTarget, GL.GL_TEXTURE_MAG_FILTER, magFilter);
-		//Set texture wrapping mode
-		gl.glTexParameteri(textureTarget, GL.GL_TEXTURE_WRAP_S, wrap_s);
-		gl.glTexParameteri(textureTarget, GL.GL_TEXTURE_WRAP_T, wrap_t);
+		
+		if (PlatformUtil.getGL11() != null){
+			GL11 gl11 = PlatformUtil.getGL11();
+			//SET texture mag/min FILTER mode
+			gl11.glTexParameteri(textureTarget, GL10.GL_TEXTURE_MIN_FILTER, minFilter);
+			gl11.glTexParameteri(textureTarget, GL10.GL_TEXTURE_MAG_FILTER, magFilter);
+			//Set texture wrapping mode
+			gl11.glTexParameteri(textureTarget, GL10.GL_TEXTURE_WRAP_S, wrap_s);
+			gl11.glTexParameteri(textureTarget, GL10.GL_TEXTURE_WRAP_T, wrap_t);
+		}
+		
+//		//SET texture mag/min FILTER mode
+//		gl.glTexParameteri(textureTarget, GL.GL_TEXTURE_MIN_FILTER, minFilter);
+//		gl.glTexParameteri(textureTarget, GL.GL_TEXTURE_MAG_FILTER, magFilter);
+//		//Set texture wrapping mode
+//		gl.glTexParameteri(textureTarget, GL.GL_TEXTURE_WRAP_S, wrap_s);
+//		gl.glTexParameteri(textureTarget, GL.GL_TEXTURE_WRAP_T, wrap_t);
 
 		switch (glTextureSettings.target) {
 		case TEXTURE_1D:
-			gl.glTexImage1D(textureTarget, 0, internalFormat, width, 0, GL.GL_RGBA, GL.GL_UNSIGNED_BYTE, null); 
+			if (gl instanceof GL11Plus) {
+				GL11Plus gl11Plus = (GL11Plus) gl;
+				gl11Plus.glTexImage1D(textureTarget, 0, internalFormat, width, 0, GL10.GL_RGBA, GL10.GL_UNSIGNED_BYTE, null); 
+			}
+//			gl.glTexImage1D(textureTarget, 0, internalFormat, width, 0, GL.GL_RGBA, GL.GL_UNSIGNED_BYTE, null); 
 			break;
 		default:
-			gl.glTexImage2D(textureTarget, 0, internalFormat, width, height, 0, GL.GL_RGBA, GL.GL_UNSIGNED_BYTE, null); //FIXME always use GL_RGBA as glformat??
+//			gl.glTexImage2D(textureTarget, 0, internalFormat, width, height, 0, GL10.GL_RGBA, GL10.GL_UNSIGNED_BYTE, null); //FIXME always use GL_RGBA as glformat??
+			gl.glTexImage2D(textureTarget, 0, internalFormat, glWidth, glHeight, 0, GL10.GL_RGBA, GL10.GL_UNSIGNED_BYTE, null); //FIXME always use GL_RGBA as glformat?? //FIXME TEST NPOT by enlarging ogl texture
 //			gl.glTexImage2D(textureTarget, 0, internalFormat, width, height, 0, GL.GL_BGRA, GL.GL_UNSIGNED_BYTE, null);//ORIGINAL
 			break;
 		}
@@ -543,9 +596,9 @@ public class GLTexture extends PImage {
 	
 	
 	/**
-     * Loads the image from the specifed file and the specified settings.
+     * Loads the image from the specified file and the specified settings.
      * Then this PImage AND an OpenGL texture object are set up with the image data.
-     * Re-initializes this texture if the old dimensions dont match the new image.
+     * Re-initializes this texture if the old dimensions don't match the new image.
      *
      * @param filename the filename
      * @param settings the settings
@@ -553,12 +606,24 @@ public class GLTexture extends PImage {
     public void loadTexture(String filename, GLTextureSettings settings){ 
     	PImage img = app.loadImage(filename);
     	this.glTextureSettings = settings;
-        if (!(ToolsMath.isPowerOfTwo(img.width) && ToolsMath.isPowerOfTwo(img.height)) ){
-       	 	this.glTextureSettings.target = TEXTURE_TARGET.RECTANGULAR;
-        }
+    	
+    	if (!isPImagePOT(width, height) && PlatformUtil.isNPOTTextureSupported()){
+    		this.glTextureSettings.target = TEXTURE_TARGET.RECTANGULAR;
+    		this.glWidth = width;
+    		this.glHeight = height;
+    	}else{
+    		this.glTextureSettings.target = TEXTURE_TARGET.TEXTURE_2D;
+    		this.glWidth = ToolsMath.nextPowerOfTwo(width);
+    		this.glHeight = ToolsMath.nextPowerOfTwo(height);
+    	}
     	this.loadTexture(img, this.glTextureSettings);
     }
 
+    
+    private static boolean isPImagePOT(int width, int height){
+    	return ((width > 0) && (width & (width - 1)) == 0 ) && ((height > 0) && (height & (height - 1)) == 0 );
+    }
+    
     
     
     /**
@@ -574,8 +639,14 @@ public class GLTexture extends PImage {
       img.loadPixels();
 
       this.glTextureSettings = settings;
-      if (!(ToolsMath.isPowerOfTwo(img.width) && ToolsMath.isPowerOfTwo(img.height)) ){
-     	 	this.glTextureSettings.target = TEXTURE_TARGET.RECTANGULAR;
+      if (!isPImagePOT(img.width, img.height) && PlatformUtil.isNPOTTextureSupported()){
+    	  this.glTextureSettings.target = TEXTURE_TARGET.RECTANGULAR;
+    	  this.glWidth = img.width;
+    	  this.glHeight = img.height;
+      }else{
+    	  this.glTextureSettings.target = TEXTURE_TARGET.TEXTURE_2D;
+    	  this.glWidth = ToolsMath.nextPowerOfTwo(img.width);
+    	  this.glHeight = ToolsMath.nextPowerOfTwo(img.height);
       }
       
       if ((img.width != this.width) || (img.height != this.height) || glTextureID[0] == 0) {
@@ -588,7 +659,7 @@ public class GLTexture extends PImage {
       this.updatePixels();
     }
 
-    
+
     /**
      * Sets this texture to the data of the specified image.
      * Re-sets ONLY this texture's OpenGL texture object data! 
@@ -599,16 +670,22 @@ public class GLTexture extends PImage {
      * @param img the new gL texture
      */
     public void loadGLTexture(PImage img) {
-    	 if (!Tools3D.isPowerOfTwoDimension(img)){
-       	  this.glTextureSettings.target = TEXTURE_TARGET.RECTANGULAR;
-         }
-    	 
-      if ((img.width != width) || (img.height != height) ) {
-        init(img.width, img.height, this.glTextureSettings);
-      }
-      this.updateGLTexture(img.pixels); 
+    	if (!isPImagePOT(img.width, img.height) && PlatformUtil.isNPOTTextureSupported()){
+    		this.glTextureSettings.target = TEXTURE_TARGET.RECTANGULAR;
+    		this.glWidth = img.width;
+    		this.glHeight = img.height;
+    	}else{
+    		this.glTextureSettings.target = TEXTURE_TARGET.TEXTURE_2D;
+    		this.glWidth = ToolsMath.nextPowerOfTwo(img.width);
+    		this.glHeight = ToolsMath.nextPowerOfTwo(img.height);
+    	}
+
+    	if ((img.width != width) || (img.height != height) ) {
+    		init(img.width, img.height, this.glTextureSettings);
+    	}
+    	this.updateGLTexture(img.pixels); 
     }
-    
+
     
     /**
      * Sets this texture's PImage pixel data to the data of the specified PImage.
@@ -643,7 +720,17 @@ public class GLTexture extends PImage {
 	 * @param intArray the int array
 	 */
 	public void updateGLTexture(int[] intArray){ 
-		this.updateGLTexture(IntBuffer.wrap(intArray));
+//		this.updateGLTexture(IntBuffer.wrap(intArray)); //FIXME original
+		IntBuffer pixelBuffer = IntBuffer.allocate(intArray.length);
+		if (PlatformUtil.isAndroid()){ //on android, most opengl implementations dont support BGRA
+			int[] rgbaPixels = new int[width * height];
+		    convertToRGBA(intArray, rgbaPixels, format, width, height);
+			pixelBuffer.put(rgbaPixels);
+		}else{
+			pixelBuffer.put(intArray);
+		}
+		pixelBuffer.rewind();
+		this.updateGLTexture(pixelBuffer);
 	}
 
 
@@ -662,8 +749,12 @@ public class GLTexture extends PImage {
 
 		//      int glFormat = glTextureSettings.glType.getGLConstant();
 		
-		int glFormat 	= GL.GL_BGRA; 				//FIXME DONT HARDCODE!?
-		int type 		= GL.GL_UNSIGNED_BYTE; 		//FIXME DONT HARDCODE!?
+		int glFormat 	= GL11Plus.GL_BGRA; 				//FIXME DONT HARDCODE!?
+		if (PlatformUtil.isAndroid()){ 				//FIXME TEST -> opengl es /android doesent support BGRA!?
+			glFormat = GL10.GL_RGBA;
+		}
+		
+		int type 		= GL10.GL_UNSIGNED_BYTE; 		//FIXME DONT HARDCODE!?
 
 		int textureTarget = glTextureSettings.target.getGLConstant();
 		// int internalFormat = glTextureSettings.textureInternalFormat.getGLConstant();
@@ -674,7 +765,7 @@ public class GLTexture extends PImage {
     		this.forcedRectMipMaps = true;
     	}
 		
-		//NPOT texture targets dont support mipmaps!
+		//NPOT texture targets don't support mipmaps!
 		if (glTextureSettings.target == TEXTURE_TARGET.RECTANGULAR){
 			if (glTextureSettings.shrinkFilter.usesMipMapLevels()){
 				this.glTextureSettings.shrinkFilter = SHRINKAGE_FILTER.BilinearNoMipMaps;
@@ -683,24 +774,28 @@ public class GLTexture extends PImage {
 		
 		switch (this.format) {
 		case PConstants.RGB:
-			this.internalFormat = GL.GL_RGB;
+			this.internalFormat = GL10.GL_RGB;
 			break;
 		case PConstants.ARGB:
-			this.internalFormat = GL.GL_RGBA;
+			this.internalFormat = GL10.GL_RGBA;
 			break;
 		default:
-			this.internalFormat = GL.GL_RGBA;
+			this.internalFormat = GL10.GL_RGBA;
 			break;
 		}
-
+		
 		gl.glBindTexture(textureTarget, this.glTextureID[0]);
 
 		switch (glTextureSettings.target) {
 		case TEXTURE_1D:
-			if (glFormat == GL.GL_BGRA){ 
-				glFormat = GL.GL_RGBA;
+			if (glFormat == GL11Plus.GL_BGRA){ 
+				glFormat = GL10.GL_RGBA;
 			}
-			gl.glTexSubImage1D(textureTarget, 0, 0, this.width, glFormat, type, buffer);
+			if (gl instanceof GL11Plus) {
+				GL11Plus gl11Plus = (GL11Plus) gl;
+				gl11Plus.glTexSubImage1D(textureTarget, 0, 0, this.width, glFormat, type, buffer);
+			}
+//			gl.glTexSubImage1D(textureTarget, 0, 0, this.width, glFormat, type, buffer);
 			break;
 		case TEXTURE_2D:
 		case RECTANGULAR:
@@ -713,21 +808,32 @@ public class GLTexture extends PImage {
 //				gl.glTexParameteri( textureTarget, GL.GL_GENERATE_MIPMAP, GL.GL_TRUE ); 
 				if (this.forcedRectMipMaps){
 					//Resizes NPOT textures to POT
-					GLU glu = ((PGraphicsOpenGL)this.parent.g).glu;
+//					GLU glu = ((PGraphicsOpenGL)this.parent.g).glu;
+					IGLU glu = PlatformUtil.getGLU();
 					glu.gluBuild2DMipmaps(textureTarget, internalFormat, this.width, this.height, glFormat, type, buffer);
 				}else{
-					if (this.fboSupported){ //Naive check if glGenerateMipmapEXT command is supported
+					if (this.fboSupported && PlatformUtil.getGL20() != null){ //Naive check if glGenerateMipmapEXT command is supported
 						gl.glTexSubImage2D(textureTarget, 0, 0, 0, this.width, this.height, glFormat, type, buffer);
-						gl.glGenerateMipmapEXT(textureTarget);  //newer OpenGL 3.x method of creating mip maps //TODO problems on ATI? use gl.glEnable(textureTarget) first? 
+						PlatformUtil.getGL20().glGenerateMipmap(textureTarget);  //newer OpenGL 3.x method of creating mip maps //TODO problems on ATI? use gl.glEnable(textureTarget) first? 
 					}else{
 						//Old school software method, will resize a NPOT texture to a POT texture
-						GLU glu = ((PGraphicsOpenGL)this.parent.g).glu;
+//						GLU glu = ((PGraphicsOpenGL)this.parent.g).glu;
+						IGLU glu = PlatformUtil.getGLU();
 						glu.gluBuild2DMipmaps(textureTarget, internalFormat, this.width, this.height, glFormat, type, buffer);
 					}
+//					if (this.fboSupported){ //Naive check if glGenerateMipmapEXT command is supported
+//						gl.glTexSubImage2D(textureTarget, 0, 0, 0, this.width, this.height, glFormat, type, buffer);
+//						gl.glGenerateMipmapEXT(textureTarget);  //newer OpenGL 3.x method of creating mip maps //TODO problems on ATI? use gl.glEnable(textureTarget) first? 
+//					}else{
+//						//Old school software method, will resize a NPOT texture to a POT texture
+//						GLU glu = ((PGraphicsOpenGL)this.parent.g).glu;
+//						glu.gluBuild2DMipmaps(textureTarget, internalFormat, this.width, this.height, glFormat, type, buffer);
+//					}
 				}
 			}
 			else{
 				gl.glTexSubImage2D(textureTarget, 0, 0, 0, width, height, glFormat, type, buffer); //ORG
+//				gl.glTexSubImage2D(textureTarget, 0, 0, 0, width, height, GL10.GL_RGBA, GL10.GL_UNSIGNED_BYTE, buffer);
 //				gl.glTexSubImage2D(textureTarget, 0, 0, 0, width, height, GL.GL_RGB, type, buffer);
 			}
 			break;
@@ -756,12 +862,22 @@ public class GLTexture extends PImage {
      *
      */
     public void updatePImageFromGLTexture(){
-        IntBuffer buff = BufferUtil.newIntBuffer(this.width * this.height);
-        int textureTarget = this.glTextureSettings.target.getGLConstant();
-        gl.glBindTexture(textureTarget, this.glTextureID[0]);
-        gl.glGetTexImage(textureTarget, 0, GL.GL_BGRA, GL.GL_UNSIGNED_BYTE, buff);
-        gl.glBindTexture(textureTarget, 0);
-        buff.get(pixels);
+    	if (gl instanceof GL11Plus) {
+			GL11Plus gl11Plus = (GL11Plus) gl;
+//			IntBuffer buff = BufferUtil.newIntBuffer(this.width * this.height);
+			IntBuffer buff = ToolsBuffers.newIntBuffer(this.width * this.height); //FIXME WORKS WITH width != glWidth?? -> TEST!
+	        int textureTarget = this.glTextureSettings.target.getGLConstant();
+	        gl11Plus.glBindTexture(textureTarget, this.glTextureID[0]);
+	        gl11Plus.glGetTexImage(textureTarget, 0, GL11Plus.GL_BGRA, GL10.GL_UNSIGNED_BYTE, buff);
+	        gl11Plus.glBindTexture(textureTarget, 0);
+	        buff.get(pixels);
+		}
+//    	IntBuffer buff = BufferUtil.newIntBuffer(this.width * this.height);
+//        int textureTarget = this.glTextureSettings.target.getGLConstant();
+//        gl.glBindTexture(textureTarget, this.glTextureID[0]);
+//        gl.glGetTexImage(textureTarget, 0, GL.GL_BGRA, GL.GL_UNSIGNED_BYTE, buff);
+//        gl.glBindTexture(textureTarget, 0);
+//        buff.get(pixels);
     }
     
     
@@ -790,10 +906,17 @@ public class GLTexture extends PImage {
 		this.glTextureSettings.wrappingVertical = wrappingVertical;
 		
 		if (this.isGLTexObjectInitialized()){
-			gl.glBindTexture(this.getTextureTarget(), this.getTextureID());
-			gl.glTexParameteri(this.getTextureTarget(), GL.GL_TEXTURE_WRAP_S, this.glTextureSettings.wrappingHorizontal.getGLConstant());
-			gl.glTexParameteri(this.getTextureTarget(), GL.GL_TEXTURE_WRAP_T, this.glTextureSettings.wrappingVertical.getGLConstant());
-			gl.glBindTexture(this.getTextureTarget(), 0);
+			if (PlatformUtil.getGL11() != null){
+				GL11 gl11 = PlatformUtil.getGL11();
+				gl11.glBindTexture(this.getTextureTarget(), this.getTextureID());
+				gl11.glTexParameteri(this.getTextureTarget(), GL10.GL_TEXTURE_WRAP_S, this.glTextureSettings.wrappingHorizontal.getGLConstant());
+				gl11.glTexParameteri(this.getTextureTarget(), GL10.GL_TEXTURE_WRAP_T, this.glTextureSettings.wrappingVertical.getGLConstant());
+				gl11.glBindTexture(this.getTextureTarget(), 0);
+			}
+//			gl.glBindTexture(this.getTextureTarget(), this.getTextureID());
+//			gl.glTexParameteri(this.getTextureTarget(), GL.GL_TEXTURE_WRAP_S, this.glTextureSettings.wrappingHorizontal.getGLConstant());
+//			gl.glTexParameteri(this.getTextureTarget(), GL.GL_TEXTURE_WRAP_T, this.glTextureSettings.wrappingVertical.getGLConstant());
+//			gl.glBindTexture(this.getTextureTarget(), 0);
 		}
 	}
 	
@@ -823,10 +946,17 @@ public class GLTexture extends PImage {
 		this.glTextureSettings.expansionFilter = magFilter;
 		
 		if (this.isGLTexObjectInitialized()){
-			gl.glBindTexture(this.getTextureTarget(), this.getTextureID());
-			 gl.glTexParameteri(this.getTextureTarget(), GL.GL_TEXTURE_MIN_FILTER, this.glTextureSettings.shrinkFilter.getGLConstant());
-			 gl.glTexParameteri(this.getTextureTarget(), GL.GL_TEXTURE_MAG_FILTER, this.glTextureSettings.expansionFilter.getGLConstant());
-			gl.glBindTexture(this.getTextureTarget(), 0);
+			if (PlatformUtil.getGL11() != null){
+				GL11 gl11 = PlatformUtil.getGL11();
+				gl11.glBindTexture(this.getTextureTarget(), this.getTextureID());
+				gl11.glTexParameteri(this.getTextureTarget(), GL10.GL_TEXTURE_MIN_FILTER, this.glTextureSettings.shrinkFilter.getGLConstant());
+				gl11.glTexParameteri(this.getTextureTarget(), GL10.GL_TEXTURE_MAG_FILTER, this.glTextureSettings.expansionFilter.getGLConstant());
+				gl11.glBindTexture(this.getTextureTarget(), 0);	
+			}
+//			gl.glBindTexture(this.getTextureTarget(), this.getTextureID());
+//			 gl.glTexParameteri(this.getTextureTarget(), GL.GL_TEXTURE_MIN_FILTER, this.glTextureSettings.shrinkFilter.getGLConstant());
+//			 gl.glTexParameteri(this.getTextureTarget(), GL.GL_TEXTURE_MAG_FILTER, this.glTextureSettings.expansionFilter.getGLConstant());
+//			gl.glBindTexture(this.getTextureTarget(), 0);
 		}
 		
 		//FIXME pixels may be empty/not current - just create mipmaps with gl code ourselves!!
@@ -864,91 +994,158 @@ public class GLTexture extends PImage {
 		return this.glTextureInitialized;
 	}
 	
+	//FIXME this belongs in PConstants in the Processing desktop version also!
+	 static final int YUV420 = 6;  // Android video preview.
 
-/*
-	private int[] toRGBA(int[] intArray, int arrayFormat) {
-		int t = 0;
-		int p = 0;
-		int twidth = width;
-		
-		int[] tIntArray = new int[width * height];
-		if (PGraphicsOpenGL.BIG_ENDIAN) {
-			switch (arrayFormat) {
-			case ALPHA:
+///*
+	/**
+	   * Reorders a pixel array in the given format into the order required by OpenGL (RGBA).
+	   * Both arrays are assumed to be of the same length. The width and height parameters
+	   * are used in the YUV420 to RBGBA conversion.
+	   * @param intArray int[]
+	   * @param tIntArray int[]
+	   * @param arrayFormat int  
+	   * @param w int
+	   * @param h int
+	   */
+	  protected void convertToRGBA(int[] intArray, int[] tIntArray, int arrayFormat, int w, int h)  {
+	    if (PlatformUtil.isBigEndian())  {
+	      switch (arrayFormat) {
+	      case ALPHA:
+	                  
+	        // Converting from xxxA into RGBA. RGB is set to white 
+	        // (0xFFFFFF, i.e.: (255, 255, 255))
+	        for (int i = 0; i< intArray.length; i++) {
+	          tIntArray[i] = 0xFFFFFF00 | intArray[i];
+	        }
+	        break;
 
-				for (int y = 0; y < height; y++) {
-					for (int x = 0; x < width; x++) {
-						tIntArray[t++] = 0xFFFFFF00 | intArray[p++];
-					}
-					t += twidth - width;
-				}
-				break;
-			case RGB:
-				for (int y = 0; y < height; y++) {
-					for (int x = 0; x < width; x++) {
-						int pixel = intArray[p++];
-						tIntArray[t++] = (pixel << 8) | 0xff;
-					}
-					t += twidth - width;
-				}
-				break;
-			case ARGB:
-				for (int y = 0; y < height; y++) {
-					for (int x = 0; x < width; x++) {
-						int pixel = intArray[p++];
-						tIntArray[t++] = (pixel << 8) | ((pixel >>4) & 0xff);
-					}
-					t += twidth - width;
-				}
-				break;
-			}
-		} else {
-			// LITTLE_ENDIAN
-			// ARGB native, and RGBA opengl means ABGR on windows
-			// for the most part just need to swap two components here
-			// the sun.cpu.endian here might be "false", oddly enough..
-			// (that's why just using an "else", rather than check for "little")
-			switch (arrayFormat) {
-			case ALPHA:
-				for (int y = 0; y < height; y++) {
-					for (int x = 0; x < width; x++) {
-						tIntArray[t++] = (intArray[p++] <<4) | 0x00FFFFFF;
-					}
-					t += twidth - width;
-				}
-				break;
-			case RGB:
-				for (int y = 0; y < height; y++) {
-					for (int x = 0; x < width; x++) {
-						int pixel = intArray[p++];
-						// needs to be ABGR, stored in memory xRGB
-						// so R and B must be swapped, and the x just made FF
-						tIntArray[t++] = 0xff000000
-						| // force opacity for good measure
-						((pixel & 0xFF) <<6) | ((pixel & 0xFF0000) >>6)
-						| (pixel & 0x0000FF00);
-					}
-					t += twidth - width;
-				}
-				break;
-			case ARGB:
-				for (int y = 0; y < height; y++) {
-					for (int x = 0; x < width; x++) {
-						int pixel = intArray[p++];
-						// needs to be ABGR stored in memory ARGB
-						// so R and B must be swapped, A and G just brought back in
-						tIntArray[t++] = ((pixel & 0xFF) <<6)
-						| ((pixel & 0xFF0000) >>6) | (pixel & 0xFF00FF00);
-					}
-					t += twidth - width;
-				}
-				break;
-			}
-		}
-		return tIntArray;
-	}
+	      case RGB:
+	                  
+	        // Converting xRGB into RGBA. A is set to 0xFF (255, full opacity).
+	        for (int i = 0; i< intArray.length; i++) {
+	          int pixel = intArray[i];
+	          tIntArray[i] = (pixel << 8) | 0xFF;
+	        }
+	        break;
 
-	
+	      case ARGB:
+	               
+	        // Converting ARGB into RGBA. Shifting RGB to 8 bits to the left,
+	        // and bringing A to the first byte.
+	        for (int i = 0; i< intArray.length; i++) {
+	          int pixel = intArray[i];
+	          tIntArray[i] = (pixel << 8) | ((pixel >> 24) & 0xFF);
+	        }
+	        break;
+	                 
+	      case YUV420:
+	        
+	        // YUV420 to RGBA conversion.
+	        int frameSize = w * h;
+	        for (int j = 0, yp = 0; j < h; j++) {       
+	          int uvp = frameSize + (j >> 1) * w, u = 0, v = 0;
+	          for (int i = 0; i < w; i++, yp++) {
+	            int y = (0xFF & ((int) intArray[yp])) - 16;
+	            if (y < 0) y = 0;
+	            if ((i & 1) == 0) {
+	              v = (0xFF & intArray[uvp++]) - 128;
+	              u = (0xFF & intArray[uvp++]) - 128;
+	            }
+
+	            int y1192 = 1192 * y;
+	            int r = (y1192 + 1634 * v);
+	            int g = (y1192 - 833 * v - 400 * u);
+	            int b = (y1192 + 2066 * u);
+
+	            if (r < 0) r = 0; else if (r > 262143) r = 262143;
+	            if (g < 0) g = 0; else if (g > 262143) g = 262143;
+	            if (b < 0) b = 0; else if (b > 262143) b = 262143;
+
+	            // Output is RGBA:
+	            tIntArray[yp] = ((r << 6) & 0xFF000000) | ((g >> 2) & 0xFF0000) | ((b >> 10) & 0xFF00) | 0xFF;
+	          }
+	        }        
+	        
+	        break;        
+	      }
+	      
+	    } else {  
+	      // LITTLE_ENDIAN
+	      // ARGB native, and RGBA opengl means ABGR on windows
+	      // for the most part just need to swap two components here
+	      // the sun.cpu.endian here might be "false", oddly enough..
+	      // (that's why just using an "else", rather than check for "little")
+	        
+	      switch (arrayFormat)  {    
+	      case ALPHA:
+	              
+	        // Converting xxxA into ARGB, with RGB set to white.
+	        for (int i = 0; i< intArray.length; i++) {
+	          tIntArray[i] = (intArray[i] << 24) | 0x00FFFFFF;
+	        }
+	        break;
+
+	      case RGB:
+	              
+	        // We need to convert xRGB into ABGR,
+	        // so R and B must be swapped, and the x just made 0xFF.
+	        for (int i = 0; i< intArray.length; i++) {
+	          int pixel = intArray[i];  
+	          tIntArray[i] = 0xFF000000 |
+	                         ((pixel & 0xFF) << 16) |
+	                         ((pixel & 0xFF0000) >> 16) |
+	                         (pixel & 0x0000FF00);
+	        }
+	        break;
+
+	      case ARGB:
+	                      
+	        // We need to convert ARGB into ABGR,
+	        // so R and B must be swapped, A and G just brought back in.        
+	        for (int i = 0; i < intArray.length; i++) {
+	          int pixel = intArray[i];
+	          tIntArray[i] = ((pixel & 0xFF) << 16) |
+	                         ((pixel & 0xFF0000) >> 16) |
+	                         (pixel & 0xFF00FF00);
+	        }
+	        break;
+	        
+	      case YUV420:
+	        
+	        // YUV420 to ABGR conversion.
+	        int frameSize = w * h;
+	        for (int j = 0, yp = 0; j < h; j++) {       
+	          int uvp = frameSize + (j >> 1) * w, u = 0, v = 0;
+	          for (int i = 0; i < w; i++, yp++) {
+	            int y = (0xFF & ((int) intArray[yp])) - 16;
+	            if (y < 0) y = 0;
+	            if ((i & 1) == 0) {
+	              v = (0xFF & intArray[uvp++]) - 128;
+	              u = (0xFF & intArray[uvp++]) - 128;
+	            }
+
+	            int y1192 = 1192 * y;
+	            int r = (y1192 + 1634 * v);
+	            int g = (y1192 - 833 * v - 400 * u);
+	            int b = (y1192 + 2066 * u);
+
+	            if (r < 0) r = 0; else if (r > 262143) r = 262143;
+	            if (g < 0) g = 0; else if (g > 262143) g = 262143;
+	            if (b < 0) b = 0; else if (b > 262143) b = 262143;
+
+	            // Output is ABGR:
+	            tIntArray[yp] = 0xFF000000 | ((b << 6) & 0xFF0000) | ((g >> 2) & 0xFF00) | ((r >> 10) & 0xFF);
+	          }
+	        }        
+	        
+	        break;
+	      }
+	        
+	    }
+	  }
+
+	/*
 	private int[] toARGB(int[] intArray) {
 		int t = 0;
 		int p = 0;
@@ -1101,10 +1298,19 @@ public class GLTexture extends PImage {
 	
 	
 	@Override
+	public void resize(int wide, int high) {
+		super.resize(wide, high);
+		if (this.isGLTexObjectInitialized()){
+			updateGLTextureFromPImage();
+		}
+	}
+	
+	
+	@Override
 	protected void finalize() throws Throwable {
 		//System.out.println("Finalizing GLTEXTURE - " + this);
-		if (this.app instanceof MTApplication) {
-			MTApplication mtApp = (MTApplication) this.app;
+		if (this.app instanceof AbstractMTApplication) {
+			AbstractMTApplication mtApp = (AbstractMTApplication) this.app;
 			mtApp.invokeLater(new Runnable() {
 				public void run() {
 					destroy();
@@ -1113,6 +1319,11 @@ public class GLTexture extends PImage {
 		}else{
 			//TODO use registerPre()?
 			//is the object even valid after finalize() is called??
+			try {
+				destroy();
+			} catch (Exception e) {
+				System.err.println(e.getLocalizedMessage());
+			}
 		}
 		super.finalize();
 	}

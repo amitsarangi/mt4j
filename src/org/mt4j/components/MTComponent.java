@@ -22,11 +22,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.media.opengl.GL;
-
 import org.mt4j.components.PickResult.PickEntry;
 import org.mt4j.components.bounds.IBoundingShape;
 import org.mt4j.components.clipping.Clip;
+import org.mt4j.components.clusters.Cluster;
 import org.mt4j.components.css.util.CSSStylableComponent;
 import org.mt4j.components.interfaces.IMTComponent3D;
 import org.mt4j.components.interfaces.IMTController;
@@ -39,6 +38,7 @@ import org.mt4j.input.inputProcessors.IGestureEventListener;
 import org.mt4j.input.inputProcessors.IInputProcessor;
 import org.mt4j.input.inputProcessors.MTGestureEvent;
 import org.mt4j.input.inputProcessors.componentProcessors.AbstractComponentProcessor;
+import org.mt4j.util.PlatformUtil;
 import org.mt4j.util.MT4jSettings;
 import org.mt4j.util.camera.IFrustum;
 import org.mt4j.util.camera.Icamera;
@@ -48,11 +48,10 @@ import org.mt4j.util.math.Matrix;
 import org.mt4j.util.math.Ray;
 import org.mt4j.util.math.Tools3D;
 import org.mt4j.util.math.Vector3D;
+import org.mt4j.util.opengl.GL10;
 
 import processing.core.PApplet;
 import processing.core.PGraphics;
-import processing.core.PGraphics3D;
-import processing.opengl.PGraphicsOpenGL;
 
 /**
  * This is the base class for all MT4j scene graph nodes. It provides basic methods
@@ -118,7 +117,7 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 	private MTComponent parent;
 	
 	/** The child components. */
-	private List<MTComponent> childComponents;
+	private ArrayList<MTComponent> childComponents;
 	
 //	/** The custom view port. */
 //	private ViewportSetting customViewPort;
@@ -148,8 +147,8 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 	/** The Global to local matrix dirty. */
 	private boolean globalInverseMatrixDirty;
 	
-	/** The pgraphics3 d. */
-	private PGraphics3D pgraphics3D;
+//	/** The pgraphics3 d. */
+//	private PGraphics3D pgraphics3D;
 	
 	/** The controller. */
 	private IMTController controller;
@@ -184,7 +183,7 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 	private GestureEventSupport gestureEvtSupport;
 	
 	/** The allowed gestures. */
-	private List<Class<? extends IInputProcessor>> allowedGestures;
+	private ArrayList<Class<? extends IInputProcessor>> allowedGestures;
 	
 	/** The attached camera. */
 	private Icamera attachedCamera;
@@ -193,7 +192,7 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 	private Icamera viewingCamera;
 	
 	/** The input listeners. */
-	private List<IMTInputEventListener> inputListeners;
+	private ArrayList<IMTInputEventListener> inputListeners;
 	
 	/** The user data. */
 	private Map<Object, Object> userData;
@@ -208,6 +207,9 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 	private int orthogonalityErrors;
 	protected static final int invPrecisionThreshold = 1000;
 	protected static final int reOrthogonalizeThreshold = 1500;
+	
+	private boolean isAndroid;
+	
 	
 	/**
 	 * Creates a new component. The component has no initial visual representation.
@@ -274,8 +276,8 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 		this.globalMatrixDirty = true;
 		this.globalInverseMatrixDirty = true;
 
-		//This class should only be used with a renderer derived from pgraphics3D!
-		this.pgraphics3D = (PGraphics3D)pApplet.g;
+//		//This class should only be used with a renderer derived from pgraphics3D!
+//		this.pgraphics3D = (PGraphics3D)pApplet.g;
 
 		//FIXME EXPERIMENTAL
 		light = null;
@@ -308,6 +310,8 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 
 		this.inversePrecisionErrors = 0;
 		this.orthogonalityErrors  = 0;
+		
+		this.isAndroid = PlatformUtil.isAndroid();
 	}
 
 	
@@ -395,7 +399,7 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 		}else{
 			//Search up the component tree for a attached camera
 			//automatically sets this viewcamera to the attached camera if found
-			this.searchViewingCamera();
+			this.viewingCamera = this.searchViewingCamera();
 			return this.viewingCamera;
 		}
 	}
@@ -403,8 +407,9 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 	/**
 	 * Search viewing camera.
 	 */
-	private void searchViewingCamera(){
+	protected Icamera searchViewingCamera(){
 		 this.viewingCamera = this.searchViewingCamRecur(this);
+		 return this.viewingCamera;
 	}
 	
 	/**
@@ -545,7 +550,6 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 	public StateChangeListener[] getStateChangeListeners(){
 		return stateChangeSupport.getListeners();
 	}
-	
 
 	/**
 	 * Removes the state change listener.
@@ -648,12 +652,31 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 //				m.m10, m.m11, m.m12,  m.m13,
 //				m.m20, m.m21, m.m22,  m.m23,
 //				m.m30, m.m31, m.m32,  m.m33);
-		pgraphics3D.modelview.apply(
-				m.m00, m.m01, m.m02,  m.m03,
-				m.m10, m.m11, m.m12,  m.m13,
-				m.m20, m.m21, m.m22,  m.m23,
-				m.m30, m.m31, m.m32,  m.m33
-		);
+		
+//		pgraphics3D.modelview.apply(
+//				m.m00, m.m01, m.m02,  m.m03,
+//				m.m10, m.m11, m.m12,  m.m13,
+//				m.m20, m.m21, m.m22,  m.m23,
+//				m.m30, m.m31, m.m32,  m.m33
+//		);
+		
+
+		if (isAndroid){
+			getRenderer().g.applyMatrix(
+					m.m00, m.m01, m.m02,  m.m03,
+					m.m10, m.m11, m.m12,  m.m13,
+					m.m20, m.m21, m.m22,  m.m23,
+					m.m30, m.m31, m.m32,  m.m33);
+		}else{
+			PlatformUtil.getModelView().apply(
+					m.m00, m.m01, m.m02,  m.m03,
+					m.m10, m.m11, m.m12,  m.m13,
+					m.m20, m.m21, m.m22,  m.m23,
+					m.m30, m.m31, m.m32,  m.m33
+			);
+		}
+
+		
 		/*
 		Matrix mInv = localInverseMatrix;
 		pgraphics3D.modelviewInv.preApply(
@@ -1664,18 +1687,17 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 		
 		g.pushMatrix();
 
-		MTLight aLight = this.getLight();
-		if (aLight != null){
-			GL gl = ((PGraphicsOpenGL)g).gl;
-			gl.glEnable(GL.GL_LIGHTING); //this is expensive
-			aLight.enable();
+		if (light != null){
+			GL10 gl = PlatformUtil.getGL();
+			gl.glEnable(GL10.GL_LIGHTING); //this is expensive
+			light.enable();
 		}
 
-		if (!this.getLocalMatrix().isIdentity())
+		if (!localMatrix.isIdentity())
 			this.applyLocalMatrix();
 
-		if (this.getClip() != null){
-			this.getClip().enableClip(g);
+		if (clip != null){
+			clip.enableClip(g);
 		}
 	}
 
@@ -1699,12 +1721,12 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 	 * @param g the g
 	 */
 	public void postDraw(PGraphics g) {
-		if (this.getClip() != null){
-			this.getClip().disableClip(g);
+		if (clip != null){
+			clip.disableClip(g);
 		}
 		
-		if (this.getChildClip() != null){
-			this.getChildClip().enableClip(g);
+		if (childClip != null){
+			childClip.enableClip(g);
 		}
 	}
 	
@@ -1719,18 +1741,17 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 			Tools3D.restoreDepthBuffer(g);
 		}
 		
-		if (this.getChildClip() != null){
-			this.getChildClip().disableClip(g);
+		if (childClip != null){
+			childClip.disableClip(g);
 		}
 			
-		renderer.popMatrix();
+		g.popMatrix();
 
 		//FIXME TRIAL
-		MTLight aLight = this.getLight();
-		if (aLight != null){
-			aLight.disable();
-			GL gl = ((PGraphicsOpenGL)g).gl;
-			gl.glDisable(GL.GL_LIGHTING);
+		if (light != null){
+			light.disable();
+			GL10 gl = PlatformUtil.getGL();
+			gl.glDisable(GL10.GL_LIGHTING);
 		}
 	}
 	
@@ -2464,7 +2485,7 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 	 * @see #globalToLocal
 	 */
 	public Vector3D getIntersectionLocal(Ray localRay) {
-//		return this.getBoundsIntersectionLocal(localRay);//FIXME TEST
+//		return this.getBoundsIntersectionLocal(localRay);
 		if (this.hasBounds()){
 			return this.getBounds().getIntersectionLocal(localRay);
 		}else{
@@ -2525,6 +2546,7 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 	 * @return the pick result
 	 */
 	public PickResult pick(float x, float y){ 
+//		System.out.println("MTComponent pick at: " + x + "," + y + " - this:" + this); 
 		PickResult pickResult = new PickResult();
 		PickInfo pickInfo = new PickInfo(x,y, Tools3D.getCameraPickRay(this.getRenderer(), this, x, y));
 		this.pickRecursive(pickInfo, pickResult, Float.MAX_VALUE, pickInfo.getPickRay(), true);
@@ -2584,8 +2606,8 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 		
 //		System.out.println("At: " + this.getName() + " Current Distance: " + currObjDist);
 		
-		if (this.isVisible() && 
-			( (onlyPickables && this.isPickable()) || !onlyPickables) 
+		if (visible && 
+			( (onlyPickables && pickable) || !onlyPickables) 
 		){
 			//Get the real ray for this obj, takes the viewing camera and viewport of this obj into account
 			//-> changes rayStartPoint and point in ray direction
@@ -2595,18 +2617,24 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 			
 			Ray invertedRay = this.getGlobalInverseMatrix().isIdentity()? currentRay : this.globalToLocal(currentRay);
 			
+			
 			/*
 			//DEBUG HELP!!!!! 
 			//This adds lines indicating the world ray and the local object ray used for ray-test
-			MTLine l1 = new MTLine(this.getRenderer(), new Vertex(currentRay.getRayStartPoint()), new Vertex(currentRay.getPointInRayDirection()));
-			this.getAncestor().addChild(l1);
-			MTLine l2 = new MTLine(this.getRenderer(), new Vertex(invertedRay.getRayStartPoint()), new Vertex(invertedRay.getPointInRayDirection()));
-			l2.setStrokeColor(255, 10, 10, 255);
-			this.getAncestor().addChild(l2);
+//			System.out.println("Ray start: " +  pickInfo.getPickRay().getRayStartPoint() + " ray end: " + pickInfo.getPickRay().getPointInRayDirection());
+			final MTLine l1 = new MTLine(this.getRenderer(), new Vertex(currentRay.getRayStartPoint()), new Vertex(currentRay.getPointInRayDirection()));
+			final MTLine l2 = new MTLine(this.getRenderer(), new Vertex(invertedRay.getRayStartPoint()), new Vertex(invertedRay.getPointInRayDirection()));
+			l2.setStrokeColor(new MTColor(255, 10, 10, 255));
+			((MTApplication)this.getRenderer()).invokeLater(new Runnable() {
+				@Override
+				public void run() {
+					getRoot().addChild(l1);
+					getRoot().addChild(l2);
+				}
+			});
 			*/
 			
 			//Check if component is clipped and only proceed if the ray intersects the clip shape
-			Clip clip = this.getClip();
 			if (clip == null || (clip != null && clip.getClipShapeIntersectionLocal(invertedRay) != null)){
 				interSP = this.getIntersectionLocal(invertedRay);
 				if (interSP != null){
@@ -2614,7 +2642,7 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 					interSP.transform(this.getGlobalMatrix());
 					// Get distance from raystart to the intersecting point
 					objDistance = interSP.getSubtracted(currentRay.getRayStartPoint()).length();
-					//System.out.println("Pick found: " + this.getName() + " InterSP: " + interSP +  " ObjDist: " + objDistance +  " Mouse Pos: " + pickInfo.getScreenXCoordinate() + "," + pickInfo.getScreenYCoordinate() + " InvRay RS:" + invertedRay.getRayStartPoint() + ",RE: " + invertedRay.getPointInRayDirection());
+//					System.out.println("Pick found: " + this.getName() + " InterSP: " + interSP +  " ObjDist: " + objDistance +  " Mouse Pos: " + pickInfo.getScreenXCoordinate() + "," + pickInfo.getScreenYCoordinate() + " InvRay RS:" + invertedRay.getRayStartPoint() + ",RE: " + invertedRay.getPointInRayDirection());
 
 //					//If the distance is the smallest yet = closest to the raystart: replace the returnObject and current distanceFrom
 //					if ( (objDistance - HIT_TOLERANCE) <= currObjDist /*|| this.isAlwaysDrawnOnTop()*/){//take isDrawnOnTop into account here?? -> OBJDistance auf 0 setzen?
@@ -2629,14 +2657,13 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 			}
 			
 			//Check for child clipping shape intersection, if not intersecting -> dont try to pick children
-			Clip childClip = this.getChildClip();
 			if (childClip != null && childClip.getClipShapeIntersectionLocal(invertedRay) == null){
 				return currObjDist;
 			}
-		}else if (this.isVisible() && this.getChildClip() != null){
+		}else if (visible && childClip != null){
 			//Check for child clipping shape intersection, if not intersecting -> dont try to pick children
 			Ray invertedRay = this.getGlobalInverseMatrix().isIdentity()? currentRay : this.globalToLocal(currentRay);
-			if (this.getChildClip().getClipShapeIntersectionLocal(invertedRay) == null){
+			if (childClip.getClipShapeIntersectionLocal(invertedRay) == null){
 				return currObjDist;
 			}
 		}
@@ -2647,7 +2674,8 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
                 if (composite) {
                     //Start a new picking with a new Pickresult obj from here
                     PickResult compositePickRes = new PickResult();
-                    float compDistance = child.pickRecursive(pickInfo, compositePickRes, Float.MAX_VALUE, currentRay, onlyPickables);
+//                    float compDistance = 
+                    	child.pickRecursive(pickInfo, compositePickRes, Float.MAX_VALUE, currentRay, onlyPickables);
 
                     //Add the composites picks to the overall picks
                     if (compositePickRes.getNearestPickResult() != null) {
@@ -2724,6 +2752,8 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 			//Re-Project unprojected world coords to projected viewport screen coords (Tuio INput)
 			float x = pickInfo.getScreenXCoordinate(); 
 			float y = pickInfo.getScreenYCoordinate(); 
+			
+//			System.out.println("MTComponent getChangedCameraPickRay at: " + x + "," + y + " obj: " + obj); 
 			
 			return Tools3D.getCameraPickRay(pa, obj, x, y);
 		}else{
@@ -2933,7 +2963,6 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 
 	
 	
-	//TODO bubble events up and down hierarchy?
 	//@Override
 	/* (non-Javadoc)
 	 * @see org.mt4j.components.interfaces.IMTComponent#processInputEvent(org.mt4j.input.inputData.MTInputEvent)
@@ -2952,12 +2981,6 @@ public class MTComponent implements IMTComponent3D, IMTInputEventListener, IGest
 			}else{
 				//Fire the same input event to all of this components' input listeners
 				this.dispatchInputEvent(inEvt);
-				
-				//TODO if (inEvt.getTarget().equals(this) && inEvt.bubbles() && !inEvt.isConsumed()){
-				// inEvt.setPhase(MTInputEvent.PHASE_BUBBLING);
-				//if (this.getParent() != null){
-				//	this.getParent().processInputEvent(inEvt);
-				//}
 			}
 		}
 		

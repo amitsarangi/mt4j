@@ -17,16 +17,16 @@
  ***********************************************************************/
 package org.mt4j.components.clipping;
 
-import javax.media.opengl.GL;
 
 import org.mt4j.components.bounds.BoundsZPlaneRectangle;
 import org.mt4j.components.visibleComponents.AbstractVisibleComponent;
 import org.mt4j.components.visibleComponents.shapes.AbstractShape;
 import org.mt4j.components.visibleComponents.shapes.MTRectangle;
+import org.mt4j.util.PlatformUtil;
 import org.mt4j.util.MT4jSettings;
 import org.mt4j.util.math.Ray;
-import org.mt4j.util.math.Tools3D;
 import org.mt4j.util.math.Vector3D;
+import org.mt4j.util.opengl.GL10;
 import org.mt4j.util.opengl.GLStencilUtil;
 
 import processing.core.PApplet;
@@ -48,7 +48,7 @@ public class Clip {
 	private AbstractVisibleComponent clipShape;
 	
 	/** The gl. */
-	private GL gl;
+	private GL10 gl;
 	
 	/**
 	 * Instantiates a new clip.
@@ -76,7 +76,8 @@ public class Clip {
 		this.clipShape = clipRect;
 		
 		if (MT4jSettings.getInstance().isOpenGlMode()){
-			this.gl = Tools3D.getGL(pApplet);	
+//			this.gl = Tools3D.getGL(pApplet);	
+			this.gl = PlatformUtil.getGL();
 		}
 	}
 	
@@ -89,7 +90,8 @@ public class Clip {
 	 * @param clipShape the clip shape
 	 */
 	public Clip(AbstractVisibleComponent clipShape) {
-		this(Tools3D.getGL(clipShape.getRenderer()), clipShape);
+//		this(Tools3D.getGL(clipShape.getRenderer()), clipShape);
+		this(PlatformUtil.getGL(), clipShape);
 	}
 	
 	
@@ -102,10 +104,12 @@ public class Clip {
 	 * @param gl the gl
 	 * @param clipShape the clip shape
 	 */
-	public Clip(GL gl, AbstractVisibleComponent clipShape) {
-		if (MT4jSettings.getInstance().isOpenGlMode()){
-			this.gl = Tools3D.getGL(clipShape.getRenderer());	
-		}
+	public Clip(GL10 gl, AbstractVisibleComponent clipShape) {
+//		if (MT4jSettings.getInstance().isOpenGlMode()){
+////			this.gl = Tools3D.getGL(clipShape.getRenderer());
+////			this.gl = GraphicsUtil.getGL();
+//		}
+		this.gl = gl;
 		this.clipShape = clipShape;
 	}
 	

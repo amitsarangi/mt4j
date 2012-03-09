@@ -210,7 +210,7 @@ public class BoundsZPlaneRectangle implements IBoundingShape {
 		Vector3D[] verts = this.boundingPointsLocal;
 //		rectNormal= this.getNormalObjSpace();
 		//Normal should actually always be (0,0,1)!
-		Vector3D testPoint = ToolsGeometry.getRayPlaneIntersection(ray, rectNormal, verts[0]);
+		final Vector3D testPoint = ToolsGeometry.getRayPlaneIntersection(ray, rectNormal, verts[0]);
 		
 		if (testPoint == null){
 			return null;

@@ -17,7 +17,7 @@
  ***********************************************************************/
 package org.mt4j.components.visibleComponents.widgets;
 
-import org.mt4j.MTApplication;
+import org.mt4j.AbstractMTApplication;
 import org.mt4j.components.MTComponent;
 import org.mt4j.components.StateChange;
 import org.mt4j.components.StateChangeEvent;
@@ -35,7 +35,7 @@ import org.mt4j.util.camera.MTCamera;
 public class MTOverlayContainer extends MTComponent {
 	
 	/** The app. */
-	private MTApplication app;
+	private AbstractMTApplication app;
 	
 	//TODO overlay layer priorites / layer numbers to sort them by priority
 	
@@ -44,7 +44,7 @@ public class MTOverlayContainer extends MTComponent {
 	 * 
 	 * @param applet the applet
 	 */
-	public MTOverlayContainer(MTApplication applet) {
+	public MTOverlayContainer(AbstractMTApplication applet) {
 		this(applet, "unnamed overlay container");
 	}
 
@@ -54,7 +54,7 @@ public class MTOverlayContainer extends MTComponent {
 	 * @param app the app
 	 * @param name the name
 	 */
-	public MTOverlayContainer(MTApplication app, String name) {
+	public MTOverlayContainer(AbstractMTApplication app, String name) {
 		super(app, name, new MTCamera(app));
 		this.app = app;
 		

@@ -22,7 +22,6 @@ import java.util.List;
 import org.mt4j.components.MTCanvas;
 import org.mt4j.input.inputData.AbstractCursorInputEvt;
 import org.mt4j.input.inputData.InputCursor;
-import org.mt4j.input.inputData.MTFingerInputEvt;
 import org.mt4j.input.inputProcessors.IInputProcessor;
 import org.mt4j.input.inputProcessors.MTGestureEvent;
 import org.mt4j.input.inputProcessors.componentProcessors.AbstractComponentProcessor;

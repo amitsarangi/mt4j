@@ -1,11 +1,11 @@
 package org.mt4j.components.css.style;
 
-import org.mt4j.MTApplication;
+import org.mt4j.AbstractMTApplication;
 import org.mt4j.components.css.util.CSSFontManager;
 import org.mt4j.components.css.util.CSSKeywords.CSSBorderStyle;
 import org.mt4j.components.css.util.CSSKeywords.CSSSelectorType;
-import org.mt4j.components.visibleComponents.font.IFont;
 import org.mt4j.util.MTColor;
+import org.mt4j.util.font.IFont;
 
 import processing.core.PImage;
 
@@ -15,7 +15,7 @@ import processing.core.PImage;
 public class CSSStyle {
 	
 	/** The MTApplication. */
-	MTApplication app;
+	AbstractMTApplication app;
 	
 	/** The uri of the style file. */
 	String uri = "";
@@ -179,7 +179,7 @@ public class CSSStyle {
 	 *
 	 * @param app the MTApplication
 	 */
-	public CSSStyle(MTApplication app) {
+	public CSSStyle(AbstractMTApplication app) {
 		this.selector = new CSSSelector("Universal", CSSSelectorType.UNIVERSAL);
 		this.app = app;
 	}
@@ -190,7 +190,7 @@ public class CSSStyle {
 	 * @param selector the selector
 	 * @param app the MTApplication
 	 */
-	public CSSStyle(CSSSelector selector,MTApplication app) {
+	public CSSStyle(CSSSelector selector,AbstractMTApplication app) {
 		super();
 		this.selector = selector;
 		this.modifiedSelector = true;
@@ -203,7 +203,7 @@ public class CSSStyle {
 	 * @param font the font (as CSSFont)
 	 * @param app the MTApplication
 	 */
-	public CSSStyle(CSSFont font,MTApplication app) {
+	public CSSStyle(CSSFont font,AbstractMTApplication app) {
 		super();
 		this.selector = new CSSSelector("Universal", CSSSelectorType.UNIVERSAL);
 		this.cssfont = font;

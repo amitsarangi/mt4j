@@ -17,7 +17,7 @@
  ***********************************************************************/
 package org.mt4j.components.visibleComponents.widgets.progressBar;
 
-import javax.media.opengl.GL;
+//import javax.media.opengl.GL;
 
 import org.mt4j.components.TransformSpace;
 import org.mt4j.components.visibleComponents.shapes.MTRectangle;
@@ -26,15 +26,17 @@ import org.mt4j.input.inputProcessors.componentProcessors.dragProcessor.DragProc
 import org.mt4j.input.inputProcessors.componentProcessors.rotateProcessor.RotateProcessor;
 import org.mt4j.input.inputProcessors.componentProcessors.scaleProcessor.ScaleProcessor;
 import org.mt4j.input.inputProcessors.componentProcessors.tapProcessor.TapProcessor;
+import org.mt4j.util.PlatformUtil;
 import org.mt4j.util.MT4jSettings;
 import org.mt4j.util.MTColor;
 import org.mt4j.util.math.Tools3D;
 import org.mt4j.util.math.Vector3D;
+import org.mt4j.util.opengl.GL10;
 
 import processing.core.PApplet;
 import processing.core.PFont;
 import processing.core.PGraphics;
-import processing.opengl.PGraphicsOpenGL;
+//import processing.opengl.PGraphicsOpenGL;
 
 /**
  * The Class MTProgressBar.
@@ -76,10 +78,10 @@ public class MTProgressBar extends MTRoundRectangle {
 	
 	
 	/** The open gl. */
-	private boolean openGl = MT4jSettings.getInstance().isOpenGlMode();
+	private boolean openGl;
 	
-	/** The pgl. */
-	private PGraphicsOpenGL pgl;
+//	/** The pgl. */
+//	private PGraphicsOpenGL pgl;
 	
 	/** The upper left. */
 	private Vector3D upperLeft;
@@ -116,9 +118,10 @@ public class MTProgressBar extends MTRoundRectangle {
 		this.progressInfo = progressInfo;
 		this.font = font;
 		this.pa = pApplet;
-		if (openGl){
-			this.pgl = ((PGraphicsOpenGL)pa.g);
-		}
+		this.openGl = MT4jSettings.getInstance().isOpenGlMode();
+//		if (openGl){
+//			this.pgl = ((PGraphicsOpenGL)pa.g);
+//		}
 		
 		this.setStrokeColor(new MTColor(0, 0, 0, 200));
 		this.setFillColor(new MTColor(200, 200, 210, 200));
@@ -214,12 +217,12 @@ public class MTProgressBar extends MTRoundRectangle {
 		}
 		
 		//gl.scissor so text gezts clipped
-		GL gl = null;
+		GL10 gl = null;
 		if (openGl){
-			gl= pgl.beginGL();
-			gl = pgl.gl;
+			/*
+			gl= GraphicsUtil.beginGL();
 			
-			gl.glEnable(GL.GL_SCISSOR_TEST);
+			gl.glEnable(GL10.GL_SCISSOR_TEST);
 			
 			//Project upper Left corner
 			upperLeftProjected = Tools3D.projectGL(gl, pgl.glu, upperLeft, upperLeftProjected);
@@ -236,7 +239,9 @@ public class MTProgressBar extends MTRoundRectangle {
 			
 			gl.glScissor(scissorStartX, scissorStartY, scissorWidth, scissorHeight);
 			
-			pgl.endGL();
+//			pgl.endGL();
+			GraphicsUtil.endGL();
+			*/
 		}
 		
 		//Draw component
@@ -274,7 +279,9 @@ public class MTProgressBar extends MTRoundRectangle {
 		}
 		
 		if (openGl){
-			gl.glDisable(GL.GL_SCISSOR_TEST);
+			/*
+			gl.glDisable(GL10.GL_SCISSOR_TEST);
+			*/
 		}
 	}
 	

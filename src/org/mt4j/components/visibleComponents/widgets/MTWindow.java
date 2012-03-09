@@ -17,8 +17,6 @@
  ***********************************************************************/
 package org.mt4j.components.visibleComponents.widgets;
 
-import javax.media.opengl.GL;
-
 import org.mt4j.components.clipping.Clip;
 import org.mt4j.components.visibleComponents.AbstractVisibleComponent;
 import org.mt4j.components.visibleComponents.shapes.AbstractShape;
@@ -28,15 +26,16 @@ import org.mt4j.input.inputProcessors.IGestureEventListener;
 import org.mt4j.input.inputProcessors.MTGestureEvent;
 import org.mt4j.input.inputProcessors.componentProcessors.scaleProcessor.ScaleEvent;
 import org.mt4j.input.inputProcessors.componentProcessors.scaleProcessor.ScaleProcessor;
+import org.mt4j.util.PlatformUtil;
 import org.mt4j.util.MT4jSettings;
 import org.mt4j.util.MTColor;
 import org.mt4j.util.math.Matrix;
 import org.mt4j.util.math.Vector3D;
 import org.mt4j.util.math.Vertex;
+import org.mt4j.util.opengl.GL10;
 
 import processing.core.PApplet;
 import processing.core.PGraphics;
-import processing.opengl.PGraphicsOpenGL;
 
 /**
  * The Class MTWindow. A round rectangle class that clips its 
@@ -104,7 +103,8 @@ public class MTWindow extends MTRoundRectangle {
 		
 		//Create inner children clip shape
 		float border = 10;
-		GL gl = ((PGraphicsOpenGL)applet.g).gl;
+//		GL gl = ((PGraphicsOpenGL)applet.g).gl;
+		GL10 gl = PlatformUtil.getGL();
 //		MTRoundRectangle clipRect =  new MTRoundRectangle(x+border, y+border, z, width-(2*border), height-(2*border), arcWidth, arcHeight, applet);
 		MTRectangle clipRect =  new MTRectangle(applet, x+border, y+border, z, width-(2*border), height-(2*border));
 		clipRect.setDrawSmooth(true);

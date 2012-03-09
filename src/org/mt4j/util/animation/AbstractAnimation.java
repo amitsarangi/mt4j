@@ -7,7 +7,7 @@ public abstract class AbstractAnimation implements IAnimation {
 	private ArrayList<IAnimationListener> animationListeners; 
 	
 	/** The target object. */
-	private Object targetObject; 
+	protected Object targetObject; 
 	
 	public AbstractAnimation(Object targetObject){
 		this.animationListeners = new ArrayList<IAnimationListener>();
@@ -22,7 +22,8 @@ public abstract class AbstractAnimation implements IAnimation {
 	 */
 	protected void fireAnimationEvent(AnimationEvent anev) {
 		synchronized(animationListeners) {
-			for (int i = 0; i < animationListeners.size(); i++) {
+			int size = animationListeners.size();
+			for (int i = 0; i < size; i++) {
 				IAnimationListener listener = (IAnimationListener)animationListeners.get(i);
 				listener.processAnimationEvent(anev);
 			}

@@ -17,10 +17,8 @@
  ***********************************************************************/
 package org.mt4j.components.visibleComponents.shapes;
 
+import java.nio.Buffer;
 import java.nio.FloatBuffer;
-import java.nio.IntBuffer;
-
-import javax.media.opengl.GL;
 
 import org.mt4j.components.bounds.BoundingSphere;
 import org.mt4j.components.bounds.IBoundingShape;
@@ -28,12 +26,16 @@ import org.mt4j.components.bounds.OrientedBoundingBox;
 import org.mt4j.components.css.style.CSSStyle;
 import org.mt4j.util.MT4jSettings;
 import org.mt4j.util.MTColor;
+import org.mt4j.util.PlatformUtil;
 import org.mt4j.util.math.BezierVertex;
 import org.mt4j.util.math.Ray;
 import org.mt4j.util.math.Tools3D;
 import org.mt4j.util.math.ToolsGeometry;
 import org.mt4j.util.math.Vector3D;
 import org.mt4j.util.math.Vertex;
+import org.mt4j.util.opengl.GL10;
+import org.mt4j.util.opengl.GL11;
+import org.mt4j.util.opengl.GL11Plus;
 import org.mt4j.util.opengl.GLTexture;
 
 import processing.core.PApplet;
@@ -80,7 +82,7 @@ public class MTPolygon extends MTCSSStylableShape{
 //		this.hasVertexColor = false;//Dont set here, gets set to false after being true in super constructor
 		
 		this.setTextureEnabled(false);
-		this.setTextureMode(PApplet.NORMALIZED);
+		this.setTextureMode(PApplet.NORMAL);
 		
 		this.setEnabled(true);
 		this.setVisible(true);
@@ -173,27 +175,28 @@ public class MTPolygon extends MTCSSStylableShape{
 	public void drawComponent(PGraphics g) {
 //		super.drawComponent(g);
 		
-		PApplet renderer = this.getRenderer();
-				
 		//Draw the shape
 		if (MT4jSettings.getInstance().isOpenGlMode()   
 		   && this.isUseDirectGL()){
-			GL gl = Tools3D.beginGL(renderer);
+//			GL gl = Tools3D.beginGL(renderer);
+			GL10 gl = PlatformUtil.beginGL();
 			
 			//Draw with PURE opengl
 			if (this.isUseDisplayList() /*&& this.getDisplayListIDs() != null && this.getDisplayListIDs()[0] != -1 && this.getDisplayListIDs()[1] != -1*/){
 				int[] displayLists = this.getGeometryInfo().getDisplayListIDs();
 				//Use Display Lists
 				if (!this.isNoFill()  && displayLists[0] != -1) 
-					gl.glCallList(displayLists[0]); //Draw fill
+//					gl.glCallList(displayLists[0]); //Draw fill
+					((GL11Plus)gl).glCallList(displayLists[0]); //Draw fill
 				if (!this.isNoStroke()  && displayLists[1] != -1)
-					gl.glCallList(displayLists[1]); //Draw outline
+//					gl.glCallList(displayLists[1]); //Draw outline
+					((GL11Plus)gl).glCallList(displayLists[1]); //Draw outline
 			}else{
 				//Use Vertex Arrays or VBOs
 				this.drawPureGl(gl);
 			}
-			Tools3D.endGL(renderer);
-			
+//			Tools3D.endGL(renderer);
+			PlatformUtil.endGL();
 		}else{ //Draw with pure proccessing commands...
 			MTColor fillColor = this.getFillColor();
 			MTColor strokeColor = this.getStrokeColor();
@@ -273,7 +276,7 @@ public class MTPolygon extends MTCSSStylableShape{
                 g.fill(v.getR(), v.getG(), v.getB(), v.getA()); //takes vertex colors into account
             }
 
-            if (this.isTextureEnabled())
+            if (this.getTexture() != null && this.isTextureEnabled())
                 g.vertex(v.x, v.y, v.z, v.getTexCoordU(), v.getTexCoordV());
             else {
                 if (v.getType() == Vector3D.BEZIERVERTEX) {
@@ -307,27 +310,30 @@ public class MTPolygon extends MTCSSStylableShape{
 	 * 
 	 * @param gl the gl
 	 */
-	protected void drawPureGl(GL gl){
+	protected void drawPureGl(GL10 gl){
+		GL11 gl11 = PlatformUtil.getGL11();
+		GL11Plus gl11Plus = PlatformUtil.getGL11Plus();
+		
 //		/*
 		//Get display array/buffer pointers
 		FloatBuffer tbuff 			= this.getGeometryInfo().getTexBuff();
 		FloatBuffer vertBuff 		= this.getGeometryInfo().getVertBuff();
 		FloatBuffer colorBuff 		= this.getGeometryInfo().getColorBuff();
 		FloatBuffer strokeColBuff 	= this.getGeometryInfo().getStrokeColBuff();
-		IntBuffer indexBuff 		= this.getGeometryInfo().getIndexBuff();
+		Buffer indexBuff 			= this.getGeometryInfo().getIndexBuff();
 		
 		//Enable Pointers, set vertex array pointer
-		gl.glEnableClientState(GL.GL_VERTEX_ARRAY);
-		gl.glEnableClientState(GL.GL_COLOR_ARRAY);
+		gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
+		gl.glEnableClientState(GL10.GL_COLOR_ARRAY);
 		if (this.isUseVBOs()){//Vertices
-			gl.glBindBuffer(GL.GL_ARRAY_BUFFER, this.getGeometryInfo().getVBOVerticesName());
-			gl.glVertexPointer(3, GL.GL_FLOAT, 0, 0);
+			gl11.glBindBuffer(GL11.GL_ARRAY_BUFFER, this.getGeometryInfo().getVBOVerticesName());
+			gl11.glVertexPointer(3, GL10.GL_FLOAT, 0, 0);
 		}else{
-			gl.glVertexPointer(3, GL.GL_FLOAT, 0, vertBuff);
+			gl.glVertexPointer(3, GL10.GL_FLOAT, 0, vertBuff);
 		}
 		
 		//Default texture target
-		int textureTarget = GL.GL_TEXTURE_2D;
+		int textureTarget = GL10.GL_TEXTURE_2D;
 		
 		/////// DRAW SHAPE ///////
 		if (!this.isNoFill()){ 
@@ -344,50 +350,50 @@ public class MTPolygon extends MTCSSStylableShape{
 				gl.glEnable(textureTarget);
 				gl.glBindTexture(textureTarget, tex.getTextureID());
 				
-				gl.glEnableClientState(GL.GL_TEXTURE_COORD_ARRAY);
+				gl.glEnableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
 				
 				if (this.isUseVBOs()){//Texture
-					gl.glBindBuffer(GL.GL_ARRAY_BUFFER, this.getGeometryInfo().getVBOTextureName());
-					gl.glTexCoordPointer(2, GL.GL_FLOAT, 0, 0);
+					gl11.glBindBuffer(GL11.GL_ARRAY_BUFFER, this.getGeometryInfo().getVBOTextureName());
+					gl11.glTexCoordPointer(2, GL10.GL_FLOAT, 0, 0);
 				}else
-					gl.glTexCoordPointer(2, GL.GL_FLOAT, 0, tbuff);
+					gl.glTexCoordPointer(2, GL10.GL_FLOAT, 0, tbuff);
 				
 				textureDrawn = true;
 			}
 			
 			if (this.isUseVBOs()){//Color
-				gl.glBindBuffer(GL.GL_ARRAY_BUFFER, this.getGeometryInfo().getVBOColorName());
-				gl.glColorPointer(4, GL.GL_FLOAT, 0, 0);
+				gl11.glBindBuffer(GL11.GL_ARRAY_BUFFER, this.getGeometryInfo().getVBOColorName());
+				gl11.glColorPointer(4, GL10.GL_FLOAT, 0, 0);
 			}else{
-				gl.glColorPointer(4, GL.GL_FLOAT, 0, colorBuff);
+				gl.glColorPointer(4, GL10.GL_FLOAT, 0, colorBuff);
 			}
 			
 			//Normals
 			if (this.getGeometryInfo().isContainsNormals()){
-				gl.glEnableClientState(GL.GL_NORMAL_ARRAY);
+				gl.glEnableClientState(GL10.GL_NORMAL_ARRAY);
 				if (this.isUseVBOs()){
-					gl.glBindBuffer(GL.GL_ARRAY_BUFFER, this.getGeometryInfo().getVBONormalsName());
-					gl.glNormalPointer(GL.GL_FLOAT, 0, 0); 
+					gl11.glBindBuffer(GL11.GL_ARRAY_BUFFER, this.getGeometryInfo().getVBONormalsName());
+					gl11.glNormalPointer(GL10.GL_FLOAT, 0, 0); 
 				}else{
-					gl.glNormalPointer(GL.GL_FLOAT, 0, this.getGeometryInfo().getNormalsBuff());
+					gl.glNormalPointer(GL10.GL_FLOAT, 0, this.getGeometryInfo().getNormalsBuff());
 				}
 			}
 			
 			//DRAW //Draw with drawElements if geometry is indexed, else draw with drawArrays!
 			if (this.getGeometryInfo().isIndexed()){
-				gl.glDrawElements(this.getFillDrawMode(), indexBuff.limit(), GL.GL_UNSIGNED_INT, indexBuff);
-//				gl.glDrawElements(this.getFillDrawMode(), indexBuff.capacity(), GL.GL_UNSIGNED_INT, indexBuff);
+				gl.glDrawElements(this.getFillDrawMode(), indexBuff.limit(), GL10.GL_UNSIGNED_SHORT, indexBuff);
+//				gl.glDrawElements(this.getFillDrawMode(), indexBuff.capacity(), GL11Plus.GL_UNSIGNED_INT, indexBuff);
 			}else{
 				gl.glDrawArrays(this.getFillDrawMode(), 0, vertBuff.capacity()/3);
 			}
 			
 			if (this.getGeometryInfo().isContainsNormals()){
-				gl.glDisableClientState(GL.GL_NORMAL_ARRAY);
+				gl.glDisableClientState(GL10.GL_NORMAL_ARRAY);
 			}
 			
 			if (textureDrawn){
 				gl.glBindTexture(textureTarget, 0);//Unbind texture
-				gl.glDisableClientState(GL.GL_TEXTURE_COORD_ARRAY);
+				gl.glDisableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
 				gl.glDisable(textureTarget); //weiter nach unten?
 			}
 		}
@@ -395,10 +401,10 @@ public class MTPolygon extends MTCSSStylableShape{
 		////////// DRAW OUTLINE ////////
 		if (!this.isNoStroke()){ 
 			if (this.isUseVBOs()){
-				gl.glBindBuffer(GL.GL_ARRAY_BUFFER, this.getGeometryInfo().getVBOStrokeColorName());
-				gl.glColorPointer(4, GL.GL_FLOAT, 0, 0);
+				gl11.glBindBuffer(GL11.GL_ARRAY_BUFFER, this.getGeometryInfo().getVBOStrokeColorName());
+				gl11.glColorPointer(4, GL10.GL_FLOAT, 0, 0);
 			}else{
-				gl.glColorPointer(4, GL.GL_FLOAT, 0, strokeColBuff);
+				gl.glColorPointer(4, GL10.GL_FLOAT, 0, strokeColBuff);
 			}
 			
 			
@@ -413,8 +419,8 @@ public class MTPolygon extends MTCSSStylableShape{
 			//SET LINE STIPPLE
 				short lineStipple = this.getLineStipple();
 				if (lineStipple != 0){
-					gl.glLineStipple(1, lineStipple);
-					gl.glEnable(GL.GL_LINE_STIPPLE);
+					gl11Plus.glLineStipple(1, lineStipple);
+					gl.glEnable(GL11Plus.GL_LINE_STIPPLE);
 				}
 //			*/
 			
@@ -424,15 +430,15 @@ public class MTPolygon extends MTCSSStylableShape{
 			//DRAW Polygon outline
 			//Draw with drawElements if geometry is indexed, else draw with drawArrays!
 			if (this.getGeometryInfo().isIndexed()){
-				gl.glDrawElements(GL.GL_LINE_STRIP, indexBuff.limit(), GL.GL_UNSIGNED_INT, indexBuff);
+				gl.glDrawElements(GL10.GL_LINE_STRIP, indexBuff.limit(), GL10.GL_UNSIGNED_SHORT, indexBuff);
 //				gl.glDrawElements(this.getFillDrawMode(), indexBuff.capacity(), GL.GL_UNSIGNED_INT, indexBuff);
 			}else{
-				gl.glDrawArrays(GL.GL_LINE_STRIP, 0, vertBuff.capacity()/3); 
+				gl.glDrawArrays(GL10.GL_LINE_STRIP, 0, vertBuff.capacity()/3); 
 			}
 			
 			//RESET LINE STIPPLE
 			if (lineStipple != 0){
-				gl.glDisable(GL.GL_LINE_STIPPLE);
+				gl.glDisable(GL11Plus.GL_LINE_STIPPLE);
 			}
 			
 			//FIXME TEST 
@@ -443,13 +449,13 @@ public class MTPolygon extends MTCSSStylableShape{
 			 */
 		}
 		
-		gl.glDisableClientState(GL.GL_VERTEX_ARRAY);
-		gl.glDisableClientState(GL.GL_COLOR_ARRAY);
+		gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
+		gl.glDisableClientState(GL10.GL_COLOR_ARRAY);
 		
 		//TEST
 		if (this.isUseVBOs()){
-			gl.glBindBuffer(GL.GL_ARRAY_BUFFER, 0);
-			gl.glBindBuffer(GL.GL_ELEMENT_ARRAY_BUFFER, 0);
+			gl11.glBindBuffer(GL11.GL_ARRAY_BUFFER, 0);
+			gl11.glBindBuffer(GL11.GL_ELEMENT_ARRAY_BUFFER, 0);
 		}
 //		*/
 	}
@@ -553,127 +559,7 @@ public class MTPolygon extends MTCSSStylableShape{
 	
 	
 	
-	/**
-	 * Scales this shape to the given width and height. Relative to its parent frame of reference.
-	 * <br>Uses the shapes bounding shape for calculation.
-	 * 
-	 * @param width the width
-	 * @param height the height
-	 * 
-	 * @return true, if sets the size xy relative to parent
-	 * 
-	 * returns false if negative values are put in
-	 */
-	public boolean setSizeXYRelativeToParent(float width, float height){
-		if (width > 0 && height > 0){
-			Vector3D centerPoint = this.getCenterPointRelativeToParent();
-			this.scale( (1f/this.getWidthXYRelativeToParent()) * width, (1f/this.getHeightXYRelativeToParent()) * height, 1, centerPoint);
-			return true;
-		}else
-			return false;
-	}
-	
-	/**
-	 * Scales this shape to the given width and height in the XY-Plane. Relative to world space.
-	 * <br>Uses the shapes bounding shape for calculation.
-	 * 
-	 * @param width the width
-	 * @param height the height
-	 * 
-	 * @return true, if sets the size xy global
-	 */
-	public boolean setSizeXYGlobal(float width, float height){
-		if (width > 0 && height > 0){
-			Vector3D centerPoint = this.getCenterPointGlobal();
-			this.scaleGlobal( (1f/this.getWidthXYGlobal())* width , (1f/this.getHeightXYGlobal()) * height, 1, centerPoint);
-			return true;
-		}else
-			return false;
-	}
-	
-	
-	/**
-	 * Scales the shape to the given height relative to parent space.
-	 * Aspect ratio is preserved! The scaling is done Axis aligned, so
-	 * shearing might occour if rotated!
-	 * <br>Uses the shapes bounding shape for calculation.
-	 * 
-	 * @param height the height
-	 * 
-	 * @return true, if the height isnt negative
-	 */
-	public boolean setHeightXYRelativeToParent(float height){
-		if (height > 0){
-			Vector3D centerPoint = this.getCenterPointRelativeToParent();
-			float factor = (1f/this.getHeightXYRelativeToParent()) * height;
-			this.scale(factor, factor, 1, centerPoint);
-			return true;
-		}else
-			return false;
-	}
-	
-	
-	/**
-	 * Scales the shape to the given height relative to world space.
-	 * Aspect ratio is preserved! The scaling is done Axis aligned, so
-	 * shearing might occour if rotated!
-	 * <br>Uses the shapes bounding shape for calculation.
-	 * 
-	 * @param height the height
-	 * 
-	 * @return true, if sets the height xy global
-	 */
-	public boolean setHeightXYGlobal(float height){
-		if (height > 0){
-			Vector3D centerPoint = this.getCenterPointGlobal();
-			float factor = (1f/this.getHeightXYGlobal())* height;
-			this.scaleGlobal(factor, factor, 1, centerPoint);
-			return true;
-		}else
-			return false;
-	}
-	
-	/**
-	 * Scales the shape to the given width relative to parent space.
-	 * Aspect ratio is preserved! 
-	 * <br>NOTE: The scaling is done Axis aligned, so
-	 * shearing might occour if rotated before!
-	 * <br>Uses the shapes bounding shape for calculation.
-	 * 
-	 * @param width the width
-	 * 
-	 * @return true, if the width isnt negative
-	 */
-	public boolean setWidthXYRelativeToParent(float width){
-		if (width > 0){
-			Vector3D centerPoint = this.getCenterPointRelativeToParent(); 
-			float factor = (1f/this.getWidthXYRelativeToParent()) * width;
-			this.scale(factor, factor, 1, centerPoint);
-			return true;
-		}else
-			return false;
-	}
-	
-	
-	/**
-	 * Scales the shape to the given width relative to world space.
-	 * Aspect ratio is preserved! The scaling is done Axis aligned, so
-	 * shearing might occour if rotated!
-	 * <br>Uses the shapes bounding shape for calculation.
-	 * 
-	 * @param width the width
-	 * 
-	 * @return true, if sets the width xy global
-	 */
-	public boolean setWidthXYGlobal(float width){
-		if (width > 0){
-			Vector3D centerPoint = this.getCenterPointGlobal();
-			float factor = (1f/this.getWidthXYGlobal())* width;
-			this.scaleGlobal(factor, factor, 1, centerPoint);
-			return true;
-		}else
-			return false;
-	}
+
 
 	
 	/* (non-Javadoc)

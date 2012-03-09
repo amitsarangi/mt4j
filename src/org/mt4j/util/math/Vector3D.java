@@ -17,7 +17,6 @@
  ***********************************************************************/
 package org.mt4j.util.math;
 
-import java.awt.Point;
 
 
 /**
@@ -859,14 +858,14 @@ public class Vector3D {
 		this.w = w;
 	}
 		
-	/**
-	 * Converts the 3D homogenous vector to a 2D jawa.awt.point, throwing away the Z-Value
-	 * 
-	 * @return the point
-	 */
-    public Point getJava2DPoint(){ 
-			return new Point(Math.round(x),Math.round(y));
-	}
+//	/**
+//	 * Converts the 3D homogenous vector to a 2D jawa.awt.point, throwing away the Z-Value
+//	 * 
+//	 * @return the point
+//	 */
+//    public Point getJava2DPoint(){ 
+//			return new Point(Math.round(x),Math.round(y));
+//	}
     
 	/**
 	 * Gets the y.
@@ -1034,7 +1033,7 @@ public class Vector3D {
      * @see java.lang.Object#toString()
      */
     public String toString(){
-    	return " X:" + this.getX() + " Y:" + this.getY() + " Z:" + this.getZ() + " W:" + this.getW();
+    	return "(" + x + "," + y + "," + z + "," + w + ")";
     }
     
 //    //TODO CHECK IF THIS WORKS; TOO

@@ -21,21 +21,18 @@ import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.media.opengl.GL;
-
-import org.mt4j.MTApplication;
+import org.mt4j.AbstractMTApplication;
+import org.mt4j.util.PlatformUtil;
+import org.mt4j.util.MT4jSettings;
 import org.mt4j.util.logging.ILogger;
 import org.mt4j.util.logging.MTLoggerFactory;
 import org.mt4j.util.math.Tools3D;
 import org.mt4j.util.math.ToolsBuffers;
-import org.mt4j.util.math.ToolsMath;
 import org.mt4j.util.opengl.GLTexture.EXPANSION_FILTER;
 import org.mt4j.util.opengl.GLTexture.SHRINKAGE_FILTER;
-import org.mt4j.util.opengl.GLTexture.TEXTURE_TARGET;
 import org.mt4j.util.opengl.GLTexture.WRAP_MODE;
 
 import processing.core.PApplet;
-import processing.opengl.PGraphicsOpenGL;
 
 /**
  * This class abstracts a opengl frame buffer object for easier usage.
@@ -54,7 +51,8 @@ public class GLFBO {
 		logger.setLevel(ILogger.INFO);
 	}
 	
-	private GL gl;
+//	private GL gl;
+	private GL20 gl;
 	
 //	private int[] fboID;
 	private int fboID;
@@ -101,7 +99,14 @@ public class GLFBO {
 	public GLFBO(PApplet pa, int width, int height, boolean attachStencilBuffer) {
 		super();
 		this.pa = pa;
-		this.gl = ((PGraphicsOpenGL)pa.g).gl;
+//		this.gl = ((PGraphicsOpenGL)pa.g).gl;
+		this.gl = PlatformUtil.getGL20();
+		if (this.gl == null){
+			this.gl = PlatformUtil.getGL11Plus();
+		}
+		if (this.gl == null){
+			System.err.println("Error initializing GLFBO - no GL 2.0 compatible OpenGL implementation available!");
+		}
 		
 		this.stencilBufferAttached = attachStencilBuffer;
 		
@@ -119,7 +124,7 @@ public class GLFBO {
 		this.textures = new ArrayList<GLTexture>();
 		
 		//FIXME FBO STACK TEST!!
-		this.fboStack = GLFboStack.getInstance(); 
+		this.fboStack = GLFboStack.getInstance(gl); 
 		
 		this.initFBO();
 	}
@@ -127,33 +132,34 @@ public class GLFBO {
 	
 	private void initFBO(){
 		IntBuffer buffer = ToolsBuffers.createIntBuffer(1);
-		gl.glGenFramebuffersEXT(1, buffer);
+		gl.glGenFramebuffers(1, buffer);
 		this.fboID = buffer.get(0);
-		gl.glBindFramebufferEXT(GL.GL_FRAMEBUFFER_EXT, fboID);
+		gl.glBindFramebuffer(GL20.GL_FRAMEBUFFER, fboID);
 		
 		//Create depth buffer
 		IntBuffer buffer2 = ToolsBuffers.createIntBuffer(1);
-		gl.glGenRenderbuffersEXT(1, buffer2);
+		gl.glGenRenderbuffers(1, buffer2);
 		this.depthRBID = buffer2.get(0);
-		gl.glBindRenderbufferEXT(GL.GL_RENDERBUFFER_EXT, depthRBID);
+		gl.glBindRenderbuffer(GL20.GL_RENDERBUFFER, depthRBID);
 		
-		if (this.isStencilBufferAttached()){
+		if (this.isStencilBufferAttached() && PlatformUtil.isDesktop()){
 			//THIS CREATES A FBO WITH A STENCIL BUFFER! HAS TO BE SUPPORTED ON THE PLATFORM!
-			gl.glRenderbufferStorageEXT(GL.GL_RENDERBUFFER_EXT, GL.GL_DEPTH24_STENCIL8_EXT, this.width, this.height);
+			gl.glRenderbufferStorage(GL20.GL_RENDERBUFFER, GL11Plus.GL_DEPTH24_STENCIL8_EXT, this.width, this.height);
+//			gl.glRenderbufferStorageEXT(GL.GL_RENDERBUFFER_EXT, GL.GL_DEPTH24_STENCIL8_EXT, this.width, this.height);
 		}else{
 			//Creates a fbo with a depth but without a stencil buffer
-			gl.glRenderbufferStorageEXT(GL.GL_RENDERBUFFER_EXT, GL.GL_DEPTH_COMPONENT, this.width, this.height); //orginal	
+			gl.glRenderbufferStorage(GL20.GL_RENDERBUFFER, GL20.GL_DEPTH_COMPONENT, this.width, this.height); //orginal	
 		}
 		
 		//Attach depth buffer to FBO
-		gl.glFramebufferRenderbufferEXT(GL.GL_FRAMEBUFFER_EXT, GL.GL_DEPTH_ATTACHMENT_EXT, GL.GL_RENDERBUFFER_EXT, depthRBID);
+		gl.glFramebufferRenderbuffer(GL20.GL_FRAMEBUFFER, GL20.GL_DEPTH_ATTACHMENT, GL20.GL_RENDERBUFFER, depthRBID);
 		
-		if (this.isStencilBufferAttached()){
+		if (this.isStencilBufferAttached() && PlatformUtil.isDesktop()){
 			//Attach stencil buffer to FBO - HAS TO BE SUPPORTED ON THE PLATFORM!
-			gl.glFramebufferRenderbufferEXT(GL.GL_FRAMEBUFFER_EXT, GL.GL_STENCIL_ATTACHMENT_EXT, GL.GL_RENDERBUFFER_EXT, depthRBID);			
+			gl.glFramebufferRenderbuffer(GL20.GL_FRAMEBUFFER, GL20.GL_STENCIL_ATTACHMENT, GL20.GL_RENDERBUFFER, depthRBID);			
 		}
 		
-		gl.glBindFramebufferEXT(GL.GL_FRAMEBUFFER_EXT, 0);
+		gl.glBindFramebuffer(GL20.GL_FRAMEBUFFER, 0);
 	}
 	
 	
@@ -178,7 +184,7 @@ public class GLFBO {
 	public GLTexture addNewTexture(boolean useMipMap){
 		this.bind();
 
-		boolean isPowerOfTwoDimension = ToolsMath.isPowerOfTwo(this.width) && ToolsMath.isPowerOfTwo(this.height);
+//		boolean isPowerOfTwoDimension = ToolsMath.isPowerOfTwo(this.width) && ToolsMath.isPowerOfTwo(this.height);
 		
 		GLTextureSettings texSettings = new GLTextureSettings();
 		texSettings.wrappingHorizontal = WRAP_MODE.CLAMP_TO_EDGE;
@@ -205,23 +211,31 @@ public class GLFBO {
 ////		tp.wrap_s = GL.GL_CLAMP;
 ////		tp.wrap_t = GL.GL_CLAMP;
 		
-		//Set texture TARGET
-		if (isPowerOfTwoDimension){
-//			tp.target = GLTextureParameters.NORMAL;
-			texSettings.target = TEXTURE_TARGET.TEXTURE_2D;
-			logger.debug("Power of 2 FBO texture created");
-		}else{
-//			tp.target = GLTextureParameters.RECTANGULAR;	
-			texSettings.target = TEXTURE_TARGET.RECTANGULAR;
-			logger.debug("Rectangular FBO texture created");
-		}
+//		//Set texture TARGET
+//		if (isPowerOfTwoDimension){
+////			tp.target = GLTextureParameters.NORMAL;
+//			texSettings.target = TEXTURE_TARGET.TEXTURE_2D;
+//			logger.debug("Power of 2 FBO texture created");
+//		}else{
+////			tp.target = GLTextureParameters.RECTANGULAR;	
+//			texSettings.target = TEXTURE_TARGET.RECTANGULAR;
+//			logger.debug("Rectangular FBO texture created");
+//		}
 		
 //		GLTexture tex = new GLTexture(pa, this.width, this.height, tp, true, 0);
 		GLTexture tex = new GLTexture(this.pa, texSettings);
+//		if (!(ToolsMath.isPowerOfTwo(this.width) && ToolsMath.isPowerOfTwo(this.height)) && GraphicsUtil.isNPOTTextureSupported()){
+//			tex.width 		= this.width;
+//			tex.height 		= this.height;
+//			tex.glWidth 	= width;
+//    		tex.glHeight 	= height;
+//    	}else{
+//    		tex.width 		= this.width;
+//    		tex.height 		= this.height;
+//    		tex.glWidth 	= ToolsMath.nextPowerOfTwo(width);
+//    		tex.glHeight 	= ToolsMath.nextPowerOfTwo(height);
+//    	}
 		tex.setupGLTexture(this.width, this.height);
-		tex.width = this.width;
-		tex.height = this.height; //To prevent init() call in loadGLTexture().. not even neccessary with fbo usage?
-		
 		gl.glBindTexture(tex.getTextureTarget(), tex.getTextureID());
 		
 		//Use extension to automatically generate mipmaps for the fbo textures 
@@ -230,9 +244,9 @@ public class GLFBO {
 //			gl.glGenerateMipmapEXT(tex.getTextureTarget()); //FIXME seems to crash JVM after app close! //FIXME do this only after drawing finished to fbo texture
 
 		//Attach texture to FBO
-		gl.glFramebufferTexture2DEXT(
-				GL.GL_FRAMEBUFFER_EXT, 
-				GL.GL_COLOR_ATTACHMENT0_EXT,
+		gl.glFramebufferTexture2D(
+				GL20.GL_FRAMEBUFFER, 
+				GL20.GL_COLOR_ATTACHMENT0,
 				tex.getTextureTarget(), tex.getTextureID(), 0);
 
 		gl.glBindTexture(tex.getTextureTarget(), 0);
@@ -258,17 +272,17 @@ public class GLFBO {
 		*/
 //		/*
 		//F�r MIIPMAPPING
-//		gl.glTexParameteri(tex.getTextureTarget(), GL.GL_GENERATE_MIPMAP, GL.GL_TRUE); // automatic mipmap
-		gl.glTexParameterf(tex.getTextureTarget(), GL.GL_TEXTURE_WRAP_S, GL.GL_CLAMP_TO_EDGE);
-		gl.glTexParameterf(tex.getTextureTarget(), GL.GL_TEXTURE_WRAP_T, GL.GL_CLAMP_TO_EDGE);
-		gl.glTexParameteri(tex.getTextureTarget(), GL.GL_TEXTURE_MAG_FILTER, GL.GL_LINEAR);
-		gl.glTexParameteri(tex.getTextureTarget(), GL.GL_TEXTURE_MIN_FILTER, GL.GL_LINEAR);
-		gl.glGenerateMipmapEXT(tex.getTextureTarget());
+//		gl.glTexParameteri(tex.getTextureTarget(), GL20.GL_GENERATE_MIPMAP, GL20.GL_TRUE); // automatic mipmap
+		gl.glTexParameterf(tex.getTextureTarget(), GL20.GL_TEXTURE_WRAP_S, GL20.GL_CLAMP_TO_EDGE);
+		gl.glTexParameterf(tex.getTextureTarget(), GL20.GL_TEXTURE_WRAP_T, GL20.GL_CLAMP_TO_EDGE);
+		gl.glTexParameteri(tex.getTextureTarget(), GL20.GL_TEXTURE_MAG_FILTER, GL20.GL_LINEAR);
+		gl.glTexParameteri(tex.getTextureTarget(), GL20.GL_TEXTURE_MIN_FILTER, GL20.GL_LINEAR);
+		gl.glGenerateMipmap(tex.getTextureTarget());
 //		 */
 		//Attach texture to FBO
-		gl.glFramebufferTexture2DEXT(
-				GL.GL_FRAMEBUFFER_EXT, 
-				GL.GL_COLOR_ATTACHMENT0_EXT,
+		gl.glFramebufferTexture2D(
+				GL20.GL_FRAMEBUFFER, 
+				GL20.GL_COLOR_ATTACHMENT0,
 				tex.getTextureTarget(), tex.getTextureID(), 0);
 		
 		gl.glBindTexture(tex.getTextureTarget(), 0);
@@ -312,17 +326,17 @@ public class GLFBO {
 		this.bind();
 		if (clearColorBuffer){
 			gl.glClearColor(r, g, b, a);
-			gl.glClear(GL.GL_COLOR_BUFFER_BIT);
+			gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		}
 		if (clearDepthBuffer){
-			gl.glClear(GL.GL_DEPTH_BUFFER_BIT);
+			gl.glClear(GL20.GL_DEPTH_BUFFER_BIT);
 		}
 		this.unBind();
 	}
 	
 	
 	protected void bind(){
-		gl.glBindFramebufferEXT(GL.GL_FRAMEBUFFER_EXT, fboID);
+		gl.glBindFramebuffer(GL20.GL_FRAMEBUFFER, fboID);
 		//gl.glBindRenderbufferEXT(GL.GL_RENDERBUFFER_EXT, depthRBID);
 	}
 	
@@ -349,7 +363,11 @@ public class GLFBO {
         setReadBuffer(GL.GL_NONE);
 		*/
 		
-		gl.glPushAttrib(GL.GL_VIEWPORT_BIT);
+		if (gl instanceof GL11Plus) {
+			GL11Plus gl11Plus = (GL11Plus) gl;
+			gl11Plus.glPushAttrib(GL11Plus.GL_VIEWPORT_BIT);
+		}
+		
 //		gl.glDrawBuffer(GL.GL_NONE);
 //		gl.glViewport(0, 0, width, height);
 //		gl.glViewport(-50,-50, pa.width+100, pa.height+100);
@@ -367,7 +385,14 @@ public class GLFBO {
 	 * 
 	 */
 	public void stopRenderToTexture(){
-		gl.glPopAttrib();
+//		gl.glPopAttrib();
+		if (gl instanceof GL11Plus) {
+			GL11Plus gl11Plus = (GL11Plus) gl;
+			gl11Plus.glPopAttrib();
+		}else{
+//			gl.glViewport(0, 0, pa.width, pa.height); //Restore viewport to max
+			gl.glViewport(0, 0, MT4jSettings.getInstance().getWindowWidth(), MT4jSettings.getInstance().getWindowHeight()); //Restore viewport to max
+		}
 
 		//FIXME FBO STACK TEST
 //		this.unBind();
@@ -377,11 +402,11 @@ public class GLFBO {
 	
 	protected void unBind() {
 		//gl.glBindRenderbufferEXT(GL.GL_RENDERBUFFER_EXT, 0);
-		gl.glBindFramebufferEXT(GL.GL_FRAMEBUFFER_EXT, 0);
+		gl.glBindFramebuffer(GL11Plus.GL_FRAMEBUFFER_EXT, 0);
 	}
 	
 	
-
+	/*
 	private void setReadBuffer(int attachVal) {
 		gl.glReadBuffer(attachVal);
 	}
@@ -389,7 +414,7 @@ public class GLFBO {
 	private void setDrawBuffer(int attachVal) {
 		gl.glDrawBuffer(attachVal);
 	}
-
+	 */
 	
 	
 	/**
@@ -400,7 +425,7 @@ public class GLFBO {
 			final IntBuffer id = ToolsBuffers.createIntBuffer(1);
 			id.put(fboID);
 			id.rewind();
-			gl.glDeleteFramebuffersEXT(id.limit(), id);
+			gl.glDeleteFramebuffers(id.limit(), id);
 			fboID = 0;
 		}
 
@@ -408,7 +433,7 @@ public class GLFBO {
 			final IntBuffer id = ToolsBuffers.createIntBuffer(1);
 			id.put(depthRBID);
 			id.rewind();
-			gl.glDeleteRenderbuffersEXT(id.limit(), id);
+			gl.glDeleteRenderbuffers(id.limit(), id);
 			depthRBID = 0;
 		}
 		
@@ -418,8 +443,8 @@ public class GLFBO {
 	@Override
 	protected void finalize() throws Throwable {
 		logger.debug("Finalizing - " + this);
-		if (this.pa instanceof MTApplication) {
-			MTApplication mtApp = (MTApplication) this.pa;
+		if (this.pa instanceof AbstractMTApplication) {
+			AbstractMTApplication mtApp = (AbstractMTApplication) this.pa;
 			mtApp.invokeLater(new Runnable() {
 				public void run() {
 					destroy();
@@ -487,31 +512,31 @@ public class GLFBO {
 	 gl.glFramebufferRenderbufferEXT(GL.GL_FRAMEBUFFER_EXT, GL.GL_STENCIL_ATTACHMENT_EXT, GL.GL_RENDERBUFFER_EXT, depthStencilBuffer[0]);
 	 */
 
-	public void checkFBOComplete(GL gl, int fboID) {
-		final int framebuffer = gl.glCheckFramebufferStatusEXT(GL.GL_FRAMEBUFFER_EXT);
+	public void checkFBOComplete(GL20 gl, int fboID) {
+		final int framebuffer = gl.glCheckFramebufferStatus(GL20.GL_FRAMEBUFFER);
 		switch (framebuffer) {
-		case GL.GL_FRAMEBUFFER_COMPLETE_EXT:
+		case GL20.GL_FRAMEBUFFER_COMPLETE:
 			logger.debug("FRAMEBUFFER STATUS COMPLETE!");
 			break;
-		case GL.GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT_EXT:
-			doError(", has caused a GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT_EXT exception", fboID);
+		case GL20.GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT:
+			doError(", has caused a GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT exception", fboID);
 			break;
-		case GL.GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT_EXT:
-			doError(", has caused a GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT_EXT exception", fboID);
+		case GL20.GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT:
+			doError(", has caused a GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT exception", fboID);
 			break;
-		case GL.GL_FRAMEBUFFER_INCOMPLETE_DIMENSIONS_EXT:
-			doError(", has caused a GL_FRAMEBUFFER_INCOMPLETE_DIMENSIONS_EXT exception", fboID);
+		case GL20.GL_FRAMEBUFFER_INCOMPLETE_DIMENSIONS:
+			doError(", has caused a GL_FRAMEBUFFER_INCOMPLETE_DIMENSIONS exception", fboID);
 			break;
-		case GL.GL_FRAMEBUFFER_INCOMPLETE_DRAW_BUFFER_EXT:
+		case GL11Plus.GL_FRAMEBUFFER_INCOMPLETE_DRAW_BUFFER_EXT:
 			doError(", has caused a GL_FRAMEBUFFER_INCOMPLETE_DRAW_BUFFER_EXT exception", fboID);
 			break;
-		case GL.GL_FRAMEBUFFER_INCOMPLETE_FORMATS_EXT:
+		case GL11Plus.GL_FRAMEBUFFER_INCOMPLETE_FORMATS_EXT:
 			doError(", has caused a GL_FRAMEBUFFER_INCOMPLETE_FORMATS_EXT exception", fboID);
 			break;
-		case GL.GL_FRAMEBUFFER_INCOMPLETE_READ_BUFFER_EXT:
+		case GL11Plus.GL_FRAMEBUFFER_INCOMPLETE_READ_BUFFER_EXT:
 			doError(", has caused a GL_FRAMEBUFFER_INCOMPLETE_READ_BUFFER_EXT exception", fboID);
 			break;
-		case GL.GL_FRAMEBUFFER_UNSUPPORTED_EXT:
+		case GL20.GL_FRAMEBUFFER_UNSUPPORTED:
 			doError(", has caused a GL_FRAMEBUFFER_UNSUPPORTED_EXT exception", fboID);
 			break;
 		default:

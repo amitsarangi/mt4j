@@ -17,6 +17,7 @@
  ***********************************************************************/
 package org.mt4j.components.visibleComponents;
 
+import org.mt4j.AbstractMTApplication;
 import org.mt4j.components.MTComponent;
 import org.mt4j.components.clipping.Clip;
 import org.mt4j.components.clipping.FillPaint;
@@ -180,7 +181,7 @@ public abstract class AbstractVisibleComponent extends MTComponent {
 	public void postDrawChildren(PGraphics g) {
 		//FIXME this is a hack to draw the outline of the shape
 		//over the clipped children, to not process the clipmask
-		//in the superclass we set it to null temporary
+		//in the superclass we temporarily set it to null
 		Clip saved = this.getChildClip();
 		if (saved != null){
 			saved.disableClip(g);
@@ -409,10 +410,11 @@ public abstract class AbstractVisibleComponent extends MTComponent {
 	 * @param stipplePattern the stipple pattern
 	 */
 	public void setLineStipple(short stipplePattern){
-		if (!MT4jSettings.getInstance().isOpenGlMode()){
+		if (MT4jSettings.getInstance().isOpenGlMode() && this.getRenderer() instanceof AbstractMTApplication && ((AbstractMTApplication) this.getRenderer()).isGL11PlusAvailable()){
+			styleInfo.setLineStipple(stipplePattern);
+		}else{
 			System.err.println("Cant set line stipple pattern if not using the OpenGL renderer. " + (this));
 		}
-		styleInfo.setLineStipple(stipplePattern);
 	}
 	
 	

@@ -17,9 +17,7 @@
  ***********************************************************************/
 package org.mt4j.input.inputProcessors.componentProcessors;
 
-import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.Deque;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
@@ -32,6 +30,7 @@ import org.mt4j.input.inputData.MTInputEvent;
 import org.mt4j.input.inputProcessors.GestureUtils;
 import org.mt4j.input.inputProcessors.IInputProcessor;
 import org.mt4j.input.inputProcessors.MTGestureEvent;
+import org.mt4j.util.ArrayDeque;
 import org.mt4j.util.math.Vector3D;
 
 import processing.core.PApplet;
@@ -102,7 +101,7 @@ public abstract class AbstractCursorProcessor extends AbstractComponentProcessor
 			InputCursor inputCursor = (InputCursor) element;
 			AbstractCursorProcessor ip = this.cursorToLockLostInputProcessor.get(element);
 			
-			//so we can use getCurrentTarget() in the processors method
+			//so we can use getCurrentTarget() in the processor's method
 			//because  the current target may have changed through bubbling
 			IMTComponent3D saved = inputCursor.getCurrentTarget(); //FIXME Hack
 			inputCursor.getCurrentEvent().setCurrentTarget(inputEvent.getCurrentTarget()); //FIXME Hack
@@ -110,8 +109,6 @@ public abstract class AbstractCursorProcessor extends AbstractComponentProcessor
 			this.cursorLocked(inputCursor, ip);
 			
 			inputCursor.getCurrentEvent().setCurrentTarget(saved); //FIXME Hack
-			
-			posEvt.getCursor(); //FIXME REMOVE
 		}
 		this.cursorToLockLostInputProcessor.clear();
 		
@@ -572,7 +569,7 @@ public abstract class AbstractCursorProcessor extends AbstractComponentProcessor
 
 
 	//FIXME TEST
-	private Deque<InputCursor> cursorUnlocked = new ArrayDeque<InputCursor>();
+	private ArrayDeque<InputCursor> cursorUnlocked = new ArrayDeque<InputCursor>();
 //	private Deque<InputCursor> cursorLocked = new ArrayDeque<InputCursor>();
 	private HashMap<InputCursor, AbstractCursorProcessor> cursorToLockLostInputProcessor = new HashMap<InputCursor, AbstractCursorProcessor>();
 	

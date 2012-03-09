@@ -17,7 +17,7 @@
  ***********************************************************************/
 package org.mt4j.sceneManagement.transition;
 
-import org.mt4j.MTApplication;
+import org.mt4j.AbstractMTApplication;
 import org.mt4j.input.inputProcessors.globalProcessors.AbstractGlobalInputProcessor;
 import org.mt4j.sceneManagement.AbstractScene;
 
@@ -33,7 +33,7 @@ public abstract class AbstractTransition extends AbstractScene implements ITrans
 	 * @param mtApplication the mt application
 	 * @param name the name
 	 */
-	public AbstractTransition(MTApplication mtApplication, String name) {
+	public AbstractTransition(AbstractMTApplication mtApplication, String name) {
 		super(mtApplication, name);
 
 		//Remove all global input processors - we dont want the transition to respond to input
