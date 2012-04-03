@@ -1170,7 +1170,7 @@ public class MTTextArea extends MTRectangle implements ITextInputListener, Compa
 	 * @return the line count
 	 */
 	public int getLineCount(){
-		int count = 0;
+		int count = 1;
         for (IFontCharacter character : this.characterList) {
             if (character.getUnicode().equals("\n")) {
                 count++;
