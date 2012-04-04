@@ -354,6 +354,9 @@ public class FontManager {
 	}
 	
 
+	public void cacheFont(IFont font){
+		fonts.add(font);
+	}
 	
 	/**
 	 * Checks if is fonts are equal.
