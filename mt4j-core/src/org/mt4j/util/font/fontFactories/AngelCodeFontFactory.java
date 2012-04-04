@@ -13,9 +13,9 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.StringTokenizer;
 
-import org.mt4j.util.PlatformUtil;
 import org.mt4j.util.MT4jSettings;
 import org.mt4j.util.MTColor;
+import org.mt4j.util.PlatformUtil;
 import org.mt4j.util.font.IFont;
 import org.mt4j.util.logging.ILogger;
 import org.mt4j.util.logging.MTLoggerFactory;
@@ -824,7 +824,7 @@ public class AngelCodeFontFactory implements IFontFactory {
 
 		@Override
 		public IFont createFont(PApplet app, String fontName, int fontSize,	MTColor color, boolean antiAliased) {
-			return createFont(app, fontName, fontSize, color, color, antiAliased);
+ 			return createFont(app, fontName, fontSize, color, color, antiAliased);
 		}
 		
 		@Override
@@ -918,11 +918,26 @@ public class AngelCodeFontFactory implements IFontFactory {
 				glTex.setWrapMode(WRAP_MODE.CLAMP_TO_EDGE, WRAP_MODE.CLAMP_TO_EDGE);
 //				glTex.setWrapMode(WRAP_MODE.CLAMP, WRAP_MODE.CLAMP);
 				
-//				glTex.setFilter(SHRINKAGE_FILTER.Trilinear, EXPANSION_FILTER.Bilinear);
-				glTex.setFilter(SHRINKAGE_FILTER.BilinearNoMipMaps, EXPANSION_FILTER.Bilinear); //AA
-//				glTex.setFilter(SHRINKAGE_FILTER.NearestNeighborNoMipMaps, EXPANSION_FILTER.NearestNeighbor);
-//				glTex.setFilter(SHRINKAGE_FILTER.BilinearNoMipMaps, EXPANSION_FILTER.NearestNeighbor); //NO AA
+				if (antiAliased){
+					glTex.setFilter(SHRINKAGE_FILTER.BilinearNoMipMaps, EXPANSION_FILTER.Bilinear); //AA
+//					glTex.setFilter(SHRINKAGE_FILTER.Trilinear, EXPANSION_FILTER.Bilinear);
+				}else{
+					glTex.setFilter(SHRINKAGE_FILTER.BilinearNoMipMaps, EXPANSION_FILTER.NearestNeighbor); //NO AA
+//					glTex.setFilter(SHRINKAGE_FILTER.NearestNeighborNoMipMaps, EXPANSION_FILTER.NearestNeighbor);
+				}
 			}
+			
+			//Add dummy character for NEWLINE
+			short[] dummy = new short[]{0};
+			short s = Short.parseShort("1");
+			//Manually add a newLine character to the font
+			AngelCodeFontCharacter newLine = new AngelCodeFontCharacter(app, fontImage, "\n", s, s, s,s,s,s,s, paddingVals, dummy, 0);
+			newLine.setPickable(false);						    		
+			newLine.setVisible(false);
+			newLine.setNoFill(true);
+			newLine.setNoStroke(true);
+			newLine.setName("newline");
+			characters.add(newLine);
 			
 			AngelCodeFont font = new AngelCodeFont(fontImage, characters.toArray(new AngelCodeFontCharacter[characters.size()]), defaultHorizontalAdvX, fontName, fontFace, fontMaxAscent, fontMaxDescent, unitsPerEm, this.fontSize, fillColor, antiAliased, hieroPadding);
 			return font;
