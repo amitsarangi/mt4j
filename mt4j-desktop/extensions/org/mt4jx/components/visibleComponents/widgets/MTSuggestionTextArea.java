@@ -313,7 +313,7 @@ public class MTSuggestionTextArea extends MTTextArea {
 					float zero = suggestionBox.getVerticesLocal()[0].y;
 					float heightPerLine = suggestionBox
 							.getHeightXY(TransformSpace.LOCAL)
-							/ (float) (suggestionBox.getLineCount() + 1);
+							/ (float) (suggestionBox.getLineCount());
 					int line = (int) ((x.y - zero) / heightPerLine);
 	
 					if (currentSuggestions.size() > line) {
