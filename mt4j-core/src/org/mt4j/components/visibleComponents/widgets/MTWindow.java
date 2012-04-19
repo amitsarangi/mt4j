@@ -102,11 +102,11 @@ public class MTWindow extends MTRoundRectangle {
 		}
 		
 		//Create inner children clip shape
-		float border = 10;
+		float border = 8;
 //		GL gl = ((PGraphicsOpenGL)applet.g).gl;
 		GL10 gl = PlatformUtil.getGL();
-//		MTRoundRectangle clipRect =  new MTRoundRectangle(x+border, y+border, z, width-(2*border), height-(2*border), arcWidth, arcHeight, applet);
-		MTRectangle clipRect =  new MTRectangle(applet, x+border, y+border, z, width-(2*border), height-(2*border));
+		MTRoundRectangle clipRect =  new MTRoundRectangle(applet, x+border, y+border, z, width-(2*border), height-(2*border), arcWidth, arcHeight);
+//		MTRectangle clipRect =  new MTRectangle(applet, x+border, y+border, z, width-(2*border), height-(2*border));
 		clipRect.setDrawSmooth(true);
 		clipRect.setNoStroke(true);
 		clipRect.setBoundsBehaviour(MTRectangle.BOUNDS_ONLY_CHECK);
@@ -114,12 +114,12 @@ public class MTWindow extends MTRoundRectangle {
 		this.setChildClip(this.clip);
 		this.drawInnerBorder = true;
 		
-		//Add window background
-		final MTRectangle windowBackGround = new MTRectangle(applet, x, y, z, 100, 200);
-		windowBackGround.setFillColor(new MTColor(200,200,200,255));
-		windowBackGround.setNoStroke(true);
-		windowBackGround.setPickable(false);
-		this.addChild(windowBackGround);
+//		//Add window background
+//		final MTRectangle windowBackGround = new MTRectangle(applet, x, y, z, 100, 200);
+//		windowBackGround.setFillColor(new MTColor(200,200,200,255));
+//		windowBackGround.setNoStroke(true);
+//		windowBackGround.setPickable(false);
+//		this.addChild(windowBackGround);
 		
 		this.removeAllGestureEventListeners(ScaleProcessor.class);
 //		cr.removeAllGestureEventListeners(RotationDetector.class);
@@ -128,8 +128,8 @@ public class MTWindow extends MTRoundRectangle {
 			public boolean processGestureEvent(MTGestureEvent ge) {
 				ScaleEvent se = (ScaleEvent)ge;
 				
-				//Scale window background normally
-				windowBackGround.scaleGlobal(se.getScaleFactorX(), se.getScaleFactorY(), se.getScaleFactorZ(), se.getScalingPoint());
+//				//Scale window background normally
+//				windowBackGround.scaleGlobal(se.getScaleFactorX(), se.getScaleFactorY(), se.getScaleFactorZ(), se.getScalingPoint());
 				
 				//Scale vertices of the window
 				AbstractShape target = (AbstractShape)ge.getTarget();
@@ -211,9 +211,14 @@ public class MTWindow extends MTRoundRectangle {
 @Override
 	public void setStrokeColor(MTColor strokeColor) {
 		super.setStrokeColor(strokeColor);
-		this.clip.getClipShape().setStrokeColor(strokeColor); //FIXME wtf? not needed!?
+//		this.clip.getClipShape().setStrokeColor(strokeColor); //FIXME wtf? not needed!?
 	}
 
-	
+	@Override
+	public void setFillColor(MTColor color) {
+		super.setFillColor(color);
+		
+		this.getChildClip().getClipShape().setStrokeColor(color); //To make draw the inner border of the clip shape smoothly above the clip
+	}
 
 }
