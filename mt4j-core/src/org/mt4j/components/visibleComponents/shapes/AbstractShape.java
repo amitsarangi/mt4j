@@ -888,12 +888,34 @@ public abstract class AbstractShape extends AbstractVisibleComponent implements 
 	}
 	
 	/**
+	 * Sets the global position of the component. (In global coordinates)
+	 *
+	 * @param x the x
+	 * @param y the y
+	 * @param z the z
+	 */
+	public void setPositionGlobal(float x, float y, float z){
+		this.translateGlobal(new Vector3D(x,y,z).getSubtracted(this.getCenterPointGlobal()));
+	}
+	
+	/**
 	 * Sets the position of the component, relative to its parent coordinate frame.
 	 * 
 	 * @param pos the pos
 	 */
 	public void setPositionRelativeToParent(Vector3D pos){
 		this.translate(pos.getSubtracted(this.getCenterPointRelativeToParent()), TransformSpace.RELATIVE_TO_PARENT);
+	}
+	
+	/**
+	 * Sets the position relative to parent.
+	 *
+	 * @param x the x
+	 * @param y the y
+	 * @param z the z
+	 */
+	public void setPositionRelativeToParent(float x, float y, float z){
+		this.translate(new Vector3D(x,y,z).getSubtracted(this.getCenterPointRelativeToParent()), TransformSpace.RELATIVE_TO_PARENT);
 	}
 	
 	/**
@@ -1118,9 +1140,8 @@ public abstract class AbstractShape extends AbstractVisibleComponent implements 
 	 * @return the height xy vect obj space
 	 * 
 	 * vector representing the height of the boundingshape of the shape
-	 * @deprecated this method should actually be private. Use getHeightXY(Transformspace.LOCAL) instead!
 	 */
-	public Vector3D getHeightXYVectLocal() {
+	private Vector3D getHeightXYVectLocal() {
 		if (this.hasBounds()){
 			return this.getBounds().getHeightXYVectLocal();
 		}else{
@@ -1209,9 +1230,8 @@ public abstract class AbstractShape extends AbstractVisibleComponent implements 
 	 * @return the width xy vect obj space
 	 * 
 	 * vector representing the width of the boundingshape of the shape
-	 * @deprecated this method should actually be private. Use getWidthXY(Transformspace.LOCAL) instead!
 	 */
-	public Vector3D getWidthXYVectLocal() {
+	private Vector3D getWidthXYVectLocal() {
 		if (this.hasBounds()){
 			return this.getBounds().getWidthXYVectLocal();
 		}else{

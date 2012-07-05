@@ -306,6 +306,11 @@ public class MTRectangle extends MTPolygon {
 	}
 	
 	
+	@Override
+	public void setPositionGlobal(float x, float y, float z) {
+		setPositionGlobal(new Vector3D(x,y,z));
+	}
+	
 	/* (non-Javadoc)
 	 * @see org.mt4j.components.visibleComponents.shapes.AbstractShape#setPositionGlobal(org.mt4j.util.math.Vector3D)
 	 */
@@ -333,6 +338,12 @@ public class MTRectangle extends MTPolygon {
 		default:
 			break;
 		}
+	}
+	
+	
+	@Override
+	public void setPositionRelativeToParent(float x, float y, float z) {
+		setPositionRelativeToParent(new Vector3D(x,y,z));
 	}
 	
 	/* (non-Javadoc)

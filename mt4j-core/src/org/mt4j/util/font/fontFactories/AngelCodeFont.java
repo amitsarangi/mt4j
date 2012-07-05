@@ -1,7 +1,6 @@
 package org.mt4j.util.font.fontFactories;
 
 import java.util.HashMap;
-import java.util.List;
 
 import org.mt4j.util.MTColor;
 import org.mt4j.util.font.FontManager;
@@ -200,6 +199,13 @@ public class AngelCodeFont implements IFont, ITextureFont {
 
 	@Override
 	public void beginBatchRenderGL(GL10 gl, IFont font) {
+		/*
+		//FIXME TEST - to avoid transparency artifacts
+		if (PlatformUtil.isAndroid()){ 
+			gl.glBlendFunc(GL10.GL_ONE, GL10.GL_ONE_MINUS_SRC_ALPHA);
+		}
+		*/
+		
 		MTColor fillColor = font.getFillColor();
 		gl.glColor4f(fillColor.getR()/255f, fillColor.getG()/255f, fillColor.getB()/255f, fillColor.getAlpha()/255f); 
 		
@@ -224,6 +230,13 @@ public class AngelCodeFont implements IFont, ITextureFont {
 		
 		gl.glDisableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
 		gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
+		
+		/*
+		//FIXME TEST - to avoid transparency artifacts
+		if (PlatformUtil.isAndroid()){ 
+			gl.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
+		}
+		*/
 	}
 
 	public PImage getFontImage() {

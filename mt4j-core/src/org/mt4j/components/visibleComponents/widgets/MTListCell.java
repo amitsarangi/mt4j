@@ -39,7 +39,6 @@ extends MTClipRectangle{
 		super(applet, 0, 0, 0, width, height);
 		this.setStrokeColor(new MTColor(0,0,0));
 		this.setComposite(true);
-		
 	}
 	
 	/* (non-Javadoc)
@@ -50,10 +49,15 @@ extends MTClipRectangle{
 //		this.registerInputProcessor(new DragProcessor(getRenderer()));
 //		this.addGestureListener(DragProcessor.class, new DefaultDragAction());
 		
+//		DragProcessor dp = new DragProcessor(getRenderer());
+////		dp.setLockPriority(1.0f);
+//		registerInputProcessor(dp);
+////		dp.setBubbledEventsEnabled(true);
+		
 		DragProcessor dp = new DragProcessor(getRenderer());
-//		dp.setLockPriority(1.0f);
+//		dp.setLockPriority(0.9f);
 		registerInputProcessor(dp);
-//		dp.setBubbledEventsEnabled(true);
+		dp.setBubbledEventsEnabled(true);
 	}
 	
 	@Override

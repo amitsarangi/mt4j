@@ -64,4 +64,11 @@ public interface ITextInputListener {
 	 */
 	public void removeLastCharacter();
 
+	/**
+	 * Sets the enable caret.
+	 *
+	 * @param b the new enable caret
+	 */
+	public void setEnableCaret(boolean b);
+
 }
