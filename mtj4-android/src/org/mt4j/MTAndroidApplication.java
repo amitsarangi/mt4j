@@ -1,11 +1,15 @@
 package org.mt4j;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.mt4j.input.AndroidInputManager;
 import org.mt4j.input.ISurfaceTouchListener;
+import org.mt4j.input.ISystemButtonListener;
 import org.mt4j.util.AndroidPlatformUtil;
-import org.mt4j.util.PlatformUtil;
 import org.mt4j.util.MT4jSettings;
 import org.mt4j.util.MTColor;
+import org.mt4j.util.PlatformUtil;
 import org.mt4j.util.animation.ani.AniAnimation;
 import org.mt4j.util.font.FontManager;
 import org.mt4j.util.font.fontFactories.AngelCodeFontFactory;
@@ -16,7 +20,12 @@ import org.mt4j.util.opengl.AndroidGL10;
 import org.mt4j.util.opengl.AndroidGL11;
 
 import processing.core.PGraphicsAndroid3D;
+import android.content.Context;
+import android.text.InputType;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
+import android.view.SurfaceView;
+import android.view.inputmethod.InputMethodManager;
 
 /*
  Android notes:
@@ -30,6 +39,14 @@ import android.view.MotionEvent;
  */
 
 public abstract class MTAndroidApplication extends AbstractMTApplication{
+	
+	/** The scene changed listeners. */
+//	private List<ISystemButtonListener> iSystemButtonListeners;
+	
+	private List<ISystemButtonListener> iSystemButtonListeners = new ArrayList<ISystemButtonListener>();
+	private InputMethodManager inputMethodManager;
+
+	//	iSystemButtonListeners = new ArrayList<ISystemButtonListener>();
 	
 	public MTAndroidApplication(){
 		super();
@@ -103,6 +120,8 @@ public abstract class MTAndroidApplication extends AbstractMTApplication{
 		if (getInputManager() == null){ //only set the default inputManager if none is set yet
 			this.setInputManager(new AndroidInputManager(this, true));
 		}
+		
+		inputMethodManager = (InputMethodManager)this.getSystemService(Context.INPUT_METHOD_SERVICE);
 		
 		//Call startup at the end of setup(). Should be overridden in extending classes
 		this.startUp();
@@ -227,12 +246,113 @@ public abstract class MTAndroidApplication extends AbstractMTApplication{
 		return "8:8:8:8:24:8"; //To get a stencil buffer
 	}
 	
+	///////////////////////////////////////////////
 	
+	/*
 	@Override
 	protected void onStop() {
+		System.out.println("On Stop");
 		//at least on android even if stopping the mt4j app, the fontmanager seems to be kept with fonts cached, but textures destroyed already?
 		FontManager.getInstance().clearCache(); 
+		
 		super.onStop();
 	}
+	*/
+	
+	/*
+	public void onBackPressed() {
+		super.onBackPressed();
+		
+		//do whatever you want here, or nothing
+		System.out.println("Back pressed");
+		//TODO go through SystemButtonListeners and call -> in app only the one in the current scene should be called
+		
+		for (ISystemButtonListener listener : iSystemButtonListeners){
+			listener.onBackPressed();
+		}
+	}
+	*/
+	
+	/*
+	@Override
+	protected void onPause() {
+		System.out.println("On Pause");
+//		Iscene cs = getCurrentScene();
+//		if (cs != null){
+//			cs.onPause();  //TODO we would have to introduce a Android Scene class.. better do with listeners then..
+//		}
+		
+		for (ISystemButtonListener listener : iSystemButtonListeners){
+			listener.onPause();
+		}
+		
+		super.onPause();
+	}
+	*/
+	
+//	@Override
+//	protected void onRestart() {
+//		super.onRestart();
+//		
+//		for (ISystemButtonListener listener : iSystemButtonListeners){
+//			listener.onRestart();
+//		}
+//
+	/*
+	@Override
+	protected void onResume() {
+		super.onResume();
+		
+		System.out.println("On Resume");
+		for (ISystemButtonListener listener : iSystemButtonListeners){
+			listener.onResume();
+		}
+	}
+		}
+	*/
+	
+	/*
+	public void keyPressed() {
+		super.keyPressed();
+	
+		if (key == CODED) {
+			if (keyCode == KeyEvent.KEYCODE_BACK) {
+				keyCode = 1;  // don't quit by default
+			}
+		}
+	}
+	*/
+
+	public void onBackPressed() {
+		//do whatever you want here, or nothing
+	}
+
+	public void keyPressed() {
+		if (key == CODED) {
+			if (keyCode == KeyEvent.KEYCODE_BACK) {
+				keyCode = 1;  // don't quit by default
+			}
+		}
+		super.keyPressed();
+	}
+
+	
+	public SurfaceView getSurfaceView(){
+		return surfaceView;
+	}
+	
+	
+	public InputMethodManager getInputMethodManager(){
+		return inputMethodManager;
+	}
+	
+	public void showSoftInput(){
+		getInputMethodManager().showSoftInput(surfaceView, InputMethodManager.SHOW_FORCED | InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS); // .SHOW_FORCED);
+	}
+	
+	public void hideSoftInput(){
+		getInputMethodManager().hideSoftInputFromWindow(surfaceView.getWindowToken(), 0); //Hide keyboard
+	}
+
 	
 }
