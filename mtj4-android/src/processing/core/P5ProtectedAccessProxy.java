@@ -1,13 +1,43 @@
+/***********************************************************************
+*   MT4j Copyright (c) 2008 - 2012, C.Ruff, Fraunhofer-Gesellschaft All rights reserved.
+*
+*   This file is part of MT4j.
+*
+*   MT4j is free software: you can redistribute it and/or modify
+*   it under the terms of the GNU Lesser General Public License as published by
+*   the Free Software Foundation, either version 3 of the License, or
+*   (at your option) any later version.
+*
+*   MT4j is distributed in the hope that it will be useful,
+*   but WITHOUT ANY WARRANTY; without even the implied warranty of
+*   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+*   GNU Lesser General Public License for more details.
+*
+*   You should have received a copy of the GNU Lesser General Public License
+*   along with MT4j.  If not, see <http://www.gnu.org/licenses/>.
+*
+************************************************************************/
 package processing.core;
 
+/**
+ * The Class P5ProtectedAccessProxy.
+ */
 public class P5ProtectedAccessProxy {
 	
+	/** The app. */
 	private PApplet app;
 	
+	/** The model view. */
 	private PMatrix3D modelView;
 	
+	/** The a3d. */
 	private PGraphicsAndroid3D a3d;
 	
+	/**
+	 * Instantiates a new p5 protected access proxy.
+	 *
+	 * @param app the app
+	 */
 	public P5ProtectedAccessProxy(PApplet app){
 		this.app = app;
 		
@@ -17,6 +47,11 @@ public class P5ProtectedAccessProxy {
 	}
 	
 	//TODO use in graphicsutil -> else we dont get the current matrix (whis is in glModelview)
+	/**
+	 * Gets the model view.
+	 *
+	 * @return the model view
+	 */
 	public PMatrix3D getModelView(){
 		if (!a3d.modelviewUpdated) {
 		      a3d.getModelviewMatrix();
@@ -25,6 +60,26 @@ public class P5ProtectedAccessProxy {
 		return a3d.modelview;
 	}
 	
+	/**
+	 * Sets the model view.
+	 *
+	 * @param m00 the m00
+	 * @param m01 the m01
+	 * @param m02 the m02
+	 * @param m03 the m03
+	 * @param m10 the m10
+	 * @param m11 the m11
+	 * @param m12 the m12
+	 * @param m13 the m13
+	 * @param m20 the m20
+	 * @param m21 the m21
+	 * @param m22 the m22
+	 * @param m23 the m23
+	 * @param m30 the m30
+	 * @param m31 the m31
+	 * @param m32 the m32
+	 * @param m33 the m33
+	 */
 	public void setModelView(
 			float m00, float m01, float m02, float m03,
             float m10, float m11, float m12, float m13,
@@ -48,6 +103,26 @@ public class P5ProtectedAccessProxy {
 //		a3d.camera; //wann wird die benutzt?
 	}
 	
+	/**
+	 * Sets the model view inv.
+	 *
+	 * @param m00 the m00
+	 * @param m01 the m01
+	 * @param m02 the m02
+	 * @param m03 the m03
+	 * @param m10 the m10
+	 * @param m11 the m11
+	 * @param m12 the m12
+	 * @param m13 the m13
+	 * @param m20 the m20
+	 * @param m21 the m21
+	 * @param m22 the m22
+	 * @param m23 the m23
+	 * @param m30 the m30
+	 * @param m31 the m31
+	 * @param m32 the m32
+	 * @param m33 the m33
+	 */
 	public void setModelViewInv(
 			float m00, float m01, float m02, float m03,
             float m10, float m11, float m12, float m13,
@@ -63,6 +138,26 @@ public class P5ProtectedAccessProxy {
 
 	//TODO modelViewInf, cameraInv
 	
+	/**
+	 * Sets the camera.
+	 *
+	 * @param m00 the m00
+	 * @param m01 the m01
+	 * @param m02 the m02
+	 * @param m03 the m03
+	 * @param m10 the m10
+	 * @param m11 the m11
+	 * @param m12 the m12
+	 * @param m13 the m13
+	 * @param m20 the m20
+	 * @param m21 the m21
+	 * @param m22 the m22
+	 * @param m23 the m23
+	 * @param m30 the m30
+	 * @param m31 the m31
+	 * @param m32 the m32
+	 * @param m33 the m33
+	 */
 	public void setCamera(
 			float m00, float m01, float m02, float m03,
             float m10, float m11, float m12, float m13,
@@ -76,6 +171,26 @@ public class P5ProtectedAccessProxy {
 		a3d.copyPMatrixToGLArray(a3d.camera, a3d.pcamera);
 	}
 	
+	/**
+	 * Sets the camera inv.
+	 *
+	 * @param m00 the m00
+	 * @param m01 the m01
+	 * @param m02 the m02
+	 * @param m03 the m03
+	 * @param m10 the m10
+	 * @param m11 the m11
+	 * @param m12 the m12
+	 * @param m13 the m13
+	 * @param m20 the m20
+	 * @param m21 the m21
+	 * @param m22 the m22
+	 * @param m23 the m23
+	 * @param m30 the m30
+	 * @param m31 the m31
+	 * @param m32 the m32
+	 * @param m33 the m33
+	 */
 	public void setCameraInv(
 			float m00, float m01, float m02, float m03,
             float m10, float m11, float m12, float m13,
@@ -91,6 +206,11 @@ public class P5ProtectedAccessProxy {
 	}
 	
 	
+	/**
+	 * Gets the projection.
+	 *
+	 * @return the projection
+	 */
 	public PMatrix3D getProjection(){
 		if (!a3d.projectionUpdated) {
 		      a3d.getProjectionMatrix();

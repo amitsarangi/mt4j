@@ -1,3 +1,22 @@
+/***********************************************************************
+*   MT4j Copyright (c) 2008 - 2012, C.Ruff, Fraunhofer-Gesellschaft All rights reserved.
+*
+*   This file is part of MT4j.
+*
+*   MT4j is free software: you can redistribute it and/or modify
+*   it under the terms of the GNU Lesser General Public License as published by
+*   the Free Software Foundation, either version 3 of the License, or
+*   (at your option) any later version.
+*
+*   MT4j is distributed in the hope that it will be useful,
+*   but WITHOUT ANY WARRANTY; without even the implied warranty of
+*   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+*   GNU Lesser General Public License for more details.
+*
+*   You should have received a copy of the GNU Lesser General Public License
+*   along with MT4j.  If not, see <http://www.gnu.org/licenses/>.
+*
+************************************************************************/
 package org.mt4j.input.inputSources;
 
 import java.util.HashMap;
@@ -12,15 +31,28 @@ import org.mt4j.util.logging.MTLoggerFactory;
 
 import android.view.MotionEvent;
 
+/**
+ * The Class AndroidMTInputSource.
+ */
 public class AndroidMTInputSource extends AbstractInputSource implements ISurfaceTouchListener {
+	
+	/** The Constant logger. */
 	private static final ILogger logger = MTLoggerFactory.getLogger(AndroidMTInputSource.class.getName());
 	static{
 		logger.setLevel(ILogger.INFO);
 	}
 	
+	/** The id to cursor id. */
 	private HashMap<Long, Long> idToCursorID;
+	
+	/** The app. */
 	private MTAndroidApplication app;
 	
+	/**
+	 * Instantiates a new android mt input source.
+	 *
+	 * @param mtApp the mt app
+	 */
 	public AndroidMTInputSource(MTAndroidApplication mtApp) {
 		super(mtApp);
 		
@@ -29,12 +61,18 @@ public class AndroidMTInputSource extends AbstractInputSource implements ISurfac
 		
 	}
 	
+	/* (non-Javadoc)
+	 * @see org.mt4j.input.inputSources.AbstractInputSource#onRegistered()
+	 */
 	@Override
 	public void onRegistered() {
 		super.onRegistered();
 		app.setTouchListener(this);
 	}
 	
+	/* (non-Javadoc)
+	 * @see org.mt4j.input.inputSources.AbstractInputSource#onUnregistered()
+	 */
 	@Override
 	public void onUnregistered() {
 		super.onUnregistered();
@@ -45,6 +83,9 @@ public class AndroidMTInputSource extends AbstractInputSource implements ISurfac
 
 	
 	
+	/* (non-Javadoc)
+	 * @see org.mt4j.input.ISurfaceTouchListener#onTouchEvent(android.view.MotionEvent)
+	 */
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
 //		logger.info("recieved touch event: " + event);

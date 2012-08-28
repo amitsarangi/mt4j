@@ -1,3 +1,22 @@
+/***********************************************************************
+*   MT4j Copyright (c) 2008 - 2012, C.Ruff, Fraunhofer-Gesellschaft All rights reserved.
+*
+*   This file is part of MT4j.
+*
+*   MT4j is free software: you can redistribute it and/or modify
+*   it under the terms of the GNU Lesser General Public License as published by
+*   the Free Software Foundation, either version 3 of the License, or
+*   (at your option) any later version.
+*
+*   MT4j is distributed in the hope that it will be useful,
+*   but WITHOUT ANY WARRANTY; without even the implied warranty of
+*   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+*   GNU Lesser General Public License for more details.
+*
+*   You should have received a copy of the GNU Lesser General Public License
+*   along with MT4j.  If not, see <http://www.gnu.org/licenses/>.
+*
+************************************************************************/
 package org.mt4j;
 
 import java.util.ArrayList;
@@ -39,21 +58,32 @@ import android.view.inputmethod.InputMethodManager;
   
  */
 
+/**
+ * The Class MTAndroidApplication.
+ */
 public abstract class MTAndroidApplication extends AbstractMTApplication{
 	
 	/** The scene changed listeners. */
 //	private List<ISystemButtonListener> iSystemButtonListeners;
 	
 	private List<ISystemButtonListener> iSystemButtonListeners = new ArrayList<ISystemButtonListener>();
+	
+	/** The input method manager. */
 	private InputMethodManager inputMethodManager;
 
 	//	iSystemButtonListeners = new ArrayList<ISystemButtonListener>();
 	
+	/**
+	 * Instantiates a new mT android application.
+	 */
 	public MTAndroidApplication(){
 		super();
 	}
 	
 	
+	/* (non-Javadoc)
+	 * @see processing.core.PApplet#setup()
+	 */
 	@Override
 	public void setup() {
 //		Log.i(this.getClass().getSimpleName(), "SETUP CALLED");
@@ -129,6 +159,9 @@ public abstract class MTAndroidApplication extends AbstractMTApplication{
 	}
 
 	
+	/**
+	 * Load gl.
+	 */
 	protected void loadGL(){
 		/*
 		String version = ((PGraphicsAndroid3D)g).gl.glGetString(GL10.GL_VERSION);
@@ -179,19 +212,35 @@ public abstract class MTAndroidApplication extends AbstractMTApplication{
 	
 
 
+	/** The touch listener. */
 	private ISurfaceTouchListener touchListener;
 	
+	/**
+	 * Sets the touch listener.
+	 *
+	 * @param listener the new touch listener
+	 */
 	public void setTouchListener(ISurfaceTouchListener listener){
 		this.touchListener = listener;
 	}
 	
+	/**
+	 * Gets the touch listener.
+	 *
+	 * @return the touch listener
+	 */
 	public ISurfaceTouchListener getTouchListener(){
 		return this.touchListener;
 	}
 	
 	///////////////////////////////////////////////////////
 	
-	/** Process incoming touch events */
+	/**
+	 * Process incoming touch events.
+	 *
+	 * @param event the event
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean surfaceTouchEvent(MotionEvent event) {
 		super.surfaceTouchEvent(event);
@@ -220,6 +269,9 @@ public abstract class MTAndroidApplication extends AbstractMTApplication{
 //	protected int sketchHeight = 300;
 	
 	
+	/* (non-Javadoc)
+	 * @see processing.core.PApplet#sketchWidth()
+	 */
 	@Override
 	public int sketchWidth() {
 //		return screenWidth;
@@ -227,6 +279,9 @@ public abstract class MTAndroidApplication extends AbstractMTApplication{
 //		return 600;
 	}
 
+	/* (non-Javadoc)
+	 * @see processing.core.PApplet#sketchHeight()
+	 */
 	@Override
 	public int sketchHeight() {
 //		return sketchHeight;
@@ -234,12 +289,18 @@ public abstract class MTAndroidApplication extends AbstractMTApplication{
 //		return 1024;
 	}
 
+	/* (non-Javadoc)
+	 * @see processing.core.PApplet#sketchRenderer()
+	 */
 	@Override
 	public String sketchRenderer() {
 		return A3D; 
 	}
 	
 	
+	/* (non-Javadoc)
+	 * @see processing.core.PApplet#sketchColordepth()
+	 */
 	@Override
 	public String sketchColordepth() { 
 //		return super.sketchColordepth(); //To get default color, depth and stencil bit depths
@@ -324,10 +385,16 @@ public abstract class MTAndroidApplication extends AbstractMTApplication{
 	}
 	*/
 
+	/* (non-Javadoc)
+	 * @see android.app.Activity#onBackPressed()
+	 */
 	public void onBackPressed() {
 		//do whatever you want here, or nothing
 	}
 
+	/* (non-Javadoc)
+	 * @see org.mt4j.AbstractMTApplication#keyPressed()
+	 */
 	public void keyPressed() {
 		if (key == CODED) {
 			if (keyCode == KeyEvent.KEYCODE_BACK) {
@@ -338,19 +405,39 @@ public abstract class MTAndroidApplication extends AbstractMTApplication{
 	}
 
 	
+	/**
+	 * Gets the surface view.
+	 *
+	 * @return the surface view
+	 */
 	public SurfaceView getSurfaceView(){
 		return surfaceView;
 	}
 	
 	
+	/**
+	 * Gets the input method manager.
+	 *
+	 * @return the input method manager
+	 */
 	public InputMethodManager getInputMethodManager(){
 		return inputMethodManager;
 	}
 	
+	/**
+	 * Show soft input.
+	 *
+	 * @param view the view
+	 */
 	public void showSoftInput(View view){
 		getInputMethodManager().showSoftInput(view, InputMethodManager.SHOW_FORCED/* | InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS*/); // .SHOW_FORCED);
 	}
 	
+	/**
+	 * Hide soft input.
+	 *
+	 * @param view the view
+	 */
 	public void hideSoftInput(View view){
 		getInputMethodManager().hideSoftInputFromWindow(view.getWindowToken(), 0); //Hide keyboard
 	}
