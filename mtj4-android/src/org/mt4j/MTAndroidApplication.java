@@ -25,6 +25,7 @@ import android.text.InputType;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.SurfaceView;
+import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
 /*
@@ -346,12 +347,12 @@ public abstract class MTAndroidApplication extends AbstractMTApplication{
 		return inputMethodManager;
 	}
 	
-	public void showSoftInput(){
-		getInputMethodManager().showSoftInput(surfaceView, InputMethodManager.SHOW_FORCED | InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS); // .SHOW_FORCED);
+	public void showSoftInput(View view){
+		getInputMethodManager().showSoftInput(view, InputMethodManager.SHOW_FORCED/* | InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS*/); // .SHOW_FORCED);
 	}
 	
-	public void hideSoftInput(){
-		getInputMethodManager().hideSoftInputFromWindow(surfaceView.getWindowToken(), 0); //Hide keyboard
+	public void hideSoftInput(View view){
+		getInputMethodManager().hideSoftInputFromWindow(view.getWindowToken(), 0); //Hide keyboard
 	}
 
 	
