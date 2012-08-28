@@ -52,7 +52,7 @@ public class MTList extends MTClipRectangle {
 	private float preferredCellWidth;
 	private float preferredCellHeight;
 	
-	private MTListCellContainer listCellContainer;
+	protected MTListCellContainer listCellContainer;
 	
 	private float cellYPadding;
 	
@@ -138,6 +138,17 @@ public class MTList extends MTClipRectangle {
 		
 	}
 	
+	//we dont need to check all -> if one is out on the bottom, the folowing are out, too
+//	private boolean isCellVisible(Vector3D v){
+//		
+//		
+//		
+//	}
+	
+	protected MTListCellContainer getListCellContainer(){
+		return this.listCellContainer;
+	}
+	
 	@Override
 	protected void setDefaultGestureActions() {
 		//No gestures
@@ -203,7 +214,7 @@ public class MTList extends MTClipRectangle {
 	}
 	
 	
-	private Vector3D getListUpperLeftLocal(){
+	protected Vector3D getListUpperLeftLocal(){
 		PositionAnchor savedAnchor = this.getAnchor();
 		this.setAnchor(PositionAnchor.UPPER_LEFT);
 		Vector3D pos = this.getPosition(TransformSpace.LOCAL);
@@ -211,7 +222,7 @@ public class MTList extends MTClipRectangle {
 		return pos;
 	}
 	
-	private Vector3D getListLowerLeftLocal(){
+	protected Vector3D getListLowerLeftLocal(){
 		PositionAnchor savedAnchor = this.getAnchor();
 		this.setAnchor(PositionAnchor.LOWER_LEFT);
 		Vector3D pos = this.getPosition(TransformSpace.LOCAL);
@@ -220,7 +231,7 @@ public class MTList extends MTClipRectangle {
 	}
 	
 	
-	private Vector3D getContainerUpperLeftRelParent(){
+	protected Vector3D getContainerUpperLeftRelParent(){
 		PositionAnchor saved = listCellContainer.getAnchor();
 		listCellContainer.setAnchor(PositionAnchor.UPPER_LEFT);
 		Vector3D returnPos = listCellContainer.getPosition(TransformSpace.RELATIVE_TO_PARENT);
@@ -228,7 +239,7 @@ public class MTList extends MTClipRectangle {
 		return returnPos;
 	}
 	
-	private Vector3D getContainerLowerLeftRelParent(){
+	protected Vector3D getContainerLowerLeftRelParent(){
 		PositionAnchor saved = listCellContainer.getAnchor();
 		listCellContainer.setAnchor(PositionAnchor.LOWER_LEFT);
 		Vector3D returnPos = listCellContainer.getPosition(TransformSpace.RELATIVE_TO_PARENT);
@@ -257,7 +268,7 @@ public class MTList extends MTClipRectangle {
 	 * 
 	 * @author Christopher Ruff
 	 */
-	private class MTListCellContainer extends MTRectangle{
+	protected class MTListCellContainer extends MTRectangle{
 		private PApplet app;
 		private List<MTListCell> cells;
 		private List<MTListCell> selectedCells; //TODO!
@@ -440,7 +451,8 @@ public class MTList extends MTClipRectangle {
 		}
 
 	}
-
+	
+	
 	/**
 	 * The Class ListCellDragListener.
 	 * Drag gestue listener which restricts dragging/scrolling of the cell container to its y-axis.

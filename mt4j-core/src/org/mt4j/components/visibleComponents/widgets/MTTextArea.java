@@ -558,7 +558,7 @@ public class MTTextArea extends MTRectangle implements ITextInputListener, Compa
 		this.getFont().setFillColor(fontColor);
 	}
 	
-	private void drawCharactersGL(GL10 gl, IFont font, List<IFontCharacter> characterList, int charListSize, int lastXAdv, int lineTotalAdv){
+	protected void drawCharactersGL(GL10 gl, IFont font, List<IFontCharacter> characterList, int charListSize, int lastXAdv, int lineTotalAdv){
 		int lastXAdvancement = lastXAdv;
 		int thisLineTotalXAdvancement = lineTotalAdv;
 		
