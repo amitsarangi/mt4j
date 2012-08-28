@@ -1,3 +1,22 @@
+/***********************************************************************
+*   MT4j Copyright (c) 2008 - 2012, C.Ruff, Fraunhofer-Gesellschaft All rights reserved.
+*
+*   This file is part of MT4j.
+*
+*   MT4j is free software: you can redistribute it and/or modify
+*   it under the terms of the GNU Lesser General Public License as published by
+*   the Free Software Foundation, either version 3 of the License, or
+*   (at your option) any later version.
+*
+*   MT4j is distributed in the hope that it will be useful,
+*   but WITHOUT ANY WARRANTY; without even the implied warranty of
+*   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+*   GNU Lesser General Public License for more details.
+*
+*   You should have received a copy of the GNU Lesser General Public License
+*   along with MT4j.  If not, see <http://www.gnu.org/licenses/>.
+*
+************************************************************************/
 package org.mt4j.input.inputSources;
 
 import java.util.HashMap;
@@ -23,10 +42,20 @@ import com.alderstone.multitouch.mac.touchpad.TouchpadObservable;
  */
 public class MacTrackpadSource extends AbstractInputSource implements Observer {
 
+	/** The tpo. */
 	private TouchpadObservable tpo;
+	
+	/** The window height. */
 	private int windowWidth, windowHeight;
+	
+	/** The finger id to cursor id. */
 	private Map<Integer, Long> fingerIdToCursorId;
 	
+	/**
+	 * Instantiates a new mac trackpad source.
+	 *
+	 * @param mtApp the mt app
+	 */
 	public MacTrackpadSource(AbstractMTApplication mtApp) {
 		super(mtApp);
 		this.tpo = TouchpadObservable.getInstance();
@@ -38,6 +67,9 @@ public class MacTrackpadSource extends AbstractInputSource implements Observer {
 		this.fingerIdToCursorId = new HashMap<Integer, Long>();
 	}
 
+	/* (non-Javadoc)
+	 * @see java.util.Observer#update(java.util.Observable, java.lang.Object)
+	 */
 	public void update(Observable obj, Object arg) {
 		Finger finger = (Finger) arg;
 		int fingerID = finger.getID();
@@ -69,6 +101,9 @@ public class MacTrackpadSource extends AbstractInputSource implements Observer {
 		this.enqueueInputEvent(new MTFingerInputEvt(this, absoluteX, absoluteY, inputID, cursor));
 	}
 
+	/**
+	 * Update.
+	 */
 	public void update() {}
 
 }

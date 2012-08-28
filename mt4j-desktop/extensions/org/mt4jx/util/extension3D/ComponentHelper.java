@@ -1,3 +1,22 @@
+/***********************************************************************
+*   MT4j Copyright (c) 2008 - 2012, C.Ruff, Fraunhofer-Gesellschaft All rights reserved.
+*
+*   This file is part of MT4j.
+*
+*   MT4j is free software: you can redistribute it and/or modify
+*   it under the terms of the GNU Lesser General Public License as published by
+*   the Free Software Foundation, either version 3 of the License, or
+*   (at your option) any later version.
+*
+*   MT4j is distributed in the hope that it will be useful,
+*   but WITHOUT ANY WARRANTY; without even the implied warranty of
+*   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+*   GNU Lesser General Public License for more details.
+*
+*   You should have received a copy of the GNU Lesser General Public License
+*   along with MT4j.  If not, see <http://www.gnu.org/licenses/>.
+*
+************************************************************************/
 package org.mt4jx.util.extension3D;
 
 import org.mt4j.components.MTComponent;
@@ -82,7 +101,7 @@ public class ComponentHelper {
 			if (clip == null || (clip != null && clip.getClipShapeIntersectionLocal(invertedRay) != null)){
 				interSP = comp.getIntersectionLocal(invertedRay);
 				if (interSP != null){
-					//FIXME TRIAL - muss für die distance messung der world ray genommen
+					//FIXME TRIAL - muss fï¿½r die distance messung der world ray genommen
 					//werden oder geht der invertierte ray? -> musss wohl der world ray sein
 					interSP.transform(comp.getGlobalMatrix());
 					// Get distance from raystart to the intersecting point
@@ -121,7 +140,7 @@ public class ComponentHelper {
 					//Add the composites picks to the overall picks
 					if (compositePickRes.getNearestPickResult() != null){
 //						System.out.println("In: " + comp.getName() + " Composites child picked, pick resultDistance: " + compDistance);
-						/*//TODO müsste diese hier nach distanz geordnet in insgesamt pickresult einfügen..
+						/*//TODO mï¿½sste diese hier nach distanz geordnet in insgesamt pickresult einfï¿½gen..
 						ArrayList<MTBaseComponent> pickList = compositePickRes.getPickList();
 						for(MTBaseComponent comp : pickList){
 							pickResult.addPickedObject(comp, compositePickRes.getInterSectionPointOfPickedObj(comp), compositePickRes.getDistanceOfPickedObj(comp));
@@ -238,7 +257,7 @@ public class ComponentHelper {
 			if (clip == null || (clip != null && clip.getClipShapeIntersectionLocal(invertedRay) != null)){
 				interSP = comp.getIntersectionLocal(invertedRay);
 				if (interSP != null){
-					//FIXME TRIAL - muss für die distance messung der world ray genommen
+					//FIXME TRIAL - muss fï¿½r die distance messung der world ray genommen
 					//werden oder geht der invertierte ray?
 					interSP.transform(comp.getGlobalMatrix());
 					//Get distance from raystart to the intersecting point
