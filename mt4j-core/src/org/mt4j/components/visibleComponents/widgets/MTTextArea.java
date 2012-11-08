@@ -789,7 +789,8 @@ public class MTTextArea extends MTRectangle implements ITextInputListener, Compa
 	 * @param string the string
 	 */
 	synchronized public void appendText(String string){
-		for (int i = 0; i < string.length(); i++) {
+		int strLength = string.length();
+		for (int i = 0; i < strLength; i++) {
 			appendCharByUnicode(string.substring(i, i+1));
 		}
 	}
@@ -800,8 +801,11 @@ public class MTTextArea extends MTRectangle implements ITextInputListener, Compa
 	 * @param string the string
 	 */
 	synchronized public void setText(String string){
-		clear();
-		for (int i = 0; i < string.length(); i++) {
+		//Clear text first
+		this.clear();
+		
+		int stringLength = string.length();
+		for (int i = 0; i < stringLength; i++) {
 			appendCharByUnicode(string.substring(i, i+1));
 		}
 		
@@ -870,8 +874,9 @@ public class MTTextArea extends MTRectangle implements ITextInputListener, Compa
 		if (character == null){
 //			System.err.println("Error adding character with unicode '" + unicode + "' to the textarea. The font couldnt find the character. ->Trying to use 'missing glyph'");
 			character = font.getFontCharacterByUnicode("missing-glyph");
-			if (character != null)
+			if (character != null){
 				addCharacter(character);
+			}
 		}else{
 			addCharacter(character);
 		}
@@ -879,7 +884,7 @@ public class MTTextArea extends MTRectangle implements ITextInputListener, Compa
 	
 	
 	/**
-	 * Gets the characters. Also returns articifially added new line characters that were
+	 * Gets the characters. Also returns artificially added new line characters that were
 	 * added by the MTTextArea
 	 * @return the characters
 	 */
@@ -899,7 +904,7 @@ public class MTTextArea extends MTRectangle implements ITextInputListener, Compa
 	}
 	
 	/**
-	 * Invoked everytime a character is added.
+	 * Invoked every time a character is added.
 	 *
 	 * @param character the character
 	 */
@@ -991,7 +996,7 @@ public class MTTextArea extends MTRectangle implements ITextInputListener, Compa
 	 * resets the textarea, clears all characters.
 	 */
 	public void clear(){
-		while (!characterList.isEmpty()){
+		while (!characterList.isEmpty()){ //FIXME this is not good for performance
 			removeLastCharacter();
 		}
 	}
@@ -1005,8 +1010,9 @@ public class MTTextArea extends MTRectangle implements ITextInputListener, Compa
 			return;
 		
 		//REMOVE THE CHARACTER
-		IFontCharacter lastCharacter = this.characterList.get(this.characterList.size()-1);
-		this.characterList.remove(this.characterList.size()-1);
+		int charCount = this.characterList.size();
+		IFontCharacter lastCharacter = this.characterList.get(charCount-1);
+		this.characterList.remove(charCount-1);
 		
 		this.characterRemoved(lastCharacter);
 	}

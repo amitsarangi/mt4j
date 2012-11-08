@@ -36,6 +36,7 @@ import org.mt4j.input.inputProcessors.componentProcessors.AbstractComponentProce
 import org.mt4j.input.inputProcessors.componentProcessors.dragProcessor.DragEvent;
 import org.mt4j.input.inputProcessors.componentProcessors.dragProcessor.DragProcessor;
 import org.mt4j.util.math.Vector3D;
+import org.mt4j.util.math.Vertex;
 
 import processing.core.PApplet;
 
@@ -250,6 +251,11 @@ public class MTList extends MTClipRectangle {
 	}
 	
 	
+	/**
+	 * Listens whether destroy() is called on a listcell and then removes it from the list.
+	 *
+	 * @see CellDestroyedEvent
+	 */
 	private class CellDestroyedListener implements StateChangeListener{
 		private MTListCell cell;
 		
@@ -292,6 +298,29 @@ public class MTList extends MTClipRectangle {
 			isDragging = false;
 		}
 		
+		
+		@Override
+		public void setMatricesDirty(boolean baseMatrixDirty) { 
+			super.setMatricesDirty(baseMatrixDirty);
+			
+			boolean firstVisibleCellHit = false;
+			for (MTListCell cell : this.cells) {
+				boolean isVisible = MTList.this.isVisible(cell);
+//				System.out.println("Cell: " + cell + " Visible: " + isVisible);
+                cell.setVisible(isVisible);
+                
+                if (!firstVisibleCellHit && isVisible){
+                	firstVisibleCellHit = true;
+                }
+                
+                //TODO this works best when the list is scrolled to the top
+                //TODO we should check if the list is scrolled way down, then we should do this
+                //loop in reverse to skip checking most cells!
+                if (firstVisibleCellHit && !isVisible){  
+                	break; //we can stop checking now, the next cells will all be below the visible list space
+                }
+            }
+		}
 		
 		public void addCell(int index, MTListCell item){
 			if (cells.contains(item)){
@@ -395,6 +424,7 @@ public class MTList extends MTClipRectangle {
 			if (this.cells.size() > 0 && !this.cells.get(0).isNoStroke()){//FIXME TEST so that stroke isnt cut off TOP because of clipping
 				offset = this.cells.get(0).getStrokeWeight();
 			}
+			
             for (MTListCell cell : this.cells) {
                 cell.setAnchor(PositionAnchor.UPPER_LEFT);
 //				Vector3D pos = new Vector3D(0, offset, 0);
@@ -402,7 +432,14 @@ public class MTList extends MTClipRectangle {
                 Vector3D pos = new Vector3D(listContainerUpperLeftLocal.x + cell.getStrokeWeight(), listContainerUpperLeftLocal.y + offset, 0);
                 cell.setPositionRelativeToParent(pos);
                 offset += cellYPadding + cell.getHeightXY(TransformSpace.RELATIVE_TO_PARENT); //TODO take strokeweight into account here,too
+                
+                //FIXME TEST
+                boolean isVisible = MTList.this.isVisible(cell);
+//				System.out.println("Cell: " + cell + " Visible: " + isVisible);
+                cell.setVisible(isVisible);
             }
+            
+            
 		}
 		
 		/**
@@ -452,6 +489,31 @@ public class MTList extends MTClipRectangle {
 			this.isDragging = isDragging;
 		}
 
+	}
+	
+	
+	//FIXME TEST //TODO only check sensible ones in loop
+	protected boolean isVisible(MTListCell cell){
+		Vertex[] cellVerts = cell.getVerticesLocal();
+		
+		Vector3D listUpperLeftLocal = getListUpperLeftLocal();
+		Vector3D listLowerLeftLocal = getListLowerLeftLocal();
+		
+		//Actually we should transform it with the cells local matrix first - but that _should_ be identity! => so leave it for performance
+		Vector3D cellUpLeftLocal = cell.localToParent(cellVerts[0]); //To List-Container local space
+		cellUpLeftLocal.transform(listCellContainer.getLocalMatrix()); //To list local space
+		
+		Vector3D cellBottomLeftLocal = cell.localToParent(cellVerts[3]); //To List-Container local space
+		cellBottomLeftLocal.transform(listCellContainer.getLocalMatrix()); //To list local space
+		
+		if ( (cellUpLeftLocal.y <= listUpperLeftLocal.y && cellBottomLeftLocal.y <= listUpperLeftLocal.y) 
+				||
+			 (cellUpLeftLocal.y >= listLowerLeftLocal.y && cellBottomLeftLocal.y >= listLowerLeftLocal.y)
+		){
+			return false;
+		}
+		
+		return true;
 	}
 	
 	

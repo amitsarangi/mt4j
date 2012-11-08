@@ -677,7 +677,8 @@ public abstract class AbstractMTApplication extends PApplet implements IMTApplic
 	
 	
 	/**
-	 * Send evt to scene processors.
+	 * Sends artificially created input STARTED or ENDED events to the scene in case
+	 * of a scene change so the state of a button for example doesent remain pressed.
 	 * 
 	 * @param scene the scene
 	 * @param evtToFire the evt to fire

@@ -1,9 +1,15 @@
 ToDo list:
 
+-> Performance / Memory:
+- MTTextArea: setText() and clear() take too long because we process each character and then do setHeight/Width etc
+- we need an updateVertices() method for things like setWidth/setHeight, also reuse the vertices and VertexBuffers instead of creating new ones for shapes like Rectangle etc
+- dont save vertices if we are in opengl -> we have to save vertices+we create new floatbuffers = 2*memory!
+	-> save only buffers and at getVerticesLocal -> create vertices from buffer -> not needed often
+	-> at setUseDirectGL(false) -> delete buffers and use vertices
+	
 -> General:
 - processing.com post and bug report (font)
 - add setAnchor(Vector3D anchorPoint) for all AbstractShapes? -> use in set/getPosition() -> per default use centerpoint -> rotate(45) -> use anchor by default?
-- how to differentiate between manipulations and gestures? 
 - add more stateChange events (e.g. transformed, globally position changed etc)
 - in boundingShapes -> calculate width/height screen or object aligned? -> rather object aligned..
 - put get/setWidth/Height into MTComponent?
@@ -25,10 +31,6 @@ ToDo list:
 - make inputevent recorder -> IMTInputListener
 - let all implementations of processInputEvent return false by default (->not consumed), or true-> for handled?
 
-- dont save vertices if we are in opengl -> we have to save vertices+we create new floatbuffers = 2*memory!
-	-> save only buffers and at getVerticesLocal -> create vertices from buffer -> not needed often
-	-> at setUseDirectGL(false) -> delete buffers and use vertices
-
 - compile 64 bit manymouse
 - shapes example, line, polyine(polygon not closed), custom shapes with bezier, concave shapes with triangulation
 - gui, widgets example
@@ -43,7 +45,7 @@ ToDo list:
 - add sound library (OpenAL?)
 - by default disable depth buffer and only for special 3d stuff enable it?
 - check if for line_smooth disabling/enabling multisampling is too expensive - if so disable/dont use line_smooth when multisampling at all 
-- framework for component persistation (X-Stream?)
+- (framework for component persistation (X-Stream?))
 - put perspective and viewport into MTCamera (?)
 - (update to latest gsvideo)
 - (Use nanotimer or currentmillis or gage timer to update and animations? -> nano has more precision but has problems on some systems(?))
