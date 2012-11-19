@@ -425,12 +425,19 @@ public abstract class AbstractMTApplication extends PApplet implements IMTApplic
 	/* (non-Javadoc)
 	 * @see org.mt4j.IMTApplication#pushScene()
 	 */
-	public void pushScene(){
+	public boolean pushScene(){
 		if (getCurrentScene() == null){
-			logger.debug("Scene stack is empty! No scene to put on the stack!");
+			logger.warn("Scene stack is empty! No scene to put on the stack!");
+			return false;
 		}else{
-			logger.debug("Putting scene: " + getCurrentScene().getName() +  " on the stack.");
-			sceneStack.offerFirst(getCurrentScene());
+			if (isSceneChangeLocked()){
+				logger.warn("Calling pushScene() during a scene transition is not permitted.");
+				return false;
+			}else{
+				logger.debug("Putting scene: " + getCurrentScene().getName() +  " on the stack.");
+				sceneStack.offerFirst(getCurrentScene());
+				return true;
+			}
 		}
 	}
 	
@@ -443,13 +450,18 @@ public abstract class AbstractMTApplication extends PApplet implements IMTApplic
 		
 		Iscene stackScene = sceneStack.peek();
 		if (stackScene != null){
-			logger.debug("Popping scene: " + stackScene.getName() +  " back from the stack.");
-			boolean changed = this.changeScene(stackScene);
-			if (changed){
-				sceneStack.pollFirst();
-				return true;
-			}else{
+			if (isSceneChangeLocked()){
+				logger.warn("Calling popScene() during a scene transition is not permitted.");
 				return false;
+			}else{
+				logger.debug("Popping scene: " + stackScene.getName() +  " back from the stack.");
+				boolean changed = this.changeScene(stackScene);
+				if (changed){
+					sceneStack.pollFirst();
+					return true;
+				}else{
+					return false;
+				}
 			}
 		}else{
 			logger.warn("Scene stack is empty! No scene to pop from the stack!");
@@ -585,6 +597,7 @@ public abstract class AbstractMTApplication extends PApplet implements IMTApplic
 			inDoSceneChange = false;
 			return true;
 		}else{
+			logger.warn("Cant change the scene if currently still in a scene transition");
 			return false;
 		}
 	}
@@ -1046,6 +1059,14 @@ public abstract class AbstractMTApplication extends PApplet implements IMTApplic
 			return super.loadImage(filename);	
 		}
 	}
+
+
+	public boolean isSceneChangeLocked() {
+		return sceneChangeLocked;
+	}
+	
+	
+	
 	
 	//////////////////////////////////////////////////
 	

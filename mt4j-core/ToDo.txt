@@ -1,5 +1,8 @@
 ToDo list:
 
+-> Android:
+- finger position seems off, on the left screen side its off to the left, on the right side off to the right
+
 -> Performance / Memory:
 - MTTextArea: setText() and clear() take too long because we process each character and then do setHeight/Width etc
 - we need an updateVertices() method for things like setWidth/setHeight, also reuse the vertices and VertexBuffers instead of creating new ones for shapes like Rectangle etc
@@ -60,6 +63,7 @@ ToDo list:
 
 
 -> Components:
+- list scroll indicator
 - use layoutBounds (parent relative, axis aligned bounds)
 - geometry setColorBinding(BIND_PER_VERTEX)/BIND_SINGLE_COLOR to allow simple coloring using glColor()?
 - LayoutContainer/Manager

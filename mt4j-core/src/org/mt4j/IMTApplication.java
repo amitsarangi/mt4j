@@ -76,8 +76,9 @@ public interface IMTApplication extends IPAppletBoth{
 
 	/**
 	 * Pushes the current scene on the scene stack.
+	 * @return 
 	 */
-	public void pushScene();
+	public boolean pushScene();
 
 	/**
 	 * Pops the scene thats currently ontop of the scene stack and changes back to it. 

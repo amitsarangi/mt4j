@@ -97,6 +97,18 @@ public class MTList extends MTClipRectangle {
 		this(applet, x, y, width, height, cellPaddingY);
 	}
 	
+	
+	/**
+	 * Instantiates a new mT list.
+	 *
+	 * @param applet the applet
+	 * @param width the width
+	 * @param height the height
+	 */
+	public MTList(PApplet applet, float width,  float height) {
+		this(applet, 0, 0, width, height, 2);
+	}
+	
 	/**
 	 * Instantiates a new mT list.
 	 *
