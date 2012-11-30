@@ -1,7 +1,11 @@
 ToDo list:
 
 -> Android:
-- finger position seems off, on the left screen side its off to the left, on the right side off to the right
+- (finger position seems off, on the left screen side its off to the left, on the right side off to the right -> seems to be driver!?)
+- we need to re-load textures/shaders and other opengl resources if they get destroyed after we pause and resume the application
+- we need to make a configuration at startup for things like listening to accelerometer or orientation
+- how do we get notice that the orientation changed?
+- 
 
 -> Performance / Memory:
 - MTTextArea: setText() and clear() take too long because we process each character and then do setHeight/Width etc

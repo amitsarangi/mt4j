@@ -19,6 +19,7 @@
 ************************************************************************/
 package org.mt4j;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,12 +40,19 @@ import org.mt4j.util.opengl.AndroidGL10;
 import org.mt4j.util.opengl.AndroidGL11;
 
 import processing.core.PGraphicsAndroid3D;
+import android.app.Activity;
 import android.content.Context;
-import android.text.InputType;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
+import android.os.Vibrator;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
+import android.view.Surface;
 import android.view.SurfaceView;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 
 /*
@@ -60,6 +68,7 @@ import android.view.inputmethod.InputMethodManager;
 
 /**
  * The Class MTAndroidApplication.
+ * Parts taken from the great LibGDX library (http://libgdx.badlogicgames.com/)
  */
 public abstract class MTAndroidApplication extends AbstractMTApplication{
 	
@@ -71,6 +80,35 @@ public abstract class MTAndroidApplication extends AbstractMTApplication{
 	/** The input method manager. */
 	private InputMethodManager inputMethodManager;
 
+	private Vibrator vibrator;
+	
+	private SensorManager manager;
+	
+	private boolean compassAvailable = false;
+	
+	private float azimuth = 0;
+	private float pitch = 0;
+	private float roll = 0;
+	private float inclination = 0;
+//	private final Orientation nativeOrientation = Orientation.Portrait;
+	private Orientation nativeOrientation;
+	public boolean accelerometerAvailable = false;
+	
+	final float[] R = new float[9];
+	final float[] orientation = new float[3];
+	
+	private final float[] magneticFieldValues = new float[3];
+	private final float[] accelerometerValues = new float[3];
+	private boolean useAccelerometer;
+	private boolean useCompass;
+	
+	private SensorEventListener accelerometerListener;
+	private SensorEventListener compassListener;
+	
+	public enum Orientation {
+		Landscape, Portrait
+	}
+	
 	//	iSystemButtonListeners = new ArrayList<ISystemButtonListener>();
 	
 	/**
@@ -78,6 +116,18 @@ public abstract class MTAndroidApplication extends AbstractMTApplication{
 	 */
 	public MTAndroidApplication(){
 		super();
+		
+		/*
+		int rotation = getRotation();
+		if (((rotation == 0 || rotation == 180) && (MT4jSettings.getInstance().getWindowWidth() >= MT4jSettings.getInstance().getWindowHeight()))
+				|| 
+			((rotation == 90 || rotation == 270) && (MT4jSettings.getInstance().getWindowWidth() <= MT4jSettings.getInstance().getWindowHeight()))) 
+		{
+			nativeOrientation = Orientation.Landscape;
+		} else {
+			nativeOrientation = Orientation.Portrait;
+		}
+		*/
 	}
 	
 	
@@ -143,20 +193,241 @@ public abstract class MTAndroidApplication extends AbstractMTApplication{
 		
 		MT4jSettings.getInstance().programStartTime = System.currentTimeMillis();
 		
+		//FIXME USE? -> put in Config?
+//		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+//		getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
+		
+		//Initialize and get OpenGL context
 		this.loadGL();
 		
-		AniAnimation.init(this); //Initialize Ani animation library
+		 //Initialize Ani animation library with application instance
+		AniAnimation.init(this);
 		
 		//Create a new inputsourcePool
 		if (getInputManager() == null){ //only set the default inputManager if none is set yet
 			this.setInputManager(new AndroidInputManager(this, true));
 		}
 		
+		//Get System Services
+		vibrator = (Vibrator)this.getSystemService(Context.VIBRATOR_SERVICE);
 		inputMethodManager = (InputMethodManager)this.getSystemService(Context.INPUT_METHOD_SERVICE);
+		
+//		/*
+		int rotation = getRotation();
+		if (((rotation == 0 || rotation == 180) && (MT4jSettings.getInstance().getWindowWidth() >= MT4jSettings.getInstance().getWindowHeight()))
+				|| 
+			((rotation == 90 || rotation == 270) && (MT4jSettings.getInstance().getWindowWidth() <= MT4jSettings.getInstance().getWindowHeight()))) 
+		{
+			nativeOrientation = Orientation.Landscape;
+		} else {
+			nativeOrientation = Orientation.Portrait;
+		}
+		
+		//Register sensonr listeners that save changes in the correspondent variables (accelleration, rotation, compass)
+//		registerSensorListeners();
+//		*/
 		
 		//Call startup at the end of setup(). Should be overridden in extending classes
 		this.startUp();
 	}
+	
+
+
+	/**
+	 * Tries to hide the status bar. Adapted from libGDX library.
+	 */
+	protected void hideStatusBar () {
+		View rootView = getWindow().getDecorView();
+
+		try {
+			Method m = View.class.getMethod("setSystemUiVisibility", int.class);
+			m.invoke(rootView, 0x0);
+			m.invoke(rootView, 0x1);
+		} catch (Exception e) {
+			logger.warn("Can't hide status bar");
+			logger.warn(e);
+		}
+	}
+	
+	
+
+	public void vibrate (int milliseconds) {
+		vibrator.vibrate(milliseconds);
+	}
+
+	public void vibrate (long[] pattern, int repeat) {
+		vibrator.vibrate(pattern, repeat);
+	}
+
+	public void cancelVibrate () {
+		vibrator.cancel();
+	}
+
+
+	public float getAccelerometerX () {
+		return accelerometerValues[0];
+	}
+
+	public float getAccelerometerY () {
+		return accelerometerValues[1];
+	}
+
+	public float getAccelerometerZ () {
+		return accelerometerValues[2];
+	}
+
+
+	private void updateOrientation () {
+		if (SensorManager.getRotationMatrix(R, null, accelerometerValues, magneticFieldValues)) {
+			SensorManager.getOrientation(R, orientation);
+			azimuth = (float)Math.toDegrees(orientation[0]);
+			pitch = (float)Math.toDegrees(orientation[1]);
+			roll = (float)Math.toDegrees(orientation[2]);
+		}
+	}
+
+	/** Returns the rotation matrix describing the devices rotation as per <a href=
+	 * "http://developer.android.com/reference/android/hardware/SensorManager.html#getRotationMatrix(float[], float[], float[], float[])"
+	 * >SensorManager#getRotationMatrix(float[], float[], float[], float[])</a>. Does not manipulate the matrix if the platform
+	 * does not have an accelerometer.
+	 * @param matrix */
+	public void getRotationMatrix (float[] matrix) {
+		SensorManager.getRotationMatrix(matrix, null, accelerometerValues, magneticFieldValues);
+	}
+
+	public float getAzimuth () {
+		if (!compassAvailable) 
+			return 0;
+
+		updateOrientation();
+		return azimuth;
+	}
+
+	public float getPitch () {
+		if (!compassAvailable) 
+			return 0;
+
+		updateOrientation();
+		return pitch;
+	}
+
+	public float getRoll () {
+		if (!compassAvailable) 
+			return 0;
+
+		updateOrientation();
+		return roll;
+	}
+
+	void registerSensorListeners () { //TODO this is never called atm
+		if (useAccelerometer) {
+			manager = (SensorManager)this.getSystemService(Context.SENSOR_SERVICE);
+			if (manager.getSensorList(Sensor.TYPE_ACCELEROMETER).size() == 0) {
+				accelerometerAvailable = false;
+			} else {
+				Sensor accelerometer = manager.getSensorList(Sensor.TYPE_ACCELEROMETER).get(0);
+				accelerometerListener = new SensorListener(this.nativeOrientation, this.accelerometerValues, this.magneticFieldValues);
+				accelerometerAvailable = manager.registerListener(accelerometerListener, accelerometer, SensorManager.SENSOR_DELAY_GAME);
+			}
+		} else
+			accelerometerAvailable = false;
+
+		if (useCompass) {
+			if (manager == null) manager = (SensorManager)this.getSystemService(Context.SENSOR_SERVICE);
+			Sensor sensor = manager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
+			if (sensor != null) {
+				compassAvailable = accelerometerAvailable;
+				if (compassAvailable) {
+					compassListener = new SensorListener(this.nativeOrientation, this.accelerometerValues, this.magneticFieldValues);
+					compassAvailable = manager.registerListener(compassListener, sensor, SensorManager.SENSOR_DELAY_GAME);
+				}
+			} else {
+				compassAvailable = false;
+			}
+		} else
+			compassAvailable = false;
+		logger.info("sensor listener setup");
+	}
+
+	void unregisterSensorListeners () {
+		if (manager != null) {
+			if (accelerometerListener != null) {
+				manager.unregisterListener(accelerometerListener);
+				accelerometerListener = null;
+			}
+			if (compassListener != null) {
+				manager.unregisterListener(compassListener);
+				compassListener = null;
+			}
+			manager = null;
+		}
+		logger.info("sensor listener tear down");
+	}
+
+
+	public int getRotation () {
+		int orientation = 0;
+
+		if (this instanceof Activity) {
+			orientation = ((Activity)this).getWindowManager().getDefaultDisplay().getOrientation();
+		} else {
+			orientation = ((WindowManager)this.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getOrientation();
+		}
+
+		switch (orientation) {
+		case Surface.ROTATION_0:
+			return 0;
+		case Surface.ROTATION_90:
+			return 90;
+		case Surface.ROTATION_180:
+			return 180;
+		case Surface.ROTATION_270:
+			return 270;
+		default:
+			return 0;
+		}
+	}
+
+	
+
+	/** Our implementation of SensorEventListener. Because Android doesn't like it when we register more than one Sensor to a single
+	 * SensorEventListener, we add one of these for each Sensor. Could use an anonymous class, but I don't see any harm in
+	 * explicitly defining it here. Correct me if I am wrong. */
+	private class SensorListener implements SensorEventListener {
+		final float[] accelerometerValues;
+		final float[] magneticFieldValues;
+		final Orientation nativeOrientation;
+
+		SensorListener (Orientation nativeOrientation, float[] accelerometerValues, float[] magneticFieldValues) {
+			this.accelerometerValues = accelerometerValues;
+			this.magneticFieldValues = magneticFieldValues;
+			this.nativeOrientation = nativeOrientation;
+		}
+
+		@Override
+		public void onAccuracyChanged (Sensor arg0, int arg1) {
+
+		}
+
+		@Override
+		public void onSensorChanged (SensorEvent event) {
+			if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
+				if (nativeOrientation == Orientation.Portrait) {
+					System.arraycopy(event.values, 0, accelerometerValues, 0, accelerometerValues.length);
+				} else {
+					accelerometerValues[0] = event.values[1];
+					accelerometerValues[1] = -event.values[0];
+					accelerometerValues[2] = event.values[2];
+				}
+			}
+			if (event.sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD) {
+				System.arraycopy(event.values, 0, magneticFieldValues, 0, magneticFieldValues.length);
+			}
+		}
+	}
+
+	
+	
 
 	
 	/**
@@ -352,6 +623,32 @@ public abstract class MTAndroidApplication extends AbstractMTApplication{
 	}
 	*/
 	
+//	/*
+	@Override
+	protected void onPause() {
+		logger.debug("onPause()");
+		
+		this.unregisterSensorListeners();
+		
+
+		if (isFinishing()) {
+			//clear resources/caches -> app is destroyed actually (sure?) //TODO
+		}
+		
+		
+		super.onPause();
+	}
+	
+	@Override
+	protected void onResume() {
+		logger.debug("onResume()");
+		
+		this.registerSensorListeners();
+		
+		super.onResume();
+	}
+//	*/
+	
 //	@Override
 //	protected void onRestart() {
 //		super.onRestart();
@@ -384,6 +681,12 @@ public abstract class MTAndroidApplication extends AbstractMTApplication{
 		}
 	}
 	*/
+	
+
+	public int getVersion () {
+		return Integer.parseInt(android.os.Build.VERSION.SDK);
+	}
+
 
 	/* (non-Javadoc)
 	 * @see android.app.Activity#onBackPressed()
