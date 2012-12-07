@@ -749,6 +749,10 @@ final public class ToolsMath {
 		return (floor + (float)Math.random()*(ceiling-floor));
 	}
 	
+	public static int getRandomInt(int i1, int i2){
+		return Math.round(ToolsMath.getRandom(i1, i2));
+	}
+	
 	public static int nextPowerOfTwo(int n) {
 	  	n--;
 	    n |= n >> 1;

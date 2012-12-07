@@ -7,9 +7,9 @@
 	  **********************************
 
 MT4J - Multi-Touch for Java - is an open source java development platform, 
-created for rapid developement of visually rich applications. 
+created for rapid development of visually rich applications. 
 MT4J is designed to support different kinds of input devices with a special 
-focus on multi touch support. 
+focus on multi-touch support. 
 
 Copyright (C) 2008-2012  Christopher Ruff, Fraunhofer-Institute for Industrial Engineering 
 -----------------------------------------------------------------
@@ -74,6 +74,7 @@ References:
 -----------
 MT4j makes use of following open source projects:
 * Processing - http://Processing.org
+* LibGDX (libgdx.badlogicgames.com)
 * Java Monkey Engine
 * LibGDX
 * Ani
