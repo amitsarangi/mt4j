@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.mt4j.audio.Audio;
 import org.mt4j.components.css.util.CSSStyleManager;
 import org.mt4j.input.IKeyListener;
 import org.mt4j.input.InputManager;
@@ -37,9 +38,10 @@ import org.mt4j.sceneManagement.Iscene;
 import org.mt4j.sceneManagement.SceneChangeEvent;
 import org.mt4j.sceneManagement.transition.ITransition;
 import org.mt4j.util.ArrayDeque;
-import org.mt4j.util.PlatformUtil;
 import org.mt4j.util.MT4jSettings;
+import org.mt4j.util.PlatformUtil;
 import org.mt4j.util.animation.AnimationManager;
+import org.mt4j.util.gdx.Files;
 import org.mt4j.util.logging.ILogger;
 import org.mt4j.util.opengl.GL10;
 import org.mt4j.util.opengl.GL11;
@@ -137,6 +139,12 @@ public abstract class AbstractMTApplication extends PApplet implements IMTApplic
 
 	protected boolean gl11PlusSupported;
 
+	// (LibGDX) Stuff
+	public Files files;
+	public Audio audio;
+	protected boolean disableAudio = false; //TODO put in config
+	// Stuff
+	
 	
 //	private static boolean fullscreen;
 	/*
@@ -320,7 +328,7 @@ public abstract class AbstractMTApplication extends PApplet implements IMTApplic
 	 * <li>Updates and draws the current scene.
 	 * <li>Updates and draws the current scene transitions.
 	 */
-	private void runApplication(){ 
+	protected void runApplication(){ 
 		//Process preDrawActions
 		synchronized (preDrawActions) {
 			for (Iterator<IPreDrawAction> iter = preDrawActions.iterator(); iter.hasNext();) {

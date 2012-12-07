@@ -30,6 +30,7 @@ import junit.framework.AssertionFailedError;
 import junit.framework.TestCase;
 
 import org.mt4j.AbstractMTApplication;
+import org.mt4j.MTApplication;
 import org.mt4j.sceneManagement.Iscene;
 import org.mt4j.test.testUtil.TestRunnable;
 
@@ -174,7 +175,7 @@ implements UncaughtExceptionHandler
 		}
 	}
 	
-	private class TestDummyMTApplication extends AbstractMTApplication {
+	private class TestDummyMTApplication extends MTApplication {
 		private static final long serialVersionUID = 1L;
 		@Override
 		public void startUp() {

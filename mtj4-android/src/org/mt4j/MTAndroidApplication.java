@@ -19,10 +19,12 @@
 ************************************************************************/
 package org.mt4j;
 
+
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.mt4j.audio.AndroidAudio;
 import org.mt4j.input.AndroidInputManager;
 import org.mt4j.input.ISurfaceTouchListener;
 import org.mt4j.input.ISystemButtonListener;
@@ -33,6 +35,7 @@ import org.mt4j.util.PlatformUtil;
 import org.mt4j.util.animation.ani.AniAnimation;
 import org.mt4j.util.font.FontManager;
 import org.mt4j.util.font.fontFactories.AngelCodeFontFactory;
+import org.mt4j.util.gdx.AndroidFiles;
 import org.mt4j.util.logging.AndroidDefaultLogger;
 import org.mt4j.util.logging.ILogger;
 import org.mt4j.util.logging.MTLoggerFactory;
@@ -105,6 +108,8 @@ public abstract class MTAndroidApplication extends AbstractMTApplication{
 	private SensorEventListener accelerometerListener;
 	private SensorEventListener compassListener;
 	
+	public int maxSimultaneousSounds = 16;
+	
 	public enum Orientation {
 		Landscape, Portrait
 	}
@@ -116,6 +121,11 @@ public abstract class MTAndroidApplication extends AbstractMTApplication{
 	 */
 	public MTAndroidApplication(){
 		super();
+		
+		// Initialize Loggin facilities  - IMPORTANT TO DO THIS ASAP! \\
+		MTLoggerFactory.setLoggerProvider(new AndroidDefaultLogger()); 
+		logger = MTLoggerFactory.getLogger(MTAndroidApplication.class.getName());
+		logger.setLevel(ILogger.INFO);
 		
 		/*
 		int rotation = getRotation();
@@ -140,12 +150,6 @@ public abstract class MTAndroidApplication extends AbstractMTApplication{
 		
 //		 orientation(LANDSCAPE); //TODO make configurable
 //		 orientation(PORTRAIT); //TODO make configurable
-		
-		// Initialize Loggin facilities  - IMPORTANT TO DO THIS ASAP! \\
-		MTLoggerFactory.setLoggerProvider(new AndroidDefaultLogger()); 
-//		MTLoggerFactory.setLoggerProvider(new AndroidDummyLogger());
-		logger = MTLoggerFactory.getLogger(MTAndroidApplication.class.getName());
-		logger.setLevel(ILogger.INFO);
 		
 		// Default font settings and factories \\
 		FontManager.DEFAULT_FONT = "arial20.fnt";
@@ -213,6 +217,7 @@ public abstract class MTAndroidApplication extends AbstractMTApplication{
 		inputMethodManager = (InputMethodManager)this.getSystemService(Context.INPUT_METHOD_SERVICE);
 		
 //		/*
+		//Stuff for getting the native orientation at app start
 		int rotation = getRotation();
 		if (((rotation == 0 || rotation == 180) && (MT4jSettings.getInstance().getWindowWidth() >= MT4jSettings.getInstance().getWindowHeight()))
 				|| 
@@ -227,12 +232,26 @@ public abstract class MTAndroidApplication extends AbstractMTApplication{
 //		registerSensorListeners();
 //		*/
 		
+		//Initialize Audio
+		if (!disableAudio) 
+			audio = new AndroidAudio(this, maxSimultaneousSounds);
+		
+		//Initialize Files 
+		files = new AndroidFiles(this.getAssets(), this.getFilesDir().getAbsolutePath());
+		
 		//Call startup at the end of setup(). Should be overridden in extending classes
 		this.startUp();
 	}
 	
+	@Override
+	public void exit() {
+		if (audio != null)
+			((AndroidAudio)audio).dispose();
+		
+		super.exit();
+	}
 
-
+	
 	/**
 	 * Tries to hide the status bar. Adapted from libGDX library.
 	 */
@@ -580,7 +599,6 @@ public abstract class MTAndroidApplication extends AbstractMTApplication{
 	}
 	
 	///////////////////////////////////////////////
-	
 	/*
 	@Override
 	protected void onStop() {
@@ -630,11 +648,11 @@ public abstract class MTAndroidApplication extends AbstractMTApplication{
 		
 		this.unregisterSensorListeners();
 		
-
 		if (isFinishing()) {
 			//clear resources/caches -> app is destroyed actually (sure?) //TODO
 		}
 		
+		//TODO pause audio/music=
 		
 		super.onPause();
 	}
@@ -644,6 +662,8 @@ public abstract class MTAndroidApplication extends AbstractMTApplication{
 		logger.debug("onResume()");
 		
 		this.registerSensorListeners();
+		
+		//TODO resume audio/music=
 		
 		super.onResume();
 	}

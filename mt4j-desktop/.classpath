@@ -38,7 +38,6 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="/mt4j-core/lib/batik-css.jar"/>
 	<classpathentry kind="lib" path="/mt4j-core/lib/xml-apis-ext.jar"/>
-	<classpathentry kind="lib" path="lib/jogl/gluegen-rt.jar"/>
 	<classpathentry kind="lib" path="lib/muito_blobtracking.jar"/>
 	<classpathentry kind="lib" path="lib/tuio/tuio4jinput.jar"/>
 	<classpathentry kind="lib" path="lib/core.jar"/>
@@ -49,5 +48,11 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="lib" path="lib/tuio/tuio4j_v1.1.jar"/>
+	<classpathentry kind="lib" path="lib/joal/joal.jar"/>
+	<classpathentry kind="lib" path="lib/joal/gluegen.jar"/>
+	<classpathentry kind="lib" path="lib/joal/gluegen-rt.jar"/>
+	<classpathentry kind="lib" path="lib/jogl/gluegen-rt.jar"/>
+	<classpathentry kind="lib" path="lib/joal/jlayer-1.0.1-libgdx.jar"/>
+	<classpathentry kind="lib" path="lib/joal/jorbis.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
